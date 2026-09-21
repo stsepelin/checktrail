@@ -74,5 +74,6 @@ synthetic broken/fixed/near-miss cases with the network disabled. It also instal
 a fresh package offline and exercises its library, CLI and MCP against the public
 Java example. The host npm cache must contain the locked production dependencies.
 The Dockerfile pins the multi-platform base image manifests. Local evidence is
-arm64 Linux; the configured hosted amd64 job has not run. Host macOS without a JDK
+arm64 Linux; the separate hosted amd64 job passed at `52ba415` (see `NATIVE-CI.md`).
+Host macOS without a JDK
 reports the native cases as skipped, not verified.

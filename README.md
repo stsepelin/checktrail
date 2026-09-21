@@ -2,14 +2,18 @@
 
 Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
-**Experimental foundation.** The intended public namespace is
-`stsepelin/repo-verifier`; no published package or hosted service is required.
+**Experimental preview: 0.1.0-alpha.1.** Public source is available at
+[stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
-[Release preparation](docs/RELEASE.md) records the unpublished registry metadata
-and the external gates still required for publication. The
+[Installation](docs/INSTALLATION.md) covers the CLI, Claude Code and Codex.
+[Release preparation](docs/RELEASE.md) records publication and verification gates. The
 [milestone audit](docs/ACCEPTANCE.md) separates implemented profiles from open
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
+
+The [13-job hosted matrix](https://github.com/stsepelin/repo-verifier/actions/runs/35573066804)
+passed at `52ba415` on Linux and macOS. This identifies a verified source revision;
+it does not imply that a later package version has been published.
 
 Repo Verifier discovers projects, plans registered checks, invokes native tools
 when explicitly trusted, and reports results without turning skipped or empty

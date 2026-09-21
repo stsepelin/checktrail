@@ -26,7 +26,8 @@ Native cases passed with pytest 9.1.1 and Python 3.12.13 in an official Linux
 container, with network access disabled and synthetic source mounted read-only.
 The host's default Python has no pytest, so the ordinary host suite explicitly
 skips the native case; parser and planning tests still run. The CI definition
-installs pinned development tools before tests; hosted CI has not run.
+installs pinned development tools before tests. The hosted profile passed at
+`52ba415`; see `NATIVE-CI.md`.
 
 For the separate container check, prepare dependencies deliberately before
 validation (requires an already installed `python:3.12-alpine` image):

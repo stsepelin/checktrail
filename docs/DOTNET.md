@@ -110,5 +110,5 @@ node scripts/verify-dotnet-container.mjs
 The helper checks the pinned native SDK/compiler, runs original synthetic cases
 with networking disabled, and tests a fresh offline package installation through
 the library, CLI and MCP. The host npm cache needs the production dependencies.
-The configured hosted amd64 job has not run. Windows process-tree handling and
+The hosted amd64 job passed at `52ba415`; see `NATIVE-CI.md`. Windows process-tree handling and
 native macOS .NET execution remain unverified.

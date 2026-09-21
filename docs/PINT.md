@@ -34,6 +34,8 @@ are created in the container filesystem with networking disabled.
 
 The first macOS hosted run exposed that using `/dev/null` as a cache file fails
 when Pint seeks within it. The regular temporary file fixes that mechanism;
-macOS acceptance still requires the corrected hosted native test to pass.
+the corrected hosted macOS suite and required profile passed at `52ba415`.
+The fixture now exercises a symlinked project root and compares canonical native
+paths on every platform. See `NATIVE-CI.md`.
 
 See [Pint's official documentation](https://laravel.com/framework/docs/pint).

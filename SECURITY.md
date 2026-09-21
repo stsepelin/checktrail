@@ -41,7 +41,6 @@ examples and reviewed files. The package allowlist excludes local reports and te
 
 ## Reporting
 
-Once the public GitHub repository exists, use its private vulnerability reporting
-channel if enabled. Until then, contact the maintainer privately. Do not put secrets
-or exploitable private deployment details in a public issue. Public vulnerability
-reporting setup is a release prerequisite, not an existing service.
+Use [GitHub private vulnerability reporting](https://github.com/stsepelin/repo-verifier/security/advisories/new).
+The reporting channel is enabled for this repository. Do not put secrets or
+exploitable private deployment details in a public issue.

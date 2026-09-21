@@ -231,7 +231,8 @@ names, rather than accepting a successful suite that skipped native work. Local
 Ruby/Linux/Node 22 and Swift/macOS execution pass. Runner regressions reject
 missing names, wrong-file names, skips, TODOs, duplicate names, suite-only matches
 and unrelated failures. Removing the missing-test rejection fails the named
-regression. This strengthens CI definitions; hosted CI is still unrun.
+regression. These profiles subsequently passed hosted CI at `52ba415`; see
+`NATIVE-CI.md` for the complete workflow evidence.
 
 The same exact-name gate now covers the prepared CI core, JavaScript, Python,
 Go, PHP, framework and Rust profiles, plus the Clang, Java, C#, actionlint,

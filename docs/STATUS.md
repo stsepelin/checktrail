@@ -2,16 +2,17 @@
 
 This is an experimental foundation with public source at
 [stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier).
-The npm package `@stsepelin/repo-verifier` is not published. The initial commit
-`60131d6` started hosted CI; the package-cache setup failures, macOS Pint
-cache-file failure and pending rerun are recorded in `NATIVE-CI.md`.
+Check the [installation guide](INSTALLATION.md) for package availability and setup.
+All 13 hosted jobs passed at `52ba415`; the exact run and earlier cache/path
+failures are recorded in `NATIVE-CI.md`. The `0.1.0-alpha.1` preview changes
+release metadata and documentation; its publication is a separate gate.
 
 ## Implemented
 
 - Exact required-test accounting across prepared CI language profiles and native
   container helpers, including dedicated Ruby/Swift jobs. Skipped, missing,
-  duplicate, TODO or failing cases cannot satisfy these profiles. Full hosted acceptance
-  remains pending; see `NATIVE-CI.md` for the distinction from optional local tests.
+  duplicate, TODO or failing cases cannot satisfy these profiles. Hosted profiles
+  passed at `52ba415`; see `NATIVE-CI.md` for the distinction from optional local tests.
 
 - External Ruff integration evaluation against pinned upstream Python fixtures and
   snapshots, with native/verifier location comparisons on macOS/Linux and explicit
@@ -122,7 +123,7 @@ lifecycle regression now accounts for later awaited render hooks; cancellation
 was tested against an observed live startup and verified temporary-directory
 removal. The profile covers selected SSR requests, not browser hydration, every
 route parameter or production equivalence. See `NUXT.md` for reproduction and limits.
-Hosted CI remains unrun.
+The hosted Nuxt job passed at `52ba415`; see `NATIVE-CI.md`.
 
 ## Vue Router testing assembly
 
@@ -145,10 +146,11 @@ a general speedup/graph-completeness claim.
 
 ## Release preparation
 
-`server.json` and npm `mcpName` describe an unpublished development candidate.
+`server.json` and npm `mcpName` describe the `0.1.0-alpha.1` preview.
 The metadata passed the pinned official registry schema; a native SDK-client test
 starts its command and verifies execution remains disabled. This does not establish
-registry acceptance, namespace ownership, hosted CI or publication. See `RELEASE.md`.
+registry acceptance or npm publication. Hosted source evidence is recorded
+separately in `NATIVE-CI.md`. See `RELEASE.md`.
 
 ## Pinned pack distribution
 
@@ -169,8 +171,8 @@ Python 3.12.13, Go 1.26.5 and PHP 8.5.6 with networking disabled. Fresh offline
 package installation passed through the library, CLI and MCP using the public
 Node example. These runs verify the protocol and fixtures, not arbitrary plugins.
 See `EXTERNAL-ADAPTERS.md` for reproducible commands and trust limitations.
-The first hosted job passed native checks but failed during offline package
-installation; see `NATIVE-CI.md`.
+The hosted job passed native and installed-package checks at `52ba415`;
+see `NATIVE-CI.md`.
 
 ## Verification and boundaries
 
@@ -203,7 +205,7 @@ Node's implicit passing result for an empty file is explicitly rejected using
 file-level summary events.
 
 The CI definition targets Node 22/24/26 on Linux and Node 24 on macOS, with Python,
-Go and PHP provisioned and preflighted. Full hosted acceptance remains pending;
+Go and PHP provisioned and preflighted. The full matrix passed at `52ba415`;
 see `NATIVE-CI.md`. Windows process execution is explicitly unsupported.
 
 The SDK package version alone did not establish modern protocol serving. Tests
@@ -444,8 +446,8 @@ Fresh offline package installation passed the Java public library, CLI and MCP
 checks. Removing the declared-type analysis guard made the native missing-analysis
 regression fail; the original implementation was restored and native verification
 rerun. `scripts/verify-java-container.mjs` reproduces both native and packaged checks.
-The hosted amd64 job passed native checks but failed during offline package
-installation; macOS has no prepared JDK. See `NATIVE-CI.md`.
+The hosted amd64 job passed at `52ba415`; macOS has no prepared JDK.
+See `NATIVE-CI.md`.
 This is Java compilation under explicit settings, not Maven/Gradle, Kotlin/Scala,
 JPMS, application tests or annotation-processor support. See `JAVA.md`.
 
@@ -469,7 +471,7 @@ fail. Removing the assembly-file guard produced a false pass using an unpinned
 `.netmodule`; the regression caught it. Both guards were restored. Fresh offline
 installation passed the C# library, CLI and MCP checks. Reproduce native and
 packaged verification with `scripts/verify-dotnet-container.mjs`. The hosted
-amd64 job is configured but unrun; see `DOTNET.md` for compilation limits and
+amd64 job passed at `52ba415`; see `DOTNET.md` for compilation limits and
 unsupported build, language and test profiles.
 
 ## GitHub Actions workflow verification
@@ -484,8 +486,8 @@ the accounting regression caught that false pass. The guard was restored.
 The explicitly prepared Linux image verifies its downloaded release archive's
 SHA-256 digest. Network-disabled runs with read-only repository and consumer
 mounts passed native tests and a fresh offline-installed package's library, CLI
-and MCP surfaces. The hosted amd64 job passed native checks but failed during offline package
-installation; see `NATIVE-CI.md`. See `ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
+and MCP surfaces. The hosted amd64 job passed at `52ba415`; see `NATIVE-CI.md`.
+See `ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
 profile limits. Other infrastructure tools remain unsupported.
 
 ## Development evaluation

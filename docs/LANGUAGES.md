@@ -26,7 +26,7 @@ and capture only their documented native assembly projections; see `FASTAPI.md`,
 
 Pint's macOS hosted check exposed a non-seekable cache-file failure. The adapter
 now uses a fresh regular file with runner-owned cleanup; the corrected macOS
-profile awaits a hosted rerun. See `PINT.md` and `NATIVE-CI.md`.
+profile passed at `52ba415`. See `PINT.md` and `NATIVE-CI.md`.
 
 ## Adapter contract
 
@@ -105,7 +105,7 @@ preservation by the wrapper.
 
 Ruby and Swift have dedicated CI definitions that require their named native
 regressions to pass. Their local execution is recorded in `RUBY.md` and `SWIFT.md`;
-hosted results remain pending. Other optional tests in the general suite can still
+both hosted jobs passed at `52ba415` (see `NATIVE-CI.md`). Other optional tests in the general suite can still
 skip, so its aggregate pass count is not evidence for every native profile.
 
 The prepared CI language profiles and native container helpers require exact

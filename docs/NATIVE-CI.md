@@ -77,4 +77,20 @@ passing their full suites and required native profiles. Clang, Ruby and Swift
 jobs passed. The macOS main job failed separately because Pint attempted to seek
 within `/dev/null`; the adapter now uses a fresh regular cache file in a
 runner-owned directory, with cleanup asserted after successful and failed checks.
-See `PINT.md`. Both corrections still need a hosted rerun.
+See `PINT.md`. A later macOS assertion also needed canonical rather than aliased
+temporary paths; its fixture now exercises a symlinked root on every platform.
+All three fixes are included in the successful run below.
+
+## Successful hosted baseline
+
+[Run 35573066804](https://github.com/stsepelin/repo-verifier/actions/runs/35573066804)
+passed all 13 jobs at commit `52ba415dfc5cfcaab459dc648baaa864627f1642`.
+The [job and step record](measurements/hosted-ci-52ba415.json) retains the source
+identity, run URLs, outcomes and timestamps. The main matrix covered Linux Node
+22/24/26 and macOS Node 24; dedicated jobs covered Java, C#, Clang, actionlint,
+external adapters, Vue Router, Nuxt, Ruby and Swift.
+
+This establishes the configured profiles for that revision and those hosted
+environments. Optional skips in the general suite still do not count as native
+coverage. The `0.1.0-alpha.1` release metadata and documentation follow this
+baseline; the release commit needs its own CI run before publication.

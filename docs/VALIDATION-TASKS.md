@@ -111,7 +111,8 @@ read-only reopening, trust and preload boundaries, responsive polling, overlap,
 explicit cancellation, shutdown, parent SIGKILL, native descendants, timeout,
 oversized output and close during planning. The container helper additionally
 checks this API from a fresh offline production-only installation, with networking
-disabled and the installed package mounted read-only. Hosted CI remains unrun.
+disabled and the installed package mounted read-only. The corresponding hosted
+Linux Node 22 step passed at `52ba415`; see `NATIVE-CI.md`.
 
 Removing the worker's parent-disconnect handler made the named SIGKILL regression
 fail because native descendants remained alive. Restoring the handler restored

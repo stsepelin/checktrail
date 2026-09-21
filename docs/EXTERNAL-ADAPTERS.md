@@ -166,5 +166,5 @@ child cancellation with cleanup. Removing the file-count reconciliation guards
 was manually verified to produce a false pass caught by the accounting regression;
 the guards were restored before the final passing runs. The helper also verifies a fresh offline package
 through the library, CLI and MCP. These checks establish this protocol's behavior;
-they do not establish arbitrary adapter correctness, Windows support, Linux amd64
-execution or hosted CI success. The CI definition awaits a hosted run.
+they do not establish arbitrary adapter correctness or Windows support. The
+separate hosted Linux job passed at `52ba415`; see `NATIVE-CI.md`.

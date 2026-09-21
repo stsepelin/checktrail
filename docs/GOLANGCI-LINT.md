@@ -56,7 +56,8 @@ node --test dist/test/golangci.test.js
 ```
 
 Preparation may download dependencies. Consumer validation requires an installed
-binary on the operator PATH and never installs it. Hosted CI has not run.
+binary on the operator PATH and never installs it. The hosted profile passed
+at `52ba415`; see `NATIVE-CI.md`.
 
 References: [CLI](https://golangci-lint.run/docs/configuration/cli/),
 [configuration](https://golangci-lint.run/docs/configuration/file/),

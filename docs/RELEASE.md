@@ -1,11 +1,12 @@
 # Release preparation
 
 The source is public at [stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier);
-the npm package remains an unpublished development candidate. `server.json` describes the
+the first preview is `0.1.0-alpha.1`. `server.json` describes the
 intended `io.github.stsepelin/repo-verifier` MCP registry identity and the matching
 `@stsepelin/repo-verifier` npm package. The npm and registry names are proposed
-metadata, not evidence of a published package or registry entry. No release
-credentials or publishing automation are configured here.
+metadata, not evidence of a published package or registry entry. Package publishing
+is configured for public access on npm's `next` tag. No credentials or automatic
+publishing workflow are stored in this repository.
 
 ## Prepared artifacts
 
@@ -23,7 +24,8 @@ credentials or publishing automation are configured here.
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. Hosted CI remains a separate gate. The local Claude Code health/discovery and
+  exercised. All 13 hosted jobs passed at source baseline `52ba415`; the preview
+  release commit requires its own run. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry
@@ -45,7 +47,38 @@ The checker requires SHA-256
 `3fba09590c99f61735d234822279f4223fab9e300c0a81e81c91ab62a4114de0`.
 A changed schema must be reviewed before changing that pin. Schema validation
 does not establish namespace ownership or registry acceptance. The current metadata
-intentionally carries `unpublished-development-candidate` under publisher metadata.
+identifies this release as `preview` under publisher metadata. That label describes
+release maturity, not whether npm or the MCP Registry has accepted it.
+
+## Preview publication sequence
+
+The candidate review records the exact tarball SHA-256, file inventory, source
+manifest and test evidence. Keep it outside the package allowlist. Client checks
+must report the same tarball hash; repacking after an edit creates a new candidate.
+The source commit must pass hosted CI before publication.
+
+After explicit approval and npm authentication for the `@stsepelin` scope, publish
+the approved file, not a newly packed working tree:
+
+```sh
+npm publish /absolute/path/stsepelin-repo-verifier-0.1.0-alpha.1.tgz \
+  --tag next --access public --ignore-scripts --registry=https://registry.npmjs.org
+```
+
+Verify the registry version and dist-tag, download its tarball, compare its digest
+to the approved file, and repeat a fresh CLI/MCP installation check. This manual
+tarball path does not claim npm build provenance. See
+[npm publishing options](https://docs.npmjs.com/cli/v11/commands/npm-publish/).
+
+Only after npm publication and separate registry authentication, publish the
+reviewed `server.json` with the official `mcp-publisher` CLI. Verify the returned
+server name, version, npm identifier and execution-disabled startup arguments
+through the registry API. The registry verifies npm ownership using `mcpName`;
+local schema validation alone cannot establish acceptance. See the official
+[registry quickstart](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx).
+
+GitHub private vulnerability reporting is enabled. Use the channel linked in
+`SECURITY.md`. Tags and GitHub releases also require explicit authorization.
 
 ## Before a concrete release
 
