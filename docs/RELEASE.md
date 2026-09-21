@@ -23,6 +23,29 @@ TypeScript 4.9.5 replay, Claude Code health/discovery and Codex direct MCP calls
 The [release record](measurements/release-alpha3.json) links these observations to
 the artifact; client profile limits remain in [CLIENTS.md](CLIENTS.md).
 
+## Alpha.4 candidate (unpublished)
+
+The checkout prepares `0.1.0-alpha.4` with optional exact Go file exclusions in
+`checktrail.go-scope.json`. Native package evidence must account for each declared
+exclusion. Active, absent or otherwise unaccounted-for declarations cannot pass.
+Go formatting continues to cover the full source inventory, and race-test package
+discovery now uses the same `-race` constraints as execution. See [GO-SCOPE.md](GO-SCOPE.md).
+
+Detailed plan/report schemas add an optional `goScope` declaration and summaries
+add an optional `goExcludedFileCount`. Consumers that validate with older strict
+schemas must update their schemas before accepting these fields. The policy is
+opt-in; existing projects retain strict scope accounting. Dependencies are unchanged.
+
+Alpha.3 does not understand the new sidecar policy. Rolling back keeps its bytes
+on disk but restores strict Go accounting, so a project relying on exclusions can
+become incomplete. Exclusions never establish validation of another platform or
+custom build-tag configuration. No cross-target execution is added.
+
+Candidate verification and commit approval precede publication. The installed MCP
+SDK routing probe was rechecked on 2026-09-21: standard Tasks remains unavailable;
+see [MCP-COMPATIBILITY.md](MCP-COMPATIBILITY.md). The published preview and artifact
+described above remain alpha.3 until a new release is explicitly authorized and verified.
+
 ## Alpha.3 scope
 
 Alpha.3 fixes the plain TypeScript adapter's unsupported `--noCheck` argument on

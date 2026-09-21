@@ -13,7 +13,11 @@ The GitHub alpha.3 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
-## Unreleased changes
+## Alpha.4 candidate (unpublished)
+
+The checkout version is `0.1.0-alpha.4`. Release verification is in progress;
+alpha.3 remains the published preview. No alpha.4 publication or hosted release
+verification is claimed.
 
 - [Go scope policy](GO-SCOPE.md): exact per-file declarations can acknowledge
   native build-constraint exclusions. Go must confirm every exemption; stale

@@ -20,6 +20,8 @@ acceptance work; [client checks](docs/CLIENTS.md) record actual application cove
 pinned libraries, including setup friction and compatibility gaps.
 Alpha.3 fixes the recorded [TypeScript 4.9.5 incompatibility](docs/TYPESCRIPT.md).
 The [setup scope guide](docs/SETUP-SCOPES.md) explains language, documentation and workflow coverage.
+The local checkout prepares **0.1.0-alpha.4**, adding explicit [Go scope exclusions](docs/GO-SCOPE.md)
+and matching race-test package discovery. Alpha.4 is not published yet.
 
 The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
 passed at release commit `b0b447d` on Linux and macOS. The exact npm tarball and
