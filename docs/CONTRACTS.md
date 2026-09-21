@@ -7,7 +7,7 @@ the consumer schema and named captured samples. The artifact format is versioned
 by `contract-bundle.schema.json`.
 
 ```sh
-repo-verifier check-contracts --root /path/to/project --input contract.json
+checktrail check-contracts --root /path/to/project --input contract.json
 ```
 
 The library exports async `validateContracts(bundle, {timeoutMs?, signal?})`.
@@ -55,13 +55,13 @@ tests to capture the producer output and consumer schema when those claims matte
 The synthetic `examples/contracts/` pair can be exercised from this checkout:
 
 ```sh
-node examples/contracts/capture.mjs > .repo-verifier/contracts.json
-node dist/src/cli.js check-contracts --root . --input .repo-verifier/contracts.json
-node examples/contracts/capture.mjs --broken > .repo-verifier/contracts.json
-node dist/src/cli.js check-contracts --root . --input .repo-verifier/contracts.json
+node examples/contracts/capture.mjs > .checktrail/contracts.json
+node dist/src/cli.js check-contracts --root . --input .checktrail/contracts.json
+node examples/contracts/capture.mjs --broken > .checktrail/contracts.json
+node dist/src/cli.js check-contracts --root . --input .checktrail/contracts.json
 ```
 
-Create `.repo-verifier/` first if it does not exist. The first capture serializes
+Create `.checktrail/` first if it does not exist. The first capture serializes
 numeric quantities; the second simulates a legacy string quantity and fails the
 consumer schema. This example fingerprints its producer module and consumer schema
 only. Tests cover native producer serialization, valid/invalid boundary payloads,

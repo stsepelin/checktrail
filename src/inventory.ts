@@ -18,6 +18,7 @@ const excludedDirectories = new Set([
   ".next",
   ".nuxt",
   ".output",
+  ".checktrail",
   ".repo-verifier",
   ".terraform",
   "obj",
@@ -27,6 +28,7 @@ function sensitive(name: string): boolean {
   return (
     name === ".env" ||
     name.startsWith(".env.") ||
+    name === ".checktrail.local.json" ||
     name === ".repo-verifier.local.json" ||
     /\.(pem|key|p12|pfx)$/i.test(name)
   );

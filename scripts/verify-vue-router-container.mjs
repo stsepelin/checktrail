@@ -35,7 +35,7 @@ const output = execFileSync(
 );
 process.stdout.write(output);
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-vue-router-package-"),
+  path.join(tmpdir(), "checktrail-vue-router-package-"),
 );
 let client;
 try {
@@ -70,7 +70,7 @@ try {
     recursive: true,
   });
   await cp(
-    path.join(repository, ".repo-verifier/vue-router-tools/node_modules"),
+    path.join(repository, ".checktrail/vue-router-tools/node_modules"),
     path.join(project, "node_modules"),
     { recursive: true },
   );
@@ -94,15 +94,14 @@ try {
         "node",
         "--input-type=module",
         "-e",
-        'import {validate} from "@stsepelin/repo-verifier"; console.log(JSON.stringify(await validate("/consumer/example",{trusted:true})));',
+        'import {validate} from "@stsepelin/checktrail"; console.log(JSON.stringify(await validate("/consumer/example",{trusted:true})));',
       ],
       { encoding: "utf8" },
     ),
   );
   assert.equal(library.outcome, "passed", JSON.stringify(library.checks));
   assert.equal(library.checks[0].runtime.collections[0].entries.length, 5);
-  const binary =
-    "/consumer/node_modules/@stsepelin/repo-verifier/dist/src/cli.js";
+  const binary = "/consumer/node_modules/@stsepelin/checktrail/dist/src/cli.js";
   const cliArgs = [
     ...installed,
     "node",

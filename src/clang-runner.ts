@@ -54,7 +54,7 @@ async function main() {
     }
     versions.set(name, output.stdout.trim());
   }
-  const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-clang-"));
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-clang-"));
   const expected = new Set(
     invocation.scope.map((file) => path.resolve(projectRoot, file)),
   );
@@ -83,7 +83,7 @@ async function main() {
         "-MF",
         dependencyFile,
         "-MT",
-        "repo-verifier",
+        "checktrail",
         unit.input,
       ];
       const native = invoke(unit.compiler, args, cwd);

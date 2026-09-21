@@ -8,7 +8,7 @@ import type {
 } from "./types.js";
 
 const schema = z.object({
-  format: z.literal("repo-verifier-pytest-1"),
+  format: z.literal("checktrail-pytest-1"),
   version: z.string().min(1),
   exitCode: z.number().int().min(0).max(5),
   finished: z.boolean(),
@@ -47,7 +47,7 @@ export function pytestEvidence(
     process.exitCode === 3 &&
     z
       .object({
-        format: z.literal("repo-verifier-pytest-1"),
+        format: z.literal("checktrail-pytest-1"),
         unavailable: z.literal("pytest"),
       })
       .safeParse(value).success

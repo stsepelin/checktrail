@@ -1,6 +1,6 @@
 # Optional advisory review exchange
 
-Repo Verifier can prepare a bounded source context for a human, local reviewer or
+Checktrail can prepare a bounded source context for a human, local reviewer or
 model-backed MCP client, then inspect a structured assessment returned by that
 reviewer. The engine does not invoke inference, select a provider, upload source,
 execute reviewer instructions or apply changes. This implements an exchange
@@ -28,10 +28,10 @@ Select exact files and public guidance topics in a JSON artifact:
 checkout, prepare an ignored artifact directory before capturing the context:
 
 ```sh
-mkdir -p examples/review/.repo-verifier
+mkdir -p examples/review/.checktrail
 node dist/src/cli.js review-context --root examples/review \
   --input selection.json --detailed --allow-review-source \
-  > examples/review/.repo-verifier/context.json
+  > examples/review/.checktrail/context.json
 ```
 
 The default output is a summary. `--detailed` alone still omits source and review
@@ -85,8 +85,8 @@ Save the assessment under the ignored artifact directory and inspect it:
 
 ```sh
 node dist/src/cli.js review-receipt --root examples/review \
-  --context .repo-verifier/context.json \
-  --input .repo-verifier/assessment.json
+  --context .checktrail/context.json \
+  --input .checktrail/assessment.json
 ```
 
 `receiveReview()` and MCP `review_receipt` use the same implementation. MCP

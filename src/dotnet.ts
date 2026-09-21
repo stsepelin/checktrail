@@ -101,9 +101,9 @@ export async function dotnetCheck(
       "Compile explicitly configured C# sources with native syntax/semantic accounting and pinned local references.",
   };
   try {
-    if (!project.files.includes("repo-verifier.dotnet.json"))
+    if (!project.files.includes("checktrail.dotnet.json"))
       throw new Error(
-        "Prepare an inventoried repo-verifier.dotnet.json with explicit compiler settings; MSBuild and NuGet are not invoked",
+        "Prepare an inventoried checktrail.dotnet.json with explicit compiler settings; MSBuild and NuGet are not invoked",
       );
     if (
       project.markers.filter((file) => file.endsWith(".csproj")).length !== 1 ||
@@ -125,7 +125,7 @@ export async function dotnetCheck(
       JSON.parse(
         await readProjectFile(
           source.root,
-          path.posix.join(project.path, "repo-verifier.dotnet.json"),
+          path.posix.join(project.path, "checktrail.dotnet.json"),
         ),
       ),
     );

@@ -69,7 +69,7 @@ try:
     json.dump({
         'version': 1, 'djangoVersion': installed, 'visitedNodes': visited, 'unsupportedNodes': unsupported,
         'runtime': {'schemaVersion': 1, 'format': 'runtime-inventory',
-            'producer': {'name': 'repo-verifier.django-routes', 'version': '1.0.0'},
+            'producer': {'name': 'checktrail.django-routes', 'version': '1.0.0'},
             'assembly': {'name': config['assembly'], 'environment': config['environment']},
             'sourceFingerprint': sys.argv[2], 'capturedAt': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'collections': [{'kind': 'routes', 'complete': unsupported == 0, 'ordered': True, 'entries': entries}]}

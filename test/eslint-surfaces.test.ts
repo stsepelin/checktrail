@@ -19,7 +19,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": eslintPolicy(),
+      "checktrail.json": eslintPolicy(),
       "eslint.config.js": eslintConfig,
       "source.js": "export const value = 42;\n",
     });

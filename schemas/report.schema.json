@@ -94,6 +94,57 @@
           "adapter": { "type": "string" },
           "project": { "type": "string" },
           "scope": { "type": "array", "items": { "type": "string" } },
+          "goScope": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": { "type": "number", "const": 1 },
+              "excludedFiles": {
+                "maxItems": 1000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "maxLength": 4096,
+                      "pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.{1,2}(?:\\/|$))(?!.*\\/\\/)(?!.*[\\\\*?[\\]{}])[\\u0020-\\u007e\\u0080-\\uffff]+\\.go$"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000,
+                      "pattern": "\\S"
+                    }
+                  },
+                  "required": ["path", "reason"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["schemaVersion", "excludedFiles"],
+            "additionalProperties": false
+          },
+          "goBuild": {
+            "type": "object",
+            "properties": {
+              "profile": {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "tags": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                }
+              }
+            },
+            "required": ["profile", "tags"],
+            "additionalProperties": false
+          },
           "status": {
             "type": "string",
             "enum": [

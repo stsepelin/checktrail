@@ -5,7 +5,7 @@ configured assembly. It requires one project-root `.csproj` marker, a prepared
 .NET SDK 10.0.401, Roslyn 5.9.0 from that SDK, and the .NET 10.0.12 runtime and
 reference pack. This profile has native evidence on arm64 Linux.
 
-The project-root `repo-verifier.dotnet.json` declares the complete supported
+The project-root `checktrail.dotnet.json` declares the complete supported
 configuration. For example:
 
 ```json
@@ -44,7 +44,7 @@ make an otherwise successful check inconclusive.
 
 Each optional reference has the shape `{ "path": "…dll", "sha256": "…" }`.
 Paths resolve from the project, must remain inside the operator root and cannot
-traverse symbolic links. Prepared DLLs can live in the excluded `.repo-verifier/`
+traverse symbolic links. Prepared DLLs can live in the excluded `.checktrail/`
 directory. Exact bytes are checked during planning, before native compilation
 and afterwards. Limits are 128 references, 32 MiB per DLL and 128 MiB total.
 Duplicates, unpinned changes, non-managed files, standalone modules and multi-file
@@ -103,12 +103,12 @@ C# project roots for compilation.
 
 ```sh
 npm run build
-docker build --file scripts/dotnet-tools.Dockerfile --tag repo-verifier-dotnet-test:10.0.401 scripts
+docker build --file scripts/dotnet-tools.Dockerfile --tag checktrail-dotnet-test:10.0.401 scripts
 node scripts/verify-dotnet-container.mjs
 ```
 
 The helper checks the pinned native SDK/compiler, runs original synthetic cases
 with networking disabled, and tests a fresh offline package installation through
 the library, CLI and MCP. The host npm cache needs the production dependencies.
-The configured hosted amd64 job has not run. Windows process-tree handling and
+The hosted amd64 job passed at `52ba415`; see `NATIVE-CI.md`. Windows process-tree handling and
 native macOS .NET execution remain unverified.

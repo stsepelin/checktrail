@@ -62,16 +62,16 @@ export async function vueRouterCheck(
     reason:
       "Capture native Vue Router records after configured startup and verify declared route probes with complete record participation.",
   };
-  if (!project.files.includes("repo-verifier.vue-router.json")) {
+  if (!project.files.includes("checktrail.vue-router.json")) {
     check.unavailableReason =
-      "Vue Router checks require an explicit repo-verifier.vue-router.json profile.";
+      "Vue Router checks require an explicit checktrail.vue-router.json profile.";
     return check;
   }
   const config = vueRouterConfigSchema.parse(
     JSON.parse(
       await readProjectFile(
         source.root,
-        path.posix.join(project.path, "repo-verifier.vue-router.json"),
+        path.posix.join(project.path, "checktrail.vue-router.json"),
       ),
     ),
   );

@@ -6,7 +6,7 @@ graphs from different languages using the same artifact contract. This feature
 does not itself scan imports, run a build system, or attest graph completeness.
 
 ```sh
-repo-verifier check-architecture --root /path/to/workspace \
+checktrail check-architecture --root /path/to/workspace \
   --input dependency-graph.json --policy architecture.json
 ```
 

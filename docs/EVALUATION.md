@@ -1,6 +1,11 @@
 # Detection and completeness evaluation
 
-The development evaluation compares Repo Verifier with direct native commands on
+The recorded results use the archived `synthetic-evaluation-v1` corpus under
+`measurements/evaluation-corpus-repo-verifier.json`. The current runnable corpus
+is v2 with Checktrail configuration filenames; these historical measurements
+do not validate v2. See [RENAMING.md](RENAMING.md).
+
+The development evaluation compares Checktrail with direct native commands on
 the same original synthetic Node, TypeScript and GitHub Actions inputs. The
 versioned corpus is separate from the adapter regression tests and was authored
 after those profiles were implemented. It is a small, paired convenience sample,
@@ -69,7 +74,7 @@ counterparts. The verifier additionally identifies the disabled TypeScript
 analysis and keeps the insufficient-evidence/profile cases from passing.
 
 The Linux measurement ran with networking disabled and the repository mounted
-read-only in the explicitly prepared `repo-verifier-actionlint-test:1.7.12` image.
+read-only in the explicitly prepared `checktrail-actionlint-test:1.7.12` image.
 The local immutable image reference was
 `sha256:60fe972d5efcb28a85a9557afe5e8428949dfe675b57b52bf33e9b3e560354dd`.
 Fixture directories were writable temporary storage inside the container.

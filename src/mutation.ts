@@ -285,9 +285,7 @@ export async function runMutations(
   }
   let baseline: Report | undefined;
   let reason = "Requested experiments finished";
-  const temporary = await mkdtemp(
-    path.join(tmpdir(), "repo-verifier-mutations-"),
-  );
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-mutations-"));
   try {
     async function trialCopy(
       name: string,

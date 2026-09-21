@@ -161,7 +161,7 @@ test("SARIF preserves incompleteness and test failures without fabricating sourc
 test("native ESLint diagnostics reach library and CLI SARIF without commands or logs", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
-    "repo-verifier.json": eslintPolicy(),
+    "checktrail.json": eslintPolicy(),
     "eslint.config.js": eslintConfig,
     "source #with space.js": "debugger;\n",
   });

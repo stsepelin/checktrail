@@ -64,7 +64,7 @@ async function main() {
       return;
     }
   }
-  const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-rust-"));
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-rust-"));
   try {
     const config = [
       "--config",

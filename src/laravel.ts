@@ -26,16 +26,16 @@ export async function laravelCheck(
     reason:
       "Bootstrap the explicit Laravel testing profile and capture native assembly registrations without dispatching requests or scheduled work.",
   };
-  if (!project.files.includes("repo-verifier.laravel.json")) {
+  if (!project.files.includes("checktrail.laravel.json")) {
     check.unavailableReason =
-      "Laravel runtime capture requires an explicit repo-verifier.laravel.json profile.";
+      "Laravel runtime capture requires an explicit checktrail.laravel.json profile.";
     return check;
   }
   const config = laravelConfigSchema.parse(
     JSON.parse(
       await readProjectFile(
         source.root,
-        path.posix.join(project.path, "repo-verifier.laravel.json"),
+        path.posix.join(project.path, "checktrail.laravel.json"),
       ),
     ),
   );

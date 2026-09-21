@@ -1,5 +1,5 @@
 {
-  "name": "repo-verifier/synthetic-laravel-tools",
+  "name": "checktrail/synthetic-laravel-tools",
   "description": "Pinned upstream framework for synthetic native collector fixtures",
   "type": "project",
   "license": "MIT",

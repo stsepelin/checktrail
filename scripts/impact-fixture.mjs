@@ -15,7 +15,7 @@ export async function prepareImpactFixture(root, specification) {
     { consumer: "service", producer: "core" },
   ];
   const files = {
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: projects.map((path) => ({
         path,

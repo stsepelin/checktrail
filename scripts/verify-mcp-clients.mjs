@@ -24,7 +24,7 @@ assert.ok(["claude", "codex"].includes(mode), "Select claude or codex");
 assert.equal(process.argv.length, 3);
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await realpath(
-  await mkdtemp(path.join(tmpdir(), "repo-verifier-client-")),
+  await mkdtemp(path.join(tmpdir(), "checktrail-client-")),
 );
 const environment = Object.fromEntries(
   ["PATH", "HOME", "TMPDIR", "SystemRoot"]
@@ -150,7 +150,7 @@ try {
   );
   const cli = path.join(
     consumer,
-    "node_modules/@stsepelin/repo-verifier/dist/src/cli.js",
+    "node_modules/@stsepelin/checktrail/dist/src/cli.js",
   );
   const trace = path.join(temporary, "wire.jsonl");
   const proxy = path.join(temporary, "observe.mjs");
@@ -207,7 +207,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
         "add-json",
         "--scope",
         "user",
-        "repo-verifier",
+        "checktrail",
         JSON.stringify({
           command: process.execPath,
           args: [proxy, "readonly"],
@@ -219,7 +219,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
     const settings = JSON.parse(
       await readFile(path.join(configDirectory, ".claude.json"), "utf8"),
     );
-    assert.deepEqual(Object.keys(settings.mcpServers), ["repo-verifier"]);
+    assert.deepEqual(Object.keys(settings.mcpServers), ["checktrail"]);
     const { spawnSync } = await import("node:child_process");
     const health = spawnSync("claude", [...args, "list"], {
       cwd: fixture,
@@ -230,7 +230,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
     });
     assert.equal(health.status, 0);
     assert.equal(health.error, undefined);
-    assert.match(health.stdout, /repo-verifier:.*✔ Connected/);
+    assert.match(health.stdout, /checktrail:.*✔ Connected/);
     assert.equal(
       health.stdout.trim().split(/\n+/).length,
       2,
@@ -254,7 +254,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
       response.end(JSON.stringify({ models: [] }));
     });
     await new Promise((resolve) => endpoint.listen(0, "127.0.0.1", resolve));
-    const provider = "repo-verifier-unused";
+    const provider = "checktrail-unused";
     const overrides = [
       "analytics.enabled=false",
       "feedback.enabled=false",
@@ -279,10 +279,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
       );
       args.push("-c", `mcp_servers.${server.name}.enabled=false`);
     }
-    const names = [
-      "repo-verifier-probe-readonly",
-      "repo-verifier-probe-trusted",
-    ];
+    const names = ["checktrail-probe-readonly", "checktrail-probe-trusted"];
     for (const [index, name] of names.entries()) {
       assert.ok(
         !servers.some((server) => server.name === name),
@@ -340,7 +337,7 @@ child.on('exit',(code,signal)=>{record({event:'exit',code,signal});process.exit(
       });
     }
     await request("initialize", {
-      clientInfo: { name: "repo-verifier-client-probe", version: "0.0.0" },
+      clientInfo: { name: "checktrail-client-probe", version: "0.0.0" },
       capabilities: { experimentalApi: true },
     });
     child.stdin.write(JSON.stringify({ method: "initialized" }) + "\n");

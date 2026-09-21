@@ -40,9 +40,7 @@ async function main(): Promise<void> {
       ): Promise<string>;
     };
   };
-  const output = await mkdtemp(
-    path.join(tmpdir(), "repo-verifier-playwright-"),
-  );
+  const output = await mkdtemp(path.join(tmpdir(), "checktrail-playwright-"));
   try {
     const config = await configLoader.loadConfigFromFile(process.cwd(), {
       forbidOnly: true,

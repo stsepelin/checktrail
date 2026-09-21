@@ -125,7 +125,7 @@ const rulesBody =
 assert.ok(rulesBody?.includes("&LinterSettings::for_rule(rule_code)"));
 assert.ok(rulesBody?.includes("assert_diagnostics!(snapshot, diagnostics)"));
 const root = await realpath(
-  await mkdtemp(path.join(tmpdir(), "repo-verifier-ruff-cohort-")),
+  await mkdtemp(path.join(tmpdir(), "checktrail-ruff-cohort-")),
 );
 const environment = {
   PATH: [
@@ -161,7 +161,7 @@ try {
   assert.equal(python.result.stderr, "");
   await writeFile(path.join(root, "LICENSE"), sources.get("LICENSE"));
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["python.ruff"] }],

@@ -52,7 +52,7 @@ export function djangoEvidence(
     const routes = result.runtime.collections[0];
     if (
       result.runtime.sourceFingerprint !== check.commands[0]!.args[3] ||
-      result.runtime.producer.name !== "repo-verifier.django-routes" ||
+      result.runtime.producer.name !== "checktrail.django-routes" ||
       result.runtime.producer.version !== "1.0.0" ||
       result.runtime.assembly.name !== profile.assembly ||
       result.runtime.assembly.environment !== profile.environment ||

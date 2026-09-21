@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "synthetic-evaluation-v1",
+  "id": "synthetic-evaluation-v2",
   "provenance": "Original post-implementation development corpus; not an independently held-out sample.",
   "cases": [
     {
@@ -115,7 +115,7 @@
       "label": "defect",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "function identity<T>(value: T): T { return value; }\nexport const result = identity<number>('7');\n"
       },
@@ -128,7 +128,7 @@
       "label": "valid",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "function identity<T>(value: T): T { return value; }\nexport const result = identity<number>(7);\n"
       }
@@ -139,7 +139,7 @@
       "label": "defect",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "export const size = (value: string | null) => value.length;\n"
       },
@@ -152,7 +152,7 @@
       "label": "valid",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "export const size = (value: string | null) => value === null ? 0 : value.length;\n"
       }
@@ -163,7 +163,7 @@
       "label": "defect",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "type Item = {kind: 'ready', value: number} | {kind: 'empty'};\nexport const read = (item: Item) => item.value;\n"
       },
@@ -176,7 +176,7 @@
       "label": "valid",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "type Item = {kind: 'ready', value: number} | {kind: 'empty'};\nexport const read = (item: Item) => item.kind === 'ready' ? item.value : 0;\n"
       }
@@ -187,7 +187,7 @@
       "label": "defect",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "const values = {north: 1, south: 2};\nconst key: keyof typeof values = 'nort';\nexport {key};\n"
       },
@@ -200,7 +200,7 @@
       "label": "valid",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "const values = {north: 1, south: 2};\nconst key: keyof typeof values = 'north';\nexport {key};\n"
       }
@@ -211,7 +211,7 @@
       "label": "defect",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\", \"noCheck\": true}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "export const amount: number = \"seven\";\n"
       },
@@ -224,7 +224,7 @@
       "label": "insufficient-evidence",
       "files": {
         "package.json": "{}",
-        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "checktrail.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
         "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
         "src/value.ts": "export const amount = 7;\n",
         "outside.ts": "export const other = 8;\n"
@@ -235,7 +235,7 @@
       "family": "actionlint",
       "label": "defect",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo '${{ unknowable.value }}'\n"
       },
       "engineSignal": "actionlint/expression",
@@ -246,7 +246,7 @@
       "family": "actionlint",
       "label": "valid",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo '${{ github.event_name }}'\n"
       }
     },
@@ -255,7 +255,7 @@
       "family": "actionlint",
       "label": "defect",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    needs: absent\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
       },
       "engineSignal": "actionlint/job-needs",
@@ -266,7 +266,7 @@
       "family": "actionlint",
       "label": "valid",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
       }
     },
@@ -275,7 +275,7 @@
       "family": "actionlint",
       "label": "defect",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-nonexistent\n    steps:\n      - run: echo ready\n"
       },
       "engineSignal": "actionlint/runner-label",
@@ -286,7 +286,7 @@
       "family": "actionlint",
       "label": "valid",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
       }
     },
@@ -295,7 +295,7 @@
       "family": "actionlint",
       "label": "defect",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "permissions:\n  contents: execute\non: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
       },
       "engineSignal": "actionlint/permissions",
@@ -306,7 +306,7 @@
       "family": "actionlint",
       "label": "valid",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "permissions:\n  contents: read\non: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
       }
     },
@@ -315,7 +315,7 @@
       "family": "actionlint",
       "label": "insufficient-evidence",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: ./unprepared-action\n"
       }
     },
@@ -324,7 +324,7 @@
       "family": "actionlint",
       "label": "unsupported-profile",
       "files": {
-        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        "checktrail.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
         ".github/workflows/check.yml": "on: push\njobs:\n  first: &job\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n  second: *job\n"
       }
     }

@@ -35,7 +35,7 @@ const consumer = JSON.stringify({
 });
 const files = {
   "package.json": "{}",
-  "repo-verifier.json": policy,
+  "checktrail.json": policy,
   "tsconfig.json": JSON.stringify({
     files: [],
     references: [{ path: "./consumer" }],

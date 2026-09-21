@@ -1,9 +1,9 @@
-# Repo Verifier implementation plan
+# Checktrail implementation plan
 
 Status: working foundation implemented; native adapters and later milestones are in progress.
 See EXECUTION.md for the implementation ledger and [ACCEPTANCE.md](ACCEPTANCE.md)
 for milestone evidence, remaining work and external verification gates.
-Intended public namespace: `stsepelin/repo-verifier`.
+Intended public namespace: `stsepelin/checktrail`.
 This document describes both the initial implementation and later milestones;
 the support matrix in `LANGUAGES.md` records what actually works.
 

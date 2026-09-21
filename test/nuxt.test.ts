@@ -8,7 +8,7 @@ import { createPlan, validate } from "../src/engine.js";
 import { fixture } from "./helpers.js";
 
 const tools = fileURLToPath(
-  new URL("../../.repo-verifier/nuxt-tools/node_modules", import.meta.url),
+  new URL("../../.checktrail/nuxt-tools/node_modules", import.meta.url),
 );
 const example = fileURLToPath(new URL("../../examples/nuxt", import.meta.url));
 const available = await access(path.join(tools, "nuxt/package.json")).then(
@@ -38,7 +38,7 @@ test("Nuxt planning requires an explicit profile, inventoried config and prepare
   );
   await assert.rejects(validate(root, { trusted: false }), /trust/);
   const config = JSON.parse(
-    await readFile(path.join(root, "repo-verifier.nuxt.json"), "utf8"),
+    await readFile(path.join(root, "checktrail.nuxt.json"), "utf8"),
   );
   for (const change of [
     { environment: "production" },
@@ -47,7 +47,7 @@ test("Nuxt planning requires an explicit profile, inventoried config and prepare
     { probes: [config.probes[0], config.probes[0]] },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.nuxt.json"),
+      path.join(root, "checktrail.nuxt.json"),
       JSON.stringify({ ...config, ...change }),
     );
     await assert.rejects(createPlan(root));
@@ -153,7 +153,7 @@ test(
       path.join(root, "nuxt.config.ts"),
       `import {writeFileSync} from 'node:fs';
  export default defineNuxtConfig({telemetry:false,devtools:{enabled:false},hooks:{ready:async()=>{
- writeFileSync('node_modules/nuxt-startup-state.json',JSON.stringify({pid:process.pid,temporary:process.env.REPO_VERIFIER_TEMP}));
+ writeFileSync('node_modules/nuxt-startup-state.json',JSON.stringify({pid:process.pid,temporary:process.env.CHECKTRAIL_TEMP}));
  await new Promise(()=>setInterval(()=>{},1000));
  }}});`,
     );

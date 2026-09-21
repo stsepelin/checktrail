@@ -98,7 +98,7 @@ checks each verified form rather than assuming the outputs are identical.
 Prepare the development fixture explicitly, then run it without networking:
 
 ```sh
-docker build --file scripts/clang-tools.Dockerfile --tag repo-verifier-clang-test:22.1.3 scripts
+docker build --file scripts/clang-tools.Dockerfile --tag checktrail-clang-test:22.1.3 scripts
 node scripts/verify-clang-container.mjs
 ```
 

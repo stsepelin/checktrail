@@ -13,7 +13,7 @@ const image = execFileSync(
   [
     "image",
     "inspect",
-    "repo-verifier-actionlint-test:1.7.12",
+    "checktrail-actionlint-test:1.7.12",
     "--format",
     "{{.Id}}",
   ],
@@ -45,7 +45,7 @@ execFileSync(
 );
 
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-actionlint-package-"),
+  path.join(tmpdir(), "checktrail-actionlint-package-"),
 );
 let client;
 try {
@@ -97,15 +97,14 @@ try {
         "node",
         "--input-type=module",
         "-e",
-        'import {validate} from "@stsepelin/repo-verifier"; console.log(JSON.stringify(await validate("/workspace/examples/actionlint", {trusted: true})));',
+        'import {validate} from "@stsepelin/checktrail"; console.log(JSON.stringify(await validate("/workspace/examples/actionlint", {trusted: true})));',
       ],
       { encoding: "utf8" },
     ),
   );
   assert.equal(library.outcome, "passed", JSON.stringify(library.checks));
   assert.equal(library.checks[0].id, "infrastructure.actionlint");
-  const binary =
-    "/consumer/node_modules/@stsepelin/repo-verifier/dist/src/cli.js";
+  const binary = "/consumer/node_modules/@stsepelin/checktrail/dist/src/cli.js";
   const cli = JSON.parse(
     execFileSync(
       "docker",
