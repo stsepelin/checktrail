@@ -79,9 +79,9 @@ export async function javaCheck(
       "Compile explicitly configured Java sources with annotation processing disabled and native parse/analysis accounting.",
   };
   try {
-    if (!project.files.includes("repo-verifier.java.json"))
+    if (!project.files.includes("checktrail.java.json"))
       throw new Error(
-        "Prepare an inventoried repo-verifier.java.json with a release and pinned classpath; Maven and Gradle are not invoked",
+        "Prepare an inventoried checktrail.java.json with a release and pinned classpath; Maven and Gradle are not invoked",
       );
     if (!scope.length) throw new Error("No Java source was inventoried");
     if (scope.some((file) => path.posix.basename(file) === "module-info.java"))
@@ -104,7 +104,7 @@ export async function javaCheck(
       JSON.parse(
         await readProjectFile(
           source.root,
-          path.posix.join(project.path, "repo-verifier.java.json"),
+          path.posix.join(project.path, "checktrail.java.json"),
         ),
       ),
     );

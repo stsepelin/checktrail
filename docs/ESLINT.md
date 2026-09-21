@@ -1,6 +1,6 @@
 # ESLint validation
 
-Select `javascript.eslint` in `repo-verifier.json`:
+Select `javascript.eslint` in `checktrail.json`:
 
 ```json
 {

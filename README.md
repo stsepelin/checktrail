@@ -1,17 +1,36 @@
-# Repo Verifier
+# Checktrail
 
 Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
-**Experimental foundation.** The intended public namespace is
-`stsepelin/repo-verifier`; no published package or hosted service is required.
+Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
+
+**Published preview: 0.1.0-alpha.4.** Public source is available at
+[stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
-[Release preparation](docs/RELEASE.md) records the unpublished registry metadata
-and the external gates still required for publication. The
+[Installation](docs/INSTALLATION.md) covers the CLI, Claude Code and Codex.
+[Agent skills](docs/SKILLS.md) provides setup, validation and review workflows
+installable with `npx skills add stsepelin/checktrail`.
+[Project setup](docs/ONBOARDING.md) covers `init`, `doctor`
+and MCP configuration generator.
+[Release preparation](docs/RELEASE.md) records publication and verification gates. The
 [milestone audit](docs/ACCEPTANCE.md) separates implemented profiles from open
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
+[Public adoption](docs/PUBLIC-ADOPTION.md) records the published package on five
+pinned libraries, including setup friction and compatibility gaps.
+Alpha.3 fixes the recorded [TypeScript 4.9.5 incompatibility](docs/TYPESCRIPT.md).
+The [setup scope guide](docs/SETUP-SCOPES.md) explains language, documentation and workflow coverage.
+Alpha.4 adds explicit [Go scope exclusions](docs/GO-SCOPE.md) and matching
+race-test package discovery. Its [release record](docs/measurements/release-alpha4.json)
+includes package, client and upgrade/rollback verification.
 
-Repo Verifier discovers projects, plans registered checks, invokes native tools
+The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+passed at release commit `ebe7f5c` on Linux and macOS. The exact npm tarball and
+fresh CLI/MCP installations were verified. The
+[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.4)
+is active; execution remains disabled by default.
+
+Checktrail discovers projects, plans registered checks, invokes native tools
 when explicitly trusted, and reports results without turning skipped or empty
 checks into success. The same engine serves developers, CI and MCP clients.
 
@@ -35,7 +54,7 @@ node dist/src/cli.js run --root examples/javascript --trust-project --detailed
 `--trust-project`: tests, compiler plugins and project configuration can execute
 code with your user privileges. This is not a sandbox.
 
-Commands always return JSON except help/version. Exit codes:
+Successful commands return JSON except help/version; input errors use stderr. Exit codes:
 
 | Code | Meaning                                                                                 |
 | ---- | --------------------------------------------------------------------------------------- |
@@ -81,7 +100,7 @@ invoked tools and test code can still access the network.
 Without configuration, registered defaults apply to each detected project.
 Node tests are selected automatically only for the exact script `node --test`.
 Python needs an explicit selection because a manifest does not identify a runner.
-Create `repo-verifier.json` in the inspected root:
+Create `checktrail.json` in the inspected root:
 
 ```json
 {
@@ -170,6 +189,9 @@ selection with inventoried source; `go.staticcheck` adds explicit all-rule analy
 and normalized findings. See [Go scope](docs/GO-SCOPE.md). The constrained
 [`go.golangci-lint` profile](docs/GOLANGCI-LINT.md) accepts explicit native linter
 selection while disabling hidden issue filters and fixes.
+The source checkout adds unreleased [Go build-tag profiles](docs/GO-BUILD.md)
+with one explicit configuration per selected native check. Alpha.4 does not
+include this capability; a runnable example is in `examples/go-build`.
 
 `php.phpstan` combines per-file analysis accounting with native JSON diagnostics.
 See the [PHPStan contract](docs/PHPSTAN.md).
@@ -208,10 +230,10 @@ For a client that accepts a command/arguments server definition:
 ```json
 {
   "mcpServers": {
-    "repo-verifier": {
+    "checktrail": {
       "command": "node",
       "args": [
-        "/path/to/repo-verifier/dist/src/cli.js",
+        "/path/to/checktrail/dist/src/cli.js",
         "serve",
         "--root",
         "/path/to/your/repository"

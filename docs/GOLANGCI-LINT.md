@@ -14,8 +14,8 @@ linters:
   enable: [govet, staticcheck, unused]
 ```
 
-Other linters, nonempty custom settings, formatters and Go build-version/tag
-profiles are incomplete until separately verified. This is deliberately a
+Other linters, nonempty custom settings, formatters and Go version/tag overrides
+in `.golangci.*` are incomplete until separately verified. This is deliberately a
 constrained profile, not support for every golangci-lint configuration. YAML
 duplicates, unsupported tags and excessive aliases are rejected. Planning only
 discovers the local config and source; parsing/native execution occurs with trust.
@@ -27,6 +27,9 @@ read-only module resolution, absolute JSON locations and no extra output files.
 Output and native analyzer cache use a fresh temporary directory, removed after
 normal completion. Existing project config and output paths are not rewritten.
 Native Go source accounting follows [the shared contract](GO-SCOPE.md).
+The source checkout adds unreleased [Checktrail build-tag profiles](GO-BUILD.md).
+Those tags are passed to both package listing and the generated native config;
+`.golangci.*` still cannot supply a separate `run.build-tags` setting.
 
 Native `nolint` and Staticcheck ignore directives are currently unsupported and
 make the check incomplete. The wrapper scans Go comment boundaries, including
@@ -49,14 +52,15 @@ Current evidence is Go 1.27.1 / golangci-lint 2.13.2 on macOS arm64.
 Development preparation is separate from validation:
 
 ```sh
-mkdir -p .repo-verifier/go-tools/bin
-GOBIN="$PWD/.repo-verifier/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+mkdir -p .checktrail/go-tools/bin
+GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
 npm run build
 node --test dist/test/golangci.test.js
 ```
 
 Preparation may download dependencies. Consumer validation requires an installed
-binary on the operator PATH and never installs it. Hosted CI has not run.
+binary on the operator PATH and never installs it. The hosted profile passed
+at `52ba415`; see `NATIVE-CI.md`.
 
 References: [CLI](https://golangci-lint.run/docs/configuration/cli/),
 [configuration](https://golangci-lint.run/docs/configuration/file/),

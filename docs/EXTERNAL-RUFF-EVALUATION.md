@@ -50,7 +50,7 @@ license and third-party notices; retain the entire file when reproducing.
 From a checkout with the declared runtime artifacts and lockfile:
 
 ```sh
-node scripts/prepare-external-ruff.mjs .repo-verifier
+node scripts/prepare-external-ruff.mjs .checktrail
 node scripts/measure-external-ruff.mjs /prepared/input-directory /prepared/ruff
 node scripts/verify-external-ruff-container.mjs /prepared/input-directory /prepared/linux/ruff
 ```

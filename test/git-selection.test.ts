@@ -39,7 +39,7 @@ const policy = JSON.stringify({
   })),
 });
 const files = {
-  "repo-verifier.json": policy,
+  "checktrail.json": policy,
   "app/package.json": nodeManifest,
   "app/value.test.js":
     "import {test} from 'node:test'; import assert from 'node:assert/strict'; import {value} from '../lib/value.js'; test('consumer contract',()=>assert.equal(value,1));",
@@ -241,16 +241,16 @@ test("Git selection falls back for missing history, root changes, incomplete gra
     ...JSON.parse(policy),
     workspace: { ...workspace, complete: false },
   });
-  await writeFile(path.join(root, "repo-verifier.json"), incomplete);
+  await writeFile(path.join(root, "checktrail.json"), incomplete);
   const incompleteBase = await syntheticCommit(root, {
     ...files,
-    "repo-verifier.json": incomplete,
+    "checktrail.json": incomplete,
   });
   await writeFile(path.join(root, "lib/value.js"), "changed\n");
   const fallback = await createPlan(root, { base: incompleteBase });
   assert.equal(fallback.plan.selection?.mode, "full");
   assert.match(fallback.plan.selection!.reason, /completeness/);
-  await writeFile(path.join(root, "repo-verifier.json"), policy);
+  await writeFile(path.join(root, "checktrail.json"), policy);
   await writeFile(path.join(root, ".env"), "SYNTHETIC=not-inspected\n");
   const excludedBase = await syntheticCommit(root, {
     ...files,

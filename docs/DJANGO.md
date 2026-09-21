@@ -1,7 +1,7 @@
 # Django URL inventory profile
 
 Select `python.django-routes` and provide project-local
-`repo-verifier.django.json`:
+`checktrail.django.json`:
 
 ```json
 {

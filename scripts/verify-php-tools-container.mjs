@@ -17,9 +17,7 @@ function installedImage(name) {
 }
 const image = installedImage("composer:2");
 const nodeImage = installedImage("node:22-alpine");
-const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-php-tools-"),
-);
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-php-tools-"));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 let sourceContainer;
 try {

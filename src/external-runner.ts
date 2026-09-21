@@ -78,8 +78,8 @@ async function main() {
   )
     throw new Error("External scope does not match its declared selectors");
   const temporary =
-    process.env.REPO_VERIFIER_TEMP ||
-    (await mkdtemp(path.join(tmpdir(), "repo-verifier-external-")));
+    process.env.CHECKTRAIL_TEMP ||
+    (await mkdtemp(path.join(tmpdir(), "checktrail-external-")));
   try {
     const bundle = path.join(temporary, "bundle");
     for (const [file, content] of adapter.contents) {

@@ -18,7 +18,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "jest.config.cjs":
         "module.exports={collectTests:true,outputFile:'should-not-write.json',testResultsProcessor:'./processor.cjs'};\n",
       "processor.cjs": "throw new Error('results processor must not run');\n",
@@ -71,7 +71,7 @@ test(
 test("Jest planning and missing-tool validation do not execute configuration", async (t) => {
   const root = await fixture(t, {
     "package.json": "{}",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "jest.config.cjs": "throw new Error('configuration ran');",
     "sum.test.js": good,
   });

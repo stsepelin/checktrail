@@ -18,10 +18,10 @@ limits and reviewer version in both arms. Each arm starts from a separate fresh
 copy and receives the same task and source access. Run pairs in alternating order;
 do not carry findings, conversation history or caches between arms.
 
-| Arm      | Reviewer access                                                                                | Instructions                                                             |
-| -------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Baseline | Native tools through fixed documented commands; no Repo Verifier                               | The public review instruction below                                      |
-| Verifier | The same native tools and Repo Verifier's documented context, guidance and validation surfaces | The same public review instruction, plus factual tool usage instructions |
+| Arm      | Reviewer access                                                                             | Instructions                                                             |
+| -------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Baseline | Native tools through fixed documented commands; no Checktrail                               | The public review instruction below                                      |
+| Verifier | The same native tools and Checktrail's documented context, guidance and validation surfaces | The same public review instruction, plus factual tool usage instructions |
 
 Record exactly which tools and commands each arm can use. If the baseline uses
 additional project instructions, version and hash a separately authored public

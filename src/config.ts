@@ -43,8 +43,28 @@ export async function loadConfig(
   source: Inventory,
   overlayPath?: string,
 ): Promise<{ config: Config | undefined; fingerprint: string }> {
-  const raw = source.files.includes("repo-verifier.json")
-    ? await readProjectFile(source.root, "repo-verifier.json")
+  const legacyNames = new Set([
+    "repo-verifier.json",
+    ...[
+      "actionlint",
+      "django",
+      "dotnet",
+      "fastapi",
+      "java",
+      "laravel",
+      "nuxt",
+      "vue-router",
+    ].map((profile) => `repo-verifier.${profile}.json`),
+  ]);
+  const legacy = source.files.find((file) =>
+    legacyNames.has(file.split("/").at(-1)!),
+  );
+  if (legacy)
+    throw new Error(
+      `Rename legacy configuration ${legacy} to its checktrail filename before validation`,
+    );
+  const raw = source.files.includes("checktrail.json")
+    ? await readProjectFile(source.root, "checktrail.json")
     : undefined;
   const base =
     raw === undefined ? undefined : configSchema.parse(JSON.parse(raw));
@@ -55,9 +75,7 @@ export async function loadConfig(
           JSON.parse(await readProjectFile(source.root, overlayPath)),
         );
   if (overlay && !base)
-    throw new Error(
-      "Policy overlays require an explicit base repo-verifier.json",
-    );
+    throw new Error("Policy overlays require an explicit base checktrail.json");
   const loaded = new Map<string, string>();
   const cache = new Map<string, LoadedPack>();
   async function resolve(

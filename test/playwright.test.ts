@@ -21,7 +21,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "math.spec.js": good,
       "playwright.config.js":
         "export default { retries: 1, grep: /never-match/, grepInvert: /.*/, shard: {current:1,total:20}, reporter: './never-load.cjs', outputDir:'preserved-output' };",
@@ -97,7 +97,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "math.spec.js": good,
       "playwright.config.ts":
         "throw new Error('config executed'); export default {};",
@@ -302,10 +302,10 @@ test(
   "native Playwright validates browser DOM assertions and reports an absent browser as unavailable",
   { timeout: 60_000 },
   async (t) => {
-    const browserDirectory = path.resolve(".repo-verifier/playwright-browsers");
+    const browserDirectory = path.resolve(".checktrail/playwright-browsers");
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": JSON.stringify({
+      "checktrail.json": JSON.stringify({
         schemaVersion: 1,
         projects: [
           {

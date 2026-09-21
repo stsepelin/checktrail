@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { validate } from "../src/engine.js";
 import { fixture } from "./helpers.js";
 
-const prepared = path.resolve(".repo-verifier/go-tools/bin");
+const prepared = path.resolve(".checktrail/go-tools/bin");
 const nativePath = prepared + path.delimiter + (process.env.PATH ?? "");
 const available =
   spawnSync("staticcheck", ["-version"], {
@@ -31,7 +31,7 @@ test(
       const root = await fixture(t, {
         "go.mod": "module example.invalid/sample\n\ngo 1.23\n",
         "value.go": good,
-        "repo-verifier.json": JSON.stringify({
+        "checktrail.json": JSON.stringify({
           schemaVersion: 1,
           projects: [{ path: ".", checks: ["go.staticcheck"] }],
         }),
@@ -79,6 +79,18 @@ test(
         "//go:build unselected_fixture\n\npackage sample\nfunc hidden() { invalid() }\n",
       );
       assert.equal((await validate(root, options)).outcome, "incomplete");
+      await writeFile(
+        path.join(root, "checktrail.go-scope.json"),
+        JSON.stringify({
+          schemaVersion: 1,
+          excludedFiles: [{ path: "excluded.go", reason: "Other target" }],
+        }),
+      );
+      assert.equal((await validate(root, options)).outcome, "passed");
+      await writeFile(path.join(root, "value.go"), bad);
+      assert.equal((await validate(root, options)).outcome, "failed");
+      await writeFile(path.join(root, "value.go"), good);
+      await rm(path.join(root, "checktrail.go-scope.json"));
       await rm(path.join(root, "excluded.go"));
       await writeFile(path.join(root, "staticcheck.conf"), "checks = broken\n");
       assert.equal((await validate(root, options)).outcome, "incomplete");

@@ -90,9 +90,7 @@ async function artifactIdentity() {
   };
 }
 const identity = await artifactIdentity();
-const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-performance-"),
-);
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-performance-"));
 try {
   const fixtures = [];
   for (const specification of cases) {

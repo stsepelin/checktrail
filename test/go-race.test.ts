@@ -46,7 +46,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "go.mod": manifest,
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "counter_test.go": broken,
     });
     const failed = await validate(root, { trusted: true, timeoutMs: 120_000 });
@@ -76,3 +76,40 @@ test("Go race instrumentation requires explicit selection", async (t) => {
     ),
   );
 });
+
+test(
+  "native Go race scope uses race build constraints and rejects stale exclusions",
+  { skip: available ? false : "Go unavailable", timeout: 120_000 },
+  async (t) => {
+    const root = await fixture(t, {
+      "go.mod": manifest,
+      "checktrail.json": policy,
+      "counter_test.go": fixed,
+      "race_only.go":
+        "//go:build race\n\npackage racefixture\nconst Instrumented = true\n",
+      "checktrail.go-scope.json": JSON.stringify({
+        schemaVersion: 1,
+        excludedFiles: [
+          { path: "race_only.go", reason: "Not part of ordinary tests" },
+        ],
+      }),
+    });
+    const { plan } = await createPlan(root);
+    assert.deepEqual(plan.checks[0]!.commands[0]!.args, [
+      "list",
+      "-json",
+      "-race",
+      "./...",
+    ]);
+    const stale = await validate(root, { trusted: true, timeoutMs: 120_000 });
+    assert.equal(stale.outcome, "incomplete", JSON.stringify(stale.checks));
+    await writeFile(
+      path.join(root, "checktrail.go-scope.json"),
+      JSON.stringify({ schemaVersion: 1, excludedFiles: [] }),
+    );
+    assert.equal(
+      (await validate(root, { trusted: true, timeoutMs: 120_000 })).outcome,
+      "passed",
+    );
+  },
+);

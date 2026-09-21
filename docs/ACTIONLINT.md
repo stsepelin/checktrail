@@ -13,7 +13,7 @@ Selecting this check explicitly covers workflows only.
 
 ## Configuration
 
-Place `repo-verifier.actionlint.json` at the repository root:
+Place `checktrail.actionlint.json` at the repository root:
 
 ```json
 {
@@ -97,7 +97,7 @@ preparation step. Validation and packaged library/CLI/MCP smoke tests then run
 with networking disabled and read-only source/consumer mounts:
 
 ```sh
-docker build --file scripts/actionlint-tools.Dockerfile --tag repo-verifier-actionlint-test:1.7.12 scripts
+docker build --file scripts/actionlint-tools.Dockerfile --tag checktrail-actionlint-test:1.7.12 scripts
 node scripts/verify-actionlint-container.mjs
 ```
 

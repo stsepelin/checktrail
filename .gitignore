@@ -1,9 +1,11 @@
 node_modules/
 dist/
 coverage/
-.repo-verifier/
-.repo-verifier.local.json
+.checktrail/
+.checktrail.local.json
 .env
 .env.*
 *.tgz
 .DS_Store
+.repo-verifier/
+.repo-verifier.local.json

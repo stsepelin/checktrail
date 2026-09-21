@@ -20,10 +20,7 @@ import { fixture } from "./helpers.js";
 import { reportSchema, reportSummarySchema } from "../src/schemas.js";
 
 const tools = fileURLToPath(
-  new URL(
-    "../../.repo-verifier/vue-router-tools/node_modules",
-    import.meta.url,
-  ),
+  new URL("../../.checktrail/vue-router-tools/node_modules", import.meta.url),
 );
 const available = await access(
   path.join(tools, "vue-router/package.json"),
@@ -91,8 +88,8 @@ async function project(
 ) {
   const root = await fixture(t, {
     "package.json": JSON.stringify({ private: true, type: "module" }),
-    "repo-verifier.json": policy,
-    "repo-verifier.vue-router.json": JSON.stringify(configuration),
+    "checktrail.json": policy,
+    "checktrail.vue-router.json": JSON.stringify(configuration),
     "routes.mjs": program,
   });
   if (prepared)
@@ -120,13 +117,13 @@ test("Vue Router planning validates explicit scope without executing startup or 
     { extra: true },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.vue-router.json"),
+      path.join(root, "checktrail.vue-router.json"),
       JSON.stringify({ ...profile, ...change }),
     );
     await assert.rejects(createPlan(root));
   }
   await writeFile(
-    path.join(root, "repo-verifier.vue-router.json"),
+    path.join(root, "checktrail.vue-router.json"),
     JSON.stringify({ ...profile, module: "missing.mjs" }),
   );
   assert.match(
@@ -210,7 +207,7 @@ test(
       ],
     };
     await writeFile(
-      path.join(root, "repo-verifier.vue-router.json"),
+      path.join(root, "checktrail.vue-router.json"),
       JSON.stringify(coveredProfile),
     );
     assert.equal((await validate(root, { trusted: true })).outcome, "passed");
@@ -227,7 +224,7 @@ test(
       ),
     );
     await writeFile(
-      path.join(root, "repo-verifier.vue-router.json"),
+      path.join(root, "checktrail.vue-router.json"),
       JSON.stringify(profile),
     );
     const unsupported = await validate(root, { trusted: true });
@@ -298,7 +295,7 @@ test(
     );
     for (const change of [{ sensitive: false }, { strict: false }]) {
       await writeFile(
-        path.join(root, "repo-verifier.vue-router.json"),
+        path.join(root, "checktrail.vue-router.json"),
         JSON.stringify({ ...configuration, ...change }),
       );
       const broken = await validate(root, { trusted: true });
@@ -429,7 +426,7 @@ test(
       path.join(root, "linked.mjs"),
     );
     await writeFile(
-      path.join(root, "repo-verifier.vue-router.json"),
+      path.join(root, "checktrail.vue-router.json"),
       JSON.stringify({ ...profile, module: "linked.mjs" }),
     );
     assert.match(

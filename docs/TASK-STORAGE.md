@@ -22,7 +22,7 @@ with mode `0600`. New directories and files use these modes. Symbolic links,
 unexpected directory entries and unrelated nonempty databases are rejected.
 
 ```js
-import { createPlan, validate, openTaskStore } from "@stsepelin/repo-verifier";
+import { createPlan, validate, openTaskStore } from "@stsepelin/checktrail";
 
 const store = await openTaskStore({
   root: projectRoot,

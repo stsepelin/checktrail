@@ -3,8 +3,8 @@
 The CLI and library export existing detailed validation reports as SARIF 2.1.0:
 
 ```sh
-repo-verifier run --root /path/to/project --trust-project --detailed > report.json
-repo-verifier export-sarif --root /path/to/project --input report.json > results.sarif
+checktrail run --root /path/to/project --trust-project --detailed > report.json
+checktrail export-sarif --root /path/to/project --input report.json > results.sarif
 ```
 
 The input path is relative to the configured root and is subject to the normal
@@ -14,7 +14,7 @@ current source. Preserve the original command's exit status in CI; exports also
 retain the report's passed/failed/incomplete exit convention.
 
 ```js
-import { exportSarif, validate } from "@stsepelin/repo-verifier";
+import { exportSarif, validate } from "@stsepelin/checktrail";
 const report = await validate(root, { trusted: true });
 const sarif = exportSarif(report);
 ```

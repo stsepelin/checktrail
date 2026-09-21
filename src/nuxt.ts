@@ -48,16 +48,16 @@ export async function nuxtCheck(
     reason:
       "Build an isolated Nuxt SSR testing assembly and verify declared requests against its native runtime router.",
   };
-  if (!project.files.includes("repo-verifier.nuxt.json")) {
+  if (!project.files.includes("checktrail.nuxt.json")) {
     check.unavailableReason =
-      "Nuxt runtime checks require an explicit repo-verifier.nuxt.json profile.";
+      "Nuxt runtime checks require an explicit checktrail.nuxt.json profile.";
     return check;
   }
   const config = nuxtConfigSchema.parse(
     JSON.parse(
       await readProjectFile(
         source.root,
-        path.posix.join(project.path, "repo-verifier.nuxt.json"),
+        path.posix.join(project.path, "checktrail.nuxt.json"),
       ),
     ),
   );

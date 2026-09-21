@@ -7,7 +7,7 @@ without loading the application. The same implementation is exported as
 `runtime_comparison` with relative `before` and `after` paths.
 
 ```sh
-repo-verifier compare-runtime --root /path/to/project \
+checktrail compare-runtime --root /path/to/project \
   --before before-runtime.json --after after-runtime.json --detailed
 ```
 

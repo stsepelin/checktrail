@@ -16,7 +16,7 @@ import { createPlan, validate } from "../src/engine.js";
 import { fixture } from "./helpers.js";
 
 const vendor = fileURLToPath(
-  new URL("../../.repo-verifier/php-tools/vendor", import.meta.url),
+  new URL("../../.checktrail/php-tools/vendor", import.meta.url),
 );
 const prepared = await access(path.join(vendor, "pest-plugins.json")).then(
   () => true,
@@ -39,7 +39,7 @@ async function replaceFixture(file: string, source: string): Promise<void> {
 test("Pest planning requires configuration without executing PHP", async (t) => {
   const root = await fixture(t, {
     "composer.json": "{}",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "tests/ExampleTest.php": good,
     "vendor/pestphp/pest/bin/pest":
       "<?php throw new Exception('planning executed code');",
@@ -64,7 +64,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "composer.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "phpunit.xml":
         '<phpunit beStrictAboutTestsThatDoNotTestAnything="false"/>',
       "tests/ExampleTest.php": good,
