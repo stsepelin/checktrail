@@ -3,17 +3,17 @@
 This is an experimental foundation with public source at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
-The `0.1.0-alpha.2` preview is published on npm and active in the MCP Registry.
-The [hosted run at 4ce8398](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
+The `0.1.0-alpha.3` preview is published on npm and active in the MCP Registry.
+The [hosted run at b0b447d](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
 passed all jobs. The published tarball matched the reviewed artifact; fresh
 registry installation, CLI/library validation, generated npx startup and MCP
 execution/trust behavior were verified. Earlier toolchain evidence remains in
 `NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
-The GitHub alpha.2 prerelease includes the verified artifact and checksum.
-[Public adoption](PUBLIC-ADOPTION.md) records the published package on five pinned
-libraries, including incomplete coverage and a TypeScript 4.9.5 incompatibility.
+The GitHub alpha.3 prerelease includes the verified artifact and checksum.
+[Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
+coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
-## Alpha.3 candidate (unpublished)
+## Alpha.3 release
 
 - [TypeScript compatibility](TYPESCRIPT.md): plain typechecking now passes the
   native 4.9.5 regression while retaining the 6.0.3 `noCheck` override and native
@@ -164,11 +164,10 @@ a general speedup/graph-completeness claim.
 
 ## Release preparation
 
-`server.json`, the npm package and the engine identify the unpublished
-`0.1.0-alpha.3` candidate. The currently published npm and Registry release is
-alpha.2. The candidate adds legacy TypeScript compatibility; publication requires
-its source commit to pass hosted CI and its exact tarball to pass release checks.
-Historical publication evidence and the candidate sequence are in `RELEASE.md`.
+`server.json`, the npm package and the engine identify the published
+`0.1.0-alpha.3` preview. Its source commit passed hosted CI, the published tarball
+matched the reviewed artifact, and fresh CLI/library/MCP installation checks passed.
+Publication evidence and the sequence for future releases are in `RELEASE.md`.
 
 ## Pinned pack distribution
 

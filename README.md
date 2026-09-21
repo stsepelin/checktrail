@@ -4,7 +4,7 @@ Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
 Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
 
-**Published preview: 0.1.0-alpha.2; source candidate: 0.1.0-alpha.3.** Public source is available at
+**Published preview: 0.1.0-alpha.3.** Public source is available at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
@@ -18,13 +18,13 @@ and MCP configuration generator.
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
 [Public adoption](docs/PUBLIC-ADOPTION.md) records the published package on five
 pinned libraries, including setup friction and compatibility gaps.
-The alpha.3 candidate fixes the recorded [TypeScript 4.9.5 incompatibility](docs/TYPESCRIPT.md);
-it has not been published.
+Alpha.3 fixes the recorded [TypeScript 4.9.5 incompatibility](docs/TYPESCRIPT.md).
+The [setup scope guide](docs/SETUP-SCOPES.md) explains language, documentation and workflow coverage.
 
-The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
-passed at release commit `4ce8398` on Linux and macOS. The exact npm tarball and
+The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
+passed at release commit `b0b447d` on Linux and macOS. The exact npm tarball and
 fresh CLI/MCP installations were verified. The
-[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.2)
+[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.3)
 is active; execution remains disabled by default.
 
 Checktrail discovers projects, plans registered checks, invokes native tools

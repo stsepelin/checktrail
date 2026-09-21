@@ -1,42 +1,54 @@
-# Release preparation
+# Releases and publication
 
-The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail);
-`@stsepelin/checktrail@0.1.0-alpha.2` is published on npm. Its downloaded artifact
-matched the reviewed tarball with SHA-256
+The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
+The published preview is `@stsepelin/checktrail@0.1.0-alpha.3`.
+Its downloaded npm artifact and GitHub release asset match the reviewed SHA-256:
+
+```text
+261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb
+```
+
+The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.3)
+and tag point to source commit `b0b447d5ea8973b3e427e179201a44b7baa1ca91` and include
+the same tarball plus `SHA256SUMS`. The [hosted release run](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
+passed all jobs. The [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.3)
+is active and matches `server.json`, with execution disabled. The Registry omits
+`isSecret: false`, whose schema default is false.
+
+Fresh public-registry installation verified CLI/library validation, generated
+npx startup with fresh/warm caches, onboarding, and MCP pass/fail/incomplete
+results, retained reports and execution denial. The exact artifact also passed
+offline installation, alpha.2 → alpha.3 → alpha.2 upgrade/rollback, the known mitt
+TypeScript 4.9.5 replay, Claude Code health/discovery and Codex direct MCP calls.
+The [release record](measurements/release-alpha3.json) links these observations to
+the artifact; client profile limits remain in [CLIENTS.md](CLIENTS.md).
+
+## Alpha.3 scope
+
+Alpha.3 fixes the plain TypeScript adapter's unsupported `--noCheck` argument on
+the exercised TypeScript 4.9.5 profile, retaining the TypeScript 6.0.3 override and
+native file accounting. Vue uses the same capability helper with its verified
+modern toolchain; solution-build remains gated to TypeScript 6.0.3. See
+[TYPESCRIPT.md](TYPESCRIPT.md). Dependencies and report/policy schemas did not change.
+
+The release targets Node.js 22 or newer on macOS and Linux. It does not add
+standard MCP Tasks or legacy Vue support. The historical alpha.2
+[adoption record](PUBLIC-ADOPTION.md) remains unchanged; its initial failures are
+not rewritten as alpha.3 successes. The immutable tarball contains preparation-time
+candidate documentation; current source documentation records verified publication.
+
+## Distribution tags and previous release
+
+`next` points to alpha.3. `latest` remains on alpha.1 because npm rejected its
+removal. Use exact versions; neither tag implies a stable release. Never republish
+an existing version. No credentials or automatic publishing workflow are stored here.
+
+The [alpha.2 prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
+introduced [setup and diagnosis](ONBOARDING.md), from source commit `4ce8398`.
+Its reviewed and downloaded artifact has SHA-256
 `ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb`.
-Fresh registry installation, CLI/library validation, generated npx startup with
-fresh/warm caches and MCP pass/fail/incomplete results were verified. Alpha.2 adds
-[setup and diagnosis](ONBOARDING.md). The
-[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.2)
-is active and matches the alpha.2 release metadata, with execution disabled. The Registry omits
-`isSecret: false`, whose schema default is false. No credentials or automatic
-publishing workflow are stored here.
-The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
-points to source commit `4ce8398` and includes the same tarball plus `SHA256SUMS`.
-The downloaded release asset was verified against the digest above.
-
-Publication is configured for npm's `next` tag. After alpha.1 publication, the
-registry assigned both `next` and `latest` to that preview; attempts to remove
-`latest` returned HTTP 400. Alpha.2 publication updated `next` while leaving
-`latest` on alpha.1. Cleanup remains unresolved; use exact versions, do not treat
-`latest` as evidence of a stable release, and never republish an existing version.
-
-## Alpha.3 candidate (unpublished)
-
-The source candidate is `0.1.0-alpha.3`. It fixes the plain TypeScript adapter's
-unsupported `--noCheck` argument on the exercised TypeScript 4.9.5 profile, while
-retaining the TypeScript 6.0.3 override and native file accounting. Vue uses the
-same capability helper with its existing verified modern toolchain; the separate
-solution-build profile remains gated to TypeScript 6.0.3. See [TYPESCRIPT.md](TYPESCRIPT.md).
-No dependencies or report/policy schemas change in this release preparation.
-The alpha.2 adoption record remains historical evidence.
-
-The candidate still targets Node.js 22 or newer on macOS and Linux. It does not
-add standard MCP Tasks or legacy Vue support. Registry metadata keeps execution
-disabled by default. Publication will use npm's `next` tag after release checks
-and hosted CI succeed; the alpha.2 publication evidence above does not verify
-this candidate. Exact artifact, client and upgrade/rollback evidence is retained
-outside the package allowlist until publication is verified.
+Its [hosted run](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
+and fresh installation checks passed; its npm and Registry versions remain published.
 
 ## Prepared artifacts
 
@@ -54,8 +66,8 @@ outside the package allowlist until publication is verified.
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. The [hosted run at 4ce8398](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
-  passed all jobs for the alpha.2 release commit. The local Claude Code health/discovery and
+  exercised. The [hosted run at b0b447d](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
+  passed all jobs for the alpha.3 release commit. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry
@@ -91,7 +103,7 @@ After explicit approval and npm authentication for the `@stsepelin` scope, publi
 the approved file, not a newly packed working tree:
 
 ```sh
-npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.3.tgz \
+npm publish /absolute/path/reviewed-new-version.tgz \
   --tag next --access public --ignore-scripts --registry=https://registry.npmjs.org
 ```
 

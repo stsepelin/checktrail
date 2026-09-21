@@ -55,10 +55,11 @@ operations were checked against the project tree.
 These are recorded adoption gaps, not fixes applied to the immutable alpha.2
 package. No new engine version is published by this exercise.
 
-## Unreleased follow-up
+## Alpha.3 follow-up
 
-The [compiler compatibility fix](TYPESCRIPT.md) now passes a known-case mitt replay
-with TypeScript 4.9.5 through a locally packed CLI, library and MCP. The observations
+The [compiler compatibility fix](TYPESCRIPT.md) is published in alpha.3. Its exact
+release artifact passes the known-case mitt replay with TypeScript 4.9.5 through
+the CLI, library and MCP; see [release verification](RELEASE.md). The observations
 above still describe published alpha.2; they are not replaced by the fixed source
 checkout's results. Workflow/documentation setup and Go platform coverage remain
 separate work.

@@ -118,10 +118,10 @@ the optional skips allowed by a developer's general test suite.
 
 [Public adoption measurements](PUBLIC-ADOPTION.md) record alpha.2 on pinned
 JavaScript, TypeScript, Python, Go and PHP libraries. TypeScript 4.9.5 rejects
-the adapter's `--noCheck` option; this older version is not verified support.
+alpha.2's `--noCheck` option; that published artifact does not support this profile.
 Go platform exclusions remain inconclusive even when native tests exit zero.
 
-The unreleased [TypeScript compatibility fix](TYPESCRIPT.md) exercises plain
+The alpha.3 [TypeScript compatibility fix](TYPESCRIPT.md) exercises plain
 TypeScript 4.9.5 and 6.0.3 using native capability-aware arguments. Published
 alpha.2 retains the recorded older-compiler limitation; Vue and solution-build
 profiles retain their separately verified versions.

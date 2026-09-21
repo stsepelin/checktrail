@@ -1,12 +1,13 @@
 # Project setup
 
-These commands are available in `0.1.0-alpha.2`. Follow the
+These commands are available since `0.1.0-alpha.2`. Follow the
 [installation guide](INSTALLATION.md), with Node.js 22+ on macOS/Linux.
 
 [Public adoption observations](PUBLIC-ADOPTION.md) show setup on real libraries,
 including nested documentation projects, workflow prerequisites and older compiler
 limitations. A narrowed policy can pass its selected checks while leaving other
-repository checks unverified.
+repository checks unverified. The [setup scope walkthrough](SETUP-SCOPES.md)
+shows how to inspect those boundaries and interpret an intentionally narrowed policy.
 
 ## Preview and create a policy
 

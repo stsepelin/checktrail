@@ -1,8 +1,8 @@
 # TypeScript compiler compatibility
 
 The source checkout's `javascript.typescript` profile now supports the exercised
-TypeScript 4.9.5 and 6.0.3 configurations. This fix is included in the
-**unpublished alpha.3 candidate**. Published alpha.2 still passes an option that
+TypeScript 4.9.5 and 6.0.3 configurations. This fix is published in
+**0.1.0-alpha.3**. Published alpha.2 still passes an option that
 TypeScript 4.9.5 rejects. The original
 [public adoption record](PUBLIC-ADOPTION.md) remains unchanged as release evidence.
 Other compiler versions require their own native verification.

@@ -1,10 +1,11 @@
 # Install the preview
 
-The published preview is `0.1.0-alpha.2` on
+The published preview is `0.1.0-alpha.3` on
 [npm](https://www.npmjs.com/package/@stsepelin/checktrail).
-Use the exact version below. `next` points to alpha.2; `latest` still points to
+Use the exact version below. `next` points to alpha.3; `latest` still points to
 alpha.1 because npm rejected its removal. Neither tag implies a stable release.
-Alpha.2 includes [project setup and diagnosis](ONBOARDING.md).
+Alpha.3 includes [project setup and diagnosis](ONBOARDING.md) and the
+[TypeScript compatibility fix](TYPESCRIPT.md).
 
 Use Node.js 22 or newer on macOS or Linux. Windows execution is not supported.
 Install each project's compilers, linters and test runners separately; Checktrail
@@ -18,7 +19,7 @@ Skills install separately from the engine and MCP configuration.
 Install the exact version once:
 
 ```sh
-npm install --global --ignore-scripts @stsepelin/checktrail@0.1.0-alpha.2
+npm install --global --ignore-scripts @stsepelin/checktrail@0.1.0-alpha.3
 checktrail --version
 ```
 

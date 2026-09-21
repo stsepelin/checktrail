@@ -1,8 +1,9 @@
 # Application client compatibility
 
-The recorded snapshots below predate the Checktrail rename and retain their
-original package identities. A release candidate needs its own client checks;
-see [RENAMING.md](RENAMING.md).
+The [alpha.3 release record](measurements/release-alpha3.json) repeats the named
+profiles below against the exact published artifact. The original standalone
+snapshots predate the Checktrail rename and retain their original identities.
+A future release needs its own checks; see [RENAMING.md](RENAMING.md).
 
 The local package was installed offline into a fresh temporary consumer and tested
 with Claude Code 2.1.263 and Codex CLI 0.154.0 on macOS arm64, Node 26.8.1. These
@@ -106,4 +107,5 @@ The runtime digest identifies the installed `dist/src` tree independently.
 
 These local checks satisfy only the named client profiles. Claude Desktop,
 Cursor, VS Code integrations, other client versions and target operating systems
-remain unverified. No public package installation or hosted CI run is implied.
+remain unverified. These original snapshots do not establish public installation or hosted CI;
+alpha.3 publication and hosted evidence are recorded separately in [RELEASE.md](RELEASE.md).
