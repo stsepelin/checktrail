@@ -5,7 +5,9 @@ import {
   cp,
   readFile,
   readdir,
+  realpath,
   rename,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
@@ -63,11 +65,14 @@ test(
     timeout: 90_000,
   },
   async (t) => {
-    const root = await fixture(t, {
+    const project = await fixture(t, {
       "composer.json": "{}",
       "repo-verifier.json": policy,
       "Example.php": good,
     });
+    const aliases = await fixture(t, {});
+    const root = path.join(aliases, "project");
+    await symlink(project, root, "dir");
     await cp(packagePath, path.join(root, "vendor/laravel/pint"), {
       recursive: true,
     });
@@ -127,7 +132,7 @@ test(
     assert.equal(excluded.outcome, "failed", JSON.stringify(excluded.checks));
     assert.deepEqual(
       JSON.parse(excluded.checks[0]!.processes[0]!.stdout).files,
-      [path.join(root, "Example.php")],
+      [await realpath(path.join(root, "Example.php"))],
     );
     await replaceFixture(path.join(root, "Example.php"), good);
     await replaceFixture(path.join(root, "pint.json"), '{"preset":"empty"}');
