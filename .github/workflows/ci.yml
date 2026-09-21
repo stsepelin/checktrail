@@ -97,6 +97,8 @@ jobs:
           node scripts/verify-required-native-tests.mjs rust
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/smoke-package.mjs
       - name: Verify review exchange in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
@@ -137,6 +139,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned Java fixture
         run: docker build --file scripts/java-tools.Dockerfile --tag repo-verifier-java-test:25.0.4 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-java-container.mjs
 
   dotnet:
@@ -154,6 +158,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned C# fixture
         run: docker build --file scripts/dotnet-tools.Dockerfile --tag repo-verifier-dotnet-test:10.0.401 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-dotnet-container.mjs
 
   actionlint:
@@ -171,6 +177,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned workflow checker
         run: docker build --file scripts/actionlint-tools.Dockerfile --tag repo-verifier-actionlint-test:1.7.12 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-actionlint-container.mjs
 
   external-adapters:
@@ -188,6 +196,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned external adapter runtimes
         run: docker build --file scripts/external-tools.Dockerfile --tag repo-verifier-external-test:1 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-external-container.mjs
 
   vue-router:
@@ -208,6 +218,8 @@ jobs:
           mkdir -p .repo-verifier/vue-router-tools
           cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
           npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-vue-router-container.mjs
 
   nuxt:
@@ -228,6 +240,8 @@ jobs:
           mkdir -p .repo-verifier/nuxt-tools
           cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
           docker run --rm --mount "type=bind,src=$PWD/.repo-verifier/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-nuxt-container.mjs
 
   ruby:

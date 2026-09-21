@@ -24,6 +24,10 @@ Nuxt, Vue Router, FastAPI, Django and Laravel profiles have separately pinned fr
 and capture only their documented native assembly projections; see `FASTAPI.md`,
 `DJANGO.md`, `LARAVEL.md`, `VUE-ROUTER.md` and `NUXT.md`.
 
+Pint's macOS hosted check exposed a non-seekable cache-file failure. The adapter
+now uses a fresh regular file with runner-owned cleanup; the corrected macOS
+profile awaits a hosted rerun. See `PINT.md` and `NATIVE-CI.md`.
+
 ## Adapter contract
 
 Every adapter declares stable ID/version, detection markers, capabilities,

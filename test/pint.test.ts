@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { access, cp, readFile, rename, writeFile } from "node:fs/promises";
+import {
+  access,
+  cp,
+  readFile,
+  readdir,
+  rename,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -64,7 +71,23 @@ test(
     await cp(packagePath, path.join(root, "vendor/laravel/pint"), {
       recursive: true,
     });
-    const passed = await validate(root, { trusted: true });
+    const scratch = await fixture(t, {});
+    const previousTemporary = process.env.TMPDIR;
+    async function run() {
+      process.env.TMPDIR = scratch;
+      try {
+        return await validate(root, { trusted: true });
+      } finally {
+        if (previousTemporary === undefined) delete process.env.TMPDIR;
+        else process.env.TMPDIR = previousTemporary;
+        assert.deepEqual(
+          await readdir(scratch),
+          [],
+          "Execution caches must be removed",
+        );
+      }
+    }
+    const passed = await run();
     assert.equal(passed.outcome, "passed", JSON.stringify(passed.checks));
     assert.equal(
       passed.checks[0]!.tools?.find((tool) => tool.name === "pint")?.version,
@@ -81,7 +104,7 @@ test(
     );
     const bad = good.replace("return 5;", "return  5;");
     await replaceFixture(path.join(root, "Example.php"), bad);
-    const failed = await validate(root, { trusted: true });
+    const failed = await run();
     assert.equal(failed.outcome, "failed", JSON.stringify(failed.checks));
     assert.equal(failed.sourceChanged, false);
     assert.equal(await readFile(path.join(root, "Example.php"), "utf8"), bad);
@@ -93,14 +116,14 @@ test(
       path.join(root, "Example.php"),
       "<?php function broken( {\n",
     );
-    const syntax = await validate(root, { trusted: true });
+    const syntax = await run();
     assert.equal(syntax.outcome, "failed", JSON.stringify(syntax.checks));
     await replaceFixture(path.join(root, "Example.php"), bad);
     await replaceFixture(
       path.join(root, "pint.json"),
       '{"notName":["Example.php"]}',
     );
-    const excluded = await validate(root, { trusted: true });
+    const excluded = await run();
     assert.equal(excluded.outcome, "failed", JSON.stringify(excluded.checks));
     assert.deepEqual(
       JSON.parse(excluded.checks[0]!.processes[0]!.stdout).files,
@@ -108,30 +131,27 @@ test(
     );
     await replaceFixture(path.join(root, "Example.php"), good);
     await replaceFixture(path.join(root, "pint.json"), '{"preset":"empty"}');
-    const noRules = await validate(root, { trusted: true });
+    const noRules = await run();
     assert.equal(noRules.outcome, "incomplete", JSON.stringify(noRules.checks));
     assert.match(noRules.checks[0]!.processes[0]!.stdout, /no-active-rules/);
     await replaceFixture(
       path.join(root, "pint.json"),
       '{"rules":{"Pint/laravel_blade":true}}',
     );
-    const blade = await validate(root, { trusted: true });
+    const blade = await run();
     assert.equal(blade.outcome, "incomplete", JSON.stringify(blade.checks));
     assert.match(
       blade.checks[0]!.processes[0]!.stdout,
       /unverified-prettier-integration/,
     );
     await replaceFixture(path.join(root, "pint.json"), '{"preset":"missing"}');
-    assert.equal(
-      (await validate(root, { trusted: true })).outcome,
-      "incomplete",
-    );
+    assert.equal((await run()).outcome, "incomplete");
     await replaceFixture(path.join(root, "pint.json"), "{}");
     await replaceFixture(
       path.join(root, "Other.php"),
       good.replace("total", "otherTotal"),
     );
-    const multiple = await validate(root, { trusted: true });
+    const multiple = await run();
     assert.equal(multiple.outcome, "passed", JSON.stringify(multiple.checks));
     assert.equal(multiple.checks[0]!.scope.length, 2);
   },

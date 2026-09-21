@@ -38,7 +38,7 @@ Container helpers retain their existing prepared dependencies, network-disabled
 execution and read-only source mounts. They do not install tools while measuring.
 A main hosted job prepares dependencies before validation. Local container runs
 are evidence for their actual versions and platforms only; the GitHub Actions
-matrix remains unrun until the repository is published and hosted jobs succeed.
+matrix requires its own successful run before being claimed as verified.
 
 The runner's regression tests exercise required-test absence, exact name/file
 identity, duplicates, skips, TODOs, suite-only matches and unrelated failures.
@@ -53,3 +53,28 @@ runs. The unchanged Ruby/Swift paths have their separate local evidence in
 `RUBY.md` and `SWIFT.md`. These records do not claim that the hosted matrix ran,
 that all profiles ran in a single environment, or that overlapping counts are
 independent tests.
+
+## Fresh-runner package preparation
+
+`npm ci` installs from the repository lockfile but does not necessarily cache
+the registry metadata needed to resolve a new consumer's dependencies. Before
+packaged checks, CI runs `node scripts/prepare-package-cache.mjs` with network
+access. It packs the current build and installs it in a disposable consumer with
+lifecycle scripts disabled, using the same npm cache as the later smoke helpers.
+The disposable installation is removed; only the npm cache is reused.
+
+The smoke helpers still create fresh consumers and install with `--offline`.
+Native container checks still use `--network none`. Cache preparation is setup,
+not evidence that a package can be installed without previously cached dependencies.
+For local reproduction, run `npm run build`, the cache preparation script, then
+`node scripts/smoke-package.mjs`, keeping the same npm cache configuration.
+
+The [first hosted run](https://github.com/stsepelin/repo-verifier/actions/runs/35570317427)
+exposed this missing setup: Java, C#, actionlint, external adapters, Vue Router and
+Nuxt reached packaged installation after their native checks, then failed with
+`ENOTCACHED`. All three Linux main-matrix jobs reached the same failure after
+passing their full suites and required native profiles. Clang, Ruby and Swift
+jobs passed. The macOS main job failed separately because Pint attempted to seek
+within `/dev/null`; the adapter now uses a fresh regular cache file in a
+runner-owned directory, with cleanup asserted after successful and failed checks.
+See `PINT.md`. Both corrections still need a hosted rerun.

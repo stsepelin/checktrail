@@ -1,10 +1,11 @@
 # Release preparation
 
-This checkout is an unpublished development candidate. `server.json` describes the
+The source is public at [stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier);
+the npm package remains an unpublished development candidate. `server.json` describes the
 intended `io.github.stsepelin/repo-verifier` MCP registry identity and the matching
-`@stsepelin/repo-verifier` npm package. These names and repository URLs are proposed
-metadata, not evidence that a remote repository, published package or registry
-entry exists. No release credentials or publishing automation are configured here.
+`@stsepelin/repo-verifier` npm package. The npm and registry names are proposed
+metadata, not evidence of a published package or registry entry. No release
+credentials or publishing automation are configured here.
 
 ## Prepared artifacts
 
@@ -53,7 +54,9 @@ intentionally carries `unpublished-development-candidate` under publisher metada
    the development-candidate status only when appropriate. Do not advertise Tasks
    until the standard wire/lifecycle gates in `MCP-COMPATIBILITY.md` pass.
 2. Run `npm run check`, `npm run format:check`,
-   `node scripts/audit-dependencies.mjs` and `node scripts/smoke-package.mjs`.
+   `node scripts/audit-dependencies.mjs`, then
+   `node scripts/prepare-package-cache.mjs` with network access before
+   `node scripts/smoke-package.mjs` performs its fresh offline installation.
    Run the corresponding native verification helpers for every advertised profile.
    Record actual tool/platform results and explicit skips. Repeat registry schema
    validation against its pinned bytes.

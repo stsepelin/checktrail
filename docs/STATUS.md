@@ -1,15 +1,16 @@
 # Implementation status
 
-This is a local experimental foundation, not a published release. The intended
-repository/package namespace is `stsepelin/repo-verifier` /
-`@stsepelin/repo-verifier`. No GitHub repository, package publication, CI run or
-client installation is implied by the metadata in this checkout.
+This is an experimental foundation with public source at
+[stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier).
+The npm package `@stsepelin/repo-verifier` is not published. The initial commit
+`60131d6` started hosted CI; the package-cache setup failures, macOS Pint
+cache-file failure and pending rerun are recorded in `NATIVE-CI.md`.
 
 ## Implemented
 
 - Exact required-test accounting across prepared CI language profiles and native
   container helpers, including dedicated Ruby/Swift jobs. Skipped, missing,
-  duplicate, TODO or failing cases cannot satisfy these profiles. Hosted execution
+  duplicate, TODO or failing cases cannot satisfy these profiles. Full hosted acceptance
   remains pending; see `NATIVE-CI.md` for the distinction from optional local tests.
 
 - External Ruff integration evaluation against pinned upstream Python fixtures and
@@ -168,7 +169,8 @@ Python 3.12.13, Go 1.26.5 and PHP 8.5.6 with networking disabled. Fresh offline
 package installation passed through the library, CLI and MCP using the public
 Node example. These runs verify the protocol and fixtures, not arbitrary plugins.
 See `EXTERNAL-ADAPTERS.md` for reproducible commands and trust limitations.
-The dedicated CI job is defined but has not run on a hosted runner.
+The first hosted job passed native checks but failed during offline package
+installation; see `NATIVE-CI.md`.
 
 ## Verification and boundaries
 
@@ -201,8 +203,8 @@ Node's implicit passing result for an empty file is explicitly rejected using
 file-level summary events.
 
 The CI definition targets Node 22/24/26 on Linux and Node 24 on macOS, with Python,
-Go and PHP provisioned and preflighted. That is intended coverage; hosted CI has
-not run. Windows process execution is explicitly unsupported.
+Go and PHP provisioned and preflighted. Full hosted acceptance remains pending;
+see `NATIVE-CI.md`. Windows process execution is explicitly unsupported.
 
 The SDK package version alone did not establish modern protocol serving. Tests
 pinning 2026-07-28 initially rejected the legacy-only connection entry point. The
@@ -428,7 +430,7 @@ See `CLANG.md`; linking, code generation and test execution are not covered.
 A fresh offline package install also passes this profile through library, CLI and
 MCP on the verified macOS compiler. Removing the source-coverage reconciliation
 made the omitted-source native regression fail; the original build was restored.
-The dedicated container CI job is configured but has not run on a hosted runner.
+The dedicated Clang container job passed in the first hosted run; see `NATIVE-CI.md`.
 
 The Java classpath profile is verified with Temurin JDK 25.0.4+7 on arm64 Linux.
 Native fixtures cover public records, a type-error/fix pair, release mismatches,
@@ -442,7 +444,8 @@ Fresh offline package installation passed the Java public library, CLI and MCP
 checks. Removing the declared-type analysis guard made the native missing-analysis
 regression fail; the original implementation was restored and native verification
 rerun. `scripts/verify-java-container.mjs` reproduces both native and packaged checks.
-The hosted amd64 job is configured but has not run; macOS has no prepared JDK.
+The hosted amd64 job passed native checks but failed during offline package
+installation; macOS has no prepared JDK. See `NATIVE-CI.md`.
 This is Java compilation under explicit settings, not Maven/Gradle, Kotlin/Scala,
 JPMS, application tests or annotation-processor support. See `JAVA.md`.
 
@@ -481,8 +484,8 @@ the accounting regression caught that false pass. The guard was restored.
 The explicitly prepared Linux image verifies its downloaded release archive's
 SHA-256 digest. Network-disabled runs with read-only repository and consumer
 mounts passed native tests and a fresh offline-installed package's library, CLI
-and MCP surfaces. The hosted amd64 job is configured but has not run. See
-`ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
+and MCP surfaces. The hosted amd64 job passed native checks but failed during offline package
+installation; see `NATIVE-CI.md`. See `ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
 profile limits. Other infrastructure tools remain unsupported.
 
 ## Development evaluation
