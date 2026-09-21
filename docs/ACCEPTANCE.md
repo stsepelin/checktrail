@@ -22,8 +22,8 @@ TypeScript compiler-option incompatibility and workflow/documentation/platform
 coverage friction. The [alpha.3 compiler fix](TYPESCRIPT.md) now passes the
 known TypeScript 4.9.5 case. [Setup guidance](SETUP-SCOPES.md) distinguishes
 workflow/documentation coverage; the alpha.4 [Go scope policy](GO-SCOPE.md)
-accounts for explicitly acknowledged native exclusions. Broader target coverage
-remains follow-up work. The observations do not establish full upstream CI coverage or
+accounts for explicitly acknowledged native exclusions. Unreleased [per-check build-tag profiles](GO-BUILD.md)
+add explicit tag selection; broader target coverage remains follow-up work. The observations do not establish full upstream CI coverage or
 general review effectiveness.
 
 1. Extend independently authored evaluation cohorts to additional implemented

@@ -78,6 +78,10 @@ This policy does not introduce build-tag flags, cross-compilation, cross-target
 test execution or a build matrix. Use separately prepared native target runs for
 coverage outside the selected profile. Existing protected Go settings stay intact.
 
+The source checkout separately adds [per-check build-tag profiles](GO-BUILD.md).
+They use their own per-profile exclusions and cannot coexist with this module-wide
+policy. That capability is unreleased; alpha.4 retains the behavior above.
+
 ## Known-case replay
 
 The [pinned public UUID replay](measurements/go-scope-policy-replay.json) uses the

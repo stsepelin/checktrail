@@ -1,3 +1,4 @@
+import { goBuildTagsSchema } from "./go-build.js";
 import { spawnSync } from "node:child_process";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -32,9 +33,10 @@ const configuration = z.strictObject({
   formatters: z.record(z.string(), z.unknown()).optional(),
 });
 async function main(): Promise<void> {
-  const [root, configFile, ...files] = process.argv.slice(2);
-  if (!root || !configFile || !files.length)
+  const [root, configFile, encodedTags, ...files] = process.argv.slice(2);
+  if (!root || !configFile || !encodedTags || !files.length)
     throw new Error("Invalid golangci-lint arguments");
+  const tags = goBuildTagsSchema.parse(JSON.parse(encodedTags));
   const version = spawnSync("golangci-lint", ["version", "--short"], {
     encoding: "utf8",
     maxBuffer: 8192,
@@ -81,6 +83,7 @@ async function main(): Promise<void> {
       version: "2",
       run: {
         tests: true,
+        "build-tags": tags,
         "modules-download-mode": "readonly",
         "relative-path-mode": "wd",
         "issues-exit-code": 1,

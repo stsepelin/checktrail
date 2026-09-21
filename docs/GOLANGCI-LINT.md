@@ -14,8 +14,8 @@ linters:
   enable: [govet, staticcheck, unused]
 ```
 
-Other linters, nonempty custom settings, formatters and Go build-version/tag
-profiles are incomplete until separately verified. This is deliberately a
+Other linters, nonempty custom settings, formatters and Go version/tag overrides
+in `.golangci.*` are incomplete until separately verified. This is deliberately a
 constrained profile, not support for every golangci-lint configuration. YAML
 duplicates, unsupported tags and excessive aliases are rejected. Planning only
 discovers the local config and source; parsing/native execution occurs with trust.
@@ -27,6 +27,9 @@ read-only module resolution, absolute JSON locations and no extra output files.
 Output and native analyzer cache use a fresh temporary directory, removed after
 normal completion. Existing project config and output paths are not rewritten.
 Native Go source accounting follows [the shared contract](GO-SCOPE.md).
+The source checkout adds unreleased [Checktrail build-tag profiles](GO-BUILD.md).
+Those tags are passed to both package listing and the generated native config;
+`.golangci.*` still cannot supply a separate `run.build-tags` setting.
 
 Native `nolint` and Staticcheck ignore directives are currently unsupported and
 make the check incomplete. The wrapper scans Go comment boundaries, including

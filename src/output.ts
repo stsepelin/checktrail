@@ -27,6 +27,7 @@ export function projectPlan(
     excludedCount: plan.excluded.length,
     checks: plan.checks.map((check) => ({
       id: check.id,
+      ...(check.goBuild ? { goBuildTagCount: check.goBuild.tags.length } : {}),
       ...(check.goScope
         ? { goExcludedFileCount: check.goScope.excludedFiles.length }
         : {}),
@@ -52,6 +53,7 @@ export function projectReport(
     sourceError: report.sourceError,
     checks: report.checks.map((check) => ({
       id: check.id,
+      ...(check.goBuild ? { goBuildTagCount: check.goBuild.tags.length } : {}),
       ...(check.goScope
         ? { goExcludedFileCount: check.goScope.excludedFiles.length }
         : {}),

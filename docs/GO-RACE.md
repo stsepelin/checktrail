@@ -13,7 +13,9 @@ updates must pass and yield the exact combined count. A passing run cannot
 establish freedom from races on paths it did not execute. Native package/file evidence makes undeclared excluded source and untested packages
 incomplete; see [Go scope](GO-SCOPE.md) for the explicit exclusion policy available since alpha.4.
 Alpha.4 also passes `-race` to package listing so it uses the same build
-constraints as the tests. A build/OS matrix is not implemented.
+constraints as the tests. The source checkout adds unreleased
+[per-check build-tag profiles](GO-BUILD.md), allowing race and ordinary tests to
+use different tags and exclusions. A build/OS matrix is not implemented.
 
 A supported Go race platform and C compiler are required. Compilation and runtime
 errors are retained in detailed output; no compiler, library or toolchain is

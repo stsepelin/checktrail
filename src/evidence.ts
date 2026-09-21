@@ -195,6 +195,7 @@ export function evaluate(
 ): CheckResult {
   const result: CheckResult = {
     ...(check.goScope ? { goScope: check.goScope } : {}),
+    ...(check.goBuild ? { goBuild: check.goBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
     id: check.id,
     adapter: check.adapter,

@@ -255,6 +255,34 @@
     {
       "file": "dist/test/go-race.test.js",
       "name": "native Go race scope uses race build constraints and rejects stale exclusions"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "Go build planning is data-only and binds every native command while preserving formatting and summary privacy"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "Go build policy rejects ambiguous assignments, unsafe tags, invalid exclusions and nonregular policies before execution"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "native Go build tags expose tagged failures and preserve exclusion, test-count and missing-profile accounting"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "native Go ordinary and race checks use independent tags and exclusions"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "native go.staticcheck build profiles analyze tagged source and retain diagnostics"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "native go.golangci-lint build profiles analyze tagged source and retain diagnostics"
+    },
+    {
+      "file": "dist/test/go-build.test.js",
+      "name": "Go build profiles agree through CLI and MCP without disclosing tags or granting trust"
     }
   ],
   "php-tools": [

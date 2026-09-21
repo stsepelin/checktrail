@@ -1,3 +1,5 @@
+import { goBuildSelectionSchema } from "./go-build.js";
+export { goBuildPolicySchema } from "./go-build.js";
 import { goScopePolicySchema } from "./go-scope-policy.js";
 export { goScopePolicySchema } from "./go-scope-policy.js";
 import { externalIdentitySchema } from "./external-adapter.js";
@@ -150,6 +152,7 @@ export const reportSchema = z.strictObject({
       project: z.string(),
       scope: strings,
       goScope: goScopePolicySchema.optional(),
+      goBuild: goBuildSelectionSchema.optional(),
       status,
       reason: z.string(),
       processes: z.array(processResult),
@@ -199,6 +202,7 @@ export const reportSummarySchema = z.strictObject({
       status,
       tests: tests.optional(),
       goExcludedFileCount: count.optional(),
+      goBuildTagCount: count.optional(),
     }),
   ),
 });
@@ -226,6 +230,7 @@ export const planSchema = z.strictObject({
       project: z.string(),
       scope: strings,
       goScope: goScopePolicySchema.optional(),
+      goBuild: goBuildSelectionSchema.optional(),
       kind,
       parser: z.enum(PARSERS),
       commands: z.array(command),
@@ -249,6 +254,7 @@ export const planSummarySchema = z.strictObject({
       kind,
       ready: z.boolean(),
       goExcludedFileCount: count.optional(),
+      goBuildTagCount: count.optional(),
     }),
   ),
 });

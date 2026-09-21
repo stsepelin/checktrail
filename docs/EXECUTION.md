@@ -21,6 +21,13 @@ an unavailable runtime or external service does not count as verification.
 
 ## M2
 
+- Implemented, unreleased: named per-check Go build-tag profiles with independent
+  exclusions, matching listing/execution settings, unchanged formatting scope,
+  strict missing/ambiguous assignment handling and summary privacy. Native
+  Go/Staticcheck/golangci-lint cases and CLI/library/MCP replay cover the selected
+  configuration; repeated-check and cross-target matrices remain pending.
+  See `GO-BUILD.md` and `examples/go-build`.
+
 - Implemented: explicit local TypeScript and ESLint adapters with file accounting.
 - Implemented: TypeScript project-reference solution validation using fresh
   in-memory declarations, source accounting and normalized compiler diagnostics.

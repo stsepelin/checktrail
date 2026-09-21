@@ -13,6 +13,13 @@ The GitHub alpha.4 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
+## Unreleased changes
+
+- [Go build-tag profiles](GO-BUILD.md): each selected native check can use its own
+  named tags and exclusions. Listing and execution agree, formatting remains
+  whole-inventory, and missing or ambiguous assignments are unavailable. Each
+  check runs once; repeating checks across a target matrix is not implemented.
+
 ## Alpha.4 release
 
 The [release record](measurements/release-alpha4.json) ties the published artifact
@@ -536,10 +543,10 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
-1. Add explicit Go build-tag profiles with scope accounting for each selected
-   configuration. Prove active, excluded and stale-file behavior on native runs
-   before adding a target matrix. Alpha.4's exclusions do not validate those targets;
-   see `GO-SCOPE.md`.
+1. Extend the unreleased per-check [Go build-tag profiles](GO-BUILD.md) toward
+   repeated-check and target matrices only after their identities, aggregation
+   and native target evidence are defined. Existing profiles validate only each
+   selected check's configuration.
 2. Integrate standard MCP Tasks after a compatible SDK passes the routing probe.
    Then verify negotiation, ordinary-call fallback, worker/store integration,
    cancellation, restart and privacy together; see `MCP-COMPATIBILITY.md`.

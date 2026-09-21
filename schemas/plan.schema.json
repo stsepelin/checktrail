@@ -127,6 +127,27 @@
             "required": ["schemaVersion", "excludedFiles"],
             "additionalProperties": false
           },
+          "goBuild": {
+            "type": "object",
+            "properties": {
+              "profile": {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "tags": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                }
+              }
+            },
+            "required": ["profile", "tags"],
+            "additionalProperties": false
+          },
           "kind": {
             "type": "string",
             "enum": ["format", "analysis", "test", "syntax", "unsupported"]

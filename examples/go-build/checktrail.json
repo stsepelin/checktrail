@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "path": ".",
+      "checks": ["go.format", "go.vet", "go.test", "go.test-race"]
+    }
+  ]
+}

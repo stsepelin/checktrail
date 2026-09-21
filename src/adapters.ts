@@ -1,3 +1,4 @@
+import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
@@ -401,6 +402,7 @@ export async function checksFor(
       });
     if (explicit) checks.push(await golangciCheck(source, project));
     await applyGoScopePolicy(source, project, checks);
+    await applyGoBuildPolicy(source, project, checks);
     return checks;
   }
   if (project.adapter === "infrastructure") {
