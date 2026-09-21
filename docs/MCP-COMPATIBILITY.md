@@ -46,6 +46,12 @@ extension handlers run. This was reproduced locally; `tasks/update` reaches its
 handler in the same probe. Upstream tracks the method-registry collision in
 [typescript-sdk#2598](https://github.com/modelcontextprotocol/typescript-sdk/issues/2598).
 
+Rechecked on 2026-09-21: npm's latest server/client SDK versions are still 2.0.0,
+the local probe still returns `-32601` for get/cancel and reaches update, and the
+[proposed upstream fix](https://github.com/modelcontextprotocol/typescript-sdk/pull/2599)
+remains open. The package retains its pinned SDK; no transport interception or
+protocol workaround is introduced.
+
 Run `npm run probe:mcp-tasks` from the source checkout to repeat the routing probe. Exit `2` means one or
 more handlers were unreachable; exit `0` means routing works. A routing success
 does not establish Tasks conformance. The probe is separate from the ordinary

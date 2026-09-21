@@ -124,9 +124,7 @@ async function identity() {
 }
 const before = await identity();
 const startedAt = new Date().toISOString();
-const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-evaluation-"),
-);
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-evaluation-"));
 const observations = [];
 async function execute(root, executable, args) {
   const start = performance.now();

@@ -27,16 +27,16 @@ export async function djangoCheck(
     reason:
       "Load explicit Django test settings, run native application setup, and inventory supported URL patterns including nested resolvers.",
   };
-  if (!project.files.includes("repo-verifier.django.json")) {
+  if (!project.files.includes("checktrail.django.json")) {
     check.unavailableReason =
-      "Django route validation requires an explicit repo-verifier.django.json profile.";
+      "Django route validation requires an explicit checktrail.django.json profile.";
     return check;
   }
   const config = djangoConfigSchema.parse(
     JSON.parse(
       await readProjectFile(
         source.root,
-        path.posix.join(project.path, "repo-verifier.django.json"),
+        path.posix.join(project.path, "checktrail.django.json"),
       ),
     ),
   );

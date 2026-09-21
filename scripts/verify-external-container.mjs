@@ -11,7 +11,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 const image = execFileSync(
   "docker",
-  ["image", "inspect", "repo-verifier-external-test:1", "--format", "{{.Id}}"],
+  ["image", "inspect", "checktrail-external-test:1", "--format", "{{.Id}}"],
   { encoding: "utf8" },
 ).trim();
 assert.match(image, /^sha256:[a-f0-9]{64}$/);
@@ -84,7 +84,7 @@ const reference = {
 const option = `${bundle}#sha256=${reference.sha256}`;
 
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-external-package-"),
+  path.join(tmpdir(), "checktrail-external-package-"),
 );
 let client;
 let nodeContainer;
@@ -176,15 +176,14 @@ try {
         "node",
         "--input-type=module",
         "-e",
-        `import {validate} from "@stsepelin/repo-verifier"; console.log(JSON.stringify(await validate("/workspace/examples/external-adapter/project", {trusted: true, externalAdapters: [${JSON.stringify(reference)}]})));`,
+        `import {validate} from "@stsepelin/checktrail"; console.log(JSON.stringify(await validate("/workspace/examples/external-adapter/project", {trusted: true, externalAdapters: [${JSON.stringify(reference)}]})));`,
       ],
       { encoding: "utf8" },
     ),
   );
   assert.equal(library.outcome, "passed", JSON.stringify(library.checks));
   assert.equal(library.checks[0].id, "external.example-lines.whitespace");
-  const binary =
-    "/consumer/node_modules/@stsepelin/repo-verifier/dist/src/cli.js";
+  const binary = "/consumer/node_modules/@stsepelin/checktrail/dist/src/cli.js";
   const cli = JSON.parse(
     execFileSync(
       "docker",
@@ -211,7 +210,7 @@ try {
         "--mount",
         `type=bind,src=${node},target=/usr/local/bin/node,readonly`,
         "--env",
-        "REPO_VERIFIER_TEST_PACKAGE=/consumer/node_modules/@stsepelin/repo-verifier",
+        "CHECKTRAIL_TEST_PACKAGE=/consumer/node_modules/@stsepelin/checktrail",
         phpImage,
         "node",
         "--test",

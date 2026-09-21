@@ -59,7 +59,7 @@ Playwright 1.63.0 and its Chromium headless shell revision 1243.
 Prepare development browsers explicitly after installing the locked npm tools:
 
 ```sh
-PLAYWRIGHT_BROWSERS_PATH=.repo-verifier/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell
+PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell
 npm run build
 node --test dist/test/playwright.test.js
 ```

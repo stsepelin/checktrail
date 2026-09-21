@@ -186,7 +186,7 @@ test("baseline failures, skipped tests, nested tests and source-changing tests s
 
 test("mutation cancellation removes the temporary copy and never reports unrun trials as survivors", async (t) => {
   const { root, recipe } = await example(t);
-  const probe = path.join(root, ".repo-verifier/started");
+  const probe = path.join(root, ".checktrail/started");
   await mkdir(path.dirname(probe));
   await writeFile(
     path.join(root, "quantity.test.js"),
@@ -232,7 +232,7 @@ test("mutation profile rejects extra projects, dependencies and unrelated requir
   );
   await writeFile(path.join(root, "package.json"), JSON.stringify(manifest));
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -247,7 +247,7 @@ test("mutation profile rejects extra projects, dependencies and unrelated requir
     runMutations(root, recipe, { trusted: true }),
     /one root/,
   );
-  await rm(path.join(root, "repo-verifier.json"));
+  await rm(path.join(root, "checktrail.json"));
   await mkdir(path.join(root, "nested"));
   await writeFile(
     path.join(root, "nested/package.json"),

@@ -2,7 +2,7 @@
 
 Prepare the pinned Python dependencies from
 `scripts/framework-tools.requirements.txt` in an isolated Python 3.12 environment
-and build Repo Verifier from the checkout. These examples use no database or
+and build Checktrail from the checkout. These examples use no database or
 network service.
 
 ```sh

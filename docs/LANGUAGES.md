@@ -1,5 +1,9 @@
 # Language and ecosystem roadmap
 
+The [setup guide](ONBOARDING.md) describes conservative
+per-language configuration proposals and static tool diagnosis. Setup does not
+extend the execution capabilities or native evidence listed below.
+
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,
@@ -23,6 +27,10 @@ has been verified separately in an isolated official Linux container. Tool versi
 Nuxt, Vue Router, FastAPI, Django and Laravel profiles have separately pinned framework compatibility gates
 and capture only their documented native assembly projections; see `FASTAPI.md`,
 `DJANGO.md`, `LARAVEL.md`, `VUE-ROUTER.md` and `NUXT.md`.
+
+Pint's macOS hosted check exposed a non-seekable cache-file failure. The adapter
+now uses a fresh regular file with runner-owned cleanup; the corrected macOS
+profile passed at `52ba415`. See `PINT.md` and `NATIVE-CI.md`.
 
 ## Adapter contract
 
@@ -101,9 +109,28 @@ preservation by the wrapper.
 
 Ruby and Swift have dedicated CI definitions that require their named native
 regressions to pass. Their local execution is recorded in `RUBY.md` and `SWIFT.md`;
-hosted results remain pending. Other optional tests in the general suite can still
+both hosted jobs passed at `52ba415` (see `NATIVE-CI.md`). Other optional tests in the general suite can still
 skip, so its aggregate pass count is not evidence for every native profile.
 
 The prepared CI language profiles and native container helpers require exact
 regression names through `NATIVE-CI.md`. Their required results are separate from
 the optional skips allowed by a developer's general test suite.
+
+[Public adoption measurements](PUBLIC-ADOPTION.md) record alpha.2 on pinned
+JavaScript, TypeScript, Python, Go and PHP libraries. TypeScript 4.9.5 rejects
+alpha.2's `--noCheck` option; that published artifact does not support this profile.
+Go platform exclusions remain inconclusive even when native tests exit zero.
+
+The alpha.3 [TypeScript compatibility fix](TYPESCRIPT.md) exercises plain
+TypeScript 4.9.5 and 6.0.3 using native capability-aware arguments. Published
+alpha.2 retains the recorded older-compiler limitation; Vue and solution-build
+profiles retain their separately verified versions.
+
+Alpha.4 adds a [Go scope policy](GO-SCOPE.md) for exact,
+native-confirmed ignored files. It retains unverified exclusions in reports and
+does not claim a build matrix or add custom build-tag execution. Published alpha.3
+keeps the original strict exclusion behavior.
+
+The source checkout adds unreleased [Go build-tag profiles](GO-BUILD.md) for
+per-check tags and exclusions across vet, tests, race tests, Staticcheck and
+golangci-lint. This is one configuration per selected check, not a target matrix.

@@ -1,23 +1,28 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.stsepelin/repo-verifier",
-  "title": "Repo Verifier",
+  "name": "io.github.stsepelin/checktrail",
+  "title": "Checktrail",
   "description": "Local code validation with explicit execution trust and evidence of what actually ran.",
-  "version": "0.1.0-dev.0",
+  "version": "0.1.0-alpha.4",
   "repository": {
-    "url": "https://github.com/stsepelin/repo-verifier",
+    "url": "https://github.com/stsepelin/checktrail",
     "source": "github"
   },
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "@stsepelin/repo-verifier",
-      "version": "0.1.0-dev.0",
+      "identifier": "@stsepelin/checktrail",
+      "version": "0.1.0-alpha.4",
       "runtimeHint": "npx",
-      "transport": { "type": "stdio" },
+      "transport": {
+        "type": "stdio"
+      },
       "packageArguments": [
-        { "type": "positional", "value": "serve" },
+        {
+          "type": "positional",
+          "value": "serve"
+        },
         {
           "type": "named",
           "name": "--root",
@@ -36,7 +41,7 @@
   ],
   "_meta": {
     "io.modelcontextprotocol.registry/publisher-provided": {
-      "releaseStatus": "unpublished-development-candidate"
+      "releaseStatus": "preview"
     }
   }
 }

@@ -170,7 +170,7 @@ export async function fetchPolicyPack(
     throw new Error("Downloaded policy pack is not valid UTF-8 policy JSON");
   }
   if (signal?.aborted) throw new Error("Policy pack download cancelled");
-  const temporary = await mkdtemp(path.join(parent, ".repo-verifier-pack-"));
+  const temporary = await mkdtemp(path.join(parent, ".checktrail-pack-"));
   try {
     const staged = path.join(temporary, "pack.json");
     const handle = await open(staged, "wx", 0o600);

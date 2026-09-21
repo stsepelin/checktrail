@@ -21,6 +21,13 @@ an unavailable runtime or external service does not count as verification.
 
 ## M2
 
+- Implemented, unreleased: named per-check Go build-tag profiles with independent
+  exclusions, matching listing/execution settings, unchanged formatting scope,
+  strict missing/ambiguous assignment handling and summary privacy. Native
+  Go/Staticcheck/golangci-lint cases and CLI/library/MCP replay cover the selected
+  configuration; repeated-check and cross-target matrices remain pending.
+  See `GO-BUILD.md` and `examples/go-build`.
+
 - Implemented: explicit local TypeScript and ESLint adapters with file accounting.
 - Implemented: TypeScript project-reference solution validation using fresh
   in-memory declarations, source accounting and normalized compiler diagnostics.
@@ -231,7 +238,8 @@ names, rather than accepting a successful suite that skipped native work. Local
 Ruby/Linux/Node 22 and Swift/macOS execution pass. Runner regressions reject
 missing names, wrong-file names, skips, TODOs, duplicate names, suite-only matches
 and unrelated failures. Removing the missing-test rejection fails the named
-regression. This strengthens CI definitions; hosted CI is still unrun.
+regression. These profiles subsequently passed hosted CI at `52ba415`; see
+`NATIVE-CI.md` for the complete workflow evidence.
 
 The same exact-name gate now covers the prepared CI core, JavaScript, Python,
 Go, PHP, framework and Rust profiles, plus the Clang, Java, C#, actionlint,

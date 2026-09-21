@@ -1,6 +1,6 @@
 # Project environments
 
-A project may declare required environment variable names in `repo-verifier.json`:
+A project may declare required environment variable names in `checktrail.json`:
 
 ```json
 {
@@ -19,9 +19,9 @@ The declaration does not grant access. The CLI operator must name each permitted
 variable, whose value is read from the CLI's environment:
 
 ```sh
-repo-verifier plan --root /path/to/project --allow-env APP_ENV --allow-env DATABASE_URL
-repo-verifier run --root /path/to/project --trust-project --allow-env APP_ENV --allow-env DATABASE_URL
-repo-verifier serve --root /path/to/project --allow-execution --allow-env APP_ENV --allow-env DATABASE_URL
+checktrail plan --root /path/to/project --allow-env APP_ENV --allow-env DATABASE_URL
+checktrail run --root /path/to/project --trust-project --allow-env APP_ENV --allow-env DATABASE_URL
+checktrail serve --root /path/to/project --allow-execution --allow-env APP_ENV --allow-env DATABASE_URL
 ```
 
 The library accepts an explicit `environment` record in `createPlan` and

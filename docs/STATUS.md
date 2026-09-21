@@ -1,16 +1,54 @@
 # Implementation status
 
-This is a local experimental foundation, not a published release. The intended
-repository/package namespace is `stsepelin/repo-verifier` /
-`@stsepelin/repo-verifier`. No GitHub repository, package publication, CI run or
-client installation is implied by the metadata in this checkout.
+This is an experimental foundation with public source at
+[stsepelin/checktrail](https://github.com/stsepelin/checktrail).
+Check the [installation guide](INSTALLATION.md) for package availability and setup.
+The `0.1.0-alpha.4` preview is published on npm and active in the MCP Registry.
+The [hosted run at ebe7f5c](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+passed all jobs. The published tarball matched the reviewed artifact; fresh
+registry installation, CLI/library validation, generated npx startup and MCP
+execution/trust behavior were verified. Earlier toolchain evidence remains in
+`NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
+The GitHub alpha.4 prerelease includes the verified artifact and checksum.
+[Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
+coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
+
+## Unreleased changes
+
+- [Go build-tag profiles](GO-BUILD.md): each selected native check can use its own
+  named tags and exclusions. Listing and execution agree, formatting remains
+  whole-inventory, and missing or ambiguous assignments are unavailable. Each
+  check runs once; repeating checks across a target matrix is not implemented.
+
+## Alpha.4 release
+
+The [release record](measurements/release-alpha4.json) ties the published artifact
+to hosted CI, fresh installation, client profiles and upgrade/rollback checks.
+
+- [Go scope policy](GO-SCOPE.md): exact per-file declarations can acknowledge
+  native build-constraint exclusions. Go must confirm every exemption; stale
+  declarations and other omissions remain incomplete. Detailed reports retain
+  reasons and summaries show counts. Formatting still covers all source. Race
+  package listing now uses the same `-race` constraints as execution.
+
+## Alpha.3 release
+
+- [TypeScript compatibility](TYPESCRIPT.md): plain typechecking now passes the
+  native 4.9.5 regression while retaining the 6.0.3 `noCheck` override and native
+  file accounting. A packed CLI/library/MCP replay fixes the recorded mitt case.
+  Published alpha.2 and its immutable adoption record retain the original failure.
 
 ## Implemented
 
+- Alpha.2: conservative multi-language `init`, execution-free `doctor`,
+  and version-pinned MCP configuration output for Codex, Claude Code/Desktop,
+  Cursor and VS Code. Existing files are preserved. See [ONBOARDING.md](ONBOARDING.md)
+  for scope, ambiguity handling and package upgrade/rollback verification.
+
 - Exact required-test accounting across prepared CI language profiles and native
   container helpers, including dedicated Ruby/Swift jobs. Skipped, missing,
-  duplicate, TODO or failing cases cannot satisfy these profiles. Hosted execution
-  remains pending; see `NATIVE-CI.md` for the distinction from optional local tests.
+  duplicate, TODO or failing cases cannot satisfy these profiles. Hosted profiles
+  passed at `52ba415`; see `NATIVE-CI.md` for the distinction from optional local tests.
 
 - External Ruff integration evaluation against pinned upstream Python fixtures and
   snapshots, with native/verifier location comparisons on macOS/Linux and explicit
@@ -121,7 +159,7 @@ lifecycle regression now accounts for later awaited render hooks; cancellation
 was tested against an observed live startup and verified temporary-directory
 removal. The profile covers selected SSR requests, not browser hydration, every
 route parameter or production equivalence. See `NUXT.md` for reproduction and limits.
-Hosted CI remains unrun.
+The hosted Nuxt job passed at `52ba415`; see `NATIVE-CI.md`.
 
 ## Vue Router testing assembly
 
@@ -144,10 +182,10 @@ a general speedup/graph-completeness claim.
 
 ## Release preparation
 
-`server.json` and npm `mcpName` describe an unpublished development candidate.
-The metadata passed the pinned official registry schema; a native SDK-client test
-starts its command and verifies execution remains disabled. This does not establish
-registry acceptance, namespace ownership, hosted CI or publication. See `RELEASE.md`.
+`server.json`, the npm package and the engine identify the published
+`0.1.0-alpha.4` preview. Its source commit passed hosted CI, the published tarball
+matched the reviewed artifact, and fresh CLI/library/MCP installation checks passed.
+Publication evidence and the sequence for future releases are in `RELEASE.md`.
 
 ## Pinned pack distribution
 
@@ -168,7 +206,8 @@ Python 3.12.13, Go 1.26.5 and PHP 8.5.6 with networking disabled. Fresh offline
 package installation passed through the library, CLI and MCP using the public
 Node example. These runs verify the protocol and fixtures, not arbitrary plugins.
 See `EXTERNAL-ADAPTERS.md` for reproducible commands and trust limitations.
-The dedicated CI job is defined but has not run on a hosted runner.
+The hosted job passed native and installed-package checks at `52ba415`;
+see `NATIVE-CI.md`.
 
 ## Verification and boundaries
 
@@ -201,8 +240,8 @@ Node's implicit passing result for an empty file is explicitly rejected using
 file-level summary events.
 
 The CI definition targets Node 22/24/26 on Linux and Node 24 on macOS, with Python,
-Go and PHP provisioned and preflighted. That is intended coverage; hosted CI has
-not run. Windows process execution is explicitly unsupported.
+Go and PHP provisioned and preflighted. The full matrix passed at `52ba415`;
+see `NATIVE-CI.md`. Windows process execution is explicitly unsupported.
 
 The SDK package version alone did not establish modern protocol serving. Tests
 pinning 2026-07-28 initially rejected the legacy-only connection entry point. The
@@ -428,7 +467,7 @@ See `CLANG.md`; linking, code generation and test execution are not covered.
 A fresh offline package install also passes this profile through library, CLI and
 MCP on the verified macOS compiler. Removing the source-coverage reconciliation
 made the omitted-source native regression fail; the original build was restored.
-The dedicated container CI job is configured but has not run on a hosted runner.
+The dedicated Clang container job passed in the first hosted run; see `NATIVE-CI.md`.
 
 The Java classpath profile is verified with Temurin JDK 25.0.4+7 on arm64 Linux.
 Native fixtures cover public records, a type-error/fix pair, release mismatches,
@@ -442,7 +481,8 @@ Fresh offline package installation passed the Java public library, CLI and MCP
 checks. Removing the declared-type analysis guard made the native missing-analysis
 regression fail; the original implementation was restored and native verification
 rerun. `scripts/verify-java-container.mjs` reproduces both native and packaged checks.
-The hosted amd64 job is configured but has not run; macOS has no prepared JDK.
+The hosted amd64 job passed at `52ba415`; macOS has no prepared JDK.
+See `NATIVE-CI.md`.
 This is Java compilation under explicit settings, not Maven/Gradle, Kotlin/Scala,
 JPMS, application tests or annotation-processor support. See `JAVA.md`.
 
@@ -466,7 +506,7 @@ fail. Removing the assembly-file guard produced a false pass using an unpinned
 `.netmodule`; the regression caught it. Both guards were restored. Fresh offline
 installation passed the C# library, CLI and MCP checks. Reproduce native and
 packaged verification with `scripts/verify-dotnet-container.mjs`. The hosted
-amd64 job is configured but unrun; see `DOTNET.md` for compilation limits and
+amd64 job passed at `52ba415`; see `DOTNET.md` for compilation limits and
 unsupported build, language and test profiles.
 
 ## GitHub Actions workflow verification
@@ -481,8 +521,8 @@ the accounting regression caught that false pass. The guard was restored.
 The explicitly prepared Linux image verifies its downloaded release archive's
 SHA-256 digest. Network-disabled runs with read-only repository and consumer
 mounts passed native tests and a fresh offline-installed package's library, CLI
-and MCP surfaces. The hosted amd64 job is configured but has not run. See
-`ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
+and MCP surfaces. The hosted amd64 job passed at `52ba415`; see `NATIVE-CI.md`.
+See `ACTIONLINT.md` and `scripts/verify-actionlint-container.mjs` for reproduction and
 profile limits. Other infrastructure tools remain unsupported.
 
 ## Development evaluation
@@ -503,15 +543,23 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
-1. Broaden runtime matrices and native PHP tooling.
-2. Framework-specific scope and integration contracts.
-3. Framework integration and additional verified linter profiles.
-4. Additional ecosystem adapters and their native evidence.
-5. Semantic framework rules and native runtime collectors. Public check profiles,
-   finding ratchets and local private policy overlays are implemented; existing
-   private instruction files have not been migrated.
-6. Durable Tasks support after a compatible SDK passes the routing probe; the
-   lifecycle and persistence acceptance gates are in `MCP-COMPATIBILITY.md`.
+1. Extend the unreleased per-check [Go build-tag profiles](GO-BUILD.md) toward
+   repeated-check and target matrices only after their identities, aggregation
+   and native target evidence are defined. Existing profiles validate only each
+   selected check's configuration.
+2. Integrate standard MCP Tasks after a compatible SDK passes the routing probe.
+   Then verify negotiation, ordinary-call fallback, worker/store integration,
+   cancellation, restart and privacy together; see `MCP-COMPATIBILITY.md`.
+3. Extend independently authored evaluation cohorts to further implemented
+   language/rule families. Preserve frozen evidence and separate known-case
+   replays from independent measurements; see `ACCEPTANCE.md`.
+4. Broaden runtime/tool versions, framework contracts and native collectors only
+   with their own broken/fixed/near-miss evidence and required CI profiles;
+   see `LANGUAGES.md` and `NATIVE-CI.md`.
+5. Resolve the baseline, labeled public cases and adjudication for the planned
+   prior-workflow comparison; see `PRIOR-WORKFLOW-EVALUATION.md`. Existing private
+   instruction files have not been migrated, and publication does not establish
+   equal-or-better review quality.
 
 Complete dependency/tool/environment fingerprints, automatically inferred workspace graphs,
 remote/executable private plugins, native import-graph collection, remote serving, durable Tasks,

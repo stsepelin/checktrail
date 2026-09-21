@@ -37,7 +37,7 @@ for (const [framework, distribution, version, field, broken] of [
       );
       const passed = await validate(root, { trusted: true });
       assert.equal(passed.outcome, "passed", JSON.stringify(passed.checks));
-      const filename = path.join(root, `repo-verifier.${framework}.json`);
+      const filename = path.join(root, `checktrail.${framework}.json`);
       const profile = JSON.parse(await readFile(filename, "utf8"));
       profile[field!] = broken;
       await writeFile(filename, JSON.stringify(profile));

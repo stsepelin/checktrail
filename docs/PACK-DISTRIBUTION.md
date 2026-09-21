@@ -6,7 +6,7 @@ trusted SHA-256 digest and validates the policy before making a local file
 available. Planning, validation and MCP do not download packs automatically.
 
 ```sh
-repo-verifier fetch-pack --root /path/to/project \
+checktrail fetch-pack --root /path/to/project \
   --url https://policies.example.org/checks/core-1.0.0.json \
   --sha256 REPLACE_WITH_TRUSTED_64_CHARACTER_SHA256 \
   --output policies/core-1.0.0.json
@@ -16,13 +16,13 @@ This fictional URL and digest placeholder must be replaced. The parent directory
 must already exist under the selected root. The destination must be a normalized
 relative `.json` path; symbolic-link directories and existing destinations are
 rejected. The command returns pack identity, byte count and a `reference` object
-that can be added to a project's `packs` array in `repo-verifier.json`. It does not
+that can be added to a project's `packs` array in `checktrail.json`. It does not
 edit project policy or activate the downloaded checks.
 
 Library consumers can call:
 
 ```js
-import { fetchPolicyPack } from "@stsepelin/repo-verifier";
+import { fetchPolicyPack } from "@stsepelin/checktrail";
 
 const downloaded = await fetchPolicyPack(projectRoot, {
   url: endpoint,

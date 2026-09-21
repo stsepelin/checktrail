@@ -6,9 +6,9 @@ reconciliation; `validationOutcome` retains native validation. A comparison can
 pass while native analysis still fails on explicitly accepted findings.
 
 ```sh
-repo-verifier create-baseline --root /path/to/project --input report.json \
+checktrail create-baseline --root /path/to/project --input report.json \
   --owner maintainer --reason "Tracked compatibility work" --detailed > baseline.json
-repo-verifier compare-findings --root /path/to/project --input report.json \
+checktrail compare-findings --root /path/to/project --input report.json \
   --baseline baseline.json --previous-baseline prior-baseline.json
 ```
 

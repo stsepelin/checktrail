@@ -54,36 +54,41 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .repo-verifier/go-tools/bin
-          GOBIN="$PWD/.repo-verifier/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .repo-verifier/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.repo-verifier/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .repo-verifier/go-tools/bin/golangci-lint version --short
+          mkdir -p .checktrail/go-tools/bin
+          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
+          .checktrail/go-tools/bin/staticcheck -version
+          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          .checktrail/go-tools/bin/golangci-lint version --short
       - name: Prepare locked PHP test tools
         run: |
-          mkdir -p .repo-verifier/php-tools
-          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .repo-verifier/php-tools/
-          composer install --working-dir=.repo-verifier/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
+          mkdir -p .checktrail/php-tools
+          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
+          composer install --working-dir=.checktrail/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
       - name: Prepare locked Laravel runtime fixtures
         run: |
-          mkdir -p .repo-verifier/laravel-tools
-          cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .repo-verifier/laravel-tools/
-          composer install --working-dir=.repo-verifier/laravel-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+          mkdir -p .checktrail/laravel-tools
+          cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .checktrail/laravel-tools/
+          composer install --working-dir=.checktrail/laravel-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
       - run: python3 -m pip install -r scripts/python-tools.requirements.txt
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
       - run: npm ci --ignore-scripts
+      - name: Prepare locked legacy TypeScript compiler
+        run: |
+          mkdir -p .checktrail/typescript-legacy-tools
+          cp scripts/typescript-legacy-tools/package.json scripts/typescript-legacy-tools/package-lock.json .checktrail/typescript-legacy-tools/
+          npm ci --prefix .checktrail/typescript-legacy-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare locked Vue Router fixtures
         run: |
-          mkdir -p .repo-verifier/vue-router-tools
-          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
-          npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+          mkdir -p .checktrail/vue-router-tools
+          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
+          npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare locked Nuxt fixtures
         run: |
-          mkdir -p .repo-verifier/nuxt-tools
-          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
-          npm ci --prefix .repo-verifier/nuxt-tools --ignore-scripts --no-audit --no-fund
+          mkdir -p .checktrail/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
+          npm ci --prefix .checktrail/nuxt-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare pinned Chromium for native browser fixtures
-        run: PLAYWRIGHT_BROWSERS_PATH=.repo-verifier/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
+        run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run check
       - name: Require prepared native regression profiles
         run: |
@@ -97,6 +102,8 @@ jobs:
           node scripts/verify-required-native-tests.mjs rust
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/smoke-package.mjs
       - name: Verify review exchange in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
@@ -119,7 +126,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned Clang fixture
-        run: docker build --file scripts/clang-tools.Dockerfile --tag repo-verifier-clang-test:22.1.3 scripts
+        run: docker build --file scripts/clang-tools.Dockerfile --tag checktrail-clang-test:22.1.3 scripts
       - run: node scripts/verify-clang-container.mjs
 
   java:
@@ -136,7 +143,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned Java fixture
-        run: docker build --file scripts/java-tools.Dockerfile --tag repo-verifier-java-test:25.0.4 scripts
+        run: docker build --file scripts/java-tools.Dockerfile --tag checktrail-java-test:25.0.4 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-java-container.mjs
 
   dotnet:
@@ -153,7 +162,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned C# fixture
-        run: docker build --file scripts/dotnet-tools.Dockerfile --tag repo-verifier-dotnet-test:10.0.401 scripts
+        run: docker build --file scripts/dotnet-tools.Dockerfile --tag checktrail-dotnet-test:10.0.401 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-dotnet-container.mjs
 
   actionlint:
@@ -170,7 +181,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned workflow checker
-        run: docker build --file scripts/actionlint-tools.Dockerfile --tag repo-verifier-actionlint-test:1.7.12 scripts
+        run: docker build --file scripts/actionlint-tools.Dockerfile --tag checktrail-actionlint-test:1.7.12 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-actionlint-container.mjs
 
   external-adapters:
@@ -187,7 +200,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare pinned external adapter runtimes
-        run: docker build --file scripts/external-tools.Dockerfile --tag repo-verifier-external-test:1 scripts
+        run: docker build --file scripts/external-tools.Dockerfile --tag checktrail-external-test:1 scripts
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-external-container.mjs
 
   vue-router:
@@ -205,9 +220,11 @@ jobs:
       - run: npm run build
       - name: Prepare locked Vue Router fixtures
         run: |
-          mkdir -p .repo-verifier/vue-router-tools
-          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
-          npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+          mkdir -p .checktrail/vue-router-tools
+          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
+          npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-vue-router-container.mjs
 
   nuxt:
@@ -225,9 +242,11 @@ jobs:
       - run: npm run build
       - name: Prepare locked Nuxt fixtures for the container runtime
         run: |
-          mkdir -p .repo-verifier/nuxt-tools
-          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
-          docker run --rm --mount "type=bind,src=$PWD/.repo-verifier/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          mkdir -p .checktrail/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-nuxt-container.mjs
 
   ruby:

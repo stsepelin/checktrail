@@ -12,7 +12,7 @@ const image = execFileSync(
 ).trim();
 if (!/^sha256:[a-f0-9]{64}$/.test(image))
   throw new Error("Expected an installed PHP image digest");
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-php-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-php-"));
 try {
   const shim = path.join(temporary, "php");
   await writeFile(

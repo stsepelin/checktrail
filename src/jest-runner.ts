@@ -15,7 +15,7 @@ async function main(): Promise<void> {
     paths.push(await withinRoot(root, path.relative(root, path.resolve(file))));
   const { results } = await runCLI(
     {
-      $0: "repo-verifier",
+      $0: "checktrail",
       _: paths,
       ci: true,
       runInBand: true,

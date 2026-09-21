@@ -36,7 +36,7 @@ test("pinned data-only packs require exact bytes and registered checks without e
     "package.json": nodeManifest,
     "value.test.js": passingTest,
     "policy.json": contents,
-    "repo-verifier.json": encode(config([], [reference(contents)])),
+    "checktrail.json": encode(config([], [reference(contents)])),
   });
   const plan = (await createPlan(root)).plan;
   assert.deepEqual(
@@ -63,7 +63,7 @@ test("pinned data-only packs require exact bytes and registered checks without e
     const value = encode(invalid);
     await writeFile(path.join(root, "policy.json"), value);
     await writeFile(
-      path.join(root, "repo-verifier.json"),
+      path.join(root, "checktrail.json"),
       encode(config([], [reference(value)])),
     );
     await assert.rejects(createPlan(root));
@@ -113,14 +113,14 @@ test("packs and operator overlays add requirements without removing base checks 
     "value.test.js": passingTest,
     "value.js": "debugger;\n",
     "policy.json": contents,
-    "repo-verifier.json": encode(config([], [reference(contents)])),
+    "checktrail.json": encode(config([], [reference(contents)])),
     "eslint.config.mjs": eslintConfig,
-    ".repo-verifier.local.json": encode(overlay),
+    ".checktrail.local.json": encode(overlay),
   });
   await copyESLint(root);
   const plain = await validate(root, { trusted: true });
   assert.equal(plain.outcome, "passed");
-  const options = { trusted: true, policyOverlay: ".repo-verifier.local.json" };
+  const options = { trusted: true, policyOverlay: ".checktrail.local.json" };
   const report = await validate(root, options);
   assert.equal(report.outcome, "failed");
   assert.deepEqual(
@@ -153,7 +153,7 @@ test("packs and operator overlays add requirements without removing base checks 
   const guarded = encode({ ...pack, requiredEnvironment: ["SYNTHETIC_MODE"] });
   await writeFile(path.join(root, "policy.json"), guarded);
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     encode(config([], [reference(guarded)])),
   );
   assert.equal(
@@ -191,31 +191,31 @@ test("conflicting packs, duplicate references, empty policies and workspace over
       ],
     },
   ]) {
-    await writeFile(path.join(root, "repo-verifier.json"), encode(value));
+    await writeFile(path.join(root, "checktrail.json"), encode(value));
     await assert.rejects(createPlan(root));
   }
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     encode(config([], [reference(contents)])),
   );
   await writeFile(
-    path.join(root, ".repo-verifier.local.json"),
+    path.join(root, ".checktrail.local.json"),
     encode(config([], [reference(alternate, "alternate.json")])),
   );
   await assert.rejects(
-    createPlan(root, { policyOverlay: ".repo-verifier.local.json" }),
+    createPlan(root, { policyOverlay: ".checktrail.local.json" }),
     /Conflicting policy pack/,
   );
   for (const [name, value] of [
     [
-      "repo-verifier.json",
+      "checktrail.json",
       {
         ...config(["javascript.node-test"]),
         workspace: { complete: false, dependencies: [] },
       },
     ],
     [
-      ".repo-verifier.local.json",
+      ".checktrail.local.json",
       {
         ...config(["javascript.node-test"]),
         workspace: { complete: true, dependencies: [] },
@@ -224,7 +224,7 @@ test("conflicting packs, duplicate references, empty policies and workspace over
   ] as const)
     await writeFile(path.join(root, name), encode(value));
   await assert.rejects(
-    createPlan(root, { policyOverlay: ".repo-verifier.local.json" }),
+    createPlan(root, { policyOverlay: ".checktrail.local.json" }),
     /Conflicting workspace/,
   );
 });
@@ -233,9 +233,7 @@ test("hidden policy changes during execution invalidate otherwise passing eviden
   for (const mode of ["overlay", "pack"] as const) {
     const contents = encode(pack);
     const hidden =
-      mode === "overlay"
-        ? ".repo-verifier.local.json"
-        : ".repo-verifier/pack.json";
+      mode === "overlay" ? ".checktrail.local.json" : ".checktrail/pack.json";
     const base =
       mode === "overlay"
         ? config(["javascript.node-test"])
@@ -248,7 +246,7 @@ test("hidden policy changes during execution invalidate otherwise passing eviden
         : contents + "\n";
     const root = await fixture(t, {
       "package.json": nodeManifest,
-      "repo-verifier.json": encode(base),
+      "checktrail.json": encode(base),
       [hidden]: initial,
       "change.test.js": `import {test} from 'node:test';import {writeFileSync} from 'node:fs';test('changes hidden policy',()=>writeFileSync(${encode(hidden)},${encode(changed)}));`,
     });
@@ -269,7 +267,7 @@ test("hidden policy changes during execution invalidate otherwise passing eviden
 test("pack selection conservatively validates all projects when Git narrows source impact", async (t) => {
   const contents = encode(pack);
   const files = {
-    "repo-verifier.json": encode({
+    "checktrail.json": encode({
       schemaVersion: 1,
       workspace: { complete: true, dependencies: [] },
       projects: ["first", "second"].map((name) => ({

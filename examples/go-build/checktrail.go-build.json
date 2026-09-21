@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "name": "ordinary",
+      "tags": ["integration"],
+      "checks": ["go.vet", "go.test"],
+      "excludedFiles": [
+        {
+          "path": "race_profile_test.go",
+          "reason": "Selected by the instrumented check"
+        }
+      ]
+    },
+    {
+      "name": "instrumented",
+      "tags": ["integration"],
+      "checks": ["go.test-race"],
+      "excludedFiles": []
+    }
+  ]
+}

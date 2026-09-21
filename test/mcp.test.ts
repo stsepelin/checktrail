@@ -28,7 +28,7 @@ async function connect(
   modern = true,
 ): Promise<Client> {
   const client = new Client(
-    { name: "repo-verifier-test-client", version: "1.0.0" },
+    { name: "checktrail-test-client", version: "1.0.0" },
     modern ? { versionNegotiation: { mode: { pin: "2026-07-28" } } } : {},
   );
   const transport = new StdioClientTransport({
@@ -211,17 +211,17 @@ test("MCP policy overlay is startup-only and cannot remove checked-in requiremen
     "value.test.js": passingTest,
     "value.js": "debugger;\n",
     "eslint.config.mjs": eslintConfig,
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["javascript.node-test"] }],
     }),
-    ".repo-verifier.local.json": eslintPolicy(),
+    ".checktrail.local.json": eslintPolicy(),
   });
   await copyESLint(root);
   const client = await connect(t, root, [
     "--allow-execution",
     "--policy-overlay",
-    ".repo-verifier.local.json",
+    ".checktrail.local.json",
   ]);
   const run = await client.callTool({ name: "validation_run", arguments: {} });
   assert.equal(run.isError, undefined);
@@ -239,7 +239,7 @@ test("MCP policy overlay is startup-only and cannot remove checked-in requiremen
       ["javascript.eslint", "failed"],
     ],
   );
-  assert.ok(!JSON.stringify(run).includes(".repo-verifier.local.json"));
+  assert.ok(!JSON.stringify(run).includes(".checktrail.local.json"));
   for (const name of ["validation_plan", "validation_run"])
     assert.equal(
       (
@@ -306,7 +306,7 @@ test("MCP compares runtime artifacts read-only with summary projection and bound
 test("MCP finding comparison retains native failure and enforces startup detail and artifact boundaries", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
-    "repo-verifier.json": eslintPolicy(),
+    "checktrail.json": eslintPolicy(),
     "eslint.config.mjs": eslintConfig,
     "value.js": "debugger;\n",
   });
@@ -372,8 +372,8 @@ test(
       "slow.test.js": `import {test} from 'node:test';
 import fs from 'node:fs';
 test('waits', async () => {
-  fs.mkdirSync('.repo-verifier', {recursive:true});
-  fs.writeFileSync('.repo-verifier/ready', 'ready');
+  fs.mkdirSync('.checktrail', {recursive:true});
+  fs.writeFileSync('.checktrail/ready', 'ready');
   await new Promise(resolve => setTimeout(resolve, 60000));
 });`,
     });
@@ -389,7 +389,7 @@ test('waits', async () => {
     for (let attempt = 0; attempt < 100; attempt++) {
       try {
         ready =
-          (await readFile(path.join(root, ".repo-verifier/ready"), "utf8")) ===
+          (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
           "ready";
         break;
       } catch {
@@ -595,7 +595,7 @@ test("MCP mutation cancellation leaves planning responsive and cleans temporary 
       ],
     }),
   });
-  const probe = path.join(root, ".repo-verifier/ready");
+  const probe = path.join(root, ".checktrail/ready");
   await mkdir(path.dirname(probe));
   await writeFile(
     path.join(root, "sum.test.js"),

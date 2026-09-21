@@ -38,5 +38,5 @@ No dependency version or package-manager signature setting was changed.
 `node scripts/smoke-package.mjs` also compares two packs of the same checkout byte
 for byte, checks the file allowlist and installs the tarball offline into a fresh
 consumer. This demonstrates repeated packaging of one built checkout, not an
-independent cross-platform rebuild or reproducible native toolchain. CI is configured
-to run the dependency audit and package smoke; a hosted run is still pending.
+independent cross-platform rebuild or reproducible native toolchain. The dependency
+audit and package smoke passed in the hosted matrix at `52ba415`; see `NATIVE-CI.md`.

@@ -18,7 +18,7 @@ unaltered installed bytes or bundler aliases.
 
 ## Request contract
 
-Select `javascript.nuxt-runtime` explicitly and add `repo-verifier.nuxt.json`:
+Select `javascript.nuxt-runtime` explicitly and add `checktrail.nuxt.json`:
 
 ```json
 {
@@ -63,7 +63,7 @@ are disabled. Project code can still
 read local files or change settings; this is a selected testing assembly, not a
 proof of production equivalence. The internal Nitro preset is pinned and tested.
 
-Probes use the synthetic host `repo-verifier.invalid`, without supplied credentials
+Probes use the synthetic host `checktrail.invalid`, without supplied credentials
 or cookies. Server route rules or handlers may intercept requests; a response
 without the instrumented SSR capture cannot establish route coverage. The check
 executes the selected SSR behavior but does not prove that middleware permissions,
@@ -88,9 +88,9 @@ can review changes in the captured projection under equivalent settings.
 Prepare the separate development fixture installation explicitly:
 
 ```sh
-mkdir -p .repo-verifier/nuxt-tools
-cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
-npm ci --prefix .repo-verifier/nuxt-tools --ignore-scripts --no-audit --no-fund
+mkdir -p .checktrail/nuxt-tools
+cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
+npm ci --prefix .checktrail/nuxt-tools --ignore-scripts --no-audit --no-fund
 npm run build
 node --test dist/test/nuxt.test.js
 ```
@@ -98,9 +98,9 @@ node --test dist/test/nuxt.test.js
 `node scripts/verify-nuxt-container.mjs` runs the native tests and a fresh offline
 package installation through library, CLI and MCP in a pinned Node 22 Alpine
 container with networking disabled and read-only source mounts. On macOS it needs
-a second prepared installation in `.repo-verifier/nuxt-linux-tools`, installed by
+a second prepared installation in `.checktrail/nuxt-linux-tools`, installed by
 that Linux image from the same lockfile, because native compiler bindings differ.
-On Linux it uses `.repo-verifier/nuxt-tools`. The helper requires Docker and the
+On Linux it uses `.checktrail/nuxt-tools`. The helper requires Docker and the
 pinned image. `examples/nuxt` contains only original synthetic fixtures.
 
 Native regressions cover generated pages, asynchronous runtime registration,

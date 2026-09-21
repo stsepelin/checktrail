@@ -1,3 +1,4 @@
+import { goScopePolicySchema } from "./go-scope-policy.js";
 import path from "node:path";
 import { z } from "zod";
 import type { Check, Command, ProcessResult } from "./types.js";
@@ -14,10 +15,11 @@ export const goEnvironment = {
 export function goScopeCommand(
   project: string,
   env: Record<string, string> = goEnvironment,
+  race = false,
 ): Command {
   return {
     executable: "go",
-    args: ["list", "-json", "./..."],
+    args: ["list", "-json", ...(race ? ["-race"] : []), "./..."],
     cwd: project,
     env,
   };
@@ -59,6 +61,7 @@ const packageSchema = z.object({
   CgoFiles: names,
   TestGoFiles: names,
   XTestGoFiles: names,
+  IgnoredGoFiles: names,
   Error: z.unknown().optional(),
   DepsErrors: z.array(z.unknown()).optional(),
 });
@@ -74,6 +77,11 @@ export function goScopeComplete(
     !process ||
     process.exitCode !== 0 ||
     process.stderr.trim() ||
+    process.timedOut ||
+    process.cancelled ||
+    process.truncated ||
+    process.signal !== null ||
+    process.errorCode !== undefined ||
     !check.scope.length
   )
     return false;
@@ -84,6 +92,22 @@ export function goScopeComplete(
     const expected = new Set(
       check.scope.map((file) => path.resolve(root, check.project, file)),
     );
+    if (expected.size !== check.scope.length) return false;
+    const policy =
+      check.goScope === undefined
+        ? undefined
+        : goScopePolicySchema.parse(check.goScope);
+    const exclusions = new Set(
+      (policy?.excludedFiles ?? []).map((entry) =>
+        path.resolve(root, check.project, entry.path),
+      ),
+    );
+    if (
+      exclusions.size !== (policy?.excludedFiles.length ?? 0) ||
+      [...exclusions].some((file) => !expected.has(file))
+    )
+      return false;
+    const ignored = new Set<string>();
     const seen = new Set<string>();
     const ids = new Set<string>();
     for (const item of packages) {
@@ -101,10 +125,37 @@ export function goScopeComplete(
         ...item.TestGoFiles,
         ...item.XTestGoFiles,
       ]) {
-        if (path.basename(file) !== file || !file.endsWith(".go")) return false;
+        if (
+          path.basename(file) !== file ||
+          file.includes("\\") ||
+          !file.endsWith(".go")
+        )
+          return false;
         const resolved = path.resolve(item.Dir, file);
-        if (!expected.has(resolved) || seen.has(resolved)) return false;
+        if (
+          !expected.has(resolved) ||
+          exclusions.has(resolved) ||
+          seen.has(resolved) ||
+          ignored.has(resolved)
+        )
+          return false;
         seen.add(resolved);
+      }
+      for (const file of item.IgnoredGoFiles) {
+        if (
+          path.basename(file) !== file ||
+          file.includes("\\") ||
+          !file.endsWith(".go")
+        )
+          return false;
+        const resolved = path.resolve(item.Dir, file);
+        if (
+          !exclusions.has(resolved) ||
+          ignored.has(resolved) ||
+          seen.has(resolved)
+        )
+          return false;
+        ignored.add(resolved);
       }
     }
     if (testOutput !== undefined) {
@@ -122,7 +173,12 @@ export function goScopeComplete(
       }
       if (tested.size !== ids.size) return false;
     }
-    return ids.size > 0 && seen.size === expected.size;
+    return (
+      ids.size > 0 &&
+      seen.size > 0 &&
+      ignored.size === exclusions.size &&
+      seen.size + ignored.size === expected.size
+    );
   } catch {
     return false;
   }

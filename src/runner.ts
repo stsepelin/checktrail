@@ -54,9 +54,9 @@ export async function runProcess(
   }
   Object.assign(env, options.environment, command.env);
   const temporary = command.temporaryDirectory
-    ? await mkdtemp(path.join(tmpdir(), "repo-verifier-command-"))
+    ? await mkdtemp(path.join(tmpdir(), "checktrail-command-"))
     : undefined;
-  if (temporary) env.REPO_VERIFIER_TEMP = temporary;
+  if (temporary) env.CHECKTRAIL_TEMP = temporary;
   try {
     return await new Promise((resolve) => {
       const child = spawn(command.executable, command.args, {

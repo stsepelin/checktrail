@@ -3,6 +3,19 @@ export { validateContracts } from "./contracts.js";
 export type { ContractBundle, ContractReport } from "./contract-schema.js";
 export type { PlanOptions, ValidationOptions } from "./engine.js";
 export { adapters } from "./adapters.js";
+export {
+  initialize,
+  diagnose,
+  mcpConfiguration,
+  mcpClients,
+} from "./onboarding.js";
+export type {
+  InitOptions,
+  InitResult,
+  DoctorIssue,
+  DoctorResult,
+  McpClient,
+} from "./onboarding.js";
 export type { PolicyPack, PackReference } from "./policy-pack.js";
 export { fetchPolicyPack } from "./fetch-pack.js";
 export type { FetchPackOptions, FetchedPack } from "./fetch-pack.js";

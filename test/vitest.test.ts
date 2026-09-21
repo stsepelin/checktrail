@@ -19,7 +19,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "vitest.config.mjs":
         "export default {test:{outputFile:'should-not-write.json'}};\n",
       "sum.test.ts": good,
@@ -65,7 +65,7 @@ test(
 test("Vitest planning and missing-tool validation never execute project configuration", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "vitest.config.mjs": "throw new Error('configuration ran');",
     "sum.test.ts": good,
   });
@@ -84,7 +84,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "vitest.config.mjs":
         "export default {test:{allowOnly:true,update:'all',dangerouslyIgnoreUnhandledErrors:true,onUnhandledError:()=>false}};\n",
       "sum.test.js":
@@ -110,7 +110,7 @@ test(
     await writeFile(path.join(root, "sum.test.js"), good);
     await writeFile(
       path.join(root, "vitest.config.mjs"),
-      "export default {test:{environment:'repo-verifier-missing-environment'}};\n",
+      "export default {test:{environment:'checktrail-missing-environment'}};\n",
     );
     const missing = await validate(root, { trusted: true });
     assert.notEqual(missing.outcome, "passed");

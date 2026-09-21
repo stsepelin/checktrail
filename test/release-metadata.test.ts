@@ -20,6 +20,11 @@ test("registry metadata starts a root-scoped MCP server without granting executi
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   assert.equal(metadata.name, npm.mcpName);
+  assert.equal(metadata.name, "io.github.stsepelin/checktrail");
+  assert.equal(npm.name, "@stsepelin/checktrail");
+  assert.equal(lock.name, npm.name);
+  assert.equal(lock.packages[""].name, npm.name);
+  assert.deepEqual(npm.bin, { checktrail: "dist/src/cli.js" });
   assert.equal(metadata.version, VERSION);
   assert.equal(npm.version, VERSION);
   assert.equal(lock.version, VERSION);
@@ -56,10 +61,11 @@ test("registry metadata starts a root-scoped MCP server without granting executi
   await client.connect(
     new StdioClientTransport({
       command: process.execPath,
-      args: [path.join(repository, npm.bin["repo-verifier"]), ...args],
+      args: [path.join(repository, npm.bin["checktrail"]), ...args],
       stderr: "pipe",
     }),
   );
+  assert.equal(client.getServerVersion()?.name, "checktrail");
   const plan = await client.callTool({
     name: "validation_plan",
     arguments: {},

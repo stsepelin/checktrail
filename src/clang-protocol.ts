@@ -17,9 +17,9 @@ export function supportedClangVersion(output: string): boolean {
 
 export function clangDependencies(text: string, cwd: string): string[] {
   const flattened = text.replace(/\\\r?\n/g, "").trim();
-  if (!flattened.startsWith("repo-verifier: "))
+  if (!flattened.startsWith("checktrail: "))
     throw new Error("Missing native dependency target");
-  const body = flattened.slice("repo-verifier: ".length);
+  const body = flattened.slice("checktrail: ".length);
   if (/[\r\n$#:]/.test(body) || body.replaceAll("\\ ", "").includes("\\"))
     throw new Error("Unsupported dependency-file spelling");
   const paths = body

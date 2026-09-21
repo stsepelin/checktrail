@@ -7,7 +7,7 @@ registrations. The verified profile is FastAPI 0.141.1 with Starlette 1.6.0 on
 Python 3.12.13 in an isolated Linux container. Other framework versions are
 unavailable until their collector behavior is verified.
 
-Select the check in `repo-verifier.json` and provide this project-local file:
+Select the check in `checktrail.json` and provide this project-local file:
 
 ```json
 {
@@ -19,7 +19,7 @@ Select the check in `repo-verifier.json` and provide this project-local file:
 }
 ```
 
-Save it as `repo-verifier.fastapi.json`. `module` must resolve to exactly one
+Save it as `checktrail.fastapi.json`. `module` must resolve to exactly one
 inventoried Python module or package in that project. `attribute` is a simple
 attribute name, not an expression or a factory invocation. The value must be a
 FastAPI application. Planning validates this configuration without importing it.

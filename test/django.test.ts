@@ -42,8 +42,8 @@ async function replace(file: string, text: string) {
 }
 const files = () => ({
   "pyproject.toml": "",
-  "repo-verifier.json": policy,
-  "repo-verifier.django.json": profile,
+  "checktrail.json": policy,
+  "checktrail.django.json": profile,
   "settings.py": settings,
   "urls.py": urls,
 });
@@ -60,7 +60,7 @@ test("Django planning validates a local settings module without executing setup 
   await assert.rejects(access(path.join(root, "imported")));
   await assert.rejects(validate(root, { trusted: false }), /operator trust/);
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -76,29 +76,26 @@ test("Django planning validates a local settings module without executing setup 
     createPlan(root, { environment: { DJANGO_SETTINGS_MODULE: "other" } }),
     /protected adapter/,
   );
-  await writeFile(path.join(root, "repo-verifier.json"), policy);
+  await writeFile(path.join(root, "checktrail.json"), policy);
   for (const value of ["../outside", "settings;execute()", "settings.app()"]) {
     await writeFile(
-      path.join(root, "repo-verifier.django.json"),
+      path.join(root, "checktrail.django.json"),
       JSON.stringify({ ...JSON.parse(profile), settings: value }),
     );
     await assert.rejects(createPlan(root));
   }
   await writeFile(
-    path.join(root, "repo-verifier.django.json"),
+    path.join(root, "checktrail.django.json"),
     JSON.stringify({ ...JSON.parse(profile), settings: "missing" }),
   );
   assert.match(
     (await createPlan(root)).plan.checks[0]!.unavailableReason!,
     /local Python/,
   );
-  await writeFile(path.join(root, "repo-verifier.django.json"), "invalid JSON");
+  await writeFile(path.join(root, "checktrail.django.json"), "invalid JSON");
+  await writeFile(path.join(root, "checktrail.fastapi.json"), "invalid JSON");
   await writeFile(
-    path.join(root, "repo-verifier.fastapi.json"),
-    "invalid JSON",
-  );
-  await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["python.pytest"] }],

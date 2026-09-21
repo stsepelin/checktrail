@@ -28,7 +28,7 @@ interface RuntimeCapture {
   sensitive: boolean;
   url: string;
 }
-const symbol = Symbol.for("repo-verifier.nuxt.capture");
+const symbol = Symbol.for("checktrail.nuxt.capture");
 const host = globalThis as typeof globalThis & {
   [symbol]?: (capture: () => RuntimeCapture) => void;
 };
@@ -56,7 +56,7 @@ async function main() {
       return;
     }
   }
-  const temporary = await realpath(process.env.REPO_VERIFIER_TEMP!);
+  const temporary = await realpath(process.env.CHECKTRAIL_TEMP!);
   const root = await realpath(process.cwd());
   const buildDir = path.join(temporary, "build");
   const serverDir = path.join(temporary, "server");
@@ -64,9 +64,9 @@ async function main() {
   await writeFile(
     plugin,
     `import {defineNuxtPlugin} from '#app';
-export default defineNuxtPlugin({name:'repo-verifier-capture',dependsOn:['nuxt:router'],enforce:'pre',setup(app){
+export default defineNuxtPlugin({name:'checktrail-capture',dependsOn:['nuxt:router'],enforce:'pre',setup(app){
  const router=app.$router; const records=router.getRoutes.bind(router);
- app.hook('app:rendered',()=>globalThis[Symbol.for('repo-verifier.nuxt.capture')]?.(()=>({records:records(),matched:router.currentRoute.value.matched,strict:router.options.strict??false,sensitive:router.options.sensitive??false,url:app.ssrContext.url})));
+ app.hook('app:rendered',()=>globalThis[Symbol.for('checktrail.nuxt.capture')]?.(()=>({records:records(),matched:router.currentRoute.value.matched,strict:router.options.strict??false,sensitive:router.options.sensitive??false,url:app.ssrContext.url})));
 }});`,
   );
   const { loadNuxt, build } = (await import(pathToFileURL(entry!).href)) as {
@@ -139,7 +139,7 @@ export default defineNuxtPlugin({name:'repo-verifier-capture',dependsOn:['nuxt:r
         captures.push(capture);
       };
       const response = await runtime!.localFetch(probe.path, {
-        headers: { host: "repo-verifier.invalid" },
+        headers: { host: "checktrail.invalid" },
       });
       await response.body?.cancel();
       let capture: unknown = null;
@@ -164,7 +164,7 @@ export default defineNuxtPlugin({name:'repo-verifier-capture',dependsOn:['nuxt:r
           result.runtime = {
             schemaVersion: 1,
             format: "runtime-inventory",
-            producer: { name: "repo-verifier.nuxt", version: "1.0.0" },
+            producer: { name: "checktrail.nuxt", version: "1.0.0" },
             assembly: {
               name: config.assembly,
               environment: config.environment,

@@ -27,6 +27,7 @@ export async function golangciCheck(
           fileURLToPath(new URL("./golangci-runner.js", import.meta.url)),
           source.root,
           configs[0] ?? "",
+          "[]",
           ...files,
         ],
         cwd: project.path,
