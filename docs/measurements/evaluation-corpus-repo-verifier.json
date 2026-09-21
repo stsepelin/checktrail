@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "id": "synthetic-evaluation-v1",
+  "provenance": "Original post-implementation development corpus; not an independently held-out sample.",
+  "cases": [
+    {
+      "id": "node-upper-bound-defect",
+      "family": "node",
+      "label": "defect",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value <= 8;\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('upper-bound', () => { assert.equal(evaluate(8), false); });\n"
+      },
+      "engineSignal": "ERR_ASSERTION",
+      "nativeSignal": "ERR_ASSERTION"
+    },
+    {
+      "id": "node-upper-bound-valid",
+      "family": "node",
+      "label": "valid",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value < 8;\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('upper-bound', () => { assert.equal(evaluate(8), false); });\n"
+      }
+    },
+    {
+      "id": "node-numeric-order-defect",
+      "family": "node",
+      "label": "defect",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = values => values.sort();\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('numeric-order', () => { assert.deepEqual(evaluate([11, 2, 7]), [2, 7, 11]); });\n"
+      },
+      "engineSignal": "ERR_ASSERTION",
+      "nativeSignal": "ERR_ASSERTION"
+    },
+    {
+      "id": "node-numeric-order-valid",
+      "family": "node",
+      "label": "valid",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = values => values.sort((a, b) => a - b);\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('numeric-order', () => { assert.deepEqual(evaluate([11, 2, 7]), [2, 7, 11]); });\n"
+      }
+    },
+    {
+      "id": "node-trimmed-key-defect",
+      "family": "node",
+      "label": "defect",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value.toLowerCase();\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('trimmed-key', () => { assert.equal(evaluate('  NORTH '), 'north'); });\n"
+      },
+      "engineSignal": "ERR_ASSERTION",
+      "nativeSignal": "ERR_ASSERTION"
+    },
+    {
+      "id": "node-trimmed-key-valid",
+      "family": "node",
+      "label": "valid",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value.trim().toLowerCase();\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('trimmed-key', () => { assert.equal(evaluate('  NORTH '), 'north'); });\n"
+      }
+    },
+    {
+      "id": "node-zero-default-defect",
+      "family": "node",
+      "label": "defect",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value || 12;\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('zero-default', () => { assert.equal(evaluate(0), 0); });\n"
+      },
+      "engineSignal": "ERR_ASSERTION",
+      "nativeSignal": "ERR_ASSERTION"
+    },
+    {
+      "id": "node-zero-default-valid",
+      "family": "node",
+      "label": "valid",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.js": "export const evaluate = value => value ?? 12;\n",
+        "value.test.js": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {evaluate} from './value.js';\ntest('zero-default', () => { assert.equal(evaluate(0), 0); });\n"
+      }
+    },
+    {
+      "id": "node-empty-tests",
+      "family": "node",
+      "label": "insufficient-evidence",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.test.js": "export const marker = 1;\n"
+      }
+    },
+    {
+      "id": "node-skipped-tests",
+      "family": "node",
+      "label": "insufficient-evidence",
+      "files": {
+        "package.json": "{\"private\": true, \"type\": \"module\", \"scripts\": {\"test\": \"node --test\"}}",
+        "value.test.js": "import {test} from 'node:test';\ntest.skip('deferred requirement', () => {});\n"
+      }
+    },
+    {
+      "id": "typescript-generic-input-defect",
+      "family": "typescript",
+      "label": "defect",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "function identity<T>(value: T): T { return value; }\nexport const result = identity<number>('7');\n"
+      },
+      "engineSignal": "TS2345",
+      "nativeSignal": "TS2345"
+    },
+    {
+      "id": "typescript-generic-input-valid",
+      "family": "typescript",
+      "label": "valid",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "function identity<T>(value: T): T { return value; }\nexport const result = identity<number>(7);\n"
+      }
+    },
+    {
+      "id": "typescript-nullable-input-defect",
+      "family": "typescript",
+      "label": "defect",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "export const size = (value: string | null) => value.length;\n"
+      },
+      "engineSignal": "TS18047",
+      "nativeSignal": "TS18047"
+    },
+    {
+      "id": "typescript-nullable-input-valid",
+      "family": "typescript",
+      "label": "valid",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "export const size = (value: string | null) => value === null ? 0 : value.length;\n"
+      }
+    },
+    {
+      "id": "typescript-union-member-defect",
+      "family": "typescript",
+      "label": "defect",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "type Item = {kind: 'ready', value: number} | {kind: 'empty'};\nexport const read = (item: Item) => item.value;\n"
+      },
+      "engineSignal": "TS2339",
+      "nativeSignal": "TS2339"
+    },
+    {
+      "id": "typescript-union-member-valid",
+      "family": "typescript",
+      "label": "valid",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "type Item = {kind: 'ready', value: number} | {kind: 'empty'};\nexport const read = (item: Item) => item.kind === 'ready' ? item.value : 0;\n"
+      }
+    },
+    {
+      "id": "typescript-literal-key-defect",
+      "family": "typescript",
+      "label": "defect",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "const values = {north: 1, south: 2};\nconst key: keyof typeof values = 'nort';\nexport {key};\n"
+      },
+      "engineSignal": "TS2820",
+      "nativeSignal": "TS2820"
+    },
+    {
+      "id": "typescript-literal-key-valid",
+      "family": "typescript",
+      "label": "valid",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "const values = {north: 1, south: 2};\nconst key: keyof typeof values = 'north';\nexport {key};\n"
+      }
+    },
+    {
+      "id": "typescript-no-check",
+      "family": "typescript",
+      "label": "defect",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\", \"noCheck\": true}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "export const amount: number = \"seven\";\n"
+      },
+      "engineSignal": "TS2322",
+      "nativeSignal": "TS2322"
+    },
+    {
+      "id": "typescript-excluded-input",
+      "family": "typescript",
+      "label": "insufficient-evidence",
+      "files": {
+        "package.json": "{}",
+        "repo-verifier.json": "{\"schemaVersion\": 1, \"projects\": [{\"path\": \".\", \"checks\": [\"javascript.typescript\"]}]}",
+        "tsconfig.json": "{\"compilerOptions\": {\"strict\": true, \"types\": [], \"target\": \"ES2023\"}, \"include\": [\"src/**/*.ts\"]}",
+        "src/value.ts": "export const amount = 7;\n",
+        "outside.ts": "export const other = 8;\n"
+      }
+    },
+    {
+      "id": "actionlint-unknown-context-defect",
+      "family": "actionlint",
+      "label": "defect",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo '${{ unknowable.value }}'\n"
+      },
+      "engineSignal": "actionlint/expression",
+      "nativeSignal": "\"kind\":\"expression\""
+    },
+    {
+      "id": "actionlint-unknown-context-valid",
+      "family": "actionlint",
+      "label": "valid",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo '${{ github.event_name }}'\n"
+      }
+    },
+    {
+      "id": "actionlint-job-dependency-defect",
+      "family": "actionlint",
+      "label": "defect",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    needs: absent\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
+      },
+      "engineSignal": "actionlint/job-needs",
+      "nativeSignal": "\"kind\":\"job-needs\""
+    },
+    {
+      "id": "actionlint-job-dependency-valid",
+      "family": "actionlint",
+      "label": "valid",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
+      }
+    },
+    {
+      "id": "actionlint-runner-name-defect",
+      "family": "actionlint",
+      "label": "defect",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-nonexistent\n    steps:\n      - run: echo ready\n"
+      },
+      "engineSignal": "actionlint/runner-label",
+      "nativeSignal": "\"kind\":\"runner-label\""
+    },
+    {
+      "id": "actionlint-runner-name-valid",
+      "family": "actionlint",
+      "label": "valid",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
+      }
+    },
+    {
+      "id": "actionlint-permission-value-defect",
+      "family": "actionlint",
+      "label": "defect",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "permissions:\n  contents: execute\non: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
+      },
+      "engineSignal": "actionlint/permissions",
+      "nativeSignal": "\"kind\":\"permissions\""
+    },
+    {
+      "id": "actionlint-permission-value-valid",
+      "family": "actionlint",
+      "label": "valid",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "permissions:\n  contents: read\non: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n"
+      }
+    },
+    {
+      "id": "actionlint-missing-local-action",
+      "family": "actionlint",
+      "label": "insufficient-evidence",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: ./unprepared-action\n"
+      }
+    },
+    {
+      "id": "actionlint-yaml-alias",
+      "family": "actionlint",
+      "label": "unsupported-profile",
+      "files": {
+        "repo-verifier.actionlint.json": "{\"schemaVersion\": 1, \"runnerLabels\": [], \"variables\": []}",
+        ".github/workflows/check.yml": "on: push\njobs:\n  first: &job\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n  second: *job\n"
+      }
+    }
+  ]
+}

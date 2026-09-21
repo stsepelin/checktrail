@@ -85,7 +85,7 @@ export function createServer(options: ServerOptions): McpServer {
   const externalAdapters = externalReferencesSchema.parse(
     options.externalAdapters ?? [],
   );
-  const server = new McpServer({ name: "repo-verifier", version: VERSION });
+  const server = new McpServer({ name: "checktrail", version: VERSION });
   const reports = new Map<string, Report>();
   let running: { id: string | number; controller: AbortController } | undefined;
   let contractRunning:

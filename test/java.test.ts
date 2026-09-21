@@ -37,7 +37,7 @@ const config = {
 };
 const simple = {
   "pom.xml": "<project/>",
-  "repo-verifier.java.json": JSON.stringify(config),
+  "checktrail.java.json": JSON.stringify(config),
   "Value.java": "public class Value { public int value() { return 1; } }",
 };
 
@@ -51,7 +51,7 @@ test("Java planning never executes Maven/Gradle and requires explicit bounded co
     /Prepare/,
   );
   await writeFile(
-    path.join(root, "repo-verifier.java.json"),
+    path.join(root, "checktrail.java.json"),
     JSON.stringify(config),
   );
   assert.equal(
@@ -68,13 +68,13 @@ test("Java planning never executes Maven/Gradle and requires explicit bounded co
     },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.java.json"),
+      path.join(root, "checktrail.java.json"),
       JSON.stringify(invalid),
     );
     assert.ok((await createPlan(root)).plan.checks[0]!.unavailableReason);
   }
   await writeFile(
-    path.join(root, "repo-verifier.java.json"),
+    path.join(root, "checktrail.java.json"),
     JSON.stringify(config),
   );
   for (const file of [
@@ -88,7 +88,7 @@ test("Java planning never executes Maven/Gradle and requires explicit bounded co
     await rm(path.join(root, file));
   }
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -224,7 +224,7 @@ test(
     const strict = await validate(root, { trusted: true });
     assert.equal(strict.outcome, "failed", JSON.stringify(strict.checks));
     await writeFile(
-      path.join(root, "repo-verifier.java.json"),
+      path.join(root, "checktrail.java.json"),
       JSON.stringify({ ...config, warningsAsErrors: false }),
     );
     const warnings = await validate(root, { trusted: true });
@@ -241,12 +241,12 @@ test(
       "public record Value(int value) {}",
     );
     await writeFile(
-      path.join(root, "repo-verifier.java.json"),
+      path.join(root, "checktrail.java.json"),
       JSON.stringify({ ...config, release: 11 }),
     );
     assert.equal((await validate(root, { trusted: true })).outcome, "failed");
     await writeFile(
-      path.join(root, "repo-verifier.java.json"),
+      path.join(root, "checktrail.java.json"),
       JSON.stringify(config),
     );
     assert.equal((await validate(root, { trusted: true })).outcome, "passed");
@@ -277,7 +277,7 @@ test(
       ...simple,
       "Value.java": "class Value { int value = library.Library.value(); }",
     });
-    const prepared = path.join(root, ".repo-verifier");
+    const prepared = path.join(root, ".checktrail");
     const classes = path.join(prepared, "classes");
     await mkdir(path.join(classes, "META-INF/services"), { recursive: true });
     await writeFile(
@@ -320,12 +320,12 @@ test(
     const jar = path.join(prepared, "library.jar");
     const pin = async () =>
       writeFile(
-        path.join(root, "repo-verifier.java.json"),
+        path.join(root, "checktrail.java.json"),
         JSON.stringify({
           ...config,
           classPath: [
             {
-              path: ".repo-verifier/library.jar",
+              path: ".checktrail/library.jar",
               sha256: createHash("sha256")
                 .update(await readFile(jar))
                 .digest("hex"),
@@ -339,11 +339,11 @@ test(
     const alias = path.join(prepared, "alias.jar");
     await symlink(jar, alias);
     const pinnedConfig = JSON.parse(
-      await readFile(path.join(root, "repo-verifier.java.json"), "utf8"),
+      await readFile(path.join(root, "checktrail.java.json"), "utf8"),
     ) as typeof config;
-    pinnedConfig.classPath[0]!.path = ".repo-verifier/alias.jar";
+    pinnedConfig.classPath[0]!.path = ".checktrail/alias.jar";
     await writeFile(
-      path.join(root, "repo-verifier.java.json"),
+      path.join(root, "checktrail.java.json"),
       JSON.stringify(pinnedConfig),
     );
     assert.match(

@@ -125,7 +125,7 @@ export function laravelEvidence(
     const runtime = result.runtime;
     if (
       runtime.sourceFingerprint !== check.commands[0]!.args[4] ||
-      runtime.producer.name !== "repo-verifier.laravel-runtime" ||
+      runtime.producer.name !== "checktrail.laravel-runtime" ||
       runtime.producer.version !== "1.0.0" ||
       runtime.assembly.name !== profile.assembly ||
       runtime.assembly.environment !== profile.environment ||

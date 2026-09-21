@@ -1,4 +1,4 @@
-# Repo Verifier
+# Checktrail
 
 Read `docs/PLAN.md` for scope and `docs/ARCHITECTURE.md` for contracts.
 Keep public fixtures synthetic. Do not import private source, reports, paths,

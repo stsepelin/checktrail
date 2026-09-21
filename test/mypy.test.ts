@@ -27,7 +27,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "pyproject.toml": config,
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "value.py": "value: int = 42\n",
       ".mypy_cache/keep": "preserve",
     });

@@ -26,7 +26,7 @@ const processResult: ProcessResult = {
   truncated: false,
 };
 const report = () => ({
-  format: "repo-verifier-mypy-1",
+  format: "checktrail-mypy-1",
   version: "2.3.1",
   files: ["/synthetic/value.py"],
   suppressedFiles: [] as string[],
@@ -90,7 +90,7 @@ test("mypy requires exact sources, a reconciled native summary and no broad supp
   );
   assert.equal(
     parse(
-      { format: "repo-verifier-mypy-1", unavailable: "unsupported version" },
+      { format: "checktrail-mypy-1", unavailable: "unsupported version" },
       { exitCode: 3 },
     ).status,
     "unavailable",

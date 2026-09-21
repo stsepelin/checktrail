@@ -74,7 +74,7 @@ export function fastapiEvidence(
         (index, offset) =>
           offset > 0 && index < result.entryRouteIndices[offset - 1]!,
       ) ||
-      result.runtime.producer.name !== "repo-verifier.fastapi-routes" ||
+      result.runtime.producer.name !== "checktrail.fastapi-routes" ||
       result.runtime.producer.version !== "1.0.0" ||
       result.runtime.assembly.name !== profile.assembly ||
       result.runtime.assembly.environment !== profile.environment ||

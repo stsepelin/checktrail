@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Check, CheckResult, ProcessResult } from "./types.js";
 
 const schema = z.object({
-  format: z.literal("repo-verifier-mypy-1"),
+  format: z.literal("checktrail-mypy-1"),
   version: z.literal("2.3.1"),
   files: z.array(z.string()),
   suppressedFiles: z.array(z.string()),
@@ -32,7 +32,7 @@ export function mypyEvidence(
   }
   const unavailable = z
     .object({
-      format: z.literal("repo-verifier-mypy-1"),
+      format: z.literal("checktrail-mypy-1"),
       unavailable: z.string().min(1),
     })
     .safeParse(value);

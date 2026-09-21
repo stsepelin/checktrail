@@ -267,7 +267,7 @@ export function externalChecks(
         env: {
           PATH: process.env.PATH ?? "",
           NODE_OPTIONS: "",
-          REPO_VERIFIER_TEMP: "",
+          CHECKTRAIL_TEMP: "",
         },
       });
     } catch (error) {

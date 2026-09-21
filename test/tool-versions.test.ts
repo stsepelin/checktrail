@@ -6,6 +6,7 @@ import { createPlan, validate } from "../src/engine.js";
 import { identifyTool } from "../src/tool-versions.js";
 import { projectReport } from "../src/output.js";
 import type { ProcessResult, ToolSpec } from "../src/types.js";
+import { copyInstalledPackages } from "./tool-fixture.js";
 import { fixture, nodeManifest, passingTest } from "./helpers.js";
 
 test("tool identities are detailed evidence and summaries omit package paths and versions", async (t) => {
@@ -32,19 +33,14 @@ test("tool identities are detailed evidence and summaries omit package paths and
 test("package version metadata must match its tool and valid check output cannot mask missing identity", async (t) => {
   const root = await fixture(t, {
     "package.json": "{}",
-    "tsconfig.json": "{}",
+    "tsconfig.json": JSON.stringify({ compilerOptions: { types: [] } }),
     "value.ts": "export const value = 1;",
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["javascript.typescript"] }],
     }),
-    "node_modules/typescript/package.json": JSON.stringify({
-      name: "typescript",
-      version: "6.0.3",
-    }),
-    "node_modules/typescript/bin/tsc":
-      "console.log(require('node:path').resolve('value.ts'));",
   });
+  await copyInstalledPackages(root, ["typescript"]);
   assert.equal((await validate(root, { trusted: true })).outcome, "passed");
   for (const contents of [
     '{"name":"wrong","version":"6.0.3"}',
@@ -67,7 +63,7 @@ test("package version metadata must match its tool and valid check output cannot
   assert.equal(broken.checks[0]!.tools?.[1]!.status, "inconclusive");
   assert.match(
     broken.checks[0]!.processes[0]!.stderr,
-    /ERR_INVALID_PACKAGE_CONFIG/,
+    /Invalid package config/,
   );
 });
 

@@ -33,7 +33,7 @@ async function project(t: TestContext) {
     "other.py": "raise RuntimeError('review must not execute source')\n",
     "package.json": nodeManifest,
     "check.test.js": passingTest,
-    ".repo-verifier/keep": "",
+    ".checktrail/keep": "",
   });
 }
 function assessment(context: ReviewContext): ReviewAssessment {
@@ -125,7 +125,7 @@ test("review boundaries reject excluded, linked, binary, invalid UTF-8, oversize
     "../outside",
     "./subject.js",
     "/absolute",
-    ".repo-verifier/keep",
+    ".checktrail/keep",
   ])
     await assert.rejects(
       createReviewContext(root, { ...selection, files: [file] }),
@@ -301,7 +301,7 @@ test("review CLI requires explicit source disclosure and never returns a validat
   const root = await project(t);
   const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
   await writeFile(
-    path.join(root, ".repo-verifier/selection.json"),
+    path.join(root, ".checktrail/selection.json"),
     JSON.stringify(selection),
   );
   const args = [
@@ -310,7 +310,7 @@ test("review CLI requires explicit source disclosure and never returns a validat
     "--root",
     root,
     "--input",
-    ".repo-verifier/selection.json",
+    ".checktrail/selection.json",
   ];
   const call = (args: string[]) =>
     spawnSync(process.execPath, args, { encoding: "utf8" });
@@ -321,12 +321,9 @@ test("review CLI requires explicit source disclosure and never returns a validat
   const detailed = call([...args, "--detailed", "--allow-review-source"]);
   assert.equal(detailed.status, 0, detailed.stderr);
   const context = reviewContextSchema.parse(JSON.parse(detailed.stdout));
+  await writeFile(path.join(root, ".checktrail/context.json"), detailed.stdout);
   await writeFile(
-    path.join(root, ".repo-verifier/context.json"),
-    detailed.stdout,
-  );
-  await writeFile(
-    path.join(root, ".repo-verifier/assessment.json"),
+    path.join(root, ".checktrail/assessment.json"),
     JSON.stringify(assessment(context)),
   );
   const receiptArgs = [
@@ -335,9 +332,9 @@ test("review CLI requires explicit source disclosure and never returns a validat
     "--root",
     root,
     "--context",
-    ".repo-verifier/context.json",
+    ".checktrail/context.json",
     "--input",
-    ".repo-verifier/assessment.json",
+    ".checktrail/assessment.json",
   ];
   const receipt = call(receiptArgs);
   assert.equal(receipt.status, 0, receipt.stderr);
@@ -354,11 +351,11 @@ test("MCP review source disclosure is operator controlled and imported prose sta
   const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
   const context = await createReviewContext(root, selection);
   await writeFile(
-    path.join(root, ".repo-verifier/context.json"),
+    path.join(root, ".checktrail/context.json"),
     JSON.stringify(context),
   );
   await writeFile(
-    path.join(root, ".repo-verifier/assessment.json"),
+    path.join(root, ".checktrail/assessment.json"),
     JSON.stringify(assessment(context)),
   );
   for (const flags of [
@@ -399,8 +396,8 @@ test("MCP review source disclosure is operator controlled and imported prose sta
       const receipt = await client.callTool({
         name: "review_receipt",
         arguments: {
-          context: ".repo-verifier/context.json",
-          input: ".repo-verifier/assessment.json",
+          context: ".checktrail/context.json",
+          input: ".checktrail/assessment.json",
         },
       });
       assert.equal(receipt.isError, undefined);

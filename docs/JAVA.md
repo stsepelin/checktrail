@@ -2,7 +2,7 @@
 
 `jvm.javac` compiles all inventoried `.java` files in a Maven/Gradle-discovered
 project as one classpath compilation. It requires a prepared full Temurin JDK
-25.0.4+7 and an explicit project-root `repo-verifier.java.json`:
+25.0.4+7 and an explicit project-root `checktrail.java.json`:
 
 ```json
 {
@@ -23,7 +23,7 @@ Dependencies are optional explicit `{ "path": "…jar", "sha256": "…" }` entri
 Paths resolve from the project and must stay inside the operator root without
 symlink traversal. Hashes cover exact file bytes and are verified during planning,
 before compilation and afterwards. Prepared JARs may live in the excluded
-`.repo-verifier/` directory. They are limited to 128 entries, 32 MiB per JAR and
+`.checktrail/` directory. They are limited to 128 entries, 32 MiB per JAR and
 128 MiB total. Duplicate paths, checksum mismatches, manifest `Class-Path`
 attributes and source-bearing JARs cannot produce a pass. Hashes establish byte
 identity, not publisher trust or a complete dependency provenance audit.
@@ -65,7 +65,7 @@ compiled dependency.
 
 ```sh
 npm run build
-docker build --file scripts/java-tools.Dockerfile --tag repo-verifier-java-test:25.0.4 scripts
+docker build --file scripts/java-tools.Dockerfile --tag checktrail-java-test:25.0.4 scripts
 node scripts/verify-java-container.mjs
 ```
 
@@ -74,5 +74,6 @@ synthetic broken/fixed/near-miss cases with the network disabled. It also instal
 a fresh package offline and exercises its library, CLI and MCP against the public
 Java example. The host npm cache must contain the locked production dependencies.
 The Dockerfile pins the multi-platform base image manifests. Local evidence is
-arm64 Linux; the configured hosted amd64 job has not run. Host macOS without a JDK
+arm64 Linux; the separate hosted amd64 job passed at `52ba415` (see `NATIVE-CI.md`).
+Host macOS without a JDK
 reports the native cases as skipped, not verified.

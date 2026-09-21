@@ -1,6 +1,6 @@
 # Jest validation
 
-Select `javascript.jest` explicitly in `repo-verifier.json`. Install Jest in the
+Select `javascript.jest` explicitly in `checktrail.json`. Install Jest in the
 project or an ancestor `node_modules` directory inside the configured root.
 Planning only reads files; operator trust is required before loading Jest or
 project configuration. No package installation is attempted.

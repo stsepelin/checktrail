@@ -117,7 +117,7 @@ test("Clang planning requires a prepared database, never runs build configuratio
     JSON.stringify(database),
   );
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -138,7 +138,7 @@ test("Clang planning requires a prepared database, never runs build configuratio
 test("Clang dependency evidence decodes continuation lines and literal spaces while rejecting malformed targets and escapes", () => {
   assert.deepEqual(
     clangDependencies(
-      "repo-verifier: \\\n source.c include/with\\ space.h\n",
+      "checktrail: \\\n source.c include/with\\ space.h\n",
       "/synthetic",
     ),
     ["/synthetic/include/with space.h", "/synthetic/source.c"],
@@ -146,11 +146,11 @@ test("Clang dependency evidence decodes continuation lines and literal spaces wh
   for (const bad of [
     "",
     "other: a.c",
-    "repo-verifier: ",
-    "repo-verifier: a.c\nother: b.h",
-    "repo-verifier: a$token.h",
-    "repo-verifier: a\\x.h",
-    "repo-verifier: a#token.h",
+    "checktrail: ",
+    "checktrail: a.c\nother: b.h",
+    "checktrail: a$token.h",
+    "checktrail: a\\x.h",
+    "checktrail: a#token.h",
   ])
     assert.throws(() => clangDependencies(bad, "/synthetic"));
 });

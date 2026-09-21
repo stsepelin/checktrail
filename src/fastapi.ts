@@ -32,16 +32,16 @@ export async function fastapiCheck(
     reason:
       "Capture the configured FastAPI application's flat native route table after lifespan startup and reject exact duplicate HTTP/WebSocket routes.",
   };
-  if (!project.files.includes("repo-verifier.fastapi.json")) {
+  if (!project.files.includes("checktrail.fastapi.json")) {
     check.unavailableReason =
-      "FastAPI route validation requires an explicit repo-verifier.fastapi.json application profile.";
+      "FastAPI route validation requires an explicit checktrail.fastapi.json application profile.";
     return check;
   }
   const config = fastapiConfigSchema.parse(
     JSON.parse(
       await readProjectFile(
         source.root,
-        path.posix.join(project.path, "repo-verifier.fastapi.json"),
+        path.posix.join(project.path, "checktrail.fastapi.json"),
       ),
     ),
   );

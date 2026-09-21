@@ -17,7 +17,7 @@ async function setup(t: TestContext, source = passingTest, detailed = false) {
     await fixture(t, {
       "package.json": nodeManifest,
       "check.test.js": source,
-      ".repo-verifier/keep": "",
+      ".checktrail/keep": "",
     }),
   );
   const directory = path.join(await realpath(await fixture(t, {})), "store");
@@ -37,7 +37,7 @@ async function completed(
 const slow = `import {test} from 'node:test'; import fs from 'node:fs'; import {spawn} from 'node:child_process';
 test('waits for cancellation', async () => {
   const child = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], {stdio:'inherit'});
-  fs.writeFileSync('.repo-verifier/started.json', JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));
+  fs.writeFileSync('.checktrail/started.json', JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));
   await new Promise(resolve=>setTimeout(resolve,60000));
 });`;
 type Pids = { pid: number; group: number; child: number };
@@ -60,7 +60,7 @@ async function started(t: TestContext, root: string): Promise<Pids> {
   for (let attempt = 0; attempt < 160; attempt++) {
     try {
       const pids = JSON.parse(
-        await readFile(path.join(root, ".repo-verifier/started.json"), "utf8"),
+        await readFile(path.join(root, ".checktrail/started.json"), "utf8"),
       ) as Pids;
       t.after(() => {
         try {
@@ -126,8 +126,8 @@ test("durable task startup does not grant execution, load project code or inheri
     t,
     "throw new Error('must not execute during startup');",
   );
-  const marker = path.join(opt.root, ".repo-verifier/preloaded");
-  const preload = path.join(opt.root, ".repo-verifier/preload.mjs");
+  const marker = path.join(opt.root, ".checktrail/preloaded");
+  const preload = path.join(opt.root, ".checktrail/preload.mjs");
   await writeFile(
     preload,
     `import fs from 'node:fs'; fs.writeFileSync(${JSON.stringify(marker)},'loaded');`,

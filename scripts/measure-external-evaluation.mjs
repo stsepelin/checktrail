@@ -139,7 +139,7 @@ assert.equal(
 );
 const startedAt = new Date().toISOString();
 const root = await realpath(
-  await mkdtemp(path.join(tmpdir(), "repo-verifier-external-evaluation-")),
+  await mkdtemp(path.join(tmpdir(), "checktrail-external-evaluation-")),
 );
 const observations = [];
 async function execute(args) {
@@ -168,7 +168,7 @@ try {
     JSON.stringify({ private: true, type: "module" }),
   );
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["javascript.eslint"] }],

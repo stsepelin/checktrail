@@ -50,7 +50,7 @@ export function exportSarif(input: unknown) {
       return {
         tool: {
           driver: {
-            name: "repo-verifier",
+            name: "checktrail",
             version: report.engineVersion,
             rules: ruleIds.map((id) => ({ id: ruleId(id), name: id })),
           },

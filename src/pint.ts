@@ -34,6 +34,7 @@ export async function pintCheck(
               ...files.map((file) => `./${file}`),
             ],
             cwd: project.path,
+            temporaryDirectory: true,
           },
         ]
       : [],

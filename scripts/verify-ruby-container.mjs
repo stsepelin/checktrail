@@ -21,7 +21,7 @@ const image = installedImage(
 const nodeImage = installedImage(
   "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
 );
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-ruby-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-ruby-"));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 let sourceContainer;
 try {

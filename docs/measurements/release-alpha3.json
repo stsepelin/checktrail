@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0-alpha.3",
+  "sourceCommit": "b0b447d5ea8973b3e427e179201a44b7baa1ca91",
+  "artifactSha256": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb",
+  "hostedCi": {
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/35597877167",
+    "conclusion": "success"
+  },
+  "publication": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.3",
+    "tag": "next",
+    "distTags": {
+      "latest": "0.1.0-alpha.1",
+      "next": "0.1.0-alpha.3"
+    },
+    "publicMetadata": true,
+    "tarballSha256": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb",
+    "integrity": "sha512-ldfts+m07oC1DHMKirDJ9GeoZvsFrP5wqDAjWmuVHuEbsqtZERlgjJZWq7zQhQzfnCMSmI63sctMvisVVCc/jw==",
+    "registryTarballMatchesApproved": true,
+    "installation": "fresh-consumer-and-cache-from-npm-registry",
+    "observations": [
+      "installed-library-passed",
+      "installed-cli-passed-summary-private",
+      "generated-npx-fresh-cache-plan-and-trust-denial",
+      "generated-npx-warm-cache-plan-and-trust-denial",
+      "installed-init-doctor-and-mcp-config",
+      "installed-mcp-plan-and-trust-denial",
+      "installed-mcp-passed-and-retained-report",
+      "installed-mcp-failed-and-retained-report",
+      "installed-mcp-incomplete-and-retained-report"
+    ],
+    "node": "v26.8.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "recordedAt": "2026-09-21T12:26:03.801Z"
+  },
+  "registry": {
+    "url": "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.3",
+    "version": "0.1.0-alpha.3",
+    "status": "active",
+    "metadataMatches": true,
+    "executionDisabled": true,
+    "recordedAt": "2026-09-21T12:26:54.618Z"
+  },
+  "githubRelease": "https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.3",
+  "clients": [
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-09-21T12:05:04.502Z",
+      "profile": "claude-code-health-discovery",
+      "clientVersion": "2.1.263 (Claude Code)",
+      "runtime": {
+        "node": "26.8.1",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.3",
+        "tarballSha256": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb",
+        "runtimeArtifactsSha256": "372f3ea20d04135591c40ada27ecf4cdd8187b5f6c608f3d7b982a60b2fc625f"
+      },
+      "harnessSha256": "254e469de77d6e906e323822cf9898f53f6818ca9aab511c3b3e70dbe63a4cb5",
+      "observations": [
+        {
+          "check": "health-and-discovery",
+          "outcome": "passed",
+          "warnings": []
+        }
+      ],
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 1,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": 130,
+              "signal": null
+            }
+          ],
+          "requestedProtocol": "2025-11-25",
+          "negotiatedProtocol": "2025-11-25",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_context",
+            "review_guidance",
+            "review_receipt",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-09-21T12:05:04.498Z",
+      "profile": "codex-app-server-direct-tools",
+      "clientVersion": "codex-cli 0.154.0",
+      "runtime": {
+        "node": "26.8.1",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.3",
+        "tarballSha256": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb",
+        "runtimeArtifactsSha256": "372f3ea20d04135591c40ada27ecf4cdd8187b5f6c608f3d7b982a60b2fc625f"
+      },
+      "harnessSha256": "254e469de77d6e906e323822cf9898f53f6818ca9aab511c3b3e70dbe63a4cb5",
+      "observations": [
+        {
+          "check": "project_context",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "validation_plan",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "guidance-https-result",
+          "outcome": "passed",
+          "references": ["https://nodejs.org/api/test.html"]
+        },
+        {
+          "check": "default-execution-denied",
+          "outcome": "passed"
+        },
+        {
+          "check": "tool-cannot-grant-trust",
+          "outcome": "passed"
+        },
+        {
+          "check": "native-passed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "passed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "passed",
+              "tests": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "native-failed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "failed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "failed",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "all-skipped-is-incomplete",
+          "outcome": "passed",
+          "validationOutcome": "incomplete",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "inconclusive",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 0,
+                "skipped": 1
+              }
+            }
+          ]
+        }
+      ],
+      "providerRequests": [
+        {
+          "method": "GET",
+          "path": "/models?client_version=0.154.0"
+        }
+      ],
+      "inferenceRequests": 0,
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 2,
+          "observedExits": 2,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": 143,
+              "signal": null
+            },
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_context",
+            "review_guidance",
+            "review_receipt",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        },
+        {
+          "label": "trusted",
+          "starts": 2,
+          "observedExits": 2,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            },
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_context",
+            "review_guidance",
+            "review_receipt",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    }
+  ],
+  "upgrade": {
+    "hashes": {
+      "baseline": "ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb",
+      "candidate": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb"
+    },
+    "stages": [
+      {
+        "phase": "baseline",
+        "version": "0.1.0-alpha.2",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      },
+      {
+        "phase": "upgrade",
+        "version": "0.1.0-alpha.3",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      },
+      {
+        "phase": "rollback",
+        "version": "0.1.0-alpha.2",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      }
+    ],
+    "installation": "offline",
+    "priorReportImport": "passed"
+  },
+  "typescriptReplay": {
+    "scope": "Known-case regression replay measured on the approved release candidate before publication; not an independent cohort.",
+    "upstreamCommit": "6b41670516ed8e8b738612f60491995470aa63b3",
+    "baseCommit": "b36f0fb4942b5d9e5edf261d4dba3807bb5475b6",
+    "tarballSha256": "261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb",
+    "sources": {
+      "src/typescript.ts": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0",
+      "src/typescript-runner.ts": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9",
+      "src/typescript-arguments.ts": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852",
+      "src/vue-tsc-runner.ts": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+    },
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v26.8.1",
+    "observations": [
+      {
+        "phase": "valid",
+        "nativeExitCode": 0,
+        "cliExitCode": 0,
+        "cli": "passed",
+        "library": "passed",
+        "mcp": "passed",
+        "sourceChanged": false,
+        "compiler": "4.9.5",
+        "diagnostic": null
+      },
+      {
+        "phase": "invalid",
+        "nativeExitCode": 2,
+        "cliExitCode": 1,
+        "cli": "failed",
+        "library": "failed",
+        "mcp": "failed",
+        "sourceChanged": false,
+        "compiler": "4.9.5",
+        "diagnostic": "TS2322"
+      }
+    ]
+  },
+  "limits": [
+    "Named client profiles and pinned known-case replay only; no general effectiveness or broader compatibility claim.",
+    "Recorded tags describe publication-time state."
+  ]
+}

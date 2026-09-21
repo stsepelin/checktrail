@@ -1,7 +1,7 @@
 # External ESLint integration evaluation
 
 This evaluation uses independently authored synthetic ESLint rule fixtures that
-were not used to build Repo Verifier's adapter. The verifier runtime and lockfile
+were not used to build Checktrail's adapter. The verifier runtime and lockfile
 were hashed before the selected upstream case files were downloaded or inspected.
 They remained unchanged during measurement. This supplies an external integration
 holdout for that frozen verifier, not independent evidence about ESLint's own
@@ -110,7 +110,7 @@ creates a fresh snapshot, archives the selected files, and prepares copies of th
 installed locked dependencies for local replay:
 
 ```sh
-node scripts/preserve-external-evaluation.mjs .repo-verifier > /tmp/frozen-evaluation.json
+node scripts/preserve-external-evaluation.mjs .checktrail > /tmp/frozen-evaluation.json
 ```
 
 It intentionally fails on a later runtime before creating the output snapshot.

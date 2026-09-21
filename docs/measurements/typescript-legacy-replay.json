@@ -1,0 +1,39 @@
+{
+  "scope": "Known-case regression replay against an unreleased local package; not a new independent cohort or published release",
+  "upstreamCommit": "6b41670516ed8e8b738612f60491995470aa63b3",
+  "baseCommit": "e2acd95b8e4896d0975221335ee23b6a03712a9c",
+  "tarballSha256": "87dc9f59e17354b2fb9764877606e16c704a008d2607a7906f985a544ce5c417",
+  "sources": {
+    "src/typescript.ts": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0",
+    "src/typescript-runner.ts": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9",
+    "src/typescript-arguments.ts": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852",
+    "src/vue-tsc-runner.ts": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+  },
+  "platform": "darwin",
+  "arch": "arm64",
+  "node": "v26.8.1",
+  "observations": [
+    {
+      "phase": "valid",
+      "nativeExitCode": 0,
+      "cliExitCode": 0,
+      "cli": "passed",
+      "library": "passed",
+      "mcp": "passed",
+      "sourceChanged": false,
+      "compiler": "4.9.5",
+      "diagnostic": null
+    },
+    {
+      "phase": "invalid",
+      "nativeExitCode": 2,
+      "cliExitCode": 1,
+      "cli": "failed",
+      "library": "failed",
+      "mcp": "failed",
+      "sourceChanged": false,
+      "compiler": "4.9.5",
+      "diagnostic": "TS2322"
+    }
+  ]
+}

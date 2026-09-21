@@ -33,7 +33,7 @@ const output = execFileSync(
 );
 process.stdout.write(output);
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-task-package-"),
+  path.join(tmpdir(), "checktrail-task-package-"),
 );
 try {
   const [packed] = JSON.parse(
@@ -67,7 +67,7 @@ try {
     import {mkdtemp, mkdir, writeFile, rm} from 'node:fs/promises';
     import {tmpdir} from 'node:os';
     import path from 'node:path';
-    import {openTaskStore, openValidationTasks, createPlan, validate, projectReport} from '@stsepelin/repo-verifier';
+    import {openTaskStore, openValidationTasks, createPlan, validate, projectReport} from '@stsepelin/checktrail';
     const temporary = await mkdtemp(path.join(tmpdir(), 'task-consumer-'));
     const root = path.join(temporary, 'project'); await mkdir(root);
     const options = {root, directory:path.join(temporary,'store')};

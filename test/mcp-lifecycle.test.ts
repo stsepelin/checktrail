@@ -15,10 +15,7 @@ async function waitForPid(
   for (let attempt = 0; attempt < 100; attempt++) {
     try {
       return JSON.parse(
-        await readFile(
-          path.join(root, ".repo-verifier", "started.json"),
-          "utf8",
-        ),
+        await readFile(path.join(root, ".checktrail", "started.json"), "utf8"),
       ) as { pid: number; group: number };
     } catch {
       await delay(25);
@@ -104,8 +101,8 @@ for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
         "slow.test.js": `import {test} from 'node:test';
 import fs from 'node:fs';
 test('waits for cancellation', async () => {
-  fs.mkdirSync('.repo-verifier', {recursive:true});
-  fs.writeFileSync('.repo-verifier/started.json', JSON.stringify({pid:process.pid,group:process.ppid}));
+  fs.mkdirSync('.checktrail', {recursive:true});
+  fs.writeFileSync('.checktrail/started.json', JSON.stringify({pid:process.pid,group:process.ppid}));
   await new Promise(resolve => setTimeout(resolve, 60000));
 });`,
       });

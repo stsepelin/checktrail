@@ -40,7 +40,7 @@ function invoke(args: string[], cwd: string) {
 
 async function main() {
   const temporary = await realpath(
-    await mkdtemp(path.join(tmpdir(), "repo-verifier-actionlint-")),
+    await mkdtemp(path.join(tmpdir(), "checktrail-actionlint-")),
   );
   try {
     try {

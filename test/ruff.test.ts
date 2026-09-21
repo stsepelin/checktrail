@@ -21,7 +21,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "pyproject.toml": config,
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "value with spaces.py": "value = 42\n",
       ".ruff_cache/keep": "preserve",
     });
@@ -75,7 +75,7 @@ test(
 test("Ruff planning describes explicit source and stub files without running tools", async (t) => {
   const root = await fixture(t, {
     "pyproject.toml": config,
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "value.py": "value = 42",
     "value.pyi": "value: int",
   });

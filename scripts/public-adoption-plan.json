@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "engine": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.2",
+    "sourceCommit": "4ce839875ff2bd30d29a3adf004afe320f69ef2a",
+    "tarballSha256": "ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb"
+  },
+  "purpose": "Public repository adoption observations; not an independent effectiveness holdout or a full upstream CI replacement.",
+  "selection": "Small public libraries covering JavaScript, TypeScript, Python, Go and PHP, chosen before validation results; retain incomplete outcomes and do not replace projects after observing results.",
+  "projects": [
+    {
+      "id": "nanoid",
+      "repository": "https://github.com/ai/nanoid.git",
+      "commit": "57009b5eb8d757ae39bf5f4361dd30c9f23391b7",
+      "family": "JavaScript"
+    },
+    {
+      "id": "mitt",
+      "repository": "https://github.com/developit/mitt.git",
+      "commit": "6b41670516ed8e8b738612f60491995470aa63b3",
+      "family": "TypeScript"
+    },
+    {
+      "id": "more-itertools",
+      "repository": "https://github.com/more-itertools/more-itertools.git",
+      "commit": "1da45ae4b61a832ed080f08a8833784aad0a9534",
+      "family": "Python"
+    },
+    {
+      "id": "uuid",
+      "repository": "https://github.com/google/uuid.git",
+      "commit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+      "family": "Go"
+    },
+    {
+      "id": "psr-log",
+      "repository": "https://github.com/php-fig/log.git",
+      "commit": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+      "family": "PHP"
+    }
+  ]
+}

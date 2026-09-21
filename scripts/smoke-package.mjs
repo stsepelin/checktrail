@@ -14,7 +14,7 @@ import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { contractFixture } from "../dist/test/contract-helpers.js";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-package-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-package-"));
 let client;
 try {
   const [packed] = JSON.parse(
@@ -76,7 +76,7 @@ try {
   ]);
   const installedMetadata = JSON.parse(
     await readFile(
-      path.join(consumer, "node_modules/@stsepelin/repo-verifier/server.json"),
+      path.join(consumer, "node_modules/@stsepelin/checktrail/server.json"),
       "utf8",
     ),
   );
@@ -95,7 +95,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {validateContracts} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";console.log(JSON.stringify(await validateContracts(JSON.parse(readFileSync("contract.json","utf8")))));',
+        'import {validateContracts} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";console.log(JSON.stringify(await validateContracts(JSON.parse(readFileSync("contract.json","utf8")))));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -115,13 +115,13 @@ try {
   const publicPack = await readFile(
     path.join(
       consumer,
-      "node_modules/@stsepelin/repo-verifier/packs/javascript-node.json",
+      "node_modules/@stsepelin/checktrail/packs/javascript-node.json",
     ),
     "utf8",
   );
   const files = {
     "policy/node.json": publicPack,
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: checks.map((name) => ({
         path: name,
@@ -198,7 +198,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {validate} from "@stsepelin/repo-verifier";const report=await validate(process.cwd(),{trusted:true});console.log(JSON.stringify(report));',
+        'import {validate} from "@stsepelin/checktrail";const report=await validate(process.cwd(),{trusted:true});console.log(JSON.stringify(report));',
       ],
       { cwd: consumer, encoding: "utf8", timeout: 60_000 },
     ),
@@ -210,7 +210,66 @@ try {
       check.tools.every((tool) => tool.status === "identified"),
     ),
   );
-  const binary = path.join(consumer, "node_modules/.bin/repo-verifier");
+  const binary = path.join(consumer, "node_modules/.bin/checktrail");
+  const onboardingRoot = path.join(temporary, "onboarding");
+  await mkdir(onboardingRoot);
+  await writeFile(
+    path.join(onboardingRoot, "package.json"),
+    JSON.stringify({
+      private: true,
+      type: "module",
+      scripts: { test: "node --test" },
+    }),
+  );
+  await writeFile(
+    path.join(onboardingRoot, "example.test.js"),
+    "import { test } from 'node:test'; test('fixture', () => {});\n",
+  );
+  const onboarding = (args) =>
+    JSON.parse(
+      execFileSync(binary, [...args, "--root", onboardingRoot], {
+        cwd: consumer,
+        encoding: "utf8",
+      }),
+    );
+  assert.equal(onboarding(["init"]).status, "preview");
+  assert.equal(onboarding(["init", "--write"]).status, "created");
+  assert.equal(onboarding(["init", "--write"]).status, "preserved");
+  assert.equal(onboarding(["doctor"]).status, "no-static-blockers");
+  const generated = onboarding(["mcp-config", "--client", "vscode"]);
+  const generatedServer = JSON.parse(generated.configuration).servers
+    .checktrail;
+  assert.equal(generatedServer.type, "stdio");
+  assert.ok(!generatedServer.args.includes("--allow-execution"));
+  const generatedClient = new Client(
+    { name: "synthetic-generated-config-client", version: "1.0.0" },
+    { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+  );
+  try {
+    await generatedClient.connect(
+      new StdioClientTransport({
+        command: generatedServer.command,
+        args: generatedServer.args,
+        cwd: consumer,
+        env: { ...process.env, npm_config_offline: "true" },
+        stderr: "pipe",
+      }),
+    );
+    const generatedPlan = await generatedClient.callTool({
+      name: "validation_plan",
+      arguments: {},
+    });
+    assert.notEqual(generatedPlan.isError, true);
+    assert.ok(JSON.stringify(generatedPlan).includes("javascript.node-test"));
+    const generatedRun = await generatedClient.callTool({
+      name: "validation_run",
+      arguments: {},
+    });
+    assert.equal(generatedRun.isError, true);
+    assert.match(JSON.stringify(generatedRun), /Execution is disabled/);
+  } finally {
+    await generatedClient.close();
+  }
   const architectureInput = architectureFixture();
   await writeFile(
     path.join(consumer, "graph.json"),
@@ -226,7 +285,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {checkArchitecture} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";const read=p=>JSON.parse(readFileSync(p,"utf8"));console.log(JSON.stringify(checkArchitecture(read("graph.json"),read("architecture.json"))));',
+        'import {checkArchitecture} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";const read=p=>JSON.parse(readFileSync(p,"utf8"));console.log(JSON.stringify(checkArchitecture(read("graph.json"),read("architecture.json"))));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -269,7 +328,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {importJUnit} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";console.log(JSON.stringify(importJUnit(readFileSync("junit.xml","utf8"))));',
+        'import {importJUnit} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";console.log(JSON.stringify(importJUnit(readFileSync("junit.xml","utf8"))));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -307,7 +366,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {exportSarif} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";console.log(JSON.stringify(exportSarif(JSON.parse(readFileSync("validation.json","utf8")))));',
+        'import {exportSarif} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";console.log(JSON.stringify(exportSarif(JSON.parse(readFileSync("validation.json","utf8")))));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -341,7 +400,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {compareFindings} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";const read=p=>JSON.parse(readFileSync(p,"utf8"));console.log(JSON.stringify(compareFindings(read("validation.json"),read("baseline.json"))));',
+        'import {compareFindings} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";const read=p=>JSON.parse(readFileSync(p,"utf8"));console.log(JSON.stringify(compareFindings(read("validation.json"),read("baseline.json"))));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -375,7 +434,7 @@ try {
         args: [
           path.join(
             consumer,
-            "node_modules/@stsepelin/repo-verifier/dist/src/cli.js",
+            "node_modules/@stsepelin/checktrail/dist/src/cli.js",
           ),
           ...launch,
         ],
@@ -449,7 +508,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {retrieveGuidance} from "@stsepelin/repo-verifier";console.log(JSON.stringify(retrieveGuidance({schemaVersion:1,checks:["javascript.node-test"],topics:[]})));',
+        'import {retrieveGuidance} from "@stsepelin/checktrail";console.log(JSON.stringify(retrieveGuidance({schemaVersion:1,checks:["javascript.node-test"],topics:[]})));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -489,7 +548,7 @@ try {
       [
         "--input-type=module",
         "-e",
-        'import {runMutations} from "@stsepelin/repo-verifier";import {readFileSync} from "node:fs";console.log(JSON.stringify(await runMutations("mutation",JSON.parse(readFileSync("mutation/mutations.json","utf8")),{trusted:true})));',
+        'import {runMutations} from "@stsepelin/checktrail";import {readFileSync} from "node:fs";console.log(JSON.stringify(await runMutations("mutation",JSON.parse(readFileSync("mutation/mutations.json","utf8")),{trusted:true})));',
       ],
       { cwd: consumer, encoding: "utf8" },
     ),
@@ -554,7 +613,7 @@ try {
         [
           "--input-type=module",
           "-e",
-          'import {validate} from "@stsepelin/repo-verifier";console.log(JSON.stringify(await validate("cpp",{trusted:true})));',
+          'import {validate} from "@stsepelin/checktrail";console.log(JSON.stringify(await validate("cpp",{trusted:true})));',
         ],
         { cwd: consumer, encoding: "utf8" },
       ),

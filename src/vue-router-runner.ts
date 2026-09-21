@@ -84,7 +84,7 @@ async function main() {
     runtime: {
       schemaVersion: 1,
       format: "runtime-inventory",
-      producer: { name: "repo-verifier.vue-router", version: "1.0.0" },
+      producer: { name: "checktrail.vue-router", version: "1.0.0" },
       assembly: { name: config.assembly, environment: config.environment },
       sourceFingerprint: fingerprint,
       capturedAt: new Date().toISOString(),

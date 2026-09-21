@@ -7,7 +7,7 @@ export async function fixture(
   t: TestContext,
   files: Record<string, string>,
 ): Promise<string> {
-  const root = await mkdtemp(path.join(tmpdir(), "repo-verifier-"));
+  const root = await mkdtemp(path.join(tmpdir(), "checktrail-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   for (const [file, contents] of Object.entries(files)) {
     await mkdir(path.dirname(path.join(root, file)), { recursive: true });

@@ -10,7 +10,7 @@ Other Laravel versions are rejected until their internal API contract is verifie
 The development tool installation is pinned in `scripts/laravel-tools/composer.lock`;
 the distributed package does not include Laravel or install it for consumers.
 
-Select the check in `repo-verifier.json`, and add `repo-verifier.laravel.json`:
+Select the check in `checktrail.json`, and add `checktrail.laravel.json`:
 
 ```json
 {
@@ -91,7 +91,7 @@ imported comparisons do not independently establish freshness of the current tre
 ## Reproduce native evidence
 
 Prepare the development-only locked Composer installation in
-`.repo-verifier/laravel-tools`, build the project, then run
+`.checktrail/laravel-tools`, build the project, then run
 `node scripts/verify-laravel-container.mjs`. It uses installed Composer/PHP and
 Node images, reports their digests, disables container networking and creates
 synthetic fixture copies inside the container. The helper does not pull images.

@@ -1,6 +1,8 @@
+import type { GoBuildSelection } from "./go-build.js";
+import type { GoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalIdentity } from "./external-adapter.js";
 import type { RuntimeInventory } from "./runtime-inventory.js";
-export const VERSION = "0.1.0-dev.0";
+export const VERSION = "0.1.0-alpha.4";
 
 export const PARSERS = [
   "vue-router-json",
@@ -80,6 +82,8 @@ export interface ToolEvidence {
 }
 
 export interface Check {
+  goScope?: GoScopePolicy;
+  goBuild?: GoBuildSelection;
   external?: ExternalIdentity;
   id: string;
   adapter: string;
@@ -154,6 +158,8 @@ export interface Finding {
 }
 
 export interface CheckResult {
+  goScope?: GoScopePolicy;
+  goBuild?: GoBuildSelection;
   external?: ExternalIdentity & {
     tools?: { name: string; version: string; source: "adapter-reported" }[];
   };

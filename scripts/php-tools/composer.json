@@ -1,5 +1,5 @@
 {
-  "name": "stsepelin/repo-verifier-php-fixtures",
+  "name": "stsepelin/checktrail-php-fixtures",
   "description": "Pinned native tools for synthetic verifier fixtures",
   "type": "project",
   "license": "MIT",

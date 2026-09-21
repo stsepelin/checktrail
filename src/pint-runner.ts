@@ -1,15 +1,17 @@
 export const pintRunner = String.raw`
 $tool = realpath($argv[1]);
-Phar::loadPhar($tool, 'repo-verifier-pint.phar');
-$base = 'phar://repo-verifier-pint.phar';
+Phar::loadPhar($tool, 'checktrail-pint.phar');
+$base = 'phar://checktrail-pint.phar';
 $loader = require $base.'/vendor/autoload.php';
 $loader->addClassMap([
     'PhpCsFixer\FixerFactory' => $base.'/overrides/FixerFactory.php',
     'PhpCsFixer\Runner\Parallel\ProcessFactory' => $base.'/overrides/Runner/Parallel/ProcessFactory.php',
 ]);
 $app = require $base.'/bootstrap/app.php';
+$temporary = getenv('CHECKTRAIL_TEMP');
+if ($temporary === false || !is_dir($temporary)) throw new RuntimeException('Missing execution temporary directory');
 $input = new Symfony\Component\Console\Input\ArgvInput([
-    'pint', '--test', '--format=agent', '--cache-file=/dev/null', '--no-ansi', '--no-interaction', '--', ...array_slice($argv, 2),
+    'pint', '--test', '--format=agent', '--cache-file='.$temporary.'/pint-cache.json', '--no-ansi', '--no-interaction', '--', ...array_slice($argv, 2),
 ]);
 $output = new class extends Symfony\Component\Console\Output\BufferedOutput implements Symfony\Component\Console\Output\ConsoleOutputInterface {
     private Symfony\Component\Console\Output\OutputInterface $errors;

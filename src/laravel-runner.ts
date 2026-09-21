@@ -68,7 +68,7 @@ try {
         exit(3);
     }
     $config = json_decode($argv[2], true, flags: JSON_THROW_ON_ERROR);
-    $rv_temporary = sys_get_temp_dir().'/repo-verifier-laravel-'.bin2hex(random_bytes(16));
+    $rv_temporary = sys_get_temp_dir().'/checktrail-laravel-'.bin2hex(random_bytes(16));
     if (!mkdir($rv_temporary, 0700)) throw new RuntimeException('Cannot create temporary cache directory');
     register_shutdown_function(function () use ($rv_temporary) {
         foreach (glob($rv_temporary.'/*') as $file) if (is_file($file) || is_link($file)) @unlink($file);
@@ -157,7 +157,7 @@ try {
         foreach (rv_property($app, 'instances') as $abstract => $instance) rv_add($entries, 'instance:'.$abstract, ['type' => 'instance', 'abstract' => $abstract, 'target' => is_object($instance) ? get_class($instance) : 'scalar:'.rv_scalar_hash($instance)]);
     });
     $result = ['version' => 1, 'laravelVersion' => Illuminate\Foundation\Application::VERSION, 'entryCount' => array_sum(array_map(fn ($collection) => count($collection['entries']), $collections)), 'runtime' => [
-        'schemaVersion' => 1, 'format' => 'runtime-inventory', 'producer' => ['name' => 'repo-verifier.laravel-runtime', 'version' => '1.0.0'],
+        'schemaVersion' => 1, 'format' => 'runtime-inventory', 'producer' => ['name' => 'checktrail.laravel-runtime', 'version' => '1.0.0'],
         'assembly' => ['name' => $config['assembly'], 'environment' => $config['environment']], 'sourceFingerprint' => $argv[3], 'capturedAt' => gmdate('Y-m-d\TH:i:s\Z'), 'collections' => $collections,
     ]];
     fwrite(STDOUT, json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));

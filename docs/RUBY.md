@@ -46,4 +46,5 @@ helper. `scripts/required-native-tests.json` identifies the exact native regress
 that must pass. The required-test runner rejects skips, TODOs, missing or duplicate
 required names, and failures elsewhere in the selected test file. A passing unit
 test cannot replace the native regression. This job definition and its local
-Linux/Node 22 execution are verified; a hosted job result remains pending.
+Linux/Node 22 execution are verified. The hosted job also passed at `52ba415`;
+see `NATIVE-CI.md` for the separate run evidence.

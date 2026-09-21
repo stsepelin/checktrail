@@ -26,16 +26,17 @@ Native cases passed with pytest 9.1.1 and Python 3.12.13 in an official Linux
 container, with network access disabled and synthetic source mounted read-only.
 The host's default Python has no pytest, so the ordinary host suite explicitly
 skips the native case; parser and planning tests still run. The CI definition
-installs pinned development tools before tests; hosted CI has not run.
+installs pinned development tools before tests. The hosted profile passed at
+`52ba415`; see `NATIVE-CI.md`.
 
 For the separate container check, prepare dependencies deliberately before
 validation (requires an already installed `python:3.12-alpine` image):
 
 ```sh
-mkdir -p .repo-verifier/python-tools
+mkdir -p .checktrail/python-tools
 docker run --rm \
   --mount "type=bind,src=$PWD,target=/repo,readonly" \
-  --mount "type=bind,src=$PWD/.repo-verifier/python-tools,target=/tools" \
+  --mount "type=bind,src=$PWD/.checktrail/python-tools,target=/tools" \
   python:3.12-alpine python3 -m pip install --no-cache-dir --target /tools \
   -r /repo/scripts/python-tools.requirements.txt
 npm run build

@@ -17,7 +17,7 @@ function installedImage(name) {
 }
 const image = installedImage("rust:1.98.1-alpine");
 const nodeImage = installedImage("node:22-alpine");
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-rust-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-rust-"));
 const rustc = execFileSync(
   "docker",
   ["run", "--rm", "--network", "none", image, "rustup", "which", "rustc"],

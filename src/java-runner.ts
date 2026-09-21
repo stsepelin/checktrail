@@ -47,7 +47,7 @@ async function main() {
   const files = await Promise.all(
     invocation.scope.map((file) => withinRoot(root, path.join(project, file))),
   );
-  const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-java-"));
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-java-"));
   try {
     const helper = path.join(temporary, "VerifierCompiler.java");
     const config = path.join(temporary, "inputs.txt");
