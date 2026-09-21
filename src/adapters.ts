@@ -1,3 +1,4 @@
+import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { clangCheck } from "./clang.js";
@@ -348,11 +349,15 @@ export async function checksFor(
         parser: "go-scope-test",
         scope: goFiles,
         commands: [
-          goScopeCommand(project.path, {
-            ...env,
-            CGO_ENABLED: "1",
-            GORACE: "exitcode=66 log_path=stderr",
-          }),
+          goScopeCommand(
+            project.path,
+            {
+              ...env,
+              CGO_ENABLED: "1",
+              GORACE: "exitcode=66 log_path=stderr",
+            },
+            true,
+          ),
           {
             executable: "go",
             args: ["test", "-race", "-json", "-count=1", "./..."],
@@ -395,6 +400,7 @@ export async function checksFor(
           "Run installed Staticcheck with all checks, surfaced suppressions and native Go file accounting.",
       });
     if (explicit) checks.push(await golangciCheck(source, project));
+    await applyGoScopePolicy(source, project, checks);
     return checks;
   }
   if (project.adapter === "infrastructure") {

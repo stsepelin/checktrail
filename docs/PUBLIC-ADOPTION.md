@@ -61,8 +61,9 @@ The [compiler compatibility fix](TYPESCRIPT.md) is published in alpha.3. Its exa
 release artifact passes the known-case mitt replay with TypeScript 4.9.5 through
 the CLI, library and MCP; see [release verification](RELEASE.md). The observations
 above still describe published alpha.2; they are not replaced by the fixed source
-checkout's results. Workflow/documentation setup and Go platform coverage remain
-separate work.
+checkout's results. The [setup scope guide](SETUP-SCOPES.md) explains omitted workflows and documentation.
+An unreleased [Go scope policy](GO-SCOPE.md) now supports exact native-confirmed
+exclusions; a target matrix remains separate work.
 
 ## Reproduce
 

@@ -1,3 +1,4 @@
+import type { GoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalIdentity } from "./external-adapter.js";
 import type { RuntimeInventory } from "./runtime-inventory.js";
 export const VERSION = "0.1.0-alpha.3";
@@ -80,6 +81,7 @@ export interface ToolEvidence {
 }
 
 export interface Check {
+  goScope?: GoScopePolicy;
   external?: ExternalIdentity;
   id: string;
   adapter: string;
@@ -154,6 +156,7 @@ export interface Finding {
 }
 
 export interface CheckResult {
+  goScope?: GoScopePolicy;
   external?: ExternalIdentity & {
     tools?: { name: string; version: string; source: "adapter-reported" }[];
   };

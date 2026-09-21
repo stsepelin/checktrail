@@ -20,8 +20,10 @@ separate states. Follow the linked evidence for tested versions and limits.
 JavaScript, TypeScript, Python, Go and PHP libraries. They expose an older
 TypeScript compiler-option incompatibility and workflow/documentation/platform
 coverage friction. The [alpha.3 compiler fix](TYPESCRIPT.md) now passes the
-known TypeScript 4.9.5 case; workflow/documentation and platform coverage remain
-follow-up work. The observations do not establish full upstream CI coverage or
+known TypeScript 4.9.5 case. [Setup guidance](SETUP-SCOPES.md) distinguishes
+workflow/documentation coverage; an unreleased [Go scope policy](GO-SCOPE.md)
+accounts for explicitly acknowledged native exclusions. Broader target coverage
+remains follow-up work. The observations do not establish full upstream CI coverage or
 general review effectiveness.
 
 1. Extend independently authored evaluation cohorts to additional implemented

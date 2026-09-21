@@ -97,6 +97,18 @@ test(
         "//go:build hidden_fixture\n\npackage sample\nfunc Hidden() { invalid() }\n",
       );
       assert.equal((await validate(root, options)).outcome, "incomplete");
+      await writeFile(
+        path.join(root, "checktrail.go-scope.json"),
+        JSON.stringify({
+          schemaVersion: 1,
+          excludedFiles: [{ path: "excluded.go", reason: "Other target" }],
+        }),
+      );
+      assert.equal((await validate(root, options)).outcome, "passed");
+      await writeFile(path.join(root, "value.go"), bad);
+      assert.equal((await validate(root, options)).outcome, "failed");
+      await writeFile(path.join(root, "value.go"), good);
+      await rm(path.join(root, "checktrail.go-scope.json"));
       await rm(path.join(root, "excluded.go"));
       for (const value of [
         'version: "2"\nlinters:\n  default: none\n',

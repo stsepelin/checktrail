@@ -13,6 +13,14 @@ The GitHub alpha.3 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
+## Unreleased changes
+
+- [Go scope policy](GO-SCOPE.md): exact per-file declarations can acknowledge
+  native build-constraint exclusions. Go must confirm every exemption; stale
+  declarations and other omissions remain incomplete. Detailed reports retain
+  reasons and summaries show counts. Formatting still covers all source. Race
+  package listing now uses the same `-race` constraints as execution.
+
 ## Alpha.3 release
 
 - [TypeScript compatibility](TYPESCRIPT.md): plain typechecking now passes the

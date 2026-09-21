@@ -194,6 +194,7 @@ export function evaluate(
   root?: string,
 ): CheckResult {
   const result: CheckResult = {
+    ...(check.goScope ? { goScope: check.goScope } : {}),
     ...(check.external ? { external: check.external } : {}),
     id: check.id,
     adapter: check.adapter,
@@ -270,7 +271,7 @@ export function evaluate(
     )
       return set(
         "inconclusive",
-        "Native Go selection omitted inventoried source, a package has no passing test, or scope could not be established.",
+        "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
       );
     return { ...result, ...(native.tests ? { tests: native.tests } : {}) };
   }

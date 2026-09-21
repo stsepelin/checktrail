@@ -1,3 +1,5 @@
+import { goScopePolicySchema } from "./go-scope-policy.js";
+export { goScopePolicySchema } from "./go-scope-policy.js";
 import { externalIdentitySchema } from "./external-adapter.js";
 export {
   externalManifestSchema,
@@ -147,6 +149,7 @@ export const reportSchema = z.strictObject({
       adapter: z.string(),
       project: z.string(),
       scope: strings,
+      goScope: goScopePolicySchema.optional(),
       status,
       reason: z.string(),
       processes: z.array(processResult),
@@ -191,7 +194,12 @@ export const reportSummarySchema = z.strictObject({
   ...reportMetadata,
   selection: selectionSummary.optional(),
   checks: z.array(
-    z.strictObject({ id: z.string(), status, tests: tests.optional() }),
+    z.strictObject({
+      id: z.string(),
+      status,
+      tests: tests.optional(),
+      goExcludedFileCount: count.optional(),
+    }),
   ),
 });
 
@@ -217,6 +225,7 @@ export const planSchema = z.strictObject({
       adapter: z.string(),
       project: z.string(),
       scope: strings,
+      goScope: goScopePolicySchema.optional(),
       kind,
       parser: z.enum(PARSERS),
       commands: z.array(command),
@@ -234,7 +243,14 @@ export const planSummarySchema = z.strictObject({
   projectCount: count,
   adapters: strings,
   excludedCount: count,
-  checks: z.array(z.strictObject({ id: z.string(), kind, ready: z.boolean() })),
+  checks: z.array(
+    z.strictObject({
+      id: z.string(),
+      kind,
+      ready: z.boolean(),
+      goExcludedFileCount: count.optional(),
+    }),
+  ),
 });
 
 export const junitImportSchema = z.strictObject({

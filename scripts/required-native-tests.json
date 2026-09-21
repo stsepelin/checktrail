@@ -235,6 +235,26 @@
     {
       "file": "dist/test/golangci.test.js",
       "name": "golangci-lint evidence needs an active configured linter and complete native scope"
+    },
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "native Go scope honors exact declared exclusions without hiding active errors or stale policy"
+    },
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "Go scope planning retains policy for every native profile, keeps formatting whole and executes nothing"
+    },
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "Go scope policy rejects globs, escapes, duplicate paths, blank reasons, foreign files and symlinks"
+    },
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "Go scope exemption evidence reconciles all selected and ignored native files and test packages"
+    },
+    {
+      "file": "dist/test/go-race.test.js",
+      "name": "native Go race scope uses race build constraints and rejects stale exclusions"
     }
   ],
   "php-tools": [
