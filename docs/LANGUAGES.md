@@ -115,3 +115,8 @@ skip, so its aggregate pass count is not evidence for every native profile.
 The prepared CI language profiles and native container helpers require exact
 regression names through `NATIVE-CI.md`. Their required results are separate from
 the optional skips allowed by a developer's general test suite.
+
+[Public adoption measurements](PUBLIC-ADOPTION.md) record alpha.2 on pinned
+JavaScript, TypeScript, Python, Go and PHP libraries. TypeScript 4.9.5 rejects
+the adapter's `--noCheck` option; this older version is not verified support.
+Go platform exclusions remain inconclusive even when native tests exit zero.

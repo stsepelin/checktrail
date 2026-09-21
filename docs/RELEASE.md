@@ -11,6 +11,9 @@ fresh/warm caches and MCP pass/fail/incomplete results were verified. Alpha.2 ad
 is active and matches `server.json`, with execution disabled. The Registry omits
 `isSecret: false`, whose schema default is false. No credentials or automatic
 publishing workflow are stored here.
+The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
+points to source commit `4ce8398` and includes the same tarball plus `SHA256SUMS`.
+The downloaded release asset was verified against the digest above.
 
 Publication is configured for npm's `next` tag. After alpha.1 publication, the
 registry assigned both `next` and `latest` to that preview; attempts to remove

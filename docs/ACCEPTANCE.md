@@ -16,6 +16,12 @@ separate states. Follow the linked evidence for tested versions and limits.
 
 ## Remaining work that can proceed locally
 
+[Public adoption measurements](PUBLIC-ADOPTION.md) now cover five pinned
+JavaScript, TypeScript, Python, Go and PHP libraries. They expose an older
+TypeScript compiler-option incompatibility and workflow/documentation/platform
+coverage friction. These remain follow-up work; the observations do not establish
+full upstream CI coverage or general review effectiveness.
+
 1. Extend independently authored evaluation cohorts to additional implemented
    language/rule families, preserving the verifier freeze and recording exact
    selection, exclusions, native baselines and interpretation limits. New fixtures
@@ -46,8 +52,9 @@ unadvertised until routing and the integrated wire/lifecycle suite pass. See
 The public repository, npm preview `0.1.0-alpha.2` and its MCP Registry entry are
 published. The [hosted run at 4ce8398](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
 passed all jobs, and fresh public installation was verified. Alpha.2 adds
-[setup commands](ONBOARDING.md). npm tag cleanup and GitHub releases remain
-separate work. The repository's explicit-action requirements still apply.
+[setup commands](ONBOARDING.md). The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
+is also published with the verified tarball and checksum. npm tag cleanup remains
+unresolved. The repository's explicit-action requirements still apply.
 `RELEASE.md` defines the concrete
 candidate checks and the authorization sequence; a local green run does not
 replace external acceptance.

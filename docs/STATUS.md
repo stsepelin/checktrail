@@ -9,6 +9,9 @@ passed all jobs. The published tarball matched the reviewed artifact; fresh
 registry installation, CLI/library validation, generated npx startup and MCP
 execution/trust behavior were verified. Earlier toolchain evidence remains in
 `NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
+The GitHub alpha.2 prerelease includes the verified artifact and checksum.
+[Public adoption](PUBLIC-ADOPTION.md) records the published package on five pinned
+libraries, including incomplete coverage and a TypeScript 4.9.5 incompatibility.
 
 ## Implemented
 

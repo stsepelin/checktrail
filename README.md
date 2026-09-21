@@ -16,6 +16,8 @@ and MCP configuration generator.
 [Release preparation](docs/RELEASE.md) records publication and verification gates. The
 [milestone audit](docs/ACCEPTANCE.md) separates implemented profiles from open
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
+[Public adoption](docs/PUBLIC-ADOPTION.md) records the published package on five
+pinned libraries, including setup friction and compatibility gaps.
 
 The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
 passed at release commit `4ce8398` on Linux and macOS. The exact npm tarball and

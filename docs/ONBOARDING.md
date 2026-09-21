@@ -3,6 +3,11 @@
 These commands are available in `0.1.0-alpha.2`. Follow the
 [installation guide](INSTALLATION.md), with Node.js 22+ on macOS/Linux.
 
+[Public adoption observations](PUBLIC-ADOPTION.md) show setup on real libraries,
+including nested documentation projects, workflow prerequisites and older compiler
+limitations. A narrowed policy can pass its selected checks while leaving other
+repository checks unverified.
+
 ## Preview and create a policy
 
 ```sh
