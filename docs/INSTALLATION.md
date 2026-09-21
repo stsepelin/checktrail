@@ -9,6 +9,9 @@ Use Node.js 22 or newer on macOS or Linux. Windows execution is not supported.
 Install each project's compilers, linters and test runners separately; Checktrail
 does not download them. Missing tools produce incomplete results.
 
+For agent workflows, see [installing skills with `npx skills`](SKILLS.md).
+Skills install separately from the engine and MCP configuration.
+
 ## CLI
 
 Install the exact version once:
