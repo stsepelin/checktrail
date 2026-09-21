@@ -1,70 +1,68 @@
 # Releases and publication
 
 The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
-The published preview is `@stsepelin/checktrail@0.1.0-alpha.3`.
+The published preview is `@stsepelin/checktrail@0.1.0-alpha.4`.
 Its downloaded npm artifact and GitHub release asset match the reviewed SHA-256:
 
 ```text
-261d10acbac14dcd5d74f4b248a390e5790f22461fecd597e29b8044aef2daeb
+4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c
 ```
 
-The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.3)
-and tag point to source commit `b0b447d5ea8973b3e427e179201a44b7baa1ca91` and include
-the same tarball plus `SHA256SUMS`. The [hosted release run](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
-passed all jobs. The [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.3)
+The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.4)
+and tag point to source commit `ebe7f5c114428aebc5084a2a33d38113cad13583` and include
+the same tarball plus `SHA256SUMS`. The [hosted release run](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+passed all jobs. The [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.4)
 is active and matches `server.json`, with execution disabled. The Registry omits
 `isSecret: false`, whose schema default is false.
 
 Fresh public-registry installation verified CLI/library validation, generated
 npx startup with fresh/warm caches, onboarding, and MCP pass/fail/incomplete
 results, retained reports and execution denial. The exact artifact also passed
-offline installation, alpha.2 → alpha.3 → alpha.2 upgrade/rollback, the known mitt
-TypeScript 4.9.5 replay, Claude Code health/discovery and Codex direct MCP calls.
-The [release record](measurements/release-alpha3.json) links these observations to
+offline installation, alpha.3 → alpha.4 → alpha.3 upgrade/rollback, the known UUID
+scope replay, Claude Code health/discovery and Codex direct MCP calls. A clean
+archive of the committed source, rebuilt with the same installed compiler and
+dependencies on the same host, produced an identical tarball. This does not
+establish cross-platform reproducibility.
+The [release record](measurements/release-alpha4.json) links these observations to
 the artifact; client profile limits remain in [CLIENTS.md](CLIENTS.md).
 
-## Alpha.4 candidate (unpublished)
+## Alpha.4 scope
 
-The checkout prepares `0.1.0-alpha.4` with optional exact Go file exclusions in
-`checktrail.go-scope.json`. Native package evidence must account for each declared
-exclusion. Active, absent or otherwise unaccounted-for declarations cannot pass.
-Go formatting continues to cover the full source inventory, and race-test package
-discovery now uses the same `-race` constraints as execution. See [GO-SCOPE.md](GO-SCOPE.md).
+Alpha.4 adds optional exact Go file exclusions in `checktrail.go-scope.json`.
+Native package evidence must account for each declared exclusion. Active, absent
+or otherwise unaccounted-for declarations cannot pass. Go formatting continues
+to cover the full source inventory, and race-test package discovery now uses the
+same `-race` constraints as execution. See [GO-SCOPE.md](GO-SCOPE.md).
 
 Detailed plan/report schemas add an optional `goScope` declaration and summaries
 add an optional `goExcludedFileCount`. Consumers that validate with older strict
 schemas must update their schemas before accepting these fields. The policy is
 opt-in; existing projects retain strict scope accounting. Dependencies are unchanged.
 
-Alpha.3 does not understand the new sidecar policy. Rolling back keeps its bytes
-on disk but restores strict Go accounting, so a project relying on exclusions can
-become incomplete. Exclusions never establish validation of another platform or
-custom build-tag configuration. No cross-target execution is added.
+Alpha.3 does not understand the new sidecar policy. The synthetic Go upgrade test
+verified that rollback keeps its bytes on disk but restores strict Go accounting:
+a project relying on exclusions becomes incomplete. Exclusions never establish
+validation of another platform or custom build-tag configuration. No cross-target
+execution is added.
 
-Candidate verification and commit approval precede publication. The installed MCP
-SDK routing probe was rechecked on 2026-09-21: standard Tasks remains unavailable;
-see [MCP-COMPATIBILITY.md](MCP-COMPATIBILITY.md). The published preview and artifact
-described above remain alpha.3 until a new release is explicitly authorized and verified.
+The installed MCP SDK routing probe was rechecked on 2026-09-21: standard Tasks
+remains unavailable; see [MCP-COMPATIBILITY.md](MCP-COMPATIBILITY.md). The release
+targets Node.js 22 or newer on macOS and Linux. The immutable tarball contains
+preparation-time candidate documentation; current source documentation records
+verified publication.
 
-## Alpha.3 scope
+## Distribution tags and previous releases
 
-Alpha.3 fixes the plain TypeScript adapter's unsupported `--noCheck` argument on
-the exercised TypeScript 4.9.5 profile, retaining the TypeScript 6.0.3 override and
-native file accounting. Vue uses the same capability helper with its verified
-modern toolchain; solution-build remains gated to TypeScript 6.0.3. See
-[TYPESCRIPT.md](TYPESCRIPT.md). Dependencies and report/policy schemas did not change.
-
-The release targets Node.js 22 or newer on macOS and Linux. It does not add
-standard MCP Tasks or legacy Vue support. The historical alpha.2
-[adoption record](PUBLIC-ADOPTION.md) remains unchanged; its initial failures are
-not rewritten as alpha.3 successes. The immutable tarball contains preparation-time
-candidate documentation; current source documentation records verified publication.
-
-## Distribution tags and previous release
-
-`next` points to alpha.3. `latest` remains on alpha.1 because npm rejected its
+`next` points to alpha.4. `latest` remains on alpha.1 because npm rejected its
 removal. Use exact versions; neither tag implies a stable release. Never republish
 an existing version. No credentials or automatic publishing workflow are stored here.
+
+The [alpha.3 prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.3)
+fixed the plain TypeScript adapter's unsupported `--noCheck` argument on the
+exercised TypeScript 4.9.5 profile, retaining the TypeScript 6.0.3 override and
+native file accounting. Vue and solution-build retain their separately verified
+versions; see [TYPESCRIPT.md](TYPESCRIPT.md). The [alpha.3 record](measurements/release-alpha3.json)
+preserves its source, artifact, CI and known mitt replay evidence.
 
 The [alpha.2 prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
 introduced [setup and diagnosis](ONBOARDING.md), from source commit `4ce8398`.
@@ -72,6 +70,8 @@ Its reviewed and downloaded artifact has SHA-256
 `ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb`.
 Its [hosted run](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
 and fresh installation checks passed; its npm and Registry versions remain published.
+The historical alpha.2 [adoption record](PUBLIC-ADOPTION.md) remains unchanged;
+its initial failures are not rewritten as later-release successes.
 
 ## Prepared artifacts
 
@@ -89,8 +89,8 @@ and fresh installation checks passed; its npm and Registry versions remain publi
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. The [hosted run at b0b447d](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
-  passed all jobs for the alpha.3 release commit. The local Claude Code health/discovery and
+  exercised. The [hosted run at ebe7f5c](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+  passed all jobs for the alpha.4 release commit. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry

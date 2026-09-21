@@ -4,7 +4,7 @@ Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
 Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
 
-**Published preview: 0.1.0-alpha.3.** Public source is available at
+**Published preview: 0.1.0-alpha.4.** Public source is available at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
@@ -20,13 +20,14 @@ acceptance work; [client checks](docs/CLIENTS.md) record actual application cove
 pinned libraries, including setup friction and compatibility gaps.
 Alpha.3 fixes the recorded [TypeScript 4.9.5 incompatibility](docs/TYPESCRIPT.md).
 The [setup scope guide](docs/SETUP-SCOPES.md) explains language, documentation and workflow coverage.
-The local checkout prepares **0.1.0-alpha.4**, adding explicit [Go scope exclusions](docs/GO-SCOPE.md)
-and matching race-test package discovery. Alpha.4 is not published yet.
+Alpha.4 adds explicit [Go scope exclusions](docs/GO-SCOPE.md) and matching
+race-test package discovery. Its [release record](docs/measurements/release-alpha4.json)
+includes package, client and upgrade/rollback verification.
 
-The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
-passed at release commit `b0b447d` on Linux and macOS. The exact npm tarball and
+The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+passed at release commit `ebe7f5c` on Linux and macOS. The exact npm tarball and
 fresh CLI/MCP installations were verified. The
-[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.3)
+[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.4)
 is active; execution remains disabled by default.
 
 Checktrail discovers projects, plans registered checks, invokes native tools

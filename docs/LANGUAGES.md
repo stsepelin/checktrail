@@ -126,7 +126,7 @@ TypeScript 4.9.5 and 6.0.3 using native capability-aware arguments. Published
 alpha.2 retains the recorded older-compiler limitation; Vue and solution-build
 profiles retain their separately verified versions.
 
-The source checkout adds an unreleased [Go scope policy](GO-SCOPE.md) for exact,
+Alpha.4 adds a [Go scope policy](GO-SCOPE.md) for exact,
 native-confirmed ignored files. It retains unverified exclusions in reports and
 does not claim a build matrix or add custom build-tag execution. Published alpha.3
 keeps the original strict exclusion behavior.

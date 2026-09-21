@@ -55,15 +55,17 @@ operations were checked against the project tree.
 These are recorded adoption gaps, not fixes applied to the immutable alpha.2
 package. No new engine version is published by this exercise.
 
-## Alpha.3 follow-up
+## Release follow-ups
 
 The [compiler compatibility fix](TYPESCRIPT.md) is published in alpha.3. Its exact
 release artifact passes the known-case mitt replay with TypeScript 4.9.5 through
 the CLI, library and MCP; see [release verification](RELEASE.md). The observations
 above still describe published alpha.2; they are not replaced by the fixed source
 checkout's results. The [setup scope guide](SETUP-SCOPES.md) explains omitted workflows and documentation.
-An unreleased [Go scope policy](GO-SCOPE.md) now supports exact native-confirmed
-exclusions; a target matrix remains separate work.
+Alpha.4 publishes the [Go scope policy](GO-SCOPE.md) for exact native-confirmed
+exclusions. Its [release record](measurements/release-alpha4.json) repeats the known
+UUID case with the exact artifact later published; the excluded JavaScript target stays unverified.
+A target matrix remains separate work.
 
 ## Reproduce
 

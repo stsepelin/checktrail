@@ -1,6 +1,6 @@
 # Application client compatibility
 
-The [alpha.3 release record](measurements/release-alpha3.json) repeats the named
+The [alpha.4 release record](measurements/release-alpha4.json) repeats the named
 profiles below against the exact published artifact. The original standalone
 snapshots predate the Checktrail rename and retain their original identities.
 A future release needs its own checks; see [RENAMING.md](RENAMING.md).
@@ -108,4 +108,4 @@ The runtime digest identifies the installed `dist/src` tree independently.
 These local checks satisfy only the named client profiles. Claude Desktop,
 Cursor, VS Code integrations, other client versions and target operating systems
 remain unverified. These original snapshots do not establish public installation or hosted CI;
-alpha.3 publication and hosted evidence are recorded separately in [RELEASE.md](RELEASE.md).
+alpha.4 publication and hosted evidence are recorded separately in [RELEASE.md](RELEASE.md).

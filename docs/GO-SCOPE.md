@@ -27,10 +27,10 @@ programs. Cross-module workspace builds need a separate explicit profile. Native
 compiler/analyzer caches may be used; test result caching remains disabled.
 Dependencies and toolchains must be prepared separately.
 
-## Explicit exclusions in the source checkout (unreleased)
+## Explicit exclusions (alpha.4 and later)
 
-The source checkout adds `checktrail.go-scope.json` at each Go module root.
-Published alpha.3 does not support this policy yet. Opt in only after reviewing
+Alpha.4 adds `checktrail.go-scope.json` at each Go module root. Earlier releases
+do not support this policy. Opt in only after reviewing
 which files the intended native run leaves unverified:
 
 ```json
@@ -90,6 +90,11 @@ this is a known-case regression replay, not independent effectiveness evidence.
 The upstream tracked files and original policy were preserved; temporary scope
 policy and failing control were removed. The record identifies the tested tarball
 and runtime source hashes; adding this record changes later package bytes.
+
+The exact alpha.4 release candidate repeated this replay before publication; see
+the [release record](measurements/release-alpha4.json). Its synthetic upgrade test
+also confirms that rolling back to alpha.3 preserves the policy file but restores
+strict scope accounting: a project relying on exclusions becomes incomplete.
 
 ## Staticcheck
 

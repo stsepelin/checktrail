@@ -3,21 +3,20 @@
 This is an experimental foundation with public source at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
-The `0.1.0-alpha.3` preview is published on npm and active in the MCP Registry.
-The [hosted run at b0b447d](https://github.com/stsepelin/checktrail/actions/runs/35597877167)
+The `0.1.0-alpha.4` preview is published on npm and active in the MCP Registry.
+The [hosted run at ebe7f5c](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
 passed all jobs. The published tarball matched the reviewed artifact; fresh
 registry installation, CLI/library validation, generated npx startup and MCP
 execution/trust behavior were verified. Earlier toolchain evidence remains in
 `NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
-The GitHub alpha.3 prerelease includes the verified artifact and checksum.
+The GitHub alpha.4 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
-## Alpha.4 candidate (unpublished)
+## Alpha.4 release
 
-The checkout version is `0.1.0-alpha.4`. Release verification is in progress;
-alpha.3 remains the published preview. No alpha.4 publication or hosted release
-verification is claimed.
+The [release record](measurements/release-alpha4.json) ties the published artifact
+to hosted CI, fresh installation, client profiles and upgrade/rollback checks.
 
 - [Go scope policy](GO-SCOPE.md): exact per-file declarations can acknowledge
   native build-constraint exclusions. Go must confirm every exemption; stale
@@ -177,7 +176,7 @@ a general speedup/graph-completeness claim.
 ## Release preparation
 
 `server.json`, the npm package and the engine identify the published
-`0.1.0-alpha.3` preview. Its source commit passed hosted CI, the published tarball
+`0.1.0-alpha.4` preview. Its source commit passed hosted CI, the published tarball
 matched the reviewed artifact, and fresh CLI/library/MCP installation checks passed.
 Publication evidence and the sequence for future releases are in `RELEASE.md`.
 
@@ -537,15 +536,23 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
-1. Broaden runtime matrices and native PHP tooling.
-2. Framework-specific scope and integration contracts.
-3. Framework integration and additional verified linter profiles.
-4. Additional ecosystem adapters and their native evidence.
-5. Semantic framework rules and native runtime collectors. Public check profiles,
-   finding ratchets and local private policy overlays are implemented; existing
-   private instruction files have not been migrated.
-6. Durable Tasks support after a compatible SDK passes the routing probe; the
-   lifecycle and persistence acceptance gates are in `MCP-COMPATIBILITY.md`.
+1. Add explicit Go build-tag profiles with scope accounting for each selected
+   configuration. Prove active, excluded and stale-file behavior on native runs
+   before adding a target matrix. Alpha.4's exclusions do not validate those targets;
+   see `GO-SCOPE.md`.
+2. Integrate standard MCP Tasks after a compatible SDK passes the routing probe.
+   Then verify negotiation, ordinary-call fallback, worker/store integration,
+   cancellation, restart and privacy together; see `MCP-COMPATIBILITY.md`.
+3. Extend independently authored evaluation cohorts to further implemented
+   language/rule families. Preserve frozen evidence and separate known-case
+   replays from independent measurements; see `ACCEPTANCE.md`.
+4. Broaden runtime/tool versions, framework contracts and native collectors only
+   with their own broken/fixed/near-miss evidence and required CI profiles;
+   see `LANGUAGES.md` and `NATIVE-CI.md`.
+5. Resolve the baseline, labeled public cases and adjudication for the planned
+   prior-workflow comparison; see `PRIOR-WORKFLOW-EVALUATION.md`. Existing private
+   instruction files have not been migrated, and publication does not establish
+   equal-or-better review quality.
 
 Complete dependency/tool/environment fingerprints, automatically inferred workspace graphs,
 remote/executable private plugins, native import-graph collection, remote serving, durable Tasks,
