@@ -13,7 +13,7 @@ The GitHub alpha.2 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records the published package on five pinned
 libraries, including incomplete coverage and a TypeScript 4.9.5 incompatibility.
 
-## Unreleased changes
+## Alpha.3 candidate (unpublished)
 
 - [TypeScript compatibility](TYPESCRIPT.md): plain typechecking now passes the
   native 4.9.5 regression while retaining the 6.0.3 `noCheck` override and native
@@ -164,11 +164,11 @@ a general speedup/graph-completeness claim.
 
 ## Release preparation
 
-`server.json` and npm `mcpName` describe the published `0.1.0-alpha.2` preview.
-The metadata passed the pinned official registry schema, and the public Registry
-entry is active. Fresh installed SDK-client checks verified startup, planning and
-execution denial with the default configuration. Hosted source evidence and the
-published tarball verification are recorded in `RELEASE.md`.
+`server.json`, the npm package and the engine identify the unpublished
+`0.1.0-alpha.3` candidate. The currently published npm and Registry release is
+alpha.2. The candidate adds legacy TypeScript compatibility; publication requires
+its source commit to pass hosted CI and its exact tarball to pass release checks.
+Historical publication evidence and the candidate sequence are in `RELEASE.md`.
 
 ## Pinned pack distribution
 

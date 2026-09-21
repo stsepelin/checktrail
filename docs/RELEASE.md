@@ -8,7 +8,7 @@ Fresh registry installation, CLI/library validation, generated npx startup with
 fresh/warm caches and MCP pass/fail/incomplete results were verified. Alpha.2 adds
 [setup and diagnosis](ONBOARDING.md). The
 [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.2)
-is active and matches `server.json`, with execution disabled. The Registry omits
+is active and matches the alpha.2 release metadata, with execution disabled. The Registry omits
 `isSecret: false`, whose schema default is false. No credentials or automatic
 publishing workflow are stored here.
 The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.2)
@@ -20,6 +20,23 @@ registry assigned both `next` and `latest` to that preview; attempts to remove
 `latest` returned HTTP 400. Alpha.2 publication updated `next` while leaving
 `latest` on alpha.1. Cleanup remains unresolved; use exact versions, do not treat
 `latest` as evidence of a stable release, and never republish an existing version.
+
+## Alpha.3 candidate (unpublished)
+
+The source candidate is `0.1.0-alpha.3`. It fixes the plain TypeScript adapter's
+unsupported `--noCheck` argument on the exercised TypeScript 4.9.5 profile, while
+retaining the TypeScript 6.0.3 override and native file accounting. Vue uses the
+same capability helper with its existing verified modern toolchain; the separate
+solution-build profile remains gated to TypeScript 6.0.3. See [TYPESCRIPT.md](TYPESCRIPT.md).
+No dependencies or report/policy schemas change in this release preparation.
+The alpha.2 adoption record remains historical evidence.
+
+The candidate still targets Node.js 22 or newer on macOS and Linux. It does not
+add standard MCP Tasks or legacy Vue support. Registry metadata keeps execution
+disabled by default. Publication will use npm's `next` tag after release checks
+and hosted CI succeed; the alpha.2 publication evidence above does not verify
+this candidate. Exact artifact, client and upgrade/rollback evidence is retained
+outside the package allowlist until publication is verified.
 
 ## Prepared artifacts
 
@@ -74,7 +91,7 @@ After explicit approval and npm authentication for the `@stsepelin` scope, publi
 the approved file, not a newly packed working tree:
 
 ```sh
-npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.2.tgz \
+npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.3.tgz \
   --tag next --access public --ignore-scripts --registry=https://registry.npmjs.org
 ```
 
