@@ -1,5 +1,9 @@
 # Language and ecosystem roadmap
 
+The alpha.2 candidate's [setup guide](ONBOARDING.md) describes conservative
+per-language configuration proposals and static tool diagnosis. Setup does not
+extend the execution capabilities or native evidence listed below.
+
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,

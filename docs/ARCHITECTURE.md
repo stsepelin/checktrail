@@ -58,7 +58,9 @@ pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
 POSIX hosts, and propagate cancellation. No automatic dependency installation,
-source rewriting, infrastructure startup, deployment or repository mutation.
+source rewriting, infrastructure startup or deployment. The explicit `init --write`
+setup command can create a new `checktrail.json`; it preserves existing
+configuration and grants no execution. See [ONBOARDING.md](ONBOARDING.md).
 Executed project code still has the process user's privileges; this is not a
 sandbox. Tests may modify files or access networks and must be trusted accordingly.
 

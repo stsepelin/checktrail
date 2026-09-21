@@ -3,7 +3,7 @@
   "name": "io.github.stsepelin/checktrail",
   "title": "Checktrail",
   "description": "Local code validation with explicit execution trust and evidence of what actually ran.",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "repository": {
     "url": "https://github.com/stsepelin/checktrail",
     "source": "github"
@@ -13,7 +13,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@stsepelin/checktrail",
-      "version": "0.1.0-alpha.1",
+      "version": "0.1.0-alpha.2",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

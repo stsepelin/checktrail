@@ -1,12 +1,20 @@
 # Release preparation
 
 The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail);
-the first preview is `0.1.0-alpha.1`. `server.json` describes the
-intended `io.github.stsepelin/checktrail` MCP registry identity and the matching
-`@stsepelin/checktrail` npm package. The npm and registry names are proposed
-metadata, not evidence of a published package or registry entry. Package publishing
-is configured for public access on npm's `next` tag. No credentials or automatic
-publishing workflow are stored in this repository.
+`@stsepelin/checktrail@0.1.0-alpha.1` is published on npm. Its downloaded artifact
+matched the reviewed tarball with SHA-256
+`84003e184805b6c5362c0801c702a72e415040ae5142fcd70f01eb9758637d04`.
+Fresh registry installation, CLI and MCP startup were verified. The alpha.2
+candidate adds [setup and diagnosis](ONBOARDING.md); it is not yet published.
+`server.json` describes the intended `io.github.stsepelin/checktrail` MCP Registry
+identity with the candidate's matching npm version. Registry registration remains
+pending. No credentials or automatic publishing workflow are stored here.
+
+Publication is configured for npm's `next` tag. After alpha.1 publication, the
+registry assigned both `next` and `latest` to that preview; attempts to remove
+`latest` returned HTTP 400. The cause is unresolved. Use exact versions and
+resolve the tag policy before publishing another candidate; do not treat `latest`
+as evidence of a stable release or republish an existing version.
 
 ## Prepared artifacts
 
@@ -24,8 +32,8 @@ publishing workflow are stored in this repository.
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. All 13 hosted jobs passed at source baseline `52ba415`; the preview
-  release commit requires its own run. The local Claude Code health/discovery and
+  exercised. The [hosted run at bfc8cc4](https://github.com/stsepelin/checktrail/actions/runs/35585998184)
+  passed all jobs; the alpha.2 release commit requires its own run. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry
@@ -61,7 +69,7 @@ After explicit approval and npm authentication for the `@stsepelin` scope, publi
 the approved file, not a newly packed working tree:
 
 ```sh
-npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.1.tgz \
+npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.2.tgz \
   --tag next --access public --ignore-scripts --registry=https://registry.npmjs.org
 ```
 
@@ -93,6 +101,8 @@ GitHub private vulnerability reporting is enabled. Use the channel linked in
    Run the corresponding native verification helpers for every advertised profile.
    Record actual tool/platform results and explicit skips. Repeat registry schema
    validation against its pinned bytes.
+   Run `scripts/verify-package-upgrade.mjs` with the reviewed previous and candidate
+   tarballs to verify offline upgrade, policy/report compatibility and rollback.
 3. Inspect the exact tarball and its SHA-256, its source revision, dependency/notice
    report, package allowlist, public examples and documentation. The smoke helper
    compares repeated packing of the same checkout and tests a fresh offline install;

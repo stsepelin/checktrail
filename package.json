@@ -1,6 +1,6 @@
 {
   "name": "@stsepelin/checktrail",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "mcpName": "io.github.stsepelin/checktrail",
   "description": "Local code validation with execution evidence, a CLI, and MCP tools.",
   "type": "module",

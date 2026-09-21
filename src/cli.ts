@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 import path from "node:path";
 import {
+  initialize,
+  diagnose,
+  mcpConfiguration,
+  mcpClients,
+  type McpClient,
+} from "./onboarding.js";
+import {
   createReviewContext,
   projectReviewContext,
   receiveReview,
@@ -41,11 +48,15 @@ import {
 } from "./runtime-inventory.js";
 
 async function main(): Promise<void> {
-  const { values, positionals } = parseArgs({
+  const { values, positionals, tokens } = parseArgs({
+    tokens: true,
     allowPositionals: true,
     strict: true,
     options: {
       root: { type: "string", default: "." },
+      write: { type: "boolean", default: false },
+      check: { type: "string", multiple: true },
+      client: { type: "string" },
       "trust-project": { type: "boolean", default: false },
       "allow-execution": { type: "boolean", default: false },
       detailed: { type: "boolean", default: false },
@@ -78,12 +89,29 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
   if (positionals.length !== 1) throw new Error("Expected exactly one command");
   const command = positionals[0];
+  for (const token of tokens) {
+    if (token.kind !== "option") continue;
+    if (["write", "check"].includes(token.name) && command !== "init")
+      throw new Error(`--${token.name} applies only to init`);
+    if (token.name === "client" && command !== "mcp-config")
+      throw new Error("--client applies only to mcp-config");
+    const allowed =
+      command === "init"
+        ? ["root", "write", "check"]
+        : command === "doctor"
+          ? ["root", "detailed", "policy-overlay", "allow-env", "adapter"]
+          : command === "mcp-config"
+            ? ["root", "client"]
+            : undefined;
+    if (allowed && !allowed.includes(token.name))
+      throw new Error(`--${token.name} does not apply to ${command}`);
+  }
   if (
     values["allow-review-source"] &&
     (!values.detailed ||
@@ -114,9 +142,15 @@ async function main(): Promise<void> {
   );
   if (
     externalAdapters.length &&
-    !["inspect", "plan", "run", "serve", "adapters", "guidance"].includes(
-      command!,
-    )
+    ![
+      "inspect",
+      "plan",
+      "run",
+      "serve",
+      "adapters",
+      "guidance",
+      "doctor",
+    ].includes(command!)
   )
     throw new Error(
       "External adapters apply only to inspection, planning, validation, serving and derived guidance",
@@ -141,7 +175,49 @@ async function main(): Promise<void> {
     ]);
     return;
   }
+  if (command === "doctor") {
+    const result = await diagnose(values.root, {
+      detailed: values.detailed,
+      externalAdapters,
+      environment: inheritEnvironment(values["allow-env"] ?? []),
+      ...(values["policy-overlay"]
+        ? { policyOverlay: values["policy-overlay"] }
+        : {}),
+    });
+    print(result);
+    process.exitCode = result.status === "no-static-blockers" ? 0 : 2;
+    return;
+  }
   const root = await realpath(values.root);
+  if (command === "init") {
+    const selections = new Map<string, string[]>();
+    for (const value of values.check ?? []) {
+      const split = value.lastIndexOf("#");
+      if (split <= 0 || split === value.length - 1)
+        throw new Error("Check selection requires PATH#CHECK_ID");
+      const selectedPath = value.slice(0, split);
+      selections.set(selectedPath, [
+        ...(selections.get(selectedPath) ?? []),
+        value.slice(split + 1),
+      ]);
+    }
+    const result = await initialize(root, {
+      write: values.write,
+      selections: [...selections].map(([selectedPath, checks]) => ({
+        path: selectedPath,
+        checks,
+      })),
+    });
+    print(result);
+    process.exitCode = result.status === "needs-selection" ? 2 : 0;
+    return;
+  }
+  if (command === "mcp-config") {
+    if (!mcpClients.includes(values.client as McpClient))
+      throw new Error(`mcp-config requires --client ${mcpClients.join("|")}`);
+    print(await mcpConfiguration(root, values.client as McpClient));
+    return;
+  }
   if (command === "fetch-pack") {
     if (!values.url || !values.sha256 || !values.output)
       throw new Error(

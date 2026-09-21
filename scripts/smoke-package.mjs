@@ -211,6 +211,65 @@ try {
     ),
   );
   const binary = path.join(consumer, "node_modules/.bin/checktrail");
+  const onboardingRoot = path.join(temporary, "onboarding");
+  await mkdir(onboardingRoot);
+  await writeFile(
+    path.join(onboardingRoot, "package.json"),
+    JSON.stringify({
+      private: true,
+      type: "module",
+      scripts: { test: "node --test" },
+    }),
+  );
+  await writeFile(
+    path.join(onboardingRoot, "example.test.js"),
+    "import { test } from 'node:test'; test('fixture', () => {});\n",
+  );
+  const onboarding = (args) =>
+    JSON.parse(
+      execFileSync(binary, [...args, "--root", onboardingRoot], {
+        cwd: consumer,
+        encoding: "utf8",
+      }),
+    );
+  assert.equal(onboarding(["init"]).status, "preview");
+  assert.equal(onboarding(["init", "--write"]).status, "created");
+  assert.equal(onboarding(["init", "--write"]).status, "preserved");
+  assert.equal(onboarding(["doctor"]).status, "no-static-blockers");
+  const generated = onboarding(["mcp-config", "--client", "vscode"]);
+  const generatedServer = JSON.parse(generated.configuration).servers
+    .checktrail;
+  assert.equal(generatedServer.type, "stdio");
+  assert.ok(!generatedServer.args.includes("--allow-execution"));
+  const generatedClient = new Client(
+    { name: "synthetic-generated-config-client", version: "1.0.0" },
+    { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+  );
+  try {
+    await generatedClient.connect(
+      new StdioClientTransport({
+        command: generatedServer.command,
+        args: generatedServer.args,
+        cwd: consumer,
+        env: { ...process.env, npm_config_offline: "true" },
+        stderr: "pipe",
+      }),
+    );
+    const generatedPlan = await generatedClient.callTool({
+      name: "validation_plan",
+      arguments: {},
+    });
+    assert.notEqual(generatedPlan.isError, true);
+    assert.ok(JSON.stringify(generatedPlan).includes("javascript.node-test"));
+    const generatedRun = await generatedClient.callTool({
+      name: "validation_run",
+      arguments: {},
+    });
+    assert.equal(generatedRun.isError, true);
+    assert.match(JSON.stringify(generatedRun), /Execution is disabled/);
+  } finally {
+    await generatedClient.close();
+  }
   const architectureInput = architectureFixture();
   await writeFile(
     path.join(consumer, "graph.json"),

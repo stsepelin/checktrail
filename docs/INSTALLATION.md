@@ -1,9 +1,11 @@
 # Install the preview
 
-The first preview version is `0.1.0-alpha.1`, intended for npm's `next` tag.
-Check the [npm package page](https://www.npmjs.com/package/@stsepelin/checktrail)
-for availability. The registry commands below require that version to be published;
-before publication, use the source checkout or a reviewed local tarball.
+The published preview is `0.1.0-alpha.1` on
+[npm](https://www.npmjs.com/package/@stsepelin/checktrail).
+Use the exact version below. The registry currently assigns both `next` and
+`latest` to that preview; `latest` is not a stable-release guarantee.
+The alpha.2 candidate adds [project setup and diagnosis](ONBOARDING.md) and is
+available from source or a reviewed candidate tarball until published.
 
 Use Node.js 22 or newer on macOS or Linux. Windows execution is not supported.
 Install each project's compilers, linters and test runners separately; Checktrail
@@ -87,7 +89,7 @@ Validation uses asynchronous calls and supports cancellation. Standard MCP Tasks
 is not advertised; the durable worker is a separate library API. See
 [client coverage](CLIENTS.md) and [MCP compatibility](MCP-COMPATIBILITY.md).
 
-## Before npm publication
+## Source checkout or unpublished candidate
 
 Build the public source checkout:
 

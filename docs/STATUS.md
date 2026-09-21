@@ -3,11 +3,18 @@
 This is an experimental foundation with public source at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
-All 13 hosted jobs passed at `52ba415`; the exact run and earlier cache/path
-failures are recorded in `NATIVE-CI.md`. The `0.1.0-alpha.1` preview changes
-release metadata and documentation; its publication is a separate gate.
+The `0.1.0-alpha.1` preview is published on npm. The newer
+[hosted run at bfc8cc4](https://github.com/stsepelin/checktrail/actions/runs/35585998184)
+passed all jobs; earlier toolchain evidence remains in `NATIVE-CI.md`.
+The alpha.2 candidate adds setup commands and requires its own release CI and
+publication. MCP Registry registration remains pending.
 
 ## Implemented
+
+- Alpha.2 candidate: conservative multi-language `init`, execution-free `doctor`,
+  and version-pinned MCP configuration output for Codex, Claude Code/Desktop,
+  Cursor and VS Code. Existing files are preserved. See [ONBOARDING.md](ONBOARDING.md)
+  for scope, ambiguity handling and package upgrade/rollback verification.
 
 - Exact required-test accounting across prepared CI language profiles and native
   container helpers, including dedicated Ruby/Swift jobs. Skipped, missing,
