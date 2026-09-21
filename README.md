@@ -4,22 +4,24 @@ Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
 Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
 
-**Published preview: 0.1.0-alpha.1; alpha.2 is in preparation.** Public source is available at
+**Published preview: 0.1.0-alpha.2.** Public source is available at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
 [Installation](docs/INSTALLATION.md) covers the CLI, Claude Code and Codex.
 [Agent skills](docs/SKILLS.md) provides setup, validation and review workflows
 installable with `npx skills add stsepelin/checktrail`.
-[Project setup](docs/ONBOARDING.md) covers the alpha.2 candidate's `init`, `doctor`
+[Project setup](docs/ONBOARDING.md) covers `init`, `doctor`
 and MCP configuration generator.
 [Release preparation](docs/RELEASE.md) records publication and verification gates. The
 [milestone audit](docs/ACCEPTANCE.md) separates implemented profiles from open
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
 
-The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35585998184)
-passed at `bfc8cc4` on Linux and macOS. That result predates the alpha.2 candidate;
-new release changes require their own CI run and package verification.
+The [hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
+passed at release commit `4ce8398` on Linux and macOS. The exact npm tarball and
+fresh CLI/MCP installations were verified. The
+[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.2)
+is active; execution remains disabled by default.
 
 Checktrail discovers projects, plans registered checks, invokes native tools
 when explicitly trusted, and reports results without turning skipped or empty

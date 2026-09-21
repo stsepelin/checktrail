@@ -1,7 +1,7 @@
 # Project setup
 
-These commands are new in the unpublished `0.1.0-alpha.2` candidate. Use the
-source checkout or a reviewed candidate tarball, with Node.js 22+ on macOS/Linux.
+These commands are available in `0.1.0-alpha.2`. Follow the
+[installation guide](INSTALLATION.md), with Node.js 22+ on macOS/Linux.
 
 ## Preview and create a policy
 

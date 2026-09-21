@@ -1,20 +1,22 @@
 # Release preparation
 
 The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail);
-`@stsepelin/checktrail@0.1.0-alpha.1` is published on npm. Its downloaded artifact
+`@stsepelin/checktrail@0.1.0-alpha.2` is published on npm. Its downloaded artifact
 matched the reviewed tarball with SHA-256
-`84003e184805b6c5362c0801c702a72e415040ae5142fcd70f01eb9758637d04`.
-Fresh registry installation, CLI and MCP startup were verified. The alpha.2
-candidate adds [setup and diagnosis](ONBOARDING.md); it is not yet published.
-`server.json` describes the intended `io.github.stsepelin/checktrail` MCP Registry
-identity with the candidate's matching npm version. Registry registration remains
-pending. No credentials or automatic publishing workflow are stored here.
+`ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb`.
+Fresh registry installation, CLI/library validation, generated npx startup with
+fresh/warm caches and MCP pass/fail/incomplete results were verified. Alpha.2 adds
+[setup and diagnosis](ONBOARDING.md). The
+[MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.2)
+is active and matches `server.json`, with execution disabled. The Registry omits
+`isSecret: false`, whose schema default is false. No credentials or automatic
+publishing workflow are stored here.
 
 Publication is configured for npm's `next` tag. After alpha.1 publication, the
 registry assigned both `next` and `latest` to that preview; attempts to remove
-`latest` returned HTTP 400. The cause is unresolved. Use exact versions and
-resolve the tag policy before publishing another candidate; do not treat `latest`
-as evidence of a stable release or republish an existing version.
+`latest` returned HTTP 400. Alpha.2 publication updated `next` while leaving
+`latest` on alpha.1. Cleanup remains unresolved; use exact versions, do not treat
+`latest` as evidence of a stable release, and never republish an existing version.
 
 ## Prepared artifacts
 
@@ -32,8 +34,8 @@ as evidence of a stable release or republish an existing version.
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. The [hosted run at bfc8cc4](https://github.com/stsepelin/checktrail/actions/runs/35585998184)
-  passed all jobs; the alpha.2 release commit requires its own run. The local Claude Code health/discovery and
+  exercised. The [hosted run at 4ce8398](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
+  passed all jobs for the alpha.2 release commit. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry

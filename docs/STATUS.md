@@ -3,15 +3,16 @@
 This is an experimental foundation with public source at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
-The `0.1.0-alpha.1` preview is published on npm. The newer
-[hosted run at bfc8cc4](https://github.com/stsepelin/checktrail/actions/runs/35585998184)
-passed all jobs; earlier toolchain evidence remains in `NATIVE-CI.md`.
-The alpha.2 candidate adds setup commands and requires its own release CI and
-publication. MCP Registry registration remains pending.
+The `0.1.0-alpha.2` preview is published on npm and active in the MCP Registry.
+The [hosted run at 4ce8398](https://github.com/stsepelin/checktrail/actions/runs/35590670960)
+passed all jobs. The published tarball matched the reviewed artifact; fresh
+registry installation, CLI/library validation, generated npx startup and MCP
+execution/trust behavior were verified. Earlier toolchain evidence remains in
+`NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
 
 ## Implemented
 
-- Alpha.2 candidate: conservative multi-language `init`, execution-free `doctor`,
+- Alpha.2: conservative multi-language `init`, execution-free `doctor`,
   and version-pinned MCP configuration output for Codex, Claude Code/Desktop,
   Cursor and VS Code. Existing files are preserved. See [ONBOARDING.md](ONBOARDING.md)
   for scope, ambiguity handling and package upgrade/rollback verification.
@@ -153,11 +154,11 @@ a general speedup/graph-completeness claim.
 
 ## Release preparation
 
-`server.json` and npm `mcpName` describe the `0.1.0-alpha.1` preview.
-The metadata passed the pinned official registry schema; a native SDK-client test
-starts its command and verifies execution remains disabled. This does not establish
-registry acceptance or npm publication. Hosted source evidence is recorded
-separately in `NATIVE-CI.md`. See `RELEASE.md`.
+`server.json` and npm `mcpName` describe the published `0.1.0-alpha.2` preview.
+The metadata passed the pinned official registry schema, and the public Registry
+entry is active. Fresh installed SDK-client checks verified startup, planning and
+execution denial with the default configuration. Hosted source evidence and the
+published tarball verification are recorded in `RELEASE.md`.
 
 ## Pinned pack distribution
 
