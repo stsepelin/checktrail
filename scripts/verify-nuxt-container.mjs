@@ -21,7 +21,7 @@ const image =
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const prepared = path.join(
   repository,
-  ".repo-verifier",
+  ".checktrail",
   process.platform === "darwin" ? "nuxt-linux-tools" : "nuxt-tools",
 );
 await access(path.join(prepared, "node_modules/nuxt/package.json"));
@@ -33,7 +33,7 @@ const native = [
   "--mount",
   `type=bind,src=${repository},target=/workspace,readonly`,
   "--mount",
-  `type=bind,src=${prepared},target=/workspace/.repo-verifier/nuxt-tools,readonly`,
+  `type=bind,src=${prepared},target=/workspace/.checktrail/nuxt-tools,readonly`,
   "--workdir",
   "/workspace",
   image,
@@ -51,7 +51,7 @@ const output = execFileSync(
 );
 process.stdout.write(output);
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-nuxt-package-"),
+  path.join(tmpdir(), "checktrail-nuxt-package-"),
 );
 let client;
 try {
@@ -110,15 +110,14 @@ try {
         "node",
         "--input-type=module",
         "-e",
-        'import {validate} from "@stsepelin/repo-verifier"; console.log(JSON.stringify(await validate("/consumer/example",{trusted:true})));',
+        'import {validate} from "@stsepelin/checktrail"; console.log(JSON.stringify(await validate("/consumer/example",{trusted:true})));',
       ],
       { encoding: "utf8", maxBuffer: 2 * 1024 * 1024 },
     ),
   );
   assert.equal(library.outcome, "passed", JSON.stringify(library.checks));
   assert.equal(library.checks[0].runtime.collections[0].entries.length, 3);
-  const binary =
-    "/consumer/node_modules/@stsepelin/repo-verifier/dist/src/cli.js";
+  const binary = "/consumer/node_modules/@stsepelin/checktrail/dist/src/cli.js";
   const cliArgs = [
     ...installed,
     "node",

@@ -34,7 +34,7 @@ const tests = execFileSync(
 );
 process.stdout.write(tests);
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "repo-verifier-review-package-"),
+  path.join(tmpdir(), "checktrail-review-package-"),
 );
 let client;
 try {
@@ -68,7 +68,7 @@ try {
   await cp(path.join(repository, "examples/review"), project, {
     recursive: true,
   });
-  await mkdir(path.join(project, ".repo-verifier"));
+  await mkdir(path.join(project, ".checktrail"));
   const installed = [
     "run",
     "--rm",
@@ -89,7 +89,7 @@ try {
         "node",
         "--input-type=module",
         "-e",
-        'import {readFile} from "node:fs/promises"; import {createReviewContext} from "@stsepelin/repo-verifier"; console.log(JSON.stringify(await createReviewContext("/consumer/example",JSON.parse(await readFile("/consumer/example/selection.json","utf8")))));',
+        'import {readFile} from "node:fs/promises"; import {createReviewContext} from "@stsepelin/checktrail"; console.log(JSON.stringify(await createReviewContext("/consumer/example",JSON.parse(await readFile("/consumer/example/selection.json","utf8")))));',
       ],
       { encoding: "utf8" },
     ),
@@ -130,15 +130,14 @@ try {
     ],
   };
   await writeFile(
-    path.join(project, ".repo-verifier/context.json"),
+    path.join(project, ".checktrail/context.json"),
     JSON.stringify(context),
   );
   await writeFile(
-    path.join(project, ".repo-verifier/assessment.json"),
+    path.join(project, ".checktrail/assessment.json"),
     JSON.stringify(assessment),
   );
-  const binary =
-    "/consumer/node_modules/@stsepelin/repo-verifier/dist/src/cli.js";
+  const binary = "/consumer/node_modules/@stsepelin/checktrail/dist/src/cli.js";
   const cliArgs = [
     ...installed,
     "node",
@@ -147,9 +146,9 @@ try {
     "--root",
     "/consumer/example",
     "--context",
-    ".repo-verifier/context.json",
+    ".checktrail/context.json",
     "--input",
-    ".repo-verifier/assessment.json",
+    ".checktrail/assessment.json",
   ];
   const receipt = JSON.parse(
     execFileSync("docker", cliArgs, { encoding: "utf8" }),
@@ -189,8 +188,8 @@ try {
   const received = await client.callTool({
     name: "review_receipt",
     arguments: {
-      context: ".repo-verifier/context.json",
-      input: ".repo-verifier/assessment.json",
+      context: ".checktrail/context.json",
+      input: ".checktrail/assessment.json",
     },
   });
   assert.equal(received.isError, undefined);

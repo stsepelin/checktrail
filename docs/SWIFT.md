@@ -43,5 +43,6 @@ The dedicated macOS CI job prints the runner's Swift version and invokes
 must execute and pass; a skipped or missing compiler test fails this job. The
 runner also rejects TODOs, duplicate required names and other failures in the
 selected test file. Local Apple Swift 6.4 execution passes this required-test
-path. The hosted runner's compiler is not pinned, and no hosted job or additional
-compiler-version support is inferred from the workflow definition.
+path. The hosted job passed at `52ba415`; see `NATIVE-CI.md`. The hosted runner's
+compiler is not pinned, so that result does not establish support for other
+compiler versions.

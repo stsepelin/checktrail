@@ -26,7 +26,7 @@ const processResult: ProcessResult = {
   truncated: false,
 };
 const report = () => ({
-  format: "repo-verifier-pytest-1",
+  format: "checktrail-pytest-1",
   version: "9.1.1",
   exitCode: 0,
   finished: true,
@@ -118,7 +118,7 @@ test("pytest treats failure in any lifecycle phase and unexpected passes as fail
   const skipped = report();
   skipped.reports[1]!.outcome = "skipped";
   assert.equal(parse(skipped).status, "inconclusive");
-  const missing = { format: "repo-verifier-pytest-1", unavailable: "pytest" };
+  const missing = { format: "checktrail-pytest-1", unavailable: "pytest" };
   assert.equal(parse(missing, { exitCode: 3 }).status, "unavailable");
   assert.equal(parse(missing).status, "inconclusive");
 });

@@ -43,7 +43,7 @@ class VerifierCompiler {
             trees.Add(CSharpSyntaxTree.ParseText(SourceText.From(text, Encoding.UTF8, SourceHashAlgorithm.Sha256), parseOptions, name));
         }
         var implicitUsings = config.GetProperty("implicitUsings").GetBoolean();
-        if (implicitUsings) trees.Add(CSharpSyntaxTree.ParseText("global using System; global using System.Collections.Generic; global using System.IO; global using System.Linq; global using System.Net.Http; global using System.Threading; global using System.Threading.Tasks;", parseOptions, "repo-verifier://implicit-usings", Encoding.UTF8));
+        if (implicitUsings) trees.Add(CSharpSyntaxTree.ParseText("global using System; global using System.Collections.Generic; global using System.IO; global using System.Linq; global using System.Net.Http; global using System.Threading; global using System.Threading.Tasks;", parseOptions, "checktrail://implicit-usings", Encoding.UTF8));
         var references = root.GetProperty("references").EnumerateArray().Select(item => {
             var file = item.GetString()!;
             using var stream = File.OpenRead(file);
@@ -62,7 +62,7 @@ class VerifierCompiler {
             concurrentBuild: false, deterministic: true, nullableContextOptions: nullable, reportSuppressedDiagnostics: true);
         var compilation = CSharpCompilation.Create(config.GetProperty("assemblyName").GetString()!, trees, references, options);
         var sources = new List<object>();
-        foreach (var tree in trees.Where(tree => tree.FilePath != "repo-verifier://implicit-usings")) {
+        foreach (var tree in trees.Where(tree => tree.FilePath != "checktrail://implicit-usings")) {
             var syntax = tree.GetRoot();
             var model = compilation.GetSemanticModel(tree);
             var diagnostics = model.GetDiagnostics();

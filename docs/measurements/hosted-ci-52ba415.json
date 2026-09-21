@@ -1,0 +1,1005 @@
+{
+  "schemaVersion": 1,
+  "runId": 35573066804,
+  "sourceCommit": "52ba415dfc5cfcaab459dc648baaa864627f1642",
+  "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "java",
+      "jobId": 106248682771,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682771",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:28:46Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Java fixture",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-java-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "checks (ubuntu-latest, 22)",
+      "jobId": 106248682914,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682914",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:38:05Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify required toolchains",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Rust compiler",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Go analyzers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked PHP test tools",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Laravel runtime fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/python-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/framework-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Vue Router fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Nuxt fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Chromium for native browser fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require prepared native regression profiles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/audit-dependencies.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/smoke-package.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify review exchange in the packaged Linux runtime",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify task storage and execution in the packaged Linux runtime",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "clang",
+      "jobId": 106248682922,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682922",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:28:22Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Clang fixture",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-clang-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "checks (ubuntu-latest, 26)",
+      "jobId": 106248682931,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682931",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:34:34Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify required toolchains",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Rust compiler",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Go analyzers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked PHP test tools",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Laravel runtime fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/python-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/framework-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Vue Router fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Nuxt fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Chromium for native browser fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require prepared native regression profiles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/audit-dependencies.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/smoke-package.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify review exchange in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify task storage and execution in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "checks (macos-latest, 24)",
+      "jobId": 106248682950,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682950",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:51Z",
+      "completedAt": "2026-09-21T07:40:59Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify required toolchains",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Rust compiler",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Go analyzers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked PHP test tools",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Laravel runtime fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/python-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/framework-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Vue Router fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Nuxt fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Chromium for native browser fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require prepared native regression profiles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/audit-dependencies.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/smoke-package.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify review exchange in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify task storage and execution in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "actionlint",
+      "jobId": 106248682978,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248682978",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:28:26Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned workflow checker",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-actionlint-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "vue-router",
+      "jobId": 106248683021,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683021",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:28:34Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Vue Router fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-vue-router-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "external-adapters",
+      "jobId": 106248683098,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683098",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:28:54Z",
+      "completedAt": "2026-09-21T07:30:36Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned external adapter runtimes",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-external-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "swift",
+      "jobId": 106248683107,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683107",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:50Z",
+      "completedAt": "2026-09-21T07:28:09Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run swiftc --version",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-required-native-tests.mjs swift",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "nuxt",
+      "jobId": 106248683110,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683110",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:47Z",
+      "completedAt": "2026-09-21T07:30:13Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Nuxt fixtures for the container runtime",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-nuxt-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "dotnet",
+      "jobId": 106248683111,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683111",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:46Z",
+      "completedAt": "2026-09-21T07:29:15Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned C# fixture",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-dotnet-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "ruby",
+      "jobId": 106248683162,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248683162",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:28:23Z",
+      "completedAt": "2026-09-21T07:28:55Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Ruby and Node runtimes",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/verify-ruby-container.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "checks (ubuntu-latest, 24)",
+      "jobId": 106248684013,
+      "url": "https://github.com/stsepelin/repo-verifier/actions/runs/35573066804/job/106248684013",
+      "conclusion": "success",
+      "startedAt": "2026-09-21T07:27:47Z",
+      "completedAt": "2026-09-21T07:36:57Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify required toolchains",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Rust compiler",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Go analyzers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked PHP test tools",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Laravel runtime fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/python-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python3 -m pip install -r scripts/framework-tools.requirements.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Vue Router fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare locked Nuxt fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare pinned Chromium for native browser fixtures",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require prepared native regression profiles",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/audit-dependencies.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare package-install cache with network access",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run node scripts/smoke-package.mjs",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify review exchange in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify task storage and execution in the packaged Linux runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "scope": "Hosted workflow evidence for this exact source commit; optional test skips do not imply native coverage. Later release metadata changes require their own verification."
+}

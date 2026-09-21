@@ -34,7 +34,7 @@ outside files, runtime services or hermetic reproducibility.
 
 ## Configuration
 
-`repo-verifier.json` is optional and uses `schemaVersion: 1`. It can select known
+`checktrail.json` is optional and uses `schemaVersion: 1`. It can select known
 checks for detected project roots. Unknown keys, IDs and project roots fail before
 any process starts. A missing config uses conservative registered defaults. Pinned JSON packs add
 registered checks, and an operator-selected private overlay adds requirements to
@@ -58,7 +58,9 @@ pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
 POSIX hosts, and propagate cancellation. No automatic dependency installation,
-source rewriting, infrastructure startup, deployment or repository mutation.
+source rewriting, infrastructure startup or deployment. The explicit `init --write`
+setup command can create a new `checktrail.json`; it preserves existing
+configuration and grants no execution. See [ONBOARDING.md](ONBOARDING.md).
 Executed project code still has the process user's privileges; this is not a
 sandbox. Tests may modify files or access networks and must be trusted accordingly.
 

@@ -48,8 +48,8 @@ async function replace(file: string, text: string) {
 test("FastAPI planning requires an explicit local import profile and never loads the application", async (t) => {
   const root = await fixture(t, {
     "pyproject.toml": "",
-    "repo-verifier.json": policy,
-    "repo-verifier.fastapi.json": profile,
+    "checktrail.json": policy,
+    "checktrail.fastapi.json": profile,
     "app.py": "from pathlib import Path\nPath('imported').write_text('ran')\n",
   });
   const plan = (await createPlan(root)).plan;
@@ -62,13 +62,13 @@ test("FastAPI planning requires an explicit local import profile and never loads
     { execute: true },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.fastapi.json"),
+      path.join(root, "checktrail.fastapi.json"),
       JSON.stringify({ ...JSON.parse(profile), ...invalid }),
     );
     await assert.rejects(createPlan(root));
   }
   await writeFile(
-    path.join(root, "repo-verifier.fastapi.json"),
+    path.join(root, "checktrail.fastapi.json"),
     profile.replace('"app"', '"missing"'),
   );
   assert.match(
@@ -86,8 +86,8 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "pyproject.toml": "",
-      "repo-verifier.json": policy,
-      "repo-verifier.fastapi.json": profile,
+      "checktrail.json": policy,
+      "checktrail.fastapi.json": profile,
       "app.py": good,
     });
     const report = await validate(root, { trusted: true });
@@ -147,8 +147,8 @@ app.add_api_route('/items', handler, methods=['GET'])
 `;
     const root = await fixture(t, {
       "pyproject.toml": "",
-      "repo-verifier.json": policy,
-      "repo-verifier.fastapi.json": profile,
+      "checktrail.json": policy,
+      "checktrail.fastapi.json": profile,
       "app.py": source,
     });
     const report = await validate(root, { trusted: true });

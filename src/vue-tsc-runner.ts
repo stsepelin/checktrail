@@ -1,5 +1,6 @@
 import { createRequire } from "node:module";
 import path from "node:path";
+import { typecheckArguments } from "./typescript-arguments.js";
 import { withinRoot } from "./inventory.js";
 
 async function main(): Promise<void> {
@@ -22,7 +23,7 @@ async function main(): Promise<void> {
     throw new Error("Vue template checking is disabled by skipTemplateCodegen");
   const compiler = load(tool) as typeof import("vue-tsc");
   const tsc = await resolve("typescript/lib/tsc.js");
-  process.argv = [process.execPath, tool, ...args];
+  process.argv = [process.execPath, tool, ...typecheckArguments(ts, args)];
   compiler.run(tsc);
 }
 

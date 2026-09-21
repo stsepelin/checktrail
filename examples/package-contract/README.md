@@ -5,7 +5,7 @@ producer compiles TypeScript into JavaScript and declarations; its package allow
 contains only `dist` and npm's required metadata. The consumer imports the public
 package name in both TypeScript and a native Node test.
 
-From a prepared Repo Verifier development checkout:
+From a prepared Checktrail development checkout:
 
 ```sh
 npm run build

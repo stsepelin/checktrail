@@ -87,7 +87,7 @@ test("native Python unittest execution yields counts and preserves the source sn
     return t.skip("python3 unavailable");
   const root = await fixture(t, {
     "pyproject.toml": '[project]\nname = "synthetic-example"',
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["python.unittest"] }],
     }),

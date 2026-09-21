@@ -1,0 +1,91 @@
+{
+  "scope": "Known-case replay of an unreleased local package; excludes the JavaScript target without validating it; not an independent holdout",
+  "upstreamCommit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+  "tarballSha256": "08069a85dc7863394a88218a1670a2e00381c7e176a1ae4c987ce8496a4c3e19",
+  "platform": "darwin",
+  "arch": "arm64",
+  "node": "v26.8.1",
+  "observations": [
+    {
+      "phase": "strict",
+      "outcome": "failed",
+      "checks": [
+        {
+          "id": "go.format",
+          "status": "failed"
+        },
+        {
+          "id": "go.vet",
+          "status": "inconclusive"
+        },
+        {
+          "id": "go.test",
+          "status": "inconclusive"
+        }
+      ],
+      "mcpCounts": [0, 0, 0]
+    },
+    {
+      "phase": "declared",
+      "outcome": "failed",
+      "checks": [
+        {
+          "id": "go.format",
+          "status": "failed"
+        },
+        {
+          "id": "go.vet",
+          "status": "passed"
+        },
+        {
+          "id": "go.test",
+          "status": "passed",
+          "tests": {
+            "total": 213,
+            "passed": 212,
+            "failed": 0,
+            "skipped": 1
+          }
+        }
+      ],
+      "mcpCounts": [0, 1, 1]
+    },
+    {
+      "phase": "failing-test",
+      "outcome": "failed",
+      "checks": [
+        {
+          "id": "go.format",
+          "status": "failed"
+        },
+        {
+          "id": "go.vet",
+          "status": "passed"
+        },
+        {
+          "id": "go.test",
+          "status": "failed",
+          "tests": {
+            "total": 214,
+            "passed": 212,
+            "failed": 1,
+            "skipped": 1
+          }
+        }
+      ],
+      "mcpCounts": [0, 1, 1]
+    }
+  ],
+  "baseCommit": "bc0b95a511706475df97d1472b4724b36dbc2848",
+  "goVersion": "go version go1.27.1 darwin/arm64",
+  "sources": {
+    "src/go-scope-policy.ts": "be40a2fa681fd5c320e36ea4608a972cb369e045227e1e3fd539f915444287f3",
+    "src/go-scope.ts": "cc85c48962b91ab4b88977a78f8bddc62e866f8d863c265ffe1b1cfd523a4895",
+    "src/adapters.ts": "ba2dab60ac9ecf20d9843285b614d62b4853f06972e2e27946fe0f8de01c4a61",
+    "src/evidence.ts": "477a82d4b40cb3480fa9d5b6ab2a0d41c06685f275fda0abb061219eb2a7a086",
+    "src/output.ts": "6befd79c5cc095137edd5b11c6f29622ffa22f9d924ed64152a085abef7da891",
+    "src/schemas.ts": "e5add92fee2727e50222757703c8dd786b72c6ebf2b40d1fcad4864961805ee2",
+    "src/types.ts": "c30a5c65903342148a7a07c210d6c0b5231295bbf7b1d94944a29c070289587c"
+  },
+  "harnessSha256": "acd5dcad4cc8fce8818963f48714cc8af8139720f64779a2dbc79d6fb4866c3f"
+}

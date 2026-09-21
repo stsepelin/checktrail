@@ -68,10 +68,10 @@ export async function actionlintCheck(
       "Statically check every inventoried workflow with native completion accounting and explicit local dependencies.",
   };
   try {
-    const file = `${prefix}repo-verifier.actionlint.json`;
+    const file = `${prefix}checktrail.actionlint.json`;
     if (!source.files.includes(file))
       throw new Error(
-        "Prepare repo-verifier.actionlint.json with explicit runnerLabels and variables",
+        "Prepare checktrail.actionlint.json with explicit runnerLabels and variables",
       );
     const config = actionlintConfigSchema.parse(
       JSON.parse(await readProjectFile(source.root, file)),

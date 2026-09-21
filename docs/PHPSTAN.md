@@ -24,10 +24,10 @@ passing result. Verification uses no network and creates synthetic fixtures insi
 Prepare pinned development dependencies separately, then run verification:
 
 ```sh
-mkdir -p .repo-verifier/php-tools
-cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .repo-verifier/php-tools/
+mkdir -p .checktrail/php-tools
+cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
 docker run --rm \
-  --mount "type=bind,src=$PWD/.repo-verifier/php-tools,target=/app" \
+  --mount "type=bind,src=$PWD/.checktrail/php-tools,target=/app" \
   --workdir /app composer:2 install \
   --no-interaction --no-scripts --prefer-dist --no-progress
 npm run build

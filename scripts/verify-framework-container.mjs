@@ -6,7 +6,7 @@ import process from "node:process";
 import { URL, fileURLToPath } from "node:url";
 
 const packages = fileURLToPath(
-  new URL("../.repo-verifier/framework-tools", import.meta.url),
+  new URL("../.checktrail/framework-tools", import.meta.url),
 );
 await access(path.join(packages, "fastapi"));
 const image = execFileSync(
@@ -16,7 +16,7 @@ const image = execFileSync(
 ).trim();
 if (!/^sha256:[a-f0-9]{64}$/.test(image))
   throw new Error("Expected an installed Python image digest");
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-python-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-python-"));
 try {
   const shim = path.join(temporary, "python3");
   await writeFile(

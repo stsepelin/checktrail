@@ -76,7 +76,7 @@ async function fingerprint(files: string[]) {
   return hash.digest("hex");
 }
 async function main() {
-  const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-dotnet-"));
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-dotnet-"));
   try {
     let sdk: string;
     try {

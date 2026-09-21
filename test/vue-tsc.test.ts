@@ -32,7 +32,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "tsconfig.json": JSON.stringify(config),
       "src/Example Component.vue": good,
     });
@@ -81,7 +81,7 @@ test(
 test("Vue compiler planning requires local tooling and does not execute it", async (t) => {
   const root = await fixture(t, {
     "package.json": "{}",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "tsconfig.json": JSON.stringify(config),
     "src/App.vue": good,
   });

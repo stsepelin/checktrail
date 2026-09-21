@@ -133,7 +133,7 @@ test("external planning verifies pinned metadata without executing code or grant
   );
   assert.equal((await createPlan(root)).plan.checks.length, 0);
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       externalAdapters: [reference],
@@ -141,7 +141,7 @@ test("external planning verifies pinned metadata without executing code or grant
     }),
   );
   await assert.rejects(createPlan(root), /externalAdapters/);
-  await rm(path.join(root, "repo-verifier.json"));
+  await rm(path.join(root, "checktrail.json"));
   const changed = await bundle(t, sample, { version: "1.0.1" });
   assert.notEqual(
     (await createPlan(root, { externalAdapters: [changed] })).plan
@@ -440,11 +440,11 @@ test("external artifact changes during execution invalidate findings even outsid
 
 test("external cancellation kills a running adapter child and cleans its verified temporary bundle", async (t) => {
   const root = await fixture(t, input);
-  await mkdir(path.join(root, ".repo-verifier"));
-  const ready = path.join(root, ".repo-verifier/ready.json");
-  const marker = path.join(root, ".repo-verifier/child-ran");
+  await mkdir(path.join(root, ".checktrail"));
+  const ready = path.join(root, ".checktrail/ready.json");
+  const marker = path.join(root, ".checktrail/child-ran");
   const child = `setTimeout(() => require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'alive'), 1200);`;
-  const program = `import {spawn} from 'node:child_process'; import {writeFile} from 'node:fs/promises'; import process from 'node:process'; const child=spawn(process.execPath,['-e',${JSON.stringify(child)}]); await writeFile(${JSON.stringify(ready)},JSON.stringify({pid:child.pid,temporary:process.env.REPO_VERIFIER_TEMP})); setInterval(()=>{},1000);`;
+  const program = `import {spawn} from 'node:child_process'; import {writeFile} from 'node:fs/promises'; import process from 'node:process'; const child=spawn(process.execPath,['-e',${JSON.stringify(child)}]); await writeFile(${JSON.stringify(ready)},JSON.stringify({pid:child.pid,temporary:process.env.CHECKTRAIL_TEMP})); setInterval(()=>{},1000);`;
   const reference = await bundle(t, program);
   const controller = new AbortController();
   const running = validate(root, {
@@ -673,9 +673,9 @@ test("external warnings respect declared failure levels and protected environmen
     );
   }
   const reference = await bundle(t);
-  for (const name of ["PATH", "NODE_OPTIONS", "REPO_VERIFIER_TEMP"]) {
+  for (const name of ["PATH", "NODE_OPTIONS", "CHECKTRAIL_TEMP"]) {
     await writeFile(
-      path.join(root, "repo-verifier.json"),
+      path.join(root, "checktrail.json"),
       JSON.stringify({
         schemaVersion: 1,
         projects: [

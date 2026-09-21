@@ -33,7 +33,7 @@ const source =
 test("project environment needs operator permission, is scoped to requests and recorded without values", async (t) => {
   const root = await fixture(t, {
     "package.json": nodeManifest,
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "env.test.js": source,
   });
   const unavailable = await validate(root, { trusted: true });
@@ -69,7 +69,7 @@ test("project environment needs operator permission, is scoped to requests and r
     environmentFingerprint({ VERIFIER_TEST_MODE: "changed" }),
   );
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["javascript.node-test"] }],
@@ -101,7 +101,7 @@ test("environment permissions reject unset, duplicate and malformed names and ca
   const root = await fixture(t, {
     "go.mod": "module example.invalid/synthetic\n\ngo 1.26\n",
     "value.go": "package synthetic\n",
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["go.test"], environment: ["GOPROXY"] }],
     }),
@@ -111,7 +111,7 @@ test("environment permissions reject unset, duplicate and malformed names and ca
     /protected adapter/,
   );
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -129,7 +129,7 @@ test("environment permissions reject unset, duplicate and malformed names and ca
 test("CLI and MCP use startup environment permissions and tool arguments cannot supply values", async (t) => {
   const root = await fixture(t, {
     "package.json": nodeManifest,
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "env.test.js": source,
   });
   const env = { ...process.env, VERIFIER_TEST_MODE: "synthetic-value" };
@@ -198,7 +198,7 @@ test("CLI and MCP use startup environment permissions and tool arguments cannot 
 
 test("workspace projects receive only their own requested environment and library calls snapshot values", async (t) => {
   const root = await fixture(t, {
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [
         {

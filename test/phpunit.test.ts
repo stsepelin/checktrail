@@ -8,7 +8,7 @@ import { validate } from "../src/engine.js";
 import { fixture } from "./helpers.js";
 
 const vendor = fileURLToPath(
-  new URL("../../.repo-verifier/php-tools/vendor", import.meta.url),
+  new URL("../../.checktrail/php-tools/vendor", import.meta.url),
 );
 const prepared = await access(
   path.join(vendor, "phpunit/phpunit/phpunit"),
@@ -34,7 +34,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "composer.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "ExampleTest.php": good,
     });
     await cp(vendor, path.join(root, "vendor"), { recursive: true });

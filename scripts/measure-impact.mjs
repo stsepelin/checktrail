@@ -144,7 +144,7 @@ function checkObservation(run, selectedProjects, failingProjects) {
 }
 const before = await identities();
 const startedAt = new Date().toISOString();
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-impact-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-impact-"));
 const observations = [];
 const baselines = [];
 try {

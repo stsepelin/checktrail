@@ -4,13 +4,7 @@ import process from "node:process";
 
 const image = execFileSync(
   "docker",
-  [
-    "image",
-    "inspect",
-    "repo-verifier-clang-test:22.1.3",
-    "--format",
-    "{{.Id}}",
-  ],
+  ["image", "inspect", "checktrail-clang-test:22.1.3", "--format", "{{.Id}}"],
   { encoding: "utf8" },
 ).trim();
 if (!/^sha256:[a-f0-9]{64}$/.test(image))
