@@ -14,7 +14,7 @@ bootstrap and test configuration.
 
 Copy a selected pack into the consumer repository or its ignored local policy
 directory, or explicitly download a pinned pack using [pack distribution](PACK-DISTRIBUTION.md). Inspect it and compute its digest with `shasum -a 256 path/to/pack.json`
-(or another SHA-256 utility). Reference the exact digest in `repo-verifier.json`:
+(or another SHA-256 utility). Reference the exact digest in `checktrail.json`:
 
 ```json
 {
@@ -60,10 +60,10 @@ adapters require separate operator registration; see `EXTERNAL-ADAPTERS.md`.
 Private overlays use the normal configuration schema and are explicitly selected:
 
 ```sh
-repo-verifier run --root /path/to/project --trust-project \
-  --policy-overlay .repo-verifier.local.json
-repo-verifier serve --root /path/to/project --allow-execution \
-  --policy-overlay .repo-verifier.local.json
+checktrail run --root /path/to/project --trust-project \
+  --policy-overlay .checktrail.local.json
+checktrail serve --root /path/to/project --allow-execution \
+  --policy-overlay .checktrail.local.json
 ```
 
 The library option is `policyOverlay`. MCP cannot set or change it through a tool
@@ -71,7 +71,7 @@ argument. The filename is not loaded automatically. It is ignored by this
 project's Git and source inventory defaults; consumers should keep private policy
 files out of their own public commits and package allowlists.
 
-An overlay requires an explicit base `repo-verifier.json`. It can add projects,
+An overlay requires an explicit base `checktrail.json`. It can add projects,
 checks and environment requirements; omitting a base requirement never removes
 it. A conflicting workspace declaration fails instead of overriding dependency
 semantics. The resolved policy fingerprint covers requirements, loaded pack
@@ -92,7 +92,7 @@ resource bounds and conservative Git selection. The offline package smoke uses
 the actual distributed Node profile through the installed library, CLI and MCP.
 
 The `infrastructure.actionlint` profile in `packs/actionlint.json` selects static
-GitHub Actions analysis. It requires explicit `repo-verifier.actionlint.json`
+GitHub Actions analysis. It requires explicit `checktrail.actionlint.json`
 settings and a prepared native checker; see [ACTIONLINT.md](ACTIONLINT.md).
 
 The separate `public.vue-router` profile in `packs/vue-router.json` selects native

@@ -9,7 +9,7 @@ import { fixture } from "./helpers.js";
 
 const packagePath = fileURLToPath(
   new URL(
-    "../../.repo-verifier/php-tools/vendor/phpstan/phpstan",
+    "../../.checktrail/php-tools/vendor/phpstan/phpstan",
     import.meta.url,
   ),
 );
@@ -35,7 +35,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "composer.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "phpstan.neon": config,
       "Example with spaces.php": good,
     });
@@ -94,7 +94,7 @@ test(
 test("PHPStan planning requires installed tools and config without executing PHP", async (t) => {
   const root = await fixture(t, {
     "composer.json": "{}",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "phpstan.neon": config,
     "Example.php": good,
   });

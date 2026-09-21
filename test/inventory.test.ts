@@ -54,6 +54,65 @@ test("fingerprint changes for source contents and ignores excluded secrets", asy
   assert.notEqual((await inventory(root)).fingerprint, first.fingerprint);
 });
 
+test("both Checktrail and legacy private artifacts stay excluded from inventory and fingerprints", async (t) => {
+  const privateFiles = [
+    ".checktrail/report.json",
+    ".checktrail.local.json",
+    ".repo-verifier/report.json",
+    ".repo-verifier.local.json",
+    "nested/.repo-verifier/report.json",
+    "nested/.checktrail.local.json",
+  ];
+  const root = await fixture(t, {
+    "main.py": "pass",
+    ...Object.fromEntries(privateFiles.map((file) => [file, "private-first"])),
+  });
+  const before = await inventory(root);
+  assert.deepEqual(before.files, ["main.py"]);
+  assert.deepEqual(
+    [...before.excluded].sort(),
+    [
+      ".checktrail",
+      ".checktrail.local.json",
+      ".repo-verifier",
+      ".repo-verifier.local.json",
+      "nested/.checktrail.local.json",
+      "nested/.repo-verifier",
+    ].sort(),
+  );
+  for (const file of privateFiles)
+    await writeFile(path.join(root, file), "private-second");
+  assert.equal((await inventory(root)).fingerprint, before.fingerprint);
+});
+
+test("legacy policy and profile filenames cannot silently fall back to default checks", async (t) => {
+  for (const name of [
+    "repo-verifier.json",
+    "repo-verifier.actionlint.json",
+    "repo-verifier.django.json",
+    "repo-verifier.dotnet.json",
+    "repo-verifier.fastapi.json",
+    "repo-verifier.java.json",
+    "repo-verifier.laravel.json",
+    "repo-verifier.nuxt.json",
+    "repo-verifier.vue-router.json",
+  ]) {
+    const root = await fixture(t, {
+      "package.json": nodeManifest,
+      "checktrail.json": JSON.stringify({
+        schemaVersion: 1,
+        projects: [{ path: ".", checks: ["javascript.node-test"] }],
+      }),
+      [`nested/${name}`]: "{}",
+    });
+    await assert.rejects(createPlan(root), (error: Error) => {
+      assert.ok(error.message.includes(`nested/${name}`));
+      assert.match(error.message, /Rename legacy configuration/);
+      return true;
+    });
+  }
+});
+
 test("rejects escaping paths and excludes symbolic links", async (t) => {
   const root = await fixture(t, { "main.py": "pass" });
   const outside = await fixture(t, { "secret.py": "private" });
@@ -94,10 +153,7 @@ test("rejects unknown configuration keys, check IDs, project paths and duplicate
     },
   ];
   for (const value of cases) {
-    await writeFile(
-      path.join(root, "repo-verifier.json"),
-      JSON.stringify(value),
-    );
+    await writeFile(path.join(root, "checktrail.json"), JSON.stringify(value));
     await assert.rejects(createPlan(root));
   }
 });

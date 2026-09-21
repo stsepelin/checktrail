@@ -22,7 +22,7 @@ test(
     const root = await fixture(t, {
       "pyproject.toml":
         '[tool.pytest.ini_options]\naddopts = "--collect-only -k nonexistent"\n',
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "test_sum.py": good,
     });
     const passed = await validate(root, { trusted: true });
@@ -85,7 +85,7 @@ test(
 test("pytest planning does not import project conftest", async (t) => {
   const root = await fixture(t, {
     "pyproject.toml": "",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "test_sum.py": good,
     "conftest.py": "raise RuntimeError('configuration ran')",
   });

@@ -1,6 +1,6 @@
 # Security and data handling
 
-Repo Verifier is an experimental local tool, not an execution sandbox or a security
+Checktrail is an experimental local tool, not an execution sandbox or a security
 certification. Run project checks only on source you trust or inside a separately
 configured isolated environment.
 
@@ -41,6 +41,6 @@ examples and reviewed files. The package allowlist excludes local reports and te
 
 ## Reporting
 
-Use [GitHub private vulnerability reporting](https://github.com/stsepelin/repo-verifier/security/advisories/new).
+Use [GitHub private vulnerability reporting](https://github.com/stsepelin/checktrail/security/advisories/new).
 The reporting channel is enabled for this repository. Do not put secrets or
 exploitable private deployment details in a public issue.

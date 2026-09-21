@@ -50,8 +50,8 @@ Hosted CI and other OS/tool combinations still require their own runs.
 Prepare the pinned development tool explicitly:
 
 ```sh
-mkdir -p .repo-verifier/go-tools/bin
-GOBIN="$PWD/.repo-verifier/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
+mkdir -p .checktrail/go-tools/bin
+GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
 npm run build
 node --test dist/test/go-scope.test.js dist/test/staticcheck.test.js
 ```

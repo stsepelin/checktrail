@@ -33,10 +33,10 @@ For the separate container check, prepare dependencies deliberately before
 validation (requires an already installed `python:3.12-alpine` image):
 
 ```sh
-mkdir -p .repo-verifier/python-tools
+mkdir -p .checktrail/python-tools
 docker run --rm \
   --mount "type=bind,src=$PWD,target=/repo,readonly" \
-  --mount "type=bind,src=$PWD/.repo-verifier/python-tools,target=/tools" \
+  --mount "type=bind,src=$PWD/.checktrail/python-tools,target=/tools" \
   python:3.12-alpine python3 -m pip install --no-cache-dir --target /tools \
   -r /repo/scripts/python-tools.requirements.txt
 npm run build

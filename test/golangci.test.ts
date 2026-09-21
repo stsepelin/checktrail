@@ -8,7 +8,7 @@ import { hasGoSuppression } from "../src/go-directives.js";
 import { fixture } from "./helpers.js";
 
 const nativePath =
-  path.resolve(".repo-verifier/go-tools/bin") +
+  path.resolve(".checktrail/go-tools/bin") +
   path.delimiter +
   (process.env.PATH ?? "");
 const available =
@@ -40,7 +40,7 @@ test(
     try {
       const root = await fixture(t, {
         "go.mod": "module example.invalid/sample\n\ngo 1.23\n",
-        "repo-verifier.json": policy,
+        "checktrail.json": policy,
         ".golangci.yml": config,
         "value.go": good,
       });

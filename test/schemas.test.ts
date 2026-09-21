@@ -144,7 +144,7 @@ test("JUnit import results satisfy the published schema for parsed and incomplet
 
 test("Rust and Laravel plans conform to the public detailed schema before any project execution", async (t) => {
   const root = await fixture(t, {
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [
         { path: "rust", checks: ["rust.cargo-check"] },
@@ -159,7 +159,7 @@ test("Rust and Laravel plans conform to the public detailed schema before any pr
       "<?php throw new RuntimeException('Planning must never load bootstrap');",
     "php/vendor/autoload.php":
       "<?php throw new RuntimeException('Planning must never load autoload');",
-    "php/repo-verifier.laravel.json": JSON.stringify({
+    "php/checktrail.laravel.json": JSON.stringify({
       schemaVersion: 1,
       assembly: "synthetic",
       environment: "testing",

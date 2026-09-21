@@ -12,12 +12,12 @@ macOS arm64 and Node 22.23.2 on Linux arm64. Other framework versions are unavai
 until verified. Framework dependencies must already exist inside the operator
 root; the engine never installs them. Fixture dependencies are locked separately
 in `scripts/vue-router-tools/package-lock.json` and are not distributed as runtime
-dependencies of Repo Verifier.
+dependencies of Checktrail.
 
 ## Configuration
 
-Select `javascript.vue-router` in `repo-verifier.json`, or use the pinned
-`packs/vue-router.json` profile. Add `repo-verifier.vue-router.json` in that project:
+Select `javascript.vue-router` in `checktrail.json`, or use the pinned
+`packs/vue-router.json` profile. Add `checktrail.vue-router.json` in that project:
 
 ```json
 {
@@ -103,9 +103,9 @@ and native evidence.
 From the checkout, prepare the development fixture tools explicitly:
 
 ```sh
-mkdir -p .repo-verifier/vue-router-tools
-cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
-npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+mkdir -p .checktrail/vue-router-tools
+cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
+npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
 npm run build
 node --test dist/test/vue-router.test.js
 node scripts/verify-vue-router-container.mjs

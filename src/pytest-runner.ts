@@ -9,7 +9,7 @@ try:
 except ModuleNotFoundError as error:
     if error.name != "pytest":
         raise
-    print(json.dumps({"format": "repo-verifier-pytest-1", "unavailable": "pytest"}))
+    print(json.dumps({"format": "checktrail-pytest-1", "unavailable": "pytest"}))
     sys.exit(3)
 
 class Evidence:
@@ -43,6 +43,6 @@ plugin = Evidence()
 files = [str(pathlib.Path(file).resolve()) for file in sys.argv[1:]]
 with contextlib.redirect_stdout(sys.stderr):
     code = pytest.main(["-o", "addopts=", "-o", "xfail_strict=true", "--maxfail=0", "-p", "no:cacheprovider", "-p", "no:terminal", "--", *files], plugins=[plugin])
-print(json.dumps({"format": "repo-verifier-pytest-1", "version": pytest.__version__, "exitCode": int(code), "finished": plugin.finished, "items": plugin.items, "reports": plugin.reports, "deselected": plugin.deselected, "collectionErrors": plugin.collection_errors}))
+print(json.dumps({"format": "checktrail-pytest-1", "version": pytest.__version__, "exitCode": int(code), "finished": plugin.finished, "items": plugin.items, "reports": plugin.reports, "deselected": plugin.deselected, "collectionErrors": plugin.collection_errors}))
 sys.exit(int(code))
 `;

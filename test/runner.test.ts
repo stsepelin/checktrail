@@ -5,18 +5,17 @@ import { fixture } from "./helpers.js";
 
 test("passes arguments literally, strips unlisted environment values, and captures streams", async (t) => {
   const root = await fixture(t, {});
-  const previous = process.env.REPO_VERIFIER_SYNTHETIC_SECRET;
-  process.env.REPO_VERIFIER_SYNTHETIC_SECRET = "not-for-child";
+  const previous = process.env.CHECKTRAIL_SYNTHETIC_SECRET;
+  process.env.CHECKTRAIL_SYNTHETIC_SECRET = "not-for-child";
   t.after(() => {
-    if (previous === undefined)
-      delete process.env.REPO_VERIFIER_SYNTHETIC_SECRET;
-    else process.env.REPO_VERIFIER_SYNTHETIC_SECRET = previous;
+    if (previous === undefined) delete process.env.CHECKTRAIL_SYNTHETIC_SECRET;
+    else process.env.CHECKTRAIL_SYNTHETIC_SECRET = previous;
   });
   const command = {
     executable: process.execPath,
     args: [
       "-e",
-      "process.stdout.write(JSON.stringify(process.argv.slice(1))); process.stderr.write(String(process.env.REPO_VERIFIER_SYNTHETIC_SECRET))",
+      "process.stdout.write(JSON.stringify(process.argv.slice(1))); process.stderr.write(String(process.env.CHECKTRAIL_SYNTHETIC_SECRET))",
       "$(not-a-command); quoted value",
     ],
     cwd: ".",
@@ -31,7 +30,7 @@ test("reports missing executables separately from code failures", async (t) => {
   const root = await fixture(t, {});
   const result = await runProcess(
     root,
-    { executable: "repo-verifier-definitely-missing-tool", args: [], cwd: "." },
+    { executable: "checktrail-definitely-missing-tool", args: [], cwd: "." },
     { timeoutMs: 1000 },
   );
   assert.equal(result.errorCode, "ENOENT");

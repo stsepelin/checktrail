@@ -9,7 +9,7 @@ import pathlib
 import sys
 
 def unavailable(reason):
-    print(json.dumps({"format": "repo-verifier-mypy-1", "unavailable": reason}))
+    print(json.dumps({"format": "checktrail-mypy-1", "unavailable": reason}))
     sys.exit(3)
 
 try:
@@ -32,7 +32,7 @@ with contextlib.redirect_stdout(sys.stderr):
     sources, options = process_options(args, stdout=capture, stderr=capture)
     suppressed = [str(pathlib.Path(source.path).resolve()) for source in sources if source.path and options.clone_for_module(source.module).ignore_errors]
     stdout, stderr, code = api.run(args)
-print(json.dumps({"format": "repo-verifier-mypy-1", "version": __version__, "files": [str(pathlib.Path(source.path).resolve()) for source in sources if source.path], "suppressedFiles": suppressed, "stdout": stdout, "stderr": capture.getvalue() + stderr, "exitCode": code}))
+print(json.dumps({"format": "checktrail-mypy-1", "version": __version__, "files": [str(pathlib.Path(source.path).resolve()) for source in sources if source.path], "suppressedFiles": suppressed, "stdout": stdout, "stderr": capture.getvalue() + stderr, "exitCode": code}))
 sys.exit(code)
 `;
 

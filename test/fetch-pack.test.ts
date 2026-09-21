@@ -19,7 +19,7 @@ import { fetchPolicyPack } from "../src/fetch-pack.js";
 import { createPlan } from "../src/engine.js";
 import { fixture, nodeManifest, passingTest } from "./helpers.js";
 
-const installed = process.env.REPO_VERIFIER_TEST_PACKAGE;
+const installed = process.env.CHECKTRAIL_TEST_PACKAGE;
 const cli = installed
   ? path.join(installed, "dist/src/cli.js")
   : fileURLToPath(new URL("../src/cli.js", import.meta.url));
@@ -206,7 +206,7 @@ test("remote policy downloads pin exact bytes, compose offline and publish witho
     0o600,
   );
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: [], packs: [downloaded.reference] }],
@@ -227,9 +227,7 @@ test("remote policy downloads pin exact bytes, compose offline and publish witho
   assert.deepEqual(raced.map((item) => item.code).sort(), [0, 2]);
   assert.deepEqual(await readFile(path.join(root, "race.json")), bytes);
   assert.ok(
-    !(await readdir(root)).some((name) =>
-      name.startsWith(".repo-verifier-pack-"),
-    ),
+    !(await readdir(root)).some((name) => name.startsWith(".checktrail-pack-")),
   );
   assert.ok(
     remote.requests.every(

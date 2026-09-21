@@ -1,9 +1,11 @@
-# Repo Verifier
+# Checktrail
 
 Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
+Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
+
 **Experimental preview: 0.1.0-alpha.1.** Public source is available at
-[stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier).
+[stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [language matrix](docs/LANGUAGES.md) before relying on an adapter.
 [Installation](docs/INSTALLATION.md) covers the CLI, Claude Code and Codex.
@@ -11,11 +13,11 @@ See [implementation status](docs/STATUS.md), the [plan](docs/PLAN.md) and the
 [milestone audit](docs/ACCEPTANCE.md) separates implemented profiles from open
 acceptance work; [client checks](docs/CLIENTS.md) record actual application coverage.
 
-The [13-job hosted matrix](https://github.com/stsepelin/repo-verifier/actions/runs/35573066804)
+The [13-job hosted matrix](https://github.com/stsepelin/checktrail/actions/runs/35573066804)
 passed at `52ba415` on Linux and macOS. This identifies a verified source revision;
 it does not imply that a later package version has been published.
 
-Repo Verifier discovers projects, plans registered checks, invokes native tools
+Checktrail discovers projects, plans registered checks, invokes native tools
 when explicitly trusted, and reports results without turning skipped or empty
 checks into success. The same engine serves developers, CI and MCP clients.
 
@@ -85,7 +87,7 @@ invoked tools and test code can still access the network.
 Without configuration, registered defaults apply to each detected project.
 Node tests are selected automatically only for the exact script `node --test`.
 Python needs an explicit selection because a manifest does not identify a runner.
-Create `repo-verifier.json` in the inspected root:
+Create `checktrail.json` in the inspected root:
 
 ```json
 {
@@ -212,10 +214,10 @@ For a client that accepts a command/arguments server definition:
 ```json
 {
   "mcpServers": {
-    "repo-verifier": {
+    "checktrail": {
       "command": "node",
       "args": [
-        "/path/to/repo-verifier/dist/src/cli.js",
+        "/path/to/checktrail/dist/src/cli.js",
         "serve",
         "--root",
         "/path/to/your/repository"

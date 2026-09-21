@@ -22,7 +22,7 @@ const config = { schemaVersion: 1, runnerLabels: [], variables: [] };
 const workflow =
   "name: Example\non: push\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ready\n";
 const base = {
-  "repo-verifier.actionlint.json": JSON.stringify(config),
+  "checktrail.actionlint.json": JSON.stringify(config),
   ".github/workflows/check.yml": workflow,
 };
 
@@ -31,7 +31,7 @@ test("workflow planning finds repository roots and retains unrelated infrastruct
     ...base,
     "main.tf": "",
     "nested/.github/workflows/other.yaml": workflow,
-    "nested/repo-verifier.actionlint.json": JSON.stringify(config),
+    "nested/checktrail.actionlint.json": JSON.stringify(config),
     "irrelevant.yaml": "jobs: {}",
   });
   const { plan } = await createPlan(root);
@@ -54,12 +54,12 @@ test("workflow planning finds repository roots and retains unrelated infrastruct
     { ...config, paths: { "**": { ignore: [".*"] } } },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.actionlint.json"),
+      path.join(root, "checktrail.actionlint.json"),
       JSON.stringify(invalid),
     );
     assert.ok((await createPlan(root)).plan.checks[0]!.unavailableReason);
   }
-  await rm(path.join(root, "repo-verifier.actionlint.json"));
+  await rm(path.join(root, "checktrail.actionlint.json"));
   assert.match(
     (await createPlan(root)).plan.checks[0]!.unavailableReason!,
     /Prepare/,
@@ -131,7 +131,7 @@ test(
       "tools/local/action.yml":
         "name: Local\ndescription: Example\ninputs:\n  greeting:\n    description: Greeting\n    required: true\nruns:\n  using: node24\n  main: main.js\n",
       "tools/local/main.js": "throw new Error('Must never execute');",
-      "repo-verifier.json": JSON.stringify({
+      "checktrail.json": JSON.stringify({
         schemaVersion: 1,
         projects: [{ path: ".", checks: ["infrastructure.actionlint"] }],
       }),
@@ -163,7 +163,7 @@ test(
       "unavailable",
     );
     await symlink(
-      path.join(root, "repo-verifier.actionlint.json"),
+      path.join(root, "checktrail.actionlint.json"),
       path.join(root, "tools/local/main.js"),
     );
     assert.equal(
@@ -209,7 +209,7 @@ test(
         "on: push\njobs:\n  call:\n    uses: ./.github/workflows/reuse.yml\n    with:\n      count: 3\n",
       ".github/workflows/reuse.yml":
         "on:\n  workflow_call:\n    inputs:\n      count:\n        type: number\n        required: true\njobs:\n  check:\n    runs-on: custom-runner\n    steps:\n      - run: echo '${{ vars.GREETING }}'\n",
-      "repo-verifier.actionlint.json": JSON.stringify({
+      "checktrail.actionlint.json": JSON.stringify({
         ...config,
         runnerLabels: ["custom-runner"],
         variables: ["GREETING"],

@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { validate } from "../src/engine.js";
 import { fixture } from "./helpers.js";
 
-const prepared = path.resolve(".repo-verifier/go-tools/bin");
+const prepared = path.resolve(".checktrail/go-tools/bin");
 const nativePath = prepared + path.delimiter + (process.env.PATH ?? "");
 const available =
   spawnSync("staticcheck", ["-version"], {
@@ -31,7 +31,7 @@ test(
       const root = await fixture(t, {
         "go.mod": "module example.invalid/sample\n\ngo 1.23\n",
         "value.go": good,
-        "repo-verifier.json": JSON.stringify({
+        "checktrail.json": JSON.stringify({
           schemaVersion: 1,
           projects: [{ path: ".", checks: ["go.staticcheck"] }],
         }),

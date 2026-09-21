@@ -61,7 +61,7 @@ test("recorded evaluation counts reconcile with every raw case and the frozen co
     import {createHash} from 'node:crypto';
     const root = process.argv[1];
     const {summarizeEvaluation} = await import(new URL('scripts/evaluation-metrics.mjs', root));
-    const bytes = await readFile(new URL('scripts/evaluation-corpus.json', root));
+    const bytes = await readFile(new URL('docs/measurements/evaluation-corpus-repo-verifier.json', root));
     const corpus = JSON.parse(bytes);
     for (const name of ['evaluation-darwin-arm64-node26.json', 'evaluation-linux-arm64-node22.json']) {
       const text = await readFile(new URL('docs/measurements/' + name, root), 'utf8');

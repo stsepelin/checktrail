@@ -49,8 +49,8 @@ Current evidence is Go 1.27.1 / golangci-lint 2.13.2 on macOS arm64.
 Development preparation is separate from validation:
 
 ```sh
-mkdir -p .repo-verifier/go-tools/bin
-GOBIN="$PWD/.repo-verifier/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+mkdir -p .checktrail/go-tools/bin
+GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
 npm run build
 node --test dist/test/golangci.test.js
 ```

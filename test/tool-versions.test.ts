@@ -34,7 +34,7 @@ test("package version metadata must match its tool and valid check output cannot
     "package.json": "{}",
     "tsconfig.json": "{}",
     "value.ts": "export const value = 1;",
-    "repo-verifier.json": JSON.stringify({
+    "checktrail.json": JSON.stringify({
       schemaVersion: 1,
       projects: [{ path: ".", checks: ["javascript.typescript"] }],
     }),

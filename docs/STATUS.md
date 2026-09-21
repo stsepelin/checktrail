@@ -1,7 +1,7 @@
 # Implementation status
 
 This is an experimental foundation with public source at
-[stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier).
+[stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
 All 13 hosted jobs passed at `52ba415`; the exact run and earlier cache/path
 failures are recorded in `NATIVE-CI.md`. The `0.1.0-alpha.1` preview changes

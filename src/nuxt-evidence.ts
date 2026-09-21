@@ -61,7 +61,7 @@ export function nuxtEvidence(
     if (result.runtime) {
       if (
         result.runtime.sourceFingerprint !== result.sourceFingerprint ||
-        result.runtime.producer.name !== "repo-verifier.nuxt" ||
+        result.runtime.producer.name !== "checktrail.nuxt" ||
         result.runtime.producer.version !== "1.0.0" ||
         result.runtime.assembly.name !== config.assembly ||
         result.runtime.assembly.environment !== config.environment ||
@@ -108,7 +108,7 @@ export function nuxtEvidence(
     for (const [index, probe] of result.probes.entries()) {
       const expected = config.probes[index]!;
       if (probe.path !== expected.path) return incomplete;
-      const file = path.posix.join(check.project, "repo-verifier.nuxt.json");
+      const file = path.posix.join(check.project, "checktrail.nuxt.json");
       if (probe.status !== 200)
         findings.push({
           ruleId: "nuxt/http-status",

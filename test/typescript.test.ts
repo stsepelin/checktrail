@@ -30,7 +30,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": "{}",
-      "repo-verifier.json": policy("apps/example"),
+      "checktrail.json": policy("apps/example"),
       "apps/example/package.json": "{}",
       "apps/example/tsconfig.json": config,
       "apps/example/src/value with spaces.ts":
@@ -77,7 +77,7 @@ test(
 test("TypeScript planning never executes an installed compiler", async (t) => {
   const root = await fixture(t, {
     "package.json": "{}",
-    "repo-verifier.json": policy(),
+    "checktrail.json": policy(),
     "tsconfig.json": config,
     "src/value.ts": "export const value = 42;",
     "node_modules/typescript/bin/tsc":
@@ -91,7 +91,7 @@ test("TypeScript planning never executes an installed compiler", async (t) => {
 test("TypeScript requires a local compiler and refuses one linked outside the root", async (t) => {
   const root = await fixture(t, {
     "package.json": "{}",
-    "repo-verifier.json": policy(),
+    "checktrail.json": policy(),
     "tsconfig.json": config,
     "src/value.ts": "export const value = 42;",
   });

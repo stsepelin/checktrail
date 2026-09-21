@@ -10,7 +10,7 @@ work; see [MCP compatibility](MCP-COMPATIBILITY.md).
 
 ```js
 import { setTimeout as delay } from "node:timers/promises";
-import { openValidationTasks } from "@stsepelin/repo-verifier";
+import { openValidationTasks } from "@stsepelin/checktrail";
 
 const tasks = await openValidationTasks({
   root: projectRoot,

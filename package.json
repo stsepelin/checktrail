@@ -1,7 +1,7 @@
 {
-  "name": "@stsepelin/repo-verifier",
+  "name": "@stsepelin/checktrail",
   "version": "0.1.0-alpha.1",
-  "mcpName": "io.github.stsepelin/repo-verifier",
+  "mcpName": "io.github.stsepelin/checktrail",
   "description": "Local code validation with execution evidence, a CLI, and MCP tools.",
   "type": "module",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "node": ">=22"
   },
   "bin": {
-    "repo-verifier": "dist/src/cli.js"
+    "checktrail": "dist/src/cli.js"
   },
   "files": [
     "dist/src",
@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stsepelin/repo-verifier.git"
+    "url": "https://github.com/stsepelin/checktrail.git"
   },
   "scripts": {
     "build": "tsc",

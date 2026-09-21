@@ -1,5 +1,9 @@
 # Application client compatibility
 
+The recorded snapshots below predate the Checktrail rename and retain their
+original package identities. A release candidate needs its own client checks;
+see [RENAMING.md](RENAMING.md).
+
 The local package was installed offline into a fresh temporary consumer and tested
 with Claude Code 2.1.263 and Codex CLI 0.154.0 on macOS arm64, Node 26.8.1. These
 are specific client surfaces and versions; they do not establish compatibility

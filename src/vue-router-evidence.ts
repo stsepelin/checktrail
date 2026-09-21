@@ -49,7 +49,7 @@ export function vueRouterEvidence(
     const collection = result.runtime.collections[0]!;
     if (
       result.runtime.sourceFingerprint !== check.commands[0]!.args[5] ||
-      result.runtime.producer.name !== "repo-verifier.vue-router" ||
+      result.runtime.producer.name !== "checktrail.vue-router" ||
       result.runtime.producer.version !== "1.0.0" ||
       result.runtime.assembly.name !== config.assembly ||
       result.runtime.assembly.environment !== config.environment ||
@@ -117,7 +117,7 @@ export function vueRouterEvidence(
           ruleId: "vue-router/probe-mismatch",
           level: "error" as const,
           message: `Route probe ${probe.path} did not resolve to its expected matched route chain.`,
-          file: path.posix.join(check.project, "repo-verifier.vue-router.json"),
+          file: path.posix.join(check.project, "checktrail.vue-router.json"),
         });
     }
     if (

@@ -46,7 +46,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "go.mod": manifest,
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "counter_test.go": broken,
     });
     const failed = await validate(root, { trusted: true, timeoutMs: 120_000 });

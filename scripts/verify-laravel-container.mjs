@@ -17,7 +17,7 @@ function installedImage(name) {
 }
 const image = installedImage("composer:2");
 const nodeImage = installedImage("node:22-alpine");
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-laravel-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-laravel-"));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 let sourceContainer;
 try {

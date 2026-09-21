@@ -34,7 +34,7 @@ outside files, runtime services or hermetic reproducibility.
 
 ## Configuration
 
-`repo-verifier.json` is optional and uses `schemaVersion: 1`. It can select known
+`checktrail.json` is optional and uses `schemaVersion: 1`. It can select known
 checks for detected project roots. Unknown keys, IDs and project roots fail before
 any process starts. A missing config uses conservative registered defaults. Pinned JSON packs add
 registered checks, and an operator-selected private overlay adds requirements to

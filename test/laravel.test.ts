@@ -10,16 +10,16 @@ import { projectReport } from "../src/output.js";
 import { fixture } from "./helpers.js";
 
 const vendor = fileURLToPath(
-  new URL("../../.repo-verifier/laravel-tools/vendor", import.meta.url),
+  new URL("../../.checktrail/laravel-tools/vendor", import.meta.url),
 );
 const available = await access(path.join(vendor, "autoload.php")).then(
   () => spawnSync("php", ["--version"], { timeout: 10_000 }).status === 0,
   () => false,
 );
 const example = new URL("../../examples/frameworks/laravel/", import.meta.url);
-const policy = await readFile(new URL("repo-verifier.json", example), "utf8");
+const policy = await readFile(new URL("checktrail.json", example), "utf8");
 const profile = await readFile(
-  new URL("repo-verifier.laravel.json", example),
+  new URL("checktrail.laravel.json", example),
   "utf8",
 );
 const manifest = await readFile(new URL("composer.json", example), "utf8");
@@ -44,8 +44,8 @@ const wiring = await readFile(
 );
 const files = () => ({
   "composer.json": manifest,
-  "repo-verifier.json": policy,
-  "repo-verifier.laravel.json": profile,
+  "checktrail.json": policy,
+  "checktrail.laravel.json": profile,
   "bootstrap/app.php": bootstrap,
   "bootstrap/providers.php": providers,
   "wiring.php": wiring,
@@ -75,26 +75,23 @@ test("Laravel planning is read-only, requires local prerequisites and protects t
   const configured = JSON.parse(policy);
   configured.projects[0].environment = ["APP_ENV"];
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify(configured),
   );
   await assert.rejects(
     createPlan(root, { environment: { APP_ENV: "production" } }),
     /protected adapter/,
   );
-  await writeFile(path.join(root, "repo-verifier.json"), policy);
+  await writeFile(path.join(root, "checktrail.json"), policy);
 
   await writeFile(
-    path.join(root, "repo-verifier.laravel.json"),
+    path.join(root, "checktrail.laravel.json"),
     profile.replace("testing", "production"),
   );
   await assert.rejects(createPlan(root));
+  await writeFile(path.join(root, "checktrail.laravel.json"), "invalid JSON");
   await writeFile(
-    path.join(root, "repo-verifier.laravel.json"),
-    "invalid JSON",
-  );
-  await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     policy.replace("php.laravel-runtime", "php.syntax"),
   );
   assert.equal((await createPlan(root)).plan.checks[0]!.id, "php.syntax");

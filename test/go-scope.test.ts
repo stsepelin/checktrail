@@ -20,7 +20,7 @@ test(
       "go.mod": "module example.invalid/sample\n\ngo 1.23\n",
       "value.go": source,
       "value_test.go": assertion,
-      "repo-verifier.json": JSON.stringify({
+      "checktrail.json": JSON.stringify({
         schemaVersion: 1,
         projects: [{ path: ".", checks: ["go.vet", "go.test"] }],
       }),

@@ -13,7 +13,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": "{}",
-      "repo-verifier.json": eslintPolicy("app"),
+      "checktrail.json": eslintPolicy("app"),
       "app/package.json": '{"type":"module"}',
       "app/eslint.config.js": eslintConfig,
       "app/src/valid [case] with spaces.js":
@@ -68,7 +68,7 @@ test(
 test("ESLint planning never executes the configuration or installed tool and reports missing prerequisites", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
-    "repo-verifier.json": eslintPolicy(),
+    "checktrail.json": eslintPolicy(),
     "eslint.config.js":
       "import fs from 'node:fs'; fs.writeFileSync('executed', 'yes'); export default [];",
     "source.js": "debugger;",
@@ -94,7 +94,7 @@ test("ESLint planning never executes the configuration or installed tool and rep
 test("ESLint does not load an installation linked outside the configured root", async (t) => {
   const root = await fixture(t, {
     "package.json": '{"type":"module"}',
-    "repo-verifier.json": eslintPolicy(),
+    "checktrail.json": eslintPolicy(),
     "eslint.config.js": eslintConfig,
   });
   await mkdir(path.join(root, "node_modules"));
@@ -114,7 +114,7 @@ test(
   async (t) => {
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
-      "repo-verifier.json": eslintPolicy(),
+      "checktrail.json": eslintPolicy(),
       "eslint.config.js": "export default [{rules: {'no-debugger': 'off'}}];\n",
       "source.js": "debugger;\n",
     });

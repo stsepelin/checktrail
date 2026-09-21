@@ -44,7 +44,7 @@ const config = {
 };
 const simple = {
   "Catalog.csproj": "<Project/>",
-  "repo-verifier.dotnet.json": JSON.stringify(config),
+  "checktrail.dotnet.json": JSON.stringify(config),
   "Value.cs": "public class Value { public int Amount => 1; }",
 };
 
@@ -59,7 +59,7 @@ test("C# planning reads explicit settings without running build targets, and rej
     /Prepare/,
   );
   await writeFile(
-    path.join(root, "repo-verifier.dotnet.json"),
+    path.join(root, "checktrail.dotnet.json"),
     JSON.stringify(config),
   );
   assert.equal(
@@ -79,13 +79,13 @@ test("C# planning reads explicit settings without running build targets, and rej
     },
   ]) {
     await writeFile(
-      path.join(root, "repo-verifier.dotnet.json"),
+      path.join(root, "checktrail.dotnet.json"),
       JSON.stringify(invalid),
     );
     assert.ok((await createPlan(root)).plan.checks[0]!.unavailableReason);
   }
   await writeFile(
-    path.join(root, "repo-verifier.dotnet.json"),
+    path.join(root, "checktrail.dotnet.json"),
     JSON.stringify(config),
   );
   for (const file of [
@@ -104,7 +104,7 @@ test("C# planning reads explicit settings without running build targets, and rej
     await rm(path.join(root, file));
   }
   await writeFile(
-    path.join(root, "repo-verifier.json"),
+    path.join(root, "checktrail.json"),
     JSON.stringify({
       schemaVersion: 1,
       projects: [
@@ -299,7 +299,7 @@ test(
     });
     const settings = async (values: Partial<typeof config>) =>
       writeFile(
-        path.join(root, "repo-verifier.dotnet.json"),
+        path.join(root, "checktrail.dotnet.json"),
         JSON.stringify({ ...config, ...values }),
       );
     const source = async (text: string) =>
@@ -372,7 +372,7 @@ test(
       ...simple,
       "Value.cs": "public class Value { public int Amount => Library.Amount; }",
     });
-    const prepared = path.join(root, ".repo-verifier");
+    const prepared = path.join(root, ".checktrail");
     await mkdir(prepared);
     const sdk = path.join(sdkBase!, "10.0.401");
     const refs = path.resolve(
@@ -411,7 +411,7 @@ test(
       ...config,
       references: [
         {
-          path: ".repo-verifier/Library.dll",
+          path: ".checktrail/Library.dll",
           sha256: createHash("sha256")
             .update(await readFile(dll))
             .digest("hex"),
@@ -420,7 +420,7 @@ test(
     };
     const settings = async (value = pinned) =>
       writeFile(
-        path.join(root, "repo-verifier.dotnet.json"),
+        path.join(root, "checktrail.dotnet.json"),
         JSON.stringify(value),
       );
     await settings();
@@ -490,9 +490,7 @@ test(
     await symlink(dll, path.join(prepared, "Alias.dll"));
     await settings({
       ...pinned,
-      references: [
-        { ...pinned.references[0]!, path: ".repo-verifier/Alias.dll" },
-      ],
+      references: [{ ...pinned.references[0]!, path: ".checktrail/Alias.dll" }],
     });
     assert.match(
       (await createPlan(root)).plan.checks[0]!.unavailableReason!,
@@ -546,7 +544,7 @@ test(
       ...pinned,
       references: [
         {
-          path: ".repo-verifier/Library.dll",
+          path: ".checktrail/Library.dll",
           sha256: createHash("sha256")
             .update(await readFile(dll))
             .digest("hex"),

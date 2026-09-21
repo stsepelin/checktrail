@@ -6,7 +6,7 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
-const temporary = await mkdtemp(path.join(tmpdir(), "repo-verifier-cache-"));
+const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-cache-"));
 try {
   const [packed] = JSON.parse(
     execFileSync(

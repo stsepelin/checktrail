@@ -19,10 +19,7 @@ import type { Check, ProcessResult } from "../src/types.js";
 import { fixture } from "./helpers.js";
 
 const packagePath = fileURLToPath(
-  new URL(
-    "../../.repo-verifier/php-tools/vendor/laravel/pint",
-    import.meta.url,
-  ),
+  new URL("../../.checktrail/php-tools/vendor/laravel/pint", import.meta.url),
 );
 const prepared = await access(path.join(packagePath, "builds/pint")).then(
   () => true,
@@ -45,7 +42,7 @@ async function replaceFixture(file: string, source: string): Promise<void> {
 test("Pint planning only resolves its installed path", async (t) => {
   const root = await fixture(t, {
     "composer.json": "{}",
-    "repo-verifier.json": policy,
+    "checktrail.json": policy,
     "Example.php": good,
     "view.blade.php": "<p>{{ $value }}</p>",
   });
@@ -67,7 +64,7 @@ test(
   async (t) => {
     const project = await fixture(t, {
       "composer.json": "{}",
-      "repo-verifier.json": policy,
+      "checktrail.json": policy,
       "Example.php": good,
     });
     const aliases = await fixture(t, {});

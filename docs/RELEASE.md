@@ -1,9 +1,9 @@
 # Release preparation
 
-The source is public at [stsepelin/repo-verifier](https://github.com/stsepelin/repo-verifier);
+The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail);
 the first preview is `0.1.0-alpha.1`. `server.json` describes the
-intended `io.github.stsepelin/repo-verifier` MCP registry identity and the matching
-`@stsepelin/repo-verifier` npm package. The npm and registry names are proposed
+intended `io.github.stsepelin/checktrail` MCP registry identity and the matching
+`@stsepelin/checktrail` npm package. The npm and registry names are proposed
 metadata, not evidence of a published package or registry entry. Package publishing
 is configured for public access on npm's `next` tag. No credentials or automatic
 publishing workflow are stored in this repository.
@@ -39,8 +39,8 @@ by the verifier below, without bundling a copied schema in the package.
 ```sh
 curl --fail --silent --show-error --location --max-time 30 \
   https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json \
-  --output /tmp/repo-verifier-registry-schema.json
-node scripts/verify-registry-metadata.mjs /tmp/repo-verifier-registry-schema.json
+  --output /tmp/checktrail-registry-schema.json
+node scripts/verify-registry-metadata.mjs /tmp/checktrail-registry-schema.json
 ```
 
 The checker requires SHA-256
@@ -61,7 +61,7 @@ After explicit approval and npm authentication for the `@stsepelin` scope, publi
 the approved file, not a newly packed working tree:
 
 ```sh
-npm publish /absolute/path/stsepelin-repo-verifier-0.1.0-alpha.1.tgz \
+npm publish /absolute/path/stsepelin-checktrail-0.1.0-alpha.1.tgz \
   --tag next --access public --ignore-scripts --registry=https://registry.npmjs.org
 ```
 

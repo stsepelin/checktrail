@@ -69,7 +69,7 @@ not evidence that a package can be installed without previously cached dependenc
 For local reproduction, run `npm run build`, the cache preparation script, then
 `node scripts/smoke-package.mjs`, keeping the same npm cache configuration.
 
-The [first hosted run](https://github.com/stsepelin/repo-verifier/actions/runs/35570317427)
+The [first hosted run](https://github.com/stsepelin/checktrail/actions/runs/35570317427)
 exposed this missing setup: Java, C#, actionlint, external adapters, Vue Router and
 Nuxt reached packaged installation after their native checks, then failed with
 `ENOTCACHED`. All three Linux main-matrix jobs reached the same failure after
@@ -83,7 +83,7 @@ All three fixes are included in the successful run below.
 
 ## Successful hosted baseline
 
-[Run 35573066804](https://github.com/stsepelin/repo-verifier/actions/runs/35573066804)
+[Run 35573066804](https://github.com/stsepelin/checktrail/actions/runs/35573066804)
 passed all 13 jobs at commit `52ba415dfc5cfcaab459dc648baaa864627f1642`.
 The [job and step record](measurements/hosted-ci-52ba415.json) retains the source
 identity, run URLs, outcomes and timestamps. The main matrix covered Linux Node

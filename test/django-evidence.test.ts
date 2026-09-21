@@ -45,7 +45,7 @@ function evidence() {
     runtime: {
       schemaVersion: 1,
       format: "runtime-inventory",
-      producer: { name: "repo-verifier.django-routes", version: "1.0.0" },
+      producer: { name: "checktrail.django-routes", version: "1.0.0" },
       assembly: { name: "sample", environment: "test" },
       sourceFingerprint: fingerprint,
       capturedAt: "2026-09-18T00:00:00.000Z",

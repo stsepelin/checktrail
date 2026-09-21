@@ -148,7 +148,7 @@ or network isolation is supplied by this protocol.
 ```sh
 npm run check
 docker build --file scripts/external-tools.Dockerfile \
-  --tag repo-verifier-external-test:1 scripts
+  --tag checktrail-external-test:1 scripts
 node scripts/verify-external-container.mjs
 ```
 

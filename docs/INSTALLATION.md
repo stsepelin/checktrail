@@ -1,12 +1,12 @@
 # Install the preview
 
 The first preview version is `0.1.0-alpha.1`, intended for npm's `next` tag.
-Check the [npm package page](https://www.npmjs.com/package/@stsepelin/repo-verifier)
+Check the [npm package page](https://www.npmjs.com/package/@stsepelin/checktrail)
 for availability. The registry commands below require that version to be published;
 before publication, use the source checkout or a reviewed local tarball.
 
 Use Node.js 22 or newer on macOS or Linux. Windows execution is not supported.
-Install each project's compilers, linters and test runners separately; Repo Verifier
+Install each project's compilers, linters and test runners separately; Checktrail
 does not download them. Missing tools produce incomplete results.
 
 ## CLI
@@ -14,20 +14,20 @@ does not download them. Missing tools produce incomplete results.
 Install the exact version once:
 
 ```sh
-npm install --global --ignore-scripts @stsepelin/repo-verifier@0.1.0-alpha.1
-repo-verifier --version
+npm install --global --ignore-scripts @stsepelin/checktrail@0.1.0-alpha.1
+checktrail --version
 ```
 
 From the project you want to inspect:
 
 ```sh
-repo-verifier plan --root "$PWD" --detailed
+checktrail plan --root "$PWD" --detailed
 ```
 
 Planning only reads files. To execute checks on a project you trust:
 
 ```sh
-repo-verifier run --root "$PWD" --trust-project --detailed
+checktrail run --root "$PWD" --trust-project --detailed
 ```
 
 Exit `0` means the selected checks passed, `1` means at least one failed, and `2`
@@ -40,9 +40,9 @@ with your user privileges; the tool is not a sandbox.
 From the project directory, register a read-only server scoped to that project:
 
 ```sh
-claude mcp add --transport stdio --scope local repo-verifier -- \
-  repo-verifier serve --root "$PWD"
-claude mcp get repo-verifier
+claude mcp add --transport stdio --scope local checktrail -- \
+  checktrail serve --root "$PWD"
+claude mcp get checktrail
 ```
 
 Restart the client if it is already running. Ask it to call `validation_plan` to
@@ -54,8 +54,8 @@ tool discovery; model-driven tool use is not part of the recorded measurement.
 From the project directory:
 
 ```sh
-codex mcp add repo-verifier -- repo-verifier serve --root "$PWD"
-codex mcp get repo-verifier
+codex mcp add checktrail -- checktrail serve --root "$PWD"
+codex mcp get checktrail
 ```
 
 The server configuration is saved in your Codex configuration. Its root is the
@@ -63,16 +63,16 @@ absolute directory captured when you run this command. Use a different server
 name for another project rather than expecting the root to follow your working
 directory. Restart an existing client session to load the configuration.
 
-Both clients need `repo-verifier` on their PATH. If the client cannot find it,
-use the absolute executable path reported by `command -v repo-verifier` in place
-of the second `repo-verifier` in the registration command. The first is the server
+Both clients need `checktrail` on their PATH. If the client cannot find it,
+use the absolute executable path reported by `command -v checktrail` in place
+of the second `checktrail` in the registration command. The first is the server
 name. Existing client policies may restrict which MCP servers can run.
 
 ## Enable validation execution
 
 The examples above disable execution. To run tests and tools, remove the read-only
-entry (`claude mcp remove --scope local repo-verifier` or
-`codex mcp remove repo-verifier`) and repeat its registration command with
+entry (`claude mcp remove --scope local checktrail` or
+`codex mcp remove checktrail`) and repeat its registration command with
 `--allow-execution` after the root argument. Only enable this for a trusted project.
 An MCP tool call cannot grant itself this permission.
 
@@ -89,8 +89,8 @@ is not advertised; the durable worker is a separate library API. See
 Build the public source checkout:
 
 ```sh
-git clone https://github.com/stsepelin/repo-verifier.git
-cd repo-verifier
+git clone https://github.com/stsepelin/checktrail.git
+cd checktrail
 npm ci --ignore-scripts
 npm run build
 node dist/src/cli.js plan --root examples/javascript --detailed

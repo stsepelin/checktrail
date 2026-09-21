@@ -33,7 +33,7 @@ function evidence() {
   const runtime: RuntimeInventory = {
     schemaVersion: 1,
     format: "runtime-inventory",
-    producer: { name: "repo-verifier.laravel-runtime", version: "1.0.0" },
+    producer: { name: "checktrail.laravel-runtime", version: "1.0.0" },
     assembly: { name: "sample", environment: "testing" },
     sourceFingerprint: fingerprint,
     capturedAt: "2026-09-18T00:00:00Z",

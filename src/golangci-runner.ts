@@ -74,9 +74,7 @@ async function main(): Promise<void> {
       throw new Error(
         "Native Go suppression directives prevent complete golangci-lint evidence",
       );
-  const temporary = await mkdtemp(
-    path.join(tmpdir(), "repo-verifier-golangci-"),
-  );
+  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-golangci-"));
   try {
     const target = path.join(temporary, "config.json");
     const native = {
