@@ -137,6 +137,10 @@
     {
       "file": "dist/test/vue-tsc.test.js",
       "name": "Vue compiler planning requires local tooling and does not execute it"
+    },
+    {
+      "file": "dist/test/typescript.test.js",
+      "name": "native TypeScript 4.9 checks valid and broken source without newer flags or emitted files"
     }
   ],
   "python": [

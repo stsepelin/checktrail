@@ -13,6 +13,13 @@ The GitHub alpha.2 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records the published package on five pinned
 libraries, including incomplete coverage and a TypeScript 4.9.5 incompatibility.
 
+## Unreleased changes
+
+- [TypeScript compatibility](TYPESCRIPT.md): plain typechecking now passes the
+  native 4.9.5 regression while retaining the 6.0.3 `noCheck` override and native
+  file accounting. A packed CLI/library/MCP replay fixes the recorded mitt case.
+  Published alpha.2 and its immutable adoption record retain the original failure.
+
 ## Implemented
 
 - Alpha.2: conservative multi-language `init`, execution-free `doctor`,

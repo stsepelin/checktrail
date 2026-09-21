@@ -72,6 +72,11 @@ jobs:
       - run: python3 -m pip install -r scripts/python-tools.requirements.txt
       - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
       - run: npm ci --ignore-scripts
+      - name: Prepare locked legacy TypeScript compiler
+        run: |
+          mkdir -p .checktrail/typescript-legacy-tools
+          cp scripts/typescript-legacy-tools/package.json scripts/typescript-legacy-tools/package-lock.json .checktrail/typescript-legacy-tools/
+          npm ci --prefix .checktrail/typescript-legacy-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare locked Vue Router fixtures
         run: |
           mkdir -p .checktrail/vue-router-tools

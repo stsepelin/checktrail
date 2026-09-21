@@ -29,20 +29,17 @@ export async function typescriptCheck(
           {
             executable: process.execPath,
             args: [
-              ...(vue
-                ? [
-                    fileURLToPath(
-                      new URL("./vue-tsc-runner.js", import.meta.url),
-                    ),
-                    compiler,
-                    source.root,
-                  ]
-                : [compiler]),
+              fileURLToPath(
+                new URL(
+                  vue ? "./vue-tsc-runner.js" : "./typescript-runner.js",
+                  import.meta.url,
+                ),
+              ),
+              compiler,
+              source.root,
               "--project",
               "./tsconfig.json",
               "--noEmit",
-              "--noCheck",
-              "false",
               "--pretty",
               "false",
               "--incremental",

@@ -19,8 +19,10 @@ separate states. Follow the linked evidence for tested versions and limits.
 [Public adoption measurements](PUBLIC-ADOPTION.md) now cover five pinned
 JavaScript, TypeScript, Python, Go and PHP libraries. They expose an older
 TypeScript compiler-option incompatibility and workflow/documentation/platform
-coverage friction. These remain follow-up work; the observations do not establish
-full upstream CI coverage or general review effectiveness.
+coverage friction. An [unreleased compiler fix](TYPESCRIPT.md) now passes the
+known TypeScript 4.9.5 case; workflow/documentation and platform coverage remain
+follow-up work. The observations do not establish full upstream CI coverage or
+general review effectiveness.
 
 1. Extend independently authored evaluation cohorts to additional implemented
    language/rule families, preserving the verifier freeze and recording exact

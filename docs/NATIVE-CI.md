@@ -22,6 +22,10 @@ checks. The separate PHP syntax helper checks its exact successful TAP test name
 the external-adapter helper already checks exact required native names for each
 of its different runtime containers.
 
+The main matrix also prepares the separately locked TypeScript 4.9.5 compiler
+from `scripts/typescript-legacy-tools/`. Its named native regression is mandatory
+in the `javascript` profile; root build tooling stays on its existing compiler.
+
 A tool version preflight remains useful but is not the acceptance condition.
 Installing the expected binary cannot compensate for a skipped, renamed, removed
 or failing required test. When intentionally renaming or replacing a regression,
