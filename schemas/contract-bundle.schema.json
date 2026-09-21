@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "contract-samples" },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "contracts": {
+      "minItems": 1,
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "producer": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sourceFingerprint": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": ["name", "sourceFingerprint"],
+            "additionalProperties": false
+          },
+          "consumer": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sourceFingerprint": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": ["name", "sourceFingerprint"],
+            "additionalProperties": false
+          },
+          "complete": { "type": "boolean" },
+          "schema": {
+            "type": "object",
+            "propertyNames": { "type": "string" },
+            "additionalProperties": {}
+          },
+          "samples": {
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "minLength": 1, "maxLength": 1024 },
+                "payload": {}
+              },
+              "required": ["name", "payload"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "producer",
+          "consumer",
+          "complete",
+          "schema",
+          "samples"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schemaVersion", "format", "capturedAt", "contracts"],
+  "additionalProperties": false
+}

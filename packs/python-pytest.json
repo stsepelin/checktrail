@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "python.pytest",
+  "version": "1.0.0",
+  "description": "Python pytest tests, Ruff linting and mypy type checking",
+  "requiredChecks": ["python.pytest", "python.ruff", "python.mypy"]
+}

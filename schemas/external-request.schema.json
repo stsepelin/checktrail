@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "identity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^external\\.[a-z][a-z0-9-]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.-]+)?$"
+        },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "required": ["id", "version", "sha256"],
+      "additionalProperties": false
+    },
+    "project": { "type": "string" },
+    "runtime": {
+      "type": "string",
+      "enum": ["node", "python3", "php", "native"]
+    },
+    "checkId": { "type": "string" },
+    "kind": {
+      "type": "string",
+      "enum": ["analysis", "syntax", "format", "test"]
+    },
+    "failOn": { "type": "string", "enum": ["error", "warning"] },
+    "scope": {
+      "minItems": 1,
+      "maxItems": 20000,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+    },
+    "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "protocolVersion": { "type": "number", "const": 1 },
+    "root": { "type": "string" }
+  },
+  "required": [
+    "identity",
+    "project",
+    "runtime",
+    "checkId",
+    "kind",
+    "failOn",
+    "scope",
+    "sourceFingerprint",
+    "protocolVersion",
+    "root"
+  ],
+  "additionalProperties": false
+}

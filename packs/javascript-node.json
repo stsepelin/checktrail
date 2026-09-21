@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "javascript.node",
+  "version": "1.0.0",
+  "description": "Node tests and ESLint source checks",
+  "requiredChecks": ["javascript.node-test", "javascript.eslint"]
+}

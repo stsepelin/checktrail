@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-19T00:42:38.887Z",
+  "profile": "codex-app-server-direct-tools",
+  "clientVersion": "codex-cli 0.154.0",
+  "runtime": {
+    "node": "26.8.1",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "package": {
+    "name": "@stsepelin/repo-verifier",
+    "version": "0.1.0-dev.0",
+    "tarballSha256": "606294107e4247d413a1233a124cc9c6ec9378192f32d41386f63255630c47f5",
+    "runtimeArtifactsSha256": "ff2534991f373526b95896780ae5cdd70c637b68a8cb939509cf4bea4d532fd5"
+  },
+  "harnessSha256": "cc92413c0d762a1dead49bd551fa8cdbff1131ea25acc9c232bd3545b5614b45",
+  "observations": [
+    {
+      "check": "project_context",
+      "outcome": "passed",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "kind": "test",
+          "ready": true
+        }
+      ]
+    },
+    {
+      "check": "validation_plan",
+      "outcome": "passed",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "kind": "test",
+          "ready": true
+        }
+      ]
+    },
+    {
+      "check": "guidance-https-result",
+      "outcome": "passed",
+      "references": ["https://nodejs.org/api/test.html"]
+    },
+    {
+      "check": "default-execution-denied",
+      "outcome": "passed"
+    },
+    {
+      "check": "tool-cannot-grant-trust",
+      "outcome": "passed"
+    },
+    {
+      "check": "native-passed-and-report",
+      "outcome": "passed",
+      "validationOutcome": "passed",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          }
+        }
+      ],
+      "retainedReportEqual": true
+    },
+    {
+      "check": "native-failed-and-report",
+      "outcome": "passed",
+      "validationOutcome": "failed",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "failed",
+          "tests": {
+            "total": 1,
+            "passed": 0,
+            "failed": 1,
+            "skipped": 0
+          }
+        }
+      ],
+      "retainedReportEqual": true
+    },
+    {
+      "check": "all-skipped-is-incomplete",
+      "outcome": "passed",
+      "validationOutcome": "incomplete",
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "inconclusive",
+          "tests": {
+            "total": 1,
+            "passed": 0,
+            "failed": 0,
+            "skipped": 1
+          }
+        }
+      ]
+    }
+  ],
+  "providerRequests": [
+    {
+      "method": "GET",
+      "path": "/models?client_version=0.154.0"
+    }
+  ],
+  "inferenceRequests": 0,
+  "connections": [
+    {
+      "label": "readonly",
+      "starts": 2,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ],
+      "requestedProtocol": "2025-06-18",
+      "negotiatedProtocol": "2025-06-18",
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "mutation_experiment",
+        "project_context",
+        "review_context",
+        "review_guidance",
+        "review_receipt",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    },
+    {
+      "label": "trusted",
+      "starts": 2,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ],
+      "requestedProtocol": "2025-06-18",
+      "negotiatedProtocol": "2025-06-18",
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "mutation_experiment",
+        "project_context",
+        "review_context",
+        "review_guidance",
+        "review_receipt",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    }
+  ]
+}

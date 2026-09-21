@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "infrastructure.actionlint",
+  "version": "1.0.0",
+  "description": "Static GitHub Actions workflow analysis with explicit local inputs and per-file native evidence; no workflow execution",
+  "requiredChecks": ["infrastructure.actionlint"],
+  "requiredEnvironment": []
+}

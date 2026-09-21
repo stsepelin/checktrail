@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "automatedCoverage": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "format": { "type": "string", "const": "review-context-summary" },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "selectedFiles": { "type": "integer", "minimum": 1, "maximum": 16 },
+    "sourceBytes": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "sourceIncluded": { "type": "boolean", "const": false }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "channel",
+    "automatedCoverage",
+    "claimsVerified",
+    "deterministicOutcomeChanged",
+    "format",
+    "contextDigest",
+    "selectedFiles",
+    "sourceBytes",
+    "sourceIncluded"
+  ],
+  "additionalProperties": false
+}

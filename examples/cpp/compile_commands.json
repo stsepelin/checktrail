@@ -1,0 +1,30 @@
+[
+  {
+    "directory": ".",
+    "file": "src/quantity.c",
+    "arguments": [
+      "clang",
+      "-std=c17",
+      "-DBATCH_SIZE=2",
+      "-Iinclude",
+      "-c",
+      "src/quantity.c",
+      "-o",
+      "quantity.o"
+    ]
+  },
+  {
+    "directory": ".",
+    "file": "src/total.cpp",
+    "arguments": [
+      "clang++",
+      "-std=c++20",
+      "-DBATCH_SIZE=2",
+      "-Iinclude",
+      "-c",
+      "src/total.cpp",
+      "-o",
+      "total.o"
+    ]
+  }
+]

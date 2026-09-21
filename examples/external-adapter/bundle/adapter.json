@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "external.example-lines",
+  "version": "1.0.0",
+  "description": "Original text whitespace example for the external adapter protocol",
+  "runtime": "node",
+  "entry": "adapter.mjs",
+  "files": [
+    {
+      "path": "adapter.mjs",
+      "sha256": "349e1cd03b9d7af58fd247a7e7a3693cad43698117466748ea26b21bb88d72ad"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d"
+    }
+  ],
+  "markers": ["lines.project"],
+  "checks": [
+    {
+      "id": "whitespace",
+      "kind": "format",
+      "description": "Inspect inventoried text files for trailing spaces and tabs",
+      "failOn": "error",
+      "scope": {
+        "extensions": [".txt"],
+        "names": []
+      }
+    }
+  ]
+}

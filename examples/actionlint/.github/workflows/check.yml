@@ -1,0 +1,10 @@
+name: Example
+on: push
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display a fictional value
+        run: echo 'Example value'

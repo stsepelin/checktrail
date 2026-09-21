@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.repo-verifier/
+.repo-verifier.local.json
+.env
+.env.*
+*.tgz
+.DS_Store

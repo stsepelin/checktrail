@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "dependency-graph" },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "collector": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      },
+      "required": ["name", "version"],
+      "additionalProperties": false
+    },
+    "complete": { "type": "boolean" },
+    "projects": {
+      "minItems": 1,
+      "maxItems": 1000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "language": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "sourceFingerprint": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "complete": { "type": "boolean" }
+        },
+        "required": ["id", "language", "sourceFingerprint", "complete"],
+        "additionalProperties": false
+      }
+    },
+    "dependencies": {
+      "maxItems": 20000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "consumer": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "producer": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        },
+        "required": ["consumer", "producer"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "capturedAt",
+    "collector",
+    "complete",
+    "projects",
+    "dependencies"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-context" },
+    "channel": { "type": "string", "const": "advisory" },
+    "automatedCoverage": { "type": "boolean", "const": false },
+    "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sourceTrust": { "type": "string", "const": "untrusted-source-text" },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "files": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        },
+        "topics": {
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "test-lifecycle",
+              "analysis-scope",
+              "package-consumers",
+              "python-imports",
+              "framework-assembly",
+              "execution-depth"
+            ]
+          }
+        }
+      },
+      "required": ["schemaVersion", "files", "topics"],
+      "additionalProperties": false
+    },
+    "instructions": { "type": "string" },
+    "guidance": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "engineVersion": { "type": "string" },
+        "channel": { "type": "string", "const": "advisory" },
+        "provenance": {
+          "type": "string",
+          "const": "builtin-guidance-selection"
+        },
+        "catalogueDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "automatedCoverage": { "type": "boolean", "const": false },
+        "selectionBasis": { "type": "string", "const": "exact-check-or-topic" },
+        "context": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 1 },
+            "checks": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9.-]*$"
+              }
+            },
+            "topics": {
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "test-lifecycle",
+                  "analysis-scope",
+                  "package-consumers",
+                  "python-imports",
+                  "framework-assembly",
+                  "execution-depth"
+                ]
+              }
+            }
+          },
+          "required": ["schemaVersion", "checks", "topics"],
+          "additionalProperties": false
+        },
+        "items": {
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9.-]*$"
+              },
+              "version": { "type": "string", "const": "1.0.0" },
+              "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+              "triggers": {
+                "type": "object",
+                "properties": {
+                  "checks": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                    }
+                  },
+                  "topics": {
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "test-lifecycle",
+                        "analysis-scope",
+                        "package-consumers",
+                        "python-imports",
+                        "framework-assembly",
+                        "execution-depth"
+                      ]
+                    }
+                  }
+                },
+                "required": ["checks", "topics"],
+                "additionalProperties": false
+              },
+              "questions": {
+                "minItems": 1,
+                "maxItems": 8,
+                "type": "array",
+                "items": { "type": "string", "minLength": 1, "maxLength": 600 }
+              },
+              "references": {
+                "minItems": 1,
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "url": {
+                      "type": "string",
+                      "maxLength": 512,
+                      "pattern": "^https:\\/\\/",
+                      "format": "uri"
+                    }
+                  },
+                  "required": ["title", "url"],
+                  "additionalProperties": false
+                }
+              },
+              "matched": {
+                "type": "object",
+                "properties": {
+                  "schemaVersion": { "type": "number", "const": 1 },
+                  "checks": {
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                    }
+                  },
+                  "topics": {
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "test-lifecycle",
+                        "analysis-scope",
+                        "package-consumers",
+                        "python-imports",
+                        "framework-assembly",
+                        "execution-depth"
+                      ]
+                    }
+                  }
+                },
+                "required": ["schemaVersion", "checks", "topics"],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "title",
+              "triggers",
+              "questions",
+              "references",
+              "matched"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "engineVersion",
+        "channel",
+        "provenance",
+        "catalogueDigest",
+        "automatedCoverage",
+        "selectionBasis",
+        "context",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "files": {
+      "minItems": 1,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "content": { "type": "string", "maxLength": 65536 }
+        },
+        "required": ["path", "sha256", "content"],
+        "additionalProperties": false
+      }
+    },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "channel",
+    "automatedCoverage",
+    "sourceFingerprint",
+    "sourceTrust",
+    "selection",
+    "instructions",
+    "guidance",
+    "files",
+    "contextDigest"
+  ],
+  "additionalProperties": false
+}

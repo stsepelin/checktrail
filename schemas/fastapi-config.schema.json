@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "module": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*$"
+    },
+    "attribute": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z_]\\w*$"
+    },
+    "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "environment": { "type": "string", "minLength": 1, "maxLength": 256 }
+  },
+  "required": [
+    "schemaVersion",
+    "module",
+    "attribute",
+    "assembly",
+    "environment"
+  ],
+  "additionalProperties": false
+}

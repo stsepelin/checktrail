@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "path": ".",
+      "checks": ["php.laravel-runtime"]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "dotnet.csharp",
+  "version": "1.0.0",
+  "description": "Explicit C# compilation with native syntax/semantic accounting and pinned local references; no build targets or tests",
+  "requiredChecks": ["dotnet.csharp"],
+  "requiredEnvironment": []
+}

@@ -1,0 +1,11 @@
+{
+  "name": "synthetic/catalog-runtime",
+  "type": "project",
+  "require": {
+    "php": "^8.5",
+    "laravel/framework": "13.32.0"
+  },
+  "config": {
+    "allow-plugins": false
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "rust.cargo",
+  "version": "1.0.0",
+  "description": "Locked offline single-package Cargo compilation with source accounting; does not execute tests",
+  "requiredChecks": ["rust.cargo-check"]
+}

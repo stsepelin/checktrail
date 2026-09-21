@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "go.core",
+  "version": "1.0.0",
+  "description": "Go formatting, vet, uncached package tests and Staticcheck",
+  "requiredChecks": ["go.format", "go.vet", "go.test", "go.staticcheck"]
+}

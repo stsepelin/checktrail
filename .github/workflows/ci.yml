@@ -1,0 +1,266 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            node: "22"
+          - os: ubuntu-latest
+            node: "24"
+          - os: ubuntu-latest
+            node: "26"
+          - os: macos-latest
+            node: "24"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: "1.27.1"
+          cache: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: "8.5"
+          coverage: none
+      - name: Verify required toolchains
+        run: |
+          node --version
+          go version
+          python3 --version
+          php --version
+      - name: Prepare pinned Rust compiler
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
+      - name: Prepare pinned Go analyzers
+        run: |
+          mkdir -p .repo-verifier/go-tools/bin
+          GOBIN="$PWD/.repo-verifier/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
+          .repo-verifier/go-tools/bin/staticcheck -version
+          GOBIN="$PWD/.repo-verifier/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          .repo-verifier/go-tools/bin/golangci-lint version --short
+      - name: Prepare locked PHP test tools
+        run: |
+          mkdir -p .repo-verifier/php-tools
+          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .repo-verifier/php-tools/
+          composer install --working-dir=.repo-verifier/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
+      - name: Prepare locked Laravel runtime fixtures
+        run: |
+          mkdir -p .repo-verifier/laravel-tools
+          cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .repo-verifier/laravel-tools/
+          composer install --working-dir=.repo-verifier/laravel-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+      - run: python3 -m pip install -r scripts/python-tools.requirements.txt
+      - run: python3 -m pip install -r scripts/framework-tools.requirements.txt
+      - run: npm ci --ignore-scripts
+      - name: Prepare locked Vue Router fixtures
+        run: |
+          mkdir -p .repo-verifier/vue-router-tools
+          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
+          npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare locked Nuxt fixtures
+        run: |
+          mkdir -p .repo-verifier/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
+          npm ci --prefix .repo-verifier/nuxt-tools --ignore-scripts --no-audit --no-fund
+      - name: Prepare pinned Chromium for native browser fixtures
+        run: PLAYWRIGHT_BROWSERS_PATH=.repo-verifier/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
+      - run: npm run check
+      - name: Require prepared native regression profiles
+        run: |
+          node scripts/verify-required-native-tests.mjs core
+          node scripts/verify-required-native-tests.mjs javascript
+          node scripts/verify-required-native-tests.mjs python
+          node scripts/verify-required-native-tests.mjs frameworks
+          node scripts/verify-required-native-tests.mjs go
+          node scripts/verify-required-native-tests.mjs php-tools
+          node scripts/verify-required-native-tests.mjs laravel
+          node scripts/verify-required-native-tests.mjs rust
+      - run: npm run format:check
+      - run: node scripts/audit-dependencies.mjs
+      - run: node scripts/smoke-package.mjs
+      - name: Verify review exchange in the packaged Linux runtime
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: node scripts/verify-review-container.mjs
+      - name: Verify task storage and execution in the packaged Linux runtime
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: node scripts/verify-task-store-container.mjs
+
+  clang:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Clang fixture
+        run: docker build --file scripts/clang-tools.Dockerfile --tag repo-verifier-clang-test:22.1.3 scripts
+      - run: node scripts/verify-clang-container.mjs
+
+  java:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Java fixture
+        run: docker build --file scripts/java-tools.Dockerfile --tag repo-verifier-java-test:25.0.4 scripts
+      - run: node scripts/verify-java-container.mjs
+
+  dotnet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned C# fixture
+        run: docker build --file scripts/dotnet-tools.Dockerfile --tag repo-verifier-dotnet-test:10.0.401 scripts
+      - run: node scripts/verify-dotnet-container.mjs
+
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned workflow checker
+        run: docker build --file scripts/actionlint-tools.Dockerfile --tag repo-verifier-actionlint-test:1.7.12 scripts
+      - run: node scripts/verify-actionlint-container.mjs
+
+  external-adapters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned external adapter runtimes
+        run: docker build --file scripts/external-tools.Dockerfile --tag repo-verifier-external-test:1 scripts
+      - run: node scripts/verify-external-container.mjs
+
+  vue-router:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare locked Vue Router fixtures
+        run: |
+          mkdir -p .repo-verifier/vue-router-tools
+          cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .repo-verifier/vue-router-tools/
+          npm ci --prefix .repo-verifier/vue-router-tools --ignore-scripts --no-audit --no-fund
+      - run: node scripts/verify-vue-router-container.mjs
+
+  nuxt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare locked Nuxt fixtures for the container runtime
+        run: |
+          mkdir -p .repo-verifier/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .repo-verifier/nuxt-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.repo-verifier/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/verify-nuxt-container.mjs
+
+  ruby:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned Ruby and Node runtimes
+        run: |
+          docker pull ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
+          docker pull node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - run: node scripts/verify-ruby-container.mjs
+
+  swift:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+      - run: swiftc --version
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/verify-required-native-tests.mjs swift

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "id": { "type": "string", "pattern": "^external\\.[a-z][a-z0-9-]{0,63}$" },
+    "version": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.-]+)?$"
+    },
+    "description": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "runtime": {
+      "type": "string",
+      "enum": ["node", "python3", "php", "native"]
+    },
+    "entry": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "files": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["path", "sha256"],
+        "additionalProperties": false
+      }
+    },
+    "markers": {
+      "minItems": 1,
+      "maxItems": 32,
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$" }
+    },
+    "checks": {
+      "minItems": 1,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+          "kind": {
+            "type": "string",
+            "enum": ["analysis", "syntax", "format", "test"]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "failOn": { "type": "string", "enum": ["error", "warning"] },
+          "scope": {
+            "type": "object",
+            "properties": {
+              "extensions": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^\\.[A-Za-z0-9_.-]{1,64}$"
+                }
+              },
+              "names": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+                }
+              }
+            },
+            "required": ["extensions", "names"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "kind", "description", "failOn", "scope"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "description",
+    "runtime",
+    "entry",
+    "files",
+    "markers",
+    "checks"
+  ],
+  "additionalProperties": false
+}

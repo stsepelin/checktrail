@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "architecture-policy" },
+    "projects": {
+      "minItems": 1,
+      "maxItems": 1000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "layer": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        },
+        "required": ["id", "layer"],
+        "additionalProperties": false
+      }
+    },
+    "layers": {
+      "minItems": 1,
+      "maxItems": 128,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "allowedDependencies": {
+      "maxItems": 16384,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "consumer": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "producer": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        },
+        "required": ["consumer", "producer"],
+        "additionalProperties": false
+      }
+    },
+    "requireAcyclic": { "type": "boolean" }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "projects",
+    "layers",
+    "allowedDependencies",
+    "requireAcyclic"
+  ],
+  "additionalProperties": false
+}

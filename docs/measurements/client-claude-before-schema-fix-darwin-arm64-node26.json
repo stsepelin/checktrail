@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-19T00:28:06.750Z",
+  "profile": "claude-code-health-discovery",
+  "clientVersion": "2.1.263 (Claude Code)",
+  "runtime": {
+    "node": "26.8.1",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "package": {
+    "name": "@stsepelin/repo-verifier",
+    "version": "0.1.0-dev.0",
+    "tarballSha256": "075056b19487a671374c60abd69299c4a12dc9bf747c619ee443b6288df29040",
+    "runtimeArtifactsSha256": "318b2ef8f73eff03133251595a6b4cd768f16041e108a59c94c87f54d441d54b"
+  },
+  "harnessSha256": "ff3664ddb54c6b32208dac1456806568241819bed95e4de116589f9fb9007609",
+  "observations": [
+    {
+      "check": "health-and-discovery",
+      "outcome": "passed",
+      "warnings": [
+        {
+          "kind": "ignored-starts_with-output-schema-format",
+          "count": 2
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "label": "readonly",
+      "starts": 1,
+      "observedExits": 1,
+      "processesStopped": true,
+      "exits": [
+        {
+          "code": 130,
+          "signal": null
+        }
+      ],
+      "requestedProtocol": "2025-11-25",
+      "negotiatedProtocol": "2025-11-25",
+      "tools": [
+        "architecture_validation",
+        "contract_validation",
+        "finding_comparison",
+        "mutation_experiment",
+        "project_context",
+        "review_context",
+        "review_guidance",
+        "review_receipt",
+        "runtime_comparison",
+        "validation_plan",
+        "validation_report",
+        "validation_run"
+      ]
+    }
+  ]
+}

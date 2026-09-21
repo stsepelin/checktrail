@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    { "path": ".", "checks": ["javascript.typescript", "javascript.node-test"] }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "jvm.java",
+  "version": "1.0.0",
+  "description": "Explicit Java compilation with pinned local dependencies and native source accounting; no build-system or test execution",
+  "requiredChecks": ["jvm.javac"],
+  "requiredEnvironment": []
+}

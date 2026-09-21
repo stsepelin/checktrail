@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "targetFramework": "net10.0",
+  "assemblyName": "Example.Catalog",
+  "languageVersion": "14",
+  "outputKind": "library",
+  "nullable": "enable",
+  "warningsAsErrors": true,
+  "allowUnsafe": false,
+  "checkedArithmetic": true,
+  "implicitUsings": false,
+  "defines": ["NET", "NET10_0", "NETCOREAPP"],
+  "references": []
+}

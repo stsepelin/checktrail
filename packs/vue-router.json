@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "public.vue-router",
+  "version": "1.0.0",
+  "description": "Native Vue Router route inventory and resolution probes through an explicit testing startup profile.",
+  "requiredChecks": ["javascript.vue-router"]
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.stsepelin/repo-verifier",
+  "title": "Repo Verifier",
+  "description": "Local code validation with explicit execution trust and evidence of what actually ran.",
+  "version": "0.1.0-dev.0",
+  "repository": {
+    "url": "https://github.com/stsepelin/repo-verifier",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@stsepelin/repo-verifier",
+      "version": "0.1.0-dev.0",
+      "runtimeHint": "npx",
+      "transport": { "type": "stdio" },
+      "packageArguments": [
+        { "type": "positional", "value": "serve" },
+        {
+          "type": "named",
+          "name": "--root",
+          "value": "{project_root}",
+          "variables": {
+            "project_root": {
+              "description": "Absolute path to the local project to inspect. Execution remains disabled.",
+              "format": "filepath",
+              "isRequired": true,
+              "isSecret": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "releaseStatus": "unpublished-development-candidate"
+    }
+  }
+}

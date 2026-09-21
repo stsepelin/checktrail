@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "provenance": { "type": "string", "const": "imported-runtime-comparison" },
+    "outcome": { "type": "string", "enum": ["passed", "failed", "incomplete"] },
+    "reason": { "type": "string" },
+    "beforeFingerprint": { "type": "string" },
+    "afterFingerprint": { "type": "string" },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "collections": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "compared": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unverified": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "changed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "added": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "removed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "collections",
+        "compared",
+        "unverified",
+        "changed",
+        "added",
+        "removed"
+      ],
+      "additionalProperties": false
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "routes",
+              "listeners",
+              "middleware",
+              "schedules",
+              "bindings"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["unchanged", "changed", "unverified"]
+          },
+          "beforeCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "afterCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "added": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "removed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "orderChanged": { "type": "boolean" },
+          "changedKeys": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          }
+        },
+        "required": [
+          "kind",
+          "status",
+          "beforeCount",
+          "afterCount",
+          "added",
+          "removed",
+          "orderChanged",
+          "changedKeys"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "provenance",
+    "outcome",
+    "reason",
+    "beforeFingerprint",
+    "afterFingerprint",
+    "counts",
+    "collections"
+  ],
+  "additionalProperties": false
+}

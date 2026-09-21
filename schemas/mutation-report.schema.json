@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "profile": { "type": "string", "const": "node-flat-tests" },
+    "channel": { "type": "string", "const": "advisory" },
+    "provenance": {
+      "type": "string",
+      "const": "temporary-copy-mutation-experiment"
+    },
+    "recipeDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "finalSourceFingerprint": {
+      "anyOf": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "null" }
+      ]
+    },
+    "complete": { "type": "boolean" },
+    "reason": { "type": "string" },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "const": "node" },
+        "version": { "type": "string" }
+      },
+      "required": ["name", "version"],
+      "additionalProperties": false
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "killed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "survived": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "invalid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "inconclusive": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "notRun": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "total",
+        "killed",
+        "survived",
+        "invalid",
+        "inconclusive",
+        "notRun"
+      ],
+      "additionalProperties": false
+    },
+    "excluded": { "type": "array", "items": { "type": "string" } },
+    "baseline": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["passed", "failed", "incomplete"]
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "sourceChanged": { "type": "boolean" },
+        "sourceError": { "type": "boolean" },
+        "tests": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "passed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["total", "passed", "failed", "skipped"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "runId",
+        "outcome",
+        "durationMs",
+        "sourceFingerprint",
+        "sourceChanged",
+        "sourceError"
+      ],
+      "additionalProperties": false
+    },
+    "trials": {
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "file": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "status": {
+            "type": "string",
+            "enum": ["killed", "survived", "invalid", "inconclusive", "not-run"]
+          },
+          "reason": { "type": "string" },
+          "observation": {
+            "type": "object",
+            "properties": {
+              "runId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "outcome": {
+                "type": "string",
+                "enum": ["passed", "failed", "incomplete"]
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "sourceFingerprint": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "sourceChanged": { "type": "boolean" },
+              "sourceError": { "type": "boolean" },
+              "tests": {
+                "type": "object",
+                "properties": {
+                  "total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "passed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "skipped": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": ["total", "passed", "failed", "skipped"],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "runId",
+              "outcome",
+              "durationMs",
+              "sourceFingerprint",
+              "sourceChanged",
+              "sourceError"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "file", "status", "reason"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "profile",
+    "channel",
+    "provenance",
+    "recipeDigest",
+    "sourceFingerprint",
+    "finalSourceFingerprint",
+    "complete",
+    "reason",
+    "durationMs",
+    "runtime",
+    "counts",
+    "excluded",
+    "trials"
+  ],
+  "additionalProperties": false
+}

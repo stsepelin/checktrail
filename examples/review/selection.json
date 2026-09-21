@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "files": ["catalog.mjs"],
+  "topics": ["test-lifecycle"]
+}

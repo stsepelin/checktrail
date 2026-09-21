@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "minItems": 1,
+  "maxItems": 64,
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "directory": { "type": "string", "minLength": 1, "maxLength": 8192 },
+      "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+      "arguments": {
+        "minItems": 2,
+        "maxItems": 256,
+        "type": "array",
+        "items": { "type": "string", "minLength": 1, "maxLength": 8192 }
+      },
+      "command": { "type": "string", "minLength": 1, "maxLength": 8192 },
+      "output": { "type": "string", "minLength": 1, "maxLength": 8192 }
+    },
+    "required": ["directory", "file"],
+    "additionalProperties": false
+  }
+}

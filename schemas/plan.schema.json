@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["full", "affected"] },
+        "reason": { "type": "string" },
+        "changedFiles": { "type": "array", "items": { "type": "string" } },
+        "selectedProjects": { "type": "array", "items": { "type": "string" } },
+        "git": {
+          "type": "object",
+          "properties": {
+            "baseCommit": { "type": "string" },
+            "headCommit": { "type": "string" },
+            "version": { "type": "string" },
+            "worktreeId": { "type": "string" },
+            "indexFingerprint": { "type": "string" }
+          },
+          "required": [
+            "baseCommit",
+            "headCommit",
+            "version",
+            "worktreeId",
+            "indexFingerprint"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["mode", "reason", "changedFiles", "selectedProjects"],
+      "additionalProperties": false
+    },
+    "workspace": {
+      "type": "object",
+      "properties": {
+        "complete": { "type": "boolean" },
+        "dependencies": {
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "consumer": { "type": "string", "minLength": 1 },
+              "producer": { "type": "string", "minLength": 1 }
+            },
+            "required": ["consumer", "producer"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["complete", "dependencies"],
+      "additionalProperties": false
+    },
+    "sourceFingerprint": { "type": "string" },
+    "policyFingerprint": { "type": "string" },
+    "excluded": { "type": "array", "items": { "type": "string" } },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" },
+          "adapter": { "type": "string" },
+          "markers": { "type": "array", "items": { "type": "string" } },
+          "files": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["path", "adapter", "markers", "files"],
+        "additionalProperties": false
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "external": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^external\\.[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 128,
+                "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9.-]+)?$"
+              },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["id", "version", "sha256"],
+            "additionalProperties": false
+          },
+          "id": { "type": "string" },
+          "adapter": { "type": "string" },
+          "project": { "type": "string" },
+          "scope": { "type": "array", "items": { "type": "string" } },
+          "kind": {
+            "type": "string",
+            "enum": ["format", "analysis", "test", "syntax", "unsupported"]
+          },
+          "parser": {
+            "type": "string",
+            "enum": [
+              "vue-router-json",
+              "nuxt-json",
+              "exit",
+              "empty",
+              "node-events",
+              "unittest",
+              "go-scope-test",
+              "go-scope-analysis",
+              "golangci-json",
+              "staticcheck-json",
+              "go-json",
+              "typescript-build-json",
+              "tsc-files",
+              "eslint-json",
+              "vitest-json",
+              "playwright-json",
+              "jest-json",
+              "pytest-json",
+              "fastapi-json",
+              "django-json",
+              "laravel-json",
+              "rust-json",
+              "clang-json",
+              "java-json",
+              "dotnet-json",
+              "actionlint-json",
+              "external-json",
+              "ruby-syntax",
+              "silent-syntax",
+              "ruff-json",
+              "mypy-json",
+              "phpstan-json",
+              "phpunit-junit",
+              "pint-json"
+            ]
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "temporaryDirectory": { "type": "boolean" },
+                "executable": { "type": "string" },
+                "args": { "type": "array", "items": { "type": "string" } },
+                "cwd": { "type": "string" },
+                "env": {
+                  "type": "object",
+                  "propertyNames": { "type": "string" },
+                  "additionalProperties": { "type": "string" }
+                }
+              },
+              "required": ["executable", "args", "cwd"],
+              "additionalProperties": false
+            }
+          },
+          "reason": { "type": "string" },
+          "unavailableReason": { "type": "string" },
+          "tools": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string", "const": "node" },
+                    "source": { "type": "string", "const": "engine-runtime" }
+                  },
+                  "required": ["name", "source"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "source": { "type": "string", "const": "package-metadata" },
+                    "path": { "type": ["string", "null"] }
+                  },
+                  "required": ["name", "source", "path"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "source": { "type": "string", "const": "version-command" },
+                    "command": {
+                      "type": "object",
+                      "properties": {
+                        "temporaryDirectory": { "type": "boolean" },
+                        "executable": { "type": "string" },
+                        "args": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        },
+                        "cwd": { "type": "string" },
+                        "env": {
+                          "type": "object",
+                          "propertyNames": { "type": "string" },
+                          "additionalProperties": { "type": "string" }
+                        }
+                      },
+                      "required": ["executable", "args", "cwd"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["name", "source", "command"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "environment": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": [
+          "id",
+          "adapter",
+          "project",
+          "scope",
+          "kind",
+          "parser",
+          "commands",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "sourceFingerprint",
+    "policyFingerprint",
+    "excluded",
+    "projects",
+    "checks"
+  ],
+  "additionalProperties": false
+}

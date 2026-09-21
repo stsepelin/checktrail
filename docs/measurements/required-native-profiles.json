@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "provenance": "local-required-native-profile-verification",
+  "recordedAt": "2026-09-19T01:27:11.461Z",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.8.1"
+  },
+  "manifestSha256": "da3a00cd8f24f3dd6452517090c2d2fa7749e933a567801bdeb0c7a019856f77",
+  "runnerSha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2",
+  "runs": [
+    {
+      "profile": "core",
+      "execution": "host with PHP container shim",
+      "helper": "scripts/verify-required-native-tests.mjs",
+      "helperSha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d",
+      "requirementsSha256": "1634fe4b70511ae58cfe3139d3f2864f15831b6f86fec6798bc613a7eeadca89",
+      "logSha256": "68ebc02186eff60ad0cb441e27f8bc684691cae3c95d7c72b735bfa958926914",
+      "result": {
+        "profile": "core",
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [],
+      "packageEvidence": []
+    },
+    {
+      "profile": "javascript",
+      "execution": "host",
+      "helper": "scripts/verify-required-native-tests.mjs",
+      "helperSha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d",
+      "requirementsSha256": "bae17cf3c2335f9956a5ed7dda81c6ce6aef75307192165a9b2ff05370c2adb1",
+      "logSha256": "f9ef2b6adc3dd8edfb6e0c5dc3a658296a0d04cdd42f003d7c144b2fdf6f6e85",
+      "result": {
+        "profile": "javascript",
+        "passed": 23,
+        "required": 23,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [],
+      "packageEvidence": []
+    },
+    {
+      "profile": "python",
+      "execution": "host with Python container shim",
+      "helper": "scripts/verify-python-container.mjs",
+      "helperSha256": "a01ce3f1be241acd78b19e346fb60b9aaf46be51a773d4f3ea3fbafa0df0a880",
+      "requirementsSha256": "2f3ec7e0969e28ab1105a63328bce42e50afad8cc035c5d264c548b9103963e0",
+      "logSha256": "690466b70a154080b86e31fb0fdc9051a10d948bd289f82900c76353d0d2aa60",
+      "result": {
+        "profile": "python",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+          "version": "3.12.13 9.1.1",
+          "network": "none",
+          "mount": "read-only"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "frameworks",
+      "execution": "host with Python container shim",
+      "helper": "scripts/verify-framework-container.mjs",
+      "helperSha256": "d4e0a823f7d97f0d41660449a1096f339cacb3d47db3876166589c9e7acf3c5e",
+      "requirementsSha256": "ea7b23b43baf5f85e47d753ea22d5c707f23e8350b60b695644a31ef8433fcbe",
+      "logSha256": "22409f0970fb7469c20d8f8f4bcbf7c8cece2f1f67d342c81d4b9960349009d6",
+      "result": {
+        "profile": "frameworks",
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+          "version": "3.12.13 0.141.1 1.6.0 6.1.1",
+          "network": "none",
+          "mount": "read-only"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "go",
+      "execution": "host",
+      "helper": "scripts/verify-required-native-tests.mjs",
+      "helperSha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d",
+      "requirementsSha256": "35bda6cd43f9280677de8b042c2e2027993fd42e281d8b52031c6da60e4aeec1",
+      "logSha256": "9347eb700b999b72e51e0d7c2869f719e817de066e0f2deb0e37595060ab60df",
+      "result": {
+        "profile": "go",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [],
+      "packageEvidence": []
+    },
+    {
+      "profile": "php-tools",
+      "execution": "Linux container",
+      "helper": "scripts/verify-php-tools-container.mjs",
+      "helperSha256": "bdbb77443c1dd0412bbd62c11386623c58c39f6ca39c583c4d2d830edacaaca2",
+      "requirementsSha256": "6334aa858a0e0757a326f27ee7020fa8d4d25b6692f29dadea37555ecead4761",
+      "logSha256": "62d37fb6d1d96b02f12c3b0b4fc0ce6960884c70b2adfb8a75d0f84c0cc34998",
+      "result": {
+        "profile": "php-tools",
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+          "nodeImage": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "phpVersion": "PHP 8.5.6 (cli) (built: May  8 2026 16:43:53) (NTS)",
+          "nodeVersion": "v22.23.2",
+          "network": "none",
+          "fixtureFilesystem": "container"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "laravel",
+      "execution": "Linux container",
+      "helper": "scripts/verify-laravel-container.mjs",
+      "helperSha256": "b24ee9eb3cf5f7dc40a67863c85405d89325e22f12f350aa72ce55e96a866d95",
+      "requirementsSha256": "2e067072ca82e1dc32a4cb1df314655e1d1f4fc06fb8a729f874ad02234b0d36",
+      "logSha256": "f4176ea50b5b7d87f8608b1b8796ef5ebac2784e8c22356a3bb13e606abeda3e",
+      "result": {
+        "profile": "laravel",
+        "passed": 3,
+        "required": 3,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+          "nodeImage": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "phpVersion": "PHP 8.5.6 (cli) (built: May  8 2026 16:43:53) (NTS)",
+          "nodeVersion": "v22.23.2",
+          "network": "none",
+          "fixtureFilesystem": "container"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "rust",
+      "execution": "Linux container",
+      "helper": "scripts/verify-rust-container.mjs",
+      "helperSha256": "2f491abcbec3cb8acf788158d8c9d4b5d64a7a96b150a9b8af730b1861248f72",
+      "requirementsSha256": "79df27bb7156233810ebd6f200deb907134d498d256994f0572d04603d1ba3dc",
+      "logSha256": "bb1c91d380351b464c1bfc0d015acdc7398b4b642af764c57c291170e5246a4b",
+      "result": {
+        "profile": "rust",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+          "nodeImage": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "rustVersion": "rustc 1.98.1 (48a229cea 2026-09-01)",
+          "nodeVersion": "v22.23.2",
+          "network": "none",
+          "fixtureFilesystem": "container"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "clang",
+      "execution": "Linux container",
+      "helper": "scripts/verify-clang-container.mjs",
+      "helperSha256": "a8f4375f32c5fd86054b82fc5926fdcc5adf5a3a97e10ebf6ff718a8edd1af40",
+      "requirementsSha256": "9f8021795cee616f806bf4dd632594f13f9157349d8dfe9791eb5bb539d19e59",
+      "logSha256": "39cdee7e959234f9c6877c03ce7b764686c2e19c0bf2422fe8790f2b4c014534",
+      "result": {
+        "profile": "clang",
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+          "clang": "Alpine clang version 22.1.3\nTarget: aarch64-alpine-linux-musl\nThread model: posix\nInstalledDir: /usr/lib/llvm22/bin",
+          "node": "v22.23.2",
+          "network": "none",
+          "fixtureFilesystem": "container"
+        }
+      ],
+      "packageEvidence": []
+    },
+    {
+      "profile": "java",
+      "execution": "Linux container",
+      "helper": "scripts/verify-java-container.mjs",
+      "helperSha256": "beae4ea69ebe24e95215cd66355c4acb22d47b7cb92905b2b9ed2b0d10ea34f8",
+      "requirementsSha256": "8bdeffe26da5b1f120ae404de04877fa36cb5186dfe8f34c95c3ee15860ca6c0",
+      "logSha256": "3d230a1952d508881822298b5bc40a9ccf863dffcb922c46244245bcb4450056",
+      "result": {
+        "profile": "java",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:a44c49b6c1fe6e8ed154119981f24b34045c22ea773abc2d995dc6d821d76242",
+          "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "sha256:a44c49b6c1fe6e8ed154119981f24b34045c22ea773abc2d995dc6d821d76242",
+          "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ]
+    },
+    {
+      "profile": "dotnet",
+      "execution": "Linux container",
+      "helper": "scripts/verify-dotnet-container.mjs",
+      "helperSha256": "ca4a846d8bfb32c8b034ac39bd0f5ec6222794241eedda8ede63c175627219a1",
+      "requirementsSha256": "5d488b47831f1f000a6388fe22961fd28e7e2fd4c46af0186482aa14b3c6fe6b",
+      "logSha256": "435ac394ff8a9a50ebfeefd2a885f8fe6bb8029413e61ac52642fec87bc439e7",
+      "result": {
+        "profile": "dotnet",
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+          "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+          "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+          "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+          "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ]
+    },
+    {
+      "profile": "actionlint",
+      "execution": "Linux container",
+      "helper": "scripts/verify-actionlint-container.mjs",
+      "helperSha256": "731c419789b99f9ea010a9782df6e9fa6ae12335e3b80b9ab35dd022b430f047",
+      "requirementsSha256": "1c71b09e047090a63f7a027db1083902e595b147a5c92d994eec9821424b6834",
+      "logSha256": "6997f4e8fd9cca4ef1b20da34101e7cfb54e563f2fefad23e2334ff7b80d2642",
+      "result": {
+        "profile": "actionlint",
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "sha256:60fe972d5efcb28a85a9557afe5e8428949dfe675b57b52bf33e9b3e560354dd",
+          "version": "1.7.12\ninstalled by downloading from release page\nbuilt with go1.26.1 compiler for linux/arm64",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "sha256:60fe972d5efcb28a85a9557afe5e8428949dfe675b57b52bf33e9b3e560354dd",
+          "version": "1.7.12\ninstalled by downloading from release page\nbuilt with go1.26.1 compiler for linux/arm64",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed"
+        }
+      ]
+    },
+    {
+      "profile": "vue-router",
+      "execution": "Linux container",
+      "helper": "scripts/verify-vue-router-container.mjs",
+      "helperSha256": "37e543d24bd797daa3f6a3e9910a9c578ca1081bd2b3415f3fccf44bbc3f4f22",
+      "requirementsSha256": "4733edf2ca9672dd547b276257e7db0f78943f6962d41e4975b552c89677f6f5",
+      "logSha256": "2a045755c06fa36cec8d68cd0586fc1d131f26d92aa8ed5b029935697fba75fd",
+      "result": {
+        "profile": "vue-router",
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "vue": "3.5.43",
+          "router": "5.3.1",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "broken": "failed as expected",
+          "mcp": "passed"
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "vue": "3.5.43",
+          "router": "5.3.1",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "broken": "failed as expected",
+          "mcp": "passed"
+        }
+      ]
+    },
+    {
+      "profile": "nuxt",
+      "execution": "Linux container",
+      "helper": "scripts/verify-nuxt-container.mjs",
+      "helperSha256": "6c17315e2e35585e3b2bb40dd2a21c8c1a2b0153c2a5f15700a68af4bb91c80a",
+      "requirementsSha256": "194dfdd1153525a4815a5bda45bfa5819638103174c0b1f31e954ba175dc690f",
+      "logSha256": "27bf58ea1df77e80dc10538277d5235faaa19d62d4508d36a3ce1b6fb7326a07",
+      "result": {
+        "profile": "nuxt",
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "nuxt": "4.5.2",
+          "nitro": "2.13.4",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "broken": "failed as expected",
+          "mcp": "passed"
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "nuxt": "4.5.2",
+          "nitro": "2.13.4",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "broken": "failed as expected",
+          "mcp": "passed"
+        }
+      ]
+    },
+    {
+      "profile": "review",
+      "execution": "Linux container",
+      "helper": "scripts/verify-review-container.mjs",
+      "helperSha256": "428838c8ddd19cc59ca2cef980199a3aa0c7f1378257ee21f97cb12a4f6c4a31",
+      "requirementsSha256": "a000e4b77f9eb5c9628104b595341b68d9e9ebc5e6d3bd29b3ed13225aa550f0",
+      "logSha256": "d740170bd11f84c3cd5317977b1f6a96dc77138f0d00ea5aa119e99300430b51",
+      "result": {
+        "profile": "review",
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed",
+          "stale": "detected",
+          "claimsVerified": false
+        }
+      ],
+      "packageEvidence": [
+        {
+          "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "node": "22.23.2",
+          "network": "none",
+          "native": "passed",
+          "installation": "offline",
+          "library": "passed",
+          "cli": "passed",
+          "mcp": "passed",
+          "stale": "detected",
+          "claimsVerified": false
+        }
+      ]
+    },
+    {
+      "profile": "tasks",
+      "execution": "Linux container",
+      "helper": "scripts/verify-task-store-container.mjs",
+      "helperSha256": "3d6f5bfd3ca38bfbd971c7f9b4948d43f418e68c0fca92beed606fcc55e3cc99",
+      "requirementsSha256": "c741716036d6ae50c654e7f6362e3680170187d0760aa1469da9af84f2d9b905",
+      "logSha256": "3d929798385f06e7552fb1a004d6f970797c0ee163e15c5384189a966afecd2c",
+      "result": {
+        "profile": "tasks",
+        "passed": 17,
+        "required": 17,
+        "problems": [],
+        "complete": true
+      },
+      "environment": [],
+      "packageEvidence": [
+        {
+          "durableWorker": "passed",
+          "installedLibrary": "passed",
+          "nativeValidation": "passed",
+          "reopen": "passed",
+          "interruption": "explicit-tool-error",
+          "mcpTasks": "not-advertised"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "These are local profile and package runs, not hosted GitHub Actions results.",
+    "Passed counts include unit cases in selected files and overlap with the general suite.",
+    "Unchanged Ruby and Swift profiles retain their separately documented local evidence.",
+    "Some profiles run host Node with containerized language commands; this does not reproduce a hosted runner image."
+  ]
+}

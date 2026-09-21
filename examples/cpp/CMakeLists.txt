@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.24)
+project(SyntheticCatalog LANGUAGES C CXX)
+add_library(catalog STATIC src/quantity.c src/total.cpp)
+target_include_directories(catalog PRIVATE include)
+target_compile_definitions(catalog PRIVATE BATCH_SIZE=2)
+set_target_properties(catalog PROPERTIES C_STANDARD 17 CXX_STANDARD 20)

@@ -1,0 +1,67 @@
+{
+  "name": "@stsepelin/repo-verifier",
+  "version": "0.1.0-dev.0",
+  "mcpName": "io.github.stsepelin/repo-verifier",
+  "description": "Local code validation with execution evidence, a CLI, and MCP tools.",
+  "type": "module",
+  "license": "MIT",
+  "author": "stsepelin",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "repo-verifier": "dist/src/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "schemas",
+    "packs",
+    "server.json",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stsepelin/repo-verifier.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src test scripts examples/javascript examples/contracts examples/package-contract examples/mutations examples/vue-router examples/nuxt examples/review eslint.config.js",
+    "format:check": "prettier --check .",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "probe:mcp-tasks": "node scripts/probe-mcp-tasks.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "fast-xml-parser": "5.11.1",
+    "yaml": "2.9.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@modelcontextprotocol/client": "2.0.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.3",
+    "eslint": "10.10.0",
+    "jest": "30.5.2",
+    "prettier": "3.9.8",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.1",
+    "vue": "3.5.43",
+    "vue-tsc": "3.3.11"
+  }
+}

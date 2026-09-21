@@ -1,0 +1,1031 @@
+{
+  "schemaVersion": 1,
+  "provenance": "external-ruff-diagnostic-integration",
+  "interpretation": "Externally authored diagnostic integration cohort for a frozen wrapper; not independent native-rule effectiveness or prior-workflow comparison",
+  "startedFromDeclaredPlan": "7d83727f85c48792b0a9719f77d0eed13dbabffca1dad2916ea4d5d0ad418d55",
+  "platform": "darwin",
+  "arch": "arm64",
+  "nodeVersion": "26.8.1",
+  "pythonVersion": "Python 3.9.6",
+  "upstream": {
+    "repository": "https://github.com/astral-sh/ruff",
+    "tag": "0.16.8",
+    "commit": "62914c4b9b79a9e5004374a9c482ad2ed69290e1"
+  },
+  "identities": {
+    "runtimeArtifactsSha256": "ff2534991f373526b95896780ae5cdd70c637b68a8cb939509cf4bea4d532fd5",
+    "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c",
+    "ruffSha256": "71f417319c8c4d45562034b44a4ff08e5a1b3dddab5b5c42d5df9800e86a6084",
+    "harnessSha256": "30fe77ada85a2d9b643bc360f25a09b9d179e0dc16a73891273671c8552b0b6f"
+  },
+  "inputsSha256": "1f64ac1522005c1c39e00bb469178a2f2f8d69b15f3ca8203ca9db1001555b75",
+  "cases": [
+    {
+      "rule": "F401",
+      "file": "F401_0.py",
+      "sourceSha256": "d111f8eebc6e248f535089b5ec3ad0bc7a39b2fcac7d91772168da89eb0e69c6",
+      "snapshotSha256": "efcf5f4e1df003fef61e9ebadecb6e4ffd264a383c544f85bf30c5de09d6c1b1",
+      "expected": [
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 2,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 12,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 32,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 33,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 37,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 52,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 93,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 94,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 99,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 105,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 107,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 112,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 114,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 122,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "rule": "F821",
+      "file": "F821_0.py",
+      "sourceSha256": "3ad1c2e5b273ae9fa3a1d334532191081e588f20bc4dddc6d5d649ba2c4a75ab",
+      "snapshotSha256": "5807d6224f3491b8fcbdaf3b27c0034809d03373fb60ba82bf820fef19888d8b",
+      "expected": [
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 2,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 6,
+          "column": 13
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 10,
+          "column": 9
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 21,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 58,
+          "column": 5
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 83,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 87,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 90,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 92,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 93,
+          "column": 14
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 115,
+          "column": 10
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 15
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 22
+        }
+      ]
+    },
+    {
+      "rule": "F841",
+      "file": "F841_0.py",
+      "sourceSha256": "5a1c89ff48280ff93ec4c0143923567adfd3b1a2f3bc37eda1e0a05a9542542c",
+      "snapshotSha256": "6b60ff82600530802d0189eb742ef441ef30bd932ea93d13a42ef0e29cc95832",
+      "expected": [
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 3,
+          "column": 22
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 16,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 20,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 6
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 26,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 51,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 79,
+          "column": 26
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 85,
+          "column": 25
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 102,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 115,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 122,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 127,
+          "column": 21
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 168,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 174,
+          "column": 13
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 182,
+          "column": 17
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "rule": "F401",
+      "system": "native",
+      "outcome": "failed",
+      "complete": true,
+      "diagnostics": [
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 2,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 12,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 32,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 33,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 37,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 52,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 93,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 94,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 99,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 105,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 107,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 112,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 114,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 122,
+          "column": 1
+        }
+      ],
+      "sourceFingerprint": "24d53d45bc00945949d133411c1449a6330c29154f50d7d2a0505ce47a06c433",
+      "wallMs": 12.538125
+    },
+    {
+      "rule": "F401",
+      "system": "verifier",
+      "outcome": "failed",
+      "status": "failed",
+      "complete": true,
+      "sourceFingerprint": "24d53d45bc00945949d133411c1449a6330c29154f50d7d2a0505ce47a06c433",
+      "diagnostics": [
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 2,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 6,
+          "column": 5
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 12,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 32,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 33,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 37,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 52,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 93,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 94,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 99,
+          "column": 8
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 105,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 107,
+          "column": 12
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 112,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 114,
+          "column": 16
+        },
+        {
+          "code": "F401",
+          "file": "F401_0.py",
+          "line": 122,
+          "column": 1
+        }
+      ],
+      "tools": [
+        {
+          "name": "python",
+          "version": "3.9.6"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.8"
+        }
+      ],
+      "engineMs": 68.577417,
+      "wallMs": 147.943583
+    },
+    {
+      "rule": "F821",
+      "system": "verifier",
+      "outcome": "failed",
+      "status": "failed",
+      "complete": true,
+      "sourceFingerprint": "e7a24b1fe300bc75d444cba37389f203d35f951b92699fddb187607f38cca2f5",
+      "diagnostics": [
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 2,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 6,
+          "column": 13
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 10,
+          "column": 9
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 21,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 58,
+          "column": 5
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 83,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 87,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 90,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 92,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 93,
+          "column": 14
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 115,
+          "column": 10
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 15
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 22
+        }
+      ],
+      "tools": [
+        {
+          "name": "python",
+          "version": "3.9.6"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.8"
+        }
+      ],
+      "engineMs": 58.237125,
+      "wallMs": 133.789625
+    },
+    {
+      "rule": "F821",
+      "system": "native",
+      "outcome": "failed",
+      "complete": true,
+      "diagnostics": [
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 2,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 6,
+          "column": 13
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 10,
+          "column": 9
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 21,
+          "column": 12
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 58,
+          "column": 5
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 83,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 87,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 90,
+          "column": 8
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 92,
+          "column": 11
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 93,
+          "column": 14
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 115,
+          "column": 10
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 15
+        },
+        {
+          "code": "F821",
+          "file": "F821_0.py",
+          "line": 123,
+          "column": 22
+        }
+      ],
+      "sourceFingerprint": "e7a24b1fe300bc75d444cba37389f203d35f951b92699fddb187607f38cca2f5",
+      "wallMs": 9.670374999999979
+    },
+    {
+      "rule": "F841",
+      "system": "native",
+      "outcome": "failed",
+      "complete": true,
+      "diagnostics": [
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 3,
+          "column": 22
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 16,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 20,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 6
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 26,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 51,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 79,
+          "column": 26
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 85,
+          "column": 25
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 102,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 115,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 122,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 127,
+          "column": 21
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 168,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 174,
+          "column": 13
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 182,
+          "column": 17
+        }
+      ],
+      "sourceFingerprint": "cd7336834deafadfd0d4df8c303794a962dc5efd7981d8aba8eaa4ebe039aa0a",
+      "wallMs": 9.694624999999974
+    },
+    {
+      "rule": "F841",
+      "system": "verifier",
+      "outcome": "failed",
+      "status": "failed",
+      "complete": true,
+      "sourceFingerprint": "cd7336834deafadfd0d4df8c303794a962dc5efd7981d8aba8eaa4ebe039aa0a",
+      "diagnostics": [
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 3,
+          "column": 22
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 16,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 20,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 6
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 21,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 26,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 51,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 79,
+          "column": 26
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 85,
+          "column": 25
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 102,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 115,
+          "column": 5
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 122,
+          "column": 14
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 127,
+          "column": 21
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 168,
+          "column": 9
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 174,
+          "column": 13
+        },
+        {
+          "code": "F841",
+          "file": "F841_0.py",
+          "line": 182,
+          "column": 17
+        }
+      ],
+      "tools": [
+        {
+          "name": "python",
+          "version": "3.9.6"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.8"
+        }
+      ],
+      "engineMs": 60.424792000000004,
+      "wallMs": 125.90187500000002
+    }
+  ],
+  "rows": [
+    {
+      "rule": "F401",
+      "system": "native",
+      "classification": "matched",
+      "comparison": {
+        "expected": 15,
+        "observed": 15,
+        "matched": 15,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    {
+      "rule": "F401",
+      "system": "verifier",
+      "classification": "matched",
+      "comparison": {
+        "expected": 15,
+        "observed": 15,
+        "matched": 15,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    {
+      "rule": "F821",
+      "system": "native",
+      "classification": "matched",
+      "comparison": {
+        "expected": 13,
+        "observed": 13,
+        "matched": 13,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    {
+      "rule": "F821",
+      "system": "verifier",
+      "classification": "matched",
+      "comparison": {
+        "expected": 13,
+        "observed": 13,
+        "matched": 13,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    {
+      "rule": "F841",
+      "system": "native",
+      "classification": "matched",
+      "comparison": {
+        "expected": 16,
+        "observed": 16,
+        "matched": 16,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    {
+      "rule": "F841",
+      "system": "verifier",
+      "classification": "matched",
+      "comparison": {
+        "expected": 16,
+        "observed": 16,
+        "matched": 16,
+        "missing": [],
+        "unexpected": []
+      }
+    }
+  ],
+  "counts": {
+    "files": 3,
+    "excludedFiles": 0,
+    "systemFileResults": 6,
+    "matched": 6,
+    "different": 0,
+    "incomplete": 0,
+    "excluded": 0
+  },
+  "model": {
+    "calls": 0,
+    "tokens": 0,
+    "providerCost": 0
+  },
+  "limits": [
+    "Whole mixed fixtures are not independent valid/invalid cases.",
+    "Only rule codes and primary start locations are compared to upstream snapshots.",
+    "No message/fix/end-location, population false-positive, review-quality or representative cost claim."
+  ]
+}

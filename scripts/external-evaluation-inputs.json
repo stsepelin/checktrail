@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "planSha256": "ae4f34342129f13a945ad4e105776eabfead72006adc4a458ad037220f64feb8",
+  "files": [
+    {
+      "file": "LICENSE",
+      "bytes": 1094,
+      "sha256": "3b6be04f862a077a4b97929dbf247299360824d9365f8603c263769303ace18c"
+    },
+    {
+      "file": "tests/lib/rules/eqeqeq.js",
+      "bytes": 17183,
+      "sha256": "1c56d702b86ca797308d115262c8c06365cf31a8b1a528192eccb3e192f667ab"
+    },
+    {
+      "file": "tests/lib/rules/no-dupe-args.js",
+      "bytes": 2966,
+      "sha256": "87b48ce9635738b068de2a4e34cc9b0fd379f486a7a00ae6f63d324545b9e12a"
+    },
+    {
+      "file": "tests/lib/rules/no-unreachable.js",
+      "bytes": 14862,
+      "sha256": "3a5aef91c457318496528528d0e2cabb6693176e5f98b6ca4a17ae444c2a252a"
+    }
+  ]
+}

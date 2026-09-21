@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "eslint-external-integration-1",
+  "declaredAt": "2026-09-18T23:45:53.448Z",
+  "purpose": "Externally authored integration holdout for the verifier wrapper, not independent native-rule or general review-quality evaluation",
+  "upstream": {
+    "repository": "https://github.com/eslint/eslint",
+    "tag": "v10.10.0",
+    "commit": "3f20a57c6293371b6193d3fb6746c2b7b2ac2689",
+    "license": "MIT"
+  },
+  "rules": ["eqeqeq", "no-dupe-args", "no-unreachable"],
+  "selection": "All literal valid/invalid RuleTester cases in the named files; nonliteral, unsupported configuration or diagnostic labels remain excluded with reasons and counts",
+  "maxCasesPerRule": 512,
+  "maxSourceBytes": 65536,
+  "expectedTool": {
+    "eslint": "10.10.0",
+    "espree": "11.2.0"
+  },
+  "frozenVerifier": {
+    "runtimeArtifactsSha256": "318b2ef8f73eff03133251595a6b4cd768f16041e108a59c94c87f54d441d54b",
+    "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c"
+  }
+}

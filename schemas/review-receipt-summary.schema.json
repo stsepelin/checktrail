@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "automatedCoverage": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "provenance": { "type": "string", "const": "imported-review-assessment" },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "freshness": { "type": "string", "enum": ["current", "stale"] },
+    "usageProvenance": { "type": "string", "const": "reviewer-declared" },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "inputTokens": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+            { "type": "null" }
+          ]
+        },
+        "outputTokens": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+            { "type": "null" }
+          ]
+        },
+        "elapsedMs": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+            { "type": "null" }
+          ]
+        },
+        "costUSD": {
+          "anyOf": [
+            { "type": "number", "minimum": 0, "maximum": 1000000 },
+            { "type": "null" }
+          ]
+        }
+      },
+      "required": ["inputTokens", "outputTokens", "elapsedMs", "costUSD"],
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "selected": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "declaredReviewed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "declaredNotReviewed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "unaccounted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        }
+      },
+      "required": [
+        "selected",
+        "declaredReviewed",
+        "declaredNotReviewed",
+        "unaccounted"
+      ],
+      "additionalProperties": false
+    },
+    "citations": {
+      "type": "object",
+      "properties": {
+        "matched": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "unmatched": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+      },
+      "required": ["matched", "unmatched"],
+      "additionalProperties": false
+    },
+    "reviewerKind": { "type": "string", "enum": ["human", "model"] },
+    "observations": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "channel",
+    "automatedCoverage",
+    "claimsVerified",
+    "deterministicOutcomeChanged",
+    "provenance",
+    "contextDigest",
+    "freshness",
+    "usageProvenance",
+    "usage",
+    "coverage",
+    "citations",
+    "reviewerKind",
+    "observations"
+  ],
+  "additionalProperties": false
+}

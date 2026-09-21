@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "workspace": {
+      "type": "object",
+      "properties": {
+        "complete": { "type": "boolean" },
+        "dependencies": {
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "consumer": { "type": "string", "minLength": 1 },
+              "producer": { "type": "string", "minLength": 1 }
+            },
+            "required": ["consumer", "producer"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["complete", "dependencies"],
+      "additionalProperties": false
+    },
+    "projects": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "checks": {
+            "maxItems": 256,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "packs": {
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+                "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+              },
+              "required": ["path", "sha256"],
+              "additionalProperties": false
+            }
+          },
+          "environment": {
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z_][A-Z0-9_]*$"
+            }
+          }
+        },
+        "required": ["path", "checks"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schemaVersion", "projects"],
+  "additionalProperties": false
+}

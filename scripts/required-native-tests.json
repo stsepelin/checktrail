@@ -1,0 +1,578 @@
+{
+  "ruby": [
+    {
+      "file": "dist/test/ruby.test.js",
+      "name": "native Ruby checks the public example and broken/fixed source without executing top-level or BEGIN code"
+    }
+  ],
+  "swift": [
+    {
+      "file": "dist/test/swift.test.js",
+      "name": "native Swift syntax checks the public package without manifest execution, catches broken grammar and distinguishes parsing from type checking"
+    }
+  ],
+  "core": [
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "runs native Node tests and records test evidence"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "rejects execution without operator trust before a project test can run"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "reports test failures and does not expose raw logs in summary mode"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "zero-test and all-skipped JavaScript files never yield pass"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "source edits during a successful check invalidate the aggregate result"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "native Python unittest execution yields counts and preserves the source snapshot"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "native Go formatting, vet and uncached tests run as separate checks"
+    },
+    {
+      "file": "dist/test/engine.test.js",
+      "name": "native PHP syntax accepts valid code and rejects malformed code"
+    }
+  ],
+  "javascript": [
+    {
+      "file": "dist/test/eslint.test.js",
+      "name": "native ESLint catches errors and warnings, preserves caches, and accounts for ignored and unconfigured files"
+    },
+    {
+      "file": "dist/test/eslint.test.js",
+      "name": "ESLint planning never executes the configuration or installed tool and reports missing prerequisites"
+    },
+    {
+      "file": "dist/test/eslint.test.js",
+      "name": "ESLint does not load an installation linked outside the configured root"
+    },
+    {
+      "file": "dist/test/eslint.test.js",
+      "name": "ESLint with no enabled rules is incomplete and a broken configuration is an execution error"
+    },
+    {
+      "file": "dist/test/typescript.test.js",
+      "name": "native TypeScript detects type errors and excluded source, without emitting incremental state"
+    },
+    {
+      "file": "dist/test/typescript.test.js",
+      "name": "TypeScript planning never executes an installed compiler"
+    },
+    {
+      "file": "dist/test/typescript.test.js",
+      "name": "TypeScript requires a local compiler and refuses one linked outside the root"
+    },
+    {
+      "file": "dist/test/typescript-build.test.js",
+      "name": "native TypeScript solution builds fresh declarations in memory and catches producer and consumer errors"
+    },
+    {
+      "file": "dist/test/typescript-build.test.js",
+      "name": "TypeScript solution never trusts persisted outputs or escapes the configured root"
+    },
+    {
+      "file": "dist/test/typescript-build.test.js",
+      "name": "TypeScript solution planning never executes the compiler"
+    },
+    {
+      "file": "dist/test/typescript-build.test.js",
+      "name": "TypeScript solution preserves files when native configuration has cycles or output escapes"
+    },
+    {
+      "file": "dist/test/typescript-build.test.js",
+      "name": "TypeScript solution evidence rejects missing programs, omitted files, duplicate paths and malformed diagnostics"
+    },
+    {
+      "file": "dist/test/vitest.test.js",
+      "name": "native Vitest records assertions, catches failures and rejects all-skipped and excluded test files"
+    },
+    {
+      "file": "dist/test/vitest.test.js",
+      "name": "Vitest planning and missing-tool validation never execute project configuration"
+    },
+    {
+      "file": "dist/test/vitest.test.js",
+      "name": "Vitest forbids focused tests, unhandled-error bypasses and snapshot updates"
+    },
+    {
+      "file": "dist/test/jest.test.js",
+      "name": "native Jest requires executed tests and accounts for excluded, skipped, focused and failed cases"
+    },
+    {
+      "file": "dist/test/jest.test.js",
+      "name": "Jest planning and missing-tool validation do not execute configuration"
+    },
+    {
+      "file": "dist/test/playwright.test.js",
+      "name": "native Playwright accounts for tests, failures, focus, skips, retries and omitted files"
+    },
+    {
+      "file": "dist/test/playwright.test.js",
+      "name": "Playwright planning does not execute config and native guards reject unsupported startup and snapshots bypass"
+    },
+    {
+      "file": "dist/test/playwright.test.js",
+      "name": "Playwright evidence rejects duplicate, missing, inconsistent and interrupted test results"
+    },
+    {
+      "file": "dist/test/playwright.test.js",
+      "name": "native Playwright validates browser DOM assertions and reports an absent browser as unavailable"
+    },
+    {
+      "file": "dist/test/vue-tsc.test.js",
+      "name": "native Vue type checking detects script and template errors, rejects excluded files and prevents disabled template checks"
+    },
+    {
+      "file": "dist/test/vue-tsc.test.js",
+      "name": "Vue compiler planning requires local tooling and does not execute it"
+    }
+  ],
+  "python": [
+    {
+      "file": "dist/test/pytest.test.js",
+      "name": "native pytest accounts for assertion and fixture lifecycle, empty files and deselection"
+    },
+    {
+      "file": "dist/test/pytest.test.js",
+      "name": "pytest planning does not import project conftest"
+    },
+    {
+      "file": "dist/test/ruff.test.js",
+      "name": "native Ruff accounts for selected files and active rules and never fixes source"
+    },
+    {
+      "file": "dist/test/ruff.test.js",
+      "name": "Ruff planning describes explicit source and stub files without running tools"
+    },
+    {
+      "file": "dist/test/mypy.test.js",
+      "name": "native mypy checks explicit files and rejects broad suppression without writing caches or installing stubs"
+    }
+  ],
+  "frameworks": [
+    {
+      "file": "dist/test/fastapi.test.js",
+      "name": "FastAPI planning requires an explicit local import profile and never loads the application"
+    },
+    {
+      "file": "dist/test/fastapi.test.js",
+      "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations"
+    },
+    {
+      "file": "dist/test/fastapi.test.js",
+      "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly"
+    },
+    {
+      "file": "dist/test/django.test.js",
+      "name": "Django planning validates a local settings module without executing setup and protects the settings environment"
+    },
+    {
+      "file": "dist/test/django.test.js",
+      "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode"
+    },
+    {
+      "file": "dist/test/django.test.js",
+      "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete"
+    },
+    {
+      "file": "dist/test/framework-examples.test.js",
+      "name": "public fastapi example passes and its duplicate-registration counterpart fails"
+    },
+    {
+      "file": "dist/test/framework-examples.test.js",
+      "name": "public django example passes and its duplicate-registration counterpart fails"
+    }
+  ],
+  "go": [
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "native Go scope rejects build-tagged and platform-excluded files instead of reporting full validation"
+    },
+    {
+      "file": "dist/test/go-scope.test.js",
+      "name": "Go package evidence requires exact source membership and fully parsed object streams"
+    },
+    {
+      "file": "dist/test/go-race.test.js",
+      "name": "native Go race check catches unsynchronized writes and passes atomic updates"
+    },
+    {
+      "file": "dist/test/go-race.test.js",
+      "name": "Go race instrumentation requires explicit selection"
+    },
+    {
+      "file": "dist/test/staticcheck.test.js",
+      "name": "native Staticcheck catches ignored return values, surfaces suppressions and rejects incomplete Go scope"
+    },
+    {
+      "file": "dist/test/staticcheck.test.js",
+      "name": "Staticcheck JSON requires valid diagnostics, complete package scope and untruncated execution"
+    },
+    {
+      "file": "dist/test/golangci.test.js",
+      "name": "native golangci-lint preserves source, disables hidden filters and validates configured checks"
+    },
+    {
+      "file": "dist/test/golangci.test.js",
+      "name": "Go suppression scanning follows comment boundaries and ignores literal or unrelated text"
+    },
+    {
+      "file": "dist/test/golangci.test.js",
+      "name": "golangci-lint evidence needs an active configured linter and complete native scope"
+    }
+  ],
+  "php-tools": [
+    {
+      "file": "dist/test/phpstan.test.js",
+      "name": "native PHPStan accounts for analysed files and catches return-type and configuration failures"
+    },
+    {
+      "file": "dist/test/phpstan.test.js",
+      "name": "PHPStan planning requires installed tools and config without executing PHP"
+    },
+    {
+      "file": "dist/test/phpunit.test.js",
+      "name": "native PHPUnit streams fresh evidence for assertions, failures, skips, empty and zero-assertion cases"
+    },
+    {
+      "file": "dist/test/pest.test.js",
+      "name": "Pest planning requires configuration without executing PHP"
+    },
+    {
+      "file": "dist/test/pest.test.js",
+      "name": "native Pest runs focused siblings, datasets and fresh snapshots without replaying cached tests"
+    },
+    {
+      "file": "dist/test/pint.test.js",
+      "name": "Pint planning only resolves its installed path"
+    },
+    {
+      "file": "dist/test/pint.test.js",
+      "name": "native Pint proves file and rule scope, rejects errors and never fixes source or consumes configured cache"
+    },
+    {
+      "file": "dist/test/pint.test.js",
+      "name": "Pint evidence cannot pass empty rules, duplicate, omitted or unexpected files or incompatible versions"
+    }
+  ],
+  "laravel": [
+    {
+      "file": "dist/test/laravel.test.js",
+      "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment"
+    },
+    {
+      "file": "dist/test/laravel.test.js",
+      "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work"
+    },
+    {
+      "file": "dist/test/laravel.test.js",
+      "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly"
+    }
+  ],
+  "rust": [
+    {
+      "file": "dist/test/rust.test.js",
+      "name": "Rust planning requires a lockfile and supported source paths without executing build scripts or fetching tools"
+    },
+    {
+      "file": "dist/test/rust.test.js",
+      "name": "Rust dep-info decodes spaces exactly and rejects unsupported escapes and empty rules"
+    },
+    {
+      "file": "dist/test/rust.test.js",
+      "name": "native Cargo checks fresh targets and exact source membership, catches compiler errors, and never claims test execution"
+    },
+    {
+      "file": "dist/test/rust.test.js",
+      "name": "native Cargo cannot reuse configured output, omit a required feature target, or turn invalid package configuration into code success"
+    },
+    {
+      "file": "dist/test/rust.test.js",
+      "name": "native Cargo accounts for build-script source and rejects unsupported multi-package workspaces"
+    }
+  ],
+  "clang": [
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "Clang planning requires a prepared database, never runs build configuration and rejects hidden compiler behavior"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "Clang dependency evidence decodes continuation lines and literal spaces while rejecting malformed targets and escapes"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "native Clang validates mixed C/C++ public sources and headers, catches type errors and never emits objects or runs code"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "native Clang requires all source/header coverage and rejects generated or symlinked project inputs"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "native Clang preserves relative macro path spelling, configured working directories and literal-space dependencies"
+    },
+    {
+      "file": "dist/test/clang.test.js",
+      "name": "native Clang checks every database configuration and distinguishes warnings, missing tools and compiler failures"
+    }
+  ],
+  "java": [
+    {
+      "file": "dist/test/java.test.js",
+      "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration"
+    },
+    {
+      "file": "dist/test/java.test.js",
+      "name": "native Java compiles the public record fixture and reports a type regression without running application initialization"
+    },
+    {
+      "file": "dist/test/java.test.js",
+      "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass"
+    },
+    {
+      "file": "dist/test/java.test.js",
+      "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source"
+    },
+    {
+      "file": "dist/test/java.test.js",
+      "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths"
+    }
+  ],
+  "dotnet": [
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "C# planning reads explicit settings without running build targets, and rejects unsupported compilation shapes"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "C# missing tooling and malformed unavailable evidence cannot produce a pass"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "native C# validates the public record, catches a type-error/fix pair and never executes application initialization or build targets"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "native C# accounts for empty files, partial types and semantic analysis; incomplete or inconsistent native evidence is rejected"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "native C# honors explicit nullability, warnings, defines, output kind and unsafe settings without implicit source inclusion"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "native C# consumes pinned metadata without executing modules or source generators and respects the declared assembly identity"
+    },
+    {
+      "file": "dist/test/dotnet.test.js",
+      "name": "native C# compiler suppressions cannot silently establish complete findings"
+    }
+  ],
+  "actionlint": [
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "workflow planning finds repository roots and retains unrelated infrastructure gaps without execution"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "native workflows catch expressions and invalid YAML, recover after fixes, and never execute scripts or repository ignores"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "native local actions require metadata and runtime assets without executing them, including nested package inputs"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "native reusable workflow inputs and explicit labels and variables are checked"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "native workflow accounting rejects omissions, duplicates, contradictory exits and altered configurations"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "workflow dependency preflight rejects unsupported YAML aliases and missing composite dependencies"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "missing actionlint cannot produce successful workflow evidence"
+    },
+    {
+      "file": "dist/test/actionlint.test.js",
+      "name": "workflow dependency paths reject escapes, ambiguous YAML and missing runtime assets before native reads"
+    }
+  ],
+  "vue-router": [
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "Vue Router planning validates explicit scope without executing startup or granting trust"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "native Vue Router captures async registration, nested default children and aliases without loading views or navigation guards"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "native Vue Router cannot pass uncovered or shadowed records, unsupported dynamic redirects or an empty router"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "native Vue Router probes preserve case and trailing-slash options and capture static redirects without navigating"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "Vue Router evidence reconciles native record indices, probe participation, versions and source identity"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "Vue Router version gates, protected environment and native readers survive startup facade replacement"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "Vue Router CLI preserves explicit trust and returns path-free summary evidence"
+    },
+    {
+      "file": "dist/test/vue-router.test.js",
+      "name": "Vue Router MCP keeps runtime route metadata behind the operator detail setting"
+    }
+  ],
+  "nuxt": [
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "Nuxt planning requires an explicit profile, inventoried config and prepared tools without evaluating Nuxt config"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "native Nuxt SSR captures generated pages and async runtime registration, catches a changed contract and uncovered records"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "native Nuxt SSR distinguishes HTTP failures, request-dependent route assemblies and unsupported metadata"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "Nuxt cancellation terminates a live startup and removes its owned build directory"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "Nuxt native evidence reconciles capture identity, ordered records and probe accounting"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "Nuxt capture includes awaited app:rendered changes registered after the observer"
+    },
+    {
+      "file": "dist/test/nuxt.test.js",
+      "name": "Nuxt rejects unsupported runtime identities and protects test environment without loading dotenv or stale build output"
+    }
+  ],
+  "review": [
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review context captures exact bounded source, stable identity and guidance without execution"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review receipts reject cross-context claims and mark changed or forged source stale"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries"
+    }
+  ],
+  "tasks": [
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task store retains native validation results through reopening without retaining summary source"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task stores reject root and disclosure changes and retain detailed results only when configured"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task cancellation reserves the transition and cannot be overwritten by late completion"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task store rejects concurrent owners in this process and another process without disrupting work"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task store recovers after a real owner SIGKILL and never resumes or passes unfinished tasks"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "SQLite rolls back an interrupted write before task-store recovery"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task retention enforces capacity, expiry, result bytes and source identity"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task store refuses unsafe directories, links, foreign databases and damaged results"
+    },
+    {
+      "file": "dist/test/task-store.test.js",
+      "name": "task store bounds UTF-8 results and total retained data with private file modes"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable validation tasks preserve native passed, failed and incomplete outcomes through reopening"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task startup does not grant execution, load project code or inherit Node preloads"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task parent SIGKILL triggers worker cleanup and retains cancellation across restart"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task timeout retains incomplete native evidence rather than a passing result"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "oversized durable detail becomes an explicit tool error while the same native run fits summary mode"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task close during planning rejects new work and releases the store"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task cancel stops a live process group before recording cancellation or releasing ownership"
+    },
+    {
+      "file": "dist/test/validation-tasks.test.js",
+      "name": "durable task close stops a live process group before recording cancellation or releasing ownership"
+    }
+  ]
+}

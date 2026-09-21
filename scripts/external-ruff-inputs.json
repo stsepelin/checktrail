@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "planSha256": "7d83727f85c48792b0a9719f77d0eed13dbabffca1dad2916ea4d5d0ad418d55",
+  "files": [
+    {
+      "file": "LICENSE",
+      "bytes": 20731,
+      "gitBlob": "655a0c76fc5539b2f8e63b673741a5fd0e0c5799",
+      "sha256": "2597d854122b77ddc71971564ca2350a37608575ce324adc5650a2b2051c8f18"
+    },
+    {
+      "file": "crates/ruff_linter/src/rules/pyflakes/mod.rs",
+      "bytes": 114518,
+      "gitBlob": "400509402face17172a3f304c8273cdc24aa00d1",
+      "sha256": "f5933dea908b2859e1ee4a6b5282fa41d24833f14c0dd567d33f46f04d3ecd86"
+    },
+    {
+      "file": "crates/ruff_linter/resources/test/fixtures/pyflakes/F401_0.py",
+      "bytes": 2106,
+      "gitBlob": "ecc6ecc43ff3237c543348f81c709f557fb677a5",
+      "sha256": "d111f8eebc6e248f535089b5ec3ad0bc7a39b2fcac7d91772168da89eb0e69c6"
+    },
+    {
+      "file": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__unused-import_F401_0.py.snap",
+      "bytes": 4537,
+      "gitBlob": "d000f803e9ba652f258c555e03db0c4e4ce6af06",
+      "sha256": "efcf5f4e1df003fef61e9ebadecb6e4ffd264a383c544f85bf30c5de09d6c1b1"
+    },
+    {
+      "file": "crates/ruff_linter/resources/test/fixtures/pyflakes/F821_0.py",
+      "bytes": 2320,
+      "gitBlob": "82c098db1c8d891ded67acb6971e479d5feca1dd",
+      "sha256": "3ad1c2e5b273ae9fa3a1d334532191081e588f20bc4dddc6d5d649ba2c4a75ab"
+    },
+    {
+      "file": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__undefined-name_F821_0.py.snap",
+      "bytes": 2225,
+      "gitBlob": "f8851825ef5059bfb7bb8453eeb7172561126037",
+      "sha256": "5807d6224f3491b8fcbdaf3b27c0034809d03373fb60ba82bf820fef19888d8b"
+    },
+    {
+      "file": "crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py",
+      "bytes": 3175,
+      "gitBlob": "52dd297a0e078ea3801577ab1d8160e05dbf9991",
+      "sha256": "5a1c89ff48280ff93ec4c0143923567adfd3b1a2f3bc37eda1e0a05a9542542c"
+    },
+    {
+      "file": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__unused-variable_F841_0.py.snap",
+      "bytes": 6468,
+      "gitBlob": "203edd2357aab03c33a2ac5a8ca059d69f56654c",
+      "sha256": "6b60ff82600530802d0189eb742ef441ef30bd932ea93d13a42ef0e29cc95832"
+    }
+  ]
+}

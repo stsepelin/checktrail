@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "module": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "attribute": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z_$][\\w$]*$"
+    },
+    "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "environment": { "type": "string", "const": "test" },
+    "strict": { "type": "boolean" },
+    "sensitive": { "type": "boolean" },
+    "probes": {
+      "minItems": 1,
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 4096,
+            "pattern": "^\\/(?!\\/)"
+          },
+          "matched": {
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "maxLength": 4096,
+                  "pattern": "^\\/"
+                },
+                "name": {
+                  "anyOf": [
+                    { "type": "string", "maxLength": 256 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["path", "name"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["path", "matched"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "module",
+    "attribute",
+    "assembly",
+    "environment",
+    "strict",
+    "sensitive",
+    "probes"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+{
+  "@nodable/entities@3.0.0": {
+    "notice": "docs/licenses/nodable-entities-3.0.0.txt",
+    "sha256": "750cb3fb6362804957ef52caaf9b5c824015be44d494637330d7cd8834d31d40",
+    "source": "https://raw.githubusercontent.com/nodable/val-parsers/d2070d76a8ba07e6c7fa142caeb51ffd756e47eb/LICENSE",
+    "upstreamManifestVersion": "2.2.0",
+    "files": {
+      "README.md": "7e3484a07c208b5c5813290a993244c6841efc3d4241c29a07ef948e8129a758",
+      "package.json": "548526ce0e1cad9ffe904fba19067013c9fea336eafd3cd52a337ec44406c9ed",
+      "src/EntityDecoder.js": "a56cf2bf8174e0adf94970d70e003afcfc3923a53d0cf973f92d374cfe684544",
+      "src/EntityEncoder.js": "812a2077e073564d6470b8fda8ac0d20ecaaf75ddb1594d55d28acc2da8a1a71",
+      "src/all-entities.js": "2f1340ab32dce314f41638b7ee6d0368b974e3302983154b815a6d49a6dfb63b",
+      "src/entities.js": "96ec5d127a4e8cd77bdc678422f0d57c8ff9e37bcec999983da71a7b72ce9a0e",
+      "src/entityTries.js": "fa2838d141fba0e8ee5bd2197956c3f6b1d23668be2c8841a585614ea7051f99",
+      "src/index.d.ts": "aea4188bf00c7d6474a34adb715810cfa9e45acafb1b4931e63db0b4253c07da",
+      "src/index.js": "79a65ddeda08664d00b7b82f5a903ea437de1dff54a02ed469e9cb1067cb568b"
+    }
+  }
+}

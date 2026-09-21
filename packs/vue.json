@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "javascript.vue",
+  "version": "1.0.0",
+  "description": "Vue script/template type checking, ESLint and Vitest tests",
+  "requiredChecks": [
+    "javascript.vue-tsc",
+    "javascript.eslint",
+    "javascript.vitest"
+  ]
+}

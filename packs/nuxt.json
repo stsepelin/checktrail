@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "public.nuxt",
+  "version": "1.0.0",
+  "description": "Native Nuxt SSR testing assembly with explicit page request contracts.",
+  "requiredChecks": ["javascript.nuxt-runtime"]
+}

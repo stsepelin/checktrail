@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["full", "affected"] },
+        "reason": { "type": "string" },
+        "projectCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "changedFileCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["mode", "reason", "projectCount", "changedFileCount"],
+      "additionalProperties": false
+    },
+    "projectCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "adapters": { "type": "array", "items": { "type": "string" } },
+    "excludedCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["format", "analysis", "test", "syntax", "unsupported"]
+          },
+          "ready": { "type": "boolean" }
+        },
+        "required": ["id", "kind", "ready"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "projectCount",
+    "adapters",
+    "excludedCount",
+    "checks"
+  ],
+  "additionalProperties": false
+}

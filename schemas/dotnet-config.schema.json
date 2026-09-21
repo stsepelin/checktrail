@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "targetFramework": { "type": "string", "const": "net10.0" },
+    "assemblyName": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*$"
+    },
+    "languageVersion": { "type": "string", "enum": ["12", "13", "14"] },
+    "outputKind": { "type": "string", "enum": ["library", "console"] },
+    "nullable": {
+      "type": "string",
+      "enum": ["enable", "disable", "warnings", "annotations"]
+    },
+    "warningsAsErrors": { "type": "boolean" },
+    "allowUnsafe": { "type": "boolean" },
+    "checkedArithmetic": { "type": "boolean" },
+    "implicitUsings": { "type": "boolean" },
+    "defines": {
+      "maxItems": 128,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      }
+    },
+    "references": {
+      "maxItems": 128,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["path", "sha256"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "targetFramework",
+    "assemblyName",
+    "languageVersion",
+    "outputKind",
+    "nullable",
+    "warningsAsErrors",
+    "allowUnsafe",
+    "checkedArithmetic",
+    "implicitUsings",
+    "defines",
+    "references"
+  ],
+  "additionalProperties": false
+}

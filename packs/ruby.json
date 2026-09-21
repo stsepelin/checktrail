@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "ruby.syntax",
+  "version": "1.0.0",
+  "description": "MRI Ruby syntax checks for source and Ruby DSL manifests; no gem installation or tests",
+  "requiredChecks": ["ruby.syntax"]
+}

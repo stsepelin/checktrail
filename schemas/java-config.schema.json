@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "release": { "type": "integer", "minimum": 8, "maximum": 25 },
+    "warningsAsErrors": { "type": "boolean" },
+    "classPath": {
+      "maxItems": 128,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["path", "sha256"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schemaVersion", "release", "warningsAsErrors", "classPath"],
+  "additionalProperties": false
+}

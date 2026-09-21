@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "synthetic-impact-v1",
+  "provenance": "Original post-implementation development cases; not independent held-out evidence. Labels and scopes fixed before measurement.",
+  "cases": [
+    {
+      "id": "producer-defect",
+      "graph": "declared-complete",
+      "changes": {
+        "core/value.js": "export const value = 2;\n"
+      },
+      "selectedProjects": ["core", "service", "web"],
+      "failingProjects": ["service", "web"],
+      "mode": "affected"
+    },
+    {
+      "id": "producer-valid-edit",
+      "graph": "declared-complete",
+      "changes": {
+        "core/value.js": "export const value = 1 + 0;\n"
+      },
+      "selectedProjects": ["core", "service", "web"],
+      "failingProjects": [],
+      "mode": "affected"
+    },
+    {
+      "id": "leaf-defect",
+      "graph": "declared-complete",
+      "changes": {
+        "web/value.test.js": "import {test} from 'node:test'; import assert from 'node:assert/strict'; import {value} from '../service/value.js'; test('web contract',()=>assert.equal(value, 2));\n"
+      },
+      "selectedProjects": ["web"],
+      "failingProjects": ["web"],
+      "mode": "affected"
+    },
+    {
+      "id": "independent-defect",
+      "graph": "declared-complete",
+      "changes": {
+        "utility/value.js": "export const value = 6;\n"
+      },
+      "selectedProjects": ["utility"],
+      "failingProjects": ["utility"],
+      "mode": "affected"
+    },
+    {
+      "id": "two-owner-defect",
+      "graph": "declared-complete",
+      "changes": {
+        "core/value.js": "export const value = 2;\n",
+        "utility/value.js": "export const value = 6;\n"
+      },
+      "selectedProjects": ["core", "service", "utility", "web"],
+      "failingProjects": ["service", "utility", "web"],
+      "mode": "affected"
+    },
+    {
+      "id": "incomplete-graph-fallback",
+      "graph": "declared-incomplete",
+      "changes": {
+        "core/value.js": "export const value = 2;\n"
+      },
+      "selectedProjects": ["core", "other", "service", "utility", "web"],
+      "failingProjects": ["service", "web"],
+      "mode": "full"
+    },
+    {
+      "id": "root-settings-fallback",
+      "graph": "declared-complete",
+      "changes": {
+        "settings.json": "{\"value\":2}\n"
+      },
+      "selectedProjects": ["core", "other", "service", "utility", "web"],
+      "failingProjects": ["other"],
+      "mode": "full"
+    },
+    {
+      "id": "unowned-source-fallback",
+      "graph": "declared-complete",
+      "changes": {
+        "shared/value.mjs": "export const value = 2;\n"
+      },
+      "selectedProjects": ["core", "other", "service", "utility", "web"],
+      "failingProjects": ["other"],
+      "mode": "full"
+    },
+    {
+      "id": "unchanged-fallback",
+      "graph": "declared-complete",
+      "changes": {},
+      "selectedProjects": ["core", "other", "service", "utility", "web"],
+      "failingProjects": [],
+      "mode": "full"
+    },
+    {
+      "id": "misdeclared-graph",
+      "graph": "misdeclared-complete",
+      "changes": {
+        "core/value.js": "export const value = 2;\n"
+      },
+      "selectedProjects": ["core"],
+      "failingProjects": ["service", "web"],
+      "mode": "affected"
+    }
+  ]
+}

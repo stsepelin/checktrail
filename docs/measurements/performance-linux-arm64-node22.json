@@ -1,0 +1,845 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-09-18T19:39:42.146Z",
+  "engineVersion": "0.1.0-dev.0",
+  "node": "v22.23.2",
+  "platform": "linux",
+  "architecture": "arm64",
+  "availableParallelism": 18,
+  "runtimeArtifactsSha256": "5a2cf784ca5c75a0955123eab06406a1685c8656f0510d52326de9ab19bcc6cf",
+  "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c",
+  "harnessSha256": "a32ab5fa4f5a57b08c905870feeecd94ab5e55f2388077c18136305d4e17c249",
+  "method": {
+    "freshProcessPerSample": true,
+    "warmFilesystemCache": "uncontrolled",
+    "rotatedCaseOrder": true,
+    "engineCpuAndMemoryExcludeChildProcesses": true,
+    "fixturesCreatedOutsideMeasurements": true,
+    "percentile": "nearest-rank",
+    "regressionBudget": null
+  },
+  "results": [
+    {
+      "case": "small",
+      "mode": "plan",
+      "projects": 1,
+      "modulesPerProject": 10,
+      "files": 12,
+      "inputBytes": 958,
+      "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 100,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 11.18350000000001,
+          "engineCpuMs": 19.4,
+          "enginePeakRssKiB": 80896
+        },
+        {
+          "round": 1,
+          "wallMs": 95,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 11.895837999999998,
+          "engineCpuMs": 18.277,
+          "enginePeakRssKiB": 80508
+        },
+        {
+          "round": 2,
+          "wallMs": 102,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 13.727892999999995,
+          "engineCpuMs": 21.068,
+          "enginePeakRssKiB": 80284
+        },
+        {
+          "round": 3,
+          "wallMs": 99,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 12.695386,
+          "engineCpuMs": 18.963,
+          "enginePeakRssKiB": 80812
+        },
+        {
+          "round": 4,
+          "wallMs": 95,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 10.675871,
+          "engineCpuMs": 18.879,
+          "enginePeakRssKiB": 80468
+        },
+        {
+          "round": 5,
+          "wallMs": 98,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 14.168480000000002,
+          "engineCpuMs": 18.761,
+          "enginePeakRssKiB": 80240
+        },
+        {
+          "round": 6,
+          "wallMs": 95,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 12.141215000000003,
+          "engineCpuMs": 19.792,
+          "enginePeakRssKiB": 80680
+        },
+        {
+          "round": 7,
+          "wallMs": 93,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 11.443335000000005,
+          "engineCpuMs": 18.303,
+          "enginePeakRssKiB": 80908
+        },
+        {
+          "round": 8,
+          "wallMs": 96,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 11.630378000000007,
+          "engineCpuMs": 18.079,
+          "enginePeakRssKiB": 80708
+        },
+        {
+          "round": 9,
+          "wallMs": 97,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 12.796511999999993,
+          "engineCpuMs": 20.128,
+          "enginePeakRssKiB": 80504
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 93,
+          "median": 96.5,
+          "p95": 102,
+          "max": 102
+        },
+        "engineMs": {
+          "min": 10.675871,
+          "median": 12.0185265,
+          "p95": 14.168480000000002,
+          "max": 14.168480000000002
+        },
+        "engineCpuMs": {
+          "min": 18.079,
+          "median": 18.921,
+          "p95": 21.068,
+          "max": 21.068
+        },
+        "enginePeakRssKiB": {
+          "min": 80240,
+          "median": 80594,
+          "p95": 80908,
+          "max": 80908
+        }
+      }
+    },
+    {
+      "case": "small",
+      "mode": "validate",
+      "projects": 1,
+      "modulesPerProject": 10,
+      "files": 12,
+      "inputBytes": 958,
+      "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 153,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 66.78353600000001,
+          "engineCpuMs": 23.797,
+          "enginePeakRssKiB": 81892
+        },
+        {
+          "round": 1,
+          "wallMs": 152,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 67.887878,
+          "engineCpuMs": 24.434,
+          "enginePeakRssKiB": 81152
+        },
+        {
+          "round": 2,
+          "wallMs": 154,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 66.95703799999998,
+          "engineCpuMs": 25.16,
+          "enginePeakRssKiB": 81772
+        },
+        {
+          "round": 3,
+          "wallMs": 154,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 70.094686,
+          "engineCpuMs": 26.095,
+          "enginePeakRssKiB": 81464
+        },
+        {
+          "round": 4,
+          "wallMs": 150,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 67.434126,
+          "engineCpuMs": 25.256,
+          "enginePeakRssKiB": 80996
+        },
+        {
+          "round": 5,
+          "wallMs": 149,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 65.66115299999998,
+          "engineCpuMs": 23.202,
+          "enginePeakRssKiB": 81340
+        },
+        {
+          "round": 6,
+          "wallMs": 147,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 64.49926999999998,
+          "engineCpuMs": 23.556,
+          "enginePeakRssKiB": 81832
+        },
+        {
+          "round": 7,
+          "wallMs": 162,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 70.94636000000001,
+          "engineCpuMs": 27.944,
+          "enginePeakRssKiB": 81644
+        },
+        {
+          "round": 8,
+          "wallMs": 154,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 69.163513,
+          "engineCpuMs": 24.358,
+          "enginePeakRssKiB": 81564
+        },
+        {
+          "round": 9,
+          "wallMs": 149,
+          "fingerprint": "f77081f4ca47457a7383f0eca6e069955c2f08046bbb72dbbd2ab31c3b03f5b1",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 66.87291200000001,
+          "engineCpuMs": 24.767,
+          "enginePeakRssKiB": 81584
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 147,
+          "median": 152.5,
+          "p95": 162,
+          "max": 162
+        },
+        "engineMs": {
+          "min": 64.49926999999998,
+          "median": 67.195582,
+          "p95": 70.94636000000001,
+          "max": 70.94636000000001
+        },
+        "engineCpuMs": {
+          "min": 23.202,
+          "median": 24.6005,
+          "p95": 27.944,
+          "max": 27.944
+        },
+        "enginePeakRssKiB": {
+          "min": 80996,
+          "median": 81574,
+          "p95": 81892,
+          "max": 81892
+        }
+      }
+    },
+    {
+      "case": "large",
+      "mode": "plan",
+      "projects": 1,
+      "modulesPerProject": 1000,
+      "files": 1002,
+      "inputBytes": 77912,
+      "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 181,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 95.592668,
+          "engineCpuMs": 100.431,
+          "enginePeakRssKiB": 88828
+        },
+        {
+          "round": 1,
+          "wallMs": 197,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 111.940581,
+          "engineCpuMs": 111.26,
+          "enginePeakRssKiB": 87872
+        },
+        {
+          "round": 2,
+          "wallMs": 177,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 95.09283,
+          "engineCpuMs": 103.033,
+          "enginePeakRssKiB": 87400
+        },
+        {
+          "round": 3,
+          "wallMs": 194,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 109.72718900000001,
+          "engineCpuMs": 115.02,
+          "enginePeakRssKiB": 87708
+        },
+        {
+          "round": 4,
+          "wallMs": 216,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 135.104002,
+          "engineCpuMs": 131.942,
+          "enginePeakRssKiB": 88180
+        },
+        {
+          "round": 5,
+          "wallMs": 272,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 188.796858,
+          "engineCpuMs": 168.738,
+          "enginePeakRssKiB": 87880
+        },
+        {
+          "round": 6,
+          "wallMs": 287,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 203.87747000000002,
+          "engineCpuMs": 177.152,
+          "enginePeakRssKiB": 87844
+        },
+        {
+          "round": 7,
+          "wallMs": 283,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 196.708416,
+          "engineCpuMs": 175.368,
+          "enginePeakRssKiB": 88196
+        },
+        {
+          "round": 8,
+          "wallMs": 298,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 211.274525,
+          "engineCpuMs": 180.632,
+          "enginePeakRssKiB": 88104
+        },
+        {
+          "round": 9,
+          "wallMs": 285,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 0,
+          "engineMs": 200.37065199999998,
+          "engineCpuMs": 174.05,
+          "enginePeakRssKiB": 88404
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 177,
+          "median": 244,
+          "p95": 298,
+          "max": 298
+        },
+        "engineMs": {
+          "min": 95.09283,
+          "median": 161.95042999999998,
+          "p95": 211.274525,
+          "max": 211.274525
+        },
+        "engineCpuMs": {
+          "min": 100.431,
+          "median": 150.34,
+          "p95": 180.632,
+          "max": 180.632
+        },
+        "enginePeakRssKiB": {
+          "min": 87400,
+          "median": 87992,
+          "p95": 88828,
+          "max": 88828
+        }
+      }
+    },
+    {
+      "case": "large",
+      "mode": "validate",
+      "projects": 1,
+      "modulesPerProject": 1000,
+      "files": 1002,
+      "inputBytes": 77912,
+      "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 455,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 366.06133900000003,
+          "engineCpuMs": 244.11,
+          "enginePeakRssKiB": 88540
+        },
+        {
+          "round": 1,
+          "wallMs": 447,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 364.243493,
+          "engineCpuMs": 229.991,
+          "enginePeakRssKiB": 88316
+        },
+        {
+          "round": 2,
+          "wallMs": 442,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 360.72513299999997,
+          "engineCpuMs": 235.558,
+          "enginePeakRssKiB": 89320
+        },
+        {
+          "round": 3,
+          "wallMs": 467,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 382.755755,
+          "engineCpuMs": 247.836,
+          "enginePeakRssKiB": 88424
+        },
+        {
+          "round": 4,
+          "wallMs": 566,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 484.69684399999994,
+          "engineCpuMs": 316.862,
+          "enginePeakRssKiB": 88308
+        },
+        {
+          "round": 5,
+          "wallMs": 613,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 529.476301,
+          "engineCpuMs": 350.478,
+          "enginePeakRssKiB": 89020
+        },
+        {
+          "round": 6,
+          "wallMs": 605,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 522.651833,
+          "engineCpuMs": 344.872,
+          "enginePeakRssKiB": 89216
+        },
+        {
+          "round": 7,
+          "wallMs": 631,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 547.5859770000001,
+          "engineCpuMs": 356.616,
+          "enginePeakRssKiB": 88936
+        },
+        {
+          "round": 8,
+          "wallMs": 618,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 534.817966,
+          "engineCpuMs": 350.912,
+          "enginePeakRssKiB": 88932
+        },
+        {
+          "round": 9,
+          "wallMs": 625,
+          "fingerprint": "fe1343bd076dcdcde97f6878283af9021815a56a73111eb5e17e697e73bc7ac8",
+          "checks": 1,
+          "executedTests": 1,
+          "engineMs": 543.075568,
+          "engineCpuMs": 348.029,
+          "enginePeakRssKiB": 88396
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 442,
+          "median": 585.5,
+          "p95": 631,
+          "max": 631
+        },
+        "engineMs": {
+          "min": 360.72513299999997,
+          "median": 503.6743385,
+          "p95": 547.5859770000001,
+          "max": 547.5859770000001
+        },
+        "engineCpuMs": {
+          "min": 229.991,
+          "median": 330.867,
+          "p95": 356.616,
+          "max": 356.616
+        },
+        "enginePeakRssKiB": {
+          "min": 88308,
+          "median": 88736,
+          "p95": 89320,
+          "max": 89320
+        }
+      }
+    },
+    {
+      "case": "workspace",
+      "mode": "plan",
+      "projects": 20,
+      "modulesPerProject": 50,
+      "files": 1040,
+      "inputBytes": 79200,
+      "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 200,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 115.74610799999999,
+          "engineCpuMs": 120.071,
+          "enginePeakRssKiB": 88456
+        },
+        {
+          "round": 1,
+          "wallMs": 218,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 131.812228,
+          "engineCpuMs": 134.039,
+          "enginePeakRssKiB": 88976
+        },
+        {
+          "round": 2,
+          "wallMs": 198,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 114.567641,
+          "engineCpuMs": 117.061,
+          "enginePeakRssKiB": 88256
+        },
+        {
+          "round": 3,
+          "wallMs": 203,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 122.02094599999998,
+          "engineCpuMs": 120.665,
+          "enginePeakRssKiB": 88908
+        },
+        {
+          "round": 4,
+          "wallMs": 215,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 124.20133799999999,
+          "engineCpuMs": 129.65,
+          "enginePeakRssKiB": 88360
+        },
+        {
+          "round": 5,
+          "wallMs": 292,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 209.06263299999998,
+          "engineCpuMs": 185.774,
+          "enginePeakRssKiB": 88272
+        },
+        {
+          "round": 6,
+          "wallMs": 297,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 212.79386899999997,
+          "engineCpuMs": 191.206,
+          "enginePeakRssKiB": 88144
+        },
+        {
+          "round": 7,
+          "wallMs": 305,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 222.72869299999996,
+          "engineCpuMs": 196.75,
+          "enginePeakRssKiB": 88136
+        },
+        {
+          "round": 8,
+          "wallMs": 307,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 222.59756700000003,
+          "engineCpuMs": 193.79,
+          "enginePeakRssKiB": 88252
+        },
+        {
+          "round": 9,
+          "wallMs": 310,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 0,
+          "engineMs": 230.243665,
+          "engineCpuMs": 197.438,
+          "enginePeakRssKiB": 87340
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 198,
+          "median": 255,
+          "p95": 310,
+          "max": 310
+        },
+        "engineMs": {
+          "min": 114.567641,
+          "median": 170.4374305,
+          "p95": 230.243665,
+          "max": 230.243665
+        },
+        "engineCpuMs": {
+          "min": 117.061,
+          "median": 159.9065,
+          "p95": 197.438,
+          "max": 197.438
+        },
+        "enginePeakRssKiB": {
+          "min": 87340,
+          "median": 88264,
+          "p95": 88976,
+          "max": 88976
+        }
+      }
+    },
+    {
+      "case": "workspace",
+      "mode": "validate",
+      "projects": 20,
+      "modulesPerProject": 50,
+      "files": 1040,
+      "inputBytes": 79200,
+      "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+      "samples": [
+        {
+          "round": 0,
+          "wallMs": 1468,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1385.4986900000001,
+          "engineCpuMs": 287.927,
+          "enginePeakRssKiB": 89624
+        },
+        {
+          "round": 1,
+          "wallMs": 1466,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1375.831201,
+          "engineCpuMs": 277.181,
+          "enginePeakRssKiB": 89224
+        },
+        {
+          "round": 2,
+          "wallMs": 1472,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1388.1851689999999,
+          "engineCpuMs": 286.293,
+          "enginePeakRssKiB": 89588
+        },
+        {
+          "round": 3,
+          "wallMs": 1556,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1472.570836,
+          "engineCpuMs": 332.589,
+          "enginePeakRssKiB": 88892
+        },
+        {
+          "round": 4,
+          "wallMs": 1543,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1448.3069899999998,
+          "engineCpuMs": 319.686,
+          "enginePeakRssKiB": 89012
+        },
+        {
+          "round": 5,
+          "wallMs": 1622,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1538.168698,
+          "engineCpuMs": 389.222,
+          "enginePeakRssKiB": 89480
+        },
+        {
+          "round": 6,
+          "wallMs": 1651,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1567.56954,
+          "engineCpuMs": 380.755,
+          "enginePeakRssKiB": 89144
+        },
+        {
+          "round": 7,
+          "wallMs": 1641,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1555.797411,
+          "engineCpuMs": 395.463,
+          "enginePeakRssKiB": 89220
+        },
+        {
+          "round": 8,
+          "wallMs": 1640,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1558.4297219999999,
+          "engineCpuMs": 394.18,
+          "enginePeakRssKiB": 89420
+        },
+        {
+          "round": 9,
+          "wallMs": 1641,
+          "fingerprint": "7f06b933059c32bf0bd7cdf5bcd408c665bab5d13adbf2a8b4e5a69fb2e57e12",
+          "checks": 20,
+          "executedTests": 20,
+          "engineMs": 1559.788525,
+          "engineCpuMs": 394.605,
+          "enginePeakRssKiB": 89184
+        }
+      ],
+      "summary": {
+        "wallMs": {
+          "min": 1466,
+          "median": 1589,
+          "p95": 1651,
+          "max": 1651
+        },
+        "engineMs": {
+          "min": 1375.831201,
+          "median": 1505.3697670000001,
+          "p95": 1567.56954,
+          "max": 1567.56954
+        },
+        "engineCpuMs": {
+          "min": 277.181,
+          "median": 356.672,
+          "p95": 395.463,
+          "max": 395.463
+        },
+        "enginePeakRssKiB": {
+          "min": 88892,
+          "median": 89222,
+          "p95": 89624,
+          "max": 89624
+        }
+      }
+    }
+  ]
+}

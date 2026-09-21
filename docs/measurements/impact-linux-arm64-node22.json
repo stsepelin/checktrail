@@ -1,0 +1,6690 @@
+{
+  "schemaVersion": 1,
+  "format": "synthetic-impact-measurement",
+  "engineVersion": "0.1.0-dev.0",
+  "startedAt": "2026-09-18T21:55:47.265Z",
+  "completedAt": "2026-09-18T21:56:10.583Z",
+  "environment": {
+    "platform": "linux",
+    "arch": "arm64",
+    "node": "22.23.2",
+    "git": "git version 2.52.0",
+    "containerImages": {
+      "node": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "git": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+    },
+    "network": "none"
+  },
+  "corpus": {
+    "id": "synthetic-impact-v1",
+    "provenance": "Original post-implementation development cases; not independent held-out evidence. Labels and scopes fixed before measurement.",
+    "cases": 10,
+    "repetitions": 3
+  },
+  "identities": {
+    "corpusSha256": "ac95e78fb9f04657d4d1ac2f4b91f306d29184bc50c5132f8ef03775bd2dfca2",
+    "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c",
+    "runtimeArtifactsSha256": "7d49e394fcba1c537666d26e98f591dc10fb212873abe937df93e5b16f4fb9e6",
+    "harnessSha256": "8c224540f6f545834859193e2b938984792c0d15c32aeed69aa022491cdc9b63"
+  },
+  "baselines": [
+    {
+      "id": "producer-defect",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 274.181387,
+      "engineCpuMs": 37.744,
+      "engineMaxRssKiB": 84328,
+      "wallMs": 374.84535600000004
+    },
+    {
+      "id": "producer-valid-edit",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 267.873717,
+      "engineCpuMs": 34.8,
+      "engineMaxRssKiB": 85016,
+      "wallMs": 358.78610300000037
+    },
+    {
+      "id": "leaf-defect",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 268.77887200000004,
+      "engineCpuMs": 37.38,
+      "engineMaxRssKiB": 85748,
+      "wallMs": 358.88872600000013
+    },
+    {
+      "id": "independent-defect",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 265.295791,
+      "engineCpuMs": 35.511,
+      "engineMaxRssKiB": 84512,
+      "wallMs": 356.77408600000035
+    },
+    {
+      "id": "two-owner-defect",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 260.994888,
+      "engineCpuMs": 34.936,
+      "engineMaxRssKiB": 84524,
+      "wallMs": 351.1480329999995
+    },
+    {
+      "id": "incomplete-graph-fallback",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "802f8da894e4d8678b231c0fa7a21cc78c2b5ce3543ec0c8e23de3749cbae8ee",
+      "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+      "engineMs": 261.67008799999996,
+      "engineCpuMs": 34.771,
+      "engineMaxRssKiB": 84948,
+      "wallMs": 350.0910469999999
+    },
+    {
+      "id": "root-settings-fallback",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 262.66445,
+      "engineCpuMs": 34.436,
+      "engineMaxRssKiB": 84236,
+      "wallMs": 353.7422920000008
+    },
+    {
+      "id": "unowned-source-fallback",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 263.34998299999995,
+      "engineCpuMs": 34.377,
+      "engineMaxRssKiB": 84940,
+      "wallMs": 351.5599860000002
+    },
+    {
+      "id": "unchanged-fallback",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+      "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+      "engineMs": 269.60661100000004,
+      "engineCpuMs": 35.878,
+      "engineMaxRssKiB": 85004,
+      "wallMs": 368.412438000003
+    },
+    {
+      "id": "misdeclared-graph",
+      "outcome": "passed",
+      "checks": [
+        {
+          "project": "core",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "other",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "service",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "utility",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        },
+        {
+          "project": "web",
+          "id": "javascript.node-test",
+          "status": "passed",
+          "tests": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0,
+            "skipped": 0
+          },
+          "assertions": [],
+          "tools": [
+            {
+              "name": "node",
+              "version": "22.23.2"
+            }
+          ]
+        }
+      ],
+      "selection": null,
+      "sourceFingerprint": "af9b6af249c28847910ec0fc4c028df12db3c2e97d3202a3fde7d29935a97d0f",
+      "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+      "engineMs": 269.751318,
+      "engineCpuMs": 38.183,
+      "engineMaxRssKiB": 84604,
+      "wallMs": 358.68627000000197
+    }
+  ],
+  "observations": [
+    {
+      "id": "producer-defect",
+      "repetition": 0,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 275.249915,
+        "engineCpuMs": 36.083,
+        "engineMaxRssKiB": 84440,
+        "wallMs": 368.085443
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 184.98506300000003,
+        "engineCpuMs": 42.079,
+        "engineMaxRssKiB": 85180,
+        "wallMs": 276.4277340000001
+      }
+    },
+    {
+      "id": "producer-defect",
+      "repetition": 1,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 184.647276,
+        "engineCpuMs": 42.687,
+        "engineMaxRssKiB": 85168,
+        "wallMs": 275.4374129999999
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 267.94225800000004,
+        "engineCpuMs": 38.451,
+        "engineMaxRssKiB": 84628,
+        "wallMs": 358.27748399999996
+      }
+    },
+    {
+      "id": "producer-defect",
+      "repetition": 2,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 269.319407,
+        "engineCpuMs": 35.22,
+        "engineMaxRssKiB": 85052,
+        "wallMs": 360.18733399999974
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "0c2a13cb267d847e80c196342a41109dd66f562f9259f89ce799be811c7fd246",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 179.97291900000005,
+        "engineCpuMs": 42.602,
+        "engineMaxRssKiB": 85440,
+        "wallMs": 273.2438159999997
+      }
+    },
+    {
+      "id": "producer-valid-edit",
+      "repetition": 0,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 182.615802,
+        "engineCpuMs": 38.114,
+        "engineMaxRssKiB": 85056,
+        "wallMs": 272.93861100000004
+      },
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 302.293279,
+        "engineCpuMs": 35.306,
+        "engineMaxRssKiB": 84816,
+        "wallMs": 391.26318900000024
+      }
+    },
+    {
+      "id": "producer-valid-edit",
+      "repetition": 1,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 272.60340700000006,
+        "engineCpuMs": 37.605,
+        "engineMaxRssKiB": 85220,
+        "wallMs": 365.7544720000001
+      },
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 177.95115199999998,
+        "engineCpuMs": 40.571,
+        "engineMaxRssKiB": 84456,
+        "wallMs": 268.0943390000002
+      }
+    },
+    {
+      "id": "producer-valid-edit",
+      "repetition": 2,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 177.897695,
+        "engineCpuMs": 39.831,
+        "engineMaxRssKiB": 85008,
+        "wallMs": 267.6818029999995
+      },
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "41f6922ce6561999b6e88899372cbd65b9cbe3b7d39c4905e828863c3539aced",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 261.889876,
+        "engineCpuMs": 36.229,
+        "engineMaxRssKiB": 84232,
+        "wallMs": 352.7491369999998
+      }
+    },
+    {
+      "id": "leaf-defect",
+      "repetition": 0,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 263.008779,
+        "engineCpuMs": 35.934,
+        "engineMaxRssKiB": 85068,
+        "wallMs": 355.88934699999936
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["web"],
+          "changedFiles": ["web/value.test.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 87.599677,
+        "engineCpuMs": 40.482,
+        "engineMaxRssKiB": 84852,
+        "wallMs": 178.0765680000004
+      }
+    },
+    {
+      "id": "leaf-defect",
+      "repetition": 1,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["web"],
+          "changedFiles": ["web/value.test.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 85.97907200000002,
+        "engineCpuMs": 39.349,
+        "engineMaxRssKiB": 84692,
+        "wallMs": 178.6413109999994
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 268.418627,
+        "engineCpuMs": 36.627,
+        "engineMaxRssKiB": 84384,
+        "wallMs": 359.68204999999944
+      }
+    },
+    {
+      "id": "leaf-defect",
+      "repetition": 2,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 267.361766,
+        "engineCpuMs": 37.749,
+        "engineMaxRssKiB": 85076,
+        "wallMs": 357.8631140000007
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["web"],
+          "changedFiles": ["web/value.test.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ca3a027f9463e8aba9d6c65cc49e55f6c8cd0d091f3cbb29e1d3c81b3f34e6ac",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 93.33043699999999,
+        "engineCpuMs": 44.242,
+        "engineMaxRssKiB": 84980,
+        "wallMs": 182.36268000000018
+      }
+    },
+    {
+      "id": "independent-defect",
+      "repetition": 0,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["utility"],
+          "changedFiles": ["utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 85.426455,
+        "engineCpuMs": 39.326,
+        "engineMaxRssKiB": 84544,
+        "wallMs": 176.16455099999985
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 263.212318,
+        "engineCpuMs": 34.864,
+        "engineMaxRssKiB": 85108,
+        "wallMs": 351.59648500000003
+      }
+    },
+    {
+      "id": "independent-defect",
+      "repetition": 1,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 267.89334199999996,
+        "engineCpuMs": 37.504,
+        "engineMaxRssKiB": 84780,
+        "wallMs": 360.0300870000001
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["utility"],
+          "changedFiles": ["utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 87.956297,
+        "engineCpuMs": 42.887,
+        "engineMaxRssKiB": 84432,
+        "wallMs": 178.28943999999956
+      }
+    },
+    {
+      "id": "independent-defect",
+      "repetition": 2,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["utility"],
+          "changedFiles": ["utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 91.38983700000001,
+        "engineCpuMs": 42.665,
+        "engineMaxRssKiB": 85180,
+        "wallMs": 184.1096580000003
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "15462f7cdefdb5cabbceed601af2bdd4014064a0d3fd57698d7e7c387605e961",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 258.587335,
+        "engineCpuMs": 33.938,
+        "engineMaxRssKiB": 84708,
+        "wallMs": 349.59867699999995
+      }
+    },
+    {
+      "id": "two-owner-defect",
+      "repetition": 0,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 260.329772,
+        "engineCpuMs": 37.003,
+        "engineMaxRssKiB": 84488,
+        "wallMs": 350.12629600000037
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "utility", "web"],
+          "changedFiles": ["core/value.js", "utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 235.638919,
+        "engineCpuMs": 41.147,
+        "engineMaxRssKiB": 84920,
+        "wallMs": 327.26787800000056
+      }
+    },
+    {
+      "id": "two-owner-defect",
+      "repetition": 1,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "utility", "web"],
+          "changedFiles": ["core/value.js", "utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 232.89657900000003,
+        "engineCpuMs": 43.223,
+        "engineMaxRssKiB": 84948,
+        "wallMs": 321.4548680000007
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 265.775577,
+        "engineCpuMs": 35.078,
+        "engineMaxRssKiB": 85052,
+        "wallMs": 357.684408000001
+      }
+    },
+    {
+      "id": "two-owner-defect",
+      "repetition": 2,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 264.473844,
+        "engineCpuMs": 37.587,
+        "engineMaxRssKiB": 84600,
+        "wallMs": 358.12873599999875
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["utility contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core", "service", "utility", "web"],
+          "changedFiles": ["core/value.js", "utility/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "c14f85fe5a46b06ad967c1c4751d79d431752b9eb07858529810d43c678468bf",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 232.303378,
+        "engineCpuMs": 47.026,
+        "engineMaxRssKiB": 84800,
+        "wallMs": 323.5392179999999
+      }
+    },
+    {
+      "id": "incomplete-graph-fallback",
+      "repetition": 0,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Workspace dependency completeness is not declared.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 276.616981,
+        "engineCpuMs": 45.661,
+        "engineMaxRssKiB": 84912,
+        "wallMs": 367.07095500000105
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 263.753144,
+        "engineCpuMs": 35.526,
+        "engineMaxRssKiB": 84972,
+        "wallMs": 357.33491200000026
+      }
+    },
+    {
+      "id": "incomplete-graph-fallback",
+      "repetition": 1,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 266.97827,
+        "engineCpuMs": 39.03,
+        "engineMaxRssKiB": 84620,
+        "wallMs": 356.96991699999853
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Workspace dependency completeness is not declared.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 281.043133,
+        "engineCpuMs": 43.197,
+        "engineMaxRssKiB": 85088,
+        "wallMs": 371.66502200000104
+      }
+    },
+    {
+      "id": "incomplete-graph-fallback",
+      "repetition": 2,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Workspace dependency completeness is not declared.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 285.513118,
+        "engineCpuMs": 44.786,
+        "engineMaxRssKiB": 85092,
+        "wallMs": 375.0216040000014
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a71ee60b57b2cd1cad46f3f0a618cdb8a13759e194d377e67bb6798feebf1791",
+        "policyFingerprint": "11eea92c03e221d314cf9b56de3ab57424d0f01c0a098c325a99b9604f3c74ab",
+        "engineMs": 267.069811,
+        "engineCpuMs": 34.541,
+        "engineMaxRssKiB": 84708,
+        "wallMs": 357.40162000000055
+      }
+    },
+    {
+      "id": "root-settings-fallback",
+      "repetition": 0,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 266.710107,
+        "engineCpuMs": 35.882,
+        "engineMaxRssKiB": 84692,
+        "wallMs": 361.7851890000002
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["settings.json"],
+          "reason": "Root or hidden configuration changed; impact is global.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 277.624926,
+        "engineCpuMs": 42.767,
+        "engineMaxRssKiB": 85172,
+        "wallMs": 370.386622
+      }
+    },
+    {
+      "id": "root-settings-fallback",
+      "repetition": 1,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["settings.json"],
+          "reason": "Root or hidden configuration changed; impact is global.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 278.477207,
+        "engineCpuMs": 44.868,
+        "engineMaxRssKiB": 85156,
+        "wallMs": 368.3733969999994
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 258.84078999999997,
+        "engineCpuMs": 35.171,
+        "engineMaxRssKiB": 84584,
+        "wallMs": 349.78921699999955
+      }
+    },
+    {
+      "id": "root-settings-fallback",
+      "repetition": 2,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 260.114274,
+        "engineCpuMs": 34.928,
+        "engineMaxRssKiB": 85304,
+        "wallMs": 351.85627399999976
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["settings.json"],
+          "reason": "Root or hidden configuration changed; impact is global.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "5ee8c16d7a35ce167b711ad0bc649082d5c013ef281e392f2e4150b0578e2a30",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 278.305793,
+        "engineCpuMs": 43.341,
+        "engineMaxRssKiB": 85300,
+        "wallMs": 370.5909100000008
+      }
+    },
+    {
+      "id": "unowned-source-fallback",
+      "repetition": 0,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["shared/value.mjs"],
+          "reason": "A changed path has no configured project owner.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 280.599388,
+        "engineCpuMs": 45.197,
+        "engineMaxRssKiB": 84908,
+        "wallMs": 373.0644620000021
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 263.199152,
+        "engineCpuMs": 36.263,
+        "engineMaxRssKiB": 84936,
+        "wallMs": 352.88580300000103
+      }
+    },
+    {
+      "id": "unowned-source-fallback",
+      "repetition": 1,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 269.807734,
+        "engineCpuMs": 37.294,
+        "engineMaxRssKiB": 84744,
+        "wallMs": 359.68742399999974
+      },
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["shared/value.mjs"],
+          "reason": "A changed path has no configured project owner.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 276.404317,
+        "engineCpuMs": 42.429,
+        "engineMaxRssKiB": 85136,
+        "wallMs": 369.6314229999989
+      }
+    },
+    {
+      "id": "unowned-source-fallback",
+      "repetition": 2,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": ["shared/value.mjs"],
+          "reason": "A changed path has no configured project owner.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 282.13428600000003,
+        "engineCpuMs": 46.859,
+        "engineMaxRssKiB": 83796,
+        "wallMs": 374.48261099999945
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["other contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "ef196b9c89fe26c5bd59a4c1133f613139b3c8a7f569b7481ff536ec6159c8ec",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 276.621731,
+        "engineCpuMs": 34.645,
+        "engineMaxRssKiB": 85140,
+        "wallMs": 367.21620299999995
+      }
+    },
+    {
+      "id": "unchanged-fallback",
+      "repetition": 0,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 269.20845099999997,
+        "engineCpuMs": 34.586,
+        "engineMaxRssKiB": 84656,
+        "wallMs": 363.0371730000006
+      },
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": [],
+          "reason": "No changed paths were found; retaining full validation.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 272.376993,
+        "engineCpuMs": 42.433,
+        "engineMaxRssKiB": 84828,
+        "wallMs": 363.16137999999773
+      }
+    },
+    {
+      "id": "unchanged-fallback",
+      "repetition": 1,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": [],
+          "reason": "No changed paths were found; retaining full validation.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 278.69212200000004,
+        "engineCpuMs": 43.446,
+        "engineMaxRssKiB": 85168,
+        "wallMs": 368.6239779999996
+      },
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 291.970118,
+        "engineCpuMs": 39.139,
+        "engineMaxRssKiB": 84820,
+        "wallMs": 382.49396799999886
+      }
+    },
+    {
+      "id": "unchanged-fallback",
+      "repetition": 2,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 264.808714,
+        "engineCpuMs": 36.645,
+        "engineMaxRssKiB": 84764,
+        "wallMs": 360.6632869999994
+      },
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "full",
+          "projects": ["core", "other", "service", "utility", "web"],
+          "changedFiles": [],
+          "reason": "No changed paths were found; retaining full validation.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "24337f672b4fd91b60408a3549baeb5bbcb8070bea9db518d804615b194f9f87",
+        "policyFingerprint": "d2f8db39f40d627b7931eba2e574aec119027657d35a801ee839fe1b614c75eb",
+        "engineMs": 281.575501,
+        "engineCpuMs": 45.351,
+        "engineMaxRssKiB": 84588,
+        "wallMs": 376.13650600000256
+      }
+    },
+    {
+      "id": "misdeclared-graph",
+      "repetition": 0,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 86.144154,
+        "engineCpuMs": 38.557,
+        "engineMaxRssKiB": 84784,
+        "wallMs": 177.044081
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 265.450206,
+        "engineCpuMs": 34.081,
+        "engineMaxRssKiB": 84400,
+        "wallMs": 356.09467799999766
+      }
+    },
+    {
+      "id": "misdeclared-graph",
+      "repetition": 1,
+      "order": ["full", "selected"],
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 267.703553,
+        "engineCpuMs": 35.197,
+        "engineMaxRssKiB": 85096,
+        "wallMs": 357.827613999998
+      },
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 87.883298,
+        "engineCpuMs": 41.004,
+        "engineMaxRssKiB": 84788,
+        "wallMs": 176.8092089999991
+      }
+    },
+    {
+      "id": "misdeclared-graph",
+      "repetition": 2,
+      "order": ["selected", "full"],
+      "selected": {
+        "outcome": "passed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": {
+          "mode": "affected",
+          "projects": ["core"],
+          "changedFiles": ["core/value.js"],
+          "reason": "Changed projects and their declared transitive consumers were selected.",
+          "gitVersion": "git version 2.52.0"
+        },
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 88.49995700000001,
+        "engineCpuMs": 40.686,
+        "engineMaxRssKiB": 84572,
+        "wallMs": 179.1370539999989
+      },
+      "full": {
+        "outcome": "failed",
+        "checks": [
+          {
+            "project": "core",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "other",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "service",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["service contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "utility",
+            "id": "javascript.node-test",
+            "status": "passed",
+            "tests": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0
+            },
+            "assertions": [],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          },
+          {
+            "project": "web",
+            "id": "javascript.node-test",
+            "status": "failed",
+            "tests": {
+              "total": 1,
+              "passed": 0,
+              "failed": 1,
+              "skipped": 0
+            },
+            "assertions": ["web contract"],
+            "tools": [
+              {
+                "name": "node",
+                "version": "22.23.2"
+              }
+            ]
+          }
+        ],
+        "selection": null,
+        "sourceFingerprint": "a6d5b45fb8a4307ecae069a40c354fc775451224fffad1b9323a7c265aa43452",
+        "policyFingerprint": "d46306d057bfcb6e926298de2100fc6beb5a4e46a08bd3f99b1f01ebf06238f9",
+        "engineMs": 260.931431,
+        "engineCpuMs": 34.645,
+        "engineMaxRssKiB": 85160,
+        "wallMs": 352.56459800000084
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "graph": "declared-complete",
+      "observations": 24,
+      "fullChecks": 120,
+      "selectedChecks": 81,
+      "fullFailures": 27,
+      "retainedFailures": 27,
+      "missedFailures": 0,
+      "changedFailureResults": 0,
+      "unexpectedFailures": 0,
+      "inconclusiveChecks": 0,
+      "selectedPassesWithFullFailures": 0,
+      "fullWallMs": 8646.330796999999,
+      "selectedWallMs": 7018.181177,
+      "fallbacks": 9,
+      "cases": 8,
+      "failureRetention": {
+        "numerator": 27,
+        "denominator": 27,
+        "fraction": 1
+      },
+      "omittedChecks": {
+        "numerator": 39,
+        "denominator": 120,
+        "fraction": 0.325
+      },
+      "totalWallRatio": 0.8116947340755324
+    },
+    {
+      "graph": "declared-incomplete",
+      "observations": 3,
+      "fullChecks": 15,
+      "selectedChecks": 15,
+      "fullFailures": 6,
+      "retainedFailures": 6,
+      "missedFailures": 0,
+      "changedFailureResults": 0,
+      "unexpectedFailures": 0,
+      "inconclusiveChecks": 0,
+      "selectedPassesWithFullFailures": 0,
+      "fullWallMs": 1071.7064489999993,
+      "selectedWallMs": 1113.7575810000035,
+      "fallbacks": 3,
+      "cases": 1,
+      "failureRetention": {
+        "numerator": 6,
+        "denominator": 6,
+        "fraction": 1
+      },
+      "omittedChecks": {
+        "numerator": 0,
+        "denominator": 15,
+        "fraction": 0
+      },
+      "totalWallRatio": 1.0392375468480588
+    },
+    {
+      "graph": "misdeclared-complete",
+      "observations": 3,
+      "fullChecks": 15,
+      "selectedChecks": 3,
+      "fullFailures": 6,
+      "retainedFailures": 0,
+      "missedFailures": 6,
+      "changedFailureResults": 0,
+      "unexpectedFailures": 0,
+      "inconclusiveChecks": 0,
+      "selectedPassesWithFullFailures": 3,
+      "fullWallMs": 1066.4868899999965,
+      "selectedWallMs": 532.990343999998,
+      "fallbacks": 0,
+      "cases": 1,
+      "failureRetention": {
+        "numerator": 0,
+        "denominator": 6,
+        "fraction": 0
+      },
+      "omittedChecks": {
+        "numerator": 12,
+        "denominator": 15,
+        "fraction": 0.8
+      },
+      "totalWallRatio": 0.49976267781407024
+    }
+  ],
+  "limitations": [
+    "Post-implementation synthetic development cases, not held-out evaluation",
+    "Maintainer-declared dependency graph; no native import inference",
+    "Repeated observations are not independent defect samples",
+    "No general performance or review-quality claim",
+    "Engine CPU/RSS excludes native child resource use",
+    "No model calls or token-cost comparison"
+  ]
+}

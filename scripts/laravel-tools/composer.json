@@ -1,0 +1,14 @@
+{
+  "name": "repo-verifier/synthetic-laravel-tools",
+  "description": "Pinned upstream framework for synthetic native collector fixtures",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "laravel/framework": "13.32.0"
+  },
+  "config": {
+    "allow-plugins": false,
+    "sort-packages": true
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "module": "routes.mjs",
+  "attribute": "configure",
+  "assembly": "example.catalog",
+  "environment": "test",
+  "strict": false,
+  "sensitive": false,
+  "probes": [
+    {
+      "path": "/catalog",
+      "matched": [
+        { "path": "/catalog", "name": "catalog" },
+        { "path": "/catalog", "name": "catalog-index" }
+      ]
+    },
+    {
+      "path": "/catalog/7",
+      "matched": [
+        { "path": "/catalog", "name": "catalog" },
+        { "path": "/catalog/:item", "name": "catalog-item" }
+      ]
+    },
+    {
+      "path": "/catalog/entry/7",
+      "matched": [
+        { "path": "/catalog", "name": "catalog" },
+        { "path": "/catalog/entry/:item", "name": "catalog-item" }
+      ]
+    },
+    { "path": "/about", "matched": [{ "path": "/about", "name": "about" }] }
+  ]
+}

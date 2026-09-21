@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "php.phpunit",
+  "version": "1.0.0",
+  "description": "PHP syntax, PHPStan, PHPUnit tests and Pint formatting",
+  "requiredChecks": ["php.syntax", "php.phpstan", "php.phpunit", "php.pint"]
+}

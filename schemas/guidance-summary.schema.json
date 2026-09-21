@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "provenance": { "type": "string", "const": "builtin-guidance-selection" },
+    "catalogueDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "automatedCoverage": { "type": "boolean", "const": false },
+    "selectionBasis": { "type": "string", "const": "exact-check-or-topic" },
+    "items": {
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9][a-z0-9.-]*$"
+          },
+          "version": { "type": "string", "const": "1.0.0" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "questions": {
+            "minItems": 1,
+            "maxItems": 8,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 600 }
+          },
+          "references": {
+            "minItems": 1,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+                "url": {
+                  "type": "string",
+                  "maxLength": 512,
+                  "pattern": "^https:\\/\\/",
+                  "format": "uri"
+                }
+              },
+              "required": ["title", "url"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["id", "version", "title", "questions", "references"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "channel",
+    "provenance",
+    "catalogueDigest",
+    "automatedCoverage",
+    "selectionBasis",
+    "items"
+  ],
+  "additionalProperties": false
+}

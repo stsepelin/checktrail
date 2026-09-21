@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "runtime-inventory" },
+    "producer": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 4096 }
+      },
+      "required": ["name", "version"],
+      "additionalProperties": false
+    },
+    "assembly": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "environment": { "type": "string", "minLength": 1, "maxLength": 4096 }
+      },
+      "required": ["name", "environment"],
+      "additionalProperties": false
+    },
+    "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "collections": {
+      "minItems": 1,
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "routes",
+              "listeners",
+              "middleware",
+              "schedules",
+              "bindings"
+            ]
+          },
+          "complete": { "type": "boolean" },
+          "ordered": { "type": "boolean" },
+          "entries": {
+            "maxItems": 20000,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": { "type": "string", "minLength": 1, "maxLength": 4096 },
+                "attributes": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      { "type": "string", "maxLength": 4096 },
+                      { "type": "number" },
+                      { "type": "boolean" },
+                      { "type": "null" },
+                      {
+                        "maxItems": 1024,
+                        "type": "array",
+                        "items": { "type": "string", "maxLength": 4096 }
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": ["key", "attributes"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["kind", "complete", "ordered", "entries"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "producer",
+    "assembly",
+    "sourceFingerprint",
+    "capturedAt",
+    "collections"
+  ],
+  "additionalProperties": false
+}

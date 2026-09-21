@@ -1,0 +1,1236 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-18T20:44:25.873Z",
+  "finishedAt": "2026-09-18T20:44:37.871Z",
+  "engineVersion": "0.1.0-dev.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "nodeVersion": "26.8.1",
+  "typescriptVersion": "6.0.3",
+  "actionlintVersion": "1.7.12\ninstalled by downloading from release page\nbuilt with go1.26.1 compiler for darwin/arm64",
+  "corpus": {
+    "id": "synthetic-evaluation-v1",
+    "provenance": "Original post-implementation development corpus; not an independently held-out sample.",
+    "cases": 30
+  },
+  "identities": {
+    "runtimeArtifactsSha256": "85b2a7723813ee65429662cd9ec62a57218a59393f97ea432904c2ce078f936a",
+    "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c",
+    "compilerArtifactsSha256": "e0a6519f0d0a90125b7fd3bdbbcf700e167656beb3baf8aca8ed8bc037494537",
+    "corpusSha256": "5b78feaa11a42fdb83521fefb77f7c340f0def8b94171663bc18dd61cf0a2347",
+    "harnessSha256": "b7ab6c2639d603a888f6f66261495b5e49b204fb8994d82b66fc3815aaaab633"
+  },
+  "model": {
+    "used": false,
+    "tokens": 0,
+    "providerCost": 0
+  },
+  "priorWorkflow": {
+    "measured": false,
+    "reason": "No independently labeled prior-workflow results were supplied"
+  },
+  "confidenceIntervals": {
+    "estimated": false,
+    "reason": "Small paired convenience corpus; no population sampling or independence claim"
+  },
+  "summaries": [
+    {
+      "family": "actionlint",
+      "cases": 10,
+      "systems": {
+        "engine": {
+          "matrix": {
+            "defect": {
+              "passed": 0,
+              "failed": 4,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 1
+            },
+            "unsupported-profile": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 1
+            }
+          },
+          "detection": {
+            "numerator": 4,
+            "denominator": 4,
+            "fraction": 1
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 0,
+          "passesOnUnsupportedProfile": 0,
+          "totalWallMs": 1968.0770000000011
+        },
+        "native": {
+          "matrix": {
+            "defect": {
+              "passed": 0,
+              "failed": 4,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 1,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "unsupported-profile": {
+              "passed": 1,
+              "failed": 0,
+              "incomplete": 0
+            }
+          },
+          "detection": {
+            "numerator": 4,
+            "denominator": 4,
+            "fraction": 1
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 1,
+          "passesOnUnsupportedProfile": 1,
+          "totalWallMs": 30.284707999999227
+        }
+      }
+    },
+    {
+      "family": "node",
+      "cases": 10,
+      "systems": {
+        "engine": {
+          "matrix": {
+            "defect": {
+              "passed": 0,
+              "failed": 4,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 2
+            },
+            "unsupported-profile": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 0
+            }
+          },
+          "detection": {
+            "numerator": 4,
+            "denominator": 4,
+            "fraction": 1
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 0,
+          "passesOnUnsupportedProfile": 0,
+          "totalWallMs": 1323.165625
+        },
+        "native": {
+          "matrix": {
+            "defect": {
+              "passed": 0,
+              "failed": 4,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 2,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "unsupported-profile": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 0
+            }
+          },
+          "detection": {
+            "numerator": 4,
+            "denominator": 4,
+            "fraction": 1
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 2,
+          "passesOnUnsupportedProfile": 0,
+          "totalWallMs": 561.9820420000003
+        }
+      }
+    },
+    {
+      "family": "typescript",
+      "cases": 10,
+      "systems": {
+        "engine": {
+          "matrix": {
+            "defect": {
+              "passed": 0,
+              "failed": 5,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 1
+            },
+            "unsupported-profile": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 0
+            }
+          },
+          "detection": {
+            "numerator": 5,
+            "denominator": 5,
+            "fraction": 1
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 0,
+          "passesOnUnsupportedProfile": 0,
+          "totalWallMs": 4327.235874000002
+        },
+        "native": {
+          "matrix": {
+            "defect": {
+              "passed": 1,
+              "failed": 4,
+              "incomplete": 0
+            },
+            "valid": {
+              "passed": 4,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "insufficient-evidence": {
+              "passed": 1,
+              "failed": 0,
+              "incomplete": 0
+            },
+            "unsupported-profile": {
+              "passed": 0,
+              "failed": 0,
+              "incomplete": 0
+            }
+          },
+          "detection": {
+            "numerator": 4,
+            "denominator": 5,
+            "fraction": 0.8
+          },
+          "falsePositives": {
+            "numerator": 0,
+            "denominator": 4,
+            "fraction": 0
+          },
+          "incompleteValidCases": 0,
+          "wrongFailureSignal": 0,
+          "passesOnInsufficientEvidence": 1,
+          "passesOnUnsupportedProfile": 0,
+          "totalWallMs": 3291.5369999999984
+        }
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "node-upper-bound-defect",
+      "fingerprint": "a19d3b7d51dc72e4f61dd3f6efefc23987d9d31f184afacfc003081822d3e223",
+      "files": 3,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "4e7c7e0843163f6d09dae344c1ed4ca82a6838ff61ddfaa1b09611a7baaca489",
+        "wallMs": 57.38529200000001
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["ERR_ASSERTION", "ERR_TEST_FAILURE"],
+        "tests": {
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0
+        },
+        "sourceFingerprint": "a19d3b7d51dc72e4f61dd3f6efefc23987d9d31f184afacfc003081822d3e223",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 66.884292,
+        "signalMatched": true,
+        "wallMs": 130.77437500000002
+      }
+    },
+    {
+      "id": "node-upper-bound-valid",
+      "fingerprint": "7d0506170c842c38a78a95c46f783e07dd4abcbc8030e6158ffae7534ad571e5",
+      "files": 3,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "tests": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "sourceFingerprint": "7d0506170c842c38a78a95c46f783e07dd4abcbc8030e6158ffae7534ad571e5",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 66.97537500000001,
+        "signalMatched": true,
+        "wallMs": 133.89099999999996
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "0b80ab482e414f2fe5b1b98cc3c8c6874c24f5f9305e1d285e0efbfb3cf213d5",
+        "wallMs": 56.35875000000004
+      }
+    },
+    {
+      "id": "node-numeric-order-defect",
+      "fingerprint": "ddebfe6b20ff7a72af52c91cba66619c42ca76e073989aab55fdd811a20d4539",
+      "files": 3,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "143be47d50364c4ec0665bdf22c66d577fe3c72139a71e2d8aff52070dfba56f",
+        "wallMs": 56.84541599999994
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["ERR_ASSERTION", "ERR_TEST_FAILURE"],
+        "tests": {
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0
+        },
+        "sourceFingerprint": "ddebfe6b20ff7a72af52c91cba66619c42ca76e073989aab55fdd811a20d4539",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 65.35779199999999,
+        "signalMatched": true,
+        "wallMs": 128.38983300000007
+      }
+    },
+    {
+      "id": "node-numeric-order-valid",
+      "fingerprint": "126d04dc0705f891b3613b4f2ad2b4f7e0e1f10c39d408a709c8a55dc3b00e1b",
+      "files": 3,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "tests": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "sourceFingerprint": "126d04dc0705f891b3613b4f2ad2b4f7e0e1f10c39d408a709c8a55dc3b00e1b",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 78.03216700000002,
+        "signalMatched": true,
+        "wallMs": 150.573167
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "d0449d12415104638f2b851c8d0a79b12c914cbe4da6ade4491c29b9f9eeca1d",
+        "wallMs": 60.168249999999944
+      }
+    },
+    {
+      "id": "node-trimmed-key-defect",
+      "fingerprint": "f2f2538cb5952a4143973f76326fd5dc08787c1cd9ec72ff82fb26512a5baec7",
+      "files": 3,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "bb19e73e27945ad5fb579d82669327978ce9ae68cd3bf15d46e876f97c945bef",
+        "wallMs": 59.169208000000026
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["ERR_ASSERTION", "ERR_TEST_FAILURE"],
+        "tests": {
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0
+        },
+        "sourceFingerprint": "f2f2538cb5952a4143973f76326fd5dc08787c1cd9ec72ff82fb26512a5baec7",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 69.43104100000001,
+        "signalMatched": true,
+        "wallMs": 134.87691699999993
+      }
+    },
+    {
+      "id": "node-trimmed-key-valid",
+      "fingerprint": "72e0cd21aa0ae2f2d6dcad142cb20988db0e6e767a93f7b469d20bee9d5ac6d4",
+      "files": 3,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "tests": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "sourceFingerprint": "72e0cd21aa0ae2f2d6dcad142cb20988db0e6e767a93f7b469d20bee9d5ac6d4",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 65.07900000000001,
+        "signalMatched": true,
+        "wallMs": 132.28429200000005
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "1c2a06e24c3c15c2618dbb3644ebde114df1f0b0477de913f1c18c1374b0c626",
+        "wallMs": 60.85200000000009
+      }
+    },
+    {
+      "id": "node-zero-default-defect",
+      "fingerprint": "97ac51676396d705a30ab2212921ac78ebad7f42823e5efa50cac6f2fb7eb161",
+      "files": 3,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "8f504e0ad577788c41ae6c2d72001445ad9356de59be127dd329c6056ca652df",
+        "wallMs": 54.36762500000009
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["ERR_ASSERTION", "ERR_TEST_FAILURE"],
+        "tests": {
+          "total": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0
+        },
+        "sourceFingerprint": "97ac51676396d705a30ab2212921ac78ebad7f42823e5efa50cac6f2fb7eb161",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 68.57787499999999,
+        "signalMatched": true,
+        "wallMs": 132.06912499999999
+      }
+    },
+    {
+      "id": "node-zero-default-valid",
+      "fingerprint": "af0f3568f70522001d09f30a748d588e94b822080698dd8c3894eb236bec25ed",
+      "files": 3,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "tests": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "sourceFingerprint": "af0f3568f70522001d09f30a748d588e94b822080698dd8c3894eb236bec25ed",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 65.973833,
+        "signalMatched": true,
+        "wallMs": 130.42941700000006
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "faafb8b7108425a98c6ee4e47142808bfc296425d9d179f71e91f697768cfe6e",
+        "wallMs": 53.82058400000005
+      }
+    },
+    {
+      "id": "node-empty-tests",
+      "fingerprint": "0895f16c8ef3ca5d331d10c043828d3a6f03d5506f22480f8b9f03089b89e968",
+      "files": 2,
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "64f89aeab15f94201d66d2b352e2592bb1e69f33d57d85875664816e7a7125f7",
+        "wallMs": 47.44950000000017
+      },
+      "engine": {
+        "outcome": "incomplete",
+        "status": "inconclusive",
+        "signals": [],
+        "sourceFingerprint": "0895f16c8ef3ca5d331d10c043828d3a6f03d5506f22480f8b9f03089b89e968",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 59.289083000000005,
+        "signalMatched": true,
+        "wallMs": 122.33279100000004
+      }
+    },
+    {
+      "id": "node-skipped-tests",
+      "fingerprint": "48cb34a1efd438cefe8d43bc3214aa3f809db05c400740d9eef8cc31f7d27848",
+      "files": 2,
+      "engine": {
+        "outcome": "incomplete",
+        "status": "inconclusive",
+        "signals": [],
+        "tests": {
+          "total": 1,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1
+        },
+        "sourceFingerprint": "48cb34a1efd438cefe8d43bc3214aa3f809db05c400740d9eef8cc31f7d27848",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          }
+        ],
+        "engineMs": 64.94787500000001,
+        "signalMatched": true,
+        "wallMs": 127.54470800000013
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "3b547943061359853db5a1eb1c40fbec7bb94c099422cae89d9c1568e2215331",
+        "wallMs": 55.565417000000025
+      }
+    },
+    {
+      "id": "typescript-generic-input-defect",
+      "fingerprint": "625aa6fdc856a227521870cbe85206f7f2e9b97d4d41741b88e9b6e86035a44f",
+      "files": 4,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 2,
+        "signalMatched": true,
+        "outputSha256": "dada78269f748674dc4d680278064d6d7f841fda9babe859c1d08172c2fc087d",
+        "wallMs": 372.96474999999987
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["TS2345"],
+        "sourceFingerprint": "625aa6fdc856a227521870cbe85206f7f2e9b97d4d41741b88e9b6e86035a44f",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 355.845042,
+        "signalMatched": true,
+        "wallMs": 421.476083
+      }
+    },
+    {
+      "id": "typescript-generic-input-valid",
+      "fingerprint": "78ba3deacfa136e2b76e3a42eecd1b3f70b22172a5f00f10507065faca8fa8a2",
+      "files": 4,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "78ba3deacfa136e2b76e3a42eecd1b3f70b22172a5f00f10507065faca8fa8a2",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 392.494084,
+        "signalMatched": true,
+        "wallMs": 468.60341700000026
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 341.2069999999999
+      }
+    },
+    {
+      "id": "typescript-nullable-input-defect",
+      "fingerprint": "54e9a11b6d345a9e59ab483de37cb8ac3f153b8ff087e8c23a05894f2f6493c4",
+      "files": 4,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 2,
+        "signalMatched": true,
+        "outputSha256": "44f72bf1eee063e577070930ac8e37299e309b2a8968489cf07e04cd681aa0de",
+        "wallMs": 358.2520840000002
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["TS18047"],
+        "sourceFingerprint": "54e9a11b6d345a9e59ab483de37cb8ac3f153b8ff087e8c23a05894f2f6493c4",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 342.22375,
+        "signalMatched": true,
+        "wallMs": 407.41949999999997
+      }
+    },
+    {
+      "id": "typescript-nullable-input-valid",
+      "fingerprint": "2de4424be12f92126e18015075c012600a9a3206f84d91a44538eeda969f0cb9",
+      "files": 4,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "2de4424be12f92126e18015075c012600a9a3206f84d91a44538eeda969f0cb9",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 379.066125,
+        "signalMatched": true,
+        "wallMs": 442.30412500000057
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 329.18412499999977
+      }
+    },
+    {
+      "id": "typescript-union-member-defect",
+      "fingerprint": "845cea99c6d0ad20176073445104a5db4b3c247ea9d0ebef122df67fa1cd6b53",
+      "files": 4,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 2,
+        "signalMatched": true,
+        "outputSha256": "1c4cf0b58ff69ff5c176e1232b75533e150476627e88e3873517c9bd015b6177",
+        "wallMs": 362.810708
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["TS2339"],
+        "sourceFingerprint": "845cea99c6d0ad20176073445104a5db4b3c247ea9d0ebef122df67fa1cd6b53",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 337.81495900000004,
+        "signalMatched": true,
+        "wallMs": 409.2091250000003
+      }
+    },
+    {
+      "id": "typescript-union-member-valid",
+      "fingerprint": "c36174d418ed63f8d51a34de4f2c324952d9d897e00547541a7d29b55132efde",
+      "files": 4,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "c36174d418ed63f8d51a34de4f2c324952d9d897e00547541a7d29b55132efde",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 378.928833,
+        "signalMatched": true,
+        "wallMs": 443.06104099999993
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 331.84358299999985
+      }
+    },
+    {
+      "id": "typescript-literal-key-defect",
+      "fingerprint": "4bb370c1416e8ea07852c8fd56bbd7afe44b7889056981d729594816a1a47fd2",
+      "files": 4,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 2,
+        "signalMatched": true,
+        "outputSha256": "caabd6468fb0bde1989cbeef3c7a118d25151388d6a593d2756781b64b22b76b",
+        "wallMs": 361.6452499999996
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["TS2820"],
+        "sourceFingerprint": "4bb370c1416e8ea07852c8fd56bbd7afe44b7889056981d729594816a1a47fd2",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 351.44233299999996,
+        "signalMatched": true,
+        "wallMs": 417.03508299999976
+      }
+    },
+    {
+      "id": "typescript-literal-key-valid",
+      "fingerprint": "17609c968573924d9f3275ada56b1b9103327636696742456400a473ed86c8ae",
+      "files": 4,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "17609c968573924d9f3275ada56b1b9103327636696742456400a473ed86c8ae",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 398.47887499999996,
+        "signalMatched": true,
+        "wallMs": 469.50475000000097
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 327.39229199999863
+      }
+    },
+    {
+      "id": "typescript-no-check",
+      "fingerprint": "731965885bbef0b3648406e551f7e9cdd4574af2120e8f416c9bdea34991d12e",
+      "files": 4,
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": false,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 151.45704099999966
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["TS2322"],
+        "sourceFingerprint": "731965885bbef0b3648406e551f7e9cdd4574af2120e8f416c9bdea34991d12e",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 339.502708,
+        "signalMatched": true,
+        "wallMs": 403.67662500000006
+      }
+    },
+    {
+      "id": "typescript-excluded-input",
+      "fingerprint": "0c6d142490342029cb2d0724b396e14a59ee6812f9551914b62b4b3578757537",
+      "files": 5,
+      "engine": {
+        "outcome": "incomplete",
+        "status": "inconclusive",
+        "signals": [],
+        "sourceFingerprint": "0c6d142490342029cb2d0724b396e14a59ee6812f9551914b62b4b3578757537",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "typescript",
+            "version": "6.0.3"
+          }
+        ],
+        "engineMs": 379.91504199999997,
+        "signalMatched": true,
+        "wallMs": 444.9461250000004
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "wallMs": 354.7801670000008
+      }
+    },
+    {
+      "id": "actionlint-unknown-context-defect",
+      "fingerprint": "6f597a163ce91a482de4e0e535f7a2374edd668a1e2a43c2509f1c13d55d408f",
+      "files": 2,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "df26b2ecba3ca8d3e31aaa139d46d2434cd2e8d328db10c3bbb73cff391057a1",
+        "wallMs": 4.627707999999984
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["actionlint/expression"],
+        "sourceFingerprint": "6f597a163ce91a482de4e0e535f7a2374edd668a1e2a43c2509f1c13d55d408f",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 139.67729200000002,
+        "signalMatched": true,
+        "wallMs": 206.81795799999963
+      }
+    },
+    {
+      "id": "actionlint-unknown-context-valid",
+      "fingerprint": "be6dad0790d6856be0f537c4edcacb452121302fcda910a2731dbf2b088b2d6c",
+      "files": 2,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "be6dad0790d6856be0f537c4edcacb452121302fcda910a2731dbf2b088b2d6c",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 127.894708,
+        "signalMatched": true,
+        "wallMs": 198.12845899999957
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 3.1084590000009484
+      }
+    },
+    {
+      "id": "actionlint-job-dependency-defect",
+      "fingerprint": "8f7b2d4f64bcc0d3ecd43391a330b4e60de9dee68659ac0df95bd46d5936e832",
+      "files": 2,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "535cad320cb3c375cac6428a6b7e7000bb8fa4b2ab56e215ee59539dd20c1d78",
+        "wallMs": 2.70129100000122
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["actionlint/job-needs"],
+        "sourceFingerprint": "8f7b2d4f64bcc0d3ecd43391a330b4e60de9dee68659ac0df95bd46d5936e832",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 153.5605,
+        "signalMatched": true,
+        "wallMs": 219.04200000000128
+      }
+    },
+    {
+      "id": "actionlint-job-dependency-valid",
+      "fingerprint": "bf9956ec0af9a23b8bbfff5c35d50f0cd08bffa948c3625dc9dce562f529e09c",
+      "files": 2,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "bf9956ec0af9a23b8bbfff5c35d50f0cd08bffa948c3625dc9dce562f529e09c",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 126.46320899999999,
+        "signalMatched": true,
+        "wallMs": 190.17100000000028
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 2.997457999999824
+      }
+    },
+    {
+      "id": "actionlint-runner-name-defect",
+      "fingerprint": "025998893c1acec9821e0156d58e45f3947d4e7c23f88f206991730f19aa1e3e",
+      "files": 2,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "59ee8096ecb690f3bb45f140a9bebff8544f0c7dbd073e7e5cd3764771301833",
+        "wallMs": 2.7696670000004815
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["actionlint/runner-label"],
+        "sourceFingerprint": "025998893c1acec9821e0156d58e45f3947d4e7c23f88f206991730f19aa1e3e",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 130.6825,
+        "signalMatched": true,
+        "wallMs": 197.7494999999999
+      }
+    },
+    {
+      "id": "actionlint-runner-name-valid",
+      "fingerprint": "bf9956ec0af9a23b8bbfff5c35d50f0cd08bffa948c3625dc9dce562f529e09c",
+      "files": 2,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "bf9956ec0af9a23b8bbfff5c35d50f0cd08bffa948c3625dc9dce562f529e09c",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 129.658875,
+        "signalMatched": true,
+        "wallMs": 192.79958299999998
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 2.8966249999994034
+      }
+    },
+    {
+      "id": "actionlint-permission-value-defect",
+      "fingerprint": "84ef7282efa39e788067609fecdfa4d59e06971bb3018142bbe1057f289a5ddc",
+      "files": 2,
+      "native": {
+        "outcome": "failed",
+        "exitCode": 1,
+        "signalMatched": true,
+        "outputSha256": "efd5f0e66a404b902c8ed4edee187f371994857ba205e0504b85864f8af2febd",
+        "wallMs": 2.762416999999914
+      },
+      "engine": {
+        "outcome": "failed",
+        "status": "failed",
+        "signals": ["actionlint/permissions"],
+        "sourceFingerprint": "84ef7282efa39e788067609fecdfa4d59e06971bb3018142bbe1057f289a5ddc",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 127.444583,
+        "signalMatched": true,
+        "wallMs": 190.9595419999987
+      }
+    },
+    {
+      "id": "actionlint-permission-value-valid",
+      "fingerprint": "37aba35ebaa9293f4e7e82f5dd5584b4ea5bd1dcbfd3b58d1f852bbab3ae99d6",
+      "files": 2,
+      "engine": {
+        "outcome": "passed",
+        "status": "passed",
+        "signals": [],
+        "sourceFingerprint": "37aba35ebaa9293f4e7e82f5dd5584b4ea5bd1dcbfd3b58d1f852bbab3ae99d6",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 130.743875,
+        "signalMatched": true,
+        "wallMs": 195.39700000000084
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 2.9229169999998703
+      }
+    },
+    {
+      "id": "actionlint-missing-local-action",
+      "fingerprint": "1cc043ed27121df55ade0707ffffd71a3698fe10eab438bfd6c57951e4f5df7f",
+      "files": 2,
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 2.654499999998734
+      },
+      "engine": {
+        "outcome": "incomplete",
+        "status": "unavailable",
+        "signals": [],
+        "sourceFingerprint": "1cc043ed27121df55ade0707ffffd71a3698fe10eab438bfd6c57951e4f5df7f",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 125.171584,
+        "signalMatched": true,
+        "wallMs": 188.81437499999993
+      }
+    },
+    {
+      "id": "actionlint-yaml-alias",
+      "fingerprint": "3cc6ae1fe1b4c33491b413666124dab08d18f9565df77adeb165974e5510403f",
+      "files": 2,
+      "engine": {
+        "outcome": "incomplete",
+        "status": "unavailable",
+        "signals": [],
+        "sourceFingerprint": "3cc6ae1fe1b4c33491b413666124dab08d18f9565df77adeb165974e5510403f",
+        "tools": [
+          {
+            "name": "node",
+            "version": "26.8.1"
+          },
+          {
+            "name": "actionlint",
+            "version": "1.7.12"
+          }
+        ],
+        "engineMs": 123.41091600000001,
+        "signalMatched": true,
+        "wallMs": 188.19758300000103
+      },
+      "native": {
+        "outcome": "passed",
+        "exitCode": 0,
+        "signalMatched": true,
+        "outputSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "wallMs": 2.843665999998848
+      }
+    }
+  ]
+}

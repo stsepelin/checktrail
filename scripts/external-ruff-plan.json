@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "ruff-external-integration-1",
+  "declaredAt": "2026-09-19T00:48:40.229Z",
+  "purpose": "Externally authored diagnostic integration cohort for a frozen wrapper; not independent native-rule effectiveness or prior-workflow comparison",
+  "upstream": {
+    "repository": "https://github.com/astral-sh/ruff",
+    "tag": "0.16.8",
+    "commit": "62914c4b9b79a9e5004374a9c482ad2ed69290e1"
+  },
+  "rules": ["F401", "F821", "F841"],
+  "selection": "The primary single-file Python fixture named after each selected rule and its corresponding default non-preview upstream diagnostic snapshot. Read the upstream test registration to verify settings. Unsupported inputs or an unresolvable snapshot contract remain explicit exclusions, not replaced cases. Primary means RULE.py when present, otherwise RULE_0.py; this filename resolution was recorded from tree metadata before content inspection.",
+  "measurement": "Preserve complete source files. Compare expected diagnostic locations/codes to both native Ruff and the verifier. Files containing mixed valid/invalid constructs are not counted as independently labeled valid cases; report missing and unexpected diagnostics separately, without a population false-positive rate.",
+  "frozenVerifier": {
+    "runtimeArtifactsSha256": "ff2534991f373526b95896780ae5cdd70c637b68a8cb939509cf4bea4d532fd5",
+    "packageLockSha256": "4e1ed6042edc258e3aad13d4180b1513f662641a1ffb74bdc377bc627591918c"
+  },
+  "tool": {
+    "ruff": "0.16.8"
+  },
+  "limits": {
+    "sourceBytesPerFile": 131072,
+    "snapshotBytesPerFile": 524288,
+    "files": 3
+  },
+  "cases": [
+    {
+      "rule": "F401",
+      "source": "crates/ruff_linter/resources/test/fixtures/pyflakes/F401_0.py",
+      "snapshot": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__unused-import_F401_0.py.snap"
+    },
+    {
+      "rule": "F821",
+      "source": "crates/ruff_linter/resources/test/fixtures/pyflakes/F821_0.py",
+      "snapshot": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__undefined-name_F821_0.py.snap"
+    },
+    {
+      "rule": "F841",
+      "source": "crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py",
+      "snapshot": "crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__unused-variable_F841_0.py.snap"
+    }
+  ],
+  "supportFiles": ["LICENSE", "crates/ruff_linter/src/rules/pyflakes/mod.rs"]
+}

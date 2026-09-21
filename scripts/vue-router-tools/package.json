@@ -1,0 +1,9 @@
+{
+  "name": "repo-verifier-vue-router-fixture-tools",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "vue": "3.5.43",
+    "vue-router": "5.3.1"
+  }
+}

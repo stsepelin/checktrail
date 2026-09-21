@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "id": "swift.syntax",
+  "version": "1.0.0",
+  "description": "Swift grammar checking without SwiftPM manifest evaluation, type checking or tests",
+  "requiredChecks": ["swift.syntax"]
+}

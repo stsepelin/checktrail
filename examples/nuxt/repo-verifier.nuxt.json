@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "assembly": "synthetic.catalog",
+  "environment": "test",
+  "probes": [
+    {
+      "path": "/",
+      "matched": [
+        {
+          "path": "/",
+          "name": "index"
+        }
+      ]
+    },
+    {
+      "path": "/catalog/7",
+      "matched": [
+        {
+          "path": "/catalog/:id()",
+          "name": "catalog-item"
+        }
+      ]
+    },
+    {
+      "path": "/late",
+      "matched": [
+        {
+          "path": "/late",
+          "name": "late"
+        }
+      ]
+    }
+  ]
+}

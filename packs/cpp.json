@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "cpp.clang",
+  "version": "1.0.0",
+  "description": "Prepared Clang compilation database checks with native source and header accounting; no linking or test execution",
+  "requiredChecks": ["cpp.clang-check"],
+  "requiredEnvironment": []
+}

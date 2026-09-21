@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "settings": "settings",
+  "assembly": "synthetic-django-catalog",
+  "environment": "isolated-test"
+}

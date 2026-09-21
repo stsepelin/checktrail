@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "format": "architecture-policy",
+  "layers": ["domain", "application"],
+  "projects": [
+    { "id": "@synthetic/catalog-domain", "layer": "domain" },
+    { "id": "@synthetic/catalog-consumer", "layer": "application" }
+  ],
+  "allowedDependencies": [{ "consumer": "application", "producer": "domain" }],
+  "requireAcyclic": true
+}
