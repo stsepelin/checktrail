@@ -135,3 +135,8 @@ turn their already-inspected cases into an unseen review benchmark.
 The [five-language alpha.5 adoption replay](PUBLIC-ADOPTION-ALPHA5.md) separately
 rechecks the original pinned libraries with the published package, preserving
 remaining scope gaps and the older immutable measurements.
+
+The [cross-family CLI pilot](CROSS-FAMILY-PILOT.md) records subscription-backed
+Claude/Codex reviews, two-family judging and independent transcript audits. Its
+contamination, budget and capacity failures remain explicit; raw scores do not
+establish comparative effectiveness.
