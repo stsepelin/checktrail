@@ -277,6 +277,11 @@ export async function createGateway(input, options = {}) {
   let previous = null;
   let calls = 0;
   let closing = false;
+  let closePromise;
+  let verifiedExecutions = 0;
+  let executionAttempts = 0;
+  let integrityFailures = 0;
+  const activeContainers = new Set();
   let queue = Promise.resolve();
   const controller = new globalThis.AbortController();
   const execute = options.execute ?? runProcess;
@@ -290,6 +295,8 @@ export async function createGateway(input, options = {}) {
   }
   await append({
     type: "start",
+    auditVersion: 2,
+    integrityScope: "mounted-trees-per-execution",
     image: config.image,
     runtimeSha256: identities[0],
     dependenciesSha256: identities[1],
@@ -304,10 +311,51 @@ export async function createGateway(input, options = {}) {
   const tools = Object.keys(schemas).filter(
     (name) => config.treatment || !name.startsWith("checktrail_"),
   );
+  async function mountedIdentity(engine) {
+    return {
+      runtimeSha256: engine ? await treeDigest(config.runtime) : null,
+      dependenciesSha256: config.dependencies
+        ? await treeDigest(config.dependencies)
+        : null,
+    };
+  }
+  function integrityError(integrity, execution) {
+    return Object.assign(new Error("Mounted runtime identity changed"), {
+      integrity,
+      execution,
+    });
+  }
   async function container(command, engine = false) {
+    executionAttempts++;
+    const expected = {
+      runtimeSha256: engine ? identities[0] : null,
+      dependenciesSha256: identities[1],
+    };
+    const integrity = {
+      scope: "mounted-trees-per-execution",
+      expected,
+      before: null,
+      after: null,
+      verified: false,
+    };
+    async function captureIdentity(phase, execution) {
+      try {
+        return await mountedIdentity(engine);
+      } catch {
+        integrity.reason = `${phase}-identity-unavailable`;
+        integrityFailures++;
+        throw integrityError(integrity, execution);
+      }
+    }
+    integrity.before = await captureIdentity("before");
+    if (JSON.stringify(integrity.before) !== JSON.stringify(expected)) {
+      integrityFailures++;
+      throw integrityError(integrity);
+    }
     const name = "checktrail-eval-" + randomUUID();
     let result;
     let failure;
+    activeContainers.add(name);
     try {
       result = await execute(
         directory,
@@ -343,11 +391,24 @@ export async function createGateway(input, options = {}) {
       !cleanup.stderr?.includes("No such container")
     )
       throw new Error("Container cleanup failed");
+    activeContainers.delete(name);
     if (failure) throw failure;
     // Host mount paths in the process command are operator metadata, never tool output.
     const { command: ignored, ...output } = result;
     void ignored;
-    return output;
+    if (controller.signal.aborted || output.cancelled) {
+      integrity.reason = "cancelled-before-post-execution-verification";
+      return { ...output, integrity };
+    }
+    integrity.after = await captureIdentity("after", output);
+    integrity.verified =
+      JSON.stringify(integrity.after) === JSON.stringify(expected);
+    if (!integrity.verified) {
+      integrityFailures++;
+      throw integrityError(integrity, output);
+    }
+    verifiedExecutions++;
+    return { ...output, integrity };
   }
   async function perform(name, argument) {
     assert.ok(
@@ -414,6 +475,7 @@ export async function createGateway(input, options = {}) {
   return {
     tools,
     call(name, argument) {
+      if (closing) return Promise.reject(new Error("Gateway is closing"));
       const pending = queue.then(async () => {
         const attempt = await append({
           type: "call",
@@ -434,6 +496,12 @@ export async function createGateway(input, options = {}) {
             ok: false,
             error:
               "Request unavailable, invalid, over budget, or execution failed; inspect operator audit.",
+            ...(error?.integrity
+              ? {
+                  integrity: error.integrity,
+                  ...(error.execution ? { execution: error.execution } : {}),
+                }
+              : {}),
           };
         }
         const evidenceId = await append({
@@ -447,31 +515,35 @@ export async function createGateway(input, options = {}) {
       queue = pending.catch(() => {});
       return pending;
     },
-    async close() {
-      if (closing) return;
+    close() {
+      if (closePromise) return closePromise;
       closing = true;
       controller.abort();
-      try {
-        await queue;
-        const final = await Promise.all([
-          treeDigest(config.runtime),
-          config.dependencies ? treeDigest(config.dependencies) : null,
-        ]);
-        await append({
-          type: "end",
-          runtimeUnchanged:
-            JSON.stringify(final) === JSON.stringify(identities),
-          calls,
-        });
-        assert.deepEqual(
-          final,
-          identities,
-          "Runtime changed during evaluation",
-        );
-      } finally {
-        await audit.close();
-        await fs.rm(directory, { recursive: true, force: true });
-      }
+      closePromise = (async () => {
+        try {
+          await queue;
+          assert.equal(
+            activeContainers.size,
+            0,
+            "Container cleanup remains unverified",
+          );
+          await fs.rm(directory, { recursive: true, force: true });
+          await append({
+            type: "end",
+            cleanupCompleted: true,
+            sourceSnapshotRemoved: true,
+            integrityScope: "completed-execution-calls",
+            executionAttempts,
+            verifiedExecutions,
+            integrityFailures,
+            calls,
+          });
+        } finally {
+          await audit.close();
+          await fs.rm(directory, { recursive: true, force: true });
+        }
+      })();
+      return closePromise;
     },
   };
 }
@@ -518,20 +590,33 @@ if (
     process.argv.length === 4 && process.argv[3] === "--trust-execution",
     "Usage: agent-evaluation-gateway.mjs CONFIG --trust-execution",
   );
-  const gateway = await createGateway(
+  const config = configSchema.parse(
     JSON.parse(await fs.readFile(process.argv[2], "utf8")),
   );
-  const handle = serveStdio(() => createServer(gateway), {
+  let gatewayPromise;
+  let stopped = false;
+  const lazyGateway = {
+    tools: Object.keys(schemas).filter(
+      (name) => config.treatment || !name.startsWith("checktrail_"),
+    ),
+    async call(name, args) {
+      assert.ok(!stopped, "Gateway is closing");
+      gatewayPromise ??= createGateway(config);
+      const gateway = await gatewayPromise;
+      assert.ok(!stopped, "Gateway is closing");
+      return gateway.call(name, args);
+    },
+  };
+  const handle = serveStdio(() => createServer(lazyGateway), {
     transport: new StdioServerTransport(process.stdin, process.stdout, {
       maxBufferSize: 32768,
     }),
   });
-  let stopped = false;
   const stop = async () => {
     if (stopped) return;
     stopped = true;
     try {
-      await gateway.close();
+      if (gatewayPromise) await (await gatewayPromise).close();
       await handle.close();
     } catch {
       process.stderr.write("Evaluation gateway shutdown failed\n");

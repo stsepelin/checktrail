@@ -18,6 +18,9 @@ function exercise(body: string) {
     const temporary = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'checktrail-gateway-test-')));
     const source = path.join(temporary, 'source');
     const runtime = path.join(temporary, 'runtime');
+    const dependencies = path.join(temporary, 'dependencies');
+    await fs.mkdir(dependencies);
+    await fs.writeFile(path.join(dependencies, 'dependency.txt'), 'synthetic dependency');
     await fs.mkdir(source); await fs.mkdir(runtime);
     await fs.writeFile(path.join(source, 'entry.py'), 'value = 1\\n');
     await fs.writeFile(path.join(temporary, 'withheld-answer.py'), 'SECRET_SIBLING');
@@ -115,7 +118,7 @@ test("gateway preserves incomplete execution and cleans up containers on runner 
   `);
 });
 
-test("gateway audits rejected calls and results with chained evidence IDs and detects runtime mutation", () => {
+test("gateway audits rejected calls and results with chained evidence IDs and records cleanup", () => {
   exercise(String.raw`
     gateway = await api.createGateway({...config,maxCalls:1}, {execute});
     const first = await gateway.call('evaluation_files',{});
@@ -130,12 +133,12 @@ test("gateway audits rejected calls and results with chained evidence IDs and de
       assert.equal(sha256,createHash('sha256').update(JSON.stringify(content)+'\n').digest('hex'));
       previous=sha256;
     }
-    assert.equal(records.at(-1).runtimeUnchanged,true);
+    assert.equal(records.at(-1).cleanupCompleted,true);
+    assert.equal(records.at(-1).sourceSnapshotRemoved,true);
+    assert.equal(records.at(-1).integrityScope,'completed-execution-calls');
+    assert.equal('runtimeUnchanged' in records.at(-1),false);
     await assert.rejects(api.createGateway(config,{execute}),{code:'EEXIST'});
-    gateway=await api.createGateway({...config,audit:config.audit+'changed'},{execute});
-    await fs.writeFile(path.join(runtime,'public-tool.txt'),'changed');
-    await assert.rejects(gateway.close(),/Runtime changed/);
-    gateway=undefined;
+
   `);
 });
 
@@ -168,5 +171,154 @@ test("gateway rejects an audit parent symlink into a disclosed runtime", () => {
     await fs.symlink(runtime,alias);
     await assert.rejects(api.createGateway({...config,audit:path.join(alias,'audit.jsonl')},{execute}),/Canonical audit/);
     await assert.rejects(fs.stat(path.join(runtime,'audit.jsonl')),{code:'ENOENT'});
+  `);
+});
+
+test("mounted dependency changes prevent execution and persist mismatched identities", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies},{execute});
+    await fs.writeFile(path.join(dependencies,'dependency.txt'),'changed');
+    const result=await gateway.call('evaluation_native',{});
+    assert.equal(result.ok,false); assert.equal(executions.length,0);
+    assert.equal(result.integrity.verified,false);
+    assert.notDeepEqual(result.integrity.before,result.integrity.expected);
+    await gateway.close();
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.at(-1).integrityFailures,1);
+    assert.deepEqual(records.find(record=>record.type==='result').result.integrity,result.integrity);
+  `);
+});
+
+test("dependency mutation during execution invalidates evidence and preserves process output", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies},{execute:async(...args)=>{
+      if(args[1].args[0]==='run')await fs.writeFile(path.join(dependencies,'dependency.txt'),'changed during run');
+      return execute(...args);
+    }});
+    const result=await gateway.call('evaluation_native',{});
+    assert.equal(result.ok,false); assert.equal(result.execution.stdout,'ok');
+    assert.deepEqual(result.integrity.before,result.integrity.expected);
+    assert.notDeepEqual(result.integrity.after,result.integrity.expected);
+    assert.equal(result.integrity.verified,false);
+    await gateway.close();
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.at(-1).verifiedExecutions,0);
+  `);
+});
+
+test("completed execution verifies its mounts while close is idempotent and makes no whole-session integrity claim", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies},{execute});
+    await fs.writeFile(path.join(runtime,'public-tool.txt'),'unmounted runtime changed');
+    const result=await gateway.call('evaluation_native',{});
+    assert.equal(result.ok,true); assert.equal(result.value.integrity.verified,true);
+    assert.equal(result.value.integrity.before.runtimeSha256,null);
+    await fs.writeFile(path.join(dependencies,'dependency.txt'),'changed after completed call');
+    const first=gateway.close(),second=gateway.close(); assert.equal(first,second); await first;
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    const end=records.at(-1);
+    assert.equal(end.cleanupCompleted,true); assert.equal(end.verifiedExecutions,1);
+    assert.equal(end.executionAttempts,1); assert.equal(end.integrityScope,'completed-execution-calls');
+    assert.equal('runtimeUnchanged' in end,false);
+    await assert.rejects(gateway.call('evaluation_files',{}),/closing/);
+  `);
+});
+
+test("closing active execution cancels and cleans its container without claiming completed integrity", () => {
+  exercise(String.raw`
+    let signalReady; const ready=new Promise(resolve=>{signalReady=resolve}); let removed=0;
+    gateway=await api.createGateway({...config,dependencies},{execute:async(root,command,options)=>{
+      if(command.args[0]==='rm'){removed++;return execute(root,command,options)}
+      signalReady(); await new Promise(resolve=>options.signal.addEventListener('abort',resolve,{once:true}));
+      return {...await execute(root,command,options),cancelled:true,exitCode:null};
+    }});
+    const pending=gateway.call('evaluation_native',{}); await ready; await gateway.close();
+    const result=await pending; assert.equal(removed,1); assert.equal(result.value.cancelled,true);
+    assert.equal(result.value.integrity.verified,false); assert.equal(result.value.integrity.after,null);
+    assert.equal(result.value.integrity.reason,'cancelled-before-post-execution-verification');
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.at(-1).cleanupCompleted,true);
+  `);
+});
+
+test("changed engine runtime prevents Checktrail execution while ordinary probes retain their distinct mounts", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies,treatment:true},{execute});
+    await fs.writeFile(path.join(runtime,'public-tool.txt'),'changed engine');
+    const engine=await gateway.call('checktrail_validate',{});
+    assert.equal(engine.ok,false); assert.equal(executions.length,0);
+    assert.notEqual(engine.integrity.before.runtimeSha256,engine.integrity.expected.runtimeSha256);
+    const probe=await gateway.call('evaluation_probe',{language:'python',code:'print(1)'});
+    assert.equal(probe.ok,true); assert.equal(probe.value.integrity.verified,true);
+    assert.equal(executions.length,2);
+  `);
+});
+
+test("unreadable mounted identity fails before execution with auditable integrity status", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies},{execute});
+    await fs.rm(dependencies,{recursive:true});
+    const result=await gateway.call('evaluation_native',{});
+    assert.equal(result.ok,false); assert.equal(executions.length,0);
+    assert.equal(result.integrity.reason,'before-identity-unavailable');
+    await gateway.close();
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.at(-1).integrityFailures,1);
+  `);
+});
+
+test("unreadable mounted identity after execution retains output and rejects unverified evidence", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway({...config,dependencies},{execute:async(...args)=>{
+      if(args[1].args[0]==='run')await fs.rm(dependencies,{recursive:true});
+      return execute(...args);
+    }});
+    const result=await gateway.call('evaluation_native',{});
+    assert.equal(result.ok,false); assert.equal(result.execution.stdout,'ok');
+    assert.equal(result.integrity.reason,'after-identity-unavailable'); assert.equal(result.integrity.verified,false);
+    await gateway.close();
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.at(-1).integrityFailures,1);
+  `);
+});
+
+test("container cleanup failure prevents a completed shutdown audit", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway(config,{execute:async(...args)=>({
+      ...await execute(...args),
+      ...(args[1].args[0]==='rm'?{exitCode:1,stderr:'synthetic cleanup failure'}:{})
+    })});
+    assert.equal((await gateway.call('evaluation_native',{})).ok,false);
+    await assert.rejects(gateway.close(),/Container cleanup remains unverified/);
+    gateway=undefined;
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.ok(!records.some(record=>record.type==='end'));
+  `);
+});
+
+test("modern MCP discovery does not reserve the gateway audit before a real tool call", () => {
+  exercise(String.raw`
+    const {Client}=await import('@modelcontextprotocol/client');
+    const {StdioClientTransport}=await import('@modelcontextprotocol/client/stdio');
+    const {fileURLToPath}=await import('node:url');
+    const configFile=path.join(temporary,'config.json');
+    await fs.writeFile(configFile,JSON.stringify(config));
+    const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(process.argv[1]),configFile,'--trust-execution'],stderr:'pipe'});
+    const client=new Client({name:'synthetic-gateway-lifecycle-test',version:'1.0.0'},{versionNegotiation:{mode:{pin:'2026-07-28'}}});
+    let stderr=''; transport.stderr.on('data',chunk=>{stderr+=chunk});
+    try {
+      await client.connect(transport);
+      const listed=await client.listTools();
+      assert.deepEqual(listed.tools.map(tool=>tool.name).sort(),['evaluation_files','evaluation_native','evaluation_probe','evaluation_read']);
+      await assert.rejects(fs.stat(config.audit),{code:'ENOENT'});
+      const result=await client.callTool({name:'evaluation_files',arguments:{}});
+      const parsed=JSON.parse(result.content[0].text);
+      assert.equal(parsed.ok,true,stderr); assert.deepEqual(parsed.value.map(item=>item.file),['entry.py']);
+    } finally { await client.close(); }
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.equal(records.filter(record=>record.type==='start').length,1);
+    assert.equal(records.at(-1).cleanupCompleted,true,stderr);
+    assert.equal(records.at(-1).executionAttempts,0);
+    assert.equal(records.at(-1).verifiedExecutions,0);
   `);
 });

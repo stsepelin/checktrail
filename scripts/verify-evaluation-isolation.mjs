@@ -154,10 +154,38 @@ print(json.dumps({'sourceReadonly':True,'hostFilesInaccessible':True,'engineUnav
   assert.equal(timed.value?.timedOut, true);
   await gateway.close();
   gateway = undefined;
+  for (const result of results) {
+    if (!result.value || !("exitCode" in result.value)) continue;
+    const { integrity, cancelled } = result.value;
+    assert.equal(integrity.verified, !cancelled);
+    assert.equal(integrity.scope, "mounted-trees-per-execution");
+    assert.deepEqual(integrity.before, integrity.expected);
+    if (!cancelled) assert.deepEqual(integrity.after, integrity.expected);
+    else assert.equal(integrity.after, null);
+  }
+  const lifecycle = [];
+  for (const file of [
+    "audit.jsonl",
+    "cancel-audit.jsonl",
+    "failed-audit.jsonl",
+    "limits-audit.jsonl",
+  ]) {
+    const records = (await fs.readFile(path.join(temporary, file), "utf8"))
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    const end = records.at(-1);
+    assert.equal(end.type, "end");
+    assert.equal(end.cleanupCompleted, true);
+    assert.equal(end.sourceSnapshotRemoved, true);
+    assert.equal(end.integrityScope, "completed-execution-calls");
+    assert.equal("runtimeUnchanged" in end, false);
+    lifecycle.push(end);
+  }
   await fs.writeFile(
     output,
     JSON.stringify(
-      { schemaVersion: 1, image, results, verified: true },
+      { schemaVersion: 1, image, results, lifecycle, verified: true },
       null,
       2,
     ) + "\n",

@@ -59,6 +59,9 @@ node scripts/agent-evaluation-gateway.mjs CONFIG.json --trust-execution
 ```
 
 The startup flag grants execution; a repository file or tool argument cannot.
+SDK discovery and tool listing create no snapshot or audit file. The first actual
+tool call captures the source and reserves the audit, so a disposable protocol
+discovery subprocess cannot claim the serving process's exclusive audit path.
 `native` is a fixed executable/argument array chosen by the operator. No shell
 interpolation is used. The prototype accepts Node and Python native commands and
 JavaScript/Python reproduction snippets. Other Checktrail language adapters remain
@@ -108,9 +111,20 @@ with explicit omitted-character counts. Display omission is different from
 execution truncation: a truncated execution remains marked `truncated`.
 
 The start record binds source bytes, worker bytes, runtime/dependency tree hashes
-and image ID. Closing checks runtime/dependency hashes again. Operators must not
-modify these directories during a run. Audit hashes detect later inconsistency;
-they do not protect against a malicious host operator who rewrites the record.
+and image ID. Audit version 2 verifies each execution's mounted dependency and
+engine trees before execution and before returning its result. Native tests and
+probes verify dependencies only: the engine is not mounted. A mismatch or an
+unreadable tree fails the call; a cancelled call retains unverified integrity.
+The result audit persists these identities before delivery to the client.
+
+Closing cancels active execution, removes its container and source snapshot, then
+records cleanup and execution counters. It does not rescan dependencies or claim
+whole-session immutability. This keeps completed-call evidence independent of a
+client's short shutdown grace period. A missing end record still means cleanup is
+unverified, even when completed calls have verified identities. Abrupt termination
+can still interrupt cleanup. Operators must not modify mounts during a run;
+before/after hashes cannot detect a transient change restored between captures,
+or protect against an operator who rewrites the audit.
 
 The call budget prevents additional work; it does not prevent a client from
 issuing repeated denied requests. The launcher must also enforce a wall deadline,

@@ -8,6 +8,9 @@ a model ranking or an MCP effectiveness improvement.
 The [setup guide](CROSS-FAMILY-EVALUATION.md) describes the protocol. The
 [measurement record](measurements/cross-family-v1.json) retains source identities,
 per-attempt outcomes, both judges' scores, execution audits and eligibility limits.
+The later [isolated pilot](ISOLATED-CROSS-FAMILY-PILOT.md) uses a restricted gateway
+and different historical cases. It preserves this run unchanged and records its own
+strict eligibility and judging failures.
 
 ## Scope and clients
 

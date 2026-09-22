@@ -6,6 +6,9 @@ installed clients. The [first cross-family pilot](CROSS-FAMILY-PILOT.md) records
 actual attempts and their protocol failures. Checktrail's engine does not call a model or acquire credentials.
 The clients send the deliberately selected public-source packets to their providers;
 local orchestration does not mean local model inference.
+The later [isolated pilot report](ISOLATED-CROSS-FAMILY-PILOT.md) records the
+gateway-restricted follow-up, with raw scores separated from independently audited
+completion and judging limitations.
 
 ## Experimental design
 

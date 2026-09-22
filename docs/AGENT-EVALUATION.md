@@ -9,6 +9,9 @@ records actual separate-agent review and its limits. The [cross-family guide](CR
 describes subscription-backed Claude Code and Codex trials, balanced judging and
 client-specific evidence limits. See [the comparison protocol](PRIOR-WORKFLOW-EVALUATION.md)
 and [review exchange](REVIEW-EXCHANGE.md) for the underlying evidence boundaries.
+The [isolated cross-family pilot](ISOLATED-CROSS-FAMILY-PILOT.md) records actual
+gateway-restricted execution, successful selected MCP checks, and remaining citation,
+budget, capacity and lifecycle failures without claiming comparative effectiveness.
 
 ```mermaid
 flowchart LR

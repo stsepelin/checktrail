@@ -140,3 +140,9 @@ The [cross-family CLI pilot](CROSS-FAMILY-PILOT.md) records subscription-backed
 Claude/Codex reviews, two-family judging and independent transcript audits. Its
 contamination, budget and capacity failures remain explicit; raw scores do not
 establish comparative effectiveness.
+
+The [isolated cross-family pilot](ISOLATED-CROSS-FAMILY-PILOT.md) subsequently
+recorded sixteen gateway-restricted reviews and seven successful MCP validations.
+Its independent audit retains four complete and twelve incomplete reviewer attempts;
+both judges also have protocol failures. Raw score agreement remains separate from
+strict eligibility and does not establish an effectiveness improvement.
