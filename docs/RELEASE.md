@@ -26,6 +26,38 @@ establish cross-platform reproducibility.
 The [release record](measurements/release-alpha4.json) links these observations to
 the artifact; client profile limits remain in [CLIENTS.md](CLIENTS.md).
 
+## Alpha.5 candidate (unpublished)
+
+The current source metadata identifies `0.1.0-alpha.5`; it has not been published.
+Alpha.4 remains the public preview. Alpha.5 adds named per-check Go build-tag
+profiles in `checktrail.go-build.json`, with independent explicit exclusions.
+Native listing and execution use the same tags, including race and analyzer
+checks. Missing assignments, ambiguous declarations and stale exclusions cannot
+pass. Formatting still checks the full inventory. See [GO build profiles](GO-BUILD.md).
+
+Detailed plans/reports add optional `goBuild` profile/tag metadata. Summary output
+adds only `goBuildTagCount`, alongside the existing exclusion count. Older strict
+schema consumers must update before accepting these fields. Projects must choose
+between the new build-profile policy and the module-wide scope policy; combining
+both is rejected. Each selected check runs once. Repeated-check, cross-target and
+cross-compilation matrices remain unsupported.
+
+Alpha.4 does not understand the new build-profile sidecar. Rolling back preserves
+its bytes but does not apply its tags or exclusions. Revalidate after rollback;
+a project relying on profile-selected files can become incomplete. No claim of
+coverage transfers from one profile or package version to another.
+
+The installed MCP SDK 2.0.0 routing probe was repeated on 2026-09-22: standard
+Tasks remains unavailable and is not advertised by this candidate.
+
+The candidate also makes the task-retention regression deterministic by controlling
+its clock and checking the exact expiry boundary. Production retention logic is
+unchanged. CI action pins have been updated; npm dependency versions are unchanged.
+The source before release preparation passed all 13 [hosted jobs](https://github.com/stsepelin/checktrail/actions/runs/35614737518)
+after retrying an actionlint download that received HTTP 504. The release commit
+still needs its own hosted CI run. Candidate checks and artifact identity belong
+in the concrete release review; this section does not claim publication.
+
 ## Alpha.4 scope
 
 Alpha.4 adds optional exact Go file exclusions in `checktrail.go-scope.json`.

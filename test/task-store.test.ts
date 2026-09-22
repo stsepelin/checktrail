@@ -13,7 +13,6 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
-import { setTimeout as delay } from "node:timers/promises";
 import { openTaskStore } from "../src/task-store.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectReport } from "../src/output.js";
@@ -269,6 +268,8 @@ test("task retention enforces capacity, expiry, result bytes and source identity
   const opt = await options(t, true);
   const store = await openTaskStore(opt);
   t.after(() => store.close());
+  let now = Date.now();
+  t.mock.method(Date, "now", () => now);
   for (const ttl of [0, -1, 1.5, 604800001, Infinity])
     assert.throws(() => store.create(fingerprint, ttl));
   assert.throws(() => store.create("not-a-fingerprint"));
@@ -294,12 +295,10 @@ test("task retention enforces capacity, expiry, result bytes and source identity
   const expiring = store.create(fingerprint, 2000);
   for (let n = 0; n < 30; n++) store.create(fingerprint);
   assert.throws(() => store.create(fingerprint), /capacity/);
-  await delay(
-    Math.max(
-      0,
-      Date.parse(expiring.createdAt) + expiring.ttlMs - Date.now() + 10,
-    ),
-  );
+  now = Date.parse(expiring.createdAt) + expiring.ttlMs - 1;
+  assert.equal(store.get(expiring.taskId).status, "working");
+  assert.throws(() => store.create(fingerprint), /capacity/);
+  now++;
   assert.throws(() => store.get(expiring.taskId), /expired/);
   assert.throws(() => store.complete(expiring.taskId, report()), /expired/);
   assert.throws(() => store.requestCancellation(expiring.taskId), /expired/);

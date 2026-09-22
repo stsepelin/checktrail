@@ -189,7 +189,7 @@ selection with inventoried source; `go.staticcheck` adds explicit all-rule analy
 and normalized findings. See [Go scope](docs/GO-SCOPE.md). The constrained
 [`go.golangci-lint` profile](docs/GOLANGCI-LINT.md) accepts explicit native linter
 selection while disabling hidden issue filters and fixes.
-The source checkout adds unreleased [Go build-tag profiles](docs/GO-BUILD.md)
+The alpha.5 source candidate adds [Go build-tag profiles](docs/GO-BUILD.md)
 with one explicit configuration per selected native check. Alpha.4 does not
 include this capability; a runnable example is in `examples/go-build`.
 

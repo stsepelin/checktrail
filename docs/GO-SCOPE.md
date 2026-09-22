@@ -80,7 +80,7 @@ coverage outside the selected profile. Existing protected Go settings stay intac
 
 The source checkout separately adds [per-check build-tag profiles](GO-BUILD.md).
 They use their own per-profile exclusions and cannot coexist with this module-wide
-policy. That capability is unreleased; alpha.4 retains the behavior above.
+policy. That capability is in the unpublished alpha.5 candidate; alpha.4 retains the behavior above.
 
 ## Known-case replay
 

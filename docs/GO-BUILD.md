@@ -1,4 +1,4 @@
-# Go build-tag profiles (unreleased)
+# Go build-tag profiles (alpha.5 candidate)
 
 The source checkout supports named build-tag profiles in module-local
 `checktrail.go-build.json`. Published alpha.4 does not support this file. It

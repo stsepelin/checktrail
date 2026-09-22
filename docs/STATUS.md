@@ -13,7 +13,10 @@ The GitHub alpha.4 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
-## Unreleased changes
+## Alpha.5 candidate (unpublished)
+
+Package, engine and Registry metadata now identify `0.1.0-alpha.5`. The public
+preview remains alpha.4 until the candidate is approved, published and verified.
 
 - [Go build-tag profiles](GO-BUILD.md): each selected native check can use its own
   named tags and exclusions. Listing and execution agree, formatting remains
