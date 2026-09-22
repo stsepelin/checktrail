@@ -27,7 +27,7 @@ read-only module resolution, absolute JSON locations and no extra output files.
 Output and native analyzer cache use a fresh temporary directory, removed after
 normal completion. Existing project config and output paths are not rewritten.
 Native Go source accounting follows [the shared contract](GO-SCOPE.md).
-The alpha.5 source candidate adds [Checktrail build-tag profiles](GO-BUILD.md).
+Alpha.5 adds [Checktrail build-tag profiles](GO-BUILD.md).
 Those tags are passed to both package listing and the generated native config;
 `.golangci.*` still cannot supply a separate `run.build-tags` setting.
 

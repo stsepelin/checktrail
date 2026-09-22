@@ -1,11 +1,12 @@
 # Install the preview
 
-The published preview is `0.1.0-alpha.4` on
+The published preview is `0.1.0-alpha.5` on
 [npm](https://www.npmjs.com/package/@stsepelin/checktrail).
-Use the exact version below. `next` points to alpha.4; `latest` still points to
+Use the exact version below. `next` points to alpha.5; `latest` still points to
 alpha.1 because npm rejected its removal. Neither tag implies a stable release.
-Alpha.4 includes [project setup and diagnosis](ONBOARDING.md), the
-[TypeScript compatibility fix](TYPESCRIPT.md), and explicit [Go scope exclusions](GO-SCOPE.md).
+Alpha.5 includes [project setup and diagnosis](ONBOARDING.md), the
+[TypeScript compatibility fix](TYPESCRIPT.md), explicit [Go scope exclusions](GO-SCOPE.md),
+and named [Go build-tag profiles](GO-BUILD.md).
 
 Use Node.js 22 or newer on macOS or Linux. Windows execution is not supported.
 Install each project's compilers, linters and test runners separately; Checktrail
@@ -19,7 +20,7 @@ Skills install separately from the engine and MCP configuration.
 Install the exact version once:
 
 ```sh
-npm install --global --ignore-scripts @stsepelin/checktrail@0.1.0-alpha.4
+npm install --global --ignore-scripts @stsepelin/checktrail@0.1.0-alpha.5
 checktrail --version
 ```
 

@@ -1,35 +1,34 @@
 # Releases and publication
 
 The source is public at [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
-The published preview is `@stsepelin/checktrail@0.1.0-alpha.4`.
+The published preview is `@stsepelin/checktrail@0.1.0-alpha.5`.
 Its downloaded npm artifact and GitHub release asset match the reviewed SHA-256:
 
 ```text
-4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c
+e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7
 ```
 
-The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.4)
-and tag point to source commit `ebe7f5c114428aebc5084a2a33d38113cad13583` and include
-the same tarball plus `SHA256SUMS`. The [hosted release run](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
-passed all jobs. The [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.4)
+The [GitHub prerelease](https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.5)
+and tag point to source commit `832a044398bcc060c0d6b4c42e66c6eb94a9f5a6` and include
+the same tarball plus `SHA256SUMS`. The [hosted release run](https://github.com/stsepelin/checktrail/actions/runs/35694375091)
+passed all jobs. The [MCP Registry entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.5)
 is active and matches `server.json`, with execution disabled. The Registry omits
 `isSecret: false`, whose schema default is false.
 
 Fresh public-registry installation verified CLI/library validation, generated
 npx startup with fresh/warm caches, onboarding, and MCP pass/fail/incomplete
 results, retained reports and execution denial. The exact artifact also passed
-offline installation, alpha.3 → alpha.4 → alpha.3 upgrade/rollback, the known UUID
-scope replay, Claude Code health/discovery and Codex direct MCP calls. A clean
+offline installation, alpha.4 → alpha.5 → alpha.4 upgrade/rollback, a synthetic Go
+build-profile replay, Claude Code health/discovery and Codex direct MCP calls. A clean
 archive of the committed source, rebuilt with the same installed compiler and
 dependencies on the same host, produced an identical tarball. This does not
 establish cross-platform reproducibility.
-The [release record](measurements/release-alpha4.json) links these observations to
+The [release record](measurements/release-alpha5.json) links these observations to
 the artifact; client profile limits remain in [CLIENTS.md](CLIENTS.md).
 
-## Alpha.5 candidate (unpublished)
+## Alpha.5 scope
 
-The current source metadata identifies `0.1.0-alpha.5`; it has not been published.
-Alpha.4 remains the public preview. Alpha.5 adds named per-check Go build-tag
+Alpha.5 adds named per-check Go build-tag
 profiles in `checktrail.go-build.json`, with independent explicit exclusions.
 Native listing and execution use the same tags, including race and analyzer
 checks. Missing assignments, ambiguous declarations and stale exclusions cannot
@@ -48,15 +47,14 @@ a project relying on profile-selected files can become incomplete. No claim of
 coverage transfers from one profile or package version to another.
 
 The installed MCP SDK 2.0.0 routing probe was repeated on 2026-09-22: standard
-Tasks remains unavailable and is not advertised by this candidate.
+Tasks remains unavailable and is not advertised by this release.
 
-The candidate also makes the task-retention regression deterministic by controlling
+The release also makes the task-retention regression deterministic by controlling
 its clock and checking the exact expiry boundary. Production retention logic is
 unchanged. CI action pins have been updated; npm dependency versions are unchanged.
-The source before release preparation passed all 13 [hosted jobs](https://github.com/stsepelin/checktrail/actions/runs/35614737518)
-after retrying an actionlint download that received HTTP 504. The release commit
-still needs its own hosted CI run. Candidate checks and artifact identity belong
-in the concrete release review; this section does not claim publication.
+The release commit passed all hosted jobs. The immutable npm archive retains its
+preparation-time candidate documentation; this source documentation records the
+verified publication. Historical release records remain unchanged.
 
 ## Alpha.4 scope
 
@@ -85,7 +83,7 @@ verified publication.
 
 ## Distribution tags and previous releases
 
-`next` points to alpha.4. `latest` remains on alpha.1 because npm rejected its
+`next` points to alpha.5. `latest` remains on alpha.1 because npm rejected its
 removal. Use exact versions; neither tag implies a stable release. Never republish
 an existing version. No credentials or automatic publishing workflow are stored here.
 
@@ -121,8 +119,8 @@ its initial failures are not rewritten as later-release successes.
   loads the installed metadata and verifies its actual startup command.
 - CI definitions cover the host suite and prepared native profiles. Local
   containers and package checks are evidence only for the environments actually
-  exercised. The [hosted run at ebe7f5c](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
-  passed all jobs for the alpha.4 release commit. The local Claude Code health/discovery and
+  exercised. The [hosted run at 832a044](https://github.com/stsepelin/checktrail/actions/runs/35694375091)
+  passed all jobs for the alpha.5 release commit. The local Claude Code health/discovery and
   Codex direct app-server profiles have fresh-install evidence in `CLIENTS.md`.
 
 The metadata follows the official registry

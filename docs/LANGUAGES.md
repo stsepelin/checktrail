@@ -131,6 +131,6 @@ native-confirmed ignored files. It retains unverified exclusions in reports and
 does not claim a build matrix or add custom build-tag execution. Published alpha.3
 keeps the original strict exclusion behavior.
 
-The alpha.5 source candidate adds [Go build-tag profiles](GO-BUILD.md) for
+Alpha.5 adds [Go build-tag profiles](GO-BUILD.md) for
 per-check tags and exclusions across vet, tests, race tests, Staticcheck and
 golangci-lint. This is one configuration per selected check, not a target matrix.

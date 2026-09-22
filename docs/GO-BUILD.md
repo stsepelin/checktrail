@@ -1,6 +1,6 @@
-# Go build-tag profiles (alpha.5 candidate)
+# Go build-tag profiles (alpha.5 and later)
 
-The source checkout supports named build-tag profiles in module-local
+Alpha.5 supports named build-tag profiles in module-local
 `checktrail.go-build.json`. Published alpha.4 does not support this file. It
 selects additional Go build constraints for each check and keeps that check's
 exclusions explicit. It does not introduce cross-compilation or a target matrix.

@@ -3,20 +3,20 @@
 This is an experimental foundation with public source at
 [stsepelin/checktrail](https://github.com/stsepelin/checktrail).
 Check the [installation guide](INSTALLATION.md) for package availability and setup.
-The `0.1.0-alpha.4` preview is published on npm and active in the MCP Registry.
-The [hosted run at ebe7f5c](https://github.com/stsepelin/checktrail/actions/runs/35603451711)
+The `0.1.0-alpha.5` preview is published on npm and active in the MCP Registry.
+The [hosted run at 832a044](https://github.com/stsepelin/checktrail/actions/runs/35694375091)
 passed all jobs. The published tarball matched the reviewed artifact; fresh
 registry installation, CLI/library validation, generated npx startup and MCP
 execution/trust behavior were verified. Earlier toolchain evidence remains in
 `NATIVE-CI.md`; release details and tag limitations are in `RELEASE.md`.
-The GitHub alpha.4 prerelease includes the verified artifact and checksum.
+The GitHub alpha.5 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
-## Alpha.5 candidate (unpublished)
+## Alpha.5 release
 
-Package, engine and Registry metadata now identify `0.1.0-alpha.5`. The public
-preview remains alpha.4 until the candidate is approved, published and verified.
+The [release record](measurements/release-alpha5.json) ties the published artifact
+to hosted CI, fresh installation, client profiles and upgrade/rollback checks.
 
 - [Go build-tag profiles](GO-BUILD.md): each selected native check can use its own
   named tags and exclusions. Listing and execution agree, formatting remains
@@ -186,7 +186,7 @@ a general speedup/graph-completeness claim.
 ## Release preparation
 
 `server.json`, the npm package and the engine identify the published
-`0.1.0-alpha.4` preview. Its source commit passed hosted CI, the published tarball
+`0.1.0-alpha.5` preview. Its source commit passed hosted CI, the published tarball
 matched the reviewed artifact, and fresh CLI/library/MCP installation checks passed.
 Publication evidence and the sequence for future releases are in `RELEASE.md`.
 
@@ -546,7 +546,7 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
-1. Extend the unreleased per-check [Go build-tag profiles](GO-BUILD.md) toward
+1. Extend the per-check [Go build-tag profiles](GO-BUILD.md) toward
    repeated-check and target matrices only after their identities, aggregation
    and native target evidence are defined. Existing profiles validate only each
    selected check's configuration.

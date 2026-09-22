@@ -1,0 +1,495 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0-alpha.5",
+  "sourceCommit": "832a044398bcc060c0d6b4c42e66c6eb94a9f5a6",
+  "artifactSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+  "hostedCi": {
+    "url": "https://github.com/stsepelin/checktrail/actions/runs/35694375091",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "ruby",
+        "conclusion": "success"
+      },
+      {
+        "name": "java",
+        "conclusion": "success"
+      },
+      {
+        "name": "clang",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (macos-latest, 24)",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (ubuntu-latest, 24)",
+        "conclusion": "success"
+      },
+      {
+        "name": "vue-router",
+        "conclusion": "success"
+      },
+      {
+        "name": "dotnet",
+        "conclusion": "success"
+      },
+      {
+        "name": "nuxt",
+        "conclusion": "success"
+      },
+      {
+        "name": "actionlint",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (ubuntu-latest, 22)",
+        "conclusion": "success"
+      },
+      {
+        "name": "swift",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (ubuntu-latest, 26)",
+        "conclusion": "success"
+      },
+      {
+        "name": "external-adapters",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "publication": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.5",
+    "tag": "next",
+    "distTags": {
+      "latest": "0.1.0-alpha.1",
+      "next": "0.1.0-alpha.5"
+    },
+    "publicMetadata": true,
+    "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "integrity": "sha512-+QeFM+Fa8m/opGdZQeSgRkQ325jx73dNgAZ/2IrrsdfQWicUEn823V3M/+6dhNxZH+Da37xxoBPrXs92tEcc0Q==",
+    "registryTarballMatchesApproved": true,
+    "installation": "fresh-consumer-and-cache-from-npm-registry",
+    "observations": [
+      "installed-library-passed",
+      "installed-cli-passed-summary-private",
+      "generated-npx-fresh-cache-plan-and-trust-denial",
+      "generated-npx-warm-cache-plan-and-trust-denial",
+      "installed-init-doctor-and-mcp-config",
+      "installed-mcp-plan-and-trust-denial",
+      "installed-mcp-passed-and-retained-report",
+      "installed-mcp-failed-and-retained-report",
+      "installed-mcp-incomplete-and-retained-report"
+    ],
+    "node": "v26.8.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "recordedAt": "2026-09-22T07:17:38.177Z"
+  },
+  "registry": {
+    "url": "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.stsepelin%2Fchecktrail/versions/0.1.0-alpha.5",
+    "version": "0.1.0-alpha.5",
+    "status": "active",
+    "metadataMatches": true,
+    "executionDisabled": true,
+    "recordedAt": "2026-09-22T07:17:42.559Z"
+  },
+  "githubRelease": "https://github.com/stsepelin/checktrail/releases/tag/v0.1.0-alpha.5",
+  "githubAssetsMatchApproved": true,
+  "committedRebuild": {
+    "commit": "832a044398bcc060c0d6b4c42e66c6eb94a9f5a6",
+    "candidateSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "rebuiltSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "matches": true,
+    "sourceManifest": "matches committed files",
+    "scope": "Clean git archive rebuilt using the same installed compiler and dependencies on this host; not a cross-platform reproducibility claim"
+  },
+  "clients": [
+    {
+      "recordedAt": "2026-09-22T06:14:15.645Z",
+      "profile": "claude-code-health-discovery",
+      "clientVersion": "2.1.263 (Claude Code)",
+      "runtime": {
+        "node": "26.8.1",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+        "runtimeArtifactsSha256": "fed42bbf04477bf0c7b426f8004d33b888009873e589920c5bb0e88dd1605173"
+      },
+      "harnessSha256": "254e469de77d6e906e323822cf9898f53f6818ca9aab511c3b3e70dbe63a4cb5",
+      "observations": [
+        {
+          "check": "health-and-discovery",
+          "outcome": "passed",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-22T06:14:17.413Z",
+      "profile": "codex-app-server-direct-tools",
+      "clientVersion": "codex-cli 0.154.0",
+      "runtime": {
+        "node": "26.8.1",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+        "runtimeArtifactsSha256": "fed42bbf04477bf0c7b426f8004d33b888009873e589920c5bb0e88dd1605173"
+      },
+      "harnessSha256": "254e469de77d6e906e323822cf9898f53f6818ca9aab511c3b3e70dbe63a4cb5",
+      "observations": [
+        {
+          "check": "project_context",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "validation_plan",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "guidance-https-result",
+          "outcome": "passed",
+          "references": ["https://nodejs.org/api/test.html"]
+        },
+        {
+          "check": "default-execution-denied",
+          "outcome": "passed"
+        },
+        {
+          "check": "tool-cannot-grant-trust",
+          "outcome": "passed"
+        },
+        {
+          "check": "native-passed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "passed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "passed",
+              "tests": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "native-failed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "failed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "failed",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "all-skipped-is-incomplete",
+          "outcome": "passed",
+          "validationOutcome": "incomplete",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "inconclusive",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 0,
+                "skipped": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "upgrade": {
+    "hashes": {
+      "baseline": "4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c",
+      "candidate": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7"
+    },
+    "stages": [
+      {
+        "phase": "baseline",
+        "version": "0.1.0-alpha.4",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      },
+      {
+        "phase": "upgrade",
+        "version": "0.1.0-alpha.5",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      },
+      {
+        "phase": "rollback",
+        "version": "0.1.0-alpha.4",
+        "cli": "passed",
+        "mcp": "passed",
+        "configuration": "unchanged"
+      }
+    ],
+    "installation": "offline",
+    "priorReportImport": "passed"
+  },
+  "goBuildUpgrade": {
+    "baselineSha256": "4cc6dca5877b29cb452595c1c50233b0d377248f6f6e84e18ffe1b74b2031f8c",
+    "candidateSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v26.8.1",
+    "results": [
+      {
+        "phase": "baseline",
+        "version": "0.1.0-alpha.4",
+        "outcome": "incomplete",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "status": "inconclusive"
+          },
+          {
+            "id": "go.test",
+            "status": "inconclusive"
+          },
+          {
+            "id": "go.test-race",
+            "status": "inconclusive"
+          }
+        ],
+        "sourcePreserved": true,
+        "cliLibraryMcpAgree": true
+      },
+      {
+        "phase": "upgrade",
+        "version": "0.1.0-alpha.5",
+        "outcome": "passed",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "status": "passed"
+          },
+          {
+            "id": "go.test",
+            "status": "passed"
+          },
+          {
+            "id": "go.test-race",
+            "status": "passed"
+          }
+        ],
+        "sourcePreserved": true,
+        "cliLibraryMcpAgree": true
+      },
+      {
+        "phase": "rollback",
+        "version": "0.1.0-alpha.4",
+        "outcome": "incomplete",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "status": "inconclusive"
+          },
+          {
+            "id": "go.test",
+            "status": "inconclusive"
+          },
+          {
+            "id": "go.test-race",
+            "status": "inconclusive"
+          }
+        ],
+        "sourcePreserved": true,
+        "cliLibraryMcpAgree": true
+      }
+    ]
+  },
+  "goBuildReplay": {
+    "scope": "Synthetic development-fixture replay measured on the exact release candidate before publication; not independent held-out evaluation.",
+    "sha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v26.8.1",
+    "observations": [
+      {
+        "phase": "passing",
+        "outcome": "passed",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "passed"
+          },
+          {
+            "id": "go.test",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "passed",
+            "tests": {
+              "total": 2,
+              "passed": 2,
+              "failed": 0,
+              "skipped": 0
+            }
+          },
+          {
+            "id": "go.test-race",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 0,
+            "status": "passed",
+            "tests": {
+              "total": 3,
+              "passed": 3,
+              "failed": 0,
+              "skipped": 0
+            }
+          }
+        ],
+        "cliLibraryMcpAgree": true,
+        "retainedReportEqual": true
+      },
+      {
+        "phase": "failing",
+        "outcome": "failed",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "passed"
+          },
+          {
+            "id": "go.test",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "failed",
+            "tests": {
+              "total": 2,
+              "passed": 1,
+              "failed": 1,
+              "skipped": 0
+            }
+          },
+          {
+            "id": "go.test-race",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 0,
+            "status": "failed",
+            "tests": {
+              "total": 3,
+              "passed": 2,
+              "failed": 1,
+              "skipped": 0
+            }
+          }
+        ],
+        "cliLibraryMcpAgree": true,
+        "retainedReportEqual": true
+      },
+      {
+        "phase": "missing-profile",
+        "outcome": "incomplete",
+        "checks": [
+          {
+            "id": "go.format",
+            "status": "passed"
+          },
+          {
+            "id": "go.vet",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "passed"
+          },
+          {
+            "id": "go.test",
+            "goBuildTagCount": 1,
+            "goExcludedFileCount": 1,
+            "status": "passed",
+            "tests": {
+              "total": 2,
+              "passed": 2,
+              "failed": 0,
+              "skipped": 0
+            }
+          },
+          {
+            "id": "go.test-race",
+            "status": "unavailable"
+          }
+        ],
+        "cliLibraryMcpAgree": true,
+        "retainedReportEqual": true
+      }
+    ]
+  },
+  "limits": [
+    "Named client profiles and synthetic Go build-profile fixtures only; no general effectiveness or broader compatibility claim.",
+    "Each selected Go check runs one configured profile. Excluded source is unverified; repeated-check and cross-target matrices remain unsupported.",
+    "The clean source rebuild used the same installed compiler and dependencies on the same host.",
+    "Standard MCP Tasks is not advertised.",
+    "Recorded tags describe publication-time state."
+  ]
+}
