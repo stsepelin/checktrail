@@ -127,6 +127,12 @@ provisional public baseline with actual reviewer and adjudicator sessions.
 
 ## Agent review experiments
 
+The [enforced cross-family pilot](ENFORCED-CROSS-FAMILY-PILOT.md) applies measured
+execution requirements to fresh Claude/Codex reviews of public Python and
+TypeScript library snapshots. Native report framing, source associations and
+budget failures remain separate from semantic findings; incomplete attempts are
+not promoted into completed comparisons.
+
 The [agent evaluation workflow](AGENT-EVALUATION.md) implements frozen declarations,
 separate source packets, sealed reviewer receipts, blinded judging and paired
 accounting. It complements these deterministic adapter measurements; it does not

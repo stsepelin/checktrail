@@ -90,6 +90,17 @@ const schemas = {
   checktrail_validate: z.strictObject({}),
 };
 
+function schemasFor(config) {
+  return config.binding
+    ? {
+        ...schemas,
+        evaluation_probe: schemas.evaluation_probe.required({
+          sourceEvidenceIds: true,
+        }),
+      }
+    : schemas;
+}
+
 export function projectEvidence(result) {
   const projected = globalThis.structuredClone(result);
   function output(value) {
@@ -246,6 +257,7 @@ export function containerArgs(config, snapshot, worker, name, engine = false) {
 
 export async function createGateway(input, options = {}) {
   const config = configSchema.parse(input);
+  const inputSchemas = schemasFor(config);
   assert.equal(
     await fs.realpath(path.dirname(config.audit)),
     path.dirname(config.audit),
@@ -346,7 +358,7 @@ export async function createGateway(input, options = {}) {
       bytes: bytes.length,
     })),
   });
-  const tools = Object.keys(schemas).filter(
+  const tools = Object.keys(inputSchemas).filter(
     (name) => config.treatment || !name.startsWith("checktrail_"),
   );
   async function mountedIdentity(engine) {
@@ -454,7 +466,7 @@ export async function createGateway(input, options = {}) {
       "Gateway budget exhausted",
     );
     assert.ok(tools.includes(name), "Tool unavailable");
-    const args = schemas[name].parse(argument);
+    const args = inputSchemas[name].parse(argument);
     if (name === "evaluation_files")
       return [...snapshot].map(([file, bytes]) => ({
         file,
@@ -563,6 +575,7 @@ export async function createGateway(input, options = {}) {
   }
   return {
     tools,
+    schemas: inputSchemas,
     call(name, argument) {
       if (closing) return Promise.reject(new Error("Gateway is closing"));
       const pending = queue.then(async () => {
@@ -663,7 +676,7 @@ export function createServer(gateway) {
   for (const name of gateway.tools)
     server.registerTool(
       name,
-      { description: descriptions[name], inputSchema: schemas[name] },
+      { description: descriptions[name], inputSchema: gateway.schemas[name] },
       async (args) => {
         const value = await gateway.call(name, args);
         return {
@@ -686,10 +699,12 @@ if (
   const config = configSchema.parse(
     JSON.parse(await fs.readFile(process.argv[2], "utf8")),
   );
+  const inputSchemas = schemasFor(config);
   let gatewayPromise;
   let stopped = false;
   const lazyGateway = {
-    tools: Object.keys(schemas).filter(
+    schemas: inputSchemas,
+    tools: Object.keys(inputSchemas).filter(
       (name) => config.treatment || !name.startsWith("checktrail_"),
     ),
     async call(name, args) {

@@ -419,3 +419,72 @@ test("probe source bindings require earlier successful read receipts and preserv
     assert.deepEqual(records.at(-1).result.value.sourceFiles,bound.value.sourceFiles);
   `);
 });
+
+test("bound reviewer and judge probes require earlier source reads before execution while legacy omission remains valid", () => {
+  exercise(String.raw`
+    const {z}=await import('zod');
+    for(const role of ['reviewer','judge']) {
+      const binding={manifestSha256:'b'.repeat(64),subjectId:'assignment',sessionId:'session',role};
+      gateway=await api.createGateway({...config,audit:config.audit+'-'+role,binding},{execute});
+      const advertised=z.toJSONSchema(gateway.schemas.evaluation_probe);
+      assert.ok(advertised.required.includes('sourceEvidenceIds'));
+      const listed=await gateway.call('evaluation_files',{});
+      const failedRead=await gateway.call('evaluation_read',{file:'missing.py'});
+      const citation=await gateway.call('evaluation_citation',{file:'entry.py',line:1,endLine:1,quote:'value = 1'});
+      const read=await gateway.call('evaluation_read',{file:'entry.py'});
+      const before=executions.length;
+      for(const args of [
+        {},
+        {sourceEvidenceIds:[]},
+        {sourceEvidenceIds:['evidence-1-aaaaaaaaaaaa']},
+        {sourceEvidenceIds:[listed.evidenceId]},
+        {sourceEvidenceIds:[failedRead.evidenceId]},
+        {sourceEvidenceIds:[citation.evidenceId]},
+        {sourceEvidenceIds:[read.evidenceId,read.evidenceId]},
+      ]) {
+        const rejected=await gateway.call('evaluation_probe',{language:'python',code:'print(1)',...args});
+        assert.equal(rejected.ok,false,JSON.stringify(args));
+        assert.equal(executions.length,before);
+      }
+      const valid=await gateway.call('evaluation_probe',{language:'python',code:'print(1)',sourceEvidenceIds:[read.evidenceId]});
+      assert.equal(valid.ok,true);assert.equal(executions.length,before+2);
+      assert.deepEqual(valid.value.sourceFiles,[{file:'entry.py',sha256:createHash('sha256').update('value = 1\n').digest('hex')}]);
+      await gateway.close();gateway=undefined;
+      const audit=(await fs.readFile(config.audit+'-'+role,'utf8')).trim().split('\n').map(JSON.parse);
+      assert.equal(audit.at(-1).executionAttempts,1);assert.equal(audit.at(-1).verifiedExecutions,1);
+    }
+    gateway=await api.createGateway(config,{execute});
+    assert.ok(!z.toJSONSchema(gateway.schemas.evaluation_probe).required.includes('sourceEvidenceIds'));
+    const before=executions.length;
+    assert.equal((await gateway.call('evaluation_probe',{language:'python',code:'print(1)'})).ok,true);
+    assert.equal(executions.length,before+2);
+  `);
+});
+
+test("bound lazy MCP discovery advertises required source IDs and rejects omission without opening an execution audit", () => {
+  exercise(String.raw`
+    const {Client}=await import('@modelcontextprotocol/client');
+    const {StdioClientTransport}=await import('@modelcontextprotocol/client/stdio');
+    const {fileURLToPath}=await import('node:url');
+    for(const role of ['reviewer','judge']) {
+      const binding={manifestSha256:'b'.repeat(64),subjectId:'assignment',sessionId:'session',role};
+      const configFile=path.join(temporary,role+'-config.json');
+      const audit=config.audit+'-'+role;
+      await fs.writeFile(configFile,JSON.stringify({...config,audit,binding}));
+      const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(process.argv[1]),configFile,'--trust-execution'],stderr:'pipe'});
+      const client=new Client({name:'bound-source-schema-test',version:'1.0.0'},{versionNegotiation:{mode:{pin:'2026-07-28'}}});
+      try {
+        await client.connect(transport);
+        const tools=await client.listTools();
+        const probe=tools.tools.find(tool=>tool.name==='evaluation_probe');
+        assert.ok(probe.inputSchema.required.includes('sourceEvidenceIds'));
+        assert.equal(probe.inputSchema.properties.sourceEvidenceIds.minItems,1);
+        for(const args of [{}, {sourceEvidenceIds:[]}]) {
+          const result=await client.callTool({name:'evaluation_probe',arguments:{language:'python',code:'print(1)',...args}});
+          assert.equal(result.isError,true);
+          await assert.rejects(fs.stat(audit),{code:'ENOENT'});
+        }
+      } finally {await client.close();}
+    }
+  `);
+});

@@ -70,6 +70,43 @@ plan's existing `budget`. The freeze records the gateway, worker, supervisor,
 protocol verifier, compiled engine modules, dependency lock and prompt bytes.
 Changing them requires a new declaration.
 
+### Preflight every case before inference
+
+Run each case's exact command against its captured source and prepared dependencies:
+
+```sh
+node scripts/preflight-evaluation-native.mjs CONFIG.json NEW_OUTPUT_DIR --trust-execution
+```
+
+The configuration has three fields: `gateway`, `profile`, and `nativeEvidence`.
+`gateway` is the operator's normal gateway configuration with `treatment: false`
+and without `audit` or `binding`; the script creates its own audit in the new output
+directory. `profile` is the exact expected execution profile above, including runtime
+and dependency tree digests. `nativeEvidence` is the declared parser and file scope.
+The gateway's observed profile must match before the native command executes.
+
+This checkout utility makes no model calls. It retains the input, complete raw
+gateway audit and `preflight.json`; existing output directories are rejected.
+Its `ready` result uses the same native completion function as the enforced
+protocol, together with execution integrity and cleanup checks. It reads the raw
+audit, not the bounded tool-display projection, and exits nonzero when not ready.
+A conclusive failing test suite can be ready: readiness means usable comparator
+evidence, not passing source. Zero-test, all-skipped, truncated and malformed
+reports are not ready.
+
+Compare the recorded source file hashes and profile with the case being frozen.
+Repeat this preflight when source, command, scope, parser, runtime or dependencies
+change. The script is an operator readiness check, not a model launcher or a
+replacement for review/judge protocol verification. Its local artifacts can contain
+paths and full test output; apply the publication policy before sharing them.
+
+For Vitest 5, the historical pilot's `--outputFile=/dev/stdout` command appends a
+banner after JSON, while removing that option tries to write a report into the
+read-only source tree. Both fail the preflight. A separately measured native
+Vitest API invocation using `new JsonReporter({ stdout: true, outputFile: "" })`
+produces clean stdout; see the [pilot report](ENFORCED-CROSS-FAMILY-PILOT.md).
+Do not strip banners from completed trial evidence or replace a failed attempt.
+
 ## Bind each process to its assignment
 
 Set the gateway's optional `binding` for an enforced run:
@@ -128,6 +165,13 @@ usable probe result IDs, covering every cited file. The cited line ranges must h
 actually been disclosed by recorded source reads. Adjacent or overlapping reads may
 cover a citation together; a gap in the disclosed lines cannot.
 
+Bound gateway clients now receive a schema requiring those source IDs; direct
+gateway calls enforce the same requirement. Missing or empty IDs cannot start a
+probe. Schema-rejected calls remain metered tool attempts, and an agent may correct
+its request within the same bounded session. Unbound legacy gateways keep their
+optional source association. Neither mode verifies that a program actually imports
+the declared source; independent inspection remains required.
+
 Judgments use `status: "completed" | "incomplete"`. Each accepted label, including
 a valid control with no findings, needs its own `probeEvidenceIds`. Resolved finding
 decisions also need them. Judge probes must reference source reads beneath that
@@ -135,6 +179,12 @@ item's exact `<blindId>/source/` prefix. This verifies the declared association 
 execution provenance; it cannot verify the semantic adequacy of a control. There
 is no substring search for source paths inside executable code, so dynamically
 constructed imports are not rejected by a textual heuristic.
+
+The judgment's top-level status describes the judge's own work. A judge can finish
+assessing an incomplete reviewer receipt and return `status: "completed"` if all
+of its own requirements were met. The scorer still keeps that reviewer receipt
+incomplete; completing adjudication does not repair the reviewed attempt. Omit no
+required label or decision evidence merely because the reviewer was incomplete.
 
 Use the exact directory produced by `blind` as the judge gateway source, including
 `judging.json` and every captured source file. Verification binds that complete
@@ -238,4 +288,8 @@ both review arms, the treatment's retained MCP validation, and both judge contro
 Changed claims, changed declared usage, missing cleanup and a sibling item's probe
 were rejected. This exercised real execution with the published alpha.5 runtime;
 no model inference occurred, and it provides no review-effectiveness evidence.
-A fresh independently reviewed cross-family cohort remains the next measurement.
+The subsequent [cross-family historical cohort](ENFORCED-CROSS-FAMILY-PILOT.md)
+records live model attempts, independent audits and a native report framing
+failure missed by the Python-only canary. A synthetic canary cannot establish
+readiness for every execution profile: verify each case's actual native command
+and complete raw output against the declared parser and scope before inference.

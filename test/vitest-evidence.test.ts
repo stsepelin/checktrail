@@ -100,6 +100,18 @@ test("Vitest evidence requires matching file paths, terminal assertions and reco
     assert.equal(parse(report(), patch).status, "inconclusive");
 });
 
+test("Vitest requires the entire stdout report, without CLI banners or extra JSON", () => {
+  const json = JSON.stringify(report());
+  assert.equal(parse(report(), { stdout: `\n${json}\n` }).status, "passed");
+  for (const stdout of [
+    `${json}\nJSON report written to /dev/stdout\n`,
+    `Starting tests\n${json}\n`,
+    `${json}\n${json}\n`,
+  ]) {
+    assert.equal(parse(report(), { stdout }).status, "inconclusive");
+  }
+});
+
 test("Vitest never treats zero tests, skipped tests or a nonzero exit as success", () => {
   const empty = report();
   empty.numTotalTests = 0;

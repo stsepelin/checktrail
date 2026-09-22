@@ -57,6 +57,11 @@ validation outcomes or establish a general superiority claim.
 For a declared `gateway-v1` run, include terminal `status`. Each accepted label,
 including a valid control with no findings, supplies `probeEvidenceIds` for its own
 control execution. Every resolved finding decision also supplies `probeEvidenceIds`.
+Your terminal status describes your adjudication work, not the reviewed receipts.
+You can complete adjudication of an incomplete review. Return `completed` when
+your own required checks, evidence and delivery are complete; the scorer still
+keeps an incomplete reviewer attempt ineligible. Do not copy a reviewer's status
+into your adjudication status.
 Pass earlier source read IDs to each probe as `sourceEvidenceIds`, using that item's
 `<blindId>/source/` files. Execute the actual control behavior, rather than inferring
 it from another finding's probe. Check that the probe actually exercises the stated

@@ -363,6 +363,8 @@ These small synthetic observations do not establish independent review quality.
 The [agent evaluation workflow](docs/AGENT-EVALUATION.md) freezes public-source cases,
 separates native-only and MCP-assisted reviewers, seals assessments, and supplies
 blinded adjudication and explicit incomplete-result accounting.
+The [enforced cross-family pilot](docs/ENFORCED-CROSS-FAMILY-PILOT.md) records
+fresh Claude/Codex attempts, delivery failures and independent execution audits.
 
 [Impact measurements](docs/IMPACT-MEASUREMENT.md) compare full and Git-selected
 validation, including missed consumer failures when dependency declarations are

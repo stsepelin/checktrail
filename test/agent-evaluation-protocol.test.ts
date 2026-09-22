@@ -101,6 +101,17 @@ test("enforced protocol binds execution, numbered source and exact inclusive bud
     assert.equal(result.toolCalls,3);
     const rejected=fixture({extraCalls:[['evaluation_read',{file:'missing.py'},null,false]]});
     assert.equal(verify(rejected.bundle).complete,true,JSON.stringify(verify(rejected.bundle)));
+    for(const extra of [{}, {sourceEvidenceIds:[]}]) {
+      const args={language:'python',code:'print(1)',...extra};
+      const directRejected=fixture({extraCalls:[['evaluation_probe',args,null,false]]});
+      const directResult=verify(directRejected.bundle);
+      assert.equal(directResult.complete,true,JSON.stringify(directResult));
+      assert.equal(directResult.toolCalls,4);
+      const sdkRejectedProbe=fixture({extraTools:[{type:'item.completed',item:{id:'invalid-probe',type:'mcp_tool_call',server:'eval',tool:'evaluation_probe',arguments:args}}]});
+      const sdkResult=verify(sdkRejectedProbe.bundle);
+      assert.equal(sdkResult.complete,true,JSON.stringify(sdkResult));
+      assert.equal(sdkResult.toolCalls,4);
+    }
     const unknownRead=fixture({extraCalls:[['evaluation_probe',{language:'python',code:'print(1)',sourceEvidenceIds:['evidence-3-000000000000']},null,false]]});
     assert.equal(verify(unknownRead.bundle).complete,true,JSON.stringify(verify(unknownRead.bundle)));
     incomplete(fixture({terminal:{input_tokens:101,output_tokens:100}}).bundle,'session-input-token-budget');

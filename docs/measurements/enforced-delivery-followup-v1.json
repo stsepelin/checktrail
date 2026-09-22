@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "kind": "synthetic-enforced-live",
+  "verifierSha256": "631be6a736d49ef1c2ccaed1504dd7f99b85b8e13b45babcb412b59a5183a814",
+  "modelInference": false,
+  "effectivenessClaimSupported": false,
+  "image": "sha256:50acdf79e4b3fcfafb4151579ac00b097382f64190481a1d69399efea05c9fed",
+  "engine": {
+    "version": "0.1.0-alpha.5",
+    "archiveSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "verifiedArchiveFiles": 408,
+    "runtimeSha256": "a6bc833708df4310d26557ac6cc7ad62eafa3bb69be796b289f852f0322a72c7"
+  },
+  "sdk": {
+    "version": "2.0.0",
+    "protocol": "2026-07-28"
+  },
+  "manifestSha256": "3caa618ce414514247e5232ff1b59d6f502107574caea2f548f80574951acb74",
+  "implementation": [
+    {
+      "file": "agent-evaluation-gateway.mjs",
+      "sha256": "179ca848a422b3a34fb069395c77140b23c8528ad0a1ddefd5a5426335cfd9e9"
+    },
+    {
+      "file": "agent-evaluation-worker.mjs",
+      "sha256": "a72168a881bc7ab3aa094ad17d83c0fc0c352b7bf5b4af868b8b2c810b61ef88"
+    },
+    {
+      "file": "agent-evaluation-protocol.mjs",
+      "sha256": "b30a59067b7b9283d757e8857569586995690f7cdd1231094df81dcaea2d5c64"
+    },
+    {
+      "file": "agent-evaluation-session.mjs",
+      "sha256": "bfa585f7207163e87599d719b0c48f71789a1f63f3bba9191937b379e8b55749"
+    }
+  ],
+  "reviews": [
+    {
+      "complete": true,
+      "nativeRuns": 1,
+      "mcpValidations": 0,
+      "probes": 1,
+      "toolCalls": 4,
+      "eventsSha256": "1f3f57758d904b777c3c1be8a3debaf67db1f6bcf32e204a5af3a876cadce49b",
+      "auditSha256": "28f90e708d1d00a827687efe426dce8ae5965a56b7722740a186b3d07fa0f8d1"
+    },
+    {
+      "complete": true,
+      "nativeRuns": 1,
+      "mcpValidations": 1,
+      "probes": 1,
+      "toolCalls": 5,
+      "eventsSha256": "4e79c6dc621a3fa572d18a3280dc0c3299989e88b94b43963751b22ad21f1e80",
+      "auditSha256": "c3659d90084874a97b6115426be74878485071eeb793b064f73966457bfcd8cc"
+    }
+  ],
+  "judge": {
+    "complete": true,
+    "controlProbes": 2,
+    "toolCalls": 6,
+    "eventsSha256": "ba8e59f9bde1b89e54ef1e32624bc20565b9c27328efd95250976f40aeb1e2c9",
+    "auditSha256": "f30c1b8d6dc8777d1adeb7fc842d78bc5d57a9ed5230ae5bf8a574af262b0956"
+  },
+  "scoringComplete": true,
+  "completedAssessments": 2,
+  "controls": [
+    {
+      "name": "altered-claim",
+      "rejected": true
+    },
+    {
+      "name": "altered-usage",
+      "rejected": true
+    },
+    {
+      "name": "missing-gateway-end",
+      "rejected": true
+    },
+    {
+      "name": "sibling-control-probe",
+      "rejected": true
+    }
+  ]
+}

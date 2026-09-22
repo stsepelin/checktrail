@@ -273,5 +273,17 @@ when its implementation and corresponding evidence exist.
   bounded process cleanup, exact terminal submissions and complete blinded judge
   packet binding. Legacy procedural runs remain distinguishable. See
   `ENFORCED-EVALUATION.md` for the protocol and real no-inference execution canary.
-- Pending: a fresh cross-family model cohort under the enforced protocol. Historical
-  pilot failures and synthetic execution canaries do not establish review quality.
+- Measured a fresh enforced historical cohort: sixteen Claude/Codex reviews of
+  public Python/TypeScript library snapshots and four independent judgments.
+  Eight reviews met the execution protocol; none of the judgments did. Native
+  report framing, missing source associations, an output-token overrun and judge
+  delivery failures remain recorded. The independent audit inspected all seventy
+  probe programs and outputs. No eligible quality comparison results from this
+  cohort; see `ENFORCED-CROSS-FAMILY-PILOT.md` and its immutable measurement.
+- Added a native-profile readiness utility using the same strict completion gate,
+  full raw audit and integrity/cleanup checks. Separate no-inference diagnostics
+  preserve the original framing failure and a failed correction before verifying
+  a working native Vitest stdout profile. Future bound probe calls require source
+  evidence IDs before execution, and judge instructions distinguish their own
+  completion from an incomplete reviewer receipt. These delivery improvements do
+  not establish review-quality improvement; a new frozen cohort is required.

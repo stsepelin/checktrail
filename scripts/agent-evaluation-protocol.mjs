@@ -93,7 +93,7 @@ const toolArguments = {
   evaluation_probe: z.strictObject({
     language: z.enum(["javascript", "python"]),
     code: z.string().min(1).max(16000),
-    sourceEvidenceIds: probeEvidenceIds.optional(),
+    sourceEvidenceIds: probeEvidenceIds,
   }),
   checktrail_plan: z.strictObject({}),
   checktrail_validate: z.strictObject({}),
@@ -185,7 +185,7 @@ function positiveTests(tests) {
   );
 }
 
-function nativeComplete(value, expected) {
+export function nativeComplete(value, expected) {
   if (!expected.nativeEvidence || !boundedExecution(value, [0, 1]))
     return false;
   const declaration = nativeEvidenceSchema.parse(expected.nativeEvidence);
@@ -272,8 +272,7 @@ function executionAttempt(call, profile, treatment) {
     typeof args.code === "string" &&
     args.code.length > 0 &&
     args.code.length <= 16000 &&
-    (args.sourceEvidenceIds === undefined ||
-      probeEvidenceIds.safeParse(args.sourceEvidenceIds).success)
+    probeEvidenceIds.safeParse(args.sourceEvidenceIds).success
   );
 }
 
