@@ -60,6 +60,10 @@ Keep prepared helper programs in a dedicated disclosure directory whose listing
 and ancestors do not reveal labels, patch names or counterpart sources. Merely
 instructing an agent not to list the adjacent curation directory is insufficient.
 Stronger trials need an enforced file-access boundary and a negative access test.
+The checkout now includes an [evaluation gateway](EVALUATION-ISOLATION.md) with
+captured-file access and fresh offline execution containers. Its version-specific
+client recipes remove native host tools and are checked against actual advertised
+tool inventories; the earlier safe-mode pilot configuration is not sufficient.
 
 ## Evidence and accounting
 

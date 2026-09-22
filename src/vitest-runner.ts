@@ -1,12 +1,36 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { withinRoot } from "./inventory.js";
+import { readProjectFile, withinRoot } from "./inventory.js";
+import { vitestMajor } from "./vitest-version.js";
+import type { CliOptions, Vitest, VitestOptions } from "vitest/node";
+
+type StartVitest4 = (
+  mode: "test",
+  filters: string[],
+  options: Omit<CliOptions, "experimental"> & {
+    experimental: { fsModuleCache: false };
+  },
+  overrides: undefined,
+  runtime: VitestOptions,
+) => Promise<Vitest>;
 
 async function main(): Promise<void> {
-  const [entry, root, ...files] = process.argv.slice(2);
-  if (!entry || !root || !files.length)
+  const [entry, inputRoot, ...files] = process.argv.slice(2);
+  if (!entry || !inputRoot || !files.length)
     throw new Error("Invalid Vitest runner arguments");
-  const tool = await withinRoot(root, path.relative(root, entry));
+  const root = await withinRoot(inputRoot, ".");
+  const tool = await withinRoot(root, path.relative(inputRoot, entry));
+  const major = vitestMajor(
+    JSON.parse(
+      await readProjectFile(
+        root,
+        path.relative(
+          root,
+          path.resolve(path.dirname(tool), "../package.json"),
+        ),
+      ),
+    ),
+  );
   const { startVitest, JsonReporter, VitestPackageInstaller } = (await import(
     pathToFileURL(tool).href
   )) as typeof import("vitest/node");
@@ -27,36 +51,49 @@ async function main(): Promise<void> {
     filters.push(
       await withinRoot(root, path.relative(root, path.resolve(file))),
     );
-  const ctx = await startVitest(
-    filters,
-    {
-      root: process.cwd(),
-      run: true,
-      watch: false,
-      update: "none",
-      allowOnly: false,
-      passWithNoTests: false,
-      dangerouslyIgnoreUnhandledErrors: false,
-      onUnhandledError: () => true,
-      cache: false,
-      fsModuleCache: false,
-      reporters: [new JsonReporter({ stdout: true, outputFile: "" })],
-    },
-    undefined,
-    { packageInstaller: new InstalledOnly() },
-  );
-  const errors = ctx.state.getUnhandledErrors();
-  if (errors.length) {
-    process.exitCode = 1;
-    for (const error of errors) {
-      const message =
-        typeof error === "object" && error !== null && "message" in error
-          ? String(error.message)
-          : String(error);
-      process.stderr.write(`Unhandled Vitest error: ${message}\n`);
+  const options = {
+    root: process.cwd(),
+    run: true,
+    watch: false,
+    update: "none" as const,
+    allowOnly: false,
+    passWithNoTests: false,
+    dangerouslyIgnoreUnhandledErrors: false,
+    onUnhandledError: () => true,
+    cache: false as const,
+    reporters: [new JsonReporter({ stdout: true, outputFile: "" })],
+  };
+  const runtime = { packageInstaller: new InstalledOnly() };
+  const ctx =
+    major === 4
+      ? await (startVitest as unknown as StartVitest4)(
+          "test",
+          filters,
+          { ...options, experimental: { fsModuleCache: false } },
+          undefined,
+          runtime,
+        )
+      : await startVitest(
+          filters,
+          { ...options, fsModuleCache: false },
+          undefined,
+          runtime,
+        );
+  try {
+    const errors = ctx.state.getUnhandledErrors();
+    if (errors.length) {
+      process.exitCode = 1;
+      for (const error of errors) {
+        const message =
+          typeof error === "object" && error !== null && "message" in error
+            ? String(error.message)
+            : String(error);
+        process.stderr.write(`Unhandled Vitest error: ${message}\n`);
+      }
     }
+  } finally {
+    await ctx.close();
   }
-  await ctx.close();
 }
 
 main().catch((error: unknown) => {

@@ -7,7 +7,7 @@ extend the execution capabilities or native evidence listed below.
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,
-Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. PHP syntax
+Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility is exercised at 4.1.9 and 5.0.1 (see [Vitest validation](VITEST.md)). PHP syntax
 has been verified separately in an isolated official Linux container. Tool versions and remaining gaps are tracked in `STATUS.md`.
 
 | Family                        | Project boundaries                                                      | Initial scope                                                                                                                                        | Subsequent native integrations                      | Important constraints                                                                                                   |

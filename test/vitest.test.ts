@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, writeFile } from "node:fs/promises";
+import { access, cp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
 import { validate, createPlan } from "../src/engine.js";
@@ -13,6 +13,17 @@ const policy = JSON.stringify({
 const good =
   "import {test, expect} from 'vitest'; test('adds',()=>expect(2+3).toBe(5));\n";
 
+async function copyVitest(root: string): Promise<void> {
+  const installed = process.env.CHECKTRAIL_TEST_VITEST_NODE_MODULES;
+  if (!installed) return copyInstalledPackages(root, ["vitest", "vite"]);
+  const metadata = JSON.parse(
+    await readFile(path.join(installed, "vitest/package.json"), "utf8"),
+  );
+  assert.equal(metadata.name, "vitest");
+  assert.equal(metadata.version, "4.1.9");
+  await cp(installed, path.join(root, "node_modules"), { recursive: true });
+}
+
 test(
   "native Vitest records assertions, catches failures and rejects all-skipped and excluded test files",
   { timeout: 60_000 },
@@ -20,11 +31,22 @@ test(
     const root = await fixture(t, {
       "package.json": '{"type":"module"}',
       "checktrail.json": policy,
-      "vitest.config.mjs":
-        "export default {test:{outputFile:'should-not-write.json'}};\n",
+      "vitest.config.mjs": `export default ${JSON.stringify({
+        test: {
+          outputFile: "should-not-write.json",
+          ...(process.env.CHECKTRAIL_TEST_VITEST_NODE_MODULES
+            ? {
+                experimental: {
+                  fsModuleCache: true,
+                  fsModuleCachePath: "should-not-cache",
+                },
+              }
+            : { fsModuleCache: true, fsModuleCachePath: "should-not-cache" }),
+        },
+      })};\n`,
       "sum.test.ts": good,
     });
-    await copyInstalledPackages(root, ["vitest", "vite"]);
+    await copyVitest(root);
     const passed = await validate(root, { trusted: true });
     assert.equal(passed.outcome, "passed", JSON.stringify(passed.checks));
     assert.deepEqual(passed.checks[0]!.tests, {
@@ -36,6 +58,7 @@ test(
     assert.equal(passed.sourceChanged, false);
     await assert.rejects(access(path.join(root, "should-not-write.json")));
     await assert.rejects(access(path.join(root, ".vitest")));
+    await assert.rejects(access(path.join(root, "should-not-cache")));
     await writeFile(
       path.join(root, "sum.test.ts"),
       "import {test,expect} from 'vitest'; test('fails',()=>expect(2+3).toBe(6));\n",
@@ -90,7 +113,7 @@ test(
       "sum.test.js":
         "import {test,expect} from 'vitest'; test.only('focused',()=>expect(1).toBe(1)); test('hidden failure',()=>expect(1).toBe(2));\n",
     });
-    await copyInstalledPackages(root, ["vitest", "vite"]);
+    await copyVitest(root);
     assert.equal((await validate(root, { trusted: true })).outcome, "failed");
     await writeFile(
       path.join(root, "sum.test.js"),
