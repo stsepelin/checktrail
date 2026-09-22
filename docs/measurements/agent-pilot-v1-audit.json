@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "audit": "Independent local results audit; no score function invoked and no result artifacts modified",
+  "manifestSha256": "e383b6b0bbbce1d3fd4215d82ac55170b5cb6512013571693459812a8433f258",
+  "errors": [],
+  "metricsAgreeWithScore": true,
+  "observations": [
+    {
+      "caseId": "c0a9",
+      "arm": "baseline",
+      "expected": 0,
+      "matched": 0,
+      "matchedDefectIds": [],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 1,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c0a9",
+      "arm": "mcp",
+      "expected": 0,
+      "matched": 0,
+      "matchedDefectIds": [],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 1,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c7b2",
+      "arm": "mcp",
+      "expected": 1,
+      "matched": 1,
+      "matchedDefectIds": ["regexp-unicode-hyphen"],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 0,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c7b2",
+      "arm": "baseline",
+      "expected": 1,
+      "matched": 1,
+      "matchedDefectIds": ["regexp-unicode-hyphen"],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 0,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c3f8",
+      "arm": "baseline",
+      "expected": 1,
+      "matched": 1,
+      "matchedDefectIds": ["copy-function-keyword-defaults"],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 0,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c3f8",
+      "arm": "mcp",
+      "expected": 1,
+      "matched": 1,
+      "matchedDefectIds": ["copy-function-keyword-defaults"],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 1,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c8d1",
+      "arm": "mcp",
+      "expected": 0,
+      "matched": 0,
+      "matchedDefectIds": [],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 1,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    },
+    {
+      "caseId": "c8d1",
+      "arm": "baseline",
+      "expected": 0,
+      "matched": 0,
+      "matchedDefectIds": [],
+      "missed": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 1,
+      "duplicateClaims": 0,
+      "unresolvedClaims": 0
+    }
+  ],
+  "summaries": [
+    {
+      "arm": "baseline",
+      "assignments": 4,
+      "expectedDefects": 2,
+      "detected": 2,
+      "confirmedMisses": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 2,
+      "unresolvedClaims": 0,
+      "duplicates": 0,
+      "unknownCostAssignments": 4
+    },
+    {
+      "arm": "mcp",
+      "assignments": 4,
+      "expectedDefects": 2,
+      "detected": 2,
+      "confirmedMisses": 0,
+      "falseClaims": 0,
+      "outOfScopeClaims": 3,
+      "unresolvedClaims": 0,
+      "duplicates": 0,
+      "unknownCostAssignments": 4
+    }
+  ],
+  "pairedExpectedDefects": {
+    "both": 2,
+    "baselineOnly": 0,
+    "mcpOnly": 0,
+    "neither": 0
+  },
+  "references": [
+    {
+      "caseId": "c3f8",
+      "validatorId": "behavior-reference",
+      "exitCode": 1,
+      "passed": 6,
+      "failures": [
+        {
+          "name": "omitted_keyword",
+          "status": "failed",
+          "error": "TypeError: original() missing 1 required keyword-only argument: 'y'"
+        },
+        {
+          "name": "keyword_default_metadata",
+          "status": "failed",
+          "error": "AssertionError: "
+        }
+      ]
+    },
+    {
+      "caseId": "c7b2",
+      "validatorId": "behavior-reference",
+      "exitCode": 1,
+      "passed": 6,
+      "failures": [
+        {
+          "name": "literal hyphen",
+          "status": "failed",
+          "error": "SyntaxError: Invalid regular expression: /^\\-$/u: Invalid escape"
+        },
+        {
+          "name": "hyphen in text",
+          "status": "failed",
+          "error": "SyntaxError: Invalid regular expression: /^foo \\- bar$/u: Invalid escape"
+        }
+      ]
+    },
+    {
+      "caseId": "c7b2",
+      "validatorId": "upstream-tests",
+      "exitCode": 0,
+      "positiveTestEvidence": "TAP version 13\n# main\nok 1 - main\n# escapes `-`\nok 2 - escapes `-`\n\n1..2\n# tests 2\n# pass 2\n# fail 0"
+    },
+    {
+      "caseId": "c8d1",
+      "validatorId": "upstream-tests",
+      "exitCode": 0,
+      "positiveTestEvidence": ".........................                                                [100%]\n25 passed in 0.02s"
+    },
+    {
+      "caseId": "c8d1",
+      "validatorId": "behavior-reference",
+      "exitCode": 0,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "caseId": "c3f8",
+      "validatorId": "upstream-tests",
+      "exitCode": 0,
+      "positiveTestEvidence": "........................                                                 [100%]\n24 passed in 0.02s"
+    },
+    {
+      "caseId": "c0a9",
+      "validatorId": "upstream-tests",
+      "exitCode": 0,
+      "positiveTestEvidence": "TAP version 13\n# main\nok 1 - main\n# escapes `-`\nok 2 - escapes `-`\n# escapes `-` in a way compatible with the Unicode flag\nok 3 - escapes `-` in a way compatible with the Unicode flag\n\n1..3\n# tests 3\n# pass 3\n# fail 0"
+    },
+    {
+      "caseId": "c0a9",
+      "validatorId": "behavior-reference",
+      "exitCode": 0,
+      "passed": 8,
+      "failures": []
+    }
+  ],
+  "sourceSnapshotVerification": [
+    {
+      "assignmentId": "2d216364da2e53a5f252ed10",
+      "caseId": "c0a9",
+      "arm": "baseline",
+      "capturedFilesVerified": 14,
+      "mismatches": [],
+      "extraFiles": [
+        "node_modules/.cache/ava/cc9661907c4b63a9d71211f2e59ca19b.js",
+        "node_modules/.cache/ava/cc9661907c4b63a9d71211f2e59ca19b.js.map"
+      ]
+    },
+    {
+      "assignmentId": "3b551b16ea514562c4834ab4",
+      "caseId": "c0a9",
+      "arm": "mcp",
+      "capturedFilesVerified": 14,
+      "mismatches": [],
+      "extraFiles": [
+        "node_modules/.cache/ava/2ce27e439102e85cf2e546b6f0c4ae93.js",
+        "node_modules/.cache/ava/2ce27e439102e85cf2e546b6f0c4ae93.js.map"
+      ]
+    },
+    {
+      "assignmentId": "bf73efd2fc2b8dbe0566b346",
+      "caseId": "c7b2",
+      "arm": "mcp",
+      "capturedFilesVerified": 14,
+      "mismatches": [],
+      "extraFiles": [
+        "node_modules/.cache/ava/959caeabd409a7e1e43ee81e17fdabe6.js",
+        "node_modules/.cache/ava/959caeabd409a7e1e43ee81e17fdabe6.js.map"
+      ]
+    },
+    {
+      "assignmentId": "3abf6390cd462132e364a51c",
+      "caseId": "c7b2",
+      "arm": "baseline",
+      "capturedFilesVerified": 14,
+      "mismatches": [],
+      "extraFiles": [
+        "node_modules/.cache/ava/52d0e5a6d373fba019647bfcaaa31e60.js",
+        "node_modules/.cache/ava/52d0e5a6d373fba019647bfcaaa31e60.js.map"
+      ]
+    },
+    {
+      "assignmentId": "d580ba784220573447032c41",
+      "caseId": "c3f8",
+      "arm": "baseline",
+      "capturedFilesVerified": 113,
+      "mismatches": [],
+      "extraFiles": []
+    },
+    {
+      "assignmentId": "7b07d8f3025fa92f006f5611",
+      "caseId": "c3f8",
+      "arm": "mcp",
+      "capturedFilesVerified": 113,
+      "mismatches": [],
+      "extraFiles": []
+    },
+    {
+      "assignmentId": "48c276203b1f83ea035cf7dc",
+      "caseId": "c8d1",
+      "arm": "mcp",
+      "capturedFilesVerified": 113,
+      "mismatches": [],
+      "extraFiles": []
+    },
+    {
+      "assignmentId": "e6e05e888100ed6b897c896c",
+      "caseId": "c8d1",
+      "arm": "baseline",
+      "capturedFilesVerified": 113,
+      "mismatches": [],
+      "extraFiles": []
+    }
+  ],
+  "mcpResults": [
+    {
+      "caseId": "c0a9",
+      "schemaVersion": 1,
+      "engineVersion": "0.1.0-alpha.5",
+      "runId": "08a09d87-307a-4f1f-81f0-b6d7fd6ed130",
+      "outcome": "incomplete",
+      "durationMs": 11,
+      "sourceChanged": true,
+      "sourceError": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "unavailable"
+        }
+      ],
+      "sameSessionRetainedReportMatches": true
+    },
+    {
+      "caseId": "c7b2",
+      "schemaVersion": 1,
+      "engineVersion": "0.1.0-alpha.5",
+      "runId": "1fcb889b-9f03-449a-98cf-25f690550818",
+      "outcome": "incomplete",
+      "durationMs": 13,
+      "sourceChanged": false,
+      "sourceError": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "unavailable"
+        }
+      ],
+      "sameSessionRetainedReportMatches": true
+    },
+    {
+      "caseId": "c3f8",
+      "schemaVersion": 1,
+      "engineVersion": "0.1.0-alpha.5",
+      "runId": "9d3ceda5-23cf-44f8-abc6-675b340200f5",
+      "outcome": "incomplete",
+      "durationMs": 35,
+      "sourceChanged": false,
+      "sourceError": false,
+      "checks": [
+        {
+          "id": "infrastructure.actionlint",
+          "status": "unavailable"
+        },
+        {
+          "id": "python.unittest",
+          "status": "unavailable"
+        }
+      ],
+      "sameSessionRetainedReportMatches": true
+    },
+    {
+      "caseId": "c8d1",
+      "schemaVersion": 1,
+      "engineVersion": "0.1.0-alpha.5",
+      "runId": "e178348a-eaa4-454e-a455-ff3247d06c9d",
+      "outcome": "incomplete",
+      "durationMs": 37,
+      "sourceChanged": false,
+      "sourceError": false,
+      "checks": [
+        {
+          "id": "infrastructure.actionlint",
+          "status": "unavailable"
+        },
+        {
+          "id": "python.unittest",
+          "status": "unavailable"
+        }
+      ],
+      "sameSessionRetainedReportMatches": true
+    }
+  ],
+  "engineArtifact": {
+    "version": "0.1.0-alpha.5",
+    "archiveSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "installedArchiveFilesByteCompared": 408
+  },
+  "frozenHarness": {
+    "manifestDigestMatchesFrozenEvaluator": true,
+    "supportDigestsMatch": true,
+    "excludedCases": 0,
+    "uniqueReferencePaths": 8,
+    "referencePathCollisions": 0,
+    "knownLaterFixesApplicable": false,
+    "note": "Independent recomputation agrees with retained score. Frozen file digest matches manifest; this audit did not re-run any evaluator or replace the frozen evaluator with corrected source."
+  },
+  "presentation": {
+    "hashesMatch": true,
+    "onlyAlteration": "Removed limitations from all eight assessments; findings, labels, references and source retained. Original limitations retained in sealed receipts."
+  },
+  "limitations": [
+    "Four purposively chosen historical snapshots in two related pairs, all development split, one trial per arm. Historical package/API recognition is disclosed and training contamination cannot be excluded.",
+    "Eight fresh declared GPT-6 sessions and separate curator/adjudicator sessions establish procedural separation only; no filesystem, organizational, or model independence. Identity and budgets are declarations.",
+    "c7b2 baseline reviewer reports prior familiarity with Unicode hyphen escaping may have guided the check; other JavaScript reviewers report general package/semantic familiarity.",
+    "Python reviewers disclosed incidental docs or CHANGELOG search hits; c8d1 MCP explicitly read docs/funcutils.rst despite the parent restriction. Disclosed content comprised API directives rather than expected defect answers.",
+    "All four MCP validations were incomplete and every planned check unavailable. Completion of advisory review does not mean successful MCP source validation.",
+    "c0a9 MCP native helper and validation overlapped and sourceChanged=true. All manifest-captured files still match; additional generated cache files are inventoried separately. The precise change during the run is not established by the summary transcript and must not be stated as a proven causal attribution.",
+    "Native references contain positive non-skipped test proof: JavaScript 3/2 tests and Python 24/25 tests. They cover selected upstream tests, not complete suites, lint or type checking. Reference nonzero exits on broken cases are specific intended behavior failures with six passing controls each.",
+    "All eight input/output token counts and costs are unknown; c3f8 baseline elapsed time is also unknown. budgetExceeded=false does not prove budget compliance where telemetry is unavailable. No cost or latency comparison is supported.",
+    "Out-of-scope counts 2 baseline and 3 MCP count finding instances. Across them are two shared underlying behavior families: adjacent numeric-backreference concatenation and dedicated function metadata loss. This is not evidence of three unique new MCP defects or causal MCP benefit.",
+    "Empty expected sets in c0a9/c8d1 mean only resolution of the named hyphen/keyword-default behaviors. Both controls retain other supported defects; they are not globally clean cases.",
+    "Adjudicator classified every supplied claim and reproduced each behavior, but has the same declared model family. Presentation redactions do not establish perfect blinding.",
+    "Spot-checked adjudicator source/reproduction logic and reference process records; did not rerun entire historical suites or audit every repository API. No winner, general quality improvement, non-inferiority, or population inference is supported."
+  ],
+  "independentBehaviorSpotChecks": [
+    {
+      "caseId": "c0a9",
+      "result": {
+        "hyphen": true,
+        "adjacent": "SyntaxError"
+      }
+    },
+    {
+      "caseId": "c7b2",
+      "result": {
+        "hyphen": "SyntaxError",
+        "adjacent": "SyntaxError"
+      }
+    },
+    {
+      "caseId": "c3f8",
+      "result": {
+        "original": 5,
+        "copy": "TypeError",
+        "copyAnnotations": {},
+        "registerCopy": "TypeError"
+      }
+    },
+    {
+      "caseId": "c8d1",
+      "result": {
+        "original": 5,
+        "copy": 5,
+        "copyAnnotations": {},
+        "registerCopy": "TypeError"
+      }
+    }
+  ]
+}

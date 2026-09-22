@@ -255,3 +255,14 @@ The installed MCP server SDK is still 2.0.0. Its standard Tasks routing failure 
 documented in `MCP-COMPATIBILITY.md`. Hosted CI, publication and independent target
 OS/client evidence remain separate acceptance gates. A gate is completed only
 when its implementation and corresponding evidence exist.
+
+## Agent evaluation workflow
+
+- Implemented a provider-neutral operator harness for freezing public-source cases,
+  exporting isolated-by-procedure reviewer packets, sealing exact-source receipts,
+  collecting bounded trusted reference processes and producing blinded judging
+  packets plus paired scores and a learning queue. The engine still invokes no model.
+- The first historical JavaScript/Python pilot used actual separate reviewers and
+  independent adjudication. Both arms matched the predeclared defects; MCP native
+  validation remained incomplete. See `AGENT-EVALUATION-PILOT.md` for evidence,
+  setup friction, unknown costs, audit fixes and the next holdout gate.

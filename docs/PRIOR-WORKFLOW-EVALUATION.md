@@ -1,9 +1,12 @@
 # Prior-workflow comparison protocol
 
-Status: prepared protocol, not a completed comparison. The actual previous
+Status: the provisional public baseline has a bounded [historical agent pilot](AGENT-EVALUATION-PILOT.md).
+A comparison with the actual previous workflow has not been completed. That previous
 workflow has not been specified. Use native tools plus public, project-agnostic
 review instructions as the provisional baseline below. That baseline must not be
 presented as a reproduction of any private team's workflow.
+The executable [agent evaluation workflow](AGENT-EVALUATION.md) implements the
+collection and adjudication stages for this provisional public baseline.
 
 The existing [development evaluation](EVALUATION.md),
 [external ESLint cohort](EXTERNAL-EVALUATION.md) and
@@ -101,7 +104,8 @@ Measure provider tokens and actual billed cost from the run or provider records;
 unknown values remain unknown. Human effort, native execution and machine time
 are separate costs. Reviewer-declared usage in an exchange receipt is labeled as
 such and is not a substitute for measured inference. No provider is required for
-core validation, and no comparison here has invoked one.
+core validation. The separate historical pilot used external agent sessions;
+provider tokens and billing were unavailable and remain unknown.
 
 ## Acceptance
 
@@ -111,6 +115,7 @@ for both arms. Define a meaningful non-inferiority margin or improvement target
 before collection if making an equal-or-better claim. Report the supported scope
 and remaining uncertainty, even when the target is met.
 
-The remaining inputs are the chosen prior workflow, independently labeled public
-end-to-end cases and an actual reviewer/adjudicator run. This document prepares
-that work; it does not satisfy the M5 effectiveness gate by itself.
+The remaining inputs for a prior-workflow claim are the chosen previous workflow,
+fresh independently labeled cases and a completed comparison meeting a predeclared
+acceptance target. The historical pilot exercised review and adjudication but does
+not satisfy the M5 effectiveness gate.

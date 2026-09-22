@@ -43,6 +43,12 @@ to hosted CI, fresh installation, client profiles and upgrade/rollback checks.
 
 ## Implemented
 
+- [Agent evaluation workflow](AGENT-EVALUATION.md): frozen public-source packets,
+  separate native-only/MCP reviewer sessions, sealed receipts, blinded adjudication,
+  reference process evidence, paired accounting and a gated learning queue. A
+  [historical pilot](AGENT-EVALUATION-PILOT.md) completed both arms without showing
+  an MCP detection advantage. It is consumed development evidence, not a fresh holdout.
+
 - Alpha.2: conservative multi-language `init`, execution-free `doctor`,
   and version-pinned MCP configuration output for Codex, Claude Code/Desktop,
   Cursor and VS Code. Existing files are preserved. See [ONBOARDING.md](ONBOARDING.md)

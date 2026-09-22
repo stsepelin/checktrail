@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-22T07:49:07.752Z",
+  "purpose": "Historical OSS API review pilot, not a private-workflow replacement or unseen-model effectiveness benchmark.",
+  "protocolArchive": "agent-pilot-v1-protocol.json",
+  "frozenHarnessSha256": "87bdf826bd2ff0199da293aaf299216505e50a170a6967c47854239f7d5c1aa6",
+  "budget": {
+    "wallSeconds": 300,
+    "maxToolCalls": 30,
+    "maxInputTokens": null,
+    "maxOutputTokens": 5000,
+    "repetitions": 1
+  },
+  "reviewerProfile": {
+    "provider": "OpenAI",
+    "model": "GPT-6",
+    "version": "not-exposed",
+    "settings": "Inherited agent session; sampling parameters not exposed"
+  },
+  "isolation": {
+    "mode": "procedural",
+    "evidence": "Separate fresh source copies and agent sessions per arm; no .git or upstream commit messages in review surfaces. Reviewers instructed to inspect only assignment source and approved native tooling, not curation, labels, pair sources, or reference validators. No filesystem access-control boundary; no network enforced by this harness. Independent adjudicator must not have produced either reviewed assessment.",
+    "freshReviewerSessions": 8,
+    "adjudicators": 1,
+    "sameInheritedModel": true,
+    "providerTokensAndCosts": "not exposed; null in observations",
+    "wallTiming": "reviewer-declared where present; reviews shared host resources"
+  },
+  "cases": [
+    {
+      "id": "c0a9",
+      "family": "javascript-api",
+      "group": "historical-javascript-pair",
+      "split": "development",
+      "source": {
+        "repository": "https://github.com/sindresorhus/escape-string-regexp",
+        "revision": "732905da074f0220487ad6a27590f89bd0819374",
+        "license": "MIT"
+      },
+      "sourceSha256": "63bf9132573f9b3d70731b7bf08722ea5cdf61cc15c53f5f4df57583d9ea07a1",
+      "selectedFiles": 14,
+      "scope": "JavaScript Unicode regexp construction with escaped hyphens. Resolution of this named defect only; not a claim of globally defect-free source.",
+      "expectedDefects": [],
+      "exclusion": null
+    },
+    {
+      "id": "c7b2",
+      "family": "javascript-api",
+      "group": "historical-javascript-pair",
+      "split": "development",
+      "source": {
+        "repository": "https://github.com/sindresorhus/escape-string-regexp",
+        "revision": "5085b257c801507460270b747f645276fbc1d937",
+        "license": "MIT"
+      },
+      "sourceSha256": "2abf4f04090268505fd9e4bff741283dfd84cfdc02a1e50085ffe64a521fb854",
+      "selectedFiles": 14,
+      "scope": "JavaScript Unicode regexp construction with escaped hyphens. Resolution of this named defect only; not a claim of globally defect-free source.",
+      "expectedDefects": ["regexp-unicode-hyphen"],
+      "exclusion": null
+    },
+    {
+      "id": "c3f8",
+      "family": "python-api",
+      "group": "historical-python-pair",
+      "split": "development",
+      "source": {
+        "repository": "https://github.com/mahmoud/boltons",
+        "revision": "0341ab3d79e6430c0e6a4149df9c92679988a534",
+        "license": "BSD-3-Clause"
+      },
+      "sourceSha256": "fa3a40691b0198ec14edb5beeb0be1a0a7a2db2c92f3fa58743011e221864bcf",
+      "selectedFiles": 113,
+      "scope": "copy_function preservation of keyword-only argument defaults. Resolution of this named defect only; not a claim of globally defect-free source.",
+      "expectedDefects": ["copy-function-keyword-defaults"],
+      "exclusion": null
+    },
+    {
+      "id": "c8d1",
+      "family": "python-api",
+      "group": "historical-python-pair",
+      "split": "development",
+      "source": {
+        "repository": "https://github.com/mahmoud/boltons",
+        "revision": "c2b04b4cb16410d7bf9ff781c78dee3ca908dc32",
+        "license": "BSD-3-Clause"
+      },
+      "sourceSha256": "7ca6ebe3ff1476771229e7a7be2cbad1c2bd416743b838085ad75b21657afbcc",
+      "selectedFiles": 113,
+      "scope": "copy_function preservation of keyword-only argument defaults. Resolution of this named defect only; not a claim of globally defect-free source.",
+      "expectedDefects": [],
+      "exclusion": null
+    }
+  ],
+  "adjudication": {
+    "judgmentsSha256": "11dd352d461fa78c05072bc07663e21ce1f346621bb1a1c108c205a2235d12ef",
+    "presentationSha256": "3d30ea6961e4f1e51b1d0e8e056ba0abae7078420dc3d76592ec0ba1cae574e9",
+    "redactions": "All reviewer limitations omitted from presentation to withhold treatment-identifying tool prose; original receipts retained. Findings/source/labels unchanged.",
+    "findings": [
+      {
+        "caseId": "c0a9",
+        "arm": "mcp",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "R1",
+            "verdict": "out-of-scope",
+            "defectId": null,
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c7b2",
+        "arm": "baseline",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "OBS-001",
+            "verdict": "confirmed",
+            "defectId": "regexp-unicode-hyphen",
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c0a9",
+        "arm": "baseline",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "OBS-001",
+            "verdict": "out-of-scope",
+            "defectId": null,
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c8d1",
+        "arm": "mcp",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "CF-01",
+            "verdict": "out-of-scope",
+            "defectId": null,
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c3f8",
+        "arm": "baseline",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "COPY-001",
+            "verdict": "confirmed",
+            "defectId": "copy-function-keyword-defaults",
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c8d1",
+        "arm": "baseline",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "OBS-001",
+            "verdict": "out-of-scope",
+            "defectId": null,
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c3f8",
+        "arm": "mcp",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "CF-01",
+            "verdict": "confirmed",
+            "defectId": "copy-function-keyword-defaults",
+            "duplicateOf": null
+          },
+          {
+            "id": "CF-02",
+            "verdict": "out-of-scope",
+            "defectId": null,
+            "duplicateOf": null
+          }
+        ]
+      },
+      {
+        "caseId": "c7b2",
+        "arm": "mcp",
+        "trial": 0,
+        "labelStatus": "accepted",
+        "findings": [
+          {
+            "id": "OBS-001",
+            "verdict": "confirmed",
+            "defectId": "regexp-unicode-hyphen",
+            "duplicateOf": null
+          }
+        ]
+      }
+    ]
+  },
+  "mcpExecution": [
+    {
+      "caseId": "c0a9",
+      "server": {
+        "name": "checktrail",
+        "version": "0.1.0-alpha.5"
+      },
+      "outcome": "incomplete",
+      "sourceChanged": true,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "unavailable"
+        }
+      ],
+      "retainedReportEqual": true,
+      "traceSha256": "12ac9d439e10469ff90a74a0123b514fef79c8945fa9ebb60281cb39bae1708e"
+    },
+    {
+      "caseId": "c7b2",
+      "server": {
+        "name": "checktrail",
+        "version": "0.1.0-alpha.5"
+      },
+      "outcome": "incomplete",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "javascript.node-test",
+          "status": "unavailable"
+        }
+      ],
+      "retainedReportEqual": true,
+      "traceSha256": "0fb001481ca5f704e854484b2636e7b5719760d6dce18e53d59dcdf80b9afa78"
+    },
+    {
+      "caseId": "c3f8",
+      "server": {
+        "name": "checktrail",
+        "version": "0.1.0-alpha.5"
+      },
+      "outcome": "incomplete",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "infrastructure.actionlint",
+          "status": "unavailable"
+        },
+        {
+          "id": "python.unittest",
+          "status": "unavailable"
+        }
+      ],
+      "retainedReportEqual": true,
+      "traceSha256": "f9717a827125403e1ba0869ee669c91933b57ad94aed680216164a974a503eaa"
+    },
+    {
+      "caseId": "c8d1",
+      "server": {
+        "name": "checktrail",
+        "version": "0.1.0-alpha.5"
+      },
+      "outcome": "incomplete",
+      "sourceChanged": false,
+      "checks": [
+        {
+          "id": "infrastructure.actionlint",
+          "status": "unavailable"
+        },
+        {
+          "id": "python.unittest",
+          "status": "unavailable"
+        }
+      ],
+      "retainedReportEqual": true,
+      "traceSha256": "c25ff3904dd8b7c93d899b2d2669392df4b8b8b82fb2fc1e2f98e568a64dd43f"
+    }
+  ],
+  "scoring": {
+    "schemaVersion": 1,
+    "runId": "oss-historical-pilot-alpha5",
+    "manifestSha256": "e383b6b0bbbce1d3fd4215d82ac55170b5cb6512013571693459812a8433f258",
+    "evidenceClass": "historical-pilot",
+    "engine": {
+      "package": "@stsepelin/checktrail",
+      "version": "0.1.0-alpha.5",
+      "sha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7"
+    },
+    "complete": true,
+    "effectivenessClaimSupported": false,
+    "identityProvenance": "orchestrator-declared; sessions do not prove distinct models or independent organizations",
+    "isolation": "procedural",
+    "observations": [
+      {
+        "caseId": "c0a9",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "arm": "baseline",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 0,
+        "matched": 0,
+        "matchedDefectIds": [],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 1,
+        "receiptSha256": "729b40094af8cbfd1f961d66ab8f235344adb96845799c1a66d1535dfc48890c",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "ef3c3418634529c688f0d76cbe0303720427960690ac498ed813cbfacc569e4d"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "fc924a5796dc4c4e3e739d2b85a73d96e62e085c4dd76b56c1d208fc35abd6ef"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 182559,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c0a9",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "arm": "mcp",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 0,
+        "matched": 0,
+        "matchedDefectIds": [],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 1,
+        "receiptSha256": "ee52f17f0cd04f0128af9228610c3ecfb1dd75c01cbb1a6bdedf04fc6d6a8cfa",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "ef3c3418634529c688f0d76cbe0303720427960690ac498ed813cbfacc569e4d"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "fc924a5796dc4c4e3e739d2b85a73d96e62e085c4dd76b56c1d208fc35abd6ef"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 179015,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c7b2",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "arm": "mcp",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 1,
+        "matched": 1,
+        "matchedDefectIds": ["regexp-unicode-hyphen"],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 0,
+        "receiptSha256": "91d1450d3c80b26ce764aca714411099f9cedd74e17a268492c724c42fc8168b",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "ab10e2885a78f92c26624f7f61adae76a44a52955078a887e8fe42531b571545"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 1,
+            "evidenceSha256": "0c4354c1af2711715f4749b36211e3315427e632911e84e57229c2337271d423"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 154934,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c7b2",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "arm": "baseline",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 1,
+        "matched": 1,
+        "matchedDefectIds": ["regexp-unicode-hyphen"],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 0,
+        "receiptSha256": "f778954de501a0ccaa2f48718794aa5b9def3f1445adec0f7ac9d2fc9f575089",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "ab10e2885a78f92c26624f7f61adae76a44a52955078a887e8fe42531b571545"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 1,
+            "evidenceSha256": "0c4354c1af2711715f4749b36211e3315427e632911e84e57229c2337271d423"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 165688,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c3f8",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "arm": "baseline",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 1,
+        "matched": 1,
+        "matchedDefectIds": ["copy-function-keyword-defaults"],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 0,
+        "receiptSha256": "6c49983e412d194b661a62d564f0c9fe2f02aead78ed91ca69606386e6dcef33",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "412722d1815a38b68044b13918c6b4212cc8e9fe7b55645da1565a63a76434d4"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 1,
+            "evidenceSha256": "23f3aad9487a44bb8fb2c93b0af0c210ecc7297610cc8580cd553f419d56bf64"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": null,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c3f8",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "arm": "mcp",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 1,
+        "matched": 1,
+        "matchedDefectIds": ["copy-function-keyword-defaults"],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 1,
+        "receiptSha256": "0aed8cd051615957f2c047452607063b83d3a81b291e14f655455898c5115ef7",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "412722d1815a38b68044b13918c6b4212cc8e9fe7b55645da1565a63a76434d4"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 1,
+            "evidenceSha256": "23f3aad9487a44bb8fb2c93b0af0c210ecc7297610cc8580cd553f419d56bf64"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 189995,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c8d1",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "arm": "mcp",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 0,
+        "matched": 0,
+        "matchedDefectIds": [],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 1,
+        "receiptSha256": "d0d17af546c46546dbc8dfca66cb8b8efc763a1a6c237ab48736e6f73d1edb18",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "22c74f899afc41930a0a6bcb302542ded69212054b3b0976dfc10f73b75778ad"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "351e37b1156923313f778a27ce1f2fd6997988758ff45916a892ae12b2bb89cc"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 189739,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      },
+      {
+        "caseId": "c8d1",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "arm": "baseline",
+        "trial": 0,
+        "status": "complete",
+        "exclusion": null,
+        "expected": 0,
+        "matched": 0,
+        "matchedDefectIds": [],
+        "missed": 0,
+        "falseClaims": 0,
+        "unresolvedClaims": 0,
+        "duplicateClaims": 0,
+        "outOfScopeClaims": 1,
+        "receiptSha256": "21c48f429db8093b3297c9d55812c6b21fe1ce053e1f468740e03afb13bb00d7",
+        "labelAccepted": true,
+        "references": [
+          {
+            "id": "upstream-tests",
+            "kind": "native",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "22c74f899afc41930a0a6bcb302542ded69212054b3b0976dfc10f73b75778ad"
+          },
+          {
+            "id": "behavior-reference",
+            "kind": "reproduction",
+            "required": true,
+            "status": "completed",
+            "exitCode": 0,
+            "evidenceSha256": "351e37b1156923313f778a27ce1f2fd6997988758ff45916a892ae12b2bb89cc"
+          }
+        ],
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null,
+          "elapsedMs": 166600,
+          "provenance": "reviewer-declared"
+        },
+        "budgetExceeded": false
+      }
+    ],
+    "pairs": [
+      {
+        "caseId": "c0a9",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "trial": 0,
+        "complete": true,
+        "expected": 0,
+        "both": 0,
+        "baselineOnly": 0,
+        "mcpOnly": 0,
+        "neither": 0,
+        "baselineFalseClaims": 0,
+        "mcpFalseClaims": 0
+      },
+      {
+        "caseId": "c7b2",
+        "family": "javascript-api",
+        "group": "historical-javascript-pair",
+        "split": "development",
+        "trial": 0,
+        "complete": true,
+        "expected": 1,
+        "both": 1,
+        "baselineOnly": 0,
+        "mcpOnly": 0,
+        "neither": 0,
+        "baselineFalseClaims": 0,
+        "mcpFalseClaims": 0
+      },
+      {
+        "caseId": "c3f8",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "trial": 0,
+        "complete": true,
+        "expected": 1,
+        "both": 1,
+        "baselineOnly": 0,
+        "mcpOnly": 0,
+        "neither": 0,
+        "baselineFalseClaims": 0,
+        "mcpFalseClaims": 0
+      },
+      {
+        "caseId": "c8d1",
+        "family": "python-api",
+        "group": "historical-python-pair",
+        "split": "development",
+        "trial": 0,
+        "complete": true,
+        "expected": 0,
+        "both": 0,
+        "baselineOnly": 0,
+        "mcpOnly": 0,
+        "neither": 0,
+        "baselineFalseClaims": 0,
+        "mcpFalseClaims": 0
+      }
+    ],
+    "summaries": [
+      {
+        "family": "all",
+        "arm": "baseline",
+        "assignments": 4,
+        "distinctCases": 4,
+        "groups": 2,
+        "complete": 4,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 2,
+        "detected": 2,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 2,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 2,
+        "unknownCostAssignments": 4
+      },
+      {
+        "family": "all",
+        "arm": "mcp",
+        "assignments": 4,
+        "distinctCases": 4,
+        "groups": 2,
+        "complete": 4,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 2,
+        "detected": 2,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 2,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 3,
+        "unknownCostAssignments": 4
+      },
+      {
+        "family": "javascript-api",
+        "arm": "baseline",
+        "assignments": 2,
+        "distinctCases": 2,
+        "groups": 1,
+        "complete": 2,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 1,
+        "detected": 1,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 1,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 1,
+        "unknownCostAssignments": 2
+      },
+      {
+        "family": "javascript-api",
+        "arm": "mcp",
+        "assignments": 2,
+        "distinctCases": 2,
+        "groups": 1,
+        "complete": 2,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 1,
+        "detected": 1,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 1,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 1,
+        "unknownCostAssignments": 2
+      },
+      {
+        "family": "python-api",
+        "arm": "baseline",
+        "assignments": 2,
+        "distinctCases": 2,
+        "groups": 1,
+        "complete": 2,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 1,
+        "detected": 1,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 1,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 1,
+        "unknownCostAssignments": 2
+      },
+      {
+        "family": "python-api",
+        "arm": "mcp",
+        "assignments": 2,
+        "distinctCases": 2,
+        "groups": 1,
+        "complete": 2,
+        "incomplete": 0,
+        "excluded": 0,
+        "expectedDefects": 1,
+        "detected": 1,
+        "confirmedMisses": 0,
+        "unresolvedExpected": 0,
+        "falseClaims": 0,
+        "validCaseFalseAlarms": 0,
+        "validCases": 1,
+        "unresolvedClaims": 0,
+        "duplicates": 0,
+        "outOfScopeClaims": 2,
+        "unknownCostAssignments": 2
+      }
+    ],
+    "learningQueue": [
+      {
+        "caseId": "c0a9",
+        "arm": "baseline",
+        "trial": 0,
+        "reason": "adjudicate-new-discovery-separately",
+        "nextGate": "development reproduction, regression, reviewed change, then fresh group-disjoint holdout"
+      },
+      {
+        "caseId": "c0a9",
+        "arm": "mcp",
+        "trial": 0,
+        "reason": "adjudicate-new-discovery-separately",
+        "nextGate": "development reproduction, regression, reviewed change, then fresh group-disjoint holdout"
+      },
+      {
+        "caseId": "c3f8",
+        "arm": "mcp",
+        "trial": 0,
+        "reason": "adjudicate-new-discovery-separately",
+        "nextGate": "development reproduction, regression, reviewed change, then fresh group-disjoint holdout"
+      },
+      {
+        "caseId": "c8d1",
+        "arm": "mcp",
+        "trial": 0,
+        "reason": "adjudicate-new-discovery-separately",
+        "nextGate": "development reproduction, regression, reviewed change, then fresh group-disjoint holdout"
+      },
+      {
+        "caseId": "c8d1",
+        "arm": "baseline",
+        "trial": 0,
+        "reason": "adjudicate-new-discovery-separately",
+        "nextGate": "development reproduction, regression, reviewed change, then fresh group-disjoint holdout"
+      }
+    ],
+    "limits": [
+      "Historical cases may be known to model training; this harness does not establish model independence or lack of contamination.",
+      "Labels, reviewer identity, budget compliance and adjudication are declarations; artifact hashes establish binding, not truth.",
+      "No population inference, non-inferiority claim, automatic code changes or model training follows from this report.",
+      "Missing, disputed, excluded and incomplete cases remain visible; repeated trials are not independent new cases."
+    ]
+  },
+  "interpretation": [
+    "Both arms matched both predeclared defects. This tiny, purposive, same-model historical sample does not establish superiority or non-inferiority.",
+    "Additional findings are outside the predeclared labels; counts are finding instances across reviews, not unique new defects.",
+    "Review completion and process-completed reference checks do not mean MCP validation passed. All MCP outcomes remain as observed.",
+    "Fixed controls are valid only for their narrowly declared expected behavior, not globally defect-free.",
+    "One reviewer ran native tests alongside MCP and received a source-inventory-change flag. The causal mechanism was not isolated; these timings are not comparative latency evidence.",
+    "Cases are consumed development material; implementation lessons require new group-disjoint holdout cases for subsequent evaluation."
+  ],
+  "independentAudit": {
+    "record": "agent-pilot-v1-audit.json",
+    "sha256": "37653bad3edbbbf655f0ff0a2f4c082825fb177ee97406e3d0925c15e2d46416",
+    "metricsAgree": true,
+    "errors": []
+  },
+  "protocolValidForEffectivenessClaim": false,
+  "protocolDeviations": [
+    "Historical/API familiarity disclosed; one reviewer reported prior familiarity with the expected Unicode behavior.",
+    "Incidental documentation/CHANGELOG search hits and one explicit source API documentation read were reported; the auditor found no disclosed expected-answer content. Packet history filtering and instruction scope need tightening.",
+    "Concurrent native/MCP execution in one assignment; MCP returned sourceChanged=true. Causation not isolated.",
+    "Token costs and complete tool-budget telemetry unavailable."
+  ]
+}

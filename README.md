@@ -360,6 +360,9 @@ evidence. It does not execute workflow jobs or action code.
 [Development evaluation](docs/EVALUATION.md) records per-family detection,
 false-positive and incomplete-result counts against direct native commands.
 These small synthetic observations do not establish independent review quality.
+The [agent evaluation workflow](docs/AGENT-EVALUATION.md) freezes public-source cases,
+separates native-only and MCP-assisted reviewers, seals assessments, and supplies
+blinded adjudication and explicit incomplete-result accounting.
 
 [Impact measurements](docs/IMPACT-MEASUREMENT.md) compare full and Git-selected
 validation, including missed consumer failures when dependency declarations are

@@ -121,4 +121,13 @@ Recorded matrices are independently recomputed from their raw observations.
 
 The [prior-workflow protocol](PRIOR-WORKFLOW-EVALUATION.md) specifies a provisional
 public baseline, matched comparison arms, declaration requirements and independent
-adjudication. No prior-workflow comparison has been run.
+adjudication. No comparison with a specified previous private workflow has been run.
+A separate [historical agent pilot](AGENT-EVALUATION-PILOT.md) exercises the
+provisional public baseline with actual reviewer and adjudicator sessions.
+
+## Agent review experiments
+
+The [agent evaluation workflow](AGENT-EVALUATION.md) implements frozen declarations,
+separate source packets, sealed reviewer receipts, blinded judging and paired
+accounting. It complements these deterministic adapter measurements; it does not
+turn their already-inspected cases into an unseen review benchmark.
