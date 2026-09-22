@@ -12,6 +12,9 @@ insufficient if the client also exposes a host shell, filesystem tools, another
 MCP server, browser, plugin or delegated agent. Verify the actual model-visible
 tool inventory before inference and retain the client event stream afterwards.
 
+See [enforced delivery](ENFORCED-EVALUATION.md) to make source, usage, execution
+and cleanup evidence prerequisites for completed submissions.
+
 ## Operator preparation
 
 Build the checkout, prepare an already-installed Linux image identified by its
@@ -73,7 +76,8 @@ runtime preparation and boundary tests.
 | Tool                  | Access                                                  |
 | --------------------- | ------------------------------------------------------- |
 | `evaluation_files`    | Captured source filenames only                          |
-| `evaluation_read`     | Exact captured path and bounded line range              |
+| `evaluation_read`     | Exact captured path and numbered bounded line range     |
+| `evaluation_citation` | Exact captured quotation and line-range preflight       |
 | `evaluation_native`   | Fixed selected native suite                             |
 | `evaluation_probe`    | Bounded JavaScript/Python code in a fresh container     |
 | `checktrail_plan`     | Treatment only: real pinned MCP planning                |

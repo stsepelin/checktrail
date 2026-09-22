@@ -53,12 +53,88 @@ test("evaluation gateway reads captured bytes only and withholds sibling names a
     assert.deepEqual(listed.value.map(item=>item.file), ['entry.py']);
     const read = await gateway.call('evaluation_read', {file:'entry.py'});
     assert.equal(read.value.text, 'value = 1\n');
+    assert.equal(read.value.endLine, 2);
+    assert.deepEqual(read.value.lines, [{line:1,text:'value = 1'},{line:2,text:''}]);
     for (const file of ['../withheld-answer.py', '/etc/passwd', 'withheld-answer.py', './entry.py', 'nested/../entry.py']) {
       const denied = await gateway.call('evaluation_read', {file});
       assert.equal(denied.ok, false);
       assert.ok(!JSON.stringify(denied).includes('SECRET_SIBLING'));
     }
     assert.equal(executions.length, 0);
+  `);
+});
+
+test("gateway numbered reads and citation checks preserve exact captured line boundaries", () => {
+  exercise(String.raw`
+    const captured = 'first\r\nconst escaped = "\\u0041";\nconst unicode = "é😀";\n';
+    await fs.writeFile(path.join(source,'entry.py'), captured);
+    gateway = await api.createGateway({...config,maxCalls:40}, {execute});
+    await fs.writeFile(path.join(source,'entry.py'), 'host changed');
+    const read = await gateway.call('evaluation_read',{file:'entry.py',line:2,count:200});
+    assert.deepEqual(read.value,{file:'entry.py',line:2,endLine:4,text:'const escaped = "\\u0041";\nconst unicode = "é😀";\n',lines:[{line:2,text:'const escaped = "\\u0041";'},{line:3,text:'const unicode = "é😀";'},{line:4,text:''}]});
+    const one = await gateway.call('evaluation_read',{file:'entry.py',line:1,count:1});
+    assert.deepEqual(one.value,{file:'entry.py',line:1,endLine:1,text:'first\r',lines:[{line:1,text:'first\r'}]});
+    const eof = await gateway.call('evaluation_read',{file:'entry.py',line:4,count:1});
+    assert.deepEqual(eof.value.lines,[{line:4,text:''}]);
+    for (const argument of [{line:0},{line:5},{count:0},{count:201}])
+      assert.equal((await gateway.call('evaluation_read',{file:'entry.py',...argument})).ok,false);
+    for (const citation of [
+      {line:1,endLine:1,quote:'first\r'},
+      {line:2,endLine:3,quote:'const escaped = "\\u0041";\nconst unicode = "é😀";'},
+      {line:3,endLine:4,quote:'const unicode = "é😀";\n'},
+      {line:4,endLine:4,quote:''},
+    ]) {
+      const result = await gateway.call('evaluation_citation',{file:'entry.py',...citation});
+      assert.deepEqual(result.value,{valid:true,file:'entry.py',line:citation.line,endLine:citation.endLine});
+    }
+    for (const citation of [
+      {line:1,endLine:1,quote:'first'},
+      {line:2,endLine:2,quote:'const escaped = "A";'},
+      {line:3,endLine:3,quote:'const unicode = "é😀";'},
+      {line:3,endLine:3,quote:'const unicode = "é😀";\n'},
+      {line:2,endLine:1,quote:'first\r'},
+      {line:4,endLine:5,quote:''},
+      {line:0,endLine:1,quote:'first\r'},
+      {file:'withheld-answer.py',line:1,endLine:1,quote:'SECRET_SIBLING'},
+      {file:'../withheld-answer.py',line:1,endLine:1,quote:'SECRET_SIBLING'},
+    ]) {
+      const result = await gateway.call('evaluation_citation',{file:'entry.py',...citation});
+      assert.equal(result.ok,false);
+      assert.ok(!JSON.stringify(result).includes('SECRET_SIBLING'));
+    }
+    assert.equal(executions.length,0);
+    await gateway.close(); gateway=undefined;
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    for (const message of ['Citation outside captured source','Invalid citation range','Citation does not match captured source'])
+      assert.ok(records.some(record=>record.type==='error' && record.message.includes(message)),message);
+    await fs.writeFile(path.join(source,'entry.py'),'no final newline');
+    gateway=await api.createGateway({...config,audit:config.audit+'2'}, {execute});
+    const last=await gateway.call('evaluation_read',{file:'entry.py'});
+    assert.deepEqual(last.value.lines,[{line:1,text:'no final newline'}]);
+    assert.equal(last.value.endLine,1);
+    assert.equal((await gateway.call('evaluation_citation',{file:'entry.py',line:1,endLine:2,quote:'no final newline\n'})).ok,false);
+  `);
+});
+
+test("gateway audit binds optional assignment identity, effective budgets and gateway bytes", () => {
+  exercise(String.raw`
+    const binding={manifestSha256:'b'.repeat(64),subjectId:'assignment-1',sessionId:'reviewer-1',role:'reviewer'};
+    for(const invalid of [{...binding,role:'curator'},{...binding,subjectId:'../assignment'}, {...binding,sessionId:''}, {...binding,manifestSha256:'B'.repeat(64)}, {...binding,extra:true}])
+      await assert.rejects(api.createGateway({...config,binding:invalid},{execute}));
+    await assert.rejects(fs.stat(config.audit),{code:'ENOENT'});
+    gateway=await api.createGateway({...config,binding,maxCalls:7,maxOutputBytes:2048},{execute});
+    await gateway.close(); gateway=undefined;
+    const record=JSON.parse((await fs.readFile(config.audit,'utf8')).split('\n')[0]);
+    assert.deepEqual(record.binding,binding);
+    assert.deepEqual(record.budget,{maxCalls:7,timeoutMs:1000,maxOutputBytes:2048});
+    assert.deepEqual(record.profile,{image:config.image,runtimeSha256:await api.treeDigest(runtime),dependenciesSha256:null,native:config.native,languages:config.languages,timeoutMs:1000,maxOutputBytes:2048});
+    assert.equal(record.gatewaySha256,createHash('sha256').update(await fs.readFile(new URL(process.argv[1]))).digest('hex'));
+    gateway=await api.createGateway({...config,audit:config.audit+'2'},{execute});
+    await gateway.close(); gateway=undefined;
+    const legacy=JSON.parse((await fs.readFile(config.audit+'2','utf8')).split('\n')[0]);
+    assert.equal(legacy.binding,null);
+    assert.deepEqual(legacy.budget,{maxCalls:20,timeoutMs:1000,maxOutputBytes:1048576});
+    assert.equal(api.configSchema.parse({...config,binding:{...binding,role:'judge'}}).binding.role,'judge');
   `);
 });
 
@@ -309,16 +385,37 @@ test("modern MCP discovery does not reserve the gateway audit before a real tool
     try {
       await client.connect(transport);
       const listed=await client.listTools();
-      assert.deepEqual(listed.tools.map(tool=>tool.name).sort(),['evaluation_files','evaluation_native','evaluation_probe','evaluation_read']);
+      assert.deepEqual(listed.tools.map(tool=>tool.name).sort(),['evaluation_citation','evaluation_files','evaluation_native','evaluation_probe','evaluation_read']);
       await assert.rejects(fs.stat(config.audit),{code:'ENOENT'});
       const result=await client.callTool({name:'evaluation_files',arguments:{}});
       const parsed=JSON.parse(result.content[0].text);
       assert.equal(parsed.ok,true,stderr); assert.deepEqual(parsed.value.map(item=>item.file),['entry.py']);
+      const citation=await client.callTool({name:'evaluation_citation',arguments:{file:'entry.py',line:1,endLine:1,quote:'value = 1'}});
+      assert.deepEqual(JSON.parse(citation.content[0].text).value,{valid:true,file:'entry.py',line:1,endLine:1});
+      const invalid=await client.callTool({name:'evaluation_citation',arguments:{file:'entry.py',line:1,endLine:1,quote:'value = 2'}});
+      assert.equal(invalid.isError,true);
     } finally { await client.close(); }
     const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
     assert.equal(records.filter(record=>record.type==='start').length,1);
     assert.equal(records.at(-1).cleanupCompleted,true,stderr);
     assert.equal(records.at(-1).executionAttempts,0);
     assert.equal(records.at(-1).verifiedExecutions,0);
+  `);
+});
+
+test("probe source bindings require earlier successful read receipts and preserve exact source hashes", () => {
+  exercise(String.raw`
+    gateway=await api.createGateway(config,{execute});
+    const listed=await gateway.call('evaluation_files',{});
+    const denied=await gateway.call('evaluation_probe',{language:'python',code:'print(1)',sourceEvidenceIds:[listed.evidenceId]});
+    assert.equal(denied.ok,false);assert.equal(executions.length,0);
+    const read=await gateway.call('evaluation_read',{file:'entry.py'});
+    const duplicate=await gateway.call('evaluation_probe',{language:'python',code:'print(1)',sourceEvidenceIds:[read.evidenceId,read.evidenceId]});
+    assert.equal(duplicate.ok,false);assert.equal(executions.length,0);
+    const bound=await gateway.call('evaluation_probe',{language:'python',code:'print(1)',sourceEvidenceIds:[read.evidenceId]});
+    assert.equal(bound.ok,true);assert.equal(executions.length,2);
+    assert.deepEqual(bound.value.sourceFiles,[{file:'entry.py',sha256:createHash('sha256').update('value = 1\n').digest('hex')}]);
+    const records=(await fs.readFile(config.audit,'utf8')).trim().split('\n').map(JSON.parse);
+    assert.deepEqual(records.at(-1).result.value.sourceFiles,bound.value.sourceFiles);
   `);
 });

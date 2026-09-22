@@ -266,3 +266,12 @@ when its implementation and corresponding evidence exist.
   independent adjudication. Both arms matched the predeclared defects; MCP native
   validation remained incomplete. See `AGENT-EVALUATION-PILOT.md` for evidence,
   setup friction, unknown costs, audit fixes and the next holdout gate.
+
+- Implemented optional frozen `gateway-v1` enforcement for agent evaluations:
+  one-time attempt reservations, numbered source/citation checks, source-bound
+  probe evidence, native/MCP result requirements, client telemetry metering,
+  bounded process cleanup, exact terminal submissions and complete blinded judge
+  packet binding. Legacy procedural runs remain distinguishable. See
+  `ENFORCED-EVALUATION.md` for the protocol and real no-inference execution canary.
+- Pending: a fresh cross-family model cohort under the enforced protocol. Historical
+  pilot failures and synthetic execution canaries do not establish review quality.

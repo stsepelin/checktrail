@@ -53,3 +53,12 @@ unmatched expected behaviors in `rationale`.
 Keep unsupported identity or cost declarations
 unverified. Your decision concerns this bounded evidence and cannot alter native
 validation outcomes or establish a general superiority claim.
+
+For a declared `gateway-v1` run, include terminal `status`. Each accepted label,
+including a valid control with no findings, supplies `probeEvidenceIds` for its own
+control execution. Every resolved finding decision also supplies `probeEvidenceIds`.
+Pass earlier source read IDs to each probe as `sourceEvidenceIds`, using that item's
+`<blindId>/source/` files. Execute the actual control behavior, rather than inferring
+it from another finding's probe. Check that the probe actually exercises the stated
+source and consequence: its declared source binding is not semantic proof. Retain
+`incomplete` when required checks, budgets or delivery requirements were not met.

@@ -54,6 +54,10 @@ checkouts and access controls when stronger separation is required. Record actua
 boundaries and access incidents. Assigning a different agent name does not verify
 independence, identity or execution.
 
+The [enforced delivery protocol](ENFORCED-EVALUATION.md) binds current gateway and
+client evidence to completed submissions. Procedural runs retain their declared-only
+semantics; select the enforced protocol explicitly before freezing a new trial.
+
 The original public prompts are [reviewer](../scripts/agent-evaluation-prompts/reviewer.md),
 [adjudicator](../scripts/agent-evaluation-prompts/adjudicator.md) and
 [curator](../scripts/agent-evaluation-prompts/curator.md). Hash their exact bytes in
@@ -196,8 +200,10 @@ terminal receipts. The judge packet includes expected labels for assessment, but
 uses anonymous record identifiers and omits arm, reviewer and usage metadata.
 Scoring checks receipt/judgment accounting; missing records remain incomplete.
 Use the helper's validated artifact contract for field names rather than adapting
-the separate review-exchange assessment schema implicitly. None of these commands
-turns a declared reproduction, identity, duration or cost into measured evidence.
+the separate review-exchange assessment schema implicitly. In procedural mode, these commands do not turn a declared reproduction, identity,
+duration or cost into measured evidence. The optional [enforced mode](ENFORCED-EVALUATION.md)
+additionally checks captured gateway/client execution evidence; semantic claims and
+identity remain independently assessed.
 
 ### Checkout artifact contract
 
@@ -215,9 +221,13 @@ The plan contains `schemaVersion: 1`, `id`, `purpose`, `evidenceClass`
   path and `sha256` of the artifact bytes.
 - `isolation`: `procedural` or `external-sandbox`, plus `isolationEvidence` prose.
   Selecting the latter does not configure or verify a sandbox.
+- Optional `executionProtocol`: the frozen `gateway-v1` enforcement contract,
+  including the separate judge budget/profile. It requires each case's
+  `executionProfile` and `nativeEvidence`; see [the contract](ENFORCED-EVALUATION.md).
 - `budget`: `wallSeconds`, `maxToolCalls`, nullable `maxInputTokens`,
   `maxOutputTokens` and `repetitions`. Reviewer compliance is declared; the helper
-  does not meter the client's model calls. A null input ceiling must be reported
+  does not meter the client's model calls in procedural mode; the separate session
+  supervisor meters available telemetry for enforced runs. A null input ceiling must be reported
   as unknown rather than described as an enforced matched input budget.
 - `cases`: each has `id`, `family`, `group`, `split`, local `root`, exact relative
   `files`, neutral `task`, `source`, `reviewCommands`, `validators` and nullable

@@ -45,3 +45,13 @@ attempted and incomplete work. Report budget exhaustion. Identity and usage valu
 are declarations unless accompanied by operator/provider evidence; unknown tokens,
 elapsed time or cost must stay unknown rather than being written as zero. Your
 assessment is advisory and cannot change deterministic validation outcomes.
+
+When the packet declares `gateway-v1`, use the numbered source reads and
+`evaluation_citation` before delivery. Run the selected native comparator; the MCP
+arm also calls `checktrail_validate`. For each executed probe, supply earlier source
+read result IDs as `sourceEvidenceIds`. Each finding supplies `probeEvidenceIds`
+covering its cited files. Preserve exact source spelling and complete-line quotes.
+Only claim `completed` when required work is done within the declared budget.
+The operator verifies the original terminal JSON against session evidence; later
+corrections cannot repair that attempt's completion. A source binding proves what
+you declared the probe concerns, so explain what the actual code and output prove.

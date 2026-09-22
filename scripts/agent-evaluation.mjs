@@ -7,7 +7,16 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
+import {
+  executionProfileSchema,
+  executionProtocolSchema,
+  nativeEvidenceSchema,
+  probeEvidenceIds,
+  readProtocolEvidence,
+  verifyProtocolEvidence,
+} from "./agent-evaluation-protocol.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const id = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/);
@@ -85,6 +94,7 @@ export const planSchema = z
       .strict(),
     isolation: z.enum(["procedural", "external-sandbox"]),
     isolationEvidence: text,
+    executionProtocol: executionProtocolSchema.optional(),
     budget: z
       .object({
         wallSeconds: z.number().int().min(1).max(3600),
@@ -106,6 +116,8 @@ export const planSchema = z
             files: z.array(relative).min(1).max(512),
             task: text,
             source,
+            executionProfile: executionProfileSchema.optional(),
+            nativeEvidence: nativeEvidenceSchema.optional(),
             reviewCommands: z
               .array(
                 z
@@ -138,6 +150,7 @@ export const labelsSchema = z
                 id,
                 description: text,
                 evidence: z.array(text).min(1).max(16),
+                probeEvidenceIds: probeEvidenceIds.optional(),
               })
               .strict(),
           )
@@ -172,6 +185,7 @@ export const receiptSchema = z
             claim: text,
             citations: z.array(citation).min(1).max(8),
             reproduction: text,
+            probeEvidenceIds: probeEvidenceIds.optional(),
           })
           .strict(),
       )
@@ -193,6 +207,7 @@ const decision = z
     defectId: id.nullable(),
     duplicateOf: id.nullable(),
     evidence: z.array(text).min(1).max(16),
+    probeEvidenceIds: probeEvidenceIds.optional(),
   })
   .strict();
 export const judgmentsSchema = z
@@ -200,6 +215,7 @@ export const judgmentsSchema = z
     schemaVersion: z.literal(1),
     manifestSha256: digest,
     adjudicator: identity,
+    status: z.enum(["completed", "incomplete"]).optional(),
     judgments: z
       .array(
         z
@@ -208,6 +224,7 @@ export const judgmentsSchema = z
             labelStatus: z.enum(["accepted", "disputed"]),
             findings: z.array(decision).max(64),
             rationale: text,
+            probeEvidenceIds: probeEvidenceIds.optional(),
           })
           .strict(),
       )
@@ -288,13 +305,26 @@ async function atomicDirectory(destination, work) {
   }
 }
 async function supportDigests() {
+  const compiled = (await fs.readdir(path.join(here, "../dist/src")))
+    .filter((file) => file.endsWith(".js"))
+    .sort()
+    .map((file) => "../dist/src/" + file);
   return Promise.all(
-    ["agent-evaluation-mcp.mjs", "../dist/src/runner.js"].map(async (file) => ({
+    [
+      "agent-evaluation-mcp.mjs",
+      "agent-evaluation-gateway.mjs",
+      "agent-evaluation-worker.mjs",
+      "agent-evaluation-protocol.mjs",
+      "agent-evaluation-session.mjs",
+      "../package-lock.json",
+      ...compiled,
+    ].map(async (file) => ({
       file,
       sha256: sha256(await fs.readFile(path.join(here, file))),
     })),
   );
 }
+
 async function promptFiles() {
   return Promise.all(
     ["reviewer", "adjudicator", "curator"].map(async (name) => ({
@@ -322,6 +352,16 @@ export async function freeze(planInput, labelsInput, destination) {
   const groups = new Map();
   for (const c of plan.cases) {
     assert.notEqual(c.family, "all", "Reserved aggregate family");
+    if (plan.executionProtocol) {
+      assert.ok(
+        c.executionProfile && c.nativeEvidence,
+        "Enforced runs require a native execution profile for every case",
+      );
+      assert.ok(
+        c.nativeEvidence.scope.every((file) => c.files.includes(file)),
+        "Native evidence scope must be captured",
+      );
+    }
     if (groups.has(c.group))
       assert.equal(
         groups.get(c.group),
@@ -396,6 +436,7 @@ export async function freeze(planInput, labelsInput, destination) {
     await writeNew(path.join(temporary, "manifest.json"), frozen);
     await writeNew(path.join(temporary, "labels.json"), labels);
     await fs.mkdir(path.join(temporary, "receipts"));
+    await fs.mkdir(path.join(temporary, "attempts"));
     await fs.mkdir(path.join(temporary, "references"));
     for (const c of cases)
       await fs.mkdir(path.join(temporary, "references", c.id));
@@ -455,6 +496,15 @@ export async function packet(root, assignmentId, destination) {
       family: c.family,
       task: c.task,
       budget: run.manifest.budget,
+      ...(run.manifest.executionProtocol
+        ? {
+            executionProtocol: run.manifest.executionProtocol.kind,
+            executionProfile: c.executionProfile,
+            nativeEvidence: c.nativeEvidence,
+            evidenceRequirements:
+              "Run the selected native suite; MCP arm also validates. Read numbered source and preflight citations. Every finding needs probeEvidenceIds from executed probes with sourceEvidenceIds covering its cited files.",
+          }
+        : {}),
       reviewerProfile: run.manifest.reviewerProfile,
       environment: run.manifest.environment,
       reviewCommands: c.reviewCommands,
@@ -475,7 +525,7 @@ export async function packet(root, assignmentId, destination) {
     });
   });
 }
-export async function seal(root, assignmentId, input) {
+async function validateReceipt(root, assignmentId, input) {
   const run = await loadRun(root),
     { c } = assignmentFor(run, assignmentId);
   assert.equal(
@@ -532,12 +582,255 @@ export async function seal(root, assignmentId, input) {
         "Citation does not match frozen source",
       );
     }
-  await writeNew(path.join(root, "receipts", assignmentId + ".json"), {
+  return { run, receipt };
+}
+function protocolExpectation(run, assignment, receipt) {
+  const c = run.manifest.cases.find((c) => c.id === assignment.caseId);
+  const digestFor = (file) =>
+    run.manifest.supportDigests.find((item) => item.file === file).sha256;
+  return {
+    binding: {
+      manifestSha256: run.sha256,
+      subjectId: assignment.id,
+      sessionId: receipt.reviewer.sessionId,
+      role: "reviewer",
+    },
+    files: c.captured.files,
+    exactFiles: true,
+    treatment: assignment.arm === "mcp",
+    profile: c.executionProfile,
+    nativeEvidence: c.nativeEvidence,
+    gatewaySha256: digestFor("agent-evaluation-gateway.mjs"),
+    workerSha256: digestFor("agent-evaluation-worker.mjs"),
+    budget: run.manifest.budget,
+    engineVersion: run.manifest.engine.version,
+  };
+}
+function disclosedRange(reads, citation) {
+  let next = citation.line;
+  for (const read of reads
+    .filter((read) => read.file === citation.file)
+    .sort((a, b) => a.line - b.line)) {
+    if (read.line > next) break;
+    next = Math.max(next, read.endLine + 1);
+    if (next > citation.endLine) return true;
+  }
+  return false;
+}
+function reviewProtocol(run, assignment, receipt, evidence) {
+  if (!run.manifest.executionProtocol)
+    return {
+      mode: "declaration-only",
+      complete: false,
+      problems: ["No enforced execution protocol was declared."],
+    };
+  const { submission, ...result } = verifyProtocolEvidence(
+    evidence,
+    protocolExpectation(run, assignment, receipt),
+  );
+  const problems = [...result.problems];
+  if (!isDeepStrictEqual(submission, receipt))
+    problems.push("Receipt differs from the client terminal submission.");
+  if (!result.native.length)
+    problems.push("A conclusive nonempty native test run is required.");
+  if (assignment.arm === "mcp" && !result.validations.length)
+    problems.push(
+      "A conclusive real MCP validation with matching retained report is required.",
+    );
+  for (const finding of receipt.findings) {
+    const ids = finding.probeEvidenceIds ?? [];
+    if (!ids.length || ids.some((id) => !result.probes.includes(id)))
+      problems.push(`Finding ${finding.id} needs usable probe evidence.`);
+    for (const citation of finding.citations) {
+      if (!disclosedRange(result.reads, citation))
+        problems.push(
+          `Finding ${finding.id} cites lines not disclosed by a recorded source read.`,
+        );
+      if (!ids.some((id) => result.probeSources?.[id]?.includes(citation.file)))
+        problems.push(
+          `Finding ${finding.id} needs a probe bound to cited file ${citation.file}.`,
+        );
+    }
+  }
+  return {
+    ...result,
+    mode: "gateway-v1",
+    complete: problems.length === 0,
+    problems,
+  };
+}
+export async function beginAttempt(
+  root,
+  assignmentId,
+  sessionId,
+  evidenceDirectory,
+) {
+  const run = await loadRun(root),
+    { c } = assignmentFor(run, assignmentId);
+  assert.ok(
+    run.manifest.executionProtocol,
+    "Attempt reservation requires an enforced run",
+  );
+  assert.equal(c.exclusion, null, "Excluded assignment cannot start");
+  id.parse(sessionId);
+  assert.notEqual(
+    sessionId,
+    run.manifest.curatorSessionId,
+    "Curator cannot review",
+  );
+  const directory = path.resolve(evidenceDirectory);
+  assert.equal(
+    await fs.realpath(path.dirname(directory)),
+    path.dirname(directory),
+    "Canonical evidence parent required",
+  );
+  await assert.rejects(
+    fs.stat(directory),
+    { code: "ENOENT" },
+    "Evidence directory must be new",
+  );
+  for (const a of run.manifest.assignments) {
+    const existing = await maybeJson(
+      path.join(root, "attempts", a.id + ".json"),
+    );
+    if (existing) {
+      assert.notEqual(
+        existing.sessionId,
+        sessionId,
+        "Each assignment needs a fresh reviewer session",
+      );
+      assert.notEqual(
+        existing.evidenceDirectory,
+        directory,
+        "Each attempt needs its own evidence directory",
+      );
+    }
+  }
+  const reservation = {
+    manifestSha256: run.sha256,
+    assignmentId,
+    sessionId,
+    evidenceDirectory: directory,
+  };
+  await writeNew(
+    path.join(root, "attempts", assignmentId + ".json"),
+    reservation,
+  );
+  return reservation;
+}
+async function reservedAttempt(
+  root,
+  run,
+  assignmentId,
+  receipt,
+  evidenceDirectory,
+) {
+  const reservation = await maybeJson(
+    path.join(root, "attempts", assignmentId + ".json"),
+  );
+  const problems = [];
+  if (!reservation)
+    problems.push("Assignment was not reserved before execution.");
+  else {
+    if (
+      reservation.manifestSha256 !== run.sha256 ||
+      reservation.assignmentId !== assignmentId ||
+      reservation.sessionId !== receipt.reviewer.sessionId
+    )
+      problems.push("Assignment reservation identity mismatch.");
+    if (
+      evidenceDirectory &&
+      reservation.evidenceDirectory !== path.resolve(evidenceDirectory)
+    )
+      problems.push("Evidence is not from the reserved attempt directory.");
+  }
+  return { reservation, problems };
+}
+async function submittedProtocol(
+  root,
+  run,
+  a,
+  receipt,
+  evidence,
+  evidenceDirectory,
+) {
+  const protocol = reviewProtocol(run, a, receipt, evidence);
+  if (!run.manifest.executionProtocol) return { protocol, reservation: null };
+  const { reservation, problems } = await reservedAttempt(
+    root,
+    run,
+    a.id,
+    receipt,
+    evidenceDirectory,
+  );
+  protocol.problems.push(...problems);
+  protocol.complete = protocol.problems.length === 0;
+  return { protocol, reservation };
+}
+export async function preflight(root, assignmentId, input, evidenceDirectory) {
+  try {
+    const { run, receipt } = await validateReceipt(root, assignmentId, input);
+    const { a } = assignmentFor(run, assignmentId);
+    const evidence = evidenceDirectory
+      ? await readProtocolEvidence(evidenceDirectory)
+      : null;
+    const { protocol } = await submittedProtocol(
+      root,
+      run,
+      a,
+      receipt,
+      evidence,
+      evidenceDirectory,
+    );
+    return {
+      valid:
+        !run.manifest.executionProtocol ||
+        receipt.status === "incomplete" ||
+        protocol.complete,
+      protocolComplete: protocol.complete && receipt.status === "completed",
+      citationValid: true,
+      protocol,
+    };
+  } catch (error) {
+    return { valid: false, citationValid: false, problems: [error.message] };
+  }
+}
+export async function seal(root, assignmentId, input, evidenceDirectory) {
+  const { run, receipt } = await validateReceipt(root, assignmentId, input);
+  const { a } = assignmentFor(run, assignmentId);
+  const evidence = evidenceDirectory
+    ? await readProtocolEvidence(evidenceDirectory)
+    : null;
+  const { protocol, reservation } = await submittedProtocol(
+    root,
+    run,
+    a,
+    receipt,
+    evidence,
+    evidenceDirectory,
+  );
+  if (run.manifest.executionProtocol && receipt.status === "completed")
+    assert.ok(
+      protocol.complete,
+      "Completed review violates enforced protocol: " +
+        protocol.problems.join("; "),
+    );
+  const saved = {
     receipt,
     sha256: hash(receipt),
     sealedAt: new Date().toISOString(),
-  });
+  };
+  if (run.manifest.executionProtocol)
+    Object.assign(saved, {
+      reservation,
+      reservationSha256: hash(reservation),
+      protocolEvidence: evidence,
+      protocolEvidenceSha256: hash(evidence),
+      protocol,
+    });
+  await writeNew(path.join(root, "receipts", assignmentId + ".json"), saved);
 }
+
 async function maybeJson(file) {
   try {
     return await readJson(file);
@@ -557,6 +850,31 @@ async function receiptsFor(root, run) {
         "Excluded case cannot have a reviewer receipt",
       );
       receiptSchema.parse(entry.receipt);
+      if (run.manifest.executionProtocol) {
+        assert.equal(
+          hash(entry.protocolEvidence ?? null),
+          entry.protocolEvidenceSha256,
+          "Sealed protocol evidence changed",
+        );
+        const verified = await submittedProtocol(
+          root,
+          run,
+          a,
+          entry.receipt,
+          entry.protocolEvidence,
+        );
+        assert.equal(
+          hash(verified.reservation),
+          entry.reservationSha256,
+          "Sealed attempt reservation changed",
+        );
+        assert.deepEqual(
+          verified.reservation,
+          entry.reservation,
+          "Sealed attempt reservation changed",
+        );
+        entry.protocol = verified.protocol;
+      }
       assert.equal(hash(entry.receipt), entry.sha256, "Sealed receipt changed");
       assert.equal(entry.receipt.assignmentId, a.id);
       assert.equal(entry.receipt.manifestSha256, run.sha256);
@@ -569,6 +887,69 @@ async function receiptsFor(root, run) {
   }
   return entries;
 }
+async function judgingPacket(root, run, entries) {
+  const items = [];
+  for (const { a, entry } of entries
+    .filter((e) => e.entry)
+    .sort((x, y) => x.a.blindId.localeCompare(y.a.blindId))) {
+    const c = run.manifest.cases.find((c) => c.id === a.caseId);
+    const { caseId: _caseId, ...label } = run.labels.find(
+      (l) => l.caseId === a.caseId,
+    );
+    void _caseId;
+    const references = [];
+    for (const v of c.validators) {
+      const saved = await maybeJson(
+        path.join(root, "references", c.id, `${v.id}.json`),
+      );
+      if (saved) {
+        assert.equal(hash(saved.record), saved.sha256, "Reference changed");
+        references.push({
+          id: v.id,
+          kind: v.kind,
+          required: v.required,
+          record: saved.record,
+        });
+      } else
+        references.push({
+          id: v.id,
+          kind: v.kind,
+          required: v.required,
+          record: null,
+        });
+    }
+    items.push({
+      blindId: a.blindId,
+      references,
+      task: c.task,
+      label,
+      findings: entry.receipt.findings,
+      status: entry.receipt.status,
+      limitations: entry.receipt.limitations,
+      ...(run.manifest.executionProtocol
+        ? {
+            protocol: {
+              complete: entry.protocol.complete,
+              problems: entry.protocol.problems,
+            },
+          }
+        : {}),
+    });
+  }
+  return {
+    schemaVersion: 1,
+    manifestSha256: run.sha256,
+    ...(run.manifest.executionProtocol
+      ? {
+          executionProtocol: run.manifest.executionProtocol.kind,
+          budget: run.manifest.executionProtocol.judgeBudget,
+        }
+      : {}),
+    instruction: run.manifest.prompts.find((p) => p.name === "adjudicator")
+      .content,
+    items,
+  };
+}
 export async function blind(root, destination) {
   const run = await loadRun(root),
     entries = await receiptsFor(root, run);
@@ -579,59 +960,18 @@ export async function blind(root, destination) {
     ),
     "Seal every terminal review before revealing labels",
   );
+  const packet = await judgingPacket(root, run, entries);
   await atomicDirectory(destination, async (temporary) => {
-    const items = [];
-    for (const { a, entry } of entries
-      .filter((e) => e.entry)
-      .sort((x, y) => x.a.blindId.localeCompare(y.a.blindId))) {
+    for (const { a, entry } of entries) {
+      if (!entry) continue;
       const c = run.manifest.cases.find((c) => c.id === a.caseId);
       await snapshot(
         path.join(root, "sources", c.id),
         c.files,
         path.join(temporary, a.blindId, "source"),
       );
-      const { caseId: _caseId, ...label } = run.labels.find(
-        (l) => l.caseId === a.caseId,
-      );
-      void _caseId;
-      const references = [];
-      for (const v of c.validators) {
-        const saved = await maybeJson(
-          path.join(root, "references", c.id, `${v.id}.json`),
-        );
-        if (saved) {
-          assert.equal(hash(saved.record), saved.sha256, "Reference changed");
-          references.push({
-            id: v.id,
-            kind: v.kind,
-            required: v.required,
-            record: saved.record,
-          });
-        } else
-          references.push({
-            id: v.id,
-            kind: v.kind,
-            required: v.required,
-            record: null,
-          });
-      }
-      items.push({
-        blindId: a.blindId,
-        references,
-        task: c.task,
-        label,
-        findings: entry.receipt.findings,
-        status: entry.receipt.status,
-        limitations: entry.receipt.limitations,
-      });
     }
-    await writeNew(path.join(temporary, "judging.json"), {
-      schemaVersion: 1,
-      manifestSha256: run.sha256,
-      instruction: run.manifest.prompts.find((p) => p.name === "adjudicator")
-        .content,
-      items,
-    });
+    await writeNew(path.join(temporary, "judging.json"), packet);
   });
 }
 
@@ -717,7 +1057,102 @@ export async function reference(root, caseId, validatorId, trusted) {
   }
 }
 
-export async function score(root, input) {
+async function verifyJudgeProtocol(
+  root,
+  run,
+  entries,
+  judgments,
+  evidenceDirectory,
+) {
+  if (!run.manifest.executionProtocol)
+    return {
+      mode: "declaration-only",
+      complete: false,
+      problems: ["No enforced judging protocol was declared."],
+    };
+  const protocol = run.manifest.executionProtocol;
+  const files = entries
+    .filter((item) => item.entry)
+    .flatMap(({ a }) =>
+      run.manifest.cases
+        .find((c) => c.id === a.caseId)
+        .captured.files.map((file) => ({
+          ...file,
+          file: `${a.blindId}/source/${file.file}`,
+        })),
+    );
+  files.push({
+    file: "judging.json",
+    sha256: sha256(encode(await judgingPacket(root, run, entries))),
+  });
+  const digestFor = (file) =>
+    run.manifest.supportDigests.find((item) => item.file === file).sha256;
+  const evidence = evidenceDirectory
+    ? await readProtocolEvidence(evidenceDirectory)
+    : null;
+  const { submission, ...verified } = verifyProtocolEvidence(evidence, {
+    binding: {
+      manifestSha256: run.sha256,
+      subjectId: "judging",
+      sessionId: judgments.adjudicator.sessionId,
+      role: "judge",
+    },
+    files,
+    exactFiles: true,
+    treatment: false,
+    profile: protocol.judgeProfile,
+    budget: protocol.judgeBudget,
+    gatewaySha256: digestFor("agent-evaluation-gateway.mjs"),
+    workerSha256: digestFor("agent-evaluation-worker.mjs"),
+  });
+  const problems = [...verified.problems];
+  if (!isDeepStrictEqual(submission, judgments))
+    problems.push("Judgments differ from the client terminal submission.");
+  if (judgments.status !== "completed")
+    problems.push("Judge has no completed terminal status.");
+  const selected = entries.filter(
+    ({ a }) => !run.manifest.cases.find((c) => c.id === a.caseId).exclusion,
+  );
+  if (
+    judgments.judgments.length !== selected.length ||
+    selected.some(({ entry }) => !entry)
+  )
+    problems.push("Judge must account for every selected terminal assessment.");
+  const bound = (ids, blindId) =>
+    ids?.length &&
+    ids.every(
+      (id) =>
+        verified.probes.includes(id) &&
+        verified.probeSources?.[id]?.some((file) =>
+          file.startsWith(`${blindId}/source/`),
+        ),
+    );
+  for (const item of judgments.judgments) {
+    if (
+      item.labelStatus === "accepted" &&
+      !bound(item.probeEvidenceIds, item.blindId)
+    )
+      problems.push(
+        `Accepted label ${item.blindId} needs its own source-bound control probe.`,
+      );
+    for (const finding of item.findings)
+      if (
+        !["duplicate", "unresolved"].includes(finding.verdict) &&
+        !bound(finding.probeEvidenceIds, item.blindId)
+      )
+        problems.push(
+          `Decision ${item.blindId}/${finding.findingId} needs source-bound probe evidence.`,
+        );
+  }
+  return {
+    ...verified,
+    mode: "gateway-v1",
+    complete: problems.length === 0,
+    problems,
+  };
+}
+
+export async function score(root, input, evidenceDirectory) {
   const run = await loadRun(root),
     judgments = judgmentsSchema.parse(input),
     entries = await receiptsFor(root, run);
@@ -749,6 +1184,13 @@ export async function score(root, input) {
       entries.some((e) => e.a.blindId === j.blindId && e.entry),
     ),
     "Unknown judgment or missing review",
+  );
+  const judgeProtocol = await verifyJudgeProtocol(
+    root,
+    run,
+    entries,
+    judgments,
+    evidenceDirectory,
   );
   const observations = [];
   for (const { a, entry } of entries) {
@@ -818,7 +1260,7 @@ export async function score(root, input) {
         evidenceSha256: saved?.sha256 ?? null,
       });
     }
-    const u = entry?.receipt.usage;
+    const u = entry?.protocol?.usage ?? entry?.receipt.usage;
     const budgetExceeded = Boolean(
       u &&
       ((u.elapsedMs !== null &&
@@ -832,6 +1274,8 @@ export async function score(root, input) {
     const ready =
       c.exclusion === null &&
       !budgetExceeded &&
+      (!run.manifest.executionProtocol ||
+        (entry?.protocol?.complete && judgeProtocol.complete)) &&
       entry?.receipt.status === "completed" &&
       j?.labelStatus === "accepted" &&
       !j.findings.some((f) => f.verdict === "unresolved") &&
@@ -866,8 +1310,13 @@ export async function score(root, input) {
       receiptSha256: entry?.sha256 ?? null,
       labelAccepted: j?.labelStatus === "accepted",
       references,
-      usage: entry?.receipt.usage ?? null,
+      usage: u ?? null,
       budgetExceeded,
+      protocol: entry?.protocol ?? {
+        mode: run.manifest.executionProtocol?.kind ?? "declaration-only",
+        complete: false,
+        problems: ["No enforced evidence."],
+      },
     });
   }
   const families = [...new Set(observations.map((o) => o.family))];
@@ -947,6 +1396,13 @@ export async function score(root, input) {
       sha256: run.manifest.engine.sha256,
     },
     complete,
+    executionProtocol:
+      run.manifest.executionProtocol?.kind ?? "declaration-only",
+    protocolComplete:
+      Boolean(run.manifest.executionProtocol) &&
+      complete &&
+      judgeProtocol.complete,
+    judgeProtocol,
     effectivenessClaimSupported: false,
     identityProvenance:
       "orchestrator-declared; sessions do not prove distinct models or independent organizations",
@@ -979,7 +1435,9 @@ export async function score(root, input) {
       })),
     limits: [
       "Historical cases may be known to model training; this harness does not establish model independence or lack of contamination.",
-      "Labels, reviewer identity, budget compliance and adjudication are declarations; artifact hashes establish binding, not truth.",
+      run.manifest.executionProtocol
+        ? "Labels, reviewer identity and semantic adjudication remain declarations; budget evidence is checked against captured telemetry and trusted supervisor observations, not independently attested by the provider."
+        : "Labels, reviewer identity, budget compliance and adjudication are declarations; artifact hashes establish binding, not truth.",
       "No population inference, non-inferiority claim, automatic code changes or model training follows from this report.",
       "Missing, disputed, excluded and incomplete cases remain visible; repeated trials are not independent new cases.",
     ],
@@ -1000,11 +1458,39 @@ async function main(args) {
         assignments: frozen.manifest.assignments,
       }),
     );
+  } else if (command === "begin" && rest.length === 4) {
+    const reservation = await beginAttempt(
+      path.resolve(rest[0]),
+      rest[1],
+      rest[2],
+      path.resolve(rest[3]),
+    );
+    console.log(
+      encode({
+        assignmentId: reservation.assignmentId,
+        sessionId: reservation.sessionId,
+        reserved: true,
+      }),
+    );
   } else if (command === "packet" && rest.length === 3)
     await packet(path.resolve(rest[0]), rest[1], path.resolve(rest[2]));
-  else if (command === "seal" && rest.length === 3)
-    await seal(path.resolve(rest[0]), rest[1], await readJson(rest[2]));
-  else if (command === "blind" && rest.length === 2)
+  else if (
+    (command === "seal" || command === "preflight") &&
+    (rest.length === 3 || rest.length === 4)
+  ) {
+    const parameters = [
+      path.resolve(rest[0]),
+      rest[1],
+      await readJson(rest[2]),
+      rest[3] ? path.resolve(rest[3]) : undefined,
+    ];
+    if (command === "seal") await seal(...parameters);
+    else {
+      const result = await preflight(...parameters);
+      console.log(encode(result));
+      if (!result.valid) process.exitCode = 1;
+    }
+  } else if (command === "blind" && rest.length === 2)
     await blind(path.resolve(rest[0]), path.resolve(rest[1]));
   else if (
     command === "reference" &&
@@ -1013,15 +1499,24 @@ async function main(args) {
   ) {
     const r = await reference(path.resolve(rest[0]), rest[1], rest[2], true);
     console.log(encode({ status: r.status, exitCode: r.exitCode }));
-  } else if (command === "score" && rest.length === 3) {
-    const result = await score(path.resolve(rest[0]), await readJson(rest[1]));
+  } else if (command === "score" && (rest.length === 3 || rest.length === 4)) {
+    const result = await score(
+      path.resolve(rest[0]),
+      await readJson(rest[1]),
+      rest[3] ? path.resolve(rest[3]) : undefined,
+    );
     await writeNew(rest[2], result);
     console.log(
-      encode({ complete: result.complete, summaries: result.summaries }),
+      encode({
+        complete: result.complete,
+        protocolComplete: result.protocolComplete,
+        executionProtocol: result.executionProtocol,
+        summaries: result.summaries,
+      }),
     );
   } else
     throw new Error(
-      "Usage: agent-evaluation.mjs freeze PLAN LABELS RUN | packet RUN ASSIGNMENT OUT | seal RUN ASSIGNMENT RECEIPT | blind RUN OUT | reference RUN CASE VALIDATOR --trust-project | score RUN JUDGMENTS OUTPUT",
+      "Usage: agent-evaluation.mjs freeze PLAN LABELS RUN | begin RUN ASSIGNMENT SESSION_ID EVIDENCE_DIR | packet RUN ASSIGNMENT OUT | preflight RUN ASSIGNMENT RECEIPT [EVIDENCE_DIR] | seal RUN ASSIGNMENT RECEIPT [EVIDENCE_DIR] | blind RUN OUT | reference RUN CASE VALIDATOR --trust-project | score RUN JUDGMENTS OUTPUT [EVIDENCE_DIR]",
     );
 }
 if (
