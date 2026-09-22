@@ -131,3 +131,7 @@ The [agent evaluation workflow](AGENT-EVALUATION.md) implements frozen declarati
 separate source packets, sealed reviewer receipts, blinded judging and paired
 accounting. It complements these deterministic adapter measurements; it does not
 turn their already-inspected cases into an unseen review benchmark.
+
+The [five-language alpha.5 adoption replay](PUBLIC-ADOPTION-ALPHA5.md) separately
+rechecks the original pinned libraries with the published package, preserving
+remaining scope gaps and the older immutable measurements.

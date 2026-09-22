@@ -1,0 +1,2034 @@
+{
+  "recordedAt": "2026-09-22T08:25:04.254Z",
+  "harnessSha256": "d7313fcc311a47a43b46044e3a3fdf8e14136b67d72c4ea0c54c7bcaa41f4c96",
+  "evidenceParserSha256": "ab71d388ca1d47009dd6768df8266b20b5fcb0a36491ede2bdcee9ef97f68c18",
+  "planSha256": "cbf154f69c3559ee8a7cc6dcb806e11bab3cf5a166cc20b3ae4f1d9777f24015",
+  "engine": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.5",
+    "sourceCommit": "832a044398bcc060c0d6b4c42e66c6eb94a9f5a6",
+    "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7"
+  },
+  "observations": [
+    {
+      "id": "nanoid",
+      "commit": "57009b5eb8d757ae39bf5f4361dd30c9f23391b7",
+      "trackedSourceSha256": "71415a05f9fa85db2b1f2a92a86b2d1eec57d4c4109850691224dd68629ede30",
+      "trackedSourceUnchanged": true,
+      "initialSetup": {
+        "exitCode": 2,
+        "schemaVersion": 1,
+        "engineVersion": "0.1.0-alpha.5",
+        "status": "needs-selection",
+        "configuration": null,
+        "unresolved": [
+          {
+            "path": ".",
+            "adapter": "javascript",
+            "choices": [
+              "javascript.node-test",
+              "javascript.typescript",
+              "javascript.typescript-build",
+              "javascript.vue-tsc",
+              "javascript.vue-router",
+              "javascript.nuxt-runtime",
+              "javascript.eslint",
+              "javascript.vitest",
+              "javascript.jest",
+              "javascript.playwright"
+            ]
+          }
+        ],
+        "executionEnabled": false
+      },
+      "createdPolicy": {
+        "schemaVersion": 1,
+        "projects": [
+          {
+            "path": ".",
+            "checks": ["infrastructure.actionlint", "javascript.node-test"]
+          }
+        ]
+      },
+      "preservation": "byte-identical",
+      "doctorHost": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "doctorPrepared": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "fullPolicy": {
+        "exitCode": 2,
+        "wallMs": 436,
+        "outcome": "incomplete",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "infrastructure.actionlint",
+            "project": ".",
+            "status": "unavailable",
+            "reason": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables",
+            "files": 4,
+            "tools": [],
+            "processes": []
+          },
+          {
+            "id": "javascript.node-test",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 4,
+            "tests": {
+              "total": 79,
+              "passed": 79,
+              "failed": 0,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "doctorLanguageOnly": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "code": "unselected-project",
+            "project": ".",
+            "adapter": "infrastructure"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "nativeComparison": {
+        "tests": {
+          "total": 79,
+          "passed": 79,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "negativeComparison": {
+        "tests": {
+          "total": 80,
+          "passed": 79,
+          "failed": 1,
+          "skipped": 0
+        },
+        "negativeControlDetected": true
+      },
+      "native": [
+        {
+          "exitCode": 0,
+          "wallMs": 308
+        }
+      ],
+      "languageOnly": {
+        "exitCode": 0,
+        "wallMs": 420,
+        "outcome": "passed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "javascript.node-test",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 4,
+            "tests": {
+              "total": 79,
+              "passed": 79,
+              "failed": 0,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "negativeNative": [
+        {
+          "exitCode": 1,
+          "wallMs": 314
+        }
+      ],
+      "negativeLanguageOnly": {
+        "exitCode": 1,
+        "wallMs": 417,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "javascript.node-test",
+            "project": ".",
+            "status": "failed",
+            "reason": "Test evidence contains failures.",
+            "files": 5,
+            "tests": {
+              "total": 80,
+              "passed": 79,
+              "failed": 1,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 1,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "runtime": ["v26.8.1"],
+      "environment": {
+        "os": "darwin",
+        "arch": "arm64",
+        "node": "v26.8.1"
+      }
+    },
+    {
+      "id": "mitt",
+      "commit": "6b41670516ed8e8b738612f60491995470aa63b3",
+      "trackedSourceSha256": "9cecf0c437450c5ea1e8fba41d9ebee4afd39f0a41dd1ac854089bee929c333e",
+      "trackedSourceUnchanged": true,
+      "initialSetup": {
+        "exitCode": 2,
+        "schemaVersion": 1,
+        "engineVersion": "0.1.0-alpha.5",
+        "status": "needs-selection",
+        "configuration": null,
+        "unresolved": [
+          {
+            "path": ".",
+            "adapter": "javascript",
+            "choices": [
+              "javascript.node-test",
+              "javascript.typescript",
+              "javascript.typescript-build",
+              "javascript.vue-tsc",
+              "javascript.vue-router",
+              "javascript.nuxt-runtime",
+              "javascript.eslint",
+              "javascript.vitest",
+              "javascript.jest",
+              "javascript.playwright"
+            ]
+          }
+        ],
+        "executionEnabled": false
+      },
+      "createdPolicy": {
+        "schemaVersion": 1,
+        "projects": [
+          {
+            "path": ".",
+            "checks": ["infrastructure.actionlint", "javascript.typescript"]
+          }
+        ]
+      },
+      "preservation": "byte-identical",
+      "doctorHost": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          },
+          {
+            "check": "javascript.typescript",
+            "adapter": "javascript",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "The selected compiler is not installed within the configured root."
+          },
+          {
+            "check": "javascript.typescript",
+            "adapter": "javascript",
+            "project": ".",
+            "code": "package-metadata",
+            "detail": "Missing or invalid package metadata: typescript"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "doctorPrepared": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "fullPolicy": {
+        "exitCode": 1,
+        "wallMs": 602,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "infrastructure.actionlint",
+            "project": ".",
+            "status": "unavailable",
+            "reason": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables",
+            "files": 2,
+            "tools": [],
+            "processes": []
+          },
+          {
+            "id": "javascript.typescript",
+            "project": ".",
+            "status": "failed",
+            "reason": "The tool returned a nonzero exit code; inspect detailed evidence for code or environment causes.",
+            "files": 3,
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              },
+              {
+                "name": "typescript",
+                "version": "4.9.5"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 2,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "doctorLanguageOnly": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "code": "unselected-project",
+            "project": ".",
+            "adapter": "infrastructure"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "nativeComparison": {
+        "diagnosticCodes": ["TS2307", "TS2578", "TS7006"],
+        "wrapperDiagnosticCodes": ["TS2307", "TS2578", "TS7006"]
+      },
+      "negativeComparison": {
+        "diagnosticCodes": ["TS2307", "TS2322", "TS2578", "TS7006"],
+        "wrapperDiagnosticCodes": ["TS2307", "TS2322", "TS2578", "TS7006"],
+        "negativeControlDetected": true
+      },
+      "preparedTypeScript": {
+        "declarationSha256": "b55d63cfd2ba5cc013980284fe155690573fe48511bf33ea07acd71280736478",
+        "buildExitCode": 0,
+        "nativeExitCode": 0,
+        "comparison": {
+          "diagnosticCodes": [],
+          "wrapperDiagnosticCodes": []
+        },
+        "wrapper": {
+          "exitCode": 0,
+          "wallMs": 539,
+          "outcome": "passed",
+          "sourceUnchanged": true,
+          "checks": [
+            {
+              "id": "javascript.typescript",
+              "project": ".",
+              "status": "passed",
+              "reason": "The planned check completed successfully.",
+              "files": 4,
+              "tools": [
+                {
+                  "name": "node",
+                  "version": "26.8.1"
+                },
+                {
+                  "name": "typescript",
+                  "version": "4.9.5"
+                }
+              ],
+              "processes": [
+                {
+                  "exitCode": 0,
+                  "timedOut": false,
+                  "cancelled": false,
+                  "truncated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "native": [
+        {
+          "exitCode": 2,
+          "wallMs": 361
+        }
+      ],
+      "languageOnly": {
+        "exitCode": 1,
+        "wallMs": 516,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "javascript.typescript",
+            "project": ".",
+            "status": "failed",
+            "reason": "The tool returned a nonzero exit code; inspect detailed evidence for code or environment causes.",
+            "files": 3,
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              },
+              {
+                "name": "typescript",
+                "version": "4.9.5"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 2,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "negativeNative": [
+        {
+          "exitCode": 2,
+          "wallMs": 358
+        }
+      ],
+      "negativeLanguageOnly": {
+        "exitCode": 1,
+        "wallMs": 517,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "javascript.typescript",
+            "project": ".",
+            "status": "failed",
+            "reason": "The tool returned a nonzero exit code; inspect detailed evidence for code or environment causes.",
+            "files": 4,
+            "tools": [
+              {
+                "name": "node",
+                "version": "26.8.1"
+              },
+              {
+                "name": "typescript",
+                "version": "4.9.5"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 2,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "runtime": ["Version 4.9.5"],
+      "environment": {
+        "os": "darwin",
+        "arch": "arm64",
+        "node": "v26.8.1"
+      }
+    },
+    {
+      "id": "more-itertools",
+      "commit": "1da45ae4b61a832ed080f08a8833784aad0a9534",
+      "trackedSourceSha256": "5eb46dfa704e40309355e1ddbc902e21320c6962f9d575e91c670f07b4b44058",
+      "trackedSourceUnchanged": true,
+      "initialSetup": {
+        "exitCode": 2,
+        "schemaVersion": 1,
+        "engineVersion": "0.1.0-alpha.5",
+        "status": "needs-selection",
+        "configuration": null,
+        "unresolved": [
+          {
+            "path": ".",
+            "adapter": "python",
+            "choices": [
+              "python.unittest",
+              "python.pytest",
+              "python.ruff",
+              "python.mypy",
+              "python.fastapi-routes",
+              "python.django-routes"
+            ]
+          },
+          {
+            "path": "docs",
+            "adapter": "python",
+            "choices": [
+              "python.unittest",
+              "python.pytest",
+              "python.ruff",
+              "python.mypy",
+              "python.fastapi-routes",
+              "python.django-routes"
+            ]
+          }
+        ],
+        "executionEnabled": false
+      },
+      "createdPolicy": {
+        "schemaVersion": 1,
+        "projects": [
+          {
+            "path": ".",
+            "checks": ["infrastructure.actionlint", "python.unittest"]
+          },
+          {
+            "path": "docs",
+            "checks": ["python.unittest"]
+          }
+        ]
+      },
+      "preservation": "byte-identical",
+      "doctorHost": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          },
+          {
+            "check": "python.unittest",
+            "adapter": "python",
+            "project": "docs",
+            "code": "unavailable-check",
+            "detail": "No unittest candidate files were discovered."
+          }
+        ],
+        "validationPerformed": false
+      },
+      "doctorPrepared": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          },
+          {
+            "check": "python.unittest",
+            "adapter": "python",
+            "project": "docs",
+            "code": "unavailable-check",
+            "detail": "No unittest candidate files were discovered."
+          }
+        ],
+        "validationPerformed": false
+      },
+      "fullPolicy": {
+        "exitCode": 2,
+        "wallMs": 14365,
+        "outcome": "incomplete",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "infrastructure.actionlint",
+            "project": ".",
+            "status": "unavailable",
+            "reason": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables",
+            "files": 1,
+            "tools": [],
+            "processes": []
+          },
+          {
+            "id": "python.unittest",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 2,
+            "tests": {
+              "total": 928,
+              "passed": 928,
+              "failed": 0,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "python",
+                "version": "3.12.13"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "python.unittest",
+            "project": "docs",
+            "status": "unavailable",
+            "reason": "No unittest candidate files were discovered.",
+            "files": 0,
+            "tools": [],
+            "processes": []
+          }
+        ]
+      },
+      "doctorLanguageOnly": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "code": "unselected-project",
+            "project": ".",
+            "adapter": "infrastructure"
+          },
+          {
+            "code": "unselected-project",
+            "project": "docs",
+            "adapter": "python"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "nativeComparison": {
+        "tests": {
+          "total": 928,
+          "passed": 928,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "negativeComparison": {
+        "tests": {
+          "total": 929,
+          "passed": 928,
+          "failed": 1,
+          "skipped": 0
+        },
+        "negativeControlDetected": true
+      },
+      "native": [
+        {
+          "exitCode": 0,
+          "wallMs": 14158
+        }
+      ],
+      "languageOnly": {
+        "exitCode": 0,
+        "wallMs": 15162,
+        "outcome": "passed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "python.unittest",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 2,
+            "tests": {
+              "total": 928,
+              "passed": 928,
+              "failed": 0,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "python",
+                "version": "3.12.13"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "negativeNative": [
+        {
+          "exitCode": 1,
+          "wallMs": 14380
+        }
+      ],
+      "negativeLanguageOnly": {
+        "exitCode": 1,
+        "wallMs": 16265,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "python.unittest",
+            "project": ".",
+            "status": "failed",
+            "reason": "Test evidence contains failures.",
+            "files": 3,
+            "tests": {
+              "total": 929,
+              "passed": 928,
+              "failed": 1,
+              "skipped": 0
+            },
+            "tools": [
+              {
+                "name": "python",
+                "version": "3.12.13"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 1,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "runtime": ["Python 3.12.13"],
+      "environment": {
+        "os": "linux",
+        "image": "sha256:50acdf79e4b3fcfafb4151579ac00b097382f64190481a1d69399efea05c9fed",
+        "network": "disabled",
+        "sourceMount": "read-only"
+      }
+    },
+    {
+      "id": "uuid",
+      "commit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+      "trackedSourceSha256": "6ffcd73e2b75f99bc3060e4259fa8b1f366ba199b2f9eca98220e9efb21f55ff",
+      "trackedSourceUnchanged": true,
+      "initialSetup": {
+        "exitCode": 0,
+        "schemaVersion": 1,
+        "engineVersion": "0.1.0-alpha.5",
+        "status": "preview",
+        "configuration": {
+          "schemaVersion": 1,
+          "projects": [
+            {
+              "path": ".",
+              "checks": [
+                "go.format",
+                "go.test",
+                "go.vet",
+                "infrastructure.actionlint"
+              ]
+            }
+          ]
+        },
+        "unresolved": [],
+        "executionEnabled": false
+      },
+      "createdPolicy": {
+        "schemaVersion": 1,
+        "projects": [
+          {
+            "path": ".",
+            "checks": [
+              "go.format",
+              "go.test",
+              "go.vet",
+              "infrastructure.actionlint"
+            ]
+          }
+        ]
+      },
+      "preservation": "byte-identical",
+      "doctorHost": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "doctorPrepared": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "unavailable-check",
+            "detail": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables"
+          },
+          {
+            "check": "infrastructure.actionlint",
+            "adapter": "infrastructure",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: actionlint"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "fullPolicy": {
+        "exitCode": 1,
+        "wallMs": 1824,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "go.format",
+            "project": ".",
+            "status": "failed",
+            "reason": "The formatter reported files or diagnostics.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.vet",
+            "project": ".",
+            "status": "inconclusive",
+            "reason": "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.test",
+            "project": ".",
+            "status": "inconclusive",
+            "reason": "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "infrastructure.actionlint",
+            "project": ".",
+            "status": "unavailable",
+            "reason": "Prepare checktrail.actionlint.json with explicit runnerLabels and variables",
+            "files": 2,
+            "tools": [],
+            "processes": []
+          }
+        ]
+      },
+      "doctorLanguageOnly": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "code": "unselected-project",
+            "project": ".",
+            "adapter": "infrastructure"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "nativeComparison": {
+        "formattedFiles": [
+          "dce.go",
+          "hash.go",
+          "node_js.go",
+          "node_net.go",
+          "null.go",
+          "uuid.go",
+          "version4.go"
+        ],
+        "tests": {
+          "total": 213,
+          "passed": 212,
+          "failed": 0,
+          "skipped": 1
+        }
+      },
+      "negativeComparison": {
+        "formattedFiles": [
+          "dce.go",
+          "hash.go",
+          "node_js.go",
+          "node_net.go",
+          "null.go",
+          "uuid.go",
+          "version4.go"
+        ],
+        "tests": {
+          "total": 214,
+          "passed": 212,
+          "failed": 1,
+          "skipped": 1
+        },
+        "negativeControlDetected": true
+      },
+      "native": [
+        {
+          "exitCode": 0,
+          "wallMs": 6
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 83
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 1039
+        }
+      ],
+      "languageOnly": {
+        "exitCode": 1,
+        "wallMs": 1307,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "go.format",
+            "project": ".",
+            "status": "failed",
+            "reason": "The formatter reported files or diagnostics.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.vet",
+            "project": ".",
+            "status": "inconclusive",
+            "reason": "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.test",
+            "project": ".",
+            "status": "inconclusive",
+            "reason": "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
+            "files": 23,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "negativeNative": [
+        {
+          "exitCode": 0,
+          "wallMs": 6
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 100
+        },
+        {
+          "exitCode": 1,
+          "wallMs": 1010
+        }
+      ],
+      "negativeLanguageOnly": {
+        "exitCode": 1,
+        "wallMs": 1506,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "go.format",
+            "project": ".",
+            "status": "failed",
+            "reason": "The formatter reported files or diagnostics.",
+            "files": 24,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.vet",
+            "project": ".",
+            "status": "inconclusive",
+            "reason": "Native Go selection or declared exclusions did not reconcile, a package has no passing test, or scope could not be established.",
+            "files": 24,
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          },
+          {
+            "id": "go.test",
+            "project": ".",
+            "status": "failed",
+            "reason": "Test evidence contains failures.",
+            "files": 24,
+            "tests": {
+              "total": 214,
+              "passed": 212,
+              "failed": 1,
+              "skipped": 1
+            },
+            "tools": [
+              {
+                "name": "go",
+                "version": "1.27.1"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 1,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "runtime": ["go version go1.27.1 darwin/arm64"],
+      "environment": {
+        "os": "darwin",
+        "arch": "arm64",
+        "node": "v26.8.1"
+      }
+    },
+    {
+      "id": "psr-log",
+      "commit": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+      "trackedSourceSha256": "618bb8db2fe17744d47f6a3436c952f633715b66fa6a5bde2f32c9e3d36c202c",
+      "trackedSourceUnchanged": true,
+      "initialSetup": {
+        "exitCode": 0,
+        "schemaVersion": 1,
+        "engineVersion": "0.1.0-alpha.5",
+        "status": "preview",
+        "configuration": {
+          "schemaVersion": 1,
+          "projects": [
+            {
+              "path": ".",
+              "checks": ["php.syntax"]
+            }
+          ]
+        },
+        "unresolved": [],
+        "executionEnabled": false
+      },
+      "createdPolicy": {
+        "schemaVersion": 1,
+        "projects": [
+          {
+            "path": ".",
+            "checks": ["php.syntax"]
+          }
+        ]
+      },
+      "preservation": "byte-identical",
+      "doctorHost": {
+        "exitCode": 2,
+        "status": "attention-required",
+        "issues": [
+          {
+            "check": "php.syntax",
+            "adapter": "php",
+            "project": ".",
+            "code": "missing-executable",
+            "detail": "Executable unavailable or not executable: php"
+          }
+        ],
+        "validationPerformed": false
+      },
+      "doctorPrepared": {
+        "exitCode": 0,
+        "status": "no-static-blockers",
+        "issues": [],
+        "validationPerformed": false
+      },
+      "fullPolicy": {
+        "exitCode": 0,
+        "wallMs": 286,
+        "outcome": "passed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "php.syntax",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 8,
+            "tools": [
+              {
+                "name": "php",
+                "version": "8.4.24"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "doctorLanguageOnly": {
+        "exitCode": 0,
+        "status": "no-static-blockers",
+        "issues": [],
+        "validationPerformed": false
+      },
+      "nativeComparison": {
+        "files": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "negativeComparison": {
+        "files": 9,
+        "passed": 8,
+        "failed": 1,
+        "negativeControlDetected": true
+      },
+      "native": [
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 36
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 35
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 36
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 35
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 36
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        }
+      ],
+      "languageOnly": {
+        "exitCode": 0,
+        "wallMs": 232,
+        "outcome": "passed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "php.syntax",
+            "project": ".",
+            "status": "passed",
+            "reason": "The planned check completed successfully.",
+            "files": 8,
+            "tools": [
+              {
+                "name": "php",
+                "version": "8.4.24"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "negativeNative": [
+        {
+          "exitCode": 255,
+          "wallMs": 38
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 40
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 37
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 35
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 35
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 34
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        },
+        {
+          "exitCode": 0,
+          "wallMs": 38
+        }
+      ],
+      "negativeLanguageOnly": {
+        "exitCode": 1,
+        "wallMs": 254,
+        "outcome": "failed",
+        "sourceUnchanged": true,
+        "checks": [
+          {
+            "id": "php.syntax",
+            "project": ".",
+            "status": "failed",
+            "reason": "The tool returned a nonzero exit code; inspect detailed evidence for code or environment causes.",
+            "files": 9,
+            "tools": [
+              {
+                "name": "php",
+                "version": "8.4.24"
+              }
+            ],
+            "processes": [
+              {
+                "exitCode": 255,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              },
+              {
+                "exitCode": 0,
+                "timedOut": false,
+                "cancelled": false,
+                "truncated": false
+              }
+            ]
+          }
+        ]
+      },
+      "runtime": [
+        "PHP 8.4.24 (cli) (built: Jul 30 2026 22:48:41) (NTS)\nCopyright (c) The PHP Group\nBuilt by https://github.com/docker-library/php\nZend Engine v4.4.24, Copyright (c) Zend Technologies"
+      ],
+      "environment": {
+        "os": "linux",
+        "image": "sha256:6b6d68d23fa6327bdaad9a07f3078e3f28d84da606a00067a2d0d2b102bd479e",
+        "network": "disabled",
+        "sourceMount": "read-only"
+      }
+    }
+  ]
+}

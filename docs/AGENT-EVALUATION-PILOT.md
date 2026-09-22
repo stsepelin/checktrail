@@ -91,6 +91,11 @@ scope unambiguous in the next declaration. `complete` in the score means complet
 review/reference/adjudication accounting, not full protocol compliance or native
 validation success.
 
+The separate [five-language alpha.5 adoption replay](PUBLIC-ADOPTION-ALPHA5.md)
+compares selected native checks and injected failures on pinned JavaScript,
+TypeScript, Python, Go and PHP projects. It is complementary deterministic
+evidence, not five additional independently reviewed agent cases.
+
 ## Learning and next experiment
 
 1. Diagnose the unavailable-check cases using original, minimal development

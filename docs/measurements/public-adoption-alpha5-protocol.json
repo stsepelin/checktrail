@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "kind": "public-adoption-known-case-replay",
+  "recordedAt": "2026-09-22T08:25:04.254Z",
+  "purpose": "Replay the original five pinned projects with alpha.5; not held-out effectiveness evidence.",
+  "engine": {
+    "package": "@stsepelin/checktrail",
+    "version": "0.1.0-alpha.5",
+    "sourceCommit": "832a044398bcc060c0d6b4c42e66c6eb94a9f5a6",
+    "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7"
+  },
+  "originalInputs": [
+    {
+      "path": "scripts/measure-public-adoption.mjs",
+      "sha256": "04bc4d567c861998335ff859774cf0e623558f4a728f645d91e72d9466188e18",
+      "matchesTrackedHead": true
+    },
+    {
+      "path": "scripts/prepare-public-adoption.mjs",
+      "sha256": "b8790f48701ed06d659a7f78f3d93c4dd571ebdedfcc2a30f1ce0d7f7db42d6a",
+      "matchesTrackedHead": true
+    },
+    {
+      "path": "scripts/public-adoption-plan.json",
+      "sha256": "c623965505494832bd0e1e0054a43e9091b4205386bc0713669f2a8cba52f6bc",
+      "matchesTrackedHead": true
+    },
+    {
+      "path": "scripts/public-adoption-evidence.mjs",
+      "sha256": "ab71d388ca1d47009dd6768df8266b20b5fcb0a36491ede2bdcee9ef97f68c18",
+      "matchesTrackedHead": true
+    },
+    {
+      "path": "docs/measurements/public-adoption-alpha2.json",
+      "sha256": "c121c87e9aaf36abbf29fe91555321173488515776156d3d9ce28de0de940803",
+      "matchesTrackedHead": true
+    }
+  ],
+  "harness": {
+    "basePath": "scripts/measure-public-adoption.mjs",
+    "baseSha256": "04bc4d567c861998335ff859774cf0e623558f4a728f645d91e72d9466188e18",
+    "replaySha256": "d7313fcc311a47a43b46044e3a3fdf8e14136b67d72c4ea0c54c7bcaa41f4c96",
+    "exactUnifiedDiff": "diff --git a/scripts/measure-public-adoption.mjs b/.checktrail/adoption-alpha5/measure-public-adoption.mjs\nindex a882bdd..012decf 100644\n--- a/scripts/measure-public-adoption.mjs\n+++ b/.checktrail/adoption-alpha5/measure-public-adoption.mjs\n@@ -456,12 +456,10 @@ try {\n           preparedNative,\n           parse(preparedRun),\n         );\n-        assert.deepEqual(comparison.wrapperDiagnosticCodes, [\"TS5023\"]);\n-        assert.ok(\n-          parse(preparedRun).checks[0].processes[0].stdout.includes(\n-            \"--noCheck\",\n-          ),\n-        );\n+        assert.deepEqual(comparison.wrapperDiagnosticCodes, []);\n+        assert.equal(preparedRun.exitCode, 0);\n+        assert.equal(parse(preparedRun).outcome, \"passed\");\n+        assert.equal(parse(preparedRun).checks[0].status, \"passed\");\n         preparedTypeScript = {\n           declarationSha256: hash(readFileSync(generated)),\n           buildExitCode: build.exitCode,\n",
+    "invocation": "CHECKTRAIL_ADOPTION_PHP_IMAGE=sha256:6b6d68d23fa6327bdaad9a07f3078e3f28d84da606a00067a2d0d2b102bd479e node .checktrail/adoption-alpha5/measure-public-adoption.mjs .checktrail/adoption-alpha5 .checktrail/release-alpha5/stsepelin-checktrail-0.1.0-alpha.5.tgz",
+    "exitCode": 0
+  },
+  "parser": {
+    "path": "scripts/public-adoption-evidence.mjs",
+    "sha256": "ab71d388ca1d47009dd6768df8266b20b5fcb0a36491ede2bdcee9ef97f68c18",
+    "copiedByteIdentical": true
+  },
+  "plan": {
+    "sha256": "cbf154f69c3559ee8a7cc6dcb806e11bab3cf5a166cc20b3ae4f1d9777f24015",
+    "value": {
+      "schemaVersion": 1,
+      "engine": {
+        "package": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "sourceCommit": "832a044398bcc060c0d6b4c42e66c6eb94a9f5a6",
+        "tarballSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7"
+      },
+      "purpose": "Public repository adoption observations; not an independent effectiveness holdout or a full upstream CI replacement.",
+      "selection": "Small public libraries covering JavaScript, TypeScript, Python, Go and PHP, chosen before validation results; retain incomplete outcomes and do not replace projects after observing results.",
+      "projects": [
+        {
+          "id": "nanoid",
+          "repository": "https://github.com/ai/nanoid.git",
+          "commit": "57009b5eb8d757ae39bf5f4361dd30c9f23391b7",
+          "family": "JavaScript"
+        },
+        {
+          "id": "mitt",
+          "repository": "https://github.com/developit/mitt.git",
+          "commit": "6b41670516ed8e8b738612f60491995470aa63b3",
+          "family": "TypeScript"
+        },
+        {
+          "id": "more-itertools",
+          "repository": "https://github.com/more-itertools/more-itertools.git",
+          "commit": "1da45ae4b61a832ed080f08a8833784aad0a9534",
+          "family": "Python"
+        },
+        {
+          "id": "uuid",
+          "repository": "https://github.com/google/uuid.git",
+          "commit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+          "family": "Go"
+        },
+        {
+          "id": "psr-log",
+          "repository": "https://github.com/php-fig/log.git",
+          "commit": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+          "family": "PHP"
+        }
+      ]
+    },
+    "exactUnifiedDiff": "diff --git a/scripts/public-adoption-plan.json b/.checktrail/adoption-alpha5/public-adoption-plan.json\nindex ea0a948..247f85b 100644\n--- a/scripts/public-adoption-plan.json\n+++ b/.checktrail/adoption-alpha5/public-adoption-plan.json\n@@ -2,9 +2,9 @@\n   \"schemaVersion\": 1,\n   \"engine\": {\n     \"package\": \"@stsepelin/checktrail\",\n-    \"version\": \"0.1.0-alpha.2\",\n-    \"sourceCommit\": \"4ce839875ff2bd30d29a3adf004afe320f69ef2a\",\n-    \"tarballSha256\": \"ffd0564f40a12a238a52fe25fe8c34fb36cf6f6480be7b6994bab82a3bd657fb\"\n+    \"version\": \"0.1.0-alpha.5\",\n+    \"sourceCommit\": \"832a044398bcc060c0d6b4c42e66c6eb94a9f5a6\",\n+    \"tarballSha256\": \"e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7\"\n   },\n   \"purpose\": \"Public repository adoption observations; not an independent effectiveness holdout or a full upstream CI replacement.\",\n   \"selection\": \"Small public libraries covering JavaScript, TypeScript, Python, Go and PHP, chosen before validation results; retain incomplete outcomes and do not replace projects after observing results.\",\n"
+  },
+  "sourceVerification": [
+    {
+      "id": "nanoid",
+      "commit": "57009b5eb8d757ae39bf5f4361dd30c9f23391b7",
+      "trackedSourceSha256": "71415a05f9fa85db2b1f2a92a86b2d1eec57d4c4109850691224dd68629ede30",
+      "matchesHistoricalTrackedSource": true,
+      "trackedSourceUnchanged": true
+    },
+    {
+      "id": "mitt",
+      "commit": "6b41670516ed8e8b738612f60491995470aa63b3",
+      "trackedSourceSha256": "9cecf0c437450c5ea1e8fba41d9ebee4afd39f0a41dd1ac854089bee929c333e",
+      "matchesHistoricalTrackedSource": true,
+      "trackedSourceUnchanged": true
+    },
+    {
+      "id": "more-itertools",
+      "commit": "1da45ae4b61a832ed080f08a8833784aad0a9534",
+      "trackedSourceSha256": "5eb46dfa704e40309355e1ddbc902e21320c6962f9d575e91c670f07b4b44058",
+      "matchesHistoricalTrackedSource": true,
+      "trackedSourceUnchanged": true
+    },
+    {
+      "id": "uuid",
+      "commit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+      "trackedSourceSha256": "6ffcd73e2b75f99bc3060e4259fa8b1f366ba199b2f9eca98220e9efb21f55ff",
+      "matchesHistoricalTrackedSource": true,
+      "trackedSourceUnchanged": true
+    },
+    {
+      "id": "psr-log",
+      "commit": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+      "trackedSourceSha256": "618bb8db2fe17744d47f6a3436c952f633715b66fa6a5bde2f32c9e3d36c202c",
+      "matchesHistoricalTrackedSource": true,
+      "trackedSourceUnchanged": true
+    }
+  ],
+  "artifactVerification": {
+    "artifactSha256": "e75aa4b0ae652734a0356094e43805299c8b4ade0afd4cd54c0704f274469dc7",
+    "installedArchiveFilesVerifiedByteForByte": 408,
+    "engineVersion": "0.1.0-alpha.5",
+    "projects": [
+      {
+        "id": "nanoid",
+        "commit": "57009b5eb8d757ae39bf5f4361dd30c9f23391b7",
+        "trackedSourceUnchanged": true,
+        "finalTrackedStatus": "clean",
+        "untrackedPolicyExpected": true
+      },
+      {
+        "id": "mitt",
+        "commit": "6b41670516ed8e8b738612f60491995470aa63b3",
+        "trackedSourceUnchanged": true,
+        "finalTrackedStatus": "clean",
+        "untrackedPolicyExpected": true
+      },
+      {
+        "id": "more-itertools",
+        "commit": "1da45ae4b61a832ed080f08a8833784aad0a9534",
+        "trackedSourceUnchanged": true,
+        "finalTrackedStatus": "clean",
+        "untrackedPolicyExpected": true
+      },
+      {
+        "id": "uuid",
+        "commit": "2d3c2a9cc518326daf99a383f07c4d3c44317e4d",
+        "trackedSourceUnchanged": true,
+        "finalTrackedStatus": "clean",
+        "untrackedPolicyExpected": true
+      },
+      {
+        "id": "psr-log",
+        "commit": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+        "trackedSourceUnchanged": true,
+        "finalTrackedStatus": "clean",
+        "untrackedPolicyExpected": true
+      }
+    ],
+    "parserUnchanged": true,
+    "temporaryNegativeControlsAndMittDeclarationRemoved": true,
+    "limitations": [
+      "Known-case replay on previously selected pinned projects; not held-out effectiveness evidence.",
+      "Full upstream CI, unselected checks and unsupported integrations are not validated.",
+      "Go native runtime selection leaves vet/test scope inconclusive; seven existing gofmt findings remain.",
+      "PHP coverage is syntax only.",
+      "Python/PHP ran in existing digest-pinned read-only network-disabled containers; JavaScript/TypeScript/Go ran on host."
+    ]
+  },
+  "toolVerification": {
+    "typescriptPackages": {
+      "@types/chai": "4.3.20",
+      "@types/mocha": "7.0.2",
+      "@types/sinon": "9.0.11",
+      "@types/sinon-chai": "3.2.12",
+      "typescript": "4.9.5"
+    },
+    "typescriptLockSha256": "9a2fbdbd39f9bb40713503f17b182bb9ef725e526a32e761e221b132dafa524c",
+    "runtimes": [
+      {
+        "id": "nanoid",
+        "runtime": ["v26.8.1"],
+        "environment": {
+          "os": "darwin",
+          "arch": "arm64",
+          "node": "v26.8.1"
+        }
+      },
+      {
+        "id": "mitt",
+        "runtime": ["Version 4.9.5"],
+        "environment": {
+          "os": "darwin",
+          "arch": "arm64",
+          "node": "v26.8.1"
+        }
+      },
+      {
+        "id": "more-itertools",
+        "runtime": ["Python 3.12.13"],
+        "environment": {
+          "os": "linux",
+          "image": "sha256:50acdf79e4b3fcfafb4151579ac00b097382f64190481a1d69399efea05c9fed",
+          "network": "disabled",
+          "sourceMount": "read-only"
+        }
+      },
+      {
+        "id": "uuid",
+        "runtime": ["go version go1.27.1 darwin/arm64"],
+        "environment": {
+          "os": "darwin",
+          "arch": "arm64",
+          "node": "v26.8.1"
+        }
+      },
+      {
+        "id": "psr-log",
+        "runtime": [
+          "PHP 8.4.24 (cli) (built: Jul 30 2026 22:48:41) (NTS)\nCopyright (c) The PHP Group\nBuilt by https://github.com/docker-library/php\nZend Engine v4.4.24, Copyright (c) Zend Technologies"
+        ],
+        "environment": {
+          "os": "linux",
+          "image": "sha256:6b6d68d23fa6327bdaad9a07f3078e3f28d84da606a00067a2d0d2b102bd479e",
+          "network": "disabled",
+          "sourceMount": "read-only"
+        }
+      }
+    ]
+  },
+  "goPolicy": {
+    "configuration": {
+      "schemaVersion": 1,
+      "projects": [
+        {
+          "path": ".",
+          "checks": ["go.format", "go.vet", "go.test"]
+        }
+      ]
+    },
+    "scopePolicy": "strict default; no go scope configuration or declared exclusions added",
+    "vetOutcome": "inconclusive",
+    "testOutcome": "inconclusive",
+    "formatOutcome": "failed"
+  },
+  "typescriptDiagnosticCounts": {
+    "native": {
+      "TS2307": 2,
+      "TS7006": 1,
+      "TS2578": 10
+    },
+    "negative-native": {
+      "TS2322": 1,
+      "TS2307": 2,
+      "TS7006": 1,
+      "TS2578": 10
+    },
+    "declaration-prepared-native": {},
+    "language-only": {
+      "TS2307": 2,
+      "TS7006": 1,
+      "TS2578": 10
+    },
+    "negative-language-only": {
+      "TS2322": 1,
+      "TS2307": 2,
+      "TS7006": 1,
+      "TS2578": 10
+    },
+    "declaration-prepared-wrapper": {}
+  },
+  "comparison": [
+    {
+      "id": "nanoid",
+      "trackedSourceSha256": "71415a05f9fa85db2b1f2a92a86b2d1eec57d4c4109850691224dd68629ede30",
+      "native": {
+        "tests": {
+          "total": 79,
+          "passed": 79,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "negative": {
+        "tests": {
+          "total": 80,
+          "passed": 79,
+          "failed": 1,
+          "skipped": 0
+        },
+        "negativeControlDetected": true
+      },
+      "fullPolicy": "incomplete",
+      "languageOnly": "passed"
+    },
+    {
+      "id": "mitt",
+      "trackedSourceSha256": "9cecf0c437450c5ea1e8fba41d9ebee4afd39f0a41dd1ac854089bee929c333e",
+      "native": {
+        "diagnosticCodes": ["TS2307", "TS2578", "TS7006"],
+        "wrapperDiagnosticCodes": ["TS2307", "TS2578", "TS7006"]
+      },
+      "negative": {
+        "diagnosticCodes": ["TS2307", "TS2322", "TS2578", "TS7006"],
+        "wrapperDiagnosticCodes": ["TS2307", "TS2322", "TS2578", "TS7006"],
+        "negativeControlDetected": true
+      },
+      "fullPolicy": "failed",
+      "languageOnly": "failed",
+      "preparedTypeScript": {
+        "declarationSha256": "b55d63cfd2ba5cc013980284fe155690573fe48511bf33ea07acd71280736478",
+        "buildExitCode": 0,
+        "nativeExitCode": 0,
+        "comparison": {
+          "diagnosticCodes": [],
+          "wrapperDiagnosticCodes": []
+        },
+        "wrapper": {
+          "exitCode": 0,
+          "wallMs": 539,
+          "outcome": "passed",
+          "sourceUnchanged": true,
+          "checks": [
+            {
+              "id": "javascript.typescript",
+              "project": ".",
+              "status": "passed",
+              "reason": "The planned check completed successfully.",
+              "files": 4,
+              "tools": [
+                {
+                  "name": "node",
+                  "version": "26.8.1"
+                },
+                {
+                  "name": "typescript",
+                  "version": "4.9.5"
+                }
+              ],
+              "processes": [
+                {
+                  "exitCode": 0,
+                  "timedOut": false,
+                  "cancelled": false,
+                  "truncated": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "more-itertools",
+      "trackedSourceSha256": "5eb46dfa704e40309355e1ddbc902e21320c6962f9d575e91c670f07b4b44058",
+      "native": {
+        "tests": {
+          "total": 928,
+          "passed": 928,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "negative": {
+        "tests": {
+          "total": 929,
+          "passed": 928,
+          "failed": 1,
+          "skipped": 0
+        },
+        "negativeControlDetected": true
+      },
+      "fullPolicy": "incomplete",
+      "languageOnly": "passed"
+    },
+    {
+      "id": "uuid",
+      "trackedSourceSha256": "6ffcd73e2b75f99bc3060e4259fa8b1f366ba199b2f9eca98220e9efb21f55ff",
+      "native": {
+        "formattedFiles": [
+          "dce.go",
+          "hash.go",
+          "node_js.go",
+          "node_net.go",
+          "null.go",
+          "uuid.go",
+          "version4.go"
+        ],
+        "tests": {
+          "total": 213,
+          "passed": 212,
+          "failed": 0,
+          "skipped": 1
+        }
+      },
+      "negative": {
+        "formattedFiles": [
+          "dce.go",
+          "hash.go",
+          "node_js.go",
+          "node_net.go",
+          "null.go",
+          "uuid.go",
+          "version4.go"
+        ],
+        "tests": {
+          "total": 214,
+          "passed": 212,
+          "failed": 1,
+          "skipped": 1
+        },
+        "negativeControlDetected": true
+      },
+      "fullPolicy": "failed",
+      "languageOnly": "failed"
+    },
+    {
+      "id": "psr-log",
+      "trackedSourceSha256": "618bb8db2fe17744d47f6a3436c952f633715b66fa6a5bde2f32c9e3d36c202c",
+      "native": {
+        "files": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "negative": {
+        "files": 9,
+        "passed": 8,
+        "failed": 1,
+        "negativeControlDetected": true
+      },
+      "fullPolicy": "passed",
+      "languageOnly": "passed"
+    }
+  ],
+  "historicalMeasurementUnchanged": true
+}
