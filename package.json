@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@modelcontextprotocol/client": "2.0.0",
+    "@modelcontextprotocol/client": "2.1.0",
     "@playwright/test": "1.63.0",
     "@types/node": "22.20.3",
     "eslint": "10.10.0",
