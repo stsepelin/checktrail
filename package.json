@@ -43,7 +43,7 @@
     "probe:mcp-tasks": "node scripts/probe-mcp-tasks.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
+    "@modelcontextprotocol/server": "2.1.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "fast-xml-parser": "5.11.1",
