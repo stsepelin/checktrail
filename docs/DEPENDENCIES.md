@@ -13,6 +13,14 @@ tools or establish native/container supply-chain provenance. The package uses np
 dependencies without bundling their code; installed packages retain their own
 notices. Audit and retain those notices if distribution arrangements change.
 
+The unreleased version 3 review context lazily uses TypeScript 6.0.3 as a
+production parser dependency. The existing pinned development version moved to
+production without changing its version or registry integrity declaration.
+It declares Apache-2.0 and includes LICENSE.txt and ThirdPartyNoticeText.txt in
+the installed package. The audit records both notice files and their hashes.
+The parser serves captured strings from memory; it does not load project
+configuration or replace the consumer's separately configured native checks.
+
 ## Supplementary upstream notice
 
 `@nodable/entities@3.0.0` declares MIT but its installed distribution omits a

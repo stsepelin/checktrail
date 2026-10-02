@@ -64,6 +64,555 @@ try {
     ],
     { cwd: consumer, stdio: "pipe" },
   );
+  const scoringSmoke = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `
+    import {scoreReviewTrials,projectReviewScoring} from "@stsepelin/checktrail";
+    const input={protocol:{schemaVersion:1,profile:"declared-claim-probability-v1",purpose:"development",confidenceThresholds:[0.95],trials:[{id:"OriginalPackageCase",clusterId:"OriginalPackageCluster",family:"test-adequacy"}]},observations:[]};
+    console.log(JSON.stringify(projectReviewScoring(scoreReviewTrials(input),false)));
+  `,
+      ],
+      { cwd: consumer, encoding: "utf8" },
+    ),
+  );
+  assert.equal(scoringSmoke.qualityGate, "not-assessed");
+  assert.equal(scoringSmoke.aggregate.statuses.unreviewed, 1);
+  assert.equal(scoringSmoke.aggregate.precision.value, null);
+  assert.equal(scoringSmoke.aggregate.properScores.brier, null);
+  assert.equal(scoringSmoke.calibratedConfidence, false);
+  // Exercise parser availability before injecting consumer development tools.
+  // The worker must execute from the installed package, not the development tree.
+  const probeRoot = path.join(consumer, "probe-profile");
+  await mkdir(probeRoot);
+  await mkdir(path.join(probeRoot, ".checktrail"));
+  await writeFile(
+    path.join(probeRoot, "subject.mjs"),
+    "export function decision(name){return name.startsWith('scope');}\n",
+  );
+  const probeSmoke = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `
+    import {createReviewContext,runReviewProbe,projectReviewProbe,runReviewVerification,projectReviewVerification} from "@stsepelin/checktrail";
+    import {writeFile,mkdir} from "node:fs/promises";
+    import {createHash} from "node:crypto";
+    const context=await createReviewContext("./probe-profile",{schemaVersion:5,track:"snapshot",currentSource:"working-tree",files:["subject.mjs"],supportFiles:[],topics:[]});
+    const candidate={id:"original-package-probe",family:"identifiers-allowlists",severity:"concern",claim:"The trigger differs from its declared decision.",trigger:"scopeToken",consequence:"Unexpected decision.",evidenceGaps:["Production policy unknown."],attribution:"unknown",fixScope:"unknown",citations:[{revision:"current",file:"subject.mjs",sourceDigest:context.files[0].sha256,startLine:1,endLine:1,quote:context.files[0].content.trim()}]};
+    const contents=JSON.stringify({schemaVersion:1,profile:"node-export-boolean-v1",id:"PackageBoundary",family:candidate.family,file:"subject.mjs",exportName:"decision",minimumTriggerScale:1,guard:null,cases:[{id:"Baseline",role:"baseline",args:["scope:read"],expected:true},{id:"Trigger",role:"trigger",args:["scopeToken"],expected:false},{id:"NearMiss",role:"near-miss",args:["other"],expected:false}]});
+    const run=await runReviewProbe("./probe-profile",context,candidate,{trusted:true,recipe:{contents,sha256:createHash("sha256").update(contents).digest("hex")},timeoutMs:10000});
+    const config={schemaVersion:1,kind:"openai-responses",model:"original-package-adjudicator",credentialEnv:"ORIGINAL_VERIFICATION_KEY",pricing:null,limits:{wallMs:10000,maxAttempts:1,retryDelayMs:0,maxRequestBytes:1048576,maxResponseBytes:131072,maxOutputTokens:4096}};
+    const response={model:config.model,status:"completed",usage:{input_tokens:100,output_tokens:20},output:[{type:"message",role:"assistant",status:"completed",content:[{type:"output_text",text:JSON.stringify({files:[{path:"subject.mjs",disposition:"reviewed",note:"Original synthetic package verification"}],candidates:[]})}]}]};
+    let requests=0;
+    const verification=await runReviewVerification("./probe-profile",context,candidate,{trusted:true,recipe:{contents,sha256:createHash("sha256").update(contents).digest("hex")},wallMs:10000,provider:{config,allowInference:true,allowSourceDisclosure:true,environment:{ORIGINAL_VERIFICATION_KEY:"opaque-original-key"},fetch:async(_url,init)=>{requests++;const request=JSON.parse(init.body);const packet=JSON.parse(request.input[0].content[0].text);if(requests===1 && "nativeObservations" in packet)throw new Error("Refuter was contaminated");if(requests===2 && (!packet.nativeObservations || "id" in packet.unverifiedTarget || "severity" in packet.unverifiedTarget))throw new Error("Adjudicator was contaminated");return Response.json(response);}}});
+    if(requests!==2)throw new Error("Missing independent package stages");
+    await mkdir("./verification-operator");
+    await writeFile("./probe-profile/.checktrail/context.json",JSON.stringify(context));await writeFile("./probe-profile/.checktrail/candidate.json",JSON.stringify(candidate));
+    await writeFile("./verification-operator/config.json",JSON.stringify(config));await writeFile("./verification-operator/recipe.json",contents);
+    await writeFile("./verification-operator/transport.mjs","globalThis.fetch=async()=>Response.json("+JSON.stringify(response)+");");
+    console.log(JSON.stringify({...projectReviewProbe(run,false),verification:projectReviewVerification(verification,false,false)}));
+  `,
+      ],
+      { cwd: consumer, encoding: "utf8" },
+    ),
+  );
+  assert.equal(probeSmoke.status, "completed");
+  assert.equal(probeSmoke.behavior, "violated");
+  assert.equal(probeSmoke.counts.controlMismatches, 0);
+  assert.equal(probeSmoke.counts.triggerMismatches, 1);
+  assert.equal(probeSmoke.claimsVerified, false);
+  assert.equal(probeSmoke.temporaryArtifacts, "removed");
+  assert.equal(probeSmoke.nativeExecution, true);
+  const verificationSmoke = probeSmoke.verification;
+  assert.equal(verificationSmoke.status, "completed");
+  assert.equal(verificationSmoke.evidenceTier, "native-expectation-mismatch");
+  assert.equal(verificationSmoke.resolution, "unresolved");
+  assert.equal(verificationSmoke.severity, "unassigned");
+  const verificationOperator = path.join(consumer, "verification-operator");
+  const installedVerificationCli = path.join(
+    consumer,
+    "node_modules/@stsepelin/checktrail/dist/src/cli.js",
+  );
+  const verificationContents = await readFile(
+    path.join(verificationOperator, "recipe.json"),
+    "utf8",
+  );
+  const verificationFlags = [
+    "--provider-config",
+    path.join(verificationOperator, "config.json"),
+    "--allow-inference",
+    "--allow-provider-source",
+    "--probe",
+    path.join(verificationOperator, "recipe.json") +
+      "#sha256=" +
+      createHash("sha256").update(verificationContents).digest("hex"),
+  ];
+  const verificationEnv = {
+    PATH: process.env.PATH,
+    ORIGINAL_VERIFICATION_KEY: "opaque-original-key",
+  };
+  const verificationCli = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--import",
+        path.join(verificationOperator, "transport.mjs"),
+        installedVerificationCli,
+        "review-verify",
+        "--root",
+        probeRoot,
+        "--context",
+        ".checktrail/context.json",
+        "--input",
+        ".checktrail/candidate.json",
+        "--trust-project",
+        ...verificationFlags,
+      ],
+      { encoding: "utf8", env: verificationEnv },
+    ),
+  );
+  client = new Client(
+    { name: "original-installed-verification", version: "1" },
+    { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+  );
+  await client.connect(
+    new StdioClientTransport({
+      command: process.execPath,
+      args: [
+        "--import",
+        path.join(verificationOperator, "transport.mjs"),
+        installedVerificationCli,
+        "serve",
+        "--root",
+        probeRoot,
+        "--allow-execution",
+        ...verificationFlags,
+      ],
+      env: verificationEnv,
+      stderr: "pipe",
+    }),
+  );
+  const verificationMcp = await client.callTool({
+    name: "review_verify",
+    arguments: {
+      context: ".checktrail/context.json",
+      candidate: ".checktrail/candidate.json",
+      probeId: "PackageBoundary",
+    },
+  });
+  assert.equal(
+    verificationMcp.isError,
+    undefined,
+    JSON.stringify(verificationMcp),
+  );
+  for (const surface of [verificationCli, verificationMcp.structuredContent])
+    for (const key of [
+      "status",
+      "evidenceTier",
+      "claimsVerified",
+      "resolution",
+      "severity",
+      "contextDigest",
+      "targetDigest",
+      "recipeDigest",
+      "independence",
+    ])
+      assert.deepEqual(surface[key], verificationSmoke[key]);
+  for (const surface of [
+    verificationSmoke,
+    verificationCli,
+    verificationMcp.structuredContent,
+  ]) {
+    assert.equal(surface.probe.nativeExecution, true);
+    assert.equal(surface.probe.counts.triggerMismatches, 1);
+    assert.equal(surface.adjudication.status, "completed");
+    assert.ok(!JSON.stringify(surface).includes("original-package-probe"));
+    assert.ok(!JSON.stringify(surface).includes("subject.mjs"));
+  }
+  await client.close();
+  client = undefined;
+  let pyrightSmoke = "not-run-unavailable";
+  const pyrightPackage = process.env.CHECKTRAIL_PYRIGHT_PACKAGE;
+  if (pyrightPackage) {
+    const pyrightRoot = path.join(consumer, "pyright-profile");
+    await mkdir(path.join(pyrightRoot, "node_modules"), { recursive: true });
+    await cp(pyrightPackage, path.join(pyrightRoot, "node_modules/pyright"), {
+      recursive: true,
+    });
+    await writeFile(
+      path.join(pyrightRoot, "pyproject.toml"),
+      '[tool.pyright]\ntypeCheckingMode="standard"\n',
+    );
+    await writeFile(
+      path.join(pyrightRoot, "checktrail.json"),
+      JSON.stringify({
+        schemaVersion: 1,
+        projects: [{ path: ".", checks: ["python.pyright"] }],
+      }),
+    );
+    await writeFile(path.join(pyrightRoot, "value.py"), 'value: int = "bad"\n');
+    const installedCli = path.join(
+      consumer,
+      "node_modules/@stsepelin/checktrail/dist/src/cli.js",
+    );
+    const library = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          'import {validate} from "@stsepelin/checktrail";console.log(JSON.stringify(await validate("./pyright-profile",{trusted:true})));',
+        ],
+        { cwd: consumer, encoding: "utf8" },
+      ),
+    );
+    assert.equal(library.outcome, "failed");
+    assert.equal(library.checks[0].findingsComplete, true);
+    assert.equal(library.checks[0].findings[0].ruleId, "reportAssignmentType");
+    const cli = spawnSync(
+      process.execPath,
+      [
+        installedCli,
+        "run",
+        "--root",
+        pyrightRoot,
+        "--trust-project",
+        "--detailed",
+      ],
+      {
+        cwd: consumer,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 1024 * 1024,
+      },
+    );
+    assert.equal(cli.status, 1, cli.stderr);
+    const cliReport = JSON.parse(cli.stdout);
+    assert.deepEqual(cliReport.checks[0].findings, library.checks[0].findings);
+    const pyrightClient = new Client(
+      { name: "original-package-pyright-test", version: "1.0.0" },
+      { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+    );
+    try {
+      await pyrightClient.connect(
+        new StdioClientTransport({
+          command: process.execPath,
+          args: [
+            installedCli,
+            "serve",
+            "--root",
+            pyrightRoot,
+            "--allow-execution",
+            "--detailed",
+          ],
+          cwd: consumer,
+          stderr: "pipe",
+        }),
+      );
+      const report = await pyrightClient.callTool({
+        name: "validation_run",
+        arguments: {},
+      });
+      assert.equal(report.isError, undefined);
+      assert.equal(report.structuredContent.outcome, "failed");
+      assert.deepEqual(
+        report.structuredContent.checks[0].findings,
+        cliReport.checks[0].findings,
+      );
+    } finally {
+      await pyrightClient.close();
+    }
+    pyrightSmoke = "original-native";
+  }
+
+  const behaviorRoot = path.join(consumer, "review-profile");
+  await mkdir(behaviorRoot);
+  await mkdir(path.join(behaviorRoot, ".checktrail"));
+  await writeFile(
+    path.join(behaviorRoot, "subject.ts"),
+    "export const fallback = 2;\nexport function subject(value = fallback) { return value; }\n",
+  );
+  await writeFile(
+    path.join(behaviorRoot, "caller.ts"),
+    'import {subject} from "./subject.js"; export function caller() { return subject(); }\n',
+  );
+  const behaviorSelection = {
+    schemaVersion: 4,
+    track: "snapshot",
+    files: ["subject.ts"],
+    supportFiles: ["caller.ts"],
+    topics: [],
+  };
+  await writeFile(
+    path.join(behaviorRoot, ".checktrail/selection.json"),
+    JSON.stringify(behaviorSelection),
+  );
+  const behavior = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        'import {createReviewContext} from "@stsepelin/checktrail"; console.log(JSON.stringify(await createReviewContext("./review-profile",' +
+          JSON.stringify(behaviorSelection) +
+          ")));",
+      ],
+      { cwd: consumer, encoding: "utf8" },
+    ),
+  );
+  assert.equal(behavior.analysis.state, "collected");
+  assert.equal(behavior.analysis.parserVersion, "6.0.3");
+  const subjectFunction = behavior.analysis.functions.find(
+    (fn) => fn.name === "subject",
+  );
+  const callerFunction = behavior.analysis.functions.find(
+    (fn) => fn.name === "caller",
+  );
+  assert.ok(
+    behavior.analysis.calls.some(
+      (call) =>
+        call.callerFunctionId === callerFunction.id &&
+        call.targetFunctionId === subjectFunction.id,
+    ),
+  );
+  const behaviorBinary = path.join(
+    consumer,
+    "node_modules/@stsepelin/checktrail/dist/src/cli.js",
+  );
+  assert.deepEqual(
+    JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          behaviorBinary,
+          "review-context",
+          "--root",
+          behaviorRoot,
+          "--input",
+          ".checktrail/selection.json",
+          "--detailed",
+          "--allow-review-source",
+        ],
+        { encoding: "utf8" },
+      ),
+    ),
+    behavior,
+  );
+  const revisionAssessment = {
+    schemaVersion: 2,
+    contextDigest: behavior.contextDigest,
+    reviewer: { kind: "human", name: "Synthetic production exchange" },
+    createdAt: "2026-09-30T00:00:00Z",
+    usage: {
+      inputTokens: null,
+      outputTokens: null,
+      elapsedMs: null,
+      costUSD: null,
+    },
+    files: [
+      { path: "subject.ts", disposition: "reviewed", note: "Declared" },
+      {
+        path: "caller.ts",
+        disposition: "not-reviewed",
+        note: "Explicit omission",
+      },
+    ],
+    observations: [
+      {
+        id: "production-claim",
+        severity: "concern",
+        claim: "Unverified synthetic concern",
+        attribution: "unknown",
+        fixScope: "follow-up",
+        citations: [
+          {
+            revision: "current",
+            file: "subject.ts",
+            sourceDigest: behavior.files.find(
+              (file) => file.path === "subject.ts",
+            ).sha256,
+            startLine: 2,
+            endLine: 2,
+            quote:
+              "export function subject(value = fallback) { return value; }",
+          },
+        ],
+      },
+    ],
+  };
+  await writeFile(
+    path.join(behaviorRoot, ".checktrail/context.json"),
+    JSON.stringify(behavior),
+  );
+  await writeFile(
+    path.join(behaviorRoot, ".checktrail/assessment.json"),
+    JSON.stringify(revisionAssessment),
+  );
+  const revisionReceipt = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        'import {receiveReview} from "@stsepelin/checktrail"; import {readFileSync} from "node:fs"; console.log(JSON.stringify(await receiveReview("./review-profile",JSON.parse(readFileSync("./review-profile/.checktrail/context.json","utf8")),JSON.parse(readFileSync("./review-profile/.checktrail/assessment.json","utf8")))));',
+      ],
+      { cwd: consumer, encoding: "utf8" },
+    ),
+  );
+  assert.equal(revisionReceipt.schemaVersion, 2);
+  assert.equal(revisionReceipt.freshness, "current");
+  assert.deepEqual(revisionReceipt.citations, {
+    matched: 1,
+    unmatched: 0,
+    base: 0,
+    current: 1,
+  });
+  assert.equal(revisionReceipt.attribution.verified, false);
+  assert.equal(revisionReceipt.claimsVerified, false);
+  assert.deepEqual(revisionReceipt.coverage, {
+    selected: 2,
+    declaredReviewed: 1,
+    declaredNotReviewed: 1,
+    unaccounted: 0,
+  });
+  const hypothesisPlan = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `
+    import {createHypothesisPlan, runProviderReview, projectProviderReview, runProviderRefutation, projectProviderRefutation} from "@stsepelin/checktrail";
+    import {readFile} from "node:fs/promises";
+    const context = JSON.parse(await readFile("./review-profile/.checktrail/context.json", "utf8"));
+    const plan = createHypothesisPlan(context);
+    const config = {schemaVersion:1,kind:"openai-responses",model:"synthetic-exact-model",credentialEnv:"SYNTHETIC_PROVIDER_KEY",pricing:null,
+      limits:{wallMs:30000,maxAttempts:1,retryDelayMs:0,maxRequestBytes:1048576,maxResponseBytes:131072,maxOutputTokens:4096,admissionBudget:{inputTokenAllowance:1000,maxTotalTokens:6000,maxEstimatedCostMicrousd:null}}};
+    const run = await runProviderReview("./review-profile", context, {config,allowInference:true,allowSourceDisclosure:true,environment:{SYNTHETIC_PROVIDER_KEY:"synthetic-opaque-key"},
+      fetch:async (_url, options) => {
+        const request = JSON.parse(options.body);
+        if(request.tools.length || request.store !== false || request.input.length !== 1 || request.previous_response_id) throw new Error("Unsafe synthetic request");
+        return Response.json({model:request.model,status:"completed",usage:{input_tokens:100,output_tokens:20},output:[{type:"message",role:"assistant",status:"completed",content:[{type:"output_text",text:JSON.stringify({files:context.selection.files.concat(context.selection.supportFiles).map(path=>({path,disposition:"reviewed",note:"Original synthetic transport"})),candidates:[]})}]}]});
+      }});
+    if(run.status !== "completed" || run.claimsVerified || run.nativeExecution || run.usage.costUSD !== null) throw new Error("Incomplete synthetic provider run");
+    if(run.budget?.observedTokens !== 120 || run.budget?.billingCeilingGuaranteed !== false || run.budget?.decision !== "within-budget") throw new Error("Incomplete packaged budget accounting");
+    const summary = projectProviderReview(run, false, false);
+    if(JSON.stringify(summary).includes("subject.ts") || JSON.stringify(summary).includes("synthetic-opaque-key")) throw new Error("Disclosure failure");
+    const targetSource=context.files.find(file=>file.path==="subject.ts");
+    const target={id:"withheld-original-package-label",family:"test-adequacy",severity:"concern",claim:"Original synthetic hypothesis only.",trigger:"Declared argument.",consequence:"Declared unexpected decision.",evidenceGaps:["Mechanism and policy unknown."],attribution:"unknown",fixScope:"unknown",citations:[{file:"subject.ts",revision:"current",sourceDigest:targetSource.sha256,startLine:1,endLine:1,quote:targetSource.content.split("\\n")[0]}]};
+    const refutation=await runProviderRefutation("./review-profile",context,target,{config,allowInference:true,allowSourceDisclosure:true,environment:{SYNTHETIC_PROVIDER_KEY:"synthetic-opaque-key"},fetch:async(_url,init)=>{const request=JSON.parse(init.body);const packet=JSON.parse(request.input[0].content[0].text);if(!request.instructions.includes("Attempt to falsify") || "id" in packet.refutationTarget || "severity" in packet.refutationTarget) throw new Error("Not an independent refutation packet");return Response.json({model:request.model,status:"completed",usage:{input_tokens:100,output_tokens:20},output:[{type:"message",role:"assistant",status:"completed",content:[{type:"output_text",text:JSON.stringify({files:context.selection.files.concat(context.selection.supportFiles).map(path=>({path,disposition:"reviewed",note:"Original synthetic refutation"})),candidates:[]})}]}]});}});
+    if(refutation.verifier.status!=="completed" || refutation.resolution!=="unresolved" || refutation.claimsVerified)throw new Error("Refutation must not promote agreement");
+    if(refutation.verifier.budget?.observedTokens!==120)throw new Error("Missing packaged refutation budget");
+    const refutationSummary=projectProviderRefutation(refutation,false,false);
+    if(JSON.stringify(refutationSummary).includes(target.id) || JSON.stringify(refutationSummary).includes("subject.ts"))throw new Error("Refutation disclosure failure");
+    console.log(JSON.stringify(plan));
+  `,
+      ],
+      { cwd: consumer, encoding: "utf8" },
+    ),
+  );
+  assert.equal(hypothesisPlan.families.length, 9);
+  assert.equal(hypothesisPlan.claimsVerified, false);
+  const hypothesisCli = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        behaviorBinary,
+        "review-hypotheses",
+        "--root",
+        behaviorRoot,
+        "--context",
+        ".checktrail/context.json",
+        "--detailed",
+      ],
+      { encoding: "utf8" },
+    ),
+  );
+  assert.deepEqual(hypothesisCli, hypothesisPlan);
+  const revisionArgs = [
+    behaviorBinary,
+    "review-receipt",
+    "--root",
+    behaviorRoot,
+    "--context",
+    ".checktrail/context.json",
+    "--input",
+    ".checktrail/assessment.json",
+  ];
+  assert.deepEqual(
+    JSON.parse(
+      execFileSync(
+        process.execPath,
+        [...revisionArgs, "--detailed", "--allow-review-source"],
+        { encoding: "utf8" },
+      ),
+    ),
+    revisionReceipt,
+  );
+  const revisionSummary = JSON.parse(
+    execFileSync(process.execPath, [...revisionArgs, "--detailed"], {
+      encoding: "utf8",
+    }),
+  );
+  assert.equal(revisionSummary.schemaVersion, 2);
+  assert.equal(revisionSummary.fixScope.followUp, 1);
+  assert.ok(!JSON.stringify(revisionSummary).includes("subject.ts"));
+  assert.ok(!JSON.stringify(revisionSummary).includes("synthetic concern"));
+  client = new Client(
+    { name: "synthetic-production-parser", version: "1.0.0" },
+    { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+  );
+  try {
+    await client.connect(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          behaviorBinary,
+          "serve",
+          "--root",
+          behaviorRoot,
+          "--detailed",
+          "--allow-review-source",
+        ],
+        stderr: "pipe",
+      }),
+    );
+    const response = await client.callTool({
+      name: "review_context",
+      arguments: behaviorSelection,
+    });
+    assert.equal(response.isError, undefined);
+    assert.deepEqual(response.structuredContent, behavior);
+    const imported = await client.callTool({
+      name: "review_receipt",
+      arguments: {
+        context: ".checktrail/context.json",
+        input: ".checktrail/assessment.json",
+      },
+    });
+    assert.equal(imported.isError, undefined);
+    assert.deepEqual(imported.structuredContent, revisionReceipt);
+    const hypotheses = await client.callTool({
+      name: "review_hypotheses",
+      arguments: { context: ".checktrail/context.json" },
+    });
+    assert.equal(hypotheses.isError, undefined);
+    assert.deepEqual(hypotheses.structuredContent, hypothesisPlan);
+    const disabledProvider = await client.callTool({
+      name: "review_run",
+      arguments: { context: ".checktrail/context.json" },
+    });
+    assert.equal(disabledProvider.isError, true);
+  } finally {
+    await client.close();
+    client = undefined;
+  }
   await copyInstalledPackages(consumer, [
     "typescript",
     "eslint",
@@ -654,7 +1203,7 @@ try {
     clangSmoke = "passed";
   }
   process.stdout.write(
-    `${JSON.stringify({ package: packed.filename, files: packed.files.length, checks, library: "passed", cli: "passed", mcp: "passed", installation: "offline", reproduciblePacking: "same-checkout", junit: "passed", sarif: "passed", architecture: "passed", guidance: "passed", mutations: "passed", clang: clangSmoke })}\n`,
+    `${JSON.stringify({ package: packed.filename, files: packed.files.length, checks, library: "passed", cli: "passed", mcp: "passed", installation: "offline", reviewBehavior: "passed", reviewerTransport: "offline-synthetic", sourceBoundProbe: "original-native", independentRefutation: "offline-synthetic", reviewScoring: "original-synthetic", pyright: pyrightSmoke, reproduciblePacking: "same-checkout", junit: "passed", sarif: "passed", architecture: "passed", guidance: "passed", mutations: "passed", clang: clangSmoke })}\n`,
   );
 } finally {
   await client?.close();

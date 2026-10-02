@@ -144,6 +144,49 @@ to hosted CI, fresh installation, client profiles and upgrade/rollback checks.
 
 ## Optional advisory review exchange
 
+The current worktree adds version 2 snapshot/diff contexts on the shared
+library/CLI/MCP exchange. Snapshots omit Git history; explicit diff assignments
+retain selected raw base/current text, exact replacement ranges and separate
+base/HEAD/index/working identities. Historical exclusions, source disclosure,
+forged base evidence and stale Git identities have synthetic regressions.
+Local macOS arm64 Node 26.9.0 verification passed; other context-version-2
+platform profiles remain pending. Version 3 adds bounded JavaScript/TypeScript
+functions, declarations/defaults and selected lexical caller links using a pinned
+parser with a memory-only host. Synthetic macOS arm64 Node 26.9.0 regressions
+and fresh offline production installation passed library/CLI/MCP checks. No
+project configuration or code runs; unresolved, unsupported, malformed and
+exhausted scope remains explicit. Broader language/consumer collection and
+runtime reachability remain incomplete. See [REVIEW-BEHAVIOR.md](REVIEW-BEHAVIOR.md)
+and [REVIEWER-TASKS.md](REVIEWER-TASKS.md) for limits and the dependency queue.
+
+Version 4 adds assessment/receipt version 2 with base/current revision and file
+digest citations, including deleted-only source. Exact quotes and digests are
+checked separately; replacement-range overlap stays conservative. Historical
+attribution and fix scope remain explicitly unverified reviewer declarations;
+snapshots require unknown historical attribution. Original synthetic regression,
+valid control, legacy compatibility and source-gated library/CLI/MCP tests passed
+locally on macOS arm64 Node 26.9.0, including a fresh offline production package
+workflow. Other platform profiles and independent claim verification remain
+pending. No new real-project field evaluation, inference or review-quality score
+is claimed by this slice.
+
+Version 5 now chooses working-tree or stage-zero index source explicitly for diff
+reviews and records before/after selected regular-file modes. Staged additions
+and deletions work independently of working-file content. Mode-only changes,
+forged modes, unresolved index entries and collection races have original
+synthetic regressions. macOS arm64 Node 26.9.0 focused checks and the exact Linux
+arm64 Node 22.23.2/Git 2.47.3 required suites pass. A pinned offline Linux image
+also passes fresh production installation, library/CLI/MCP, privacy and stale
+source checks. These are development acceptance profiles; wider OS/tool profiles
+and independent reviewer-quality evaluation remain open.
+
+The Go analyzer parsers now separate unlocated loading/cache records from genuine
+source compiler blocks. Synthetic mixed/error/near-miss regressions and native
+Go 1.27.1, Staticcheck 2026.2.1 and golangci-lint 2.13.2 compiler broken/fixed
+controls passed locally. Unknown layouts remain incomplete; source diagnostics
+remain failures. The required local check passed its available tests; unavailable
+prepared native profiles were skipped and are not claimed as passing.
+
 Selected-source contexts and imported human/model assessments are available through
 library, CLI and MCP. Exact file bytes, context digests, current source, quotations
 and declared file accounting are checked. Source and assessment prose require
@@ -552,6 +595,23 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
+The expanded target is a locally operated reviewer using optional
+operator-authorized Codex/Claude subscriptions or API inference, with independent
+claim validation and measured quality. The hypothesis catalogue and stateless API transport have offline synthetic
+acceptance. Source-bound Boolean probes add measured native function/guard
+evidence; subscription orchestration, broader probes and independent claim
+validation remain unfinished. The current review exchange does not verify
+defects. [REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md) defines the required inventory,
+quality targets and separate feature/evaluation/quality gates. The immediate slice
+is task reconciliation plus stronger diff/base/behavior/caller context and original
+synthetic acceptance cases. All existing unfinished M0–M5 work and subsequent
+integrations in `LANGUAGES.md` stay visible; none becomes optional to open a trial.
+
+No new real-project MCP field evaluation starts until that required implementation
+inventory is complete and existing operator permissions cover the concrete
+evaluation. Earlier adoption and agent measurements remain historical, not the
+new quality holdout.
+
 1. Extend the per-check [Go build-tag profiles](GO-BUILD.md) toward
    repeated-check and target matrices only after their identities, aggregation
    and native target evidence are defined. Existing profiles validate only each
@@ -572,7 +632,9 @@ performance claim follows from these samples.
 
 Complete dependency/tool/environment fingerprints, automatically inferred workspace graphs,
 remote/executable private plugins, native import-graph collection, remote serving, durable Tasks,
-sandbox execution, automatic fixes and model-assisted review are not implemented.
+sandbox execution and automatic fixes are not implemented. Model-assisted review
+is partial through the optional stateless API transport; subscription clients and
+independent claim validation remain pending.
 The inventory intentionally does not read `.gitignore`; its fixed exclusions and
 limits are documented in the README. Bundled adapter behavior is versioned with
 the engine until adapters receive independent releases.
@@ -580,3 +642,22 @@ the engine until adapters receive independent releases.
 Tests and source fingerprints do not prove program correctness or secrecy against
 malicious project code. The result means that the selected checks ran with the
 reported evidence. It never means the entire repository has been reviewed.
+
+- [Optional provider review](REVIEW-PROVIDERS.md): versioned nine-family hypothesis
+  plans and stateless OpenAI/Anthropic API transports share the library, CLI and
+  MCP, with startup-only grants, bounded attempts and unknown usage accounting.
+  Original synthetic transport tests pass on macOS arm64 Node 26.9.0; native
+  provider inference, subscription clients and wider profiles remain pending.
+
+- [Source-bound probes](REVIEW-PROBES.md): operator-pinned native Boolean controls,
+  compiled-source/function/guard identity, per-case reset, stale source, budgets,
+  cancellation and cleanup retain explicit unresolved outcomes. This bounded profile
+  does not verify claim mechanisms, production callers or reviewer quality.
+
+- [Independent refutation attempts](REVIEW-REFUTATION.md) withhold prior reviewer
+  labels and verdicts, bind exact assigned source and retain counterclaims as advisory.
+  All general claim-check dimensions remain unestablished. [Verification](REVIEW-VERIFICATION.md) adds live pinned Node corroboration and a separate raw-evidence adjudication assignment with bounded evidence tiers; general claim resolution, deduplication and consequence severity remain open.
+
+- [Descriptive confidence scoring](REVIEW-SCORING.md) separates proper probability
+  losses, reliability, risk/coverage and incomplete/unreviewed accounting. Labels and
+  independence remain operator declarations; no calibration or quality gate is claimed.

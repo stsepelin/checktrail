@@ -104,6 +104,17 @@ export async function toolsFor(
         ]),
       );
     }
+    if (check.id === "python.pyright")
+      tools.push(
+        { name: "node", source: "engine-runtime" },
+        {
+          name: "pyright",
+          source: "package-metadata",
+          path:
+            (await localTool(root, check.project, "pyright/package.json")) ??
+            null,
+        },
+      );
     if (check.id === "python.ruff")
       tools.push(command("ruff", "ruff", ["--version"]));
     if (check.id === "python.fastapi-routes")

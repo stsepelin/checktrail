@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "kind": {
+      "type": "string",
+      "enum": ["openai-responses", "anthropic-messages"]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "credentialEnv": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,127}$" },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "wallMs": { "type": "integer", "minimum": 1, "maximum": 120000 },
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "retryDelayMs": { "type": "integer", "minimum": 0, "maximum": 5000 },
+        "maxRequestBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "maxResponseBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "maxOutputTokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "admissionBudget": {
+          "type": "object",
+          "properties": {
+            "inputTokenAllowance": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            },
+            "maxTotalTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000000
+            },
+            "maxEstimatedCostMicrousd": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000000 },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": [
+            "inputTokenAllowance",
+            "maxTotalTokens",
+            "maxEstimatedCostMicrousd"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "wallMs",
+        "maxAttempts",
+        "retryDelayMs",
+        "maxRequestBytes",
+        "maxResponseBytes",
+        "maxOutputTokens"
+      ],
+      "additionalProperties": false
+    },
+    "pricing": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "inputUSDPerMillion": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "outputUSDPerMillion": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "reference": { "type": "string", "minLength": 1, "maxLength": 1024 }
+          },
+          "required": [
+            "inputUSDPerMillion",
+            "outputUSDPerMillion",
+            "reference"
+          ],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "model",
+    "credentialEnv",
+    "limits",
+    "pricing"
+  ],
+  "additionalProperties": false
+}

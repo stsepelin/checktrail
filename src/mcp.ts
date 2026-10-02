@@ -1,4 +1,42 @@
 import {
+  runReviewVerification,
+  projectReviewVerification,
+  reviewVerificationRunSchema,
+  reviewVerificationSummarySchema,
+} from "./review-verification.js";
+import {
+  scoreReviewTrials,
+  projectReviewScoring,
+  reviewScoringReportSchema,
+  reviewScoringSummarySchema,
+} from "./review-scoring.js";
+import {
+  runProviderRefutation,
+  projectProviderRefutation,
+  reviewRefutationRunSchema,
+  reviewRefutationSummarySchema,
+} from "./review-refutation.js";
+import {
+  runReviewProbe,
+  projectReviewProbe,
+  parseReviewProbe,
+  type PinnedReviewProbe,
+} from "./review-probe.js";
+import {
+  reviewProbeRunSchema,
+  reviewProbeSummarySchema,
+} from "./review-probe-schema.js";
+import {
+  runProviderReview,
+  projectProviderReview,
+  type ReviewProviderOptions,
+} from "./review-provider.js";
+import {
+  reviewProviderConfigSchema,
+  reviewProviderRunSchema,
+  reviewProviderSummarySchema,
+} from "./review-provider-schema.js";
+import {
   createReviewContext,
   projectReviewContext,
   receiveReview,
@@ -9,6 +47,13 @@ import {
   reviewReceiptSchema,
   reviewReceiptSummarySchema,
 } from "./review.js";
+import {
+  createHypothesisPlan,
+  projectHypothesisPlan,
+  reviewFamilySchema,
+  hypothesisPlanSchema,
+  hypothesisSummarySchema,
+} from "./review-hypotheses.js";
 import {
   externalReferencesSchema,
   type ExternalReference,
@@ -68,6 +113,9 @@ import { VERSION } from "./types.js";
 import type { Report } from "./types.js";
 
 export interface ServerOptions {
+  reviewProbes?: PinnedReviewProbe[];
+  probeLimits?: { wallMs: number; maxOutputBytes: number };
+  reviewProvider?: Omit<ReviewProviderOptions, "signal">;
   externalAdapters?: ExternalReference[];
   root: string;
   allowExecution: boolean;
@@ -81,6 +129,26 @@ export interface ServerOptions {
 export function createServer(options: ServerOptions): McpServer {
   if (options.allowReviewSource && !options.detailed)
     throw new Error("Review source disclosure requires detailed output");
+  const probeLimits = z
+    .strictObject({
+      wallMs: z.number().int().min(1).max(120_000),
+      maxOutputBytes: z.number().int().min(1).max(1_048_576),
+    })
+    .parse(options.probeLimits ?? { wallMs: 30000, maxOutputBytes: 65536 });
+  if ((options.reviewProbes?.length ?? 0) > 8)
+    throw new Error("At most eight native probe recipes can be registered");
+  const probes = new Map<string, PinnedReviewProbe>();
+  for (const pinned of options.reviewProbes ?? []) {
+    const recipe = parseReviewProbe(pinned);
+    if (probes.has(recipe.id)) throw new Error("Duplicate operator probe ID");
+    probes.set(recipe.id, pinned);
+  }
+  const provider = options.reviewProvider
+    ? {
+        ...options.reviewProvider,
+        config: reviewProviderConfigSchema.parse(options.reviewProvider.config),
+      }
+    : undefined;
   const environment = operatorEnvironment(options.environment);
   const externalAdapters = externalReferencesSchema.parse(
     options.externalAdapters ?? [],
@@ -88,12 +156,16 @@ export function createServer(options: ServerOptions): McpServer {
   const server = new McpServer({ name: "checktrail", version: VERSION });
   const reports = new Map<string, Report>();
   let running: { id: string | number; controller: AbortController } | undefined;
+  let reviewRunning:
+    { id: string | number; controller: AbortController } | undefined;
   let contractRunning:
     { id: string | number; controller: AbortController } | undefined;
   // SDK 2.0.0's cancellation handler drops the valid numeric request ID 0.
   server.server.setNotificationHandler(
     "notifications/cancelled",
     (notification) => {
+      if (reviewRunning && notification.params.requestId === reviewRunning.id)
+        reviewRunning.controller.abort();
       if (running && notification.params.requestId === running.id)
         running.controller.abort();
       if (
@@ -270,6 +342,306 @@ export function createServer(options: ServerOptions): McpServer {
         return error(
           "Review receipt failed. Inspect artifact schema, context identity and scope locally with the CLI.",
         );
+      }
+    },
+  );
+  server.registerTool(
+    "review_hypotheses",
+    {
+      description:
+        "Plan versioned advisory hypothesis families for a captured modern review context. Returns public invariants and evidence requirements, never findings or model inference. Applicability and source freshness remain unverified.",
+      inputSchema: z.strictObject({
+        context: z.string().min(1),
+        families: z.array(reviewFamilySchema).min(1).max(9).optional(),
+      }),
+      outputSchema: options.detailed
+        ? hypothesisPlanSchema
+        : hypothesisSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ context, families }) => {
+      try {
+        return reply(
+          projectHypothesisPlan(
+            createHypothesisPlan(
+              JSON.parse(await readProjectFile(options.root, context)),
+              families ? { schemaVersion: 1, families } : undefined,
+            ),
+            Boolean(options.detailed),
+          ),
+        );
+      } catch {
+        return error(
+          "Hypothesis planning failed. Inspect context version, scope, catalogue and family selection locally with the CLI.",
+        );
+      }
+    },
+  );
+  server.registerTool(
+    "review_probe",
+    {
+      description:
+        "Execute one operator-pinned native probe of an exactly cited current function, with baseline/trigger/near-miss controls and measured coverage. Requires startup execution trust and probe registration. Project code is not sandboxed; observed behavior does not verify the claim mechanism, caller reachability or fix.",
+      inputSchema: z.strictObject({
+        context: z.string().min(1),
+        candidate: z.string().min(1),
+        probeId: z.string().min(1).max(64),
+      }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? reviewProbeRunSchema
+          : reviewProbeSummarySchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true,
+        idempotentHint: false,
+      },
+    },
+    async ({ context, candidate, probeId }, request) => {
+      if (!options.allowExecution)
+        return error(
+          "Native probe execution is disabled. The operator must enable execution at server startup.",
+        );
+      const recipe = probes.get(probeId);
+      if (!recipe)
+        return error("Native probe is not registered by the operator.");
+      if (running)
+        return error(
+          "A native validation mutation or probe is already running for this server.",
+        );
+      const controller = new AbortController();
+      running = { id: request.mcpReq.id, controller };
+      try {
+        const report = await runReviewProbe(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, context)),
+          JSON.parse(await readProjectFile(options.root, candidate)),
+          {
+            trusted: true,
+            recipe,
+            timeoutMs: probeLimits.wallMs,
+            maxOutputBytes: probeLimits.maxOutputBytes,
+            signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
+          },
+        );
+        return reply(
+          projectReviewProbe(
+            report,
+            options.detailed && Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Native probe could not start. Inspect registration integrity, source addresses, controls and operator budgets locally with the CLI.",
+        );
+      } finally {
+        running = undefined;
+      }
+    },
+  );
+  server.registerTool(
+    "review_verify",
+    {
+      description:
+        "Run independent refutation, a fresh operator-pinned native probe and evidence-only adjudication. Requires execution, inference, source disclosure and recipe registration at startup. Project code is not sandboxed. Reports bounded native observations; free-text claims, consequence severity and remedies remain unverified.",
+      inputSchema: z.strictObject({
+        context: z.string().min(1),
+        candidate: z.string().min(1),
+        probeId: z.string().min(1).max(64),
+      }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? reviewVerificationRunSchema
+          : reviewVerificationSummarySchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true,
+        idempotentHint: false,
+      },
+    },
+    async ({ context, candidate, probeId }, request) => {
+      if (
+        !options.allowExecution ||
+        !provider?.allowInference ||
+        !provider.allowSourceDisclosure
+      )
+        return error(
+          "Verification is disabled. Operator execution, inference and source-disclosure grants are required at startup.",
+        );
+      const recipe = probes.get(probeId);
+      if (!recipe)
+        return error("Native probe is not registered by the operator.");
+      if (running || reviewRunning)
+        return error(
+          "A native or provider operation is already running for this server.",
+        );
+      const controller = new AbortController();
+      running = { id: request.mcpReq.id, controller };
+      reviewRunning = { id: request.mcpReq.id, controller };
+      try {
+        const run = await runReviewVerification(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, context)),
+          JSON.parse(await readProjectFile(options.root, candidate)),
+          {
+            trusted: true,
+            recipe,
+            wallMs: probeLimits.wallMs,
+            maxNativeOutputBytes: probeLimits.maxOutputBytes,
+            provider,
+            signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
+          },
+        );
+        return reply(
+          projectReviewVerification(
+            run,
+            options.detailed,
+            Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Verification could not start. Inspect operator grants, pinned recipe, source addresses and provider configuration locally with the CLI.",
+        );
+      } finally {
+        running = undefined;
+        reviewRunning = undefined;
+      }
+    },
+  );
+  server.registerTool(
+    "review_score",
+    {
+      description:
+        "Compute descriptive claim-probability scores, abstention/completeness, reliability and risk/coverage from a frozen operator-supplied protocol and unverified labels. No inference or execution. Does not establish calibrated confidence, independent adjudication or a quality gate.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewScoringReportSchema
+        : reviewScoringSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectReviewScoring(
+            scoreReviewTrials(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Review scoring failed. Check frozen trial identities, thresholds, terminal states and labels locally with the CLI.",
+        );
+      }
+    },
+  );
+  server.registerTool(
+    "review_refute",
+    {
+      description:
+        "Independently attempt to refute one exactly cited unverified candidate against its captured assignment in a fresh stateless provider request only when the operator configured inference and provider source disclosure at startup. Never executes project code or verifies candidate defects. Normal output hides source and prose; model, credentials and budgets cannot be supplied by tool arguments.",
+      inputSchema: z.strictObject({
+        context: z.string().min(1),
+        candidate: z.string().min(1),
+      }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? reviewRefutationRunSchema
+          : reviewRefutationSummarySchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: true,
+        idempotentHint: false,
+      },
+    },
+    async ({ context, candidate }, request) => {
+      if (!provider?.allowInference || !provider.allowSourceDisclosure)
+        return error(
+          "Provider review is disabled. The operator must configure inference and provider source disclosure at server startup.",
+        );
+      if (reviewRunning)
+        return error("A provider review is already running for this server.");
+      const controller = new AbortController();
+      reviewRunning = { id: request.mcpReq.id, controller };
+      try {
+        const run = await runProviderRefutation(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, context)),
+          JSON.parse(await readProjectFile(options.root, candidate)),
+          {
+            ...provider,
+            signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
+          },
+        );
+        return reply(
+          projectProviderRefutation(
+            run,
+            options.detailed,
+            Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Provider review could not start. Inspect operator grants, provider configuration and captured context locally with the CLI.",
+        );
+      } finally {
+        reviewRunning = undefined;
+      }
+    },
+  );
+  server.registerTool(
+    "review_run",
+    {
+      description:
+        "Run an optional stateless provider review of one captured assignment only when the operator configured inference and provider source disclosure at startup. Never executes project code or verifies candidate defects. Normal output hides source and prose; model, credentials and budgets cannot be supplied by tool arguments.",
+      inputSchema: z.strictObject({ context: z.string().min(1) }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? reviewProviderRunSchema
+          : reviewProviderSummarySchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: true,
+        idempotentHint: false,
+      },
+    },
+    async ({ context }, request) => {
+      if (!provider?.allowInference || !provider.allowSourceDisclosure)
+        return error(
+          "Provider review is disabled. The operator must configure inference and provider source disclosure at server startup.",
+        );
+      if (reviewRunning)
+        return error("A provider review is already running for this server.");
+      const controller = new AbortController();
+      reviewRunning = { id: request.mcpReq.id, controller };
+      try {
+        const run = await runProviderReview(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, context)),
+          {
+            ...provider,
+            signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
+          },
+        );
+        return reply(
+          projectProviderReview(
+            run,
+            options.detailed,
+            Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Provider review could not start. Inspect operator grants, provider configuration and captured context locally with the CLI.",
+        );
+      } finally {
+        reviewRunning = undefined;
       }
     },
   );

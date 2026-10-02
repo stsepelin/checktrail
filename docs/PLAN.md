@@ -6,6 +6,13 @@ for milestone evidence, remaining work and external verification gates.
 Intended public namespace: `stsepelin/checktrail`.
 This document describes both the initial implementation and later milestones;
 the support matrix in `LANGUAGES.md` records what actually works.
+The expanded locally operated reviewer target and required finish-first sequence
+are in [REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md). Its hypothesis catalogue and bounded stateless API transport are implemented
+with offline synthetic evidence. A bounded source-bound Boolean probe profile is
+implemented, alongside fresh stateless refutation attempts. Subscription
+orchestration, broader probes and independent claim validation remain unfinished.
+[REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md) reconciles required families and
+explicit deferrals; exact new acceptance-profile pins remain open.
 
 ## 1. Purpose and success criteria
 
@@ -113,7 +120,9 @@ reject escaping paths and symlinks. Bound inventory size, file reads, runtime,
 output and retained reports. Do not install dependencies or fetch tools on demand.
 Do not start infrastructure, apply migrations or access production by default.
 
-Core code sends no telemetry or source uploads. Invoked tools may have their own
+Core validation sends no telemetry or source uploads. Optional reviewer inference
+requires separate operator inference and provider source-disclosure grants; see
+[REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md). Invoked tools may have their own
 network behavior; offline defaults and an OS/container sandbox are distinct work.
 Keep logs out of normal MCP output. Summary mode exposes rule IDs and counts;
 detailed mode is an explicit operator choice. Findings passed to a cloud-backed
@@ -218,6 +227,13 @@ results. No provider or source upload is required for the core product.
 Gate: labeled held-out cases measure detection and false positives per rule family;
 compare against native tools and the prior workflow; record tool/model versions,
 token cost, latency and confidence intervals where sample sizes permit them.
+
+The expanded reviewer layer may use operator-authorized Codex/Claude subscriptions
+or API inference while the core remains provider-free. The roadmap separates
+feature completion, authorized evaluation and demonstrated quality: no new
+real-project MCP field trial starts before the reconciled required implementation
+inventory is complete. Synthetic development and harness-readiness tests continue;
+passing them does not automatically authorize a field trial.
 
 ## 9. Validation strategy
 

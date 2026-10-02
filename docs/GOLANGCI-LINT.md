@@ -43,6 +43,13 @@ diagnostics or warnings, and complete package/file evidence. Diagnostics become
 normalized findings and fail. Unknown/duplicate active linters, omitted source,
 malformed evidence, runtime/configuration errors or missing tools are incomplete.
 
+The pinned native extractor assigns some unlocated package errors to the first
+local file at column zero. Checktrail accepts that anchor as a source failure only
+when the message supplies a complete native compiler block with selected file,
+positive line and column addresses; otherwise it records a loading/analysis error
+with no source finding. Genuine positioned type errors remain failures. Mixed
+source/loading results retain valid findings while marking analysis incomplete.
+
 Native synthetic tests cover a discarded return value and its fix; clean source;
 configured issue filtering/fixing/output paths; no active linters; rejected custom
 settings; real and literal suppression text; excluded Go source; and malformed

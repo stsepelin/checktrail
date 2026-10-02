@@ -36,6 +36,7 @@ export const PARSERS = [
   "silent-syntax",
   "ruff-json",
   "mypy-json",
+  "pyright-json",
   "phpstan-json",
   "phpunit-junit",
   "pint-json",

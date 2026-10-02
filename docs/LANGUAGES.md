@@ -13,7 +13,7 @@ has been verified separately in an isolated official Linux container. Tool versi
 | Family                        | Project boundaries                                                      | Initial scope                                                                                                                                        | Subsequent native integrations                      | Important constraints                                                                                                   |
 | ----------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | JavaScript / TypeScript       | package.json                                                            | Discovery; Node/Vitest/Jest/Playwright tests; explicit local tsc/vue-tsc, solution references, ESLint and opt-in Vue Router/Nuxt SSR route contracts | framework scope profiles                            | ESLint JavaScript is exercised; parser/processor combinations need their own verification; TS tests need a loader/build |
-| Python                        | pyproject.toml, setup.py, requirements.txt                              | Discovery; unittest/pytest, Ruff/mypy and opt-in FastAPI/Django route inventories                                                                    | Pyright                                             | Never import setup.py for discovery; virtual environments, namespace packages and plugins matter                        |
+| Python                        | pyproject.toml, pyrightconfig.json, setup.py, requirements.txt          | Discovery; unittest/pytest, Ruff/mypy, pinned local Pyright and opt-in FastAPI/Django route inventories                                              | Wider Python/tool configurations                    | Never import setup.py for discovery; virtual environments, namespace packages and plugins matter                        |
 | Go                            | go.mod                                                                  | Discovery; gofmt, vet, tests, explicit race/Staticcheck/golangci-lint profiles; native scope accounting                                              | broader golangci-lint settings                      | Module/workspace boundaries, build tags, cgo, platform constraints and test caching                                     |
 | PHP                           | composer.json                                                           | Discovery; syntax, PHPStan, PHPUnit, Pest, Pint and opt-in Laravel assembly capture                                                                  | Larastan integration, PHP-CS-Fixer                  | Syntax is not type/test validation; runtime extensions, generated proxies and framework bootstrapping matter            |
 | Rust                          | Cargo.toml                                                              | Single-package Cargo check with locked offline dependencies and dep-info scope                                                                       | cargo fmt, clippy, test                             | Build scripts and proc macros execute code; feature/target matrix; offline dependencies                                 |
@@ -31,6 +31,46 @@ and capture only their documented native assembly projections; see `FASTAPI.md`,
 Pint's macOS hosted check exposed a non-seekable cache-file failure. The adapter
 now uses a fresh regular file with runner-owned cleanup; the corrected macOS
 profile passed at `52ba415`. See `PINT.md` and `NATIVE-CI.md`.
+
+The [Pyright profile](PYRIGHT.md) requires a pinned local compiler, explicit source
+and native diagnostic accounting. Its JSON/TOML and namespace/virtual-environment
+controls are bounded; suppression exceptions and native Windows are not promoted.
+
+## Advisory review context support
+
+Review context collection accepts bounded UTF-8 regular source files regardless
+of language; this does not add semantic rules for those languages. Version 1
+selected-source contexts remain supported. Version 2 adds current-source snapshot
+and immutable-base diff tracks through the library, CLI and MCP. Diff collection
+uses host Git on supported POSIX systems and reports base/current bytes, exact
+replacement ranges, identities and uncollected analysis. Version 3 adds the
+bounded [JavaScript/TypeScript syntax profile](REVIEW-BEHAVIOR.md) with explicitly
+selected support files, whole functions, declarations/defaults and lexical
+caller links. Synthetic macOS arm64 Node 26.9.0 checks cover the library, CLI and
+MCP; other platforms remain pending for this profile. This is advisory syntax
+context, with explicit unsupported/malformed/exhausted states and unknown runtime
+dispatch. Version 4 retains this syntax profile and adds explicit revision/digest
+citations and unverified attribution/fix-scope declarations through assessment and
+receipt version 2. Its synthetic macOS arm64 Node 26.9.0 library/CLI/MCP and offline
+installed-package checks are locally verified; other platforms remain pending.
+Version 5 additionally selects raw working-tree or stage-zero index source for
+diffs and captures selected regular-file modes; snapshots remain working-only.
+Original synthetic macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2/Git 2.47.3
+required profiles and a fresh offline Linux library/CLI/MCP package workflow pass.
+Other target platforms and runtimes retain their separate acceptance gates.
+These source addresses do not add native findings or semantic language support.
+The [hypothesis catalogue and stateless API transport](REVIEW-PROVIDERS.md)
+use the same source packets without adding language semantics. Offline synthetic
+API operator admission budgets do not extend native language support.
+API/library/CLI/MCP acceptance passes on macOS arm64 Node 26.9.0 and
+Linux arm64 Node 22.23.2; actual provider
+inference, subscription clients and wider platform acceptance remain pending.
+The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
+on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
+language probes, automatic callers and independent claim verification remain pending.
+[Stateless refutation attempts](REVIEW-REFUTATION.md) can propose counterclaims
+without adding semantic support or establishing their correctness. See
+[REVIEW-EXCHANGE.md](REVIEW-EXCHANGE.md).
 
 ## Adapter contract
 
@@ -134,3 +174,13 @@ keeps the original strict exclusion behavior.
 Alpha.5 adds [Go build-tag profiles](GO-BUILD.md) for
 per-check tags and exclusions across vet, tests, race tests, Staticcheck and
 golangci-lint. This is one configuration per selected check, not a target matrix.
+
+[Descriptive reviewer scoring](REVIEW-SCORING.md) accepts declared numerical
+observations for the nine families; it does not add native language or calibrated
+confidence support. Unknown labels/probabilities and unreviewed cases stay visible.
+
+The experimental [verification profile](REVIEW-VERIFICATION.md) combines live
+`node-export-boolean-v1` probes with fresh API refutation and raw-evidence
+adjudication. It inherits the probe's plain ESM function and selected-dependency
+limits. Native expectation mismatches do not establish production consequences
+or widen language, framework or Windows support.

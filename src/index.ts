@@ -73,6 +73,7 @@ export type {
 
 export {
   createReviewContext,
+  parseReviewContext,
   projectReviewContext,
   receiveReview,
   projectReviewReceipt,
@@ -96,3 +97,59 @@ export type {
   ValidationTasks,
   ValidationTasksOptions,
 } from "./validation-tasks.js";
+
+export {
+  createHypothesisPlan,
+  projectHypothesisPlan,
+} from "./review-hypotheses.js";
+export type { HypothesisPlan } from "./review-hypotheses.js";
+
+export {
+  runProviderReview,
+  projectProviderReview,
+  loadReviewProviderConfig,
+} from "./review-provider.js";
+export type { ReviewProviderOptions } from "./review-provider.js";
+export type {
+  ReviewProviderConfig,
+  ReviewProviderRun,
+  ReviewProviderBudget,
+  ReviewCandidate,
+} from "./review-provider-schema.js";
+
+export {
+  runReviewProbe,
+  projectReviewProbe,
+  parseReviewProbe,
+  parseReviewProbeRun,
+  loadPinnedReviewProbe,
+} from "./review-probe.js";
+export type { ReviewProbeOptions, PinnedReviewProbe } from "./review-probe.js";
+export type {
+  ReviewProbeRecipe,
+  ReviewProbeRun,
+} from "./review-probe-schema.js";
+
+export {
+  runProviderRefutation,
+  parseProviderRefutation,
+  projectProviderRefutation,
+} from "./review-refutation.js";
+export type { ReviewRefutationRun } from "./review-refutation.js";
+
+export {
+  scoreReviewTrials,
+  projectReviewScoring,
+  reviewBinomialLower95,
+} from "./review-scoring.js";
+export type { ReviewScoringReport } from "./review-scoring.js";
+
+export {
+  runReviewVerification,
+  parseReviewVerification,
+  projectReviewVerification,
+} from "./review-verification.js";
+export type {
+  ReviewVerificationOptions,
+  ReviewVerificationRun,
+} from "./review-verification.js";

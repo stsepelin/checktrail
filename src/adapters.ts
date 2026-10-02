@@ -19,6 +19,7 @@ import { pintCheck } from "./pint.js";
 import path from "node:path";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
+import { pyrightCheck } from "./pyright.js";
 import { mypyCheck } from "./mypy.js";
 import { ruffCheck } from "./ruff.js";
 import { pytestCheck } from "./pytest.js";
@@ -51,12 +52,18 @@ export const adapters = [
   },
   {
     id: "python",
-    markers: ["pyproject.toml", "setup.py", "requirements.txt"],
+    markers: [
+      "pyproject.toml",
+      "pyrightconfig.json",
+      "setup.py",
+      "requirements.txt",
+    ],
     checks: [
       "python.unittest",
       "python.pytest",
       "python.ruff",
       "python.mypy",
+      "python.pyright",
       "python.fastapi-routes",
       "python.django-routes",
     ],
@@ -280,6 +287,7 @@ export async function checksFor(
           pytestCheck(project),
           ruffCheck(project),
           mypyCheck(project),
+          await pyrightCheck(source, project),
           ...(requested?.includes("python.fastapi-routes")
             ? [await fastapiCheck(source, project)]
             : []),

@@ -246,7 +246,7 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -373,4 +373,21 @@ wrong. Fewer selected checks alone do not establish a safe or faster run.
 Optional [`review-context` and `review-receipt`](docs/REVIEW-EXCHANGE.md) exchange
 bounded selected source and external reviewer assessments. Source and review prose
 require `--detailed --allow-review-source`; claims and declared usage remain advisory.
-The engine does not call a model or upload code.
+Core validation does not call a model or upload code. Optional
+[provider review](docs/REVIEW-PROVIDERS.md) requires separate operator inference
+and source-disclosure grants; normal output hides source and candidate prose.
+
+[Native review probes](docs/REVIEW-PROBES.md) bind operator-pinned controls to
+selected source and measured function/guard execution. Native execution requires
+operator trust; Boolean counterexamples remain advisory evidence.
+
+[Independent refutation](docs/REVIEW-REFUTATION.md) sends one unverified hypothesis
+to a fresh stateless verifier while withholding prior reviewer labels and verdicts.
+Counterclaims stay advisory. [Native corroboration and independent adjudication](docs/REVIEW-VERIFICATION.md)
+now combine fresh refutation, a live operator-pinned Node probe and a separate
+raw-evidence assignment. Bounded observations do not verify production impact,
+claim mechanism or severity; full independent findings remain unfinished.
+
+[Reviewer scoring](docs/REVIEW-SCORING.md) reports proper probability losses,
+reliability, risk/coverage and explicit incomplete/unknown accounting from declared
+labels. It does not establish calibrated confidence or a quality gate.

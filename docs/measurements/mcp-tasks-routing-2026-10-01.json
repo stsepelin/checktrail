@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-01T07:36:39.589902Z",
+  "profile": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "scope": "published official SDK extension routing only, not Tasks conformance",
+  "registryLatestServerVersion": "2.2.0",
+  "probeSha256": "a1b6890563575593ea9f5473d1a2af671a42cacaa8ca8ed82447bf1af3b96b7a",
+  "dependencies": [
+    {
+      "name": "@modelcontextprotocol/server",
+      "version": "2.2.0",
+      "integrity": "sha512-qFnltjus6Gk8Lx6J1w2RXmr3YPN22MNT6qD6zjAkaiWIlFIFxWClz0rXHNuJF/KSUyn5YGhkSvXkWDbQHVLFEQ=="
+    },
+    {
+      "name": "@modelcontextprotocol/client",
+      "version": "2.2.0",
+      "integrity": "sha512-LxCou/CSYQ6dwEnjhLZY0KnEuc8V4UJ3IEQCl/uR2yHobSQIEdJKUlKLRYRF5i5FqRGHy1eK7une3aAWDHLtig=="
+    },
+    {
+      "name": "@modelcontextprotocol/core",
+      "version": "2.2.0",
+      "integrity": "sha512-iLhmprRmWI8EcosOA3wVvww22z02NkgqhV4fBH6f/odQBsi7xnJc0HGmi21yWO+/iKw2yzqVE127Zhna5/+JXw=="
+    },
+    {
+      "name": "zod",
+      "version": "4.6.5",
+      "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
+    }
+  ],
+  "protocol": "2026-07-28",
+  "exitCode": 2,
+  "results": [
+    {
+      "method": "tasks/get",
+      "handlerReached": false,
+      "errorCode": -32601
+    },
+    {
+      "method": "tasks/cancel",
+      "handlerReached": false,
+      "errorCode": -32601
+    },
+    {
+      "method": "tasks/update",
+      "handlerReached": true,
+      "errorCode": null
+    }
+  ],
+  "projectDependencyChanged": false
+}

@@ -69,7 +69,7 @@ sandbox. Tests may modify files or access networks and must be trusted according
 Expose `project_context`, `validation_plan`, `validation_run`, `validation_report`,
 `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-and `mutation_experiment`.
+`review_hypotheses`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
 restart clears them. The optional library-only [task store](TASK-STORAGE.md)
@@ -122,3 +122,63 @@ assessments without invoking a model. Source and review prose require a separate
 operator disclosure setting. Context identity, freshness, quotations and declared
 file accounting are checked, while defect claims remain unverified and separate
 from validation. See `REVIEW-EXCHANGE.md`.
+
+Version 2 review contexts distinguish current-source snapshot assignments from
+explicit immutable-base diff assignments. Historical blobs use inventory
+disclosure exclusions and raw host Git reads; HEAD/index/source identities and
+exact replacement ranges bind the evidence. Completeness fields expose missing
+semantic/caller analysis. This collector does not create a model session or
+establish reviewer independence; orchestration and blinded evaluation remain
+separate planned capabilities.
+
+Version 3 lazily loads a pinned parser for bounded JavaScript/TypeScript syntax
+context. Its memory-only compiler host receives captured strings and resolves
+only explicitly selected relative modules, without loading consumer configuration,
+plugins or code. Functions, declarations/defaults and lexical caller links retain
+base/current addresses and incomplete scope. Receipt reconstruction binds this
+metadata to the current collector contract; it does not verify a defect or runtime
+reachability. See [REVIEW-BEHAVIOR.md](REVIEW-BEHAVIOR.md).
+
+Version 4 keeps the bounded syntax profile and versions the exchange instructions
+for assessment/receipt version 2. Citation addresses bind base/current revision,
+file digest and complete line ranges, including deleted base files. Historical
+attribution and fix scope are reviewer declarations; range overlap, matching
+source and receipt freshness never verify the claim or its proposed remedy.
+Snapshots require unknown historical attribution. Older exchange shapes retain
+their current-only citation contract. Shared projections keep source and claim
+prose behind the operator disclosure setting.
+
+Version 5 selects working-tree or raw stage-zero index bytes for diff assignments
+and captures selected regular-file modes. Working snapshots retain no Git history.
+The collector compares per-handle metadata and rechecks captured source/modes after
+Git identity validation; the importer reconciles mode presence and reconstructs
+the selected source view. These guards detect the tested ordinary races and mode
+changes, without claiming an atomic or adversarial filesystem snapshot. Mode-only
+changes remain separate from text replacement ranges.
+
+The optional `review-provider` module uses the same captured context and receipt
+contracts plus the versioned hypothesis catalogue. Only operator startup settings
+select its fixed API endpoint, exact model, credential environment name and limits.
+`review_run` accepts a context artifact path only. Provider source disclosure is
+separate from source/prose output permission and from project execution trust.
+Attempts send one stateless inline assignment with no tools or prior messages;
+all native outcomes remain separate. See [REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md)
+for partial capability and acceptance limits.
+
+The experimental `review-probe` engine executes operator-pinned Boolean cases
+in fresh current-source trees. Native V8 coverage and compiled-source digests
+bind observed functions/guards; missing scale or stale/incomplete evidence remains
+unresolved. `review_probe` selects a startup-registered recipe only and shares the
+native execution slot. No claim mechanism, reachability or fix becomes verified.
+See [REVIEW-PROBES.md](REVIEW-PROBES.md).
+
+[Independent refutation](REVIEW-REFUTATION.md) sends one unverified hypothesis
+to a fresh stateless verifier while withholding prior reviewer labels and verdicts.
+Counterclaims stay advisory. [Native corroboration and independent adjudication](REVIEW-VERIFICATION.md)
+now combine fresh refutation, a live operator-pinned Node probe and a separate
+raw-evidence assignment. Bounded observations do not verify production impact,
+claim mechanism or severity; full independent findings remain unfinished.
+
+[Reviewer scoring](REVIEW-SCORING.md) reports proper probability losses,
+reliability, risk/coverage and explicit incomplete/unknown accounting from declared
+labels. It does not establish calibrated confidence or a quality gate.

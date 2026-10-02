@@ -1,104 +1,317 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "engineVersion": { "type": "string" },
-    "channel": { "type": "string", "const": "advisory" },
-    "automatedCoverage": { "type": "boolean", "const": false },
-    "claimsVerified": { "type": "boolean", "const": false },
-    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
-    "provenance": { "type": "string", "const": "imported-review-assessment" },
-    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "freshness": { "type": "string", "enum": ["current", "stale"] },
-    "usageProvenance": { "type": "string", "const": "reviewer-declared" },
-    "usage": {
+  "anyOf": [
+    {
       "type": "object",
       "properties": {
-        "inputTokens": {
-          "anyOf": [
-            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-            { "type": "null" }
-          ]
+        "schemaVersion": { "type": "number", "const": 1 },
+        "engineVersion": { "type": "string" },
+        "channel": { "type": "string", "const": "advisory" },
+        "automatedCoverage": { "type": "boolean", "const": false },
+        "claimsVerified": { "type": "boolean", "const": false },
+        "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+        "provenance": {
+          "type": "string",
+          "const": "imported-review-assessment"
         },
-        "outputTokens": {
-          "anyOf": [
-            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-            { "type": "null" }
-          ]
+        "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "freshness": { "type": "string", "enum": ["current", "stale"] },
+        "usageProvenance": { "type": "string", "const": "reviewer-declared" },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "inputTokens": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "outputTokens": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "elapsedMs": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "costUSD": {
+              "anyOf": [
+                { "type": "number", "minimum": 0, "maximum": 1000000 },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": ["inputTokens", "outputTokens", "elapsedMs", "costUSD"],
+          "additionalProperties": false
         },
-        "elapsedMs": {
-          "anyOf": [
-            { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-            { "type": "null" }
-          ]
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "selected": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "declaredReviewed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "declaredNotReviewed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unaccounted": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": [
+            "selected",
+            "declaredReviewed",
+            "declaredNotReviewed",
+            "unaccounted"
+          ],
+          "additionalProperties": false
         },
-        "costUSD": {
-          "anyOf": [
-            { "type": "number", "minimum": 0, "maximum": 1000000 },
-            { "type": "null" }
-          ]
-        }
-      },
-      "required": ["inputTokens", "outputTokens", "elapsedMs", "costUSD"],
-      "additionalProperties": false
-    },
-    "coverage": {
-      "type": "object",
-      "properties": {
-        "selected": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-        "declaredReviewed": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000000
+        "citations": {
+          "type": "object",
+          "properties": {
+            "matched": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unmatched": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": ["matched", "unmatched"],
+          "additionalProperties": false
         },
-        "declaredNotReviewed": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000000
-        },
-        "unaccounted": {
+        "reviewerKind": { "type": "string", "enum": ["human", "model"] },
+        "observations": {
           "type": "integer",
           "minimum": 0,
           "maximum": 1000000000
         }
       },
       "required": [
-        "selected",
-        "declaredReviewed",
-        "declaredNotReviewed",
-        "unaccounted"
+        "schemaVersion",
+        "engineVersion",
+        "channel",
+        "automatedCoverage",
+        "claimsVerified",
+        "deterministicOutcomeChanged",
+        "provenance",
+        "contextDigest",
+        "freshness",
+        "usageProvenance",
+        "usage",
+        "coverage",
+        "citations",
+        "reviewerKind",
+        "observations"
       ],
       "additionalProperties": false
     },
-    "citations": {
+    {
       "type": "object",
       "properties": {
-        "matched": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-        "unmatched": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+        "schemaVersion": { "type": "number", "const": 2 },
+        "engineVersion": { "type": "string" },
+        "channel": { "type": "string", "const": "advisory" },
+        "automatedCoverage": { "type": "boolean", "const": false },
+        "claimsVerified": { "type": "boolean", "const": false },
+        "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+        "provenance": {
+          "type": "string",
+          "const": "imported-review-assessment"
+        },
+        "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "freshness": { "type": "string", "enum": ["current", "stale"] },
+        "usageProvenance": { "type": "string", "const": "reviewer-declared" },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "inputTokens": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "outputTokens": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "elapsedMs": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+                { "type": "null" }
+              ]
+            },
+            "costUSD": {
+              "anyOf": [
+                { "type": "number", "minimum": 0, "maximum": 1000000 },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": ["inputTokens", "outputTokens", "elapsedMs", "costUSD"],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "selected": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "declaredReviewed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "declaredNotReviewed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unaccounted": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": [
+            "selected",
+            "declaredReviewed",
+            "declaredNotReviewed",
+            "unaccounted"
+          ],
+          "additionalProperties": false
+        },
+        "citations": {
+          "type": "object",
+          "properties": {
+            "matched": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unmatched": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "base": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": ["matched", "unmatched", "base", "current"],
+          "additionalProperties": false
+        },
+        "attribution": {
+          "type": "object",
+          "properties": {
+            "provenance": { "type": "string", "const": "reviewer-declared" },
+            "verified": { "type": "boolean", "const": false },
+            "regression": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "preExisting": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": [
+            "provenance",
+            "verified",
+            "regression",
+            "preExisting",
+            "unknown"
+          ],
+          "additionalProperties": false
+        },
+        "fixScope": {
+          "type": "object",
+          "properties": {
+            "provenance": { "type": "string", "const": "reviewer-declared" },
+            "verified": { "type": "boolean", "const": false },
+            "thisChange": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "followUp": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            }
+          },
+          "required": [
+            "provenance",
+            "verified",
+            "thisChange",
+            "followUp",
+            "unknown"
+          ],
+          "additionalProperties": false
+        },
+        "reviewerKind": { "type": "string", "enum": ["human", "model"] },
+        "observations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        }
       },
-      "required": ["matched", "unmatched"],
+      "required": [
+        "schemaVersion",
+        "engineVersion",
+        "channel",
+        "automatedCoverage",
+        "claimsVerified",
+        "deterministicOutcomeChanged",
+        "provenance",
+        "contextDigest",
+        "freshness",
+        "usageProvenance",
+        "usage",
+        "coverage",
+        "citations",
+        "attribution",
+        "fixScope",
+        "reviewerKind",
+        "observations"
+      ],
       "additionalProperties": false
-    },
-    "reviewerKind": { "type": "string", "enum": ["human", "model"] },
-    "observations": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
-  },
-  "required": [
-    "schemaVersion",
-    "engineVersion",
-    "channel",
-    "automatedCoverage",
-    "claimsVerified",
-    "deterministicOutcomeChanged",
-    "provenance",
-    "contextDigest",
-    "freshness",
-    "usageProvenance",
-    "usage",
-    "coverage",
-    "citations",
-    "reviewerKind",
-    "observations"
-  ],
-  "additionalProperties": false
+    }
+  ]
 }

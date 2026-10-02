@@ -52,6 +52,18 @@ the local probe still returns `-32601` for get/cancel and reaches update, and th
 remains open. The package retains its pinned SDK; no transport interception or
 protocol workaround is introduced.
 
+Rechecked on 2026-09-30: an isolated exact official server/client/core 2.2.0
+installation still returns `-32601` for get/cancel and reaches update. Its installed
+implementation still uses the blanket historical-method gate. The upstream fix
+was merged that day, but is absent from this tested release. The project retains
+SDK 2.0.0; see the [pinned routing measurement](measurements/mcp-tasks-routing-2026-09-30.json).
+A merged source fix is not evidence that a published artifact contains it.
+
+Rechecked on 2026-10-01: the npm registry still selects server 2.2.0. The exact
+published server/client/core 2.2.0 profile again returns `-32601` for get/cancel
+and reaches update; see the [current routing measurement](measurements/mcp-tasks-routing-2026-10-01.json).
+No project SDK dependency was changed and no Tasks capability is advertised.
+
 Run `npm run probe:mcp-tasks` from the source checkout to repeat the routing probe. Exit `2` means one or
 more handlers were unreachable; exit `0` means routing works. A routing success
 does not establish Tasks conformance. The probe is separate from the ordinary

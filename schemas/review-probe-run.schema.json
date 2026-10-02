@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-probe-run" },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "nativeExecution": { "type": "boolean" },
+    "executionSandboxed": { "type": "boolean", "const": false },
+    "profile": { "type": "string", "const": "node-export-boolean-v1" },
+    "recipeDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "workerDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sourceDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "functionRange": {
+      "type": "object",
+      "properties": {
+        "start": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "end": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+      },
+      "required": ["start", "end"],
+      "additionalProperties": false
+    },
+    "minimumTriggerScale": { "type": "integer", "minimum": 1, "maximum": 1024 },
+    "guard": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "start": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+            "end": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+          },
+          "required": ["start", "end"],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidateDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "const": "node" },
+        "version": { "type": "string" }
+      },
+      "required": ["name", "version"],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "incomplete",
+        "cancelled",
+        "timed-out",
+        "stale",
+        "unsupported"
+      ]
+    },
+    "behavior": {
+      "type": "string",
+      "enum": ["violated", "satisfied", "unresolved"]
+    },
+    "requirementProvenance": {
+      "type": "string",
+      "const": "operator-pinned-expectations"
+    },
+    "callerReachability": { "type": "string", "const": "not-established" },
+    "mechanismVerified": { "type": "boolean", "const": false },
+    "fixVerified": { "type": "boolean", "const": false },
+    "freshness": { "type": "string", "enum": ["current", "stale"] },
+    "temporaryArtifacts": {
+      "type": "string",
+      "enum": ["removed", "cleanup-failed", "not-created"]
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "selected": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "observed": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "unresolved": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "notRun": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "triggerMismatches": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "controlMismatches": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        }
+      },
+      "required": [
+        "selected",
+        "observed",
+        "unresolved",
+        "notRun",
+        "triggerMismatches",
+        "controlMismatches"
+      ],
+      "additionalProperties": false
+    },
+    "trials": {
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["baseline", "trigger", "near-miss"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["observed", "unresolved", "not-run"]
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "boolean-observed",
+              "scale-not-met",
+              "guard-not-covered",
+              "runtime-error",
+              "malformed-evidence",
+              "timeout",
+              "cancelled",
+              "output-limit",
+              "budget-exhausted"
+            ]
+          },
+          "inputScale": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000
+          },
+          "functionExecuted": { "type": "boolean" },
+          "guardCoverage": {
+            "type": "string",
+            "enum": ["not-requested", "executed", "not-executed", "unknown"]
+          },
+          "expected": { "type": "boolean" },
+          "actual": { "type": ["boolean", "null"] },
+          "matchesExpectation": { "type": ["boolean", "null"] },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000
+          },
+          "ranges": {
+            "maxItems": 128,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                }
+              },
+              "required": ["start", "end", "count"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "status",
+          "reason",
+          "inputScale",
+          "functionExecuted",
+          "guardCoverage",
+          "expected",
+          "actual",
+          "matchesExpectation",
+          "durationMs",
+          "ranges"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "engineVersion",
+    "channel",
+    "claimsVerified",
+    "deterministicOutcomeChanged",
+    "nativeExecution",
+    "executionSandboxed",
+    "profile",
+    "recipeDigest",
+    "workerDigest",
+    "sourceDigest",
+    "functionRange",
+    "minimumTriggerScale",
+    "guard",
+    "contextDigest",
+    "candidateDigest",
+    "runtime",
+    "status",
+    "behavior",
+    "requirementProvenance",
+    "callerReachability",
+    "mechanismVerified",
+    "fixVerified",
+    "freshness",
+    "temporaryArtifacts",
+    "counts",
+    "trials"
+  ],
+  "additionalProperties": false
+}
