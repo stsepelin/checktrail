@@ -207,6 +207,8 @@ test("neutral workflow MCP uses one strict provider-free tool with startup sourc
         { trusted: true },
         { allowReviewSource: true },
         { provider: "arbitrary" },
+        { audit: { file: "arbitrary" } },
+        { reviewWorkflowAudit: { file: "arbitrary" } },
       ])
         assert.equal(
           (

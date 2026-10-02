@@ -1212,5 +1212,51 @@
       "file": "dist/test/review-workflow-surfaces.test.js",
       "name": "neutral workflow CLI treats empty EOF and interrupted pending assignments as incomplete and rejects mismatched startup limits"
     }
+  ],
+  "review-workflow-audit": [
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit retains issued packets invalid responses live native stages and terminal metadata without passing history to workers"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit rejects public linked existing inside-project and undisclosed storage before changing artifacts"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit reserves event and byte completion before native execution and simultaneous admissions"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit durability loss prevents new assignment disclosure and retains interrupted history"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit rejects changed reordered replayed and forged records and treats a torn tail as incomplete"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit crash leaves a durable pending native intent with unknown accounting and cannot resume it"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit bounds oversized and unserializable input honestly without treating truncated bodies as complete"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit disposal waits for native cleanup accounting before finalization"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit CLI requires startup grants keeps model-selected paths inert and reports incomplete journals explicitly"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit MCP discovery siblings and in-place legacy fallback never spend or reopen the command journal"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit reconciles serialized assignment ledgers and prevents disappearing history even with recomputed chains"
+    }
   ]
 }

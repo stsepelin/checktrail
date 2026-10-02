@@ -7,7 +7,7 @@ needs no model credentials for this workflow. Compatibility still requires a
 recorded MCP client/application profile; provider independence does not mean
 every application has been tested.
 
-The shared `ReviewWorkflowEngine` backs the `review_workflow` MCP tool and the
+The shared `ReviewWorkflowEngine`, wrapped by `ReviewWorkflowSession`, backs the `review_workflow` MCP tool and the
 foreground `review-session` JSON-lines CLI. Original synthetic controls exercise
 reviewer, refuter, live native probe and adjudicator stages without configuring a
 model provider. These controls verify exchange and native behavior, not actual
@@ -64,7 +64,7 @@ a context containing files. Incomplete, refused, unavailable, cancelled, malform
 missing-coverage and unmatched-citation submissions never advance. Retry uses a
 new assignment and a new declared session within the same total attempt budget.
 The engine retains response byte counts/digests and valid host/usage declarations,
-not malformed response bodies.
+not malformed response bodies in engine memory. Opt-in [command auditing](REVIEW-WORKFLOW-AUDIT.md) separately retains admitted raw JSON submissions in private operator storage.
 
 A reviewer may propose several unverified candidates. This bounded workflow
 processes one selected opaque target; siblings remain unverified. Refutation
@@ -137,9 +137,11 @@ spent counts. See [native probe budgets](REVIEW-PROBES.md).
 
 Source is checked at opening and before issuing, accepting and executing stages.
 `status` is an accounting snapshot, not a new freshness attestation. No atomic
-filesystem snapshot is promised. The engine is ephemeral: disconnect/crash does
-not persist the audit. The host/harness must capture summaries before disconnect;
-durable all-attempt evaluation storage remains required work.
+filesystem snapshot is promised. The engine is ephemeral by default. Optional
+[startup command auditing](REVIEW-WORKFLOW-AUDIT.md) persists admitted commands,
+issued packets and accounting snapshots before results are released. It preserves
+interrupted prefixes without resuming them. Complete model/native attempt artifacts
+and sealed benchmark orchestration remain required work.
 
 ## Independence and remaining gates
 

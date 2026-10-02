@@ -303,6 +303,12 @@ export class ReviewWorkflowEngine {
     this.#end(workflow, "closed", "closed");
     return this.status(id);
   }
+  /** Source-free accounting snapshots, including receipts that arrive during disposal. */
+  snapshots(): ReviewWorkflowSummary[] {
+    return [...this.#workflows.values()].map((workflow) =>
+      structuredClone(reviewWorkflowSummarySchema.parse(workflow.report)),
+    );
+  }
   dispose(): ReviewWorkflowSummary[] {
     for (const workflow of this.#workflows.values())
       this.#end(workflow, "closed", "closed");

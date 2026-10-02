@@ -102,6 +102,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs rust
           node scripts/verify-required-native-tests.mjs review-budget
           node scripts/verify-required-native-tests.mjs review-workflow
+          node scripts/verify-required-native-tests.mjs review-workflow-audit
           node scripts/verify-required-native-tests.mjs review-native-budget
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
@@ -112,6 +113,8 @@ jobs:
         run: node scripts/verify-review-budget-package.mjs
       - name: Verify model-independent workflow in the production package
         run: node scripts/verify-review-workflow-package.mjs
+      - name: Verify durable workflow audits in the production package
+        run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
       - name: Verify review exchange in the packaged Linux runtime

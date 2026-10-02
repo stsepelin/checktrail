@@ -366,3 +366,8 @@ export {
   reviewWorkflowAssignmentSchema,
   reviewWorkflowSummarySchema,
 } from "./review-workflow-schema.js";
+
+export {
+  reviewWorkflowAuditOptionsSchema,
+  reviewWorkflowAuditSummarySchema,
+} from "./review-workflow-audit-schema.js";

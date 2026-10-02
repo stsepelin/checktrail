@@ -163,3 +163,11 @@ export type {
   ReviewWorkflowSummary,
   ReviewWorkflowResponse,
 } from "./review-workflow-schema.js";
+
+export { ReviewWorkflowSession } from "./review-workflow-session.js";
+export type { ReviewWorkflowSessionOptions } from "./review-workflow-session.js";
+export { inspectReviewWorkflowAudit } from "./review-workflow-audit.js";
+export type {
+  ReviewWorkflowAuditOptions,
+  ReviewWorkflowAuditSummary,
+} from "./review-workflow-audit-schema.js";

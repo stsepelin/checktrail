@@ -270,7 +270,7 @@ adjudicator assignments with host-owned AI sessions and an operator-pinned live
 probe. The foreground `review-session` CLI uses the same engine. Assignment output
 requires startup `--detailed --allow-review-source`; native probes additionally
 require execution trust. Completed stages keep findings and host isolation
-unverified. See [workflow operations and limits](docs/REVIEW-MCP-WORKFLOW.md).
+unverified. See [workflow operations and limits](docs/REVIEW-MCP-WORKFLOW.md) and optional [private durable command audits](docs/REVIEW-WORKFLOW-AUDIT.md).
 
 The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not

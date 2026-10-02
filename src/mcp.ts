@@ -1,4 +1,5 @@
-import { ReviewWorkflowEngine } from "./review-workflow.js";
+import { ReviewWorkflowSession } from "./review-workflow-session.js";
+import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.js";
 import {
   reviewWorkflowCommandSchema,
   reviewWorkflowSummarySchema,
@@ -134,13 +135,14 @@ export interface ServerOptions {
   allowExecution: boolean;
   allowReviewSource?: boolean;
   reviewWorkflowLimits?: ReviewWorkflowLimits;
+  reviewWorkflowAudit?: ReviewWorkflowAuditOptions;
   detailed: boolean;
   environment?: Record<string, string>;
   base?: string;
   policyOverlay?: string;
 }
 
-export function createServer(options: ServerOptions): McpServer {
+function prepareWorkflowOptions(options: ServerOptions) {
   if (options.allowReviewSource && !options.detailed)
     throw new Error("Review source disclosure requires detailed output");
   const probeLimits = z
@@ -164,30 +166,60 @@ export function createServer(options: ServerOptions): McpServer {
         config: reviewProviderConfigSchema.parse(options.reviewProvider.config),
       }
     : undefined;
-  const workflowEngine = new ReviewWorkflowEngine(options.root, {
-    allowReviewSource: Boolean(options.allowReviewSource),
-    trusted: Boolean(options.allowExecution),
-    ...(options.reviewWorkflowLimits
-      ? { limits: options.reviewWorkflowLimits }
-      : {}),
-    probes: [...probes.values()],
-    nativeWallMs: probeLimits.wallMs,
-    maxNativeOutputBytes: probeLimits.maxOutputBytes,
-    ...(probeLimits.nativeBudget
-      ? { nativeBudget: probeLimits.nativeBudget }
-      : {}),
-  });
-  const workflowRequests = new Map<string | number, AbortController>();
+  return { probes, probeLimits, provider };
+}
+function createWorkflowSession(
+  options: ServerOptions,
+  prepared: ReturnType<typeof prepareWorkflowOptions>,
+  auditActivation: "startup" | "first-command" = "startup",
+): ReviewWorkflowSession {
+  const { probes, probeLimits } = prepared;
+  return new ReviewWorkflowSession(
+    options.root,
+    {
+      allowReviewSource: Boolean(options.allowReviewSource),
+      ...(options.reviewWorkflowAudit
+        ? { audit: options.reviewWorkflowAudit }
+        : {}),
+      trusted: Boolean(options.allowExecution),
+      ...(options.reviewWorkflowLimits
+        ? { limits: options.reviewWorkflowLimits }
+        : {}),
+      probes: [...probes.values()],
+      nativeWallMs: probeLimits.wallMs,
+      maxNativeOutputBytes: probeLimits.maxOutputBytes,
+      ...(probeLimits.nativeBudget
+        ? { nativeBudget: probeLimits.nativeBudget }
+        : {}),
+    },
+    auditActivation,
+  );
+}
+export function createServer(options: ServerOptions): McpServer {
+  return createConnectionServer(options);
+}
+function createConnectionServer(
+  options: ServerOptions,
+  sharedWorkflow?: ReviewWorkflowSession,
+): McpServer {
+  const prepared = prepareWorkflowOptions(options),
+    { probes, probeLimits, provider } = prepared;
   const environment = operatorEnvironment(options.environment);
   const externalAdapters = externalReferencesSchema.parse(
     options.externalAdapters ?? [],
   );
+  const workflowEngine =
+    sharedWorkflow ?? createWorkflowSession(options, prepared);
+  const workflowRequests = new Map<string | number, AbortController>();
   const server = new McpServer({ name: "checktrail", version: VERSION });
   const priorClose = server.server.onclose;
   server.server.onclose = () => {
     for (const controller of workflowRequests.values()) controller.abort();
-    workflowEngine.dispose();
-    priorClose?.();
+    try {
+      if (!sharedWorkflow) workflowEngine.dispose();
+    } finally {
+      priorClose?.();
+    }
   };
   const reports = new Map<string, Report>();
   let running: { id: string | number; controller: AbortController } | undefined;
@@ -979,10 +1011,19 @@ export function createServer(options: ServerOptions): McpServer {
 }
 
 export function serve(options: ServerOptions): void {
-  const handle = serveStdio(() => createServer(options), {
-    transport: new StdioServerTransport(process.stdin, process.stdout, {
-      maxBufferSize: 1024 * 1024,
-    }),
+  // The SDK may discard a discovery instance before pinning another era.
+  // The foreground connection owns one workflow epoch across that negotiation.
+  // Official clients also spawn disposable discovery siblings. Preflight at
+  // startup, but create the exclusive journal before the first workflow command.
+  const prepared = prepareWorkflowOptions(options);
+  operatorEnvironment(options.environment);
+  externalReferencesSchema.parse(options.externalAdapters ?? []);
+  const workflow = createWorkflowSession(options, prepared, "first-command");
+  const transport = new StdioServerTransport(process.stdin, process.stdout, {
+    maxBufferSize: 1024 * 1024,
+  });
+  const handle = serveStdio(() => createConnectionServer(options, workflow), {
+    transport,
     onerror: () => {
       process.stderr.write("MCP transport error\n");
     },
@@ -994,6 +1035,12 @@ export function serve(options: ServerOptions): void {
     process.stdin.removeListener("end", shutdown);
     process.removeListener("SIGINT", interrupt);
     process.removeListener("SIGTERM", terminate);
+    try {
+      workflow.dispose();
+    } catch {
+      process.stderr.write("MCP audit finalization failed\n");
+      process.exitCode = 2;
+    }
     void handle.close().catch(() => {
       process.stderr.write("MCP shutdown failed\n");
       process.exitCode = 2;
@@ -1006,6 +1053,14 @@ export function serve(options: ServerOptions): void {
   const terminate = (): void => {
     process.exitCode = 143;
     shutdown();
+  };
+  const priorTransportClose = transport.onclose;
+  transport.onclose = () => {
+    try {
+      priorTransportClose?.();
+    } finally {
+      shutdown();
+    }
   };
   process.stdin.once("end", shutdown);
   process.once("SIGINT", interrupt);

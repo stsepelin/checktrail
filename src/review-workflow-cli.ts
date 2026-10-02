@@ -2,9 +2,9 @@ import { constants } from "node:fs";
 import { open } from "node:fs/promises";
 import { StringDecoder } from "node:string_decoder";
 import {
-  ReviewWorkflowEngine,
-  type ReviewWorkflowOptions,
-} from "./review-workflow.js";
+  ReviewWorkflowSession,
+  type ReviewWorkflowSessionOptions,
+} from "./review-workflow-session.js";
 import {
   reviewWorkflowLimitsSchema,
   type ReviewWorkflowLimits,
@@ -44,9 +44,9 @@ export async function loadReviewWorkflowLimits(
 /** Foreground JSON-lines exchange; one engine epoch until EOF or termination. */
 export async function serveReviewSession(
   root: string,
-  options: ReviewWorkflowOptions,
+  options: ReviewWorkflowSessionOptions,
 ): Promise<void> {
-  const engine = new ReviewWorkflowEngine(root, options);
+  const engine = new ReviewWorkflowSession(root, options);
   const controller = new AbortController();
   const decoder = new StringDecoder("utf8");
   let buffer = "";

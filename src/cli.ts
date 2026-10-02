@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { inspectReviewWorkflowAudit } from "./review-workflow-audit.js";
 import {
   loadReviewWorkflowLimits,
   serveReviewSession,
@@ -112,6 +113,9 @@ async function main(): Promise<void> {
       "allow-env": { type: "string", multiple: true },
       "timeout-ms": { type: "string", default: "30000" },
       "workflow-limits": { type: "string" },
+      "workflow-audit": { type: "string" },
+      "workflow-audit-max-bytes": { type: "string" },
+      "workflow-audit-max-events": { type: "string" },
       "native-max-calls": { type: "string" },
       "native-max-output-bytes": { type: "string" },
       help: { type: "boolean", default: false },
@@ -124,7 +128,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON]\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -194,6 +198,29 @@ async function main(): Promise<void> {
     !["review-session", "serve"].includes(command!)
   )
     throw new Error("Workflow limits apply only to review-session or serve");
+  const auditFlags =
+    values["workflow-audit"] !== undefined ||
+    values["workflow-audit-max-bytes"] !== undefined ||
+    values["workflow-audit-max-events"] !== undefined;
+  if (
+    auditFlags &&
+    (!["serve", "review-session"].includes(command!) ||
+      !values["workflow-audit"])
+  )
+    throw new Error(
+      "Workflow audit flags require serve/review-session and an operator audit path",
+    );
+  const workflowAudit = values["workflow-audit"]
+    ? {
+        file: path.resolve(values["workflow-audit"]),
+        ...(values["workflow-audit-max-bytes"] !== undefined
+          ? { maxBytes: Number(values["workflow-audit-max-bytes"]) }
+          : {}),
+        ...(values["workflow-audit-max-events"] !== undefined
+          ? { maxEvents: Number(values["workflow-audit-max-events"]) }
+          : {}),
+      }
+    : undefined;
   const workflowLimits =
     values["workflow-limits"] !== undefined
       ? await loadReviewWorkflowLimits(path.resolve(values["workflow-limits"]))
@@ -370,6 +397,23 @@ async function main(): Promise<void> {
     }
     return;
   }
+  if (command === "review-audit") {
+    if (!values.input)
+      throw new Error("Review-audit requires an operator input file");
+    const audit = inspectReviewWorkflowAudit(path.resolve(values.input));
+    print(audit);
+    if (
+      audit.journalStatus !== "sealed" ||
+      !audit.nativeAccountingComplete ||
+      !audit.allCommandBodiesRetained ||
+      !audit.commands.started ||
+      audit.workflows.some(
+        (workflow) => workflow.disposition === "not-complete",
+      )
+    )
+      process.exitCode = 2;
+    return;
+  }
   if (command === "review-session") {
     if (values.input || values.context || values["allow-execution"])
       throw new Error(
@@ -379,6 +423,7 @@ async function main(): Promise<void> {
       allowReviewSource: values["allow-review-source"],
       trusted: values["trust-project"],
       ...(workflowLimits ? { limits: workflowLimits } : {}),
+      ...(workflowAudit ? { audit: workflowAudit } : {}),
       probes: await Promise.all(
         (values.probe ?? []).map(loadPinnedReviewProbe),
       ),
@@ -817,6 +862,7 @@ async function main(): Promise<void> {
             },
           }
         : {}),
+      ...(workflowAudit ? { reviewWorkflowAudit: workflowAudit } : {}),
       allowReviewSource: values["allow-review-source"],
       detailed: values.detailed,
       environment,

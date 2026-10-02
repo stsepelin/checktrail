@@ -25,6 +25,16 @@ Host AI identity, usage and freshness remain declarations; completed stages keep
 claims unresolved, severity unassigned and host isolation unverified. Durable
 benchmark audits and general claim validation remain open; Gate A is open.
 
+Opt-in [durable command audits](REVIEW-WORKFLOW-AUDIT.md) now persist intent before
+workflow dispatch, exact admitted JSON commands/issued packets and source-free
+accounting before result release. Original controls cover private startup storage,
+crash prefixes, reservations, native cleanup and SDK discovery/fallback. The
+[local measurement](measurements/review-workflow-audit-2026-10-03.json) binds required
+macOS/Linux profiles, guard mutations and an offline production package replay.
+Storage stays private to the operator; journals do not feed later worker packets
+or resume interrupted work. Complete model/native attempt archives and the sealed
+benchmark harness remain open. Gate A remains open.
+
 Version 2 [Go build profiles](GO-BUILD.md) add bounded repeated execution,
 stable per-execution identities, native target preflight and production compile/link
 checks with owned temporary outputs. The [local measurement](measurements/go-matrix-native-2026-10-02.json)

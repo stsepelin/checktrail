@@ -36,7 +36,7 @@ profiles remain open. See REVIEW-PROVIDERS.md and REVIEW-PROBES.md for limits an
 unverified ceilings. The neutral workflow separately enforces protected engine
 epoch, assignment, packet, response, retained-payload and wall admission. Host
 model calls/tokens/billing remain outside these engine budgets. See
-REVIEW-MCP-WORKFLOW.md for the meters and ephemeral lifecycle.
+REVIEW-MCP-WORKFLOW.md for the meters and default ephemeral lifecycle; REVIEW-WORKFLOW-AUDIT.md describes opt-in private command persistence.
 
 ## Discovery and scope
 
@@ -155,12 +155,12 @@ semantic/caller analysis. This collector does not create a model session or
 establish reviewer independence. The primary reviewer workflow is provider-neutral
 MCP exchange: the host owns AI selection/authentication and session state. The bounded `ReviewWorkflowEngine` now issues reviewer/refuter/adjudicator
 assignments and consumes one-use host responses around a live operator-pinned
-native probe. CLI JSON-lines and `review_workflow` use this same ephemeral engine.
+native probe. CLI JSON-lines and `review_workflow` use this same engine through `ReviewWorkflowSession`, with optional startup-only durable command auditing.
 Protected startup quotas, packet/response/retention admission, source checks and
 consumed attempt metadata are observed engine controls; host sessions, models and
 usage remain unverified declarations. The workflow processes one selected target
 and retains unresolved claims and unassigned severity even when all stages finish.
-Blinded evaluation and persisted all-attempt audits remain planned; a native AI
+Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Blinded evaluation and complete model/native all-attempt artifacts remain planned; a native AI
 client launcher is optional. The server cannot clear the host's conversation or enforce
 its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md.
 

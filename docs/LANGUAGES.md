@@ -80,6 +80,13 @@ surfaces on macOS. Contexts require revision-aware versions 4/5; native
 corroboration retains the plain Node Boolean profile. This adds neither language
 semantics, actual AI-client acceptance, host isolation nor verified findings. See
 REVIEW-MCP-WORKFLOW.md and measurements/review-workflow-2026-10-03.json.
+Opt-in [durable workflow command audits](REVIEW-WORKFLOW-AUDIT.md) share the library,
+CLI and MCP session wrapper on the recorded POSIX profiles. Required original
+synthetic controls cover private storage, crash prefixes, ordering, budgets,
+cleanup and protocol negotiation; offline production installation replays all
+three interfaces. This adds no language semantics, host isolation, actual model
+inference or complete benchmark attempt archive. See
+measurements/review-workflow-audit-2026-10-03.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
 on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
 language probes, automatic callers and independent claim verification remain pending.
