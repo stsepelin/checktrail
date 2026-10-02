@@ -69,6 +69,7 @@ test("MCP 2026-07-28 advertises tools, validates input, and cannot elevate execu
     "review_run",
     "review_score",
     "review_verify",
+    "review_workflow",
     "runtime_comparison",
     "validation_plan",
     "validation_report",

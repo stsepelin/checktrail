@@ -5,9 +5,11 @@ verification. It does not replace the plan or promote an unverified capability.
 Local implementation, local native evidence, hosted CI and publication are
 separate states. Follow the linked evidence for tested versions and limits.
 
-The expanded [reviewer roadmap](REVIEWER-ROADMAP.md) adds a planned optional model
-orchestration/claim-validation layer, not an implemented capability or achieved
-quality claim. Its required inventory retains unfinished M0–M5 work and every
+The expanded [reviewer roadmap](REVIEWER-ROADMAP.md) targets model-independent
+MCP review and claim validation, with host-owned AI/authentication. Neutral stage
+exchange and independent claim validation remain unfinished; engine-owned
+inference or native AI client orchestration is optional. No achieved quality
+claim follows from the current exchange. Its required inventory retains unfinished M0–M5 work and every
 subsequent integration in `LANGUAGES.md`. Feature completion precedes any new
 real-project MCP field evaluation; applicable operator permissions and a frozen
 independent protocol precede measurement, and demonstrated quality is a separate

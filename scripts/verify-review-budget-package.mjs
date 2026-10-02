@@ -211,6 +211,42 @@ try {
       false,
     );
   }
+  for (const limits of [
+    { maxCalls: 0, maxOutputBytes: 65536 },
+    { maxCalls: 2, maxOutputBytes: 65536 },
+    { maxCalls: 3, maxOutputBytes: 0 },
+  ]) {
+    let calls = 0;
+    const run = await runReviewVerification(root, context, target, {
+      trusted: true,
+      recipe: pin,
+      wallMs: 10000,
+      nativeBudget: limits,
+      provider: {
+        config,
+        environment,
+        allowInference: true,
+        allowSourceDisclosure: true,
+        fetch: async () => {
+          calls++;
+          return globalThis.Response.json(envelope);
+        },
+      },
+    });
+    parseReviewVerification(run);
+    assert.equal(run.status, "incomplete");
+    assert.equal(run.stopReason, "probe-incomplete");
+    assert.equal(run.adjudication, null);
+    assert.equal(calls, 1);
+    assert.equal(
+      run.probe.nativeBudget.calls,
+      limits.maxOutputBytes ? limits.maxCalls : 0,
+    );
+    assert.equal(
+      run.probe.counts.notRun,
+      limits.maxOutputBytes ? 3 - limits.maxCalls : 3,
+    );
+  }
   await writeFile(
     path.join(root, ".checktrail/context.json"),
     JSON.stringify(context),
@@ -258,6 +294,40 @@ try {
   assert.equal(cli.status, "completed");
   assert.equal(cli.budgetScope, "verification-run");
   assert.equal(cli.adjudication.aggregateBudget.observedTokens, 240);
+  let boundedCli;
+  try {
+    execFileSync(
+      process.execPath,
+      [
+        "--import",
+        transport,
+        binary,
+        "review-verify",
+        "--root",
+        root,
+        "--context",
+        ".checktrail/context.json",
+        "--input",
+        ".checktrail/target.json",
+        "--trust-project",
+        "--native-max-calls",
+        "2",
+        ...startup,
+      ],
+      {
+        encoding: "utf8",
+        env: { ...process.env, ...environment },
+        stdio: "pipe",
+      },
+    );
+    assert.fail("Unfunded native package CLI incorrectly completed");
+  } catch (error) {
+    assert.equal(error.status, 2);
+    boundedCli = JSON.parse(error.stdout);
+  }
+  assert.equal(boundedCli.status, "incomplete");
+  assert.equal(boundedCli.probe.nativeBudget.calls, 2);
+  assert.equal(boundedCli.adjudication, null);
   for (const funded of [false, true]) {
     const selected = globalThis.structuredClone(config);
     selected.limits.aggregateBudget.maxTotalTokens = funded ? 240 : 239;
@@ -318,6 +388,64 @@ try {
     );
     await client.close();
   }
+  for (const [flag, value, expectedCalls] of [
+    ["--native-max-calls", "2", 2],
+    ["--native-max-output-bytes", "0", 0],
+  ]) {
+    const client = new Client(
+      { name: "original-native-budget-package-control", version: "1" },
+      { versionNegotiation: { mode: { pin: "2026-07-28" } } },
+    );
+    clients.push(client);
+    await client.connect(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          "--import",
+          transport,
+          binary,
+          "serve",
+          "--root",
+          root,
+          "--allow-execution",
+          flag,
+          value,
+          ...startup,
+        ],
+        env: { PATH: process.env.PATH, ...environment },
+        stderr: "pipe",
+      }),
+    );
+    const input = {
+      context: ".checktrail/context.json",
+      candidate: ".checktrail/target.json",
+      probeId: "OriginalBudgetPackage",
+    };
+    const result = await client.callTool({
+      name: "review_verify",
+      arguments: input,
+    });
+    assert.equal(result.isError, undefined, JSON.stringify(result));
+    assert.equal(result.structuredContent.status, "incomplete");
+    assert.equal(
+      result.structuredContent.probe.nativeBudget.calls,
+      expectedCalls,
+    );
+    assert.equal(result.structuredContent.adjudication, null);
+    assert.equal(
+      (
+        await client.callTool({
+          name: "review_verify",
+          arguments: {
+            ...input,
+            nativeBudget: { maxCalls: 16, maxOutputBytes: 65536 },
+          },
+        })
+      ).isError,
+      true,
+    );
+    await client.close();
+  }
   assert.equal(await readFile(path.join(root, "subject.mjs"), "utf8"), source);
   result = {
     profile: "original-synthetic-review-budget-production-package",
@@ -330,6 +458,10 @@ try {
     library: "funded-and-exhausted",
     cli: "funded",
     mcp: "funded-and-exhausted-startup-controls",
+    nativeBudgetLibrary: "zero-calls-zero-output-and-partial-controls",
+    nativeBudgetCLI: "funded-and-call-exhausted",
+    nativeBudgetMCP:
+      "funded-call-exhausted-zero-output-and-startup-only-controls",
     providerInference: false,
     fieldEvaluation: false,
     complete: true,

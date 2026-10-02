@@ -16,7 +16,9 @@ flowchart TD
 The engine owns discovery, planning, execution accounting and report construction.
 Adapters describe checks and parse results; they do not write protocol messages.
 CLI and MCP call the same functions. stdout belongs exclusively to JSON or MCP;
-diagnostics go to stderr. The engine does not call an LLM.
+diagnostics go to stderr. Deterministic validation does not call an LLM; optional
+advisory assignments can be exchanged with a host-owned AI without engine
+inference. Optional direct API inference requires separate operator grants.
 
 ## Reviewer run budgets
 
@@ -25,8 +27,16 @@ budget per verification run. An engine-owned ledger spans both independent API
 assignments and all retries; it is never included in the model packet. Standalone
 review/refutation gets a fresh ledger for that invocation. Retained reports bind
 the shared ID, exact earlier attempts, numeric usage and transport-body bytes.
-Native/tool aggregate budgets and subscription profiles remain separate open
-requirements. See REVIEW-PROVIDERS.md for reservations and unverified ceilings.
+Version 2 native probe receipts also bind one call/output ledger across fresh
+cases, with shrinking output allowances and every reached/unrun case retained.
+Verification binds it to frozen operator startup limits and stops before later
+adjudicator disclosure when native evidence is incomplete. Delivered chunks can
+exceed retention ceilings before cancellation. Wider native/tool and optional provider
+profiles remain open. See REVIEW-PROVIDERS.md and REVIEW-PROBES.md for limits and
+unverified ceilings. The neutral workflow separately enforces protected engine
+epoch, assignment, packet, response, retained-payload and wall admission. Host
+model calls/tokens/billing remain outside these engine budgets. See
+REVIEW-MCP-WORKFLOW.md for the meters and ephemeral lifecycle.
 
 ## Discovery and scope
 
@@ -83,7 +93,7 @@ sandbox. Tests may modify files or access networks and must be trusted according
 Expose `project_context`, `validation_plan`, `validation_run`, `validation_report`,
 `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
+`review_hypotheses`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
 restart clears them. The optional library-only [task store](TASK-STORAGE.md)
@@ -142,8 +152,17 @@ explicit immutable-base diff assignments. Historical blobs use inventory
 disclosure exclusions and raw host Git reads; HEAD/index/source identities and
 exact replacement ranges bind the evidence. Completeness fields expose missing
 semantic/caller analysis. This collector does not create a model session or
-establish reviewer independence; orchestration and blinded evaluation remain
-separate planned capabilities.
+establish reviewer independence. The primary reviewer workflow is provider-neutral
+MCP exchange: the host owns AI selection/authentication and session state. The bounded `ReviewWorkflowEngine` now issues reviewer/refuter/adjudicator
+assignments and consumes one-use host responses around a live operator-pinned
+native probe. CLI JSON-lines and `review_workflow` use this same ephemeral engine.
+Protected startup quotas, packet/response/retention admission, source checks and
+consumed attempt metadata are observed engine controls; host sessions, models and
+usage remain unverified declarations. The workflow processes one selected target
+and retains unresolved claims and unassigned severity even when all stages finish.
+Blinded evaluation and persisted all-attempt audits remain planned; a native AI
+client launcher is optional. The server cannot clear the host's conversation or enforce
+its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md.
 
 Version 3 lazily loads a pinned parser for bounded JavaScript/TypeScript syntax
 context. Its memory-only compiler host receives captured strings and resolves

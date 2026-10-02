@@ -22,6 +22,8 @@ import { reviewCandidateSchema } from "./review-provider-schema.js";
 import { runProcess } from "./runner.js";
 import { VERSION } from "./types.js";
 import {
+  reviewNativeBudgetLimitsSchema,
+  type ReviewNativeBudgetLimits,
   reviewProbeRecipeSchema,
   reviewProbeRunSchema,
   reviewProbeSummarySchema,
@@ -39,6 +41,7 @@ export interface ReviewProbeOptions {
   recipe: PinnedReviewProbe;
   timeoutMs: number;
   maxOutputBytes?: number;
+  nativeBudget?: ReviewNativeBudgetLimits;
   signal?: AbortSignal;
 }
 export function parseReviewProbe(input: PinnedReviewProbe) {
@@ -97,7 +100,28 @@ export async function runReviewProbe(
     maxOutputBytes > 1_048_576
   )
     throw new Error("Invalid native probe output budget");
-  const recipe = parseReviewProbe(options.recipe);
+  const timeoutMs = options.timeoutMs;
+  const pinned = { ...options.recipe };
+  const limits = reviewNativeBudgetLimitsSchema.parse(
+    options.nativeBudget ?? {
+      maxCalls: 16,
+      maxOutputBytes,
+    },
+  );
+  const nativeBudget = {
+    scope: "native-probe-run" as const,
+    limits: {
+      ...limits,
+      wallMs: timeoutMs,
+      maxCallOutputBytes: maxOutputBytes,
+    },
+    calls: 0,
+    outputBytes: 0,
+    stopReason: "none" as "none" | "call-limit" | "output-limit",
+    outputByteCeilingGuaranteed: false as const,
+  };
+  const started = performance.now();
+  const recipe = parseReviewProbe(pinned);
   const candidate = reviewCandidateSchema.parse(candidateInput);
   const context = parseReviewContext(contextInput);
   if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
@@ -159,20 +183,22 @@ export async function runReviewProbe(
     throw new Error(
       "Native probe citations must match assigned source exactly",
     );
-  const trials: ReviewProbeRun["trials"] = recipe.cases.map((item) => ({
-    id: item.id,
-    role: item.role,
-    status: "not-run",
-    reason: "budget-exhausted",
-    inputScale: reviewProbeInputScale(item.args),
-    functionExecuted: false,
-    guardCoverage: recipe.guard ? "unknown" : "not-requested",
-    expected: item.expected,
-    actual: null,
-    matchesExpectation: null,
-    durationMs: 0,
-    ranges: [],
-  }));
+  const trials: Extract<ReviewProbeRun, { schemaVersion: 2 }>["trials"] =
+    recipe.cases.map((item) => ({
+      id: item.id,
+      role: item.role,
+      status: "not-run",
+      reason: "not-started",
+      inputScale: reviewProbeInputScale(item.args),
+      functionExecuted: false,
+      guardCoverage: recipe.guard ? "unknown" : "not-requested",
+      expected: item.expected,
+      actual: null,
+      matchesExpectation: null,
+      durationMs: 0,
+      ranges: [],
+      execution: null,
+    }));
   const supported =
     process.platform !== "win32" &&
     context.files.every((file) => /\.(?:js|mjs)$/.test(file.path)) &&
@@ -193,20 +219,14 @@ export async function runReviewProbe(
   let nativeExecution = false;
   let temporary: string | undefined;
   let temporaryArtifacts: ReviewProbeRun["temporaryArtifacts"] = "not-created";
-  const started = performance.now();
   const workerBytes = await readFile(
     fileURLToPath(new URL("./review-probe-worker.js", import.meta.url)),
   );
   const workerDigest = createHash("sha256").update(workerBytes).digest("hex");
   try {
     if (status === "incomplete" && supported) {
-      temporary = await realpath(
-        await mkdtemp(path.join(tmpdir(), "checktrail-probe-")),
-      );
       for (const [index, trial] of trials.entries()) {
-        const remaining = Math.floor(
-          options.timeoutMs - (performance.now() - started),
-        );
+        let remaining = Math.floor(timeoutMs - (performance.now() - started));
         if (options.signal?.aborted) {
           status = "cancelled";
           trial.reason = "cancelled";
@@ -217,6 +237,23 @@ export async function runReviewProbe(
           trial.reason = "timeout";
           break;
         }
+        if (
+          nativeBudget.calls >= limits.maxCalls ||
+          nativeBudget.outputBytes >= limits.maxOutputBytes
+        ) {
+          nativeBudget.stopReason =
+            nativeBudget.calls >= limits.maxCalls
+              ? "call-limit"
+              : "output-limit";
+          trial.reason =
+            nativeBudget.stopReason === "call-limit"
+              ? "call-limit"
+              : "output-budget";
+          break;
+        }
+        temporary ??= await realpath(
+          await mkdtemp(path.join(tmpdir(), "checktrail-probe-")),
+        );
         const caseRoot = path.join(temporary, `case-${index}`);
         await mkdir(path.join(caseRoot, "source"), { recursive: true });
         await writeFile(
@@ -238,6 +275,18 @@ export async function runReviewProbe(
         });
         const requestFile = path.join(caseRoot, "request.json");
         await writeFile(requestFile, request, { mode: 0o600 });
+        // Copying assigned sources is part of the wall budget, not a new allowance.
+        remaining = Math.floor(timeoutMs - (performance.now() - started));
+        if (options.signal?.aborted || remaining < 1) {
+          status = options.signal?.aborted ? "cancelled" : "timed-out";
+          trial.reason = options.signal?.aborted ? "cancelled" : "timeout";
+          break;
+        }
+        const outputLimitBytes = Math.min(
+          maxOutputBytes,
+          limits.maxOutputBytes - nativeBudget.outputBytes,
+        );
+        const call = ++nativeBudget.calls;
         const result = await runProcess(
           caseRoot,
           {
@@ -247,13 +296,29 @@ export async function runReviewProbe(
           },
           {
             timeoutMs: Math.min(120_000, remaining),
-            maxOutputBytes,
+            maxOutputBytes: outputLimitBytes,
             ...(options.signal ? { signal: options.signal } : {}),
           },
         );
         nativeExecution ||= result.exitCode !== null || result.signal !== null;
+        const outputBytes = result.outputBytes;
+        nativeBudget.outputBytes += outputBytes;
+        trial.execution = {
+          call,
+          outputLimitBytes,
+          outputBytes,
+          truncated: result.truncated,
+        };
+        if (result.truncated) nativeBudget.stopReason = "output-limit";
         trial.durationMs = Math.round(result.durationMs);
-        await rm(caseRoot, { recursive: true, force: true });
+        try {
+          await rm(caseRoot, { recursive: true, force: true });
+        } catch {
+          // Keep the invocation/byte receipt and stop before another case starts.
+          trial.status = "unresolved";
+          trial.reason = "cleanup-failed";
+          break;
+        }
         if (
           result.cancelled ||
           result.timedOut ||
@@ -273,6 +338,10 @@ export async function runReviewProbe(
                 : "runtime-error";
           if (result.cancelled || result.timedOut) {
             status = result.cancelled ? "cancelled" : "timed-out";
+            break;
+          }
+          if (result.truncated) {
+            nativeBudget.stopReason = "output-limit";
             break;
           }
           continue;
@@ -404,7 +473,10 @@ export async function runReviewProbe(
     }
   }
   if (options.signal?.aborted && status !== "stale") status = "cancelled";
-  if (performance.now() - started > options.timeoutMs && status === "completed")
+  if (
+    performance.now() - started > timeoutMs &&
+    (status === "completed" || status === "incomplete")
+  )
     status = "timed-out";
   const counts = {
     selected: trials.length,
@@ -424,8 +496,9 @@ export async function runReviewProbe(
         trial.matchesExpectation === false,
     ).length,
   };
-  return reviewProbeRunSchema.parse({
-    schemaVersion: 1,
+  return parseReviewProbeRun({
+    schemaVersion: 2,
+    nativeBudget,
     format: "review-probe-run",
     engineVersion: VERSION,
     channel: "advisory",
@@ -434,7 +507,7 @@ export async function runReviewProbe(
     nativeExecution,
     executionSandboxed: false,
     profile: recipe.profile,
-    recipeDigest: options.recipe.sha256,
+    recipeDigest: pinned.sha256,
     workerDigest,
     sourceDigest: target.sha256,
     functionRange: { start: definition.start, end: definition.end },
@@ -460,8 +533,89 @@ export async function runReviewProbe(
     trials,
   });
 }
+function reconcileNativeBudget(
+  run: Extract<ReviewProbeRun, { schemaVersion: 2 }>,
+): void {
+  const budget = run.nativeBudget;
+  let calls = 0,
+    bytes = 0;
+  let stopped = false;
+  let expectedStop: typeof budget.stopReason = "none";
+  for (const trial of run.trials) {
+    const execution = trial.execution;
+    if (!execution) {
+      if (
+        trial.status !== "not-run" ||
+        trial.durationMs !== 0 ||
+        trial.functionExecuted ||
+        trial.actual !== null ||
+        trial.matchesExpectation !== null ||
+        trial.ranges.length
+      )
+        throw new Error("Unstarted native trial cannot retain observations");
+      if (!stopped) {
+        if (trial.reason === "call-limit") {
+          if (calls < budget.limits.maxCalls)
+            throw new Error("Native call budget was not exhausted");
+          expectedStop = "call-limit";
+        } else if (trial.reason === "output-budget") {
+          if (
+            bytes < budget.limits.maxOutputBytes ||
+            calls >= budget.limits.maxCalls
+          )
+            throw new Error("Native output budget was not exhausted");
+          expectedStop = "output-limit";
+        } else if (
+          trial.reason === "not-started" &&
+          run.status === "incomplete" &&
+          (calls >= budget.limits.maxCalls ||
+            bytes >= budget.limits.maxOutputBytes)
+        )
+          throw new Error("Native admission stop reason is missing");
+      } else if (trial.reason !== "not-started")
+        throw new Error(
+          "Unstarted native trial cannot change a prior stop reason",
+        );
+      stopped = true;
+      continue;
+    }
+    const remaining = budget.limits.maxOutputBytes - bytes;
+    if (
+      stopped ||
+      calls >= budget.limits.maxCalls ||
+      remaining < 1 ||
+      execution.call !== ++calls ||
+      execution.outputLimitBytes !==
+        Math.min(budget.limits.maxCallOutputBytes, remaining) ||
+      execution.truncated !==
+        execution.outputBytes > execution.outputLimitBytes ||
+      trial.status === "not-run" ||
+      (execution.truncated &&
+        (trial.status !== "unresolved" ||
+          !["output-limit", "cancelled", "timeout", "cleanup-failed"].includes(
+            trial.reason,
+          )))
+    )
+      throw new Error("Native trial admission does not reconcile");
+    bytes += execution.outputBytes;
+    if (execution.truncated) {
+      stopped = true;
+      expectedStop = "output-limit";
+    }
+    if (["cancelled", "timeout", "cleanup-failed"].includes(trial.reason))
+      stopped = true;
+  }
+  if (
+    budget.calls !== calls ||
+    budget.outputBytes !== bytes ||
+    budget.stopReason !== expectedStop ||
+    (budget.stopReason !== "none" && run.status === "completed")
+  )
+    throw new Error("Native run budget does not reconcile");
+}
 export function parseReviewProbeRun(input: unknown): ReviewProbeRun {
   const run = reviewProbeRunSchema.parse(input);
+  if (run.schemaVersion === 2) reconcileNativeBudget(run);
   const counts = run.counts;
   if (
     counts.selected !== run.trials.length ||

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-workflow-assignment" },
+    "engineVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "channel": { "type": "string", "const": "advisory" },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "hostIsolationVerified": { "type": "boolean", "const": false },
+    "assignmentId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "assignmentDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "stage": {
+      "type": "string",
+      "enum": ["reviewer", "refuter", "adjudicator"]
+    },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "instructions": { "type": "string", "maxLength": 8192 },
+    "packet": { "type": "string", "maxLength": 1048576 },
+    "responseSchema": { "type": "string", "maxLength": 65536 },
+    "sessionRequirement": { "type": "string", "const": "fresh-host-session" },
+    "sourceTrust": { "type": "string", "const": "untrusted-source-text" }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "engineVersion",
+    "channel",
+    "claimsVerified",
+    "deterministicOutcomeChanged",
+    "hostIsolationVerified",
+    "assignmentId",
+    "assignmentDigest",
+    "stage",
+    "contextDigest",
+    "instructions",
+    "packet",
+    "responseSchema",
+    "sessionRequirement",
+    "sourceTrust"
+  ],
+  "additionalProperties": false
+}

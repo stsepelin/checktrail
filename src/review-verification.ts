@@ -34,6 +34,8 @@ import {
   type PinnedReviewProbe,
 } from "./review-probe.js";
 import {
+  reviewNativeBudgetLimitsSchema,
+  type ReviewNativeBudgetLimits,
   reviewProbeRunSchema,
   reviewProbeSummarySchema,
 } from "./review-probe-schema.js";
@@ -46,7 +48,6 @@ import { VERSION } from "./types.js";
 import { shareProviderRunBudget } from "./review-provider-aggregate.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const common = {
-  schemaVersion: z.literal(1),
   format: z.literal("review-verification-run"),
   engineVersion: z.string(),
   channel: z.literal("advisory"),
@@ -84,10 +85,6 @@ const common = {
     "no-current-native-evidence",
   ]),
   budgetScope: z.enum(["per-provider-assignment", "verification-run"]),
-  limits: z.strictObject({
-    wallMs: z.number().int().min(1).max(120000),
-    maxNativeOutputBytes: z.number().int().min(1).max(1048576),
-  }),
   independence: z.strictObject({
     refuterNativeEvidence: z.literal(false),
     adjudicatorInput: z.literal(
@@ -104,7 +101,14 @@ const common = {
   consequence: z.literal("not-established"),
   fixFeasibility: z.literal("not-established"),
 };
-export const reviewVerificationRunSchema = z.strictObject({
+const legacyLimits = z.strictObject({
+  wallMs: z.number().int().min(1).max(120000),
+  maxNativeOutputBytes: z.number().int().min(1).max(1048576),
+});
+const limitsSchema = legacyLimits.extend({
+  nativeBudget: reviewNativeBudgetLimitsSchema,
+});
+const retained = {
   ...common,
   context: reviewContextSchema,
   target: reviewCandidateSchema,
@@ -112,20 +116,51 @@ export const reviewVerificationRunSchema = z.strictObject({
   refutation: reviewRefutationRunSchema,
   probe: reviewProbeRunSchema.nullable(),
   adjudication: reviewProviderRunSchema.nullable(),
-});
-export const reviewVerificationSummarySchema = z.strictObject({
+};
+export const reviewVerificationRunSchema = z.discriminatedUnion(
+  "schemaVersion",
+  [
+    z.strictObject({
+      ...retained,
+      schemaVersion: z.literal(1),
+      limits: legacyLimits,
+    }),
+    z.strictObject({
+      ...retained,
+      schemaVersion: z.literal(2),
+      limits: limitsSchema,
+    }),
+  ],
+);
+const summary = {
   ...common,
   refutation: reviewRefutationSummarySchema,
   probe: reviewProbeSummarySchema.nullable(),
   adjudication: reviewProviderSummarySchema.nullable(),
   sourceIncluded: z.literal(false),
-});
+};
+export const reviewVerificationSummarySchema = z.discriminatedUnion(
+  "schemaVersion",
+  [
+    z.strictObject({
+      ...summary,
+      schemaVersion: z.literal(1),
+      limits: legacyLimits,
+    }),
+    z.strictObject({
+      ...summary,
+      schemaVersion: z.literal(2),
+      limits: limitsSchema,
+    }),
+  ],
+);
 export type ReviewVerificationRun = z.infer<typeof reviewVerificationRunSchema>;
 export interface ReviewVerificationOptions {
   trusted: boolean;
   recipe: PinnedReviewProbe;
   wallMs: number;
   maxNativeOutputBytes?: number;
+  nativeBudget?: ReviewNativeBudgetLimits;
   provider: ReviewProviderOptions;
   signal?: AbortSignal;
 }
@@ -244,9 +279,13 @@ export async function runReviewVerification(
     throw new Error(
       "Verification requires operator execution, inference and provider-source grants",
     );
-  const limits = reviewVerificationRunSchema.shape.limits.parse({
+  const limits = limitsSchema.parse({
     wallMs: options.wallMs,
     maxNativeOutputBytes: options.maxNativeOutputBytes ?? 65536,
+    nativeBudget: options.nativeBudget ?? {
+      maxCalls: 16,
+      maxOutputBytes: options.maxNativeOutputBytes ?? 65536,
+    },
   });
   const { context, target, recipe } = inputs(
     contextInput,
@@ -294,6 +333,7 @@ export async function runReviewVerification(
         recipe: pinned,
         timeoutMs: limits.wallMs,
         maxOutputBytes: limits.maxNativeOutputBytes,
+        nativeBudget: limits.nativeBudget,
         signal,
       });
       parseReviewProbeRun(probe);
@@ -334,7 +374,7 @@ export async function runReviewVerification(
             ? "completed"
             : "incomplete";
     return parseReviewVerification({
-      schemaVersion: 1,
+      schemaVersion: 2,
       format: "review-verification-run",
       engineVersion: VERSION,
       channel: "advisory",
@@ -406,6 +446,18 @@ export function parseReviewVerification(input: unknown): ReviewVerificationRun {
     throw new Error("Verification probe digest does not reconcile");
   if (probe) {
     parseReviewProbeRun(probe);
+    if (
+      run.schemaVersion === 2 &&
+      (probe.schemaVersion !== 2 ||
+        !isDeepStrictEqual(probe.nativeBudget.limits, {
+          ...run.limits.nativeBudget,
+          wallMs: run.limits.wallMs,
+          maxCallOutputBytes: run.limits.maxNativeOutputBytes,
+        }))
+    )
+      throw new Error(
+        "Verification native budgets do not match operator limits",
+      );
     if (
       refutation.verifier.status !== "completed" ||
       probe.contextDigest !== context.contextDigest ||

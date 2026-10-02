@@ -81,8 +81,12 @@ A snapshot context reads current selected files and includes no Git history,
 commit identities or earlier source. Earlier assessments are not imported as
 review state; the collector exposes only explicitly selected source. This is an
 evidence boundary, not proof of reviewer independence:
-fresh provider sessions, restricted access, answer hiding and isolated memories
-still belong to the pending orchestration and evaluation harness.
+fresh host AI sessions, restricted access, answer hiding and isolated memories
+still need host-side controls and the pending evaluation harness. The MCP server
+cannot erase a host conversation. The bounded provider-neutral stage exchange now
+uses these citation contracts and live native evidence; host isolation and general
+claim validation remain unverified. Engine-owned inference is optional
+(REVIEW-MCP-WORKFLOW.md).
 
 For a diff assignment, use `track: "diff"` and `baseCommit` containing the exact
 40- or 64-character lowercase commit ID. Branch names and revision expressions

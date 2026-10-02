@@ -32,6 +32,30 @@ export const reviewProbeWireSchema = z.strictObject({
   functionRange: span,
   ranges: z.array(span.extend({ count })).min(1).max(128),
 });
+export const reviewNativeBudgetLimitsSchema = z.strictObject({
+  maxCalls: z.number().int().min(0).max(16),
+  maxOutputBytes: z.number().int().min(0).max(16_777_216),
+});
+export type ReviewNativeBudgetLimits = z.infer<
+  typeof reviewNativeBudgetLimitsSchema
+>;
+const execution = z.strictObject({
+  call: z.number().int().min(1).max(16),
+  outputLimitBytes: z.number().int().min(1).max(1_048_576),
+  outputBytes: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  truncated: z.boolean(),
+});
+const nativeBudget = z.strictObject({
+  scope: z.literal("native-probe-run"),
+  limits: reviewNativeBudgetLimitsSchema.extend({
+    wallMs: z.number().int().min(1).max(120_000),
+    maxCallOutputBytes: z.number().int().min(1).max(1_048_576),
+  }),
+  calls: z.number().int().nonnegative().max(16),
+  outputBytes: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  stopReason: z.enum(["none", "call-limit", "output-limit"]),
+  outputByteCeilingGuaranteed: z.literal(false),
+});
 const trial = z.strictObject({
   id: identifier,
   role: z.enum(["baseline", "trigger", "near-miss"]),
@@ -46,6 +70,10 @@ const trial = z.strictObject({
     "cancelled",
     "output-limit",
     "budget-exhausted",
+    "not-started",
+    "call-limit",
+    "output-budget",
+    "cleanup-failed",
   ]),
   inputScale: count,
   functionExecuted: z.boolean(),
@@ -62,7 +90,6 @@ const trial = z.strictObject({
   ranges: z.array(span.extend({ count })).max(128),
 });
 const metadata = {
-  schemaVersion: z.literal(1),
   format: z.literal("review-probe-run"),
   engineVersion: z.string(),
   channel: z.literal("advisory"),
@@ -104,13 +131,31 @@ const metadata = {
     controlMismatches: count,
   }),
 };
-export const reviewProbeRunSchema = z.strictObject({
-  ...metadata,
-  trials: z.array(trial).max(16),
-});
-export const reviewProbeSummarySchema = z.strictObject({
-  ...metadata,
-  sourceIncluded: z.literal(false),
-});
+export const reviewProbeRunSchema = z.discriminatedUnion("schemaVersion", [
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(1),
+    trials: z.array(trial).max(16),
+  }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(2),
+    nativeBudget,
+    trials: z.array(trial.extend({ execution: execution.nullable() })).max(16),
+  }),
+]);
+export const reviewProbeSummarySchema = z.discriminatedUnion("schemaVersion", [
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(1),
+    sourceIncluded: z.literal(false),
+  }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(2),
+    nativeBudget,
+    sourceIncluded: z.literal(false),
+  }),
+]);
 export type ReviewProbeRecipe = z.infer<typeof reviewProbeRecipeSchema>;
 export type ReviewProbeRun = z.infer<typeof reviewProbeRunSchema>;

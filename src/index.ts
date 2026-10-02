@@ -126,6 +126,7 @@ export {
 } from "./review-probe.js";
 export type { ReviewProbeOptions, PinnedReviewProbe } from "./review-probe.js";
 export type {
+  ReviewNativeBudgetLimits,
   ReviewProbeRecipe,
   ReviewProbeRun,
 } from "./review-probe-schema.js";
@@ -153,3 +154,12 @@ export type {
   ReviewVerificationOptions,
   ReviewVerificationRun,
 } from "./review-verification.js";
+
+export { ReviewWorkflowEngine } from "./review-workflow.js";
+export type { ReviewWorkflowOptions } from "./review-workflow.js";
+export type {
+  ReviewWorkflowLimits,
+  ReviewWorkflowAssignment,
+  ReviewWorkflowSummary,
+  ReviewWorkflowResponse,
+} from "./review-workflow-schema.js";

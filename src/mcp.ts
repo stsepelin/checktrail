@@ -1,3 +1,10 @@
+import { ReviewWorkflowEngine } from "./review-workflow.js";
+import {
+  reviewWorkflowCommandSchema,
+  reviewWorkflowSummarySchema,
+  reviewWorkflowAssignmentSchema,
+  type ReviewWorkflowLimits,
+} from "./review-workflow-schema.js";
 import {
   runReviewVerification,
   projectReviewVerification,
@@ -23,6 +30,8 @@ import {
   type PinnedReviewProbe,
 } from "./review-probe.js";
 import {
+  reviewNativeBudgetLimitsSchema,
+  type ReviewNativeBudgetLimits,
   reviewProbeRunSchema,
   reviewProbeSummarySchema,
 } from "./review-probe-schema.js";
@@ -114,12 +123,17 @@ import type { Report } from "./types.js";
 
 export interface ServerOptions {
   reviewProbes?: PinnedReviewProbe[];
-  probeLimits?: { wallMs: number; maxOutputBytes: number };
+  probeLimits?: {
+    wallMs: number;
+    maxOutputBytes: number;
+    nativeBudget?: ReviewNativeBudgetLimits;
+  };
   reviewProvider?: Omit<ReviewProviderOptions, "signal">;
   externalAdapters?: ExternalReference[];
   root: string;
   allowExecution: boolean;
   allowReviewSource?: boolean;
+  reviewWorkflowLimits?: ReviewWorkflowLimits;
   detailed: boolean;
   environment?: Record<string, string>;
   base?: string;
@@ -133,6 +147,7 @@ export function createServer(options: ServerOptions): McpServer {
     .strictObject({
       wallMs: z.number().int().min(1).max(120_000),
       maxOutputBytes: z.number().int().min(1).max(1_048_576),
+      nativeBudget: reviewNativeBudgetLimitsSchema.optional(),
     })
     .parse(options.probeLimits ?? { wallMs: 30000, maxOutputBytes: 65536 });
   if ((options.reviewProbes?.length ?? 0) > 8)
@@ -149,11 +164,31 @@ export function createServer(options: ServerOptions): McpServer {
         config: reviewProviderConfigSchema.parse(options.reviewProvider.config),
       }
     : undefined;
+  const workflowEngine = new ReviewWorkflowEngine(options.root, {
+    allowReviewSource: Boolean(options.allowReviewSource),
+    trusted: Boolean(options.allowExecution),
+    ...(options.reviewWorkflowLimits
+      ? { limits: options.reviewWorkflowLimits }
+      : {}),
+    probes: [...probes.values()],
+    nativeWallMs: probeLimits.wallMs,
+    maxNativeOutputBytes: probeLimits.maxOutputBytes,
+    ...(probeLimits.nativeBudget
+      ? { nativeBudget: probeLimits.nativeBudget }
+      : {}),
+  });
+  const workflowRequests = new Map<string | number, AbortController>();
   const environment = operatorEnvironment(options.environment);
   const externalAdapters = externalReferencesSchema.parse(
     options.externalAdapters ?? [],
   );
   const server = new McpServer({ name: "checktrail", version: VERSION });
+  const priorClose = server.server.onclose;
+  server.server.onclose = () => {
+    for (const controller of workflowRequests.values()) controller.abort();
+    workflowEngine.dispose();
+    priorClose?.();
+  };
   const reports = new Map<string, Report>();
   let running: { id: string | number; controller: AbortController } | undefined;
   let reviewRunning:
@@ -164,6 +199,8 @@ export function createServer(options: ServerOptions): McpServer {
   server.server.setNotificationHandler(
     "notifications/cancelled",
     (notification) => {
+      if (notification.params.requestId !== undefined)
+        workflowRequests.get(notification.params.requestId)?.abort();
       if (reviewRunning && notification.params.requestId === reviewRunning.id)
         reviewRunning.controller.abort();
       if (running && notification.params.requestId === running.id)
@@ -283,6 +320,50 @@ export function createServer(options: ServerOptions): McpServer {
         );
       } finally {
         running = undefined;
+      }
+    },
+  );
+  server.registerTool(
+    "review_workflow",
+    {
+      description:
+        "Coordinate model-independent review stages without invoking a model or reading host credentials. Open a captured context, request a bounded reviewer/refuter assignment, submit a one-use response, execute a startup-registered native probe, and request raw-evidence adjudication. Fresh host sessions and usage are declarations, never verified. Native execution requires operator startup trust; no tool argument can grant it. Close discards raw workflow artifacts; every issued attempt retains metadata. Completed stages never verify defects or approve a repository.",
+      inputSchema: reviewWorkflowCommandSchema,
+      outputSchema: options.allowReviewSource
+        ? z.union([reviewWorkflowSummarySchema, reviewWorkflowAssignmentSchema])
+        : reviewWorkflowSummarySchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true,
+        idempotentHint: false,
+      },
+    },
+    async (command, request) => {
+      if (
+        workflowRequests.size >= 16 ||
+        (command.operation === "probe" && running)
+      )
+        return error("Workflow operation capacity is unavailable.");
+      const controller = new AbortController();
+      workflowRequests.set(request.mcpReq.id, controller);
+      if (command.operation === "probe")
+        running = { id: request.mcpReq.id, controller };
+      try {
+        return reply(
+          await workflowEngine.command(
+            command,
+            AbortSignal.any([request.mcpReq.signal, controller.signal]),
+          ),
+        );
+      } catch {
+        return error(
+          "Workflow operation rejected. Inspect stage order, source freshness, issued identities and operator startup grants locally.",
+        );
+      } finally {
+        workflowRequests.delete(request.mcpReq.id);
+        if (command.operation === "probe" && running?.controller === controller)
+          running = undefined;
       }
     },
   );
@@ -422,6 +503,9 @@ export function createServer(options: ServerOptions): McpServer {
             recipe,
             timeoutMs: probeLimits.wallMs,
             maxOutputBytes: probeLimits.maxOutputBytes,
+            ...(probeLimits.nativeBudget
+              ? { nativeBudget: probeLimits.nativeBudget }
+              : {}),
             signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
           },
         );
@@ -490,6 +574,9 @@ export function createServer(options: ServerOptions): McpServer {
             recipe,
             wallMs: probeLimits.wallMs,
             maxNativeOutputBytes: probeLimits.maxOutputBytes,
+            ...(probeLimits.nativeBudget
+              ? { nativeBudget: probeLimits.nativeBudget }
+              : {}),
             provider,
             signal: AbortSignal.any([request.mcpReq.signal, controller.signal]),
           },

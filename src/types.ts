@@ -142,6 +142,8 @@ export interface ProcessResult {
   timedOut: boolean;
   cancelled: boolean;
   truncated: boolean;
+  /** Raw stdout/stderr bytes delivered, including chunks beyond the retention limit. */
+  outputBytes?: number;
   errorCode?: string;
 }
 

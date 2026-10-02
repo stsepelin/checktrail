@@ -251,6 +251,11 @@
                 "timedOut": { "type": "boolean" },
                 "cancelled": { "type": "boolean" },
                 "truncated": { "type": "boolean" },
+                "outputBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
                 "errorCode": { "type": "string" }
               },
               "required": [
@@ -512,6 +517,11 @@
                     "timedOut": { "type": "boolean" },
                     "cancelled": { "type": "boolean" },
                     "truncated": { "type": "boolean" },
+                    "outputBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
                     "errorCode": { "type": "string" }
                   },
                   "required": [

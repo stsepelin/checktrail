@@ -96,6 +96,7 @@ const processResult = z.strictObject({
   timedOut: z.boolean(),
   cancelled: z.boolean(),
   truncated: z.boolean(),
+  outputBytes: count.optional(),
   errorCode: z.string().optional(),
 });
 const selection = z.strictObject({
@@ -357,3 +358,11 @@ export {
   reviewVerificationRunSchema,
   reviewVerificationSummarySchema,
 } from "./review-verification.js";
+
+export {
+  reviewWorkflowLimitsSchema,
+  reviewWorkflowResponseSchema,
+  reviewWorkflowCommandSchema,
+  reviewWorkflowAssignmentSchema,
+  reviewWorkflowSummarySchema,
+} from "./review-workflow-schema.js";

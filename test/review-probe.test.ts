@@ -7,11 +7,15 @@ import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import path from "node:path";
 import { test } from "node:test";
+import { setTimeout as delay } from "node:timers/promises";
+import { syncBuiltinESMExports } from "node:module";
+import { rm } from "node:fs/promises";
 import { createReviewContext } from "../src/review.js";
 import {
   runReviewProbe,
   projectReviewProbe,
   parseReviewProbe,
+  parseReviewProbeRun,
   type PinnedReviewProbe,
 } from "../src/review-probe.js";
 import type { ReviewProbeRecipe } from "../src/review-probe-schema.js";
@@ -500,6 +504,24 @@ test("CLI and MCP native probes share evidence while execution trust and recipe 
   const cliRun = JSON.parse(cli.stdout);
   assert.equal(cliRun.behavior, "violated");
   assert.equal(cliRun.claimsVerified, false);
+  for (const [flag, value] of [
+    ["--native-max-calls", "2"],
+    ["--native-max-output-bytes", "0"],
+  ]) {
+    const bounded = spawnSync(
+      process.execPath,
+      [...args, "--trust-project", flag!, value!],
+      { encoding: "utf8" },
+    );
+    assert.equal(bounded.status, 2, bounded.stderr);
+    const result = JSON.parse(bounded.stdout);
+    assert.equal(result.status, "incomplete");
+    assert.equal(
+      result.nativeBudget.calls,
+      flag === "--native-max-calls" ? 2 : 0,
+    );
+    assert.equal(result.counts.notRun, flag === "--native-max-calls" ? 1 : 3);
+  }
   const connect = async (flags: string[]) => {
     const client = new Client(
       { name: "synthetic-native-probe", version: "1" },
@@ -519,6 +541,30 @@ test("CLI and MCP native probes share evidence while execution trust and recipe 
     candidate: ".checktrail/candidate.json",
     probeId: recipe.id,
   };
+  for (const [flag, value] of [
+    ["--native-max-calls", "2"],
+    ["--native-max-output-bytes", "0"],
+  ]) {
+    const bounded = await connect([
+      "--allow-execution",
+      "--probe",
+      registration,
+      flag!,
+      value!,
+    ]);
+    const result = await bounded.callTool({
+      name: "review_probe",
+      arguments: input,
+    });
+    assert.equal(result.isError, undefined, JSON.stringify(result));
+    const run = result.structuredContent as Record<string, unknown>;
+    assert.equal(run.status, "incomplete");
+    assert.equal(
+      (run.nativeBudget as Record<string, unknown>).calls,
+      flag === "--native-max-calls" ? 2 : 0,
+    );
+    await bounded.close();
+  }
   for (const flags of [[], ["--probe", registration], ["--allow-execution"]]) {
     const client = await connect(flags);
     assert.equal(
@@ -596,6 +642,7 @@ test("CLI and MCP native probes share evidence while execution trust and recipe 
     { recipe: pinned },
     { allowExecution: true },
     { timeoutMs: 120000 },
+    { nativeBudget: { maxCalls: 16, maxOutputBytes: 65536 } },
   ]) {
     assert.equal(
       (
@@ -646,7 +693,11 @@ test("native probe compiled-source identity rejects altered debugger evidence an
   );
   assert.equal(limited.behavior, "unresolved");
   assert.equal(limited.counts.observed, 0);
-  assert.ok(limited.trials.every((trial) => trial.reason === "output-limit"));
+  assert.equal(limited.trials[0]!.reason, "output-limit");
+  assert.deepEqual(
+    limited.trials.slice(1).map((trial) => trial.status),
+    ["not-run", "not-run"],
+  );
   assert.equal(limited.temporaryArtifacts, "removed");
 });
 
@@ -668,4 +719,408 @@ test("native probe source changes during execution stay stale despite complete o
   assert.equal(run.behavior, "unresolved");
   assert.equal(run.temporaryArtifacts, "removed");
   assert.equal(projectReviewProbe(run, false).behavior, "unresolved");
+});
+
+test("native probe run budgets admit exact call and output boundaries without resetting between cases", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name){return name==='scope:read';}\n",
+  );
+  const opts = { ...runOptions, recipe: pin(recipe) };
+  const first = await runReviewProbe(root, context, candidate, opts);
+  assert.equal(first.schemaVersion, 2);
+  if (first.schemaVersion !== 2)
+    throw new Error("Missing native budget version");
+  assert.equal(first.nativeBudget.calls, 3);
+  const outputBytes = first.trials.reduce(
+    (n, trial) => n + trial.execution!.outputBytes,
+    0,
+  );
+  assert.equal(first.nativeBudget.outputBytes, outputBytes);
+  assert.ok(outputBytes > 0);
+  for (const [maxCalls, maxOutputBytes, expected] of [
+    [3, outputBytes, "completed"],
+    [2, outputBytes, "incomplete"],
+    [3, outputBytes - 1, "incomplete"],
+  ] as const) {
+    const run = await runReviewProbe(root, context, candidate, {
+      ...opts,
+      nativeBudget: { maxCalls, maxOutputBytes },
+    });
+    assert.equal(run.status, expected, JSON.stringify(run));
+    if (run.schemaVersion !== 2)
+      throw new Error("Missing native budget version");
+    assert.equal(run.nativeBudget.calls, maxCalls);
+    if (maxCalls === 2) {
+      assert.equal(run.counts.observed, 2);
+      assert.equal(run.counts.notRun, 1);
+      assert.equal(run.trials[2]!.reason, "call-limit");
+      assert.equal(run.trials[2]!.execution, null);
+      assert.equal(run.nativeBudget.stopReason, "call-limit");
+    } else if (expected === "incomplete") {
+      assert.equal(run.counts.observed, 2);
+      assert.equal(run.counts.unresolved, 1);
+      assert.equal(
+        run.trials[2]!.execution!.outputLimitBytes,
+        first.trials[2]!.execution!.outputBytes - 1,
+      );
+      assert.equal(run.nativeBudget.stopReason, "output-limit");
+    } else {
+      assert.equal(run.nativeBudget.outputBytes, outputBytes);
+      assert.equal(run.nativeBudget.stopReason, "none");
+    }
+    assert.equal(run.temporaryArtifacts, "removed");
+    assert.equal(projectReviewProbe(run, false).sourceIncluded, false);
+  }
+  // An exact byte ceiling permits the current case; the next one cannot start.
+  const exhausted = await runReviewProbe(root, context, candidate, {
+    ...opts,
+    nativeBudget: {
+      maxCalls: 3,
+      maxOutputBytes: first.trials[0]!.execution!.outputBytes,
+    },
+  });
+  assert.equal(exhausted.counts.observed, 1);
+  assert.equal(exhausted.counts.notRun, 2);
+  assert.equal(exhausted.trials[1]!.reason, "output-budget");
+  assert.equal(exhausted.behavior, "unresolved");
+});
+
+test("native probe zero and invalid run budgets prevent all project execution and temporary case creation", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name,target){process.getBuiltinModule('node:fs').appendFileSync(target,'executed\\n');return name==='scope:read';}\n",
+  );
+  const marker = path.join(root, ".checktrail/native-marker");
+  const selected = structuredClone(recipe);
+  for (const item of selected.cases) item.args.push(marker);
+  const opts = { ...runOptions, recipe: pin(selected) };
+  for (const limits of [
+    { maxCalls: 0, maxOutputBytes: 65536 },
+    { maxCalls: 3, maxOutputBytes: 0 },
+  ]) {
+    const run = await runReviewProbe(root, context, candidate, {
+      ...opts,
+      nativeBudget: limits,
+    });
+    assert.equal(run.status, "incomplete");
+    assert.equal(run.nativeExecution, false);
+    assert.equal(run.counts.notRun, 3);
+    assert.equal(run.temporaryArtifacts, "not-created");
+    assert.equal(
+      run.trials[0]!.reason,
+      limits.maxCalls === 0 ? "call-limit" : "output-budget",
+    );
+    await assert.rejects(readFile(marker), { code: "ENOENT" });
+    parseReviewProbeRun(run);
+  }
+  for (const limits of [
+    { maxCalls: -1, maxOutputBytes: 100 },
+    { maxCalls: 17, maxOutputBytes: 100 },
+    { maxCalls: 1.5, maxOutputBytes: 100 },
+    { maxCalls: 1, maxOutputBytes: -1 },
+    { maxCalls: 1, maxOutputBytes: 16777217 },
+    { maxCalls: 1, maxOutputBytes: 1.5 },
+    { maxCalls: 1, maxOutputBytes: 100, extra: true },
+  ])
+    await assert.rejects(
+      runReviewProbe(root, context, candidate, {
+        ...opts,
+        nativeBudget: limits,
+      }),
+    );
+  await assert.rejects(readFile(marker), { code: "ENOENT" });
+});
+
+test("native probe output overrun counts delivered stdout and stderr and stops every later case", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name,target){process.getBuiltinModule('node:fs').appendFileSync(target,'executed\\n');process.stdout.write('x'.repeat(4096));process.stderr.write('y'.repeat(4096));return true;}\n",
+  );
+  const marker = path.join(root, ".checktrail/native-marker");
+  const selected = structuredClone(recipe);
+  for (const item of selected.cases) item.args.push(marker);
+  const run = await runReviewProbe(root, context, candidate, {
+    ...runOptions,
+    maxOutputBytes: 100,
+    recipe: pin(selected),
+    nativeBudget: { maxCalls: 3, maxOutputBytes: 20000 },
+  });
+  if (run.schemaVersion !== 2) throw new Error("Missing native budget version");
+  assert.equal(run.status, "incomplete");
+  assert.equal(run.nativeBudget.calls, 1);
+  assert.ok(run.nativeBudget.outputBytes >= 4096);
+  assert.equal(
+    run.nativeBudget.outputBytes,
+    run.trials[0]!.execution!.outputBytes,
+  );
+  assert.equal(run.nativeBudget.outputByteCeilingGuaranteed, false);
+  assert.equal(run.nativeBudget.stopReason, "output-limit");
+  assert.equal(run.trials[0]!.execution!.truncated, true);
+  assert.equal(run.trials[0]!.execution!.outputLimitBytes, 100);
+  assert.equal(run.counts.notRun, 2);
+  assert.equal(await readFile(marker, "utf8"), "executed\n");
+  assert.equal(run.temporaryArtifacts, "removed");
+  parseReviewProbeRun(run);
+});
+
+test("retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name){return name==='scope:read';}\n",
+  );
+  const run = await runReviewProbe(root, context, candidate, {
+    ...runOptions,
+    recipe: pin(recipe),
+  });
+  if (run.schemaVersion !== 2) throw new Error("Missing native budget version");
+  type Run = typeof run;
+  for (const edit of [
+    (v: Run) => {
+      Reflect.deleteProperty(v, "nativeBudget");
+    },
+    (v: Run) => {
+      Reflect.deleteProperty(v.trials[0]!, "execution");
+    },
+    (v: Run) => {
+      v.nativeBudget.calls--;
+    },
+    (v: Run) => {
+      v.nativeBudget.outputBytes++;
+    },
+    (v: Run) => {
+      v.nativeBudget.limits.maxCalls = 2;
+    },
+    (v: Run) => {
+      v.nativeBudget.limits.maxOutputBytes = 1;
+    },
+    (v: Run) => {
+      v.trials[1]!.execution!.call = 1;
+    },
+    (v: Run) => {
+      v.trials[1]!.execution!.outputLimitBytes--;
+    },
+    (v: Run) => {
+      v.trials[1]!.execution!.truncated = true;
+    },
+    (v: Run) => {
+      v.trials[1]!.execution = null;
+    },
+    (v: Run) => {
+      v.nativeBudget.stopReason = "call-limit";
+    },
+  ]) {
+    const changed = structuredClone(run);
+    edit(changed);
+    assert.throws(() => parseReviewProbeRun(changed));
+  }
+  const legacy: Record<string, unknown> = structuredClone(run);
+  legacy.schemaVersion = 1;
+  delete legacy.nativeBudget;
+  for (const trial of legacy.trials as Record<string, unknown>[])
+    delete trial.execution;
+  assert.equal(parseReviewProbeRun(legacy).schemaVersion, 1);
+  assert.equal(
+    projectReviewProbe(parseReviewProbeRun(legacy), false).nativeBudget,
+    undefined,
+  );
+});
+
+test("native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases", async (t) => {
+  const waiting = await assignment(
+    t,
+    "export async function decision(name,target){process.stdout.write('é');process.stderr.write('😀');process.getBuiltinModule('node:fs').writeFileSync(target,'ready');await new Promise(()=>{setInterval(()=>{},1000)});return true;}\n",
+  );
+  const marker = path.join(waiting.root, ".checktrail/native-ready");
+  const selected = structuredClone(recipe);
+  for (const item of selected.cases) item.args.push(marker);
+  const controller = new AbortController();
+  const pending = runReviewProbe(
+    waiting.root,
+    waiting.context,
+    waiting.candidate,
+    { ...runOptions, recipe: pin(selected), signal: controller.signal },
+  );
+  try {
+    const deadline = Date.now() + 5000;
+    while (true) {
+      try {
+        assert.equal(await readFile(marker, "utf8"), "ready");
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        assert.ok(
+          Date.now() < deadline,
+          "Original native fixture did not start",
+        );
+        await delay(10);
+      }
+    }
+    controller.abort();
+    const run = await pending;
+    assert.equal(run.status, "cancelled");
+    if (run.schemaVersion !== 2)
+      throw new Error("Missing native budget version");
+    assert.equal(run.nativeBudget.calls, 1);
+    assert.equal(run.nativeBudget.outputBytes, 6);
+    assert.equal(run.trials[0]!.execution!.outputBytes, 6);
+    assert.equal(run.counts.notRun, 2);
+    assert.equal(run.temporaryArtifacts, "removed");
+    parseReviewProbeRun(run);
+  } finally {
+    controller.abort();
+    await pending;
+  }
+  const slow = await assignment(
+    t,
+    "export async function decision(name){await new Promise(resolve=>setTimeout(resolve,400));return name==='scope:read';}\n",
+  );
+  const opts = {
+    ...runOptions,
+    recipe: pin(recipe),
+    nativeBudget: { maxCalls: 3, maxOutputBytes: 65536 },
+  };
+  const timed = await runReviewProbe(slow.root, slow.context, slow.candidate, {
+    ...opts,
+    timeoutMs: 1000,
+  });
+  assert.equal(timed.status, "timed-out");
+  assert.ok(timed.counts.observed < 3);
+  assert.equal(timed.temporaryArtifacts, "removed");
+  parseReviewProbeRun(timed);
+  // A cancelled/expired invocation cannot debit an independent new run.
+  const fresh = await runReviewProbe(
+    slow.root,
+    slow.context,
+    slow.candidate,
+    opts,
+  );
+  assert.equal(fresh.status, "completed", JSON.stringify(fresh));
+  if (fresh.schemaVersion !== 2)
+    throw new Error("Missing native budget version");
+  assert.equal(fresh.nativeBudget.calls, 3);
+});
+
+test("native cleanup failures retain spent budgets and stop later cases without losing reached observations", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name){return name==='scope:read';}\n",
+  );
+  const fs = process.getBuiltinModule(
+    "node:fs/promises",
+  ) as typeof import("node:fs/promises");
+  const original = fs.rm;
+  for (const [failCase, maxOutputBytes] of [
+    [true, 65536],
+    [false, 65536],
+    [true, 1],
+  ] as const) {
+    let failures = 0;
+    let parent: string | undefined;
+    const injected: typeof original = async (target, options) => {
+      if (typeof target === "string") {
+        const caseDirectory =
+          path.basename(target) === "case-0" &&
+          path.basename(path.dirname(target)).startsWith("checktrail-probe-");
+        const parentDirectory = path
+          .basename(target)
+          .startsWith("checktrail-probe-");
+        if ((failCase ? caseDirectory : parentDirectory) && failures === 0) {
+          parent = failCase ? path.dirname(target) : target;
+          failures++;
+          throw Object.assign(new Error("Original synthetic cleanup failure"), {
+            code: "EACCES",
+          });
+        }
+      }
+      return original(target, options);
+    };
+    assert.equal(Reflect.set(fs, "rm", injected), true);
+    syncBuiltinESMExports();
+    try {
+      const run = await runReviewProbe(root, context, candidate, {
+        ...runOptions,
+        recipe: pin(recipe),
+        maxOutputBytes,
+        nativeBudget: { maxCalls: failCase ? 1 : 3, maxOutputBytes: 65536 },
+      });
+      assert.equal(failures, 1);
+      assert.equal(run.status, "incomplete");
+      assert.equal(run.behavior, "unresolved");
+      assert.equal(
+        run.temporaryArtifacts,
+        failCase ? "removed" : "cleanup-failed",
+      );
+      if (run.schemaVersion !== 2)
+        throw new Error("Missing native budget version");
+      assert.equal(run.nativeBudget.calls, failCase ? 1 : 3);
+      assert.equal(run.counts.unresolved, failCase ? 1 : 0);
+      assert.equal(run.counts.observed, failCase ? 0 : 3);
+      assert.equal(run.counts.notRun, failCase ? 2 : 0);
+      if (failCase) assert.equal(run.trials[0]!.reason, "cleanup-failed");
+      assert.ok(run.nativeBudget.outputBytes > 0);
+      parseReviewProbeRun(run);
+    } finally {
+      Reflect.set(fs, "rm", original);
+      syncBuiltinESMExports();
+      if (parent) await rm(parent, { recursive: true, force: true });
+    }
+  }
+});
+
+test("native probe preparation that spends the wall allowance cannot start a project process", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name,target){process.getBuiltinModule('node:fs').appendFileSync(target,'executed\\n');return name==='scope:read';}\n",
+  );
+  const selected = structuredClone(recipe);
+  const marker = path.join(root, ".checktrail/native-marker");
+  for (const item of selected.cases) item.args.push(marker);
+  const fs = process.getBuiltinModule(
+    "node:fs/promises",
+  ) as typeof import("node:fs/promises");
+  const original = fs.writeFile;
+  let delayed = 0;
+  const injected: typeof original = async (target, data, options) => {
+    await original(target, data, options);
+    if (
+      typeof target === "string" &&
+      path.basename(target) === "request.json" &&
+      path.basename(path.dirname(target)) === "case-0" &&
+      path
+        .basename(path.dirname(path.dirname(target)))
+        .startsWith("checktrail-probe-")
+    ) {
+      delayed++;
+      await delay(1200);
+    }
+  };
+  Reflect.set(fs, "writeFile", injected);
+  syncBuiltinESMExports();
+  try {
+    const run = await runReviewProbe(root, context, candidate, {
+      ...runOptions,
+      timeoutMs: 1000,
+      recipe: pin(selected),
+    });
+    assert.equal(
+      delayed,
+      1,
+      "Fixture must reach case preparation before exhausting the allowance",
+    );
+    assert.equal(run.status, "timed-out");
+    assert.equal(run.nativeExecution, false);
+    assert.equal(run.counts.notRun, 3);
+    assert.equal(run.trials[0]!.reason, "timeout");
+    assert.equal(run.temporaryArtifacts, "removed");
+    if (run.schemaVersion !== 2)
+      throw new Error("Missing native budget version");
+    assert.equal(run.nativeBudget.calls, 0);
+    assert.equal(run.nativeBudget.outputBytes, 0);
+    await assert.rejects(readFile(marker), { code: "ENOENT" });
+    parseReviewProbeRun(run);
+  } finally {
+    Reflect.set(fs, "writeFile", original);
+    syncBuiltinESMExports();
+  }
 });

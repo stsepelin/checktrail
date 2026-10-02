@@ -738,6 +738,7 @@ test("verification CLI and MCP agree on native evidence and enforce startup-only
     { nativeEvidence: [] },
     { wallMs: 1 },
     { aggregateBudget: { maxCalls: 99 } },
+    { nativeBudget: { maxCalls: 16, maxOutputBytes: 65536 } },
   ])
     assert.equal(
       (
@@ -1177,4 +1178,77 @@ test("verification aggregate budget state is fresh for each run and operator zer
     assert.equal(run.probe, null);
     assert.equal(run.adjudication, null);
   }
+});
+
+test("verification native run budgets retain unfunded cases and prevent later adjudicator disclosure", async (t) => {
+  const { root, context, target } = await assignment(t);
+  for (const maxCalls of [0, 2, 3]) {
+    let calls = 0;
+    const opts = options(async () => {
+      calls++;
+      return Response.json(envelope(config.kind));
+    });
+    opts.nativeBudget = { maxCalls, maxOutputBytes: 65536 };
+    const run = await runReviewVerification(root, context, target, opts);
+    assert.equal(run.status, maxCalls === 3 ? "completed" : "incomplete");
+    assert.equal(calls, maxCalls === 3 ? 2 : 1);
+    assert.equal(
+      run.stopReason,
+      maxCalls === 3 ? "completed" : "probe-incomplete",
+    );
+    assert.equal(run.probe!.counts.notRun, 3 - maxCalls);
+    assert.equal(
+      run.probe!.temporaryArtifacts,
+      maxCalls ? "removed" : "not-created",
+    );
+    if (run.probe!.schemaVersion !== 2)
+      throw new Error("Missing native budget version");
+    assert.equal(run.probe!.nativeBudget.calls, maxCalls);
+    parseReviewVerification(run);
+  }
+  let calls = 0;
+  const opts = options(async () => {
+    calls++;
+    return Response.json(envelope(config.kind));
+  });
+  opts.nativeBudget = { maxCalls: 3, maxOutputBytes: 1 };
+  const truncated = await runReviewVerification(root, context, target, opts);
+  assert.equal(truncated.status, "incomplete");
+  assert.equal(truncated.stopReason, "probe-incomplete");
+  assert.equal(truncated.probe!.counts.unresolved, 1);
+  assert.equal(truncated.probe!.counts.notRun, 2);
+  assert.equal(truncated.adjudication, null);
+  assert.equal(calls, 1);
+});
+
+test("verification native budgets freeze before refutation and retained operator limits cannot detach from observations", async (t) => {
+  const { root, context, target } = await assignment(t);
+  let calls = 0;
+  const opts = options(async () => {
+    calls++;
+    opts.nativeBudget!.maxCalls = 16;
+    opts.nativeBudget!.maxOutputBytes = 16777216;
+    return Response.json(envelope(config.kind));
+  });
+  opts.nativeBudget = { maxCalls: 2, maxOutputBytes: 65536 };
+  const run = await runReviewVerification(root, context, target, opts);
+  assert.equal(calls, 1);
+  assert.equal(run.status, "incomplete");
+  if (run.schemaVersion !== 2) throw new Error("Missing native budget version");
+  assert.equal(run.limits.nativeBudget.maxCalls, 2);
+  assert.equal(run.limits.nativeBudget.maxOutputBytes, 65536);
+  const changed = structuredClone(run);
+  changed.limits.nativeBudget.maxCalls = 3;
+  assert.throws(() => parseReviewVerification(changed), /native budgets/);
+  const erased = structuredClone(run);
+  Reflect.deleteProperty(erased.limits, "nativeBudget");
+  assert.throws(() => parseReviewVerification(erased));
+  const oldProbe = structuredClone(run) as Record<string, unknown>;
+  const probe = oldProbe.probe as Record<string, unknown>;
+  probe.schemaVersion = 1;
+  delete probe.nativeBudget;
+  for (const trial of probe.trials as Record<string, unknown>[])
+    delete trial.execution;
+  oldProbe.probeDigest = hash(probe);
+  assert.throws(() => parseReviewVerification(oldProbe), /native budgets/);
 });

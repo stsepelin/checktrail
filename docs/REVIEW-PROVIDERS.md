@@ -5,8 +5,11 @@ OpenAI Responses or Anthropic Messages. This is the bounded `stateless-inline-ap
 profile. It proposes advisory candidates with a family, trigger, consequence,
 evidence gaps and exact source citations. It does not execute project code,
 independently verify a defect, calibrate confidence or change a native result.
-[Subscription client acceptance](REVIEW-SUBSCRIPTIONS.md) remains pending; API credentials are not
-subscription credentials, and Checktrail never opens a client's credential store.
+This optional engine-owned transport is separate from the required
+[provider-neutral MCP workflow](REVIEW-MCP-WORKFLOW.md), whose AI host owns
+authentication. [Native AI client orchestration](REVIEW-SUBSCRIPTIONS.md) is
+optional and unimplemented. API credentials are not subscription credentials;
+Checktrail never opens a client's credential store.
 
 The nine versioned hypothesis families are planned with `review-hypotheses --context
 context.json` or `review_hypotheses`. Their invariants and evidence requirements are
@@ -168,7 +171,8 @@ headers and protocol overhead; a delivered chunk can exceed the allowance before
 the reader cancels it. `transportByteCeilingGuaranteed` therefore stays false,
 alongside the existing false input-token and billing guarantees. Verified
 pre-request token accounting, native/tool budgets, streaming-provider profiles
-and subscription cleanup remain in R7. An `advisory-completed` disposition
+remain acceptance work for the optional engine-owned inference profile; broader
+native/tool and neutral-stage lifecycle stay required in R7. An `advisory-completed` disposition
 means the assigned paths and citations reconcile, not that the repository is clean
 or the candidates are correct. Severity remains suggestion/concern; consequence
 ranking, calibrated probability and independent evidence tiers remain pending.
@@ -185,8 +189,9 @@ Required macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2 profiles pass,
 with fresh offline installed-package library/CLI/MCP acceptance on macOS.
 These original synthetic transport tests use an operator-injected offline fetch;
 they do not spend inference tokens or claim native provider acceptance. Actual
-operator-selected synthetic inference and subscription client profiles remain
-required before R3 closes. No real-project field review is enabled by these tests.
+operator-selected synthetic inference remains unverified for the advertised API
+transport. Required R3 closure instead concerns provider-neutral MCP stages;
+Checktrail-owned subscription client launchers are optional. No real-project field review is enabled by these tests.
 
 The aggregate profile's exact source-bound development evidence is recorded in
 [review-budget-native-2026-10-02.json](measurements/review-budget-native-2026-10-02.json).

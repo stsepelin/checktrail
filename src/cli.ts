@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import {
+  loadReviewWorkflowLimits,
+  serveReviewSession,
+} from "./review-workflow-cli.js";
+import {
   runReviewVerification,
   projectReviewVerification,
 } from "./review-verification.js";
+import { reviewNativeBudgetLimitsSchema } from "./review-probe-schema.js";
 import {
   runReviewProbe,
   projectReviewProbe,
@@ -106,6 +111,9 @@ async function main(): Promise<void> {
       adapter: { type: "string", multiple: true },
       "allow-env": { type: "string", multiple: true },
       "timeout-ms": { type: "string", default: "30000" },
+      "workflow-limits": { type: "string" },
+      "native-max-calls": { type: "string" },
+      "native-max-output-bytes": { type: "string" },
       help: { type: "boolean", default: false },
       version: { type: "boolean", default: false },
     },
@@ -116,7 +124,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON]\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -149,6 +157,7 @@ async function main(): Promise<void> {
         "review-refute",
         "review-probe",
         "review-verify",
+        "review-session",
         "serve",
       ].includes(command!))
   )
@@ -181,8 +190,44 @@ async function main(): Promise<void> {
       "Provider configuration and inference grants apply only to review-run or serve",
     );
   if (
+    values["workflow-limits"] !== undefined &&
+    !["review-session", "serve"].includes(command!)
+  )
+    throw new Error("Workflow limits apply only to review-session or serve");
+  const workflowLimits =
+    values["workflow-limits"] !== undefined
+      ? await loadReviewWorkflowLimits(path.resolve(values["workflow-limits"]))
+      : undefined;
+  const nativeBudgetFlags =
+    values["native-max-calls"] !== undefined ||
+    values["native-max-output-bytes"] !== undefined;
+  if (
+    nativeBudgetFlags &&
+    !["review-probe", "review-verify", "review-session", "serve"].includes(
+      command!,
+    )
+  )
+    throw new Error(
+      "Native review budgets apply only to review-probe, review-verify or serve",
+    );
+  const nativeBudget = nativeBudgetFlags
+    ? {
+        maxCalls:
+          values["native-max-calls"] === undefined
+            ? 16
+            : Number(values["native-max-calls"]),
+        maxOutputBytes:
+          values["native-max-output-bytes"] === undefined
+            ? 65536
+            : Number(values["native-max-output-bytes"]),
+      }
+    : undefined;
+  if (nativeBudget) reviewNativeBudgetLimitsSchema.parse(nativeBudget);
+  if (
     values.probe &&
-    !["review-probe", "review-verify", "serve"].includes(command!)
+    !["review-probe", "review-verify", "review-session", "serve"].includes(
+      command!,
+    )
   )
     throw new Error(
       "Operator probe registration applies only to review-probe or serve",
@@ -325,6 +370,24 @@ async function main(): Promise<void> {
     }
     return;
   }
+  if (command === "review-session") {
+    if (values.input || values.context || values["allow-execution"])
+      throw new Error(
+        "Review-session uses JSON-lines stdin and --trust-project for optional native execution",
+      );
+    await serveReviewSession(root, {
+      allowReviewSource: values["allow-review-source"],
+      trusted: values["trust-project"],
+      ...(workflowLimits ? { limits: workflowLimits } : {}),
+      probes: await Promise.all(
+        (values.probe ?? []).map(loadPinnedReviewProbe),
+      ),
+      nativeWallMs: Number(values["timeout-ms"]),
+      maxNativeOutputBytes: 65536,
+      ...(nativeBudget ? { nativeBudget } : {}),
+    });
+    return;
+  }
   if (command === "review-context") {
     if (!values.input)
       throw new Error("review-context requires --input selection.json");
@@ -395,6 +458,7 @@ async function main(): Promise<void> {
         {
           trusted: true,
           recipe,
+          ...(nativeBudget ? { nativeBudget } : {}),
           timeoutMs: Number(values["timeout-ms"]),
           signal: controller.signal,
         },
@@ -440,6 +504,7 @@ async function main(): Promise<void> {
         {
           trusted: true,
           recipe,
+          ...(nativeBudget ? { nativeBudget } : {}),
           wallMs: Number(values["timeout-ms"]),
           signal: controller.signal,
           provider: {
@@ -738,6 +803,7 @@ async function main(): Promise<void> {
   if (command === "serve") {
     await serve({
       root,
+      ...(workflowLimits ? { reviewWorkflowLimits: workflowLimits } : {}),
       allowExecution: values["allow-execution"],
       ...(values.probe
         ? {
@@ -747,6 +813,7 @@ async function main(): Promise<void> {
             probeLimits: {
               wallMs: Number(values["timeout-ms"]),
               maxOutputBytes: 65536,
+              ...(nativeBudget ? { nativeBudget } : {}),
             },
           }
         : {}),

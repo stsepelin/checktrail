@@ -2,6 +2,12 @@
 
 Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
+The local MCP server works through the chosen MCP host. That host handles AI
+selection and subscription/API authentication; Checktrail does not need to log
+in to a model service. Direct provider calls are an optional separate interface.
+See the [MCP review workflow](docs/REVIEW-MCP-WORKFLOW.md) for implemented tools,
+planned review stages and the limits of fresh-session enforcement.
+
 Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
 
 **Published preview: 0.1.0-alpha.5.** Public source is available at
@@ -249,7 +255,7 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -258,6 +264,13 @@ The model cannot grant that permission through a tool argument. Add `--detailed`
 only if the client may receive paths, commands and raw diagnostics. The default
 summary omits those fields. Data returned through an MCP client may be sent to
 that client's model provider.
+
+The model-independent `review_workflow` tool exchanges bounded reviewer/refuter/
+adjudicator assignments with host-owned AI sessions and an operator-pinned live
+probe. The foreground `review-session` CLI uses the same engine. Assignment output
+requires startup `--detailed --allow-review-source`; native probes additionally
+require execution trust. Completed stages keep findings and host isolation
+unverified. See [workflow operations and limits](docs/REVIEW-MCP-WORKFLOW.md).
 
 The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not

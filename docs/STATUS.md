@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [model-independent workflow](REVIEW-MCP-WORKFLOW.md) now exchanges
+reviewer/refuter/adjudicator assignments through one library, foreground CLI and
+MCP contract, around a live operator-pinned Node probe. The
+[local measurement](measurements/review-workflow-2026-10-03.json) records original
+synthetic broken/fixed/near-miss controls, protected quotas and cancellation,
+guard mutations, exact macOS/Linux profiles and offline production installation.
+Host AI identity, usage and freshness remain declarations; completed stages keep
+claims unresolved, severity unassigned and host isolation unverified. Durable
+benchmark audits and general claim validation remain open; Gate A is open.
+
 Version 2 [Go build profiles](GO-BUILD.md) add bounded repeated execution,
 stable per-execution identities, native target preflight and production compile/link
 checks with owned temporary outputs. The [local measurement](measurements/go-matrix-native-2026-10-02.json)
@@ -605,12 +615,13 @@ performance claim follows from these samples.
 
 ## Next implementation work
 
-The expanded target is a locally operated reviewer using optional
-operator-authorized Codex/Claude subscriptions or API inference, with independent
-claim validation and measured quality. The hypothesis catalogue and stateless API transport have offline synthetic
+The expanded target is a locally operated, model-independent MCP reviewer with
+independent claim validation and measured quality. The chosen AI host owns model
+execution and subscription/API authentication. Engine-owned inference and native
+AI client orchestration are optional; see REVIEW-MCP-WORKFLOW.md. The hypothesis catalogue and stateless API transport have offline synthetic
 acceptance. Source-bound Boolean probes add measured native function/guard
-evidence; subscription orchestration, broader probes and independent claim
-validation remain unfinished. The current review exchange does not verify
+evidence; bounded provider-neutral stage exchange now has synthetic acceptance.
+Broader probes, host isolation and independent claim validation remain unfinished. The current review exchange does not verify
 defects. [REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md) defines the required inventory,
 quality targets and separate feature/evaluation/quality gates. The immediate slice
 is task reconciliation plus stronger diff/base/behavior/caller context and original
@@ -642,8 +653,10 @@ new quality holdout.
 Complete dependency/tool/environment fingerprints, automatically inferred workspace graphs,
 remote/executable private plugins, native import-graph collection, remote serving, durable Tasks,
 sandbox execution and automatic fixes are not implemented. Model-assisted review
-is partial through the optional stateless API transport; subscription clients and
-independent claim validation remain pending.
+has optional stateless API transport evidence. Bounded provider-neutral staged
+exchange is implemented; wider reviewer acceptance and independent claim validation
+remain pending; native AI client launching
+is not required.
 The inventory intentionally does not read `.gitignore`; its fixed exclusions and
 limits are documented in the README. Bundled adapter behavior is versioned with
 the engine until adapters receive independent releases.
@@ -657,9 +670,11 @@ reported evidence. It never means the entire repository has been reviewed.
   MCP, with startup-only grants, bounded attempts and unknown usage accounting.
   Optional aggregate verification-run admission spans both fresh assignments and
   all retries, with calls, reported tokens, estimated cost and transport bodies
-  retained; native/tool budgets and subscription cleanup remain open.
+  retained; bounded Node probe call/output admission also has synthetic evidence.
+  Wider native/tool lifecycle and persisted all-attempt evaluation audits remain open.
   Original synthetic transport tests pass on macOS arm64 Node 26.9.0; native
-  provider inference, subscription clients and wider profiles remain pending.
+  provider inference and wider optional transport profiles remain pending.
+  The MCP workflow does not depend on Checktrail-owned subscription clients.
 
 - [Source-bound probes](REVIEW-PROBES.md): operator-pinned native Boolean controls,
   compiled-source/function/guard identity, per-case reset, stale source, budgets,

@@ -63,11 +63,23 @@ The [hypothesis catalogue and stateless API transport](REVIEW-PROVIDERS.md)
 use the same source packets without adding language semantics. Offline synthetic
 Per-assignment and optional shared verification-run API admission budgets do not
 extend native language support. The shared profile accounts for calls, reported
-tokens, estimated cost and transport bodies; native/tool budgets remain open.
+tokens, estimated cost and transport bodies. Version 2 Node Boolean probes also
+share native runner-call and delivered-output admission across their fresh cases;
+wider native/tool budget profiles remain open. Host AI budgets are outside the
+MCP server's control; native AI client orchestration is optional.
 Exact development evidence is recorded in REVIEW-PROVIDERS.md and its measurements.
 API/library/CLI/MCP acceptance passes on macOS arm64 Node 26.9.0 and
 Linux arm64 Node 22.23.2; actual provider
-inference, subscription clients and wider platform acceptance remain pending.
+inference and wider platform acceptance remain pending for that optional transport.
+The required reviewer workflow is model-independent MCP exchange with host-owned
+authentication. The bounded reviewer/refuter/native-probe/adjudicator exchange is
+implemented through the shared library, foreground JSON-lines CLI and MCP tool.
+Original synthetic required profiles pass on macOS arm64 Node 26.9.0 and Linux
+arm64 Node 22.23.2/Git 2.47.3; offline production installation exercises all three
+surfaces on macOS. Contexts require revision-aware versions 4/5; native
+corroboration retains the plain Node Boolean profile. This adds neither language
+semantics, actual AI-client acceptance, host isolation nor verified findings. See
+REVIEW-MCP-WORKFLOW.md and measurements/review-workflow-2026-10-03.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
 on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
 language probes, automatic callers and independent claim verification remain pending.

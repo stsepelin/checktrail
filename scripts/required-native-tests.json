@@ -1120,5 +1120,97 @@
       "file": "dist/test/review-provider.test.js",
       "name": "aggregate provider configuration rejects ambiguous bounds and keeps legacy configuration behavior"
     }
+  ],
+  "review-native-budget": [
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe run budgets admit exact call and output boundaries without resetting between cases"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe output overrun counts delivered stdout and stderr and stops every later case"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification native run budgets retain unfunded cases and prevent later adjudicator disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification native budgets freeze before refutation and retained operator limits cannot detach from observations"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe preparation that spends the wall allowance cannot start a project process"
+    }
+  ],
+  "review-workflow": [
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow runs reviewer refuter live native and adjudicator stages with blind packets for broken fixed and near-miss controls"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow consumes malformed forged and replayed responses without advancing or leaking failed output into a retry"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow keeps empty and partial reviews distinct and rejects reused or undeclared fresh host sessions"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow zero exact and exhausted operator budgets are immutable and do not reset on close"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow stage order foreign handles source disclosure and native execution remain independently gated"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow concurrency reservations stale source timeout and cancellation preserve reached attempt accounting"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow closing a running native case retains delivered bytes after cleanup without restoring discarded source"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow packet preparation that spends the wall allowance cannot disclose an assignment"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow foreground CLI uses the shared provider-free engine and retains final cleanup on EOF"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow MCP uses one strict provider-free tool with startup source native and budget grants"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow CLI treats empty EOF and interrupted pending assignments as incomplete and rejects mismatched startup limits"
+    }
   ]
 }

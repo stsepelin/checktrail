@@ -58,7 +58,14 @@ model and budgets come from server startup. Verification reserves both the nativ
 and provider execution slots until cancellation or completion releases them.
 
 `--timeout-ms` bounds the combined run through a shared cancellation signal;
-MCP uses the operator's `probeLimits.wallMs`. Native output has its own byte bound.
+MCP uses the operator's `probeLimits.wallMs`. Native cases also share the
+[run-wide call/output ledger](REVIEW-PROBES.md#run-wide-native-budgets).
+The operator can select `nativeBudget` through the library, startup
+`probeLimits.nativeBudget`, or CLI `--native-max-calls` and
+`--native-max-output-bytes`. Incomplete admission retains unrun cases and stops
+before adjudicator disclosure. Version 2 verification receipts bind these frozen
+operator limits to the live version 2 probe accounting; version 1 receipts remain
+readable. A verification's native budget applies to its one probe stage.
 [Provider admission budgets](REVIEW-PROVIDERS.md) apply per assignment across its
 retries. Optional operator `limits.aggregateBudget` also shares call, token,
 estimated-cost and body-byte admission across both assignments and all retries;
@@ -68,8 +75,8 @@ ledger stays engine-local and is withheld from both model packets. Each new
 verification invocation starts a new ledger, including after cancellation.
 Input allowances and billing remain unverified, and transport byte accounting
 excludes protocol overhead and can observe an overlarge delivered chunk.
-Subscription clients, aggregate native/tool budgets and streaming-provider
-cleanup profiles remain unfinished.
+The bounded Node probe ledger does not close wider native/tool budget profiles,
+neutral-stage lifecycle or optional streaming-provider cleanup requirements.
 
 Reports retain each reached stage, its numeric usage/attempt accounting and its
 source/recipe/packet bindings. Later source changes invalidate the current native
@@ -100,4 +107,6 @@ bounded Node profile does not advertise Windows or wider-language support.
 The [dated native measurement](measurements/review-verification-2026-10-02.json)
 binds the measured source and exact macOS/Linux, installed-package and client
 profiles. Client discovery/direct-tool checks start no model turn and do not
-verify subscription-session isolation or reviewer quality.
+verify host AI session isolation or reviewer quality. The MCP-first workflow
+with host-owned AI/authentication is described in REVIEW-MCP-WORKFLOW.md; this
+engine-owned API pipeline remains optional.

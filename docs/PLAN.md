@@ -9,8 +9,13 @@ the support matrix in `LANGUAGES.md` records what actually works.
 The expanded locally operated reviewer target and required finish-first sequence
 are in [REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md). Its hypothesis catalogue and bounded stateless API transport are implemented
 with offline synthetic evidence. A bounded source-bound Boolean probe profile is
-implemented, alongside fresh stateless refutation attempts. Subscription
-orchestration, broader probes and independent claim validation remain unfinished.
+implemented, alongside fresh stateless refutation attempts. The required reviewer
+workflow is model-independent through MCP: the AI host owns model execution and
+authentication. The bounded reviewer/refuter/live-probe/adjudicator exchange has
+original synthetic acceptance through the shared library, CLI and MCP. Broader
+probes, host isolation, general claim validation and the evaluation harness remain
+unfinished; Checktrail-owned AI client orchestration is optional rather than a
+completion gate. See [REVIEW-MCP-WORKFLOW.md](REVIEW-MCP-WORKFLOW.md).
 [REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md) reconciles required families and
 explicit deferrals; exact new acceptance-profile pins remain open.
 
@@ -228,8 +233,11 @@ Gate: labeled held-out cases measure detection and false positives per rule fami
 compare against native tools and the prior workflow; record tool/model versions,
 token cost, latency and confidence intervals where sample sizes permit them.
 
-The expanded reviewer layer may use operator-authorized Codex/Claude subscriptions
-or API inference while the core remains provider-free. The roadmap separates
+The expanded reviewer layer works through the operator-selected MCP AI host,
+which owns its subscription/API authentication. Checktrail-owned direct provider
+inference remains optional. No native AI client launcher is required to complete
+the MCP reviewer workflow; independent sessions and blinded evaluation still
+require evidence from the chosen host. See REVIEW-MCP-WORKFLOW.md. The roadmap separates
 feature completion, authorized evaluation and demonstrated quality: no new
 real-project MCP field trial starts before the reconciled required implementation
 inventory is complete. Synthetic development and harness-readiness tests continue;

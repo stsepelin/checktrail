@@ -124,6 +124,8 @@ process.stdout.write(
       "node",
       "scripts/verify-required-native-tests.mjs",
       "review-budget",
+      "review-workflow",
+      "review-native-budget",
     ],
     { encoding: "utf8", maxBuffer: 1024 * 1024 },
   ),

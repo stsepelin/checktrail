@@ -49,7 +49,8 @@ Configure MCP's provider and grants at server startup as described in
 [REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md). `review_refute` accepts only context and
 candidate artifact paths. It shares the provider execution slot and cancellation
 handling with `review_run`; tool arguments cannot choose a model, grants, history,
-native evidence or budget. Subscription clients remain pending.
+native evidence or budget. Checktrail-owned subscription clients are optional and unimplemented; required
+provider-neutral MCP refutation stages remain pending.
 
 `review-refutation.test.ts` uses original synthetic assignments and offline
 transport responses for independent requests, hidden prior labels, forged source

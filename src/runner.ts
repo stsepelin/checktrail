@@ -16,7 +16,7 @@ export async function runProcess(
   root: string,
   command: Command,
   options: RunOptions,
-): Promise<ProcessResult> {
+): Promise<ProcessResult & { outputBytes: number }> {
   if (
     !Number.isInteger(options.timeoutMs) ||
     options.timeoutMs < 1 ||
@@ -25,7 +25,7 @@ export async function runProcess(
     throw new Error("Timeout must be between 1 and 120000 milliseconds");
   }
   const started = performance.now();
-  const result: ProcessResult = {
+  const result: ProcessResult & { outputBytes: number } = {
     command,
     exitCode: null,
     signal: null,
@@ -35,6 +35,7 @@ export async function runProcess(
     timedOut: false,
     cancelled: false,
     truncated: false,
+    outputBytes: 0,
   };
   if (options.signal?.aborted) return { ...result, cancelled: true };
   if (process.platform === "win32")
@@ -86,6 +87,7 @@ export async function runProcess(
         const available = Math.max(0, maximum - bytes);
         if (available) chunks.push(chunk.subarray(0, available));
         bytes += chunk.length;
+        result.outputBytes = bytes;
         if (bytes > maximum) {
           result.truncated = true;
           terminate();

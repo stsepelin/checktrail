@@ -40,6 +40,35 @@ candidate and registered probe ID; tool arguments cannot grant trust, register
 code or change a budget. The native execution slot is shared with other native
 checks. Provider inference/source grants remain separate from native trust.
 
+## Run-wide native budgets
+
+Every new probe run uses one native call/output ledger across its cases. Library
+`nativeBudget` and MCP startup `probeLimits.nativeBudget` accept `maxCalls`
+(0–16) and `maxOutputBytes` (0–16 MiB). CLI `review-probe`, `review-verify` and
+`serve` expose `--native-max-calls` and `--native-max-output-bytes`. Defaults are
+16 runner calls and 65,536 bytes for the whole probe; a library per-call output
+limit also supplies the default aggregate output limit. These ceilings cannot be
+changed by tool arguments or provider output. A zero ceiling starts no project
+process and creates no case directory. It retains every selected case as unrun.
+
+Each runner invocation spends a call, including an unsuccessful launch or a
+cancellation race. Actual delivered stdout and stderr bytes debit the same
+output allowance. The next case receives the smaller of its per-call output
+limit and the remaining run allowance. Exhausted admission or output truncation
+stops further cases. All source copies and case starts share the probe wall
+allowance; verification additionally shares its cancellation deadline across
+provider and native stages. Cleanup completes before execution slots are released.
+Cleanup and filesystem work can outlast a deadline; this is not a hard elapsed
+time guarantee.
+
+Version 2 probe receipts retain limits, calls, total bytes, stop reason and each
+case's invocation/byte accounting. Imports reconstruct every admission and total;
+version 1 receipts remain readable with no claim that they contain a run budget.
+A raw output chunk may arrive beyond the allowance before process-group termination.
+The entire delivered chunk is charged even though retained buffers are bounded;
+`outputByteCeilingGuaranteed` is false. These are trusted-process lifecycle controls,
+not an OS sandbox or a quota for descendant processes or future language/tool/streaming/subscription profiles.
+
 ## Native evidence and unresolved states
 
 V8 precise coverage must show the selected current function actually executed.
@@ -90,3 +119,7 @@ not close the finish-first gate or establish review quality.
 [Verification](REVIEW-VERIFICATION.md) runs this probe between independent
 refutation and raw-evidence adjudication. Failed or incomplete controls cannot
 advance; no imported tool-argument report is used as native proof.
+
+The [native budget measurement](measurements/review-native-budget-2026-10-02.json)
+records the version 2 call/output/wall/cancellation/cleanup controls and their exact
+source/runtime bindings. Wider R7 profiles and Gate A remain open.
