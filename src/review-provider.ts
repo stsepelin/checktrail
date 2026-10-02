@@ -13,6 +13,11 @@ import {
 } from "./review.js";
 import { VERSION } from "./types.js";
 import {
+  assignmentProviderBudget,
+  aggregateProviderBudget,
+  checkAggregateProviderBudget,
+} from "./review-provider-aggregate.js";
+import {
   providerBudget,
   checkProviderBudget,
 } from "./review-provider-budget.js";
@@ -206,9 +211,14 @@ function parseEnvelope(
   }
 }
 
-class ResponseLimit extends Error {
+class ResponseReadError extends Error {
   constructor(readonly bytes: number) {
-    super("Provider response exceeded its byte budget");
+    super("Provider response could not be completely read");
+  }
+}
+class ResponseLimit extends ResponseReadError {
+  constructor(readonly bytes: number) {
+    super(bytes);
   }
 }
 async function readResponse(
@@ -233,9 +243,10 @@ async function readResponse(
     for (;;) {
       signal.throwIfAborted();
       const chunk = await reader.read();
+      if (!chunk.done) bytes += chunk.value.byteLength;
+      // A delivered chunk is consumed even if cancellation wins before decoding.
       signal.throwIfAborted();
       if (chunk.done) break;
-      bytes += chunk.value.byteLength;
       if (bytes > maximum) throw new ResponseLimit(bytes);
       chunks.push(chunk.value);
     }
@@ -245,6 +256,10 @@ async function readResponse(
       ),
       bytes,
     };
+  } catch (error) {
+    throw error instanceof ResponseReadError
+      ? error
+      : new ResponseReadError(bytes);
   } finally {
     signal.removeEventListener("abort", cancel);
     await reader.cancel().catch(() => {});
@@ -409,15 +424,33 @@ async function runProviderAssignment(
     ? AbortSignal.any([options.signal, controller.signal])
     : controller.signal;
   const attempts: Attempt[] = [];
+  const aggregateSession = assignmentProviderBudget(options, config);
+  const priorAttempts = structuredClone(aggregateSession?.attempts ?? []);
+  const requestBytes = Buffer.byteLength(request);
   const operatorRates = config.pricing
     ? {
         inputUSDPerMillion: config.pricing.inputUSDPerMillion,
         outputUSDPerMillion: config.pricing.outputUSDPerMillion,
       }
     : null;
+  const aggregate = () =>
+    aggregateSession
+      ? aggregateProviderBudget(
+          config.limits,
+          attempts,
+          priorAttempts,
+          aggregateSession.id,
+          requestBytes,
+          operatorRates,
+        )
+      : undefined;
   const budgetBlocked = (): boolean => {
     const budget = providerBudget(config.limits, attempts, operatorRates);
-    return budget !== undefined && budget.decision !== "within-budget";
+    const runBudget = aggregate();
+    return (
+      (budget !== undefined && budget.decision !== "within-budget") ||
+      (runBudget !== undefined && runBudget.decision !== "within-budget")
+    );
   };
   let status: ReviewProviderRun["status"] = "incomplete";
   let freshness: ReviewProviderRun["freshness"] = "not-checked";
@@ -425,10 +458,7 @@ async function runProviderAssignment(
   let candidates: ReviewProviderRun["candidates"] = [];
   try {
     if (signal.aborted) status = timedOut ? "timed-out" : "cancelled";
-    else if (
-      Buffer.byteLength(request) > config.limits.maxRequestBytes ||
-      budgetBlocked()
-    )
+    else if (requestBytes > config.limits.maxRequestBytes || budgetBlocked())
       status = "budget-exhausted";
     else {
       const key = (options.environment ?? process.env)[config.credentialEnv];
@@ -478,10 +508,12 @@ async function runProviderAssignment(
             status: "transport-error",
             durationMs: 0,
             responseBytes: 0,
+            requestBytes,
             observedModel: null,
             usage: unknownUsage(),
           };
           attempts.push(attempt);
+          aggregateSession?.attempts.push(attempt);
           let output: ReviewModelOutput | undefined;
           try {
             const response = await (options.fetch ?? globalThis.fetch)(
@@ -565,7 +597,7 @@ async function runProviderAssignment(
               }
             }
           } catch (error) {
-            if (error instanceof ResponseLimit)
+            if (error instanceof ResponseReadError)
               attempt.responseBytes = error.bytes;
             attempt.status = signal.aborted
               ? timedOut
@@ -678,6 +710,7 @@ async function runProviderAssignment(
             budget: providerBudget(config.limits, attempts, operatorRates),
           }
         : {}),
+      ...(aggregateSession ? { aggregateBudget: aggregate() } : {}),
       attempts,
       usage: totals(attempts),
       independence: {
@@ -757,6 +790,7 @@ export async function loadReviewProviderConfig(
 export function parseProviderReview(input: unknown): ReviewProviderRun {
   const run = reviewProviderRunSchema.parse(input);
   checkProviderBudget(run);
+  checkAggregateProviderBudget(run);
   if (
     run.declaredReviewed + run.declaredNotReviewed + run.unaccounted !==
     run.selectedPaths

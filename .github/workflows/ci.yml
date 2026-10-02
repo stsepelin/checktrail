@@ -100,11 +100,16 @@ jobs:
           node scripts/verify-required-native-tests.mjs php-tools
           node scripts/verify-required-native-tests.mjs laravel
           node scripts/verify-required-native-tests.mjs rust
+          node scripts/verify-required-native-tests.mjs review-budget
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/smoke-package.mjs
+      - name: Verify aggregate review budgets in the production package
+        run: node scripts/verify-review-budget-package.mjs
+      - name: Verify repeated Go profiles in the production package
+        run: node scripts/verify-go-matrix-package.mjs
       - name: Verify review exchange in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: node scripts/verify-review-container.mjs

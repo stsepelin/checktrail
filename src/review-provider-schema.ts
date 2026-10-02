@@ -19,6 +19,12 @@ export const reviewAdmissionBudgetSchema = z.strictObject({
     .max(1_000_000_000_000)
     .nullable(),
 });
+export const reviewAggregateBudgetLimitsSchema =
+  reviewAdmissionBudgetSchema.extend({
+    maxCalls: z.number().int().min(0).max(6),
+    maxRequestBodyBytes: z.number().int().min(0).max(6_291_456),
+    maxResponseBodyBytes: z.number().int().min(0).max(6_291_456),
+  });
 const rates = z.strictObject({
   inputUSDPerMillion: z.number().nonnegative().max(1_000_000),
   outputUSDPerMillion: z.number().nonnegative().max(1_000_000),
@@ -56,6 +62,7 @@ export const reviewProviderConfigSchema = z.strictObject({
     maxResponseBytes: z.number().int().min(1).max(1_048_576),
     maxOutputTokens: z.number().int().min(1).max(65_536),
     admissionBudget: reviewAdmissionBudgetSchema.optional(),
+    aggregateBudget: reviewAggregateBudgetLimitsSchema.optional(),
   }),
   pricing: z
     .strictObject({
@@ -124,13 +131,32 @@ const usage = z.strictObject({
   costUSD: z.number().nonnegative().max(1_000_000).nullable(),
   costProvenance: z.enum(["unknown", "operator-rates-estimate"]),
 });
-const attempt = z.strictObject({
+export const reviewProviderAttemptSchema = z.strictObject({
   id: z.string().uuid(),
   status: reviewAttemptStatusSchema,
   durationMs: count,
   responseBytes: count,
+  // Optional only for retained version 1 reports from before body accounting.
+  requestBytes: count.optional(),
   observedModel: z.string().min(1).max(256).nullable(),
   usage,
+});
+export const reviewAggregateBudgetSchema = reviewProviderBudgetSchema.extend({
+  profile: z.literal("reported-usage-run-admission-v1"),
+  id: z.string().uuid(),
+  priorAttempts: z.array(reviewProviderAttemptSchema).max(3),
+  requestBytes: count,
+  observedCalls: z.number().int().min(0).max(6),
+  observedRequestBodyBytes: count,
+  observedResponseBodyBytes: count,
+  transportByteCeilingGuaranteed: z.literal(false),
+  decision: z.enum([
+    ...reviewProviderBudgetSchema.shape.decision.options,
+    "call-limit-exceeded",
+    "request-byte-limit-exceeded",
+    "response-byte-limit-exceeded",
+    "response-reservation-does-not-fit",
+  ]),
 });
 const common = {
   schemaVersion: z.literal(1),
@@ -161,7 +187,8 @@ const common = {
   durationMs: count,
   limits: reviewProviderConfigSchema.shape.limits,
   budget: reviewProviderBudgetSchema.optional(),
-  attempts: z.array(attempt).max(3),
+  aggregateBudget: reviewAggregateBudgetSchema.optional(),
+  attempts: z.array(reviewProviderAttemptSchema).max(3),
   usage: usage.extend({
     attemptsWithUnknownUsage: z.number().int().min(0).max(3),
   }),

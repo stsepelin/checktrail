@@ -29,6 +29,7 @@
         "type": "object",
         "properties": {
           "checkId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "executionId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
           "project": {
             "anyOf": [
               { "type": "string", "const": "." },

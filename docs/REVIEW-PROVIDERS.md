@@ -122,11 +122,53 @@ responses; overruns stop capacity retries even without an admission budget.
 Cached Anthropic input counts consume the same allowance. Cancellation,
 timeout and stale source retain their distinct terminal states.
 
-This is `reported-usage-admission-v1`, not a guaranteed provider billing cap or
-an aggregate budget spanning multiple assignments. Old configurations without
-admissionBudget retain their previous wall/byte/output/attempt controls. Verified
-pre-request token accounting, aggregate/native/tool budgets, streaming-provider
-profiles and subscription cleanup remain in R7. An `advisory-completed` disposition
+This per-assignment profile is `reported-usage-admission-v1`. Old configurations
+without admissionBudget retain their previous wall/byte/output/attempt controls.
+
+`limits.aggregateBudget` optionally adds `reported-usage-run-admission-v1`:
+
+```json
+{
+  "inputTokenAllowance": 12000,
+  "maxTotalTokens": 40000,
+  "maxEstimatedCostMicrousd": null,
+  "maxCalls": 2,
+  "maxRequestBodyBytes": 1048576,
+  "maxResponseBodyBytes": 262144
+}
+```
+
+In `review-verify` the same engine-owned accounting spans refutation, its retries,
+adjudication and its retries. Standalone review/refutation uses one run budget for
+that assignment. Every new invocation starts a new budget; this is not a server,
+cohort or account-wide quota. Per-assignment and aggregate limits both apply when
+configured. Limits come only from the operator provider file or library options.
+No accounting state enters a model packet, conversation history or MCP argument.
+
+Before each request the engine admits one call, the exact serialized JSON request
+body, an input/output token reservation, the operator-rate monetary reservation
+and the full per-attempt response byte allowance. Earlier observed usage and body
+bytes consume that same run budget. The response reservation is conservative:
+an expected small reply does not authorize a request whose maximum response
+allowance no longer fits. Zero limits stop unfunded requests. Unknown or exceeded
+usage stops further disclosure; cancellation, timeout and stale source retain
+their distinct statuses. Monetary calculations use upward integer microdollars.
+
+Receipts retain the shared opaque budget ID, prior attempt metadata, request body
+bytes, consumed response body bytes, numeric totals and the admission decision.
+Import checks reconstruct each admitted attempt and require verification stages
+to share the exact earlier ledger. Consistency checks do not authenticate a
+wholly manufactured external report. Prior ledger entries contain no source,
+candidate prose, credential values or HTTP error text. Partial consumed response
+bytes remain counted on decode failure, stream failure or cancellation.
+
+These are admission controls, not verified tokenization or guaranteed billing.
+Transport accounting covers JSON request and consumed response bodies, excluding
+headers and protocol overhead; a delivered chunk can exceed the allowance before
+the reader cancels it. `transportByteCeilingGuaranteed` therefore stays false,
+alongside the existing false input-token and billing guarantees. Verified
+pre-request token accounting, native/tool budgets, streaming-provider profiles
+and subscription cleanup remain in R7. An `advisory-completed` disposition
 means the assigned paths and citations reconcile, not that the repository is clean
 or the candidates are correct. Severity remains suggestion/concern; consequence
 ranking, calibrated probability and independent evidence tiers remain pending.
@@ -145,6 +187,16 @@ These original synthetic transport tests use an operator-injected offline fetch;
 they do not spend inference tokens or claim native provider acceptance. Actual
 operator-selected synthetic inference and subscription client profiles remain
 required before R3 closes. No real-project field review is enabled by these tests.
+
+The aggregate profile's exact source-bound development evidence is recorded in
+[review-budget-native-2026-10-02.json](measurements/review-budget-native-2026-10-02.json).
+`review-budget` requires the original boundary, retry, unknown/cache usage,
+transport-body, retained-report, session-reset and shared CLI/MCP controls.
+Targeted mutations exercise the shared ledger, call admission, stage identity
+and partial-body accounting. `scripts/verify-review-budget-package.mjs` checks a
+fresh offline production-only install through the library, CLI and MCP, using
+injected synthetic transports. No real inference, field evaluation or held-out
+quality measurement is performed by that helper.
 
 Interfaces: [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs),
 [Responses storage controls](https://developers.openai.com/api/docs/guides/migrate-to-responses),

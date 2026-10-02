@@ -1,4 +1,4 @@
-import type { GoBuildSelection } from "./go-build.js";
+import type { GoTargetEvidence, GoBuildSelection } from "./go-build.js";
 import type { GoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalIdentity } from "./external-adapter.js";
 import type { RuntimeInventory } from "./runtime-inventory.js";
@@ -13,6 +13,7 @@ export const PARSERS = [
   "unittest",
   "go-scope-test",
   "go-scope-analysis",
+  "go-build",
   "golangci-json",
   "staticcheck-json",
   "go-json",
@@ -85,6 +86,7 @@ export interface ToolEvidence {
 export interface Check {
   goScope?: GoScopePolicy;
   goBuild?: GoBuildSelection;
+  executionId?: string;
   external?: ExternalIdentity;
   id: string;
   adapter: string;
@@ -159,8 +161,10 @@ export interface Finding {
 }
 
 export interface CheckResult {
+  goTarget?: GoTargetEvidence;
   goScope?: GoScopePolicy;
   goBuild?: GoBuildSelection;
+  executionId?: string;
   external?: ExternalIdentity & {
     tools?: { name: string; version: string; source: "adapter-reported" }[];
   };
@@ -180,6 +184,7 @@ export interface CheckResult {
 }
 
 export interface Report {
+  requiredExecutionIds?: string[];
   selection?: ChangeSelection;
   schemaVersion: 1;
   engineVersion: string;

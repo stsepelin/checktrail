@@ -14,7 +14,7 @@ Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
-`frameworks`, `go`, `php-tools`, `laravel` and `rust`. Dedicated container jobs
+`frameworks`, `go` (including `go-matrix`), `php-tools`, `laravel` and `rust`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
@@ -98,3 +98,12 @@ This establishes the configured profiles for that revision and those hosted
 environments. Optional skips in the general suite still do not count as native
 coverage. The `0.1.0-alpha.1` release metadata and documentation follow this
 baseline; the release commit needs its own CI run before publication.
+
+-
+
++The `review-budget` required profile covers shared verification-run API admission
++with original synthetic transports and native Boolean controls. The main CI
++matrix runs the profile explicitly and invokes +`scripts/verify-review-budget-package.mjs` after preparing the offline package
++cache. This checks installed library/CLI/MCP accounting and operator controls;
++it starts no real provider inference or field review. Exact local runtime pins,
++mutations and cleanup evidence are in +[the dated measurement](measurements/review-budget-native-2026-10-02.json). +

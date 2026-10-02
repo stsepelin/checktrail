@@ -43,6 +43,7 @@ import {
 } from "./review-adjudication.js";
 import { createHash } from "node:crypto";
 import { VERSION } from "./types.js";
+import { shareProviderRunBudget } from "./review-provider-aggregate.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const common = {
   schemaVersion: z.literal(1),
@@ -82,7 +83,7 @@ const common = {
     "native-controls-observed",
     "no-current-native-evidence",
   ]),
-  budgetScope: z.literal("per-provider-assignment"),
+  budgetScope: z.enum(["per-provider-assignment", "verification-run"]),
   limits: z.strictObject({
     wallMs: z.number().int().min(1).max(120000),
     maxNativeOutputBytes: z.number().int().min(1).max(1048576),
@@ -277,6 +278,7 @@ export async function runReviewVerification(
       ? { environment: { ...options.provider.environment } }
       : {}),
   };
+  shareProviderRunBudget(provider, config);
   try {
     const refutation = await runProviderRefutation(
       root,
@@ -351,7 +353,9 @@ export async function runReviewVerification(
       stopReason: status === "incomplete" ? incomplete : status,
       freshness,
       evidenceTier: tier(probe, freshness),
-      budgetScope: "per-provider-assignment",
+      budgetScope: config.limits.aggregateBudget
+        ? "verification-run"
+        : "per-provider-assignment",
       limits,
       independence: {
         refuterNativeEvidence: false,
@@ -456,6 +460,29 @@ export function parseReviewVerification(input: unknown): ReviewVerificationRun {
         "Verification adjudication assignment and independent sessions do not reconcile",
       );
   }
+  const budget = refutation.verifier.aggregateBudget;
+  if (
+    run.budgetScope !==
+      (budget ? "verification-run" : "per-provider-assignment") ||
+    (budget && budget.priorAttempts.length !== 0) ||
+    (adjudication &&
+      (Boolean(budget) !== Boolean(adjudication.aggregateBudget) ||
+        (budget &&
+          (adjudication.aggregateBudget!.id !== budget.id ||
+            !isDeepStrictEqual(
+              adjudication.aggregateBudget!.priorAttempts,
+              refutation.verifier.attempts,
+            ) ||
+            !isDeepStrictEqual(
+              adjudication.limits,
+              refutation.verifier.limits,
+            ) ||
+            !isDeepStrictEqual(
+              adjudication.aggregateBudget!.operatorRates,
+              budget.operatorRates,
+            )))))
+  )
+    throw new Error("Verification shared provider budget does not reconcile");
   if (
     (refutation.verifier.freshness === "stale" ||
       probe?.freshness === "stale" ||

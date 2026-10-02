@@ -40,6 +40,7 @@ const keyId = (key: z.infer<typeof findingKeySchema>) =>
     key.line,
     key.level,
     key.messageHash,
+    ...(key.executionId ? [key.executionId] : []),
   ]);
 function baseline(input: unknown): FindingBaseline {
   const result = findingBaselineSchema.parse(input);
@@ -60,6 +61,7 @@ function findings(report: ReturnType<typeof validatedReport>) {
     for (const finding of check.findings ?? []) {
       const parsed = findingKeySchema.safeParse({
         checkId: check.id,
+        ...(check.executionId ? { executionId: check.executionId } : {}),
         project: check.project,
         ruleId: finding.ruleId,
         file: finding.file,
@@ -69,7 +71,7 @@ function findings(report: ReturnType<typeof validatedReport>) {
       });
       const id = parsed.success
         ? keyId(parsed.data)
-        : digest([check.id, check.project, finding]);
+        : digest([check.id, check.project, check.executionId ?? null, finding]);
       const previous = result.get(id);
       result.set(id, {
         key: parsed.success ? parsed.data : undefined,
@@ -176,13 +178,19 @@ export function compareFindings(
   const entries: FindingComparison["entries"] = [];
   for (const entry of policy.entries) {
     const found = current.get(entry.id);
-    const check = report.checks.find(
-      (check) => check.id === entry.checkId && check.project === entry.project,
+    const checks = report.checks.filter(
+      (check) =>
+        check.id === entry.checkId &&
+        check.project === entry.project &&
+        (check.executionId ?? null) === (entry.executionId ?? null),
     );
     const accounted =
-      check &&
-      (check.status === "passed" ||
-        (check.status === "failed" && check.findingsComplete === true));
+      checks.length > 0 &&
+      checks.every(
+        (check) =>
+          check.status === "passed" ||
+          (check.status === "failed" && check.findingsComplete === true),
+      );
     let status: FindingComparison["entries"][number]["status"];
     if (entry.expiresAt && Date.parse(entry.expiresAt) <= now)
       status = "expired";

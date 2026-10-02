@@ -13,6 +13,16 @@ The GitHub alpha.5 prerelease includes the verified artifact and checksum.
 [Public adoption](PUBLIC-ADOPTION.md) records alpha.2 on five pinned libraries, including incomplete
 coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
+## Current source
+
+Version 2 [Go build profiles](GO-BUILD.md) add bounded repeated execution,
+stable per-execution identities, native target preflight and production compile/link
+checks with owned temporary outputs. The [local measurement](measurements/go-matrix-native-2026-10-02.json)
+binds original macOS/Linux controls, production-only offline library/CLI/MCP
+installation and killed guard mutations. Foreign test execution remains unavailable;
+cross-compilation carries no target runtime claim. E1 is locally verified for the
+bounded profile; Gate A remains open for the other required tasks.
+
 ## Alpha.5 release
 
 The [release record](measurements/release-alpha5.json) ties the published artifact
@@ -612,10 +622,9 @@ inventory is complete and existing operator permissions cover the concrete
 evaluation. Earlier adoption and agent measurements remain historical, not the
 new quality holdout.
 
-1. Extend the per-check [Go build-tag profiles](GO-BUILD.md) toward
-   repeated-check and target matrices only after their identities, aggregation
-   and native target evidence are defined. Existing profiles validate only each
-   selected check's configuration.
+1. Extend the recorded Go target/toolchain compatibility profiles under E5 while
+   preserving the [bounded repetition and target contract](GO-BUILD.md).
+   Unsupported target execution and incomplete work stay visible.
 2. Integrate standard MCP Tasks after a compatible SDK passes the routing probe.
    Then verify negotiation, ordinary-call fallback, worker/store integration,
    cancellation, restart and privacy together; see `MCP-COMPATIBILITY.md`.
@@ -646,6 +655,9 @@ reported evidence. It never means the entire repository has been reviewed.
 - [Optional provider review](REVIEW-PROVIDERS.md): versioned nine-family hypothesis
   plans and stateless OpenAI/Anthropic API transports share the library, CLI and
   MCP, with startup-only grants, bounded attempts and unknown usage accounting.
+  Optional aggregate verification-run admission spans both fresh assignments and
+  all retries, with calls, reported tokens, estimated cost and transport bodies
+  retained; native/tool budgets and subscription cleanup remain open.
   Original synthetic transport tests pass on macOS arm64 Node 26.9.0; native
   provider inference, subscription clients and wider profiles remain pending.
 

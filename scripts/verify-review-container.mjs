@@ -116,6 +116,18 @@ process.stdout.write(
     { encoding: "utf8", maxBuffer: 1024 * 1024 },
   ),
 );
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-budget",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-review-package-"),
 );

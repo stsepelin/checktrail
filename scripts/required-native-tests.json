@@ -283,6 +283,50 @@
     {
       "file": "dist/test/go-build.test.js",
       "name": "Go build profiles agree through CLI and MCP without disclosing tags or granting trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix planning expands exact required identities without executing code or leaking profile metadata"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix rejects unsafe, ambiguous and over-budget declarations before any process starts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go target preflight rejects incomplete, contradictory and duplicate native evidence and exact target near misses"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repetitions retain intermittent failures, fresh processes and every cancelled or omitted execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go target matrices compile and link cross targets while retaining host tests and unavailable foreign execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix CLI and MCP retain every execution with summary privacy and operator trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repeated race targets preserve instrumentation and independent native test counts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.staticcheck repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.golangci-lint repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go build evidence distinguishes positioned compiler failures from loading, linking, unexpected output and omitted production scope"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go production builds retain test exclusions only in checks that actually select tests"
     }
   ],
   "php-tools": [
@@ -995,6 +1039,86 @@
     {
       "file": "dist/test/review-verification.test.js",
       "name": "MCP verification reserves both execution slots and releases them after cancellation"
+    }
+  ],
+  "go-matrix": [
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix planning expands exact required identities without executing code or leaking profile metadata"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix rejects unsafe, ambiguous and over-budget declarations before any process starts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go target preflight rejects incomplete, contradictory and duplicate native evidence and exact target near misses"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repetitions retain intermittent failures, fresh processes and every cancelled or omitted execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go target matrices compile and link cross targets while retaining host tests and unavailable foreign execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix CLI and MCP retain every execution with summary privacy and operator trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repeated race targets preserve instrumentation and independent native test counts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.staticcheck repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.golangci-lint repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go build evidence distinguishes positioned compiler failures from loading, linking, unexpected output and omitted production scope"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go production builds retain test exclusions only in checks that actually select tests"
+    }
+  ],
+  "review-budget": [
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budgets admit exact shared call token and monetary boundaries across both fresh assignments"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate transport budgets reserve each response and charge actual request bodies before another disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budgets retain capacity retries unknown usage and input overruns without resetting at adjudication"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budget receipts reject erased limits forged totals omitted prior attempts and reset session identities"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budget state is fresh for each run and operator zero ceilings never disclose or execute"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification CLI and MCP agree on native evidence and enforce startup-only recipe trust inference and disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "standalone aggregate provider budgets account for retries and retain partial cancelled body bytes without subsequent disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "aggregate provider configuration rejects ambiguous bounds and keeps legacy configuration behavior"
     }
   ]
 }

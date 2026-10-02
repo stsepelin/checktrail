@@ -73,6 +73,7 @@ export const adapters = [
     markers: ["go.mod"],
     checks: [
       "go.format",
+      "go.build",
       "go.vet",
       "go.test",
       "go.test-race",
@@ -350,6 +351,29 @@ export async function checksFor(
           "Run module tests without cached results and parse test events.",
       },
     ];
+    if (explicit && requested?.includes("go.build"))
+      checks.push({
+        ...base,
+        id: "go.build",
+        kind: "analysis",
+        parser: "go-build",
+        scope: goFiles.filter((file) => !file.endsWith("_test.go")),
+        commands: [
+          goScopeCommand(project.path),
+          {
+            executable: process.execPath,
+            args: [
+              fileURLToPath(new URL("./go-build-runner.js", import.meta.url)),
+              "[]",
+            ],
+            cwd: project.path,
+            env,
+            temporaryDirectory: true,
+          },
+        ],
+        reason:
+          "Compile production Go packages and link mains into owned temporary outputs; test files are outside this build check.",
+      });
     if (explicit)
       checks.push({
         ...base,

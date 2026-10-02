@@ -18,6 +18,16 @@ Adapters describe checks and parse results; they do not write protocol messages.
 CLI and MCP call the same functions. stdout belongs exclusively to JSON or MCP;
 diagnostics go to stderr. The engine does not call an LLM.
 
+## Reviewer run budgets
+
+Optional operator provider configuration can select one aggregate admission
+budget per verification run. An engine-owned ledger spans both independent API
+assignments and all retries; it is never included in the model packet. Standalone
+review/refutation gets a fresh ledger for that invocation. Retained reports bind
+the shared ID, exact earlier attempts, numeric usage and transport-body bytes.
+Native/tool aggregate budgets and subscription profiles remain separate open
+requirements. See REVIEW-PROVIDERS.md for reservations and unverified ceilings.
+
 ## Discovery and scope
 
 The root is configured by the operator, canonicalized once, and never supplied by
@@ -47,7 +57,11 @@ detailed reports retain names and a fingerprint. See `ENVIRONMENTS.md`.
 ## Execution and results
 
 Commands are executable/argument arrays with no shell interpolation. A required
-check gets one terminal result. Aggregate status is failed if any check fails,
+check gets one terminal result. Version 2 Go build policies expand each selected
+check into explicit profile/repetition executions; each has a stable identity and
+terminal result in a required manifest. Target preflight, production compile/link
+and executed tests remain separate evidence; foreign tests are unavailable
+without a target executor. All repetitions share the run's wall/output budget. Aggregate status is failed if any check fails,
 incomplete if any required check lacks a conclusive result, otherwise passed.
 An empty plan is incomplete. The report retains both failures and incomplete work.
 

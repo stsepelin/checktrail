@@ -55,7 +55,10 @@
         "no-current-native-evidence"
       ]
     },
-    "budgetScope": { "type": "string", "const": "per-provider-assignment" },
+    "budgetScope": {
+      "type": "string",
+      "enum": ["per-provider-assignment", "verification-run"]
+    },
     "limits": {
       "type": "object",
       "properties": {
@@ -4494,6 +4497,55 @@
                     "maxEstimatedCostMicrousd"
                   ],
                   "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokenAllowance": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxTotalTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2000000
+                    },
+                    "maxEstimatedCostMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000000
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "maxCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "maxRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6291456
+                    },
+                    "maxResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6291456
+                    }
+                  },
+                  "required": [
+                    "inputTokenAllowance",
+                    "maxTotalTokens",
+                    "maxEstimatedCostMicrousd",
+                    "maxCalls",
+                    "maxRequestBodyBytes",
+                    "maxResponseBodyBytes"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -4602,6 +4654,255 @@
               ],
               "additionalProperties": false
             },
+            "aggregateBudget": {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "const": "reported-usage-run-admission-v1"
+                },
+                "operatorRates": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "inputUSDPerMillion": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        },
+                        "outputUSDPerMillion": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        }
+                      },
+                      "required": ["inputUSDPerMillion", "outputUSDPerMillion"],
+                      "additionalProperties": false
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "reservationTokens": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "reservationMicrousd": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "observedTokens": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "observedMicrousd": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "decision": {
+                  "type": "string",
+                  "enum": [
+                    "within-budget",
+                    "reservation-does-not-fit",
+                    "usage-unknown",
+                    "input-allowance-exceeded",
+                    "output-allowance-exceeded",
+                    "token-limit-exceeded",
+                    "cost-limit-exceeded",
+                    "pricing-unavailable",
+                    "call-limit-exceeded",
+                    "request-byte-limit-exceeded",
+                    "response-byte-limit-exceeded",
+                    "response-reservation-does-not-fit"
+                  ]
+                },
+                "inputAllowanceVerified": { "type": "boolean", "const": false },
+                "billingCeilingGuaranteed": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "priorAttempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "requestBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "observedCalls": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                },
+                "observedRequestBodyBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "observedResponseBodyBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "transportByteCeilingGuaranteed": {
+                  "type": "boolean",
+                  "const": false
+                }
+              },
+              "required": [
+                "profile",
+                "operatorRates",
+                "reservationTokens",
+                "reservationMicrousd",
+                "observedTokens",
+                "observedMicrousd",
+                "decision",
+                "inputAllowanceVerified",
+                "billingCeilingGuaranteed",
+                "id",
+                "priorAttempts",
+                "requestBytes",
+                "observedCalls",
+                "observedRequestBodyBytes",
+                "observedResponseBodyBytes",
+                "transportByteCeilingGuaranteed"
+              ],
+              "additionalProperties": false
+            },
             "attempts": {
               "maxItems": 3,
               "type": "array",
@@ -4638,6 +4939,11 @@
                     "maximum": 9007199254740991
                   },
                   "responseBytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "requestBytes": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 9007199254740991
@@ -6307,6 +6613,55 @@
                     "maxEstimatedCostMicrousd"
                   ],
                   "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokenAllowance": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxTotalTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2000000
+                    },
+                    "maxEstimatedCostMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000000
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "maxCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "maxRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6291456
+                    },
+                    "maxResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6291456
+                    }
+                  },
+                  "required": [
+                    "inputTokenAllowance",
+                    "maxTotalTokens",
+                    "maxEstimatedCostMicrousd",
+                    "maxCalls",
+                    "maxRequestBodyBytes",
+                    "maxResponseBodyBytes"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -6415,6 +6770,255 @@
               ],
               "additionalProperties": false
             },
+            "aggregateBudget": {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "const": "reported-usage-run-admission-v1"
+                },
+                "operatorRates": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "inputUSDPerMillion": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        },
+                        "outputUSDPerMillion": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000
+                        }
+                      },
+                      "required": ["inputUSDPerMillion", "outputUSDPerMillion"],
+                      "additionalProperties": false
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "reservationTokens": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "reservationMicrousd": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "observedTokens": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "observedMicrousd": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "decision": {
+                  "type": "string",
+                  "enum": [
+                    "within-budget",
+                    "reservation-does-not-fit",
+                    "usage-unknown",
+                    "input-allowance-exceeded",
+                    "output-allowance-exceeded",
+                    "token-limit-exceeded",
+                    "cost-limit-exceeded",
+                    "pricing-unavailable",
+                    "call-limit-exceeded",
+                    "request-byte-limit-exceeded",
+                    "response-byte-limit-exceeded",
+                    "response-reservation-does-not-fit"
+                  ]
+                },
+                "inputAllowanceVerified": { "type": "boolean", "const": false },
+                "billingCeilingGuaranteed": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "priorAttempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "requestBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "observedCalls": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                },
+                "observedRequestBodyBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "observedResponseBodyBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "transportByteCeilingGuaranteed": {
+                  "type": "boolean",
+                  "const": false
+                }
+              },
+              "required": [
+                "profile",
+                "operatorRates",
+                "reservationTokens",
+                "reservationMicrousd",
+                "observedTokens",
+                "observedMicrousd",
+                "decision",
+                "inputAllowanceVerified",
+                "billingCeilingGuaranteed",
+                "id",
+                "priorAttempts",
+                "requestBytes",
+                "observedCalls",
+                "observedRequestBodyBytes",
+                "observedResponseBodyBytes",
+                "transportByteCeilingGuaranteed"
+              ],
+              "additionalProperties": false
+            },
             "attempts": {
               "maxItems": 3,
               "type": "array",
@@ -6451,6 +7055,11 @@
                     "maximum": 9007199254740991
                   },
                   "responseBytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "requestBytes": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 9007199254740991

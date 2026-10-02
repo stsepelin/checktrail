@@ -61,6 +61,47 @@
             "maxEstimatedCostMicrousd"
           ],
           "additionalProperties": false
+        },
+        "aggregateBudget": {
+          "type": "object",
+          "properties": {
+            "inputTokenAllowance": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            },
+            "maxTotalTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000000
+            },
+            "maxEstimatedCostMicrousd": {
+              "anyOf": [
+                { "type": "integer", "minimum": 0, "maximum": 1000000000000 },
+                { "type": "null" }
+              ]
+            },
+            "maxCalls": { "type": "integer", "minimum": 0, "maximum": 6 },
+            "maxRequestBodyBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6291456
+            },
+            "maxResponseBodyBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6291456
+            }
+          },
+          "required": [
+            "inputTokenAllowance",
+            "maxTotalTokens",
+            "maxEstimatedCostMicrousd",
+            "maxCalls",
+            "maxRequestBodyBytes",
+            "maxResponseBodyBytes"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

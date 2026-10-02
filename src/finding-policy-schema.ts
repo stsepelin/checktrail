@@ -10,6 +10,7 @@ const relative = z
   );
 export const findingKeySchema = z.strictObject({
   checkId: z.string().min(1).max(256),
+  executionId: hash.optional(),
   project: z.union([z.literal("."), relative]),
   ruleId: z.string().min(1).max(256),
   file: relative,

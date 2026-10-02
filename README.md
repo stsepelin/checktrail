@@ -192,6 +192,9 @@ selection while disabling hidden issue filters and fixes.
 Alpha.5 adds [Go build-tag profiles](docs/GO-BUILD.md)
 with one explicit configuration per selected native check. Alpha.4 does not
 include this capability; a runnable example is in `examples/go-build`.
+Current source also implements version 2 repeated tag/target profiles and explicit
+production `go.build` checks; these additions are unpublished. Cross-target tests
+remain unavailable without a target executor. See [Go build profiles](docs/GO-BUILD.md).
 
 `php.phpstan` combines per-file analysis accounting with native JSON diagnostics.
 See the [PHPStan contract](docs/PHPSTAN.md).

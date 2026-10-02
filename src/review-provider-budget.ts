@@ -19,7 +19,11 @@ function decimal(value: number): { numerator: bigint; denominator: bigint } {
     ? { numerator: digits * 10n ** BigInt(power), denominator: 1n }
     : { numerator: digits, denominator: 10n ** BigInt(-power) };
 }
-function cost(input: number, output: number, rates: Rates): number | null {
+export function providerUsageCostMicrousd(
+  input: number,
+  output: number,
+  rates: Rates,
+): number | null {
   if (!rates) return null;
   const a = decimal(rates.inputUSDPerMillion);
   const b = decimal(rates.outputUSDPerMillion);
@@ -57,10 +61,10 @@ export function providerBudget(
       : null;
   const observedMicrousd =
     input !== null && output !== null
-      ? cost(input, output, operatorRates)
+      ? providerUsageCostMicrousd(input, output, operatorRates)
       : null;
   const reservationTokens = budget.inputTokenAllowance + limits.maxOutputTokens;
-  const reservationMicrousd = cost(
+  const reservationMicrousd = providerUsageCostMicrousd(
     budget.inputTokenAllowance,
     limits.maxOutputTokens,
     operatorRates,

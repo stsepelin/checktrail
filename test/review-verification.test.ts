@@ -617,7 +617,10 @@ test("verification freezes caller supplied recipe config and source inputs acros
 test("verification CLI and MCP agree on native evidence and enforce startup-only recipe trust inference and disclosure", async (t) => {
   const { root, context, target } = await assignment(t);
   const operator = await fixture(t, {
-    "provider.json": JSON.stringify(config),
+    "provider.json": JSON.stringify(
+      budgetOptions(async () => Response.json(envelope(config.kind))).provider
+        .config,
+    ),
     "probe.json": pin(recipe).contents,
     "transport.mjs": `globalThis.fetch=async()=>Response.json(${JSON.stringify(envelope(config.kind))});\n`,
   });
@@ -668,6 +671,8 @@ test("verification CLI and MCP agree on native evidence and enforce startup-only
   assert.equal(cli.status, 0, cli.stdout + cli.stderr);
   const summary = JSON.parse(cli.stdout);
   assert.equal(summary.evidenceTier, "native-expectation-mismatch");
+  assert.equal(summary.budgetScope, "verification-run");
+  assert.equal(summary.adjudication.aggregateBudget.observedTokens, 240);
   const connect = async (startup: string[]) => {
     const client = new Client(
       { name: "original-verification-control", version: "1" },
@@ -732,6 +737,7 @@ test("verification CLI and MCP agree on native evidence and enforce startup-only
     { model: "other" },
     { nativeEvidence: [] },
     { wallMs: 1 },
+    { aggregateBudget: { maxCalls: 99 } },
   ])
     assert.equal(
       (
@@ -891,3 +897,284 @@ test(
     assert.fail("Verification slots remained busy after cancellation");
   },
 );
+
+function runBudget(
+  overrides: Partial<
+    NonNullable<ReviewProviderConfig["limits"]["aggregateBudget"]>
+  > = {},
+) {
+  return {
+    inputTokenAllowance: 100,
+    maxTotalTokens: 240,
+    maxEstimatedCostMicrousd: null,
+    maxCalls: 2,
+    maxRequestBodyBytes: 2097152,
+    maxResponseBodyBytes: 2048,
+    ...overrides,
+  };
+}
+function budgetOptions(
+  fetch: typeof globalThis.fetch,
+  kind: ReviewProviderConfig["kind"] = "openai-responses",
+) {
+  const value = options(fetch, kind);
+  value.provider.config.limits.maxOutputTokens = 20;
+  value.provider.config.limits.maxResponseBytes = 1024;
+  value.provider.config.limits.aggregateBudget = runBudget();
+  return value;
+}
+
+test("verification aggregate budgets admit exact shared call token and monetary boundaries across both fresh assignments", async (t) => {
+  const { root, context, target } = await assignment(t);
+  for (const kind of ["openai-responses", "anthropic-messages"] as const) {
+    for (const [overrides, funded, reason] of [
+      [{ maxCalls: 1 }, false, "call-limit-exceeded"],
+      [{ maxTotalTokens: 239 }, false, "reservation-does-not-fit"],
+      [{ maxEstimatedCostMicrousd: 27 }, false, "reservation-does-not-fit"],
+      [{ maxEstimatedCostMicrousd: 28 }, true, "within-budget"],
+      [{}, true, "within-budget"],
+    ] as const) {
+      let calls = 0;
+      const opts = budgetOptions(async (_url, init) => {
+        calls++;
+        const wire = JSON.parse(init!.body as string);
+        const packet =
+          kind === "openai-responses"
+            ? wire.input[0].content[0].text
+            : wire.messages[0].content[0].text;
+        assert.ok(!packet.includes("priorAttempts"));
+        assert.ok(!packet.includes("reported-usage-run-admission-v1"));
+        assert.ok(
+          !packet.includes("Original independent synthetic assignment"),
+        );
+        return Response.json(envelope(kind));
+      }, kind);
+      opts.provider.config.pricing = {
+        inputUSDPerMillion: 0.1,
+        outputUSDPerMillion: 0.2,
+        reference: "original synthetic rates",
+      };
+      opts.provider.config.limits.aggregateBudget = runBudget(overrides);
+      const run = await runReviewVerification(root, context, target, opts);
+      assert.equal(calls, funded ? 2 : 1);
+      assert.equal(run.status, funded ? "completed" : "incomplete");
+      assert.equal(run.budgetScope, "verification-run");
+      assert.equal(run.probe?.nativeExecution, true);
+      assert.equal(
+        run.refutation.verifier.aggregateBudget?.observedTokens,
+        120,
+      );
+      const budget = run.adjudication!.aggregateBudget!;
+      assert.equal(budget.decision, reason);
+      assert.equal(budget.observedCalls, funded ? 2 : 1);
+      assert.equal(budget.observedTokens, funded ? 240 : 120);
+      assert.equal(budget.observedMicrousd, funded ? 28 : 14);
+      assert.equal(budget.reservationMicrousd, 14);
+      assert.equal(budget.id, run.refutation.verifier.aggregateBudget?.id);
+      assert.deepEqual(budget.priorAttempts, run.refutation.verifier.attempts);
+      assert.equal(budget.billingCeilingGuaranteed, false);
+      assert.equal(budget.inputAllowanceVerified, false);
+      assert.equal(budget.transportByteCeilingGuaranteed, false);
+      const projected = projectReviewVerification(run, false, false);
+      assert.ok(!JSON.stringify(projected).includes(target.claim));
+      assert.ok(
+        !JSON.stringify(projected).includes("opaque-original-verification-key"),
+      );
+    }
+  }
+});
+
+test("verification aggregate transport budgets reserve each response and charge actual request bodies before another disclosure", async (t) => {
+  const { root, context, target } = await assignment(t);
+  let calls = 0;
+  const opts = budgetOptions(async () => {
+    calls++;
+    return Response.json(envelope(config.kind));
+  });
+  const pilot = await runReviewVerification(root, context, target, opts);
+  assert.equal(pilot.status, "completed");
+  const requests =
+    pilot.adjudication!.aggregateBudget!.observedRequestBodyBytes;
+  const firstResponse = pilot.refutation.verifier.attempts[0]!.responseBytes;
+  for (const [overrides, funded, reason] of [
+    [
+      { maxRequestBodyBytes: requests - 1 },
+      false,
+      "request-byte-limit-exceeded",
+    ],
+    [{ maxRequestBodyBytes: requests }, true, "within-budget"],
+    [
+      { maxResponseBodyBytes: firstResponse + 1023 },
+      false,
+      "response-reservation-does-not-fit",
+    ],
+    [{ maxResponseBodyBytes: firstResponse + 1024 }, true, "within-budget"],
+  ] as const) {
+    calls = 0;
+    opts.provider.config.limits.aggregateBudget = runBudget(overrides);
+    const run = await runReviewVerification(root, context, target, opts);
+    assert.equal(calls, funded ? 2 : 1);
+    assert.equal(run.adjudication!.aggregateBudget!.decision, reason);
+    assert.equal(
+      run.adjudication!.aggregateBudget!.observedRequestBodyBytes,
+      funded ? requests : pilot.refutation.verifier.attempts[0]!.requestBytes,
+    );
+    assert.equal(
+      run.adjudication!.aggregateBudget!.observedResponseBodyBytes,
+      firstResponse * (funded ? 2 : 1),
+    );
+  }
+});
+
+test("verification aggregate budgets retain capacity retries unknown usage and input overruns without resetting at adjudication", async (t) => {
+  const { root, context, target } = await assignment(t);
+  for (const kind of ["openai-responses", "anthropic-messages"] as const) {
+    for (const funded of [false, true]) {
+      let calls = 0;
+      const opts = budgetOptions(async () => {
+        calls++;
+        return calls === 1
+          ? Response.json(
+              { usage: { input_tokens: 5, output_tokens: 1 } },
+              { status: 503 },
+            )
+          : Response.json(envelope(kind));
+      }, kind);
+      opts.provider.config.limits.maxAttempts = 2;
+      opts.provider.config.limits.aggregateBudget = runBudget({
+        maxCalls: funded ? 3 : 2,
+        maxTotalTokens: 246,
+        maxResponseBodyBytes: 3072,
+      });
+      const run = await runReviewVerification(root, context, target, opts);
+      assert.equal(calls, funded ? 3 : 2);
+      assert.equal(run.refutation.verifier.attempts.length, 2);
+      assert.equal(run.refutation.verifier.attempts[0]!.status, "capacity");
+      assert.equal(
+        run.refutation.verifier.aggregateBudget?.observedTokens,
+        126,
+      );
+      assert.equal(
+        run.adjudication!.aggregateBudget!.observedTokens,
+        funded ? 246 : 126,
+      );
+      assert.equal(
+        run.adjudication!.aggregateBudget!.decision,
+        funded ? "within-budget" : "call-limit-exceeded",
+      );
+    }
+    for (const mode of ["unknown", "overrun"] as const) {
+      let calls = 0;
+      const opts = budgetOptions(async () => {
+        calls++;
+        const value = envelope(kind);
+        if (mode === "unknown") Object.assign(value, { usage: {} });
+        else
+          Object.assign(value, {
+            usage:
+              kind === "anthropic-messages"
+                ? {
+                    input_tokens: 100,
+                    output_tokens: 20,
+                    cache_read_input_tokens: 1,
+                  }
+                : { input_tokens: 101, output_tokens: 20 },
+          });
+        return Response.json(value);
+      }, kind);
+      const run = await runReviewVerification(root, context, target, opts);
+      assert.equal(calls, 1);
+      assert.equal(run.refutation.verifier.status, "budget-exhausted");
+      assert.equal(
+        run.refutation.verifier.aggregateBudget?.decision,
+        mode === "unknown" ? "usage-unknown" : "input-allowance-exceeded",
+      );
+      assert.equal(run.probe, null);
+      assert.equal(run.adjudication, null);
+      if (mode === "unknown")
+        assert.equal(
+          run.refutation.verifier.aggregateBudget?.observedTokens,
+          null,
+        );
+    }
+  }
+});
+
+test("verification aggregate budget receipts reject erased limits forged totals omitted prior attempts and reset session identities", async (t) => {
+  const { root, context, target } = await assignment(t);
+  const run = await runReviewVerification(
+    root,
+    context,
+    target,
+    budgetOptions(async () => Response.json(envelope(config.kind))),
+  );
+  for (const mutate of [
+    (value: typeof run) => {
+      delete value.adjudication!.aggregateBudget;
+    },
+    (value: typeof run) => {
+      delete value.adjudication!.limits.aggregateBudget;
+    },
+    (value: typeof run) => {
+      value.adjudication!.aggregateBudget!.observedTokens = 0;
+    },
+    (value: typeof run) => {
+      value.adjudication!.aggregateBudget!.priorAttempts = [];
+    },
+    (value: typeof run) => {
+      value.adjudication!.aggregateBudget!.id =
+        "22222222-2222-4222-8222-222222222222";
+    },
+    (value: typeof run) => {
+      delete value.adjudication!.attempts[0]!.requestBytes;
+    },
+    (value: typeof run) => {
+      value.budgetScope = "per-provider-assignment";
+    },
+    (value: typeof run) => {
+      value.adjudication!.limits.aggregateBudget!.maxTotalTokens = 120;
+    },
+  ]) {
+    const value = structuredClone(run);
+    mutate(value);
+    value.adjudicationDigest = hash(value.adjudication);
+    assert.throws(
+      () => parseReviewVerification(value),
+      /aggregate|budget|reconcile/i,
+    );
+  }
+});
+
+test("verification aggregate budget state is fresh for each run and operator zero ceilings never disclose or execute", async (t) => {
+  const { root, context, target } = await assignment(t);
+  let calls = 0;
+  const opts = budgetOptions(async () => {
+    calls++;
+    return Response.json(envelope(config.kind));
+  });
+  const first = await runReviewVerification(root, context, target, opts);
+  const second = await runReviewVerification(root, context, target, opts);
+  assert.equal(calls, 4);
+  assert.notEqual(
+    first.refutation.verifier.aggregateBudget!.id,
+    second.refutation.verifier.aggregateBudget!.id,
+  );
+  assert.equal(first.adjudication!.aggregateBudget!.observedTokens, 240);
+  assert.equal(second.adjudication!.aggregateBudget!.observedTokens, 240);
+  for (const overrides of [
+    { maxCalls: 0 },
+    { maxTotalTokens: 0 },
+    { maxRequestBodyBytes: 0 },
+    { maxResponseBodyBytes: 0 },
+    { maxEstimatedCostMicrousd: 0 },
+  ]) {
+    calls = 0;
+    opts.provider.config.limits.aggregateBudget = runBudget(overrides);
+    const run = await runReviewVerification(root, context, target, opts);
+    assert.equal(calls, 0);
+    assert.equal(run.refutation.verifier.status, "budget-exhausted");
+    assert.equal(run.refutation.verifier.attempts.length, 0);
+    assert.equal(run.probe, null);
+    assert.equal(run.adjudication, null);
+  }
+});

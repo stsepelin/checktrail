@@ -1,106 +1,144 @@
-# Go build-tag profiles (alpha.5 and later)
+# Go build profiles
 
-Alpha.5 supports named build-tag profiles in module-local
-`checktrail.go-build.json`. Published alpha.4 does not support this file. It
-selects additional Go build constraints for each check and keeps that check's
-exclusions explicit. It does not introduce cross-compilation or a target matrix.
+Published alpha.5 supports version 1 module-local `checktrail.go-build.json`
+with one build-tag profile per selected check. The current source adds version 2
+for repeated profiles, explicit targets and the opt-in `go.build` check. These
+additions have not been published.
 
 ## Configure
 
-Continue selecting checks in `checktrail.json`. A build profile does not enable
-checks: `go.test-race`, Staticcheck and golangci-lint still need explicit selection.
-Use the [runnable synthetic example](../examples/go-build/checktrail.go-build.json)
-with [its check selection](../examples/go-build/checktrail.json), or configure:
+Select registered checks in `checktrail.json`. A build profile never enables an
+unselected check. `go.build`, race tests, Staticcheck and golangci-lint require
+explicit selection. The existing [synthetic example](../examples/go-build/checktrail.go-build.json)
+retains version 1 compatibility. Version 2 can repeat checks across profiles:
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "profiles": [
     {
-      "name": "integration",
+      "name": "linux-build",
       "tags": ["integration"],
-      "checks": ["go.vet", "go.test"],
-      "excludedFiles": []
+      "checks": ["go.build", "go.vet"],
+      "excludedFiles": [],
+      "repetitions": 2,
+      "target": { "os": "linux", "arch": "arm64", "cgo": false }
+    },
+    {
+      "name": "ordinary-tests",
+      "tags": ["integration"],
+      "checks": ["go.test"],
+      "excludedFiles": [],
+      "repetitions": 3
     }
   ]
 }
 ```
 
-Every selected native Go check must be assigned exactly one profile. Missing
-assignments are unavailable; they never silently fall back to an untagged run.
-Profile names and check assignments must be unique. A profile may share its tags
-and exclusions across several checks; other profiles can use different settings.
-Unselected checks are not executed, even if a profile names them. Each check runs
-once. Repeating one check across several profiles is not implemented.
+Version 1 remains strict: up to five profiles, unique names and exactly one
+assignment per native check; every check runs once. It cannot select `go.build`
+or set targets/repetitions. Version 2 permits a check in several named profiles,
+but rejects duplicates within one profile. It requires `repetitions` from 1
+through 16, permits up to 16 profiles and caps the complete declaration at 128
+check executions per module, including assignments to unselected checks.
+Missing assignments produce unavailable results rather than an untagged fallback.
 
-Tags are an array of distinct ASCII identifiers matching
-`[A-Za-z_][A-Za-z0-9_]*`, each at most 64 characters, with at most 32 tags.
-An empty array adds no tags. Profile names start with an ASCII letter and allow
-letters, digits, underscores and hyphens, up to 64 characters. Up to five profiles
-can assign the five supported native checks. Unknown fields, malformed JSON,
-nonregular policy files and invalid exclusions make native checks unavailable.
+Tags are distinct ASCII identifiers `[A-Za-z_][A-Za-z0-9_]*`, each at most 64
+characters, with at most 32 tags. Profile names begin with an ASCII letter and
+allow letters, digits, underscores and hyphens, up to 64 characters. Targets
+accept lowercase ASCII names `[a-z][a-z0-9]{0,15}` and a Boolean cgo mode. Native
+preflight establishes whether the installed toolchain supports that exact pair.
+The policy cannot select a compiler, executor, custom environment or arbitrary
+arguments. Malformed, ambiguous, over-limit or nonregular policies make the
+original native checks unavailable without partially applying earlier profiles.
 
-Each profile has its own `excludedFiles`, using the exact paths and nonblank
-reasons described in [Go scope](GO-SCOPE.md). Excluded files must still be
-inventoried and confirmed by native `IgnoredGoFiles`. An active or stale exclusion
-cannot pass. Listing a source file as excluded never suppresses an actual finding.
-Do not combine this file with `checktrail.go-scope.json`; their overlapping policy
-is rejected. To migrate, move exclusions into each applicable profile and remove
-the old scope policy after reviewing the complete configuration.
+Each profile declares exact inventoried `excludedFiles` with nonblank reasons,
+as in [Go scope](GO-SCOPE.md). Native `IgnoredGoFiles` must confirm every applicable
+exemption. Active, stale and undeclared omissions cannot pass. An exclusion never
+suppresses a compiler or analyzer diagnostic. Do not combine build profiles with
+`checktrail.go-scope.json`; migrate the old exclusions into each applicable profile.
 
-## Execution and evidence
+## Execution and target evidence
 
-Go listing, vet, tests and Staticcheck receive identical `-tags` settings within
-each check. Race tests also keep `-race` in listing and execution. Golangci-lint
-receives the profile tags in its generated configuration; its project's own
-`run.build-tags` remains unsupported to avoid a second source of settings.
-Existing protected Go settings, version checks and tool requirements still apply.
+Listing and execution receive identical tags and target environment. Race listing
+and tests also receive `-race`; a race target with cgo disabled is unavailable
+before execution. Golangci-lint receives the same tags in its generated config;
+its own `run.build-tags` remains unsupported. Existing protected Go settings and
+analyzer version requirements still apply. Operator environment values cannot
+override protected profile settings.
 
-Formatting checks the full inventory once and ignores build profiles. Native
-checks retain their whole inventory and reconcile selected and excluded files
-separately. Tests still need a passing test in each package; test counts and
-failures come from native events. A passing ordinary test does not cover a file
-selected only by the race profile. An exclusion's reason is an operator statement,
-not independent evidence that another check ran or covered it.
+A targeted execution first records native `go env -json` target/host/cgo values
+and `go tool dist list -json` support metadata. Malformed, interrupted, contradictory
+or duplicate evidence remains inconclusive. An unsupported pair or cgo mode is
+unavailable. Test profiles must match native `GOHOSTOS`/`GOHOSTARCH`: a foreign
+profile stops after preflight, records no executed tests and makes validation
+incomplete. There is no configured emulator or remote target executor.
 
-Detailed plans/reports add `goBuild` with the profile name and tags alongside
-`goScope` with that profile's exclusions. Summary plans/reports expose only
-`goBuildTagCount` and `goExcludedFileCount`; names, tags and reasons remain private
-unless detailed output is enabled. Counts describe declarations, not proof of
-execution. Older strict report-schema consumers must update before accepting the
-new optional fields. The [policy schema](../schemas/go-build-policy.schema.json)
-defines the data shape; planning also checks duplicate assignments and inventoried
-file membership.
+`go.build` compiles production packages and links main packages into separate
+fixed outputs in an owned temporary directory that the runner removes. Its source scope excludes
+`_test.go`; the native listing parser uses production files for this check.
+It never reports executed tests. Cross-target compilation does not establish
+runtime behavior on that target. A cgo cross-build still requires an installed
+compatible C toolchain; missing infrastructure cannot establish a successful build.
 
-Planning reads data only. Execution still requires CLI/library/operator startup
-trust. Policy files cannot set environment values or arbitrary command arguments.
-Tags do not set `GOOS`, `GOARCH`, the compiler version or enable race instrumentation;
-only the selected race check adds instrumentation. No unselected tag combinations
-or other operating systems are claimed as validated.
+Formatting runs once against the full inventoried Go source. Other profiles
+reconcile their native selection and exact exclusions separately. Tests use
+`-count=1` in a new native process for every repetition and need a passing test
+in each package. Repeating a test does not create independent test cases, model
+reviews or statistical quality evidence. Process globals are fresh; the project
+filesystem and declared external resources can persist between repetitions.
+
+Every required profile/repetition gets a terminal result, including failures,
+cancellation, exhausted time/output budgets and unavailable targets. All share
+the existing validation wall/output budget; repetition does not multiply it.
+Any native failure makes the aggregate failed; otherwise missing conclusive work
+makes it incomplete. Source freshness checks apply to the whole run.
+
+## Identities, exports and privacy
+
+Version 2 retains `goBuild.repetition` with one-based `iteration` and `total`.
+A stable SHA-256 `executionId` binds the project, check, source scope, profile,
+tags, exclusions, target and repetition. The report source fingerprint separately
+binds file contents. Detailed reports retain the required execution manifest and
+native `goTarget` evidence. Report import checks exact identities, group completeness,
+manifest reconciliation and target evidence before finding comparison or SARIF export.
+These consistency checks do not authenticate an independently manufactured report.
+
+SARIF keeps one run per execution with the identity and profile metadata. Finding
+baselines optionally include `executionId`; the same diagnostic in two executions
+produces two entries. Changing profile identity cannot silently reuse a baseline
+from another profile. Legacy baseline hashes remain unchanged. Strict schema
+consumers must update for the new optional fields before importing these artifacts.
+
+Summary plans/reports expose opaque execution identities, repetition counts,
+`goBuildTagCount` and `goExcludedFileCount`. Profile names, tags, target names,
+paths, commands, logs and exclusion reasons require detailed output. Summary
+counts describe declarations and individual execution outcomes.
+
+Planning reads data only. Execution requires operator trust through the shared
+CLI/library/MCP engine; project policy or MCP arguments cannot grant it.
 
 ## Reproduce
 
-From a built source checkout with Go and a supported race toolchain prepared:
+From a built checkout with Go and the pinned analyzers prepared:
 
 ```sh
-node dist/src/cli.js plan --root examples/go-build --detailed
-node dist/src/cli.js run --root examples/go-build --trust-project --detailed --timeout-ms 120000
-node --test dist/test/go-build.test.js
+node --test dist/test/go-matrix.test.js
+node scripts/verify-required-native-tests.mjs go-matrix
 node scripts/verify-required-native-tests.mjs go
+node scripts/verify-go-matrix-package.mjs
 ```
 
-The example's ordinary profile selects the integration test and acknowledges the
-race-only test. The instrumented profile selects both. This demonstrates source
-selection; the arithmetic example does not itself demonstrate race detection.
-The separate [race regression](GO-RACE.md) exercises an actual data race.
+The original controls cover data-only planning, staged policy application,
+invalid bounds and exact target near misses, intermittent failures across fresh
+processes, missing/duplicate/forged execution identities, exhausted/cancelled
+work, native host/race tests, foreign compilation/linking, unsupported test
+execution, analyzer diagnostics, baseline reconciliation and CLI/MCP privacy/trust.
+The [source-bound local record](measurements/go-matrix-native-2026-10-02.json)
+retains the actual macOS/Linux profiles, native controls, installed package and
+guard mutations. The required `go` profile includes the matrix controls. Unavailable native tools
+cannot satisfy that profile. Hosted CI results require their own run.
 
-The native regression suite exercises tagged compiler errors and assertions,
-valid near misses, undeclared omissions, stale exclusions, missing assignments,
-independent ordinary/race settings, analyzer diagnostics, nonexecuting planning,
-summary privacy and CLI/MCP agreement. Standard schema checks cover the exported
-policy and report shapes. Prepared CI requires these named cases to run; unavailable
-native tools cannot satisfy the required profile.
-
-References: [Go build constraints](https://pkg.go.dev/cmd/go#hdr-Build_constraints),
+References: [Go commands and environment](https://pkg.go.dev/cmd/go),
 [Staticcheck CLI](https://staticcheck.dev/docs/running-staticcheck/cli/),
 [golangci-lint configuration](https://golangci-lint.run/docs/configuration/file/).

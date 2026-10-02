@@ -1269,3 +1269,145 @@ test("provider error responses obey the same reported output allowance as succes
     }
   }
 });
+
+test("standalone aggregate provider budgets account for retries and retain partial cancelled body bytes without subsequent disclosure", async (t) => {
+  const { root, context } = await packet(t);
+  const config = structuredClone(baseConfig);
+  config.limits.aggregateBudget = {
+    inputTokenAllowance: 200,
+    maxTotalTokens: 10000,
+    maxEstimatedCostMicrousd: null,
+    maxCalls: 1,
+    maxRequestBodyBytes: 1048576,
+    maxResponseBodyBytes: 131072,
+  };
+  let calls = 0;
+  const run = await runProviderReview(root, context, {
+    config,
+    environment,
+    allowInference: true,
+    allowSourceDisclosure: true,
+    fetch: async () => {
+      calls++;
+      return Response.json(
+        { usage: { input_tokens: 100, output_tokens: 20 } },
+        { status: 503 },
+      );
+    },
+  });
+  assert.equal(calls, 1);
+  assert.equal(run.status, "budget-exhausted");
+  assert.equal(run.aggregateBudget?.observedCalls, 1);
+  assert.equal(run.aggregateBudget?.decision, "call-limit-exceeded");
+  assert.equal(run.aggregateBudget?.priorAttempts.length, 0);
+  assert.ok(run.attempts[0]!.requestBytes! > 0);
+  const controller = new AbortController();
+  t.after(() => controller.abort());
+  const chunk = new TextEncoder().encode('{"partial":');
+  let cancelled = false;
+  const partial = await runProviderReview(root, context, {
+    config,
+    environment,
+    allowInference: true,
+    allowSourceDisclosure: true,
+    signal: controller.signal,
+    fetch: async () =>
+      new Response(
+        new ReadableStream({
+          start(stream) {
+            stream.enqueue(chunk);
+          },
+          pull() {
+            controller.abort();
+          },
+          cancel() {
+            cancelled = true;
+          },
+        }),
+      ),
+  });
+  assert.equal(partial.status, "cancelled");
+  assert.equal(cancelled, true);
+  assert.equal(partial.attempts.length, 1);
+  assert.equal(partial.attempts[0]!.responseBytes, chunk.length);
+  assert.equal(
+    partial.aggregateBudget?.observedResponseBodyBytes,
+    chunk.length,
+  );
+  assert.equal(partial.aggregateBudget?.observedTokens, null);
+  for (const mode of ["stream-error", "invalid-utf8"] as const) {
+    calls = 0;
+    const bytes = mode === "stream-error" ? chunk : new Uint8Array([255]);
+    const failed = await runProviderReview(root, context, {
+      config,
+      environment,
+      allowInference: true,
+      allowSourceDisclosure: true,
+      fetch: async () => {
+        calls++;
+        return new Response(
+          new ReadableStream({
+            start(stream) {
+              stream.enqueue(bytes);
+              if (mode === "invalid-utf8") stream.close();
+            },
+            pull(stream) {
+              stream.error(new Error("Original unretained transport prose"));
+            },
+          }),
+        );
+      },
+    });
+    assert.equal(calls, 1);
+    assert.equal(failed.status, "budget-exhausted");
+    assert.equal(failed.attempts[0]!.status, "transport-error");
+    assert.equal(
+      failed.aggregateBudget?.observedResponseBodyBytes,
+      bytes.length,
+    );
+    assert.equal(failed.aggregateBudget?.observedTokens, null);
+    assert.ok(
+      !JSON.stringify(failed).includes("Original unretained transport prose"),
+    );
+  }
+});
+
+test("aggregate provider configuration rejects ambiguous bounds and keeps legacy configuration behavior", () => {
+  const config = structuredClone(baseConfig);
+  const budget = {
+    inputTokenAllowance: 100,
+    maxTotalTokens: 10000,
+    maxEstimatedCostMicrousd: null,
+    maxCalls: 2,
+    maxRequestBodyBytes: 1048576,
+    maxResponseBodyBytes: 262144,
+  };
+  for (const change of [
+    { maxCalls: -1 },
+    { maxCalls: 7 },
+    { maxCalls: 1.5 },
+    { maxRequestBodyBytes: -1 },
+    { maxResponseBodyBytes: 6291457 },
+    { inputTokenAllowance: 0 },
+    { arbitraryExecutable: "untrusted" },
+  ]) {
+    assert.equal(
+      reviewProviderConfigSchema.safeParse({
+        ...config,
+        limits: { ...config.limits, aggregateBudget: { ...budget, ...change } },
+      }).success,
+      false,
+    );
+  }
+  assert.equal(
+    reviewProviderConfigSchema.parse(config).limits.aggregateBudget,
+    undefined,
+  );
+  assert.equal(
+    reviewProviderConfigSchema.parse({
+      ...config,
+      limits: { ...config.limits, aggregateBudget: budget },
+    }).limits.aggregateBudget?.maxCalls,
+    2,
+  );
+});

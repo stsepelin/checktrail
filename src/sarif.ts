@@ -101,6 +101,11 @@ export function exportSarif(input: unknown) {
           ...(check
             ? {
                 checkId: check.id,
+                ...(check.executionId
+                  ? { executionId: check.executionId }
+                  : {}),
+                ...(check.goBuild ? { goBuild: check.goBuild } : {}),
+                ...(check.goTarget ? { goTarget: check.goTarget } : {}),
                 project: check.project,
                 status: check.status,
                 normalizedFindingsAvailable: check.findings !== undefined,

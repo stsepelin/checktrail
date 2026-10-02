@@ -137,11 +137,11 @@ export async function toolsFor(
   if (check.adapter === "go")
     return [
       command("go", "go", ["version"]),
+      ...(["go.build", "go.golangci-lint"].includes(check.id)
+        ? [{ name: "node", source: "engine-runtime" } as const]
+        : []),
       ...(check.id === "go.golangci-lint"
-        ? [
-            { name: "node", source: "engine-runtime" } as const,
-            command("golangci-lint", "golangci-lint", ["version", "--short"]),
-          ]
+        ? [command("golangci-lint", "golangci-lint", ["version", "--short"])]
         : []),
       ...(check.id === "go.staticcheck"
         ? [command("staticcheck", "staticcheck", ["-version"])]

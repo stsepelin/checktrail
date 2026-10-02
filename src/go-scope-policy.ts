@@ -56,7 +56,16 @@ export async function applyGoScopePolicy(
       throw new Error(
         "Go scope exclusions must name inventoried project files",
       );
-    for (const check of scoped) check.goScope = policy;
+    for (const check of scoped)
+      check.goScope =
+        check.id === "go.build"
+          ? {
+              ...policy,
+              excludedFiles: policy.excludedFiles.filter((entry) =>
+                check.scope.includes(entry.path),
+              ),
+            }
+          : policy;
   } catch (error) {
     for (const check of scoped)
       check.unavailableReason =

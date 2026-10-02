@@ -60,9 +60,16 @@ and provider execution slots until cancellation or completion releases them.
 `--timeout-ms` bounds the combined run through a shared cancellation signal;
 MCP uses the operator's `probeLimits.wallMs`. Native output has its own byte bound.
 [Provider admission budgets](REVIEW-PROVIDERS.md) apply per assignment across its
-retries; they are not a combined token/billing ceiling for both assignments.
-Subscription clients, aggregate token/native/tool budgets and stronger transport
-cleanup guarantees remain unfinished.
+retries. Optional operator `limits.aggregateBudget` also shares call, token,
+estimated-cost and body-byte admission across both assignments and all retries;
+`budgetScope` records `verification-run` for this profile. With no aggregate
+configuration it retains `per-provider-assignment` for compatibility. The shared
+ledger stays engine-local and is withheld from both model packets. Each new
+verification invocation starts a new ledger, including after cancellation.
+Input allowances and billing remain unverified, and transport byte accounting
+excludes protocol overhead and can observe an overlarge delivered chunk.
+Subscription clients, aggregate native/tool budgets and streaming-provider
+cleanup profiles remain unfinished.
 
 Reports retain each reached stage, its numeric usage/attempt accounting and its
 source/recipe/packet bindings. Later source changes invalidate the current native
