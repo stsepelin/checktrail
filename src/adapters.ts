@@ -19,6 +19,7 @@ import { pintCheck } from "./pint.js";
 import path from "node:path";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
+import { pyrightCheck } from "./pyright.js";
 import { mypyCheck } from "./mypy.js";
 import { ruffCheck } from "./ruff.js";
 import { pytestCheck } from "./pytest.js";
@@ -51,12 +52,18 @@ export const adapters = [
   },
   {
     id: "python",
-    markers: ["pyproject.toml", "setup.py", "requirements.txt"],
+    markers: [
+      "pyproject.toml",
+      "pyrightconfig.json",
+      "setup.py",
+      "requirements.txt",
+    ],
     checks: [
       "python.unittest",
       "python.pytest",
       "python.ruff",
       "python.mypy",
+      "python.pyright",
       "python.fastapi-routes",
       "python.django-routes",
     ],
@@ -66,6 +73,7 @@ export const adapters = [
     markers: ["go.mod"],
     checks: [
       "go.format",
+      "go.build",
       "go.vet",
       "go.test",
       "go.test-race",
@@ -280,6 +288,7 @@ export async function checksFor(
           pytestCheck(project),
           ruffCheck(project),
           mypyCheck(project),
+          await pyrightCheck(source, project),
           ...(requested?.includes("python.fastapi-routes")
             ? [await fastapiCheck(source, project)]
             : []),
@@ -342,6 +351,29 @@ export async function checksFor(
           "Run module tests without cached results and parse test events.",
       },
     ];
+    if (explicit && requested?.includes("go.build"))
+      checks.push({
+        ...base,
+        id: "go.build",
+        kind: "analysis",
+        parser: "go-build",
+        scope: goFiles.filter((file) => !file.endsWith("_test.go")),
+        commands: [
+          goScopeCommand(project.path),
+          {
+            executable: process.execPath,
+            args: [
+              fileURLToPath(new URL("./go-build-runner.js", import.meta.url)),
+              "[]",
+            ],
+            cwd: project.path,
+            env,
+            temporaryDirectory: true,
+          },
+        ],
+        reason:
+          "Compile production Go packages and link mains into owned temporary outputs; test files are outside this build check.",
+      });
     if (explicit)
       checks.push({
         ...base,

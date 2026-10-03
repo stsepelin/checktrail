@@ -95,3 +95,35 @@ test("bounds combined output and marks truncated evidence", async (t) => {
   );
   assert.notEqual(result.exitCode, 0);
 });
+
+test("runner accounts raw combined bytes beyond retention without counting Unicode replacement characters", async (t) => {
+  const root = await fixture(t, {});
+  const complete = await runProcess(
+    root,
+    {
+      executable: process.execPath,
+      args: ["-e", "process.stdout.write('é');process.stderr.write('😀');"],
+      cwd: ".",
+    },
+    { timeoutMs: 5000 },
+  );
+  assert.equal(complete.outputBytes, 6);
+  assert.equal(complete.stdout, "é");
+  assert.equal(complete.stderr, "😀");
+  const truncated = await runProcess(
+    root,
+    {
+      executable: process.execPath,
+      args: [
+        "-e",
+        "process.stdout.write('é'.repeat(4096));setInterval(()=>{},1000);",
+      ],
+      cwd: ".",
+    },
+    { timeoutMs: 5000, maxOutputBytes: 1 },
+  );
+  assert.equal(truncated.truncated, true);
+  assert.ok(truncated.outputBytes! >= 8192);
+  assert.equal(Buffer.byteLength(truncated.stdout), 3); // UTF-8 replacement of a retained half character.
+  assert.equal(truncated.signal, "SIGKILL");
+});

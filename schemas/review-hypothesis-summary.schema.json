@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-hypothesis-plan" },
+    "engineVersion": { "type": "string" },
+    "channel": { "type": "string", "const": "advisory" },
+    "provenance": { "type": "string", "const": "builtin-hypothesis-catalogue" },
+    "automatedCoverage": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "modelInvoked": { "type": "boolean", "const": false },
+    "freshness": { "type": "string", "const": "not-checked" },
+    "sourceIncluded": { "type": "boolean", "const": false },
+    "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "catalogueDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "selectedPaths": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "capturedViews": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "syntaxCollectedViews": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "syntaxPartialViews": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "repositoryComplete": { "type": "boolean", "const": false },
+        "runtimeReachability": { "type": "string", "const": "unknown" }
+      },
+      "required": [
+        "selectedPaths",
+        "capturedViews",
+        "syntaxCollectedViews",
+        "syntaxPartialViews",
+        "repositoryComplete",
+        "runtimeReachability"
+      ],
+      "additionalProperties": false
+    },
+    "families": {
+      "minItems": 1,
+      "maxItems": 9,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "authorization-tenancy",
+          "identifiers-allowlists",
+          "types-numeric-semantics",
+          "lifecycle-ordering",
+          "assembly-wiring",
+          "concurrency-resources",
+          "atomic-artifacts",
+          "dependencies-builds",
+          "test-adequacy"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "engineVersion",
+    "channel",
+    "provenance",
+    "automatedCoverage",
+    "claimsVerified",
+    "modelInvoked",
+    "freshness",
+    "sourceIncluded",
+    "contextDigest",
+    "catalogueDigest",
+    "scope",
+    "families"
+  ],
+  "additionalProperties": false
+}

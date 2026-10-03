@@ -8,8 +8,15 @@ import { fileURLToPath, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 const repository = fileURLToPath(new URL("../", import.meta.url));
-const image =
-  "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+const preparedImage =
+  process.env.CHECKTRAIL_REVIEW_IMAGE ??
+  "checktrail-review-tools:finish-first-v1";
+const image = execFileSync(
+  "docker",
+  ["image", "inspect", preparedImage, "--format", "{{.Id}}"],
+  { encoding: "utf8" },
+).trim();
+assert.match(image, /^sha256:[a-f0-9]{64}$/);
 const native = [
   "run",
   "--rm",
@@ -27,12 +34,102 @@ assert.equal(
   }).trim(),
   "v22.23.2",
 );
+const gitVersion = execFileSync("docker", [...native, "git", "--version"], {
+  encoding: "utf8",
+}).trim();
+assert.equal(gitVersion, "git version 2.47.3");
 const tests = execFileSync(
   "docker",
   [...native, "node", "scripts/verify-required-native-tests.mjs", "review"],
   { encoding: "utf8", maxBuffer: 1024 * 1024 },
 );
 process.stdout.write(tests);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-git",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-provider",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-probe",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-refutation",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-scoring",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      "review-verification",
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
+for (const profile of [
+  "review-budget",
+  "review-workflow",
+  "review-workflow-audit",
+  "review-native-budget",
+]) {
+  process.stdout.write(
+    execFileSync(
+      "docker",
+      [...native, "node", "scripts/verify-required-native-tests.mjs", profile],
+      { encoding: "utf8", maxBuffer: 1024 * 1024 },
+    ),
+  );
+}
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-review-package-"),
 );
@@ -69,6 +166,18 @@ try {
     recursive: true,
   });
   await mkdir(path.join(project, ".checktrail"));
+  const selection = {
+    schemaVersion: 5,
+    track: "snapshot",
+    currentSource: "working-tree",
+    files: ["catalog.mjs"],
+    supportFiles: [],
+    topics: ["test-lifecycle"],
+  };
+  await writeFile(
+    path.join(project, "selection.json"),
+    JSON.stringify(selection),
+  );
   const installed = [
     "run",
     "--rm",
@@ -95,7 +204,7 @@ try {
     ),
   );
   const assessment = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     contextDigest: context.contextDigest,
     reviewer: { kind: "human", name: "Synthetic example reviewer" },
     createdAt: "2026-09-19T00:00:00Z",
@@ -118,8 +227,14 @@ try {
         severity: "suggestion",
         claim:
           "Consider documenting the accepted label input type; this is an advisory suggestion.",
+        attribution: "unknown",
+        fixScope: "follow-up",
         citations: [
           {
+            revision: "current",
+            sourceDigest: context.files.find(
+              (file) => file.path === "catalog.mjs",
+            ).sha256,
             file: "catalog.mjs",
             startLine: 1,
             endLine: 1,
@@ -210,6 +325,9 @@ try {
     JSON.stringify({
       image,
       node: "22.23.2",
+      git: gitVersion,
+      contextVersion: context.schemaVersion,
+      receiptVersion: receipt.schemaVersion,
       network: "none",
       native: "passed",
       installation: "offline",

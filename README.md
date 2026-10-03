@@ -2,6 +2,12 @@
 
 Local code validation with a CLI, MCP tools, and evidence of what actually ran.
 
+The local MCP server works through the chosen MCP host. That host handles AI
+selection and subscription/API authentication; Checktrail does not need to log
+in to a model service. Direct provider calls are an optional separate interface.
+See the [MCP review workflow](docs/REVIEW-MCP-WORKFLOW.md) for implemented tools,
+planned review stages and the limits of fresh-session enforcement.
+
 Formerly Repo Verifier. See the [rename guide](docs/RENAMING.md) for existing source checkouts.
 
 **Published preview: 0.1.0-alpha.5.** Public source is available at
@@ -192,6 +198,9 @@ selection while disabling hidden issue filters and fixes.
 Alpha.5 adds [Go build-tag profiles](docs/GO-BUILD.md)
 with one explicit configuration per selected native check. Alpha.4 does not
 include this capability; a runnable example is in `examples/go-build`.
+Current source also implements version 2 repeated tag/target profiles and explicit
+production `go.build` checks; these additions are unpublished. Cross-target tests
+remain unavailable without a target executor. See [Go build profiles](docs/GO-BUILD.md).
 
 `php.phpstan` combines per-file analysis accounting with native JSON diagnostics.
 See the [PHPStan contract](docs/PHPSTAN.md).
@@ -246,7 +255,7 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -255,6 +264,13 @@ The model cannot grant that permission through a tool argument. Add `--detailed`
 only if the client may receive paths, commands and raw diagnostics. The default
 summary omits those fields. Data returned through an MCP client may be sent to
 that client's model provider.
+
+The model-independent `review_workflow` tool exchanges bounded reviewer/refuter/
+adjudicator assignments with host-owned AI sessions and an operator-pinned live
+probe. The foreground `review-session` CLI uses the same engine. Assignment output
+requires startup `--detailed --allow-review-source`; native probes additionally
+require execution trust. Completed stages keep findings and host isolation
+unverified. See [workflow operations and limits](docs/REVIEW-MCP-WORKFLOW.md) and optional [private durable command audits](docs/REVIEW-WORKFLOW-AUDIT.md).
 
 The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not
@@ -373,4 +389,21 @@ wrong. Fewer selected checks alone do not establish a safe or faster run.
 Optional [`review-context` and `review-receipt`](docs/REVIEW-EXCHANGE.md) exchange
 bounded selected source and external reviewer assessments. Source and review prose
 require `--detailed --allow-review-source`; claims and declared usage remain advisory.
-The engine does not call a model or upload code.
+Core validation does not call a model or upload code. Optional
+[provider review](docs/REVIEW-PROVIDERS.md) requires separate operator inference
+and source-disclosure grants; normal output hides source and candidate prose.
+
+[Native review probes](docs/REVIEW-PROBES.md) bind operator-pinned controls to
+selected source and measured function/guard execution. Native execution requires
+operator trust; Boolean counterexamples remain advisory evidence.
+
+[Independent refutation](docs/REVIEW-REFUTATION.md) sends one unverified hypothesis
+to a fresh stateless verifier while withholding prior reviewer labels and verdicts.
+Counterclaims stay advisory. [Native corroboration and independent adjudication](docs/REVIEW-VERIFICATION.md)
+now combine fresh refutation, a live operator-pinned Node probe and a separate
+raw-evidence assignment. Bounded observations do not verify production impact,
+claim mechanism or severity; full independent findings remain unfinished.
+
+[Reviewer scoring](docs/REVIEW-SCORING.md) reports proper probability losses,
+reliability, risk/coverage and explicit incomplete/unknown accounting from declared
+labels. It does not establish calibrated confidence or a quality gate.

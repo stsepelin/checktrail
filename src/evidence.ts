@@ -1,3 +1,5 @@
+import { goBuildEvidence } from "./go-build-evidence.js";
+import { goTargetPreflight } from "./go-target.js";
 import { nuxtEvidence } from "./nuxt-evidence.js";
 import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
@@ -13,6 +15,7 @@ import { djangoEvidence } from "./django-evidence.js";
 import path from "node:path";
 import { phpunitEvidence } from "./phpunit-evidence.js";
 import { phpstanEvidence } from "./phpstan-evidence.js";
+import { pyrightEvidence } from "./pyright-evidence.js";
 import { mypyEvidence } from "./mypy-evidence.js";
 import { ruffEvidence } from "./ruff-evidence.js";
 import { pytestEvidence } from "./pytest-evidence.js";
@@ -194,6 +197,7 @@ export function evaluate(
   root?: string,
 ): CheckResult {
   const result: CheckResult = {
+    ...(check.executionId ? { executionId: check.executionId } : {}),
     ...(check.goScope ? { goScope: check.goScope } : {}),
     ...(check.goBuild ? { goBuild: check.goBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
@@ -212,6 +216,24 @@ export function evaluate(
   });
   if (check.unavailableReason)
     return set("unavailable", check.unavailableReason);
+  if (check.goBuild?.target) {
+    const target = goTargetPreflight(check, processes);
+    if (target.evidence) result.goTarget = target.evidence;
+    if (target.status !== "ready") return set(target.status, target.reason);
+    const goBuild = { ...check.goBuild };
+    delete goBuild.target;
+    const native = evaluate(
+      { ...check, goBuild, commands: check.commands.slice(2) },
+      processes.slice(2),
+      root,
+    );
+    return {
+      ...native,
+      goBuild: check.goBuild,
+      processes,
+      ...(target.evidence ? { goTarget: target.evidence } : {}),
+    };
+  }
   if (processes.length !== check.commands.length || processes.length === 0)
     return set("inconclusive", "Not all planned commands ran.");
   if (processes.some((p) => p.cancelled))
@@ -238,6 +260,8 @@ export function evaluate(
     return { ...result, ...externalEvidence(check, processes) };
   if (check.parser === "typescript-build-json")
     return { ...result, ...typescriptBuildEvidence(check, processes, root) };
+  if (check.parser === "go-build")
+    return { ...result, ...goBuildEvidence(check, processes, root) };
   if (check.parser === "golangci-json")
     return { ...result, ...golangciEvidence(check, processes, root) };
   if (check.parser === "staticcheck-json")
@@ -284,6 +308,8 @@ export function evaluate(
     return { ...result, ...phpunitEvidence(check, processes, root) };
   if (check.parser === "phpstan-json")
     return { ...result, ...phpstanEvidence(check, processes, root) };
+  if (check.parser === "pyright-json")
+    return { ...result, ...pyrightEvidence(check, processes, root) };
   if (check.parser === "mypy-json")
     return { ...result, ...mypyEvidence(check, processes, root) };
   if (check.parser === "ruff-json")

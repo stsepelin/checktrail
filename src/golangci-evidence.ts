@@ -1,7 +1,8 @@
 import path from "node:path";
 import { z } from "zod";
 import { goScopeComplete } from "./go-scope.js";
-import type { Check, CheckResult, ProcessResult } from "./types.js";
+import { goCompileFindings } from "./go-compile-evidence.js";
+import type { Check, CheckResult, Finding, ProcessResult } from "./types.js";
 const schema = z.object({
   Issues: z.array(
     z.object({
@@ -73,17 +74,40 @@ export function golangciEvidence(
       )
     )
       return incomplete;
-    const findings = report.Issues.map((issue) => ({
-      ruleId: issue.FromLinter,
-      level: "error" as const,
-      message: issue.Text,
-      file: path.relative(root, issue.Pos.Filename).split(path.sep).join("/"),
-      line: issue.Pos.Line,
-    }));
+    // The pinned native extractor relocates unpositioned package errors to
+    // the first local file, line 1, column 0. Such an anchor is not evidence
+    // that the source at that line is defective. Never guess from message text.
+    let loadingError = false;
+    const findings: Finding[] = [];
+    for (const issue of report.Issues) {
+      if (issue.FromLinter === "typecheck" && issue.Pos.Column === 0) {
+        const compiled = goCompileFindings(
+          check,
+          root,
+          issue.Text,
+          "typecheck",
+        );
+        if (compiled) findings.push(...compiled);
+        else loadingError = true;
+      } else
+        findings.push({
+          ruleId: issue.FromLinter,
+          level: "error",
+          message: issue.Text,
+          file: path
+            .relative(root, issue.Pos.Filename)
+            .split(path.sep)
+            .join("/"),
+          line: issue.Pos.Line,
+        });
+    }
     if (findings.length)
       return {
         status: "failed",
-        reason: "golangci-lint reported native diagnostics.",
+        reason:
+          loadingError || report.Report.Error
+            ? "golangci-lint reported source diagnostics; loading errors leave analysis incomplete."
+            : "golangci-lint reported native diagnostics.",
         findings,
         findingsComplete:
           process.exitCode === 1 &&
@@ -97,10 +121,12 @@ export function golangciEvidence(
           ) &&
           goScopeComplete(check, processes[0], root),
       };
-    if (process.exitCode !== 0 || report.Report.Error)
+    if (loadingError || process.exitCode !== 0 || report.Report.Error)
       return {
         status: "error",
         reason: "golangci-lint reported an analysis or loading error.",
+        findings,
+        findingsComplete: false,
       };
     if (
       report.Report.Warnings?.length ||

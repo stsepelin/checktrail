@@ -17,6 +17,10 @@
     },
     "sourceChanged": { "type": "boolean" },
     "sourceError": { "type": "boolean" },
+    "requiredExecutionIds": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    },
     "selection": {
       "type": "object",
       "properties": {
@@ -140,9 +144,57 @@
                   "maxLength": 64,
                   "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
                 }
+              },
+              "repetition": {
+                "type": "object",
+                "properties": {
+                  "iteration": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 16
+                  },
+                  "total": { "type": "integer", "minimum": 1, "maximum": 16 }
+                },
+                "required": ["iteration", "total"],
+                "additionalProperties": false
+              },
+              "target": {
+                "type": "object",
+                "properties": {
+                  "os": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]{0,15}$"
+                  },
+                  "arch": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]{0,15}$"
+                  },
+                  "cgo": { "type": "boolean" }
+                },
+                "required": ["os", "arch", "cgo"],
+                "additionalProperties": false
               }
             },
             "required": ["profile", "tags"],
+            "additionalProperties": false
+          },
+          "executionId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "goTarget": {
+            "type": "object",
+            "properties": {
+              "os": { "type": "string", "pattern": "^[a-z][a-z0-9]{0,15}$" },
+              "arch": { "type": "string", "pattern": "^[a-z][a-z0-9]{0,15}$" },
+              "cgo": { "type": "boolean" },
+              "hostOs": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]{0,15}$"
+              },
+              "hostArch": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]{0,15}$"
+              }
+            },
+            "required": ["os", "arch", "cgo", "hostOs", "hostArch"],
             "additionalProperties": false
           },
           "status": {
@@ -199,6 +251,11 @@
                 "timedOut": { "type": "boolean" },
                 "cancelled": { "type": "boolean" },
                 "truncated": { "type": "boolean" },
+                "outputBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
                 "errorCode": { "type": "string" }
               },
               "required": [
@@ -460,6 +517,11 @@
                     "timedOut": { "type": "boolean" },
                     "cancelled": { "type": "boolean" },
                     "truncated": { "type": "boolean" },
+                    "outputBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
                     "errorCode": { "type": "string" }
                   },
                   "required": [

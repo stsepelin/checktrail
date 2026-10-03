@@ -1,6 +1,7 @@
 import path from "node:path";
 import { z } from "zod";
 import { goScopeComplete } from "./go-scope.js";
+import { goCompileFindings } from "./go-compile-evidence.js";
 import type { Check, CheckResult, Finding, ProcessResult } from "./types.js";
 
 const diagnostic = z.object({
@@ -38,10 +39,21 @@ export function staticcheckEvidence(
     );
     const findings: Finding[] = [];
     let compileError = false;
+    let loadingError = false;
     for (const row of rows) {
       if (row.code === "compile") {
         compileError = true;
-        continue;
+        if (!row.location.file && row.location.line === 0) {
+          const compiled = goCompileFindings(
+            check,
+            root,
+            row.message,
+            "compile",
+          );
+          if (compiled) findings.push(...compiled);
+          else loadingError = true;
+          continue;
+        }
       }
       const file = path.resolve(root, check.project, row.location.file);
       if (!expected.has(file) || row.location.line < 1) return incomplete;
@@ -53,11 +65,12 @@ export function staticcheckEvidence(
         line: row.location.line,
       });
     }
-    if (findings.length || compileError)
+    if (findings.length)
       return {
         status: "failed",
-        reason:
-          "Staticcheck reported diagnostics, including explicitly surfaced native suppressions.",
+        reason: loadingError
+          ? "Staticcheck reported source diagnostics; loading errors leave analysis incomplete."
+          : "Staticcheck reported diagnostics, including explicitly surfaced native suppressions.",
         findings,
         findingsComplete:
           !compileError &&
@@ -65,11 +78,13 @@ export function staticcheckEvidence(
           !process.stderr.trim() &&
           goScopeComplete(check, processes[0], root),
       };
-    if (process.exitCode !== 0 || process.stderr.trim())
+    if (loadingError || process.exitCode !== 0 || process.stderr.trim())
       return {
         status: "error",
         reason:
           "Staticcheck reported a loading, configuration or runtime error.",
+        findings,
+        findingsComplete: false,
       };
     if (!goScopeComplete(check, processes[0], root)) return incomplete;
     return {

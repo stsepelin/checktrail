@@ -6,6 +6,18 @@ for milestone evidence, remaining work and external verification gates.
 Intended public namespace: `stsepelin/checktrail`.
 This document describes both the initial implementation and later milestones;
 the support matrix in `LANGUAGES.md` records what actually works.
+The expanded locally operated reviewer target and required finish-first sequence
+are in [REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md). Its hypothesis catalogue and bounded stateless API transport are implemented
+with offline synthetic evidence. A bounded source-bound Boolean probe profile is
+implemented, alongside fresh stateless refutation attempts. The required reviewer
+workflow is model-independent through MCP: the AI host owns model execution and
+authentication. The bounded reviewer/refuter/live-probe/adjudicator exchange has
+original synthetic acceptance through the shared library, CLI and MCP. Broader
+probes, host isolation, general claim validation and the evaluation harness remain
+unfinished; Checktrail-owned AI client orchestration is optional rather than a
+completion gate. See [REVIEW-MCP-WORKFLOW.md](REVIEW-MCP-WORKFLOW.md).
+[REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md) reconciles required families and
+explicit deferrals; exact new acceptance-profile pins remain open.
 
 ## 1. Purpose and success criteria
 
@@ -113,7 +125,9 @@ reject escaping paths and symlinks. Bound inventory size, file reads, runtime,
 output and retained reports. Do not install dependencies or fetch tools on demand.
 Do not start infrastructure, apply migrations or access production by default.
 
-Core code sends no telemetry or source uploads. Invoked tools may have their own
+Core validation sends no telemetry or source uploads. Optional reviewer inference
+requires separate operator inference and provider source-disclosure grants; see
+[REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md). Invoked tools may have their own
 network behavior; offline defaults and an OS/container sandbox are distinct work.
 Keep logs out of normal MCP output. Summary mode exposes rule IDs and counts;
 detailed mode is an explicit operator choice. Findings passed to a cloud-backed
@@ -218,6 +232,16 @@ results. No provider or source upload is required for the core product.
 Gate: labeled held-out cases measure detection and false positives per rule family;
 compare against native tools and the prior workflow; record tool/model versions,
 token cost, latency and confidence intervals where sample sizes permit them.
+
+The expanded reviewer layer works through the operator-selected MCP AI host,
+which owns its subscription/API authentication. Checktrail-owned direct provider
+inference remains optional. No native AI client launcher is required to complete
+the MCP reviewer workflow; independent sessions and blinded evaluation still
+require evidence from the chosen host. See REVIEW-MCP-WORKFLOW.md. The roadmap separates
+feature completion, authorized evaluation and demonstrated quality: no new
+real-project MCP field trial starts before the reconciled required implementation
+inventory is complete. Synthetic development and harness-readiness tests continue;
+passing them does not automatically authorize a field trial.
 
 ## 9. Validation strategy
 

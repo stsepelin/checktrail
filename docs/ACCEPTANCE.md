@@ -5,6 +5,17 @@ verification. It does not replace the plan or promote an unverified capability.
 Local implementation, local native evidence, hosted CI and publication are
 separate states. Follow the linked evidence for tested versions and limits.
 
+The expanded [reviewer roadmap](REVIEWER-ROADMAP.md) targets model-independent
+MCP review and claim validation, with host-owned AI/authentication. Neutral stage
+exchange and independent claim validation remain unfinished; engine-owned
+inference or native AI client orchestration is optional. No achieved quality
+claim follows from the current exchange. Its required inventory retains unfinished M0–M5 work and every
+subsequent integration in `LANGUAGES.md`. Feature completion precedes any new
+real-project MCP field evaluation; applicable operator permissions and a frozen
+independent protocol precede measurement, and demonstrated quality is a separate
+final gate.
+Historical adoption/client/agent observations remain historical evidence.
+
 | Milestone                         | Implemented scope and evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Open acceptance work                                                                                                                                                                                                                           |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | M0: public contracts              | Original public fixtures, MIT license, security/contribution guidance, schemas, explicit package allowlist, dependency notices and CI definitions. `STATUS.md`, `SECURITY.md`, `RELEASE.md`.                                                                                                                                                                                                                                                                                                          | Public source, npm alpha.5 and its MCP Registry entry are published. Hosted CI passed at `832a044`; fresh registry installation was verified.                                                                                                  |

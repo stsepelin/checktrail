@@ -1,3 +1,4 @@
+import { goTargetPreflight } from "./go-target.js";
 import {
   externalChecks,
   externalPolicyFingerprint,
@@ -245,6 +246,12 @@ export async function validate(
           const processResult = await execute(command);
           if (!processResult) break;
           processes.push(processResult);
+          if (
+            check.goBuild?.target &&
+            processes.length === 2 &&
+            goTargetPreflight(check, processes).status !== "ready"
+          )
+            break;
         } catch {
           executionError = true;
           break;
@@ -309,6 +316,13 @@ export async function validate(
     sourceChanged,
     sourceError,
     outcome: aggregate(checks, sourceChanged || sourceError),
+    ...(plan.checks.some((check) => check.executionId)
+      ? {
+          requiredExecutionIds: plan.checks.flatMap((check) =>
+            check.executionId ? [check.executionId] : [],
+          ),
+        }
+      : {}),
     checks,
   };
 }

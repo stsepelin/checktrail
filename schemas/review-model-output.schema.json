@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "files": {
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "disposition": {
+            "type": "string",
+            "enum": ["reviewed", "not-reviewed"]
+          },
+          "note": { "type": "string", "maxLength": 1024 }
+        },
+        "required": ["path", "disposition", "note"],
+        "additionalProperties": false
+      }
+    },
+    "candidates": {
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "family": {
+            "type": "string",
+            "enum": [
+              "authorization-tenancy",
+              "identifiers-allowlists",
+              "types-numeric-semantics",
+              "lifecycle-ordering",
+              "assembly-wiring",
+              "concurrency-resources",
+              "atomic-artifacts",
+              "dependencies-builds",
+              "test-adequacy"
+            ]
+          },
+          "severity": { "type": "string", "enum": ["suggestion", "concern"] },
+          "claim": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "trigger": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "consequence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "evidenceGaps": {
+            "maxItems": 16,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+          },
+          "attribution": {
+            "type": "string",
+            "enum": ["regression", "pre-existing", "unknown"]
+          },
+          "fixScope": {
+            "type": "string",
+            "enum": ["this-change", "follow-up", "unknown"]
+          },
+          "citations": {
+            "minItems": 1,
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+                "revision": { "type": "string", "enum": ["base", "current"] },
+                "sourceDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "startLine": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65537
+                },
+                "endLine": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65537
+                },
+                "quote": { "type": "string", "minLength": 1, "maxLength": 2048 }
+              },
+              "required": [
+                "file",
+                "revision",
+                "sourceDigest",
+                "startLine",
+                "endLine",
+                "quote"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "family",
+          "severity",
+          "claim",
+          "trigger",
+          "consequence",
+          "evidenceGaps",
+          "attribution",
+          "fixScope",
+          "citations"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["files", "candidates"],
+  "additionalProperties": false
+}

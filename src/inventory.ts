@@ -34,6 +34,18 @@ function sensitive(name: string): boolean {
   );
 }
 
+// Apply the inventory's disclosure exclusions to historical regular files,
+// including paths whose directories no longer exist in the working tree.
+export function inventorySourcePath(file: string): boolean {
+  const parts = file.split("/");
+  return parts.every(
+    (name, index) =>
+      name !== ".git" &&
+      !sensitive(name) &&
+      (index === parts.length - 1 || !excludedDirectories.has(name)),
+  );
+}
+
 export async function withinRoot(
   root: string,
   relative: string,

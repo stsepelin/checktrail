@@ -3,7 +3,9 @@
 The local Claude Code and Codex clients can supply separate model families to the
 [agent evaluation workflow](AGENT-EVALUATION.md). Authentication stays with the
 installed clients. The [first cross-family pilot](CROSS-FAMILY-PILOT.md) records
-actual attempts and their protocol failures. Checktrail's engine does not call a model or acquire credentials.
+actual attempts and their protocol failures. The engine revision used by this historical trial did not call a model or
+acquire credentials. New optional provider orchestration has separate acceptance
+in REVIEW-PROVIDERS.md.
 The clients send the deliberately selected public-source packets to their providers;
 local orchestration does not mean local model inference.
 The later [isolated pilot report](ISOLATED-CROSS-FAMILY-PILOT.md) records the

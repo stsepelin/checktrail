@@ -283,6 +283,50 @@
     {
       "file": "dist/test/go-build.test.js",
       "name": "Go build profiles agree through CLI and MCP without disclosing tags or granting trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix planning expands exact required identities without executing code or leaking profile metadata"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix rejects unsafe, ambiguous and over-budget declarations before any process starts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go target preflight rejects incomplete, contradictory and duplicate native evidence and exact target near misses"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repetitions retain intermittent failures, fresh processes and every cancelled or omitted execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go target matrices compile and link cross targets while retaining host tests and unavailable foreign execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix CLI and MCP retain every execution with summary privacy and operator trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repeated race targets preserve instrumentation and independent native test counts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.staticcheck repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.golangci-lint repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go build evidence distinguishes positioned compiler failures from loading, linking, unexpected output and omitted production scope"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go production builds retain test exclusions only in checks that actually select tests"
     }
   ],
   "php-tools": [
@@ -555,6 +599,74 @@
     {
       "file": "dist/test/review.test.js",
       "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files"
+    },
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision receipts anchor deleted base source and expose attribution without verifying claims"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision citation scope never substitutes an absent revision and remains strict"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate"
+    },
+    {
+      "file": "dist/test/review-citations.test.js",
+      "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative"
     }
   ],
   "tasks": [
@@ -625,6 +737,526 @@
     {
       "file": "dist/test/validation-tasks.test.js",
       "name": "durable task close stops a live process group before recording cancellation or releasing ownership"
+    }
+  ],
+  "review-git": [
+    {
+      "file": "dist/test/review-behavior.test.js",
+      "name": "diff behavior retains moved helper behavior, unchanged decisions and deleted cross-project callers"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "snapshot assignments exclude Git history and disclose context omissions"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "diff assignments retain committed, staged, working, added and deleted evidence without filters"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "diff context rejects excluded historical source, binary data, symlinks, oversized pairs and forged hunks"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "review replacement ranges reconstruct exact line endings, additions and deletions"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "diff collection rejects HEAD and index races before returning evidence"
+    },
+    {
+      "file": "dist/test/review.test.js",
+      "name": "versioned diff contexts share CLI and MCP source gates and exact engine evidence"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "complete review contexts select exact working or staged bytes and regular-file modes"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "staged review sources retain index additions and deletions independently of the working files"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "selected file-mode changes and fabricated mode evidence invalidate review freshness"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "working snapshots carry selected modes without history and staged snapshots require a distinct future contract"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "staged source rejects selected unresolved merges symlinks invalid UTF-8 and aggregate overflows"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "mode-only collection races cannot return a supposedly current review packet"
+    },
+    {
+      "file": "dist/test/review-completeness.test.js",
+      "name": "staged context selection shares exact CLI and MCP bytes without widening operator permissions"
+    }
+  ],
+  "review-provider": [
+    {
+      "file": "dist/test/review-hypotheses.test.js",
+      "name": "hypothesis catalogue binds nine distinct invariants and leaves applicability freshness and coverage unverified"
+    },
+    {
+      "file": "dist/test/review-hypotheses.test.js",
+      "name": "hypothesis planning rejects empty duplicate unknown family selection and forged catalogue or source contracts"
+    },
+    {
+      "file": "dist/test/review-hypotheses.test.js",
+      "name": "broken fixed and near-miss family packets stay unscored until probes and independent validation supply evidence"
+    },
+    {
+      "file": "dist/test/review-hypotheses.test.js",
+      "name": "hypothesis library CLI and MCP agree without granting source execution or inference"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "stateless provider transports send only the assigned packet with no tools history memory or credential retention"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "every provider review and retry is a new stateless assignment without previous outputs or automatic model switching"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider completion does not hide omitted files unsupported evidence malformed citations refusals or tool requests"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider grants request bounds missing credentials stale source and cancellation prevent disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider retries capacity and rate limits only within operator limits and keeps unknown billed usage unknown"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider body truncation invalid encoding stalled streams and cancellation never become complete reviews"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider freshness is checked after inference and malformed usage never becomes zero cost"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider projection rejects fabricated completion accounting identities usage and detached candidates"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "CLI and MCP provider reviews share advisory accounting and startup grants cannot be elevated by tool arguments"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider admission budgets reject unfunded requests and missing prices before disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider admission budgets retain unknown and exceeded usage without clean completion or further retries"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider admission budgets charge all retries and cache tokens against the remaining allowance"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider monetary admission uses upward decimal microdollars at exact boundaries"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "retained provider budgets reject erased limits impossible retry histories and forged totals"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "provider error responses obey the same reported output allowance as successful responses"
+    }
+  ],
+  "review-probe": [
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe source changes during execution stay stale despite complete observed controls"
+    }
+  ],
+  "review-refutation": [
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "independent refutation requests disclose one unverified hypothesis without prior identity severity verdict native evidence or sibling source"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "refutation target addresses and grants reject forged quotations revisions and source digests before disclosure"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "wrong mechanisms locations remedies and model agreement remain unresolved even when an independent attempt accounts for source"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "retained refutation bindings cannot detach targets assignments receipts or check states and summary hides both sides of the attempt"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "refutation CLI and MCP use shared fresh attempts and tool arguments cannot select provider grants history or budgets"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "reviewer and refuter recheck source before capacity retries and after refused or cancelled attempts"
+    },
+    {
+      "file": "dist/test/review-refutation.test.js",
+      "name": "independent refuters inherit operator admission budgets without disclosing or promoting an unfunded assignment"
+    }
+  ],
+  "review-scoring": [
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "review scoring separates actionable correctness proper probability losses reliability and risk from complete selected-case accounting"
+    },
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "scoring retains unresolved findings missing probabilities endpoint infinite loss and absence of any review without reporting a clean cohort"
+    },
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "one-sided exact binomial limits need sufficient independent evidence and repeated clusters cannot inherit a finding-level interval"
+    },
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "scoring rejects empty or duplicate assignments out-of-cohort observations contradictory terminal labels and unfrozen thresholds"
+    },
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "retained scoring projections reconstruct every numerator denominator family bin and confidence bound and hide trial identifiers"
+    },
+    {
+      "file": "dist/test/review-scoring.test.js",
+      "name": "review scoring CLI and MCP return the shared truthful report without inference source grants or project execution"
+    }
+  ],
+  "pyright": [
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "Pyright planning never executes configuration or installed tools and reports missing prerequisites"
+    },
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "native Pyright checks namespace source and stubs, catches broken and fixed types and preserves source"
+    },
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "native Pyright refuses clean completion for excluded sources and configuration or comment suppression"
+    },
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "native Pyright accounts for versions, invalid configuration and environment-specific import errors"
+    },
+    {
+      "file": "dist/test/pyright-evidence.test.js",
+      "name": "Pyright requires exact native sources, active configuration and reconciled diagnostic counts"
+    },
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "native Pyright resolves a configured synthetic virtual environment without executing package source"
+    },
+    {
+      "file": "dist/test/pyright.test.js",
+      "name": "native Pyright shares source accounting and findings across CLI and MCP"
+    }
+  ],
+  "review-verification": [
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification uses fresh blind refutation and raw-evidence adjudication without promoting native mismatches into production claims"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification preserves agreeing controls and failed controls without claiming refutation or adjudicating incomplete native evidence"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification validates all operator grants recipe bindings quotations and argument scale before disclosure or native execution"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification retains refused capacity malformed and unfunded refutation attempts without running project code"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification source changes during adjudication invalidate native corroboration and stop fresh capacity retries"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification cancellation wall budgets and late provider failures retain every reached stage and stop further disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification retained packets reject detached recipe expectations function sources stage identities and manufactured completion"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification freezes caller supplied recipe config and source inputs across independent stages"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification CLI and MCP agree on native evidence and enforce startup-only recipe trust inference and disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "MCP verification reserves both execution slots and releases them after cancellation"
+    }
+  ],
+  "go-matrix": [
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix planning expands exact required identities without executing code or leaking profile metadata"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix rejects unsafe, ambiguous and over-budget declarations before any process starts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go target preflight rejects incomplete, contradictory and duplicate native evidence and exact target near misses"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repetitions retain intermittent failures, fresh processes and every cancelled or omitted execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go target matrices compile and link cross targets while retaining host tests and unavailable foreign execution"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go matrix CLI and MCP retain every execution with summary privacy and operator trust"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go repeated race targets preserve instrumentation and independent native test counts"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.staticcheck repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native go.golangci-lint repeated target profiles preserve per-execution diagnostics and baseline identities"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "Go build evidence distinguishes positioned compiler failures from loading, linking, unexpected output and omitted production scope"
+    },
+    {
+      "file": "dist/test/go-matrix.test.js",
+      "name": "native Go production builds retain test exclusions only in checks that actually select tests"
+    }
+  ],
+  "review-budget": [
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budgets admit exact shared call token and monetary boundaries across both fresh assignments"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate transport budgets reserve each response and charge actual request bodies before another disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budgets retain capacity retries unknown usage and input overruns without resetting at adjudication"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budget receipts reject erased limits forged totals omitted prior attempts and reset session identities"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification aggregate budget state is fresh for each run and operator zero ceilings never disclose or execute"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification CLI and MCP agree on native evidence and enforce startup-only recipe trust inference and disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "standalone aggregate provider budgets account for retries and retain partial cancelled body bytes without subsequent disclosure"
+    },
+    {
+      "file": "dist/test/review-provider.test.js",
+      "name": "aggregate provider configuration rejects ambiguous bounds and keeps legacy configuration behavior"
+    }
+  ],
+  "review-native-budget": [
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe run budgets admit exact call and output boundaries without resetting between cases"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe output overrun counts delivered stdout and stderr and stops every later case"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification native run budgets retain unfunded cases and prevent later adjudicator disclosure"
+    },
+    {
+      "file": "dist/test/review-verification.test.js",
+      "name": "verification native budgets freeze before refutation and retained operator limits cannot detach from observations"
+    },
+    {
+      "file": "dist/test/runner.test.js",
+      "name": "runner accounts raw combined bytes beyond retention without counting Unicode replacement characters"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe preparation that spends the wall allowance cannot start a project process"
+    }
+  ],
+  "review-workflow": [
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow runs reviewer refuter live native and adjudicator stages with blind packets for broken fixed and near-miss controls"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow consumes malformed forged and replayed responses without advancing or leaking failed output into a retry"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow keeps empty and partial reviews distinct and rejects reused or undeclared fresh host sessions"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow zero exact and exhausted operator budgets are immutable and do not reset on close"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow stage order foreign handles source disclosure and native execution remain independently gated"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow concurrency reservations stale source timeout and cancellation preserve reached attempt accounting"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow closing a running native case retains delivered bytes after cleanup without restoring discarded source"
+    },
+    {
+      "file": "dist/test/review-workflow.test.js",
+      "name": "neutral workflow packet preparation that spends the wall allowance cannot disclose an assignment"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow foreground CLI uses the shared provider-free engine and retains final cleanup on EOF"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow MCP uses one strict provider-free tool with startup source native and budget grants"
+    },
+    {
+      "file": "dist/test/review-workflow-surfaces.test.js",
+      "name": "neutral workflow CLI treats empty EOF and interrupted pending assignments as incomplete and rejects mismatched startup limits"
+    }
+  ],
+  "review-workflow-audit": [
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit retains issued packets invalid responses live native stages and terminal metadata without passing history to workers"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit rejects public linked existing inside-project and undisclosed storage before changing artifacts"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit reserves event and byte completion before native execution and simultaneous admissions"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit durability loss prevents new assignment disclosure and retains interrupted history"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit rejects changed reordered replayed and forged records and treats a torn tail as incomplete"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit crash leaves a durable pending native intent with unknown accounting and cannot resume it"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit bounds oversized and unserializable input honestly without treating truncated bodies as complete"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit disposal waits for native cleanup accounting before finalization"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit CLI requires startup grants keeps model-selected paths inert and reports incomplete journals explicitly"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit MCP discovery siblings and in-place legacy fallback never spend or reopen the command journal"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit reconciles serialized assignment ledgers and prevents disappearing history even with recomputed chains"
     }
   ]
 }

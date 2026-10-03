@@ -47,7 +47,7 @@ async function hostGit(root: string): Promise<string> {
   throw new Error("A host Git executable outside the project is required");
 }
 
-function gitReader(root: string) {
+export function gitReader(root: string) {
   const executable = hostGit(root);
   const deadline = Date.now() + 5000;
   let bytes = 4 * 1024 * 1024;

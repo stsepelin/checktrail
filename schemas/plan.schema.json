@@ -143,11 +143,41 @@
                   "maxLength": 64,
                   "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
                 }
+              },
+              "repetition": {
+                "type": "object",
+                "properties": {
+                  "iteration": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 16
+                  },
+                  "total": { "type": "integer", "minimum": 1, "maximum": 16 }
+                },
+                "required": ["iteration", "total"],
+                "additionalProperties": false
+              },
+              "target": {
+                "type": "object",
+                "properties": {
+                  "os": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]{0,15}$"
+                  },
+                  "arch": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]{0,15}$"
+                  },
+                  "cgo": { "type": "boolean" }
+                },
+                "required": ["os", "arch", "cgo"],
+                "additionalProperties": false
               }
             },
             "required": ["profile", "tags"],
             "additionalProperties": false
           },
+          "executionId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
           "kind": {
             "type": "string",
             "enum": ["format", "analysis", "test", "syntax", "unsupported"]
@@ -163,6 +193,7 @@
               "unittest",
               "go-scope-test",
               "go-scope-analysis",
+              "go-build",
               "golangci-json",
               "staticcheck-json",
               "go-json",
@@ -186,6 +217,7 @@
               "silent-syntax",
               "ruff-json",
               "mypy-json",
+              "pyright-json",
               "phpstan-json",
               "phpunit-junit",
               "pint-json"

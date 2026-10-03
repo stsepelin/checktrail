@@ -1,5 +1,30 @@
 #!/usr/bin/env node
+import { inspectReviewWorkflowAudit } from "./review-workflow-audit.js";
+import {
+  loadReviewWorkflowLimits,
+  serveReviewSession,
+} from "./review-workflow-cli.js";
+import {
+  runReviewVerification,
+  projectReviewVerification,
+} from "./review-verification.js";
+import { reviewNativeBudgetLimitsSchema } from "./review-probe-schema.js";
+import {
+  runReviewProbe,
+  projectReviewProbe,
+  loadPinnedReviewProbe,
+} from "./review-probe.js";
+import {
+  runProviderRefutation,
+  projectProviderRefutation,
+} from "./review-refutation.js";
+import { scoreReviewTrials, projectReviewScoring } from "./review-scoring.js";
 import path from "node:path";
+import {
+  loadReviewProviderConfig,
+  runProviderReview,
+  projectProviderReview,
+} from "./review-provider.js";
 import {
   initialize,
   diagnose,
@@ -13,6 +38,10 @@ import {
   receiveReview,
   projectReviewReceipt,
 } from "./review.js";
+import {
+  createHypothesisPlan,
+  projectHypothesisPlan,
+} from "./review-hypotheses.js";
 import { fetchPolicyPack } from "./fetch-pack.js";
 import {
   externalReferencesSchema,
@@ -63,6 +92,10 @@ async function main(): Promise<void> {
       input: { type: "string" },
       context: { type: "string" },
       "allow-review-source": { type: "boolean", default: false },
+      "allow-provider-source": { type: "boolean", default: false },
+      "allow-inference": { type: "boolean", default: false },
+      "provider-config": { type: "string" },
+      probe: { type: "string", multiple: true },
       url: { type: "string" },
       sha256: { type: "string" },
       output: { type: "string" },
@@ -79,6 +112,12 @@ async function main(): Promise<void> {
       adapter: { type: "string", multiple: true },
       "allow-env": { type: "string", multiple: true },
       "timeout-ms": { type: "string", default: "30000" },
+      "workflow-limits": { type: "string" },
+      "workflow-audit": { type: "string" },
+      "workflow-audit-max-bytes": { type: "string" },
+      "workflow-audit-max-events": { type: "string" },
+      "native-max-calls": { type: "string" },
+      "native-max-output-bytes": { type: "string" },
       help: { type: "boolean", default: false },
       version: { type: "boolean", default: false },
     },
@@ -89,7 +128,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -115,13 +154,118 @@ async function main(): Promise<void> {
   if (
     values["allow-review-source"] &&
     (!values.detailed ||
-      !["review-context", "review-receipt", "serve"].includes(command!))
+      ![
+        "review-context",
+        "review-receipt",
+        "review-run",
+        "review-refute",
+        "review-probe",
+        "review-verify",
+        "review-session",
+        "serve",
+      ].includes(command!))
   )
     throw new Error(
       "Review source disclosure requires --detailed with review-context, review-receipt or serve",
     );
-  if (values.context !== undefined && command !== "review-receipt")
-    throw new Error("--context applies only to review-receipt");
+  if (
+    values.context !== undefined &&
+    ![
+      "review-receipt",
+      "review-hypotheses",
+      "review-run",
+      "review-refute",
+      "review-probe",
+      "review-verify",
+    ].includes(command!)
+  )
+    throw new Error(
+      "--context applies only to review-receipt and review-hypotheses",
+    );
+  if (
+    (values["provider-config"] !== undefined ||
+      values["allow-inference"] ||
+      values["allow-provider-source"]) &&
+    !["review-run", "review-refute", "review-verify", "serve"].includes(
+      command!,
+    )
+  )
+    throw new Error(
+      "Provider configuration and inference grants apply only to review-run or serve",
+    );
+  if (
+    values["workflow-limits"] !== undefined &&
+    !["review-session", "serve"].includes(command!)
+  )
+    throw new Error("Workflow limits apply only to review-session or serve");
+  const auditFlags =
+    values["workflow-audit"] !== undefined ||
+    values["workflow-audit-max-bytes"] !== undefined ||
+    values["workflow-audit-max-events"] !== undefined;
+  if (
+    auditFlags &&
+    (!["serve", "review-session"].includes(command!) ||
+      !values["workflow-audit"])
+  )
+    throw new Error(
+      "Workflow audit flags require serve/review-session and an operator audit path",
+    );
+  const workflowAudit = values["workflow-audit"]
+    ? {
+        file: path.resolve(values["workflow-audit"]),
+        ...(values["workflow-audit-max-bytes"] !== undefined
+          ? { maxBytes: Number(values["workflow-audit-max-bytes"]) }
+          : {}),
+        ...(values["workflow-audit-max-events"] !== undefined
+          ? { maxEvents: Number(values["workflow-audit-max-events"]) }
+          : {}),
+      }
+    : undefined;
+  const workflowLimits =
+    values["workflow-limits"] !== undefined
+      ? await loadReviewWorkflowLimits(path.resolve(values["workflow-limits"]))
+      : undefined;
+  const nativeBudgetFlags =
+    values["native-max-calls"] !== undefined ||
+    values["native-max-output-bytes"] !== undefined;
+  if (
+    nativeBudgetFlags &&
+    !["review-probe", "review-verify", "review-session", "serve"].includes(
+      command!,
+    )
+  )
+    throw new Error(
+      "Native review budgets apply only to review-probe, review-verify or serve",
+    );
+  const nativeBudget = nativeBudgetFlags
+    ? {
+        maxCalls:
+          values["native-max-calls"] === undefined
+            ? 16
+            : Number(values["native-max-calls"]),
+        maxOutputBytes:
+          values["native-max-output-bytes"] === undefined
+            ? 65536
+            : Number(values["native-max-output-bytes"]),
+      }
+    : undefined;
+  if (nativeBudget) reviewNativeBudgetLimitsSchema.parse(nativeBudget);
+  if (
+    values.probe &&
+    !["review-probe", "review-verify", "review-session", "serve"].includes(
+      command!,
+    )
+  )
+    throw new Error(
+      "Operator probe registration applies only to review-probe or serve",
+    );
+  if (
+    values["allow-inference"] &&
+    (!values["provider-config"] || !values["allow-provider-source"])
+  )
+    throw new Error(
+      "Inference requires --provider-config and --allow-provider-source",
+    );
   if (
     command !== "fetch-pack" &&
     (values.url !== undefined ||
@@ -253,6 +397,42 @@ async function main(): Promise<void> {
     }
     return;
   }
+  if (command === "review-audit") {
+    if (!values.input)
+      throw new Error("Review-audit requires an operator input file");
+    const audit = inspectReviewWorkflowAudit(path.resolve(values.input));
+    print(audit);
+    if (
+      audit.journalStatus !== "sealed" ||
+      !audit.nativeAccountingComplete ||
+      !audit.allCommandBodiesRetained ||
+      !audit.commands.started ||
+      audit.workflows.some(
+        (workflow) => workflow.disposition === "not-complete",
+      )
+    )
+      process.exitCode = 2;
+    return;
+  }
+  if (command === "review-session") {
+    if (values.input || values.context || values["allow-execution"])
+      throw new Error(
+        "Review-session uses JSON-lines stdin and --trust-project for optional native execution",
+      );
+    await serveReviewSession(root, {
+      allowReviewSource: values["allow-review-source"],
+      trusted: values["trust-project"],
+      ...(workflowLimits ? { limits: workflowLimits } : {}),
+      ...(workflowAudit ? { audit: workflowAudit } : {}),
+      probes: await Promise.all(
+        (values.probe ?? []).map(loadPinnedReviewProbe),
+      ),
+      nativeWallMs: Number(values["timeout-ms"]),
+      maxNativeOutputBytes: 65536,
+      ...(nativeBudget ? { nativeBudget } : {}),
+    });
+    return;
+  }
   if (command === "review-context") {
     if (!values.input)
       throw new Error("review-context requires --input selection.json");
@@ -265,6 +445,218 @@ async function main(): Promise<void> {
         values["allow-review-source"],
       ),
     );
+    return;
+  }
+  if (command === "review-score") {
+    if (!values.input)
+      throw new Error("review-score requires --input scoring-input.json");
+    print(
+      projectReviewScoring(
+        scoreReviewTrials(
+          JSON.parse(await readProjectFile(root, values.input)),
+        ),
+        values.detailed,
+      ),
+    );
+    return;
+  }
+  if (command === "review-hypotheses") {
+    if (!values.context)
+      throw new Error("review-hypotheses requires --context context.json");
+    print(
+      projectHypothesisPlan(
+        createHypothesisPlan(
+          JSON.parse(await readProjectFile(root, values.context)),
+          values.input
+            ? JSON.parse(await readProjectFile(root, values.input))
+            : undefined,
+        ),
+        values.detailed,
+      ),
+    );
+    return;
+  }
+  if (command === "review-probe") {
+    if (values.detailed && !values["allow-review-source"])
+      throw new Error(
+        "Detailed review probes require operator source-output permission",
+      );
+    if (
+      !values.context ||
+      !values.input ||
+      values.probe?.length !== 1 ||
+      !values["trust-project"]
+    )
+      throw new Error(
+        "review-probe requires --context, --input candidate, one --probe PATH#sha256=DIGEST and --trust-project",
+      );
+    const recipe = await loadPinnedReviewProbe(values.probe[0]!);
+    const controller = new AbortController();
+    const cancel = (): void => controller.abort();
+    process.once("SIGINT", cancel);
+    process.once("SIGTERM", cancel);
+    try {
+      const result = await runReviewProbe(
+        root,
+        JSON.parse(await readProjectFile(root, values.context)),
+        JSON.parse(await readProjectFile(root, values.input)),
+        {
+          trusted: true,
+          recipe,
+          ...(nativeBudget ? { nativeBudget } : {}),
+          timeoutMs: Number(values["timeout-ms"]),
+          signal: controller.signal,
+        },
+      );
+      print(projectReviewProbe(result, values.detailed));
+      process.exitCode = result.status === "completed" ? 0 : 2;
+    } finally {
+      process.removeListener("SIGINT", cancel);
+      process.removeListener("SIGTERM", cancel);
+    }
+    return;
+  }
+  if (command === "review-verify") {
+    if (values.detailed && !values["allow-review-source"])
+      throw new Error(
+        "Detailed verification requires operator source-output permission",
+      );
+    if (
+      !values.context ||
+      !values.input ||
+      values.probe?.length !== 1 ||
+      !values["trust-project"] ||
+      !values["provider-config"] ||
+      !values["allow-inference"] ||
+      !values["allow-provider-source"]
+    )
+      throw new Error(
+        "review-verify requires --context, --input candidate, one pinned --probe, --trust-project, --provider-config, --allow-inference and --allow-provider-source",
+      );
+    const recipe = await loadPinnedReviewProbe(values.probe[0]!);
+    const config = await loadReviewProviderConfig(
+      path.resolve(values["provider-config"]),
+    );
+    const controller = new AbortController();
+    const cancel = (): void => controller.abort();
+    process.once("SIGINT", cancel);
+    process.once("SIGTERM", cancel);
+    try {
+      const run = await runReviewVerification(
+        root,
+        JSON.parse(await readProjectFile(root, values.context)),
+        JSON.parse(await readProjectFile(root, values.input)),
+        {
+          trusted: true,
+          recipe,
+          ...(nativeBudget ? { nativeBudget } : {}),
+          wallMs: Number(values["timeout-ms"]),
+          signal: controller.signal,
+          provider: {
+            config,
+            allowInference: true,
+            allowSourceDisclosure: true,
+          },
+        },
+      );
+      print(
+        projectReviewVerification(
+          run,
+          values.detailed,
+          values["allow-review-source"],
+        ),
+      );
+      process.exitCode = run.status === "completed" ? 0 : 2;
+    } finally {
+      process.removeListener("SIGINT", cancel);
+      process.removeListener("SIGTERM", cancel);
+    }
+    return;
+  }
+  if (command === "review-refute") {
+    if (
+      !values.context ||
+      !values.input ||
+      !values["provider-config"] ||
+      !values["allow-inference"] ||
+      !values["allow-provider-source"]
+    )
+      throw new Error(
+        "review-refute requires --input candidate, --context, --provider-config, --allow-inference and --allow-provider-source",
+      );
+    const config = await loadReviewProviderConfig(
+      path.resolve(values["provider-config"]),
+    );
+    const controller = new AbortController();
+    const cancel = (): void => controller.abort();
+    process.once("SIGINT", cancel);
+    process.once("SIGTERM", cancel);
+    try {
+      const result = await runProviderRefutation(
+        root,
+        JSON.parse(await readProjectFile(root, values.context)),
+        JSON.parse(await readProjectFile(root, values.input)),
+        {
+          config,
+          allowInference: true,
+          allowSourceDisclosure: true,
+          signal: controller.signal,
+        },
+      );
+      print(
+        projectProviderRefutation(
+          result,
+          values.detailed,
+          values["allow-review-source"],
+        ),
+      );
+      process.exitCode = result.verifier.status === "completed" ? 0 : 2;
+    } finally {
+      process.removeListener("SIGINT", cancel);
+      process.removeListener("SIGTERM", cancel);
+    }
+    return;
+  }
+  if (command === "review-run") {
+    if (
+      !values.context ||
+      !values["provider-config"] ||
+      !values["allow-inference"] ||
+      !values["allow-provider-source"]
+    )
+      throw new Error(
+        "review-run requires --context, --provider-config, --allow-inference and --allow-provider-source",
+      );
+    const config = await loadReviewProviderConfig(
+      path.resolve(values["provider-config"]),
+    );
+    const controller = new AbortController();
+    const cancel = (): void => controller.abort();
+    process.once("SIGINT", cancel);
+    process.once("SIGTERM", cancel);
+    try {
+      const result = await runProviderReview(
+        root,
+        JSON.parse(await readProjectFile(root, values.context)),
+        {
+          config,
+          allowInference: true,
+          allowSourceDisclosure: true,
+          signal: controller.signal,
+        },
+      );
+      print(
+        projectProviderReview(
+          result,
+          values.detailed,
+          values["allow-review-source"],
+        ),
+      );
+      process.exitCode = result.status === "completed" ? 0 : 2;
+    } finally {
+      process.removeListener("SIGINT", cancel);
+      process.removeListener("SIGTERM", cancel);
+    }
     return;
   }
   if (command === "review-receipt") {
@@ -456,11 +848,36 @@ async function main(): Promise<void> {
   if (command === "serve") {
     await serve({
       root,
+      ...(workflowLimits ? { reviewWorkflowLimits: workflowLimits } : {}),
       allowExecution: values["allow-execution"],
+      ...(values.probe
+        ? {
+            reviewProbes: await Promise.all(
+              values.probe.map(loadPinnedReviewProbe),
+            ),
+            probeLimits: {
+              wallMs: Number(values["timeout-ms"]),
+              maxOutputBytes: 65536,
+              ...(nativeBudget ? { nativeBudget } : {}),
+            },
+          }
+        : {}),
+      ...(workflowAudit ? { reviewWorkflowAudit: workflowAudit } : {}),
       allowReviewSource: values["allow-review-source"],
       detailed: values.detailed,
       environment,
       externalAdapters,
+      ...(values["provider-config"]
+        ? {
+            reviewProvider: {
+              config: await loadReviewProviderConfig(
+                path.resolve(values["provider-config"]),
+              ),
+              allowInference: values["allow-inference"],
+              allowSourceDisclosure: values["allow-provider-source"],
+            },
+          }
+        : {}),
       ...(values.base !== undefined ? { base: values.base } : {}),
       ...(values["policy-overlay"] !== undefined
         ? { policyOverlay: values["policy-overlay"] }

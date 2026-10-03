@@ -70,7 +70,12 @@ for (const [location, entry] of Object.entries(lock.packages).sort(([a], [b]) =>
   assert.equal(new URL(entry.resolved).origin, "https://registry.npmjs.org");
   const notices = [];
   for (const name of (await readdir(directory)).sort()) {
-    if (!/^(?:licen[cs]e|copying|notice)(?:[.-]|$)/i.test(name)) continue;
+    if (
+      !/^(?:licen[cs]e|copying|notice)(?:[.-]|$)|^ThirdPartyNoticeText\.txt$/i.test(
+        name,
+      )
+    )
+      continue;
     const file = path.join(directory, name);
     const stat = await lstat(file);
     assert.ok(

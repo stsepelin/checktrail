@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "maxBytes": {
+      "default": 67108864,
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 134217728
+    },
+    "maxEvents": {
+      "default": 1024,
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4096
+    }
+  },
+  "required": ["file", "maxBytes", "maxEvents"],
+  "additionalProperties": false
+}

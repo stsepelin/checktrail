@@ -1,0 +1,4726 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "format": { "type": "string", "const": "review-verification-run" },
+        "engineVersion": { "type": "string" },
+        "channel": { "type": "string", "const": "advisory" },
+        "claimsVerified": { "type": "boolean", "const": false },
+        "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+        "resolution": { "type": "string", "const": "unresolved" },
+        "severity": { "type": "string", "const": "unassigned" },
+        "severityBasis": {
+          "type": "string",
+          "const": "consequence-not-established"
+        },
+        "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "targetDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "recipeDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "refutationDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "probeDigest": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "adjudicationDigest": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "incomplete", "stale", "cancelled", "timed-out"]
+        },
+        "stopReason": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "refutation-incomplete",
+            "probe-incomplete",
+            "adjudication-incomplete",
+            "stale",
+            "cancelled",
+            "timed-out"
+          ]
+        },
+        "freshness": { "type": "string", "enum": ["current", "stale"] },
+        "evidenceTier": {
+          "type": "string",
+          "enum": [
+            "native-expectation-mismatch",
+            "native-controls-observed",
+            "no-current-native-evidence"
+          ]
+        },
+        "budgetScope": {
+          "type": "string",
+          "enum": ["per-provider-assignment", "verification-run"]
+        },
+        "independence": {
+          "type": "object",
+          "properties": {
+            "refuterNativeEvidence": { "type": "boolean", "const": false },
+            "adjudicatorInput": {
+              "type": "string",
+              "const": "raw-native-observations-and-unverified-hypotheses"
+            },
+            "priorProviderIdentities": { "type": "boolean", "const": false },
+            "priorSeverityAndConfidence": { "type": "boolean", "const": false },
+            "priorVerdicts": { "type": "boolean", "const": false },
+            "sessions": {
+              "type": "string",
+              "const": "fresh-stateless-inline-api"
+            }
+          },
+          "required": [
+            "refuterNativeEvidence",
+            "adjudicatorInput",
+            "priorProviderIdentities",
+            "priorSeverityAndConfidence",
+            "priorVerdicts",
+            "sessions"
+          ],
+          "additionalProperties": false
+        },
+        "mechanism": { "type": "string", "const": "not-established" },
+        "callerReachability": { "type": "string", "const": "not-established" },
+        "intendedPolicy": { "type": "string", "const": "not-established" },
+        "consequence": { "type": "string", "const": "not-established" },
+        "fixFeasibility": { "type": "string", "const": "not-established" },
+        "refutation": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 1 },
+            "format": { "type": "string", "const": "review-refutation-run" },
+            "channel": { "type": "string", "const": "advisory" },
+            "claimsVerified": { "type": "boolean", "const": false },
+            "deterministicOutcomeChanged": {
+              "type": "boolean",
+              "const": false
+            },
+            "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "targetDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "assignmentDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "resolution": { "type": "string", "const": "unresolved" },
+            "disposition": {
+              "type": "string",
+              "enum": ["refutation-attempt-completed", "no-complete-attempt"]
+            },
+            "checks": {
+              "minItems": 9,
+              "maxItems": 9,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "dimension": {
+                    "type": "string",
+                    "enum": [
+                      "current-address",
+                      "mechanism",
+                      "defaults",
+                      "sibling-family",
+                      "caller-reachability",
+                      "trigger-scale",
+                      "test-adequacy",
+                      "fix-feasibility",
+                      "change-scope"
+                    ]
+                  },
+                  "status": { "type": "string", "const": "not-established" }
+                },
+                "required": ["dimension", "status"],
+                "additionalProperties": false
+              }
+            },
+            "independence": {
+              "type": "object",
+              "properties": {
+                "targetVisibility": {
+                  "type": "string",
+                  "const": "one-unverified-hypothesis"
+                },
+                "priorReviewerResults": { "type": "boolean", "const": false },
+                "originalReviewerIdentity": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "originalSeverityAndConfidence": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "nativeEvidenceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "targetVisibility",
+                "priorReviewerResults",
+                "originalReviewerIdentity",
+                "originalSeverityAndConfidence",
+                "nativeEvidenceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            "verifier": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "format": { "type": "string", "const": "review-provider-run" },
+                "engineVersion": { "type": "string" },
+                "channel": { "type": "string", "const": "advisory" },
+                "claimsVerified": { "type": "boolean", "const": false },
+                "automatedCoverage": { "type": "boolean", "const": false },
+                "deterministicOutcomeChanged": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "runId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "contextDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "configDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "packetDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "catalogueDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": ["openai-responses", "anthropic-messages"]
+                },
+                "requestedModel": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "completed",
+                    "incomplete",
+                    "cancelled",
+                    "timed-out",
+                    "stale",
+                    "budget-exhausted",
+                    "unavailable"
+                  ]
+                },
+                "disposition": {
+                  "type": "string",
+                  "enum": ["advisory-completed", "no-complete-review"]
+                },
+                "freshness": {
+                  "type": "string",
+                  "enum": ["current", "stale", "not-checked"]
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "wallMs": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120000
+                    },
+                    "maxAttempts": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 3
+                    },
+                    "retryDelayMs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "maxRequestBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxResponseBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65536
+                    },
+                    "admissionBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "aggregateBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "maxCalls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6
+                        },
+                        "maxRequestBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        },
+                        "maxResponseBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd",
+                        "maxCalls",
+                        "maxRequestBodyBytes",
+                        "maxResponseBodyBytes"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "wallMs",
+                    "maxAttempts",
+                    "retryDelayMs",
+                    "maxRequestBytes",
+                    "maxResponseBytes",
+                    "maxOutputTokens"
+                  ],
+                  "additionalProperties": false
+                },
+                "budget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-run-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable",
+                        "call-limit-exceeded",
+                        "request-byte-limit-exceeded",
+                        "response-byte-limit-exceeded",
+                        "response-reservation-does-not-fit"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "priorAttempts": {
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "completed",
+                              "capacity",
+                              "rate-limited",
+                              "authentication",
+                              "unavailable",
+                              "refused",
+                              "output-limit",
+                              "incomplete",
+                              "malformed",
+                              "tool-request",
+                              "transport-error",
+                              "timed-out",
+                              "cancelled",
+                              "budget-exhausted"
+                            ]
+                          },
+                          "durationMs": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "responseBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "requestBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "observedModel": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 256
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "usage": {
+                            "type": "object",
+                            "properties": {
+                              "inputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "outputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costUSD": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costProvenance": {
+                                "type": "string",
+                                "enum": ["unknown", "operator-rates-estimate"]
+                              }
+                            },
+                            "required": [
+                              "inputTokens",
+                              "outputTokens",
+                              "costUSD",
+                              "costProvenance"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "durationMs",
+                          "responseBytes",
+                          "observedModel",
+                          "usage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "requestBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "observedRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "transportByteCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed",
+                    "id",
+                    "priorAttempts",
+                    "requestBytes",
+                    "observedCalls",
+                    "observedRequestBodyBytes",
+                    "observedResponseBodyBytes",
+                    "transportByteCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "attempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "usage": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "outputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costUSD": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1000000 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costProvenance": {
+                      "type": "string",
+                      "enum": ["unknown", "operator-rates-estimate"]
+                    },
+                    "attemptsWithUnknownUsage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  },
+                  "required": [
+                    "inputTokens",
+                    "outputTokens",
+                    "costUSD",
+                    "costProvenance",
+                    "attemptsWithUnknownUsage"
+                  ],
+                  "additionalProperties": false
+                },
+                "independence": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "stateless-inline-api-v1"
+                    },
+                    "priorMessages": { "type": "number", "const": 0 },
+                    "tools": { "type": "number", "const": 0 },
+                    "historyRetrieval": { "type": "boolean", "const": false },
+                    "localMemory": { "type": "boolean", "const": false },
+                    "providerTrainingContamination": {
+                      "type": "string",
+                      "const": "unknown"
+                    },
+                    "providerRetention": {
+                      "type": "string",
+                      "const": "provider-policy"
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "priorMessages",
+                    "tools",
+                    "historyRetrieval",
+                    "localMemory",
+                    "providerTrainingContamination",
+                    "providerRetention"
+                  ],
+                  "additionalProperties": false
+                },
+                "nativeExecution": { "type": "boolean", "const": false },
+                "selectedPaths": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16
+                },
+                "declaredReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "declaredNotReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "unaccounted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
+                },
+                "matchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unmatchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sourceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "schemaVersion",
+                "format",
+                "engineVersion",
+                "channel",
+                "claimsVerified",
+                "automatedCoverage",
+                "deterministicOutcomeChanged",
+                "runId",
+                "contextDigest",
+                "configDigest",
+                "packetDigest",
+                "catalogueDigest",
+                "provider",
+                "requestedModel",
+                "status",
+                "disposition",
+                "freshness",
+                "durationMs",
+                "limits",
+                "attempts",
+                "usage",
+                "independence",
+                "nativeExecution",
+                "selectedPaths",
+                "declaredReviewed",
+                "declaredNotReviewed",
+                "unaccounted",
+                "candidates",
+                "matchedCitations",
+                "unmatchedCitations",
+                "sourceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            "sourceIncluded": { "type": "boolean", "const": false }
+          },
+          "required": [
+            "schemaVersion",
+            "format",
+            "channel",
+            "claimsVerified",
+            "deterministicOutcomeChanged",
+            "contextDigest",
+            "targetDigest",
+            "assignmentDigest",
+            "resolution",
+            "disposition",
+            "checks",
+            "independence",
+            "verifier",
+            "sourceIncluded"
+          ],
+          "additionalProperties": false
+        },
+        "probe": {
+          "anyOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "format": { "type": "string", "const": "review-probe-run" },
+                    "engineVersion": { "type": "string" },
+                    "channel": { "type": "string", "const": "advisory" },
+                    "claimsVerified": { "type": "boolean", "const": false },
+                    "deterministicOutcomeChanged": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "nativeExecution": { "type": "boolean" },
+                    "executionSandboxed": { "type": "boolean", "const": false },
+                    "profile": {
+                      "type": "string",
+                      "const": "node-export-boolean-v1"
+                    },
+                    "recipeDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "workerDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "sourceDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "functionRange": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "end": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": ["start", "end"],
+                      "additionalProperties": false
+                    },
+                    "minimumTriggerScale": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1024
+                    },
+                    "guard": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            }
+                          },
+                          "required": ["start", "end"],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "contextDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "candidateDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "runtime": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string", "const": "node" },
+                        "version": { "type": "string" }
+                      },
+                      "required": ["name", "version"],
+                      "additionalProperties": false
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "incomplete",
+                        "cancelled",
+                        "timed-out",
+                        "stale",
+                        "unsupported"
+                      ]
+                    },
+                    "behavior": {
+                      "type": "string",
+                      "enum": ["violated", "satisfied", "unresolved"]
+                    },
+                    "requirementProvenance": {
+                      "type": "string",
+                      "const": "operator-pinned-expectations"
+                    },
+                    "callerReachability": {
+                      "type": "string",
+                      "const": "not-established"
+                    },
+                    "mechanismVerified": { "type": "boolean", "const": false },
+                    "fixVerified": { "type": "boolean", "const": false },
+                    "freshness": {
+                      "type": "string",
+                      "enum": ["current", "stale"]
+                    },
+                    "temporaryArtifacts": {
+                      "type": "string",
+                      "enum": ["removed", "cleanup-failed", "not-created"]
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "observed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "notRun": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "triggerMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "controlMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": [
+                        "selected",
+                        "observed",
+                        "unresolved",
+                        "notRun",
+                        "triggerMismatches",
+                        "controlMismatches"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "schemaVersion": { "type": "number", "const": 1 },
+                    "sourceIncluded": { "type": "boolean", "const": false }
+                  },
+                  "required": [
+                    "format",
+                    "engineVersion",
+                    "channel",
+                    "claimsVerified",
+                    "deterministicOutcomeChanged",
+                    "nativeExecution",
+                    "executionSandboxed",
+                    "profile",
+                    "recipeDigest",
+                    "workerDigest",
+                    "sourceDigest",
+                    "functionRange",
+                    "minimumTriggerScale",
+                    "guard",
+                    "contextDigest",
+                    "candidateDigest",
+                    "runtime",
+                    "status",
+                    "behavior",
+                    "requirementProvenance",
+                    "callerReachability",
+                    "mechanismVerified",
+                    "fixVerified",
+                    "freshness",
+                    "temporaryArtifacts",
+                    "counts",
+                    "schemaVersion",
+                    "sourceIncluded"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "format": { "type": "string", "const": "review-probe-run" },
+                    "engineVersion": { "type": "string" },
+                    "channel": { "type": "string", "const": "advisory" },
+                    "claimsVerified": { "type": "boolean", "const": false },
+                    "deterministicOutcomeChanged": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "nativeExecution": { "type": "boolean" },
+                    "executionSandboxed": { "type": "boolean", "const": false },
+                    "profile": {
+                      "type": "string",
+                      "const": "node-export-boolean-v1"
+                    },
+                    "recipeDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "workerDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "sourceDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "functionRange": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "end": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": ["start", "end"],
+                      "additionalProperties": false
+                    },
+                    "minimumTriggerScale": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1024
+                    },
+                    "guard": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            }
+                          },
+                          "required": ["start", "end"],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "contextDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "candidateDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "runtime": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string", "const": "node" },
+                        "version": { "type": "string" }
+                      },
+                      "required": ["name", "version"],
+                      "additionalProperties": false
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "incomplete",
+                        "cancelled",
+                        "timed-out",
+                        "stale",
+                        "unsupported"
+                      ]
+                    },
+                    "behavior": {
+                      "type": "string",
+                      "enum": ["violated", "satisfied", "unresolved"]
+                    },
+                    "requirementProvenance": {
+                      "type": "string",
+                      "const": "operator-pinned-expectations"
+                    },
+                    "callerReachability": {
+                      "type": "string",
+                      "const": "not-established"
+                    },
+                    "mechanismVerified": { "type": "boolean", "const": false },
+                    "fixVerified": { "type": "boolean", "const": false },
+                    "freshness": {
+                      "type": "string",
+                      "enum": ["current", "stale"]
+                    },
+                    "temporaryArtifacts": {
+                      "type": "string",
+                      "enum": ["removed", "cleanup-failed", "not-created"]
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "observed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "notRun": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "triggerMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "controlMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": [
+                        "selected",
+                        "observed",
+                        "unresolved",
+                        "notRun",
+                        "triggerMismatches",
+                        "controlMismatches"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "schemaVersion": { "type": "number", "const": 2 },
+                    "nativeBudget": {
+                      "type": "object",
+                      "properties": {
+                        "scope": {
+                          "type": "string",
+                          "const": "native-probe-run"
+                        },
+                        "limits": {
+                          "type": "object",
+                          "properties": {
+                            "maxCalls": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 16
+                            },
+                            "maxOutputBytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 16777216
+                            },
+                            "wallMs": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 120000
+                            },
+                            "maxCallOutputBytes": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 1048576
+                            }
+                          },
+                          "required": [
+                            "maxCalls",
+                            "maxOutputBytes",
+                            "wallMs",
+                            "maxCallOutputBytes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "calls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 16
+                        },
+                        "outputBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "stopReason": {
+                          "type": "string",
+                          "enum": ["none", "call-limit", "output-limit"]
+                        },
+                        "outputByteCeilingGuaranteed": {
+                          "type": "boolean",
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "scope",
+                        "limits",
+                        "calls",
+                        "outputBytes",
+                        "stopReason",
+                        "outputByteCeilingGuaranteed"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "sourceIncluded": { "type": "boolean", "const": false }
+                  },
+                  "required": [
+                    "format",
+                    "engineVersion",
+                    "channel",
+                    "claimsVerified",
+                    "deterministicOutcomeChanged",
+                    "nativeExecution",
+                    "executionSandboxed",
+                    "profile",
+                    "recipeDigest",
+                    "workerDigest",
+                    "sourceDigest",
+                    "functionRange",
+                    "minimumTriggerScale",
+                    "guard",
+                    "contextDigest",
+                    "candidateDigest",
+                    "runtime",
+                    "status",
+                    "behavior",
+                    "requirementProvenance",
+                    "callerReachability",
+                    "mechanismVerified",
+                    "fixVerified",
+                    "freshness",
+                    "temporaryArtifacts",
+                    "counts",
+                    "schemaVersion",
+                    "nativeBudget",
+                    "sourceIncluded"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "adjudication": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "format": { "type": "string", "const": "review-provider-run" },
+                "engineVersion": { "type": "string" },
+                "channel": { "type": "string", "const": "advisory" },
+                "claimsVerified": { "type": "boolean", "const": false },
+                "automatedCoverage": { "type": "boolean", "const": false },
+                "deterministicOutcomeChanged": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "runId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "contextDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "configDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "packetDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "catalogueDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": ["openai-responses", "anthropic-messages"]
+                },
+                "requestedModel": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "completed",
+                    "incomplete",
+                    "cancelled",
+                    "timed-out",
+                    "stale",
+                    "budget-exhausted",
+                    "unavailable"
+                  ]
+                },
+                "disposition": {
+                  "type": "string",
+                  "enum": ["advisory-completed", "no-complete-review"]
+                },
+                "freshness": {
+                  "type": "string",
+                  "enum": ["current", "stale", "not-checked"]
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "wallMs": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120000
+                    },
+                    "maxAttempts": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 3
+                    },
+                    "retryDelayMs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "maxRequestBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxResponseBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65536
+                    },
+                    "admissionBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "aggregateBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "maxCalls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6
+                        },
+                        "maxRequestBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        },
+                        "maxResponseBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd",
+                        "maxCalls",
+                        "maxRequestBodyBytes",
+                        "maxResponseBodyBytes"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "wallMs",
+                    "maxAttempts",
+                    "retryDelayMs",
+                    "maxRequestBytes",
+                    "maxResponseBytes",
+                    "maxOutputTokens"
+                  ],
+                  "additionalProperties": false
+                },
+                "budget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-run-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable",
+                        "call-limit-exceeded",
+                        "request-byte-limit-exceeded",
+                        "response-byte-limit-exceeded",
+                        "response-reservation-does-not-fit"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "priorAttempts": {
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "completed",
+                              "capacity",
+                              "rate-limited",
+                              "authentication",
+                              "unavailable",
+                              "refused",
+                              "output-limit",
+                              "incomplete",
+                              "malformed",
+                              "tool-request",
+                              "transport-error",
+                              "timed-out",
+                              "cancelled",
+                              "budget-exhausted"
+                            ]
+                          },
+                          "durationMs": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "responseBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "requestBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "observedModel": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 256
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "usage": {
+                            "type": "object",
+                            "properties": {
+                              "inputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "outputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costUSD": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costProvenance": {
+                                "type": "string",
+                                "enum": ["unknown", "operator-rates-estimate"]
+                              }
+                            },
+                            "required": [
+                              "inputTokens",
+                              "outputTokens",
+                              "costUSD",
+                              "costProvenance"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "durationMs",
+                          "responseBytes",
+                          "observedModel",
+                          "usage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "requestBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "observedRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "transportByteCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed",
+                    "id",
+                    "priorAttempts",
+                    "requestBytes",
+                    "observedCalls",
+                    "observedRequestBodyBytes",
+                    "observedResponseBodyBytes",
+                    "transportByteCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "attempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "usage": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "outputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costUSD": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1000000 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costProvenance": {
+                      "type": "string",
+                      "enum": ["unknown", "operator-rates-estimate"]
+                    },
+                    "attemptsWithUnknownUsage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  },
+                  "required": [
+                    "inputTokens",
+                    "outputTokens",
+                    "costUSD",
+                    "costProvenance",
+                    "attemptsWithUnknownUsage"
+                  ],
+                  "additionalProperties": false
+                },
+                "independence": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "stateless-inline-api-v1"
+                    },
+                    "priorMessages": { "type": "number", "const": 0 },
+                    "tools": { "type": "number", "const": 0 },
+                    "historyRetrieval": { "type": "boolean", "const": false },
+                    "localMemory": { "type": "boolean", "const": false },
+                    "providerTrainingContamination": {
+                      "type": "string",
+                      "const": "unknown"
+                    },
+                    "providerRetention": {
+                      "type": "string",
+                      "const": "provider-policy"
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "priorMessages",
+                    "tools",
+                    "historyRetrieval",
+                    "localMemory",
+                    "providerTrainingContamination",
+                    "providerRetention"
+                  ],
+                  "additionalProperties": false
+                },
+                "nativeExecution": { "type": "boolean", "const": false },
+                "selectedPaths": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16
+                },
+                "declaredReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "declaredNotReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "unaccounted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
+                },
+                "matchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unmatchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sourceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "schemaVersion",
+                "format",
+                "engineVersion",
+                "channel",
+                "claimsVerified",
+                "automatedCoverage",
+                "deterministicOutcomeChanged",
+                "runId",
+                "contextDigest",
+                "configDigest",
+                "packetDigest",
+                "catalogueDigest",
+                "provider",
+                "requestedModel",
+                "status",
+                "disposition",
+                "freshness",
+                "durationMs",
+                "limits",
+                "attempts",
+                "usage",
+                "independence",
+                "nativeExecution",
+                "selectedPaths",
+                "declaredReviewed",
+                "declaredNotReviewed",
+                "unaccounted",
+                "candidates",
+                "matchedCitations",
+                "unmatchedCitations",
+                "sourceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            { "type": "null" }
+          ]
+        },
+        "sourceIncluded": { "type": "boolean", "const": false },
+        "schemaVersion": { "type": "number", "const": 1 },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "wallMs": { "type": "integer", "minimum": 1, "maximum": 120000 },
+            "maxNativeOutputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            }
+          },
+          "required": ["wallMs", "maxNativeOutputBytes"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "format",
+        "engineVersion",
+        "channel",
+        "claimsVerified",
+        "deterministicOutcomeChanged",
+        "resolution",
+        "severity",
+        "severityBasis",
+        "contextDigest",
+        "targetDigest",
+        "recipeDigest",
+        "refutationDigest",
+        "probeDigest",
+        "adjudicationDigest",
+        "status",
+        "stopReason",
+        "freshness",
+        "evidenceTier",
+        "budgetScope",
+        "independence",
+        "mechanism",
+        "callerReachability",
+        "intendedPolicy",
+        "consequence",
+        "fixFeasibility",
+        "refutation",
+        "probe",
+        "adjudication",
+        "sourceIncluded",
+        "schemaVersion",
+        "limits"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "format": { "type": "string", "const": "review-verification-run" },
+        "engineVersion": { "type": "string" },
+        "channel": { "type": "string", "const": "advisory" },
+        "claimsVerified": { "type": "boolean", "const": false },
+        "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+        "resolution": { "type": "string", "const": "unresolved" },
+        "severity": { "type": "string", "const": "unassigned" },
+        "severityBasis": {
+          "type": "string",
+          "const": "consequence-not-established"
+        },
+        "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "targetDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "recipeDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "refutationDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "probeDigest": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "adjudicationDigest": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "incomplete", "stale", "cancelled", "timed-out"]
+        },
+        "stopReason": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "refutation-incomplete",
+            "probe-incomplete",
+            "adjudication-incomplete",
+            "stale",
+            "cancelled",
+            "timed-out"
+          ]
+        },
+        "freshness": { "type": "string", "enum": ["current", "stale"] },
+        "evidenceTier": {
+          "type": "string",
+          "enum": [
+            "native-expectation-mismatch",
+            "native-controls-observed",
+            "no-current-native-evidence"
+          ]
+        },
+        "budgetScope": {
+          "type": "string",
+          "enum": ["per-provider-assignment", "verification-run"]
+        },
+        "independence": {
+          "type": "object",
+          "properties": {
+            "refuterNativeEvidence": { "type": "boolean", "const": false },
+            "adjudicatorInput": {
+              "type": "string",
+              "const": "raw-native-observations-and-unverified-hypotheses"
+            },
+            "priorProviderIdentities": { "type": "boolean", "const": false },
+            "priorSeverityAndConfidence": { "type": "boolean", "const": false },
+            "priorVerdicts": { "type": "boolean", "const": false },
+            "sessions": {
+              "type": "string",
+              "const": "fresh-stateless-inline-api"
+            }
+          },
+          "required": [
+            "refuterNativeEvidence",
+            "adjudicatorInput",
+            "priorProviderIdentities",
+            "priorSeverityAndConfidence",
+            "priorVerdicts",
+            "sessions"
+          ],
+          "additionalProperties": false
+        },
+        "mechanism": { "type": "string", "const": "not-established" },
+        "callerReachability": { "type": "string", "const": "not-established" },
+        "intendedPolicy": { "type": "string", "const": "not-established" },
+        "consequence": { "type": "string", "const": "not-established" },
+        "fixFeasibility": { "type": "string", "const": "not-established" },
+        "refutation": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 1 },
+            "format": { "type": "string", "const": "review-refutation-run" },
+            "channel": { "type": "string", "const": "advisory" },
+            "claimsVerified": { "type": "boolean", "const": false },
+            "deterministicOutcomeChanged": {
+              "type": "boolean",
+              "const": false
+            },
+            "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "targetDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "assignmentDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "resolution": { "type": "string", "const": "unresolved" },
+            "disposition": {
+              "type": "string",
+              "enum": ["refutation-attempt-completed", "no-complete-attempt"]
+            },
+            "checks": {
+              "minItems": 9,
+              "maxItems": 9,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "dimension": {
+                    "type": "string",
+                    "enum": [
+                      "current-address",
+                      "mechanism",
+                      "defaults",
+                      "sibling-family",
+                      "caller-reachability",
+                      "trigger-scale",
+                      "test-adequacy",
+                      "fix-feasibility",
+                      "change-scope"
+                    ]
+                  },
+                  "status": { "type": "string", "const": "not-established" }
+                },
+                "required": ["dimension", "status"],
+                "additionalProperties": false
+              }
+            },
+            "independence": {
+              "type": "object",
+              "properties": {
+                "targetVisibility": {
+                  "type": "string",
+                  "const": "one-unverified-hypothesis"
+                },
+                "priorReviewerResults": { "type": "boolean", "const": false },
+                "originalReviewerIdentity": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "originalSeverityAndConfidence": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "nativeEvidenceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "targetVisibility",
+                "priorReviewerResults",
+                "originalReviewerIdentity",
+                "originalSeverityAndConfidence",
+                "nativeEvidenceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            "verifier": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "format": { "type": "string", "const": "review-provider-run" },
+                "engineVersion": { "type": "string" },
+                "channel": { "type": "string", "const": "advisory" },
+                "claimsVerified": { "type": "boolean", "const": false },
+                "automatedCoverage": { "type": "boolean", "const": false },
+                "deterministicOutcomeChanged": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "runId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "contextDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "configDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "packetDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "catalogueDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": ["openai-responses", "anthropic-messages"]
+                },
+                "requestedModel": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "completed",
+                    "incomplete",
+                    "cancelled",
+                    "timed-out",
+                    "stale",
+                    "budget-exhausted",
+                    "unavailable"
+                  ]
+                },
+                "disposition": {
+                  "type": "string",
+                  "enum": ["advisory-completed", "no-complete-review"]
+                },
+                "freshness": {
+                  "type": "string",
+                  "enum": ["current", "stale", "not-checked"]
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "wallMs": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120000
+                    },
+                    "maxAttempts": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 3
+                    },
+                    "retryDelayMs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "maxRequestBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxResponseBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65536
+                    },
+                    "admissionBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "aggregateBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "maxCalls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6
+                        },
+                        "maxRequestBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        },
+                        "maxResponseBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd",
+                        "maxCalls",
+                        "maxRequestBodyBytes",
+                        "maxResponseBodyBytes"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "wallMs",
+                    "maxAttempts",
+                    "retryDelayMs",
+                    "maxRequestBytes",
+                    "maxResponseBytes",
+                    "maxOutputTokens"
+                  ],
+                  "additionalProperties": false
+                },
+                "budget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-run-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable",
+                        "call-limit-exceeded",
+                        "request-byte-limit-exceeded",
+                        "response-byte-limit-exceeded",
+                        "response-reservation-does-not-fit"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "priorAttempts": {
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "completed",
+                              "capacity",
+                              "rate-limited",
+                              "authentication",
+                              "unavailable",
+                              "refused",
+                              "output-limit",
+                              "incomplete",
+                              "malformed",
+                              "tool-request",
+                              "transport-error",
+                              "timed-out",
+                              "cancelled",
+                              "budget-exhausted"
+                            ]
+                          },
+                          "durationMs": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "responseBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "requestBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "observedModel": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 256
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "usage": {
+                            "type": "object",
+                            "properties": {
+                              "inputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "outputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costUSD": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costProvenance": {
+                                "type": "string",
+                                "enum": ["unknown", "operator-rates-estimate"]
+                              }
+                            },
+                            "required": [
+                              "inputTokens",
+                              "outputTokens",
+                              "costUSD",
+                              "costProvenance"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "durationMs",
+                          "responseBytes",
+                          "observedModel",
+                          "usage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "requestBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "observedRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "transportByteCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed",
+                    "id",
+                    "priorAttempts",
+                    "requestBytes",
+                    "observedCalls",
+                    "observedRequestBodyBytes",
+                    "observedResponseBodyBytes",
+                    "transportByteCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "attempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "usage": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "outputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costUSD": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1000000 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costProvenance": {
+                      "type": "string",
+                      "enum": ["unknown", "operator-rates-estimate"]
+                    },
+                    "attemptsWithUnknownUsage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  },
+                  "required": [
+                    "inputTokens",
+                    "outputTokens",
+                    "costUSD",
+                    "costProvenance",
+                    "attemptsWithUnknownUsage"
+                  ],
+                  "additionalProperties": false
+                },
+                "independence": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "stateless-inline-api-v1"
+                    },
+                    "priorMessages": { "type": "number", "const": 0 },
+                    "tools": { "type": "number", "const": 0 },
+                    "historyRetrieval": { "type": "boolean", "const": false },
+                    "localMemory": { "type": "boolean", "const": false },
+                    "providerTrainingContamination": {
+                      "type": "string",
+                      "const": "unknown"
+                    },
+                    "providerRetention": {
+                      "type": "string",
+                      "const": "provider-policy"
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "priorMessages",
+                    "tools",
+                    "historyRetrieval",
+                    "localMemory",
+                    "providerTrainingContamination",
+                    "providerRetention"
+                  ],
+                  "additionalProperties": false
+                },
+                "nativeExecution": { "type": "boolean", "const": false },
+                "selectedPaths": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16
+                },
+                "declaredReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "declaredNotReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "unaccounted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
+                },
+                "matchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unmatchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sourceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "schemaVersion",
+                "format",
+                "engineVersion",
+                "channel",
+                "claimsVerified",
+                "automatedCoverage",
+                "deterministicOutcomeChanged",
+                "runId",
+                "contextDigest",
+                "configDigest",
+                "packetDigest",
+                "catalogueDigest",
+                "provider",
+                "requestedModel",
+                "status",
+                "disposition",
+                "freshness",
+                "durationMs",
+                "limits",
+                "attempts",
+                "usage",
+                "independence",
+                "nativeExecution",
+                "selectedPaths",
+                "declaredReviewed",
+                "declaredNotReviewed",
+                "unaccounted",
+                "candidates",
+                "matchedCitations",
+                "unmatchedCitations",
+                "sourceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            "sourceIncluded": { "type": "boolean", "const": false }
+          },
+          "required": [
+            "schemaVersion",
+            "format",
+            "channel",
+            "claimsVerified",
+            "deterministicOutcomeChanged",
+            "contextDigest",
+            "targetDigest",
+            "assignmentDigest",
+            "resolution",
+            "disposition",
+            "checks",
+            "independence",
+            "verifier",
+            "sourceIncluded"
+          ],
+          "additionalProperties": false
+        },
+        "probe": {
+          "anyOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "format": { "type": "string", "const": "review-probe-run" },
+                    "engineVersion": { "type": "string" },
+                    "channel": { "type": "string", "const": "advisory" },
+                    "claimsVerified": { "type": "boolean", "const": false },
+                    "deterministicOutcomeChanged": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "nativeExecution": { "type": "boolean" },
+                    "executionSandboxed": { "type": "boolean", "const": false },
+                    "profile": {
+                      "type": "string",
+                      "const": "node-export-boolean-v1"
+                    },
+                    "recipeDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "workerDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "sourceDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "functionRange": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "end": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": ["start", "end"],
+                      "additionalProperties": false
+                    },
+                    "minimumTriggerScale": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1024
+                    },
+                    "guard": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            }
+                          },
+                          "required": ["start", "end"],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "contextDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "candidateDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "runtime": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string", "const": "node" },
+                        "version": { "type": "string" }
+                      },
+                      "required": ["name", "version"],
+                      "additionalProperties": false
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "incomplete",
+                        "cancelled",
+                        "timed-out",
+                        "stale",
+                        "unsupported"
+                      ]
+                    },
+                    "behavior": {
+                      "type": "string",
+                      "enum": ["violated", "satisfied", "unresolved"]
+                    },
+                    "requirementProvenance": {
+                      "type": "string",
+                      "const": "operator-pinned-expectations"
+                    },
+                    "callerReachability": {
+                      "type": "string",
+                      "const": "not-established"
+                    },
+                    "mechanismVerified": { "type": "boolean", "const": false },
+                    "fixVerified": { "type": "boolean", "const": false },
+                    "freshness": {
+                      "type": "string",
+                      "enum": ["current", "stale"]
+                    },
+                    "temporaryArtifacts": {
+                      "type": "string",
+                      "enum": ["removed", "cleanup-failed", "not-created"]
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "observed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "notRun": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "triggerMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "controlMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": [
+                        "selected",
+                        "observed",
+                        "unresolved",
+                        "notRun",
+                        "triggerMismatches",
+                        "controlMismatches"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "schemaVersion": { "type": "number", "const": 1 },
+                    "sourceIncluded": { "type": "boolean", "const": false }
+                  },
+                  "required": [
+                    "format",
+                    "engineVersion",
+                    "channel",
+                    "claimsVerified",
+                    "deterministicOutcomeChanged",
+                    "nativeExecution",
+                    "executionSandboxed",
+                    "profile",
+                    "recipeDigest",
+                    "workerDigest",
+                    "sourceDigest",
+                    "functionRange",
+                    "minimumTriggerScale",
+                    "guard",
+                    "contextDigest",
+                    "candidateDigest",
+                    "runtime",
+                    "status",
+                    "behavior",
+                    "requirementProvenance",
+                    "callerReachability",
+                    "mechanismVerified",
+                    "fixVerified",
+                    "freshness",
+                    "temporaryArtifacts",
+                    "counts",
+                    "schemaVersion",
+                    "sourceIncluded"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "format": { "type": "string", "const": "review-probe-run" },
+                    "engineVersion": { "type": "string" },
+                    "channel": { "type": "string", "const": "advisory" },
+                    "claimsVerified": { "type": "boolean", "const": false },
+                    "deterministicOutcomeChanged": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "nativeExecution": { "type": "boolean" },
+                    "executionSandboxed": { "type": "boolean", "const": false },
+                    "profile": {
+                      "type": "string",
+                      "const": "node-export-boolean-v1"
+                    },
+                    "recipeDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "workerDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "sourceDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "functionRange": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "end": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": ["start", "end"],
+                      "additionalProperties": false
+                    },
+                    "minimumTriggerScale": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1024
+                    },
+                    "guard": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            }
+                          },
+                          "required": ["start", "end"],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "contextDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "candidateDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "runtime": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string", "const": "node" },
+                        "version": { "type": "string" }
+                      },
+                      "required": ["name", "version"],
+                      "additionalProperties": false
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "incomplete",
+                        "cancelled",
+                        "timed-out",
+                        "stale",
+                        "unsupported"
+                      ]
+                    },
+                    "behavior": {
+                      "type": "string",
+                      "enum": ["violated", "satisfied", "unresolved"]
+                    },
+                    "requirementProvenance": {
+                      "type": "string",
+                      "const": "operator-pinned-expectations"
+                    },
+                    "callerReachability": {
+                      "type": "string",
+                      "const": "not-established"
+                    },
+                    "mechanismVerified": { "type": "boolean", "const": false },
+                    "fixVerified": { "type": "boolean", "const": false },
+                    "freshness": {
+                      "type": "string",
+                      "enum": ["current", "stale"]
+                    },
+                    "temporaryArtifacts": {
+                      "type": "string",
+                      "enum": ["removed", "cleanup-failed", "not-created"]
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "observed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "notRun": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "triggerMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "controlMismatches": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        }
+                      },
+                      "required": [
+                        "selected",
+                        "observed",
+                        "unresolved",
+                        "notRun",
+                        "triggerMismatches",
+                        "controlMismatches"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "schemaVersion": { "type": "number", "const": 2 },
+                    "nativeBudget": {
+                      "type": "object",
+                      "properties": {
+                        "scope": {
+                          "type": "string",
+                          "const": "native-probe-run"
+                        },
+                        "limits": {
+                          "type": "object",
+                          "properties": {
+                            "maxCalls": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 16
+                            },
+                            "maxOutputBytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 16777216
+                            },
+                            "wallMs": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 120000
+                            },
+                            "maxCallOutputBytes": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 1048576
+                            }
+                          },
+                          "required": [
+                            "maxCalls",
+                            "maxOutputBytes",
+                            "wallMs",
+                            "maxCallOutputBytes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "calls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 16
+                        },
+                        "outputBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "stopReason": {
+                          "type": "string",
+                          "enum": ["none", "call-limit", "output-limit"]
+                        },
+                        "outputByteCeilingGuaranteed": {
+                          "type": "boolean",
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "scope",
+                        "limits",
+                        "calls",
+                        "outputBytes",
+                        "stopReason",
+                        "outputByteCeilingGuaranteed"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "sourceIncluded": { "type": "boolean", "const": false }
+                  },
+                  "required": [
+                    "format",
+                    "engineVersion",
+                    "channel",
+                    "claimsVerified",
+                    "deterministicOutcomeChanged",
+                    "nativeExecution",
+                    "executionSandboxed",
+                    "profile",
+                    "recipeDigest",
+                    "workerDigest",
+                    "sourceDigest",
+                    "functionRange",
+                    "minimumTriggerScale",
+                    "guard",
+                    "contextDigest",
+                    "candidateDigest",
+                    "runtime",
+                    "status",
+                    "behavior",
+                    "requirementProvenance",
+                    "callerReachability",
+                    "mechanismVerified",
+                    "fixVerified",
+                    "freshness",
+                    "temporaryArtifacts",
+                    "counts",
+                    "schemaVersion",
+                    "nativeBudget",
+                    "sourceIncluded"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "adjudication": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "format": { "type": "string", "const": "review-provider-run" },
+                "engineVersion": { "type": "string" },
+                "channel": { "type": "string", "const": "advisory" },
+                "claimsVerified": { "type": "boolean", "const": false },
+                "automatedCoverage": { "type": "boolean", "const": false },
+                "deterministicOutcomeChanged": {
+                  "type": "boolean",
+                  "const": false
+                },
+                "runId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "contextDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "configDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "packetDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "catalogueDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": ["openai-responses", "anthropic-messages"]
+                },
+                "requestedModel": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "completed",
+                    "incomplete",
+                    "cancelled",
+                    "timed-out",
+                    "stale",
+                    "budget-exhausted",
+                    "unavailable"
+                  ]
+                },
+                "disposition": {
+                  "type": "string",
+                  "enum": ["advisory-completed", "no-complete-review"]
+                },
+                "freshness": {
+                  "type": "string",
+                  "enum": ["current", "stale", "not-checked"]
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "wallMs": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120000
+                    },
+                    "maxAttempts": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 3
+                    },
+                    "retryDelayMs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 5000
+                    },
+                    "maxRequestBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxResponseBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1048576
+                    },
+                    "maxOutputTokens": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65536
+                    },
+                    "admissionBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "aggregateBudget": {
+                      "type": "object",
+                      "properties": {
+                        "inputTokenAllowance": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1048576
+                        },
+                        "maxTotalTokens": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 2000000
+                        },
+                        "maxEstimatedCostMicrousd": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000000
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "maxCalls": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6
+                        },
+                        "maxRequestBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        },
+                        "maxResponseBodyBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6291456
+                        }
+                      },
+                      "required": [
+                        "inputTokenAllowance",
+                        "maxTotalTokens",
+                        "maxEstimatedCostMicrousd",
+                        "maxCalls",
+                        "maxRequestBodyBytes",
+                        "maxResponseBodyBytes"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "wallMs",
+                    "maxAttempts",
+                    "retryDelayMs",
+                    "maxRequestBytes",
+                    "maxResponseBytes",
+                    "maxOutputTokens"
+                  ],
+                  "additionalProperties": false
+                },
+                "budget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "aggregateBudget": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "reported-usage-run-admission-v1"
+                    },
+                    "operatorRates": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "inputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            },
+                            "outputUSDPerMillion": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000
+                            }
+                          },
+                          "required": [
+                            "inputUSDPerMillion",
+                            "outputUSDPerMillion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "reservationTokens": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "reservationMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "observedMicrousd": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "decision": {
+                      "type": "string",
+                      "enum": [
+                        "within-budget",
+                        "reservation-does-not-fit",
+                        "usage-unknown",
+                        "input-allowance-exceeded",
+                        "output-allowance-exceeded",
+                        "token-limit-exceeded",
+                        "cost-limit-exceeded",
+                        "pricing-unavailable",
+                        "call-limit-exceeded",
+                        "request-byte-limit-exceeded",
+                        "response-byte-limit-exceeded",
+                        "response-reservation-does-not-fit"
+                      ]
+                    },
+                    "inputAllowanceVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "billingCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "priorAttempts": {
+                      "maxItems": 3,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "completed",
+                              "capacity",
+                              "rate-limited",
+                              "authentication",
+                              "unavailable",
+                              "refused",
+                              "output-limit",
+                              "incomplete",
+                              "malformed",
+                              "tool-request",
+                              "transport-error",
+                              "timed-out",
+                              "cancelled",
+                              "budget-exhausted"
+                            ]
+                          },
+                          "durationMs": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "responseBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "requestBytes": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "observedModel": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 256
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "usage": {
+                            "type": "object",
+                            "properties": {
+                              "inputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "outputTokens": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costUSD": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "costProvenance": {
+                                "type": "string",
+                                "enum": ["unknown", "operator-rates-estimate"]
+                              }
+                            },
+                            "required": [
+                              "inputTokens",
+                              "outputTokens",
+                              "costUSD",
+                              "costProvenance"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "durationMs",
+                          "responseBytes",
+                          "observedModel",
+                          "usage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "requestBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedCalls": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    },
+                    "observedRequestBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "observedResponseBodyBytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "transportByteCeilingGuaranteed": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "operatorRates",
+                    "reservationTokens",
+                    "reservationMicrousd",
+                    "observedTokens",
+                    "observedMicrousd",
+                    "decision",
+                    "inputAllowanceVerified",
+                    "billingCeilingGuaranteed",
+                    "id",
+                    "priorAttempts",
+                    "requestBytes",
+                    "observedCalls",
+                    "observedRequestBodyBytes",
+                    "observedResponseBodyBytes",
+                    "transportByteCeilingGuaranteed"
+                  ],
+                  "additionalProperties": false
+                },
+                "attempts": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "capacity",
+                          "rate-limited",
+                          "authentication",
+                          "unavailable",
+                          "refused",
+                          "output-limit",
+                          "incomplete",
+                          "malformed",
+                          "tool-request",
+                          "transport-error",
+                          "timed-out",
+                          "cancelled",
+                          "budget-exhausted"
+                        ]
+                      },
+                      "durationMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "responseBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "requestBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "observedModel": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "usage": {
+                        "type": "object",
+                        "properties": {
+                          "inputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "outputTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costUSD": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000000
+                              },
+                              { "type": "null" }
+                            ]
+                          },
+                          "costProvenance": {
+                            "type": "string",
+                            "enum": ["unknown", "operator-rates-estimate"]
+                          }
+                        },
+                        "required": [
+                          "inputTokens",
+                          "outputTokens",
+                          "costUSD",
+                          "costProvenance"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "durationMs",
+                      "responseBytes",
+                      "observedModel",
+                      "usage"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "usage": {
+                  "type": "object",
+                  "properties": {
+                    "inputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "outputTokens": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costUSD": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1000000 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "costProvenance": {
+                      "type": "string",
+                      "enum": ["unknown", "operator-rates-estimate"]
+                    },
+                    "attemptsWithUnknownUsage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  },
+                  "required": [
+                    "inputTokens",
+                    "outputTokens",
+                    "costUSD",
+                    "costProvenance",
+                    "attemptsWithUnknownUsage"
+                  ],
+                  "additionalProperties": false
+                },
+                "independence": {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "stateless-inline-api-v1"
+                    },
+                    "priorMessages": { "type": "number", "const": 0 },
+                    "tools": { "type": "number", "const": 0 },
+                    "historyRetrieval": { "type": "boolean", "const": false },
+                    "localMemory": { "type": "boolean", "const": false },
+                    "providerTrainingContamination": {
+                      "type": "string",
+                      "const": "unknown"
+                    },
+                    "providerRetention": {
+                      "type": "string",
+                      "const": "provider-policy"
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "priorMessages",
+                    "tools",
+                    "historyRetrieval",
+                    "localMemory",
+                    "providerTrainingContamination",
+                    "providerRetention"
+                  ],
+                  "additionalProperties": false
+                },
+                "nativeExecution": { "type": "boolean", "const": false },
+                "selectedPaths": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16
+                },
+                "declaredReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "declaredNotReviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "unaccounted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32
+                },
+                "matchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unmatchedCitations": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sourceIncluded": { "type": "boolean", "const": false }
+              },
+              "required": [
+                "schemaVersion",
+                "format",
+                "engineVersion",
+                "channel",
+                "claimsVerified",
+                "automatedCoverage",
+                "deterministicOutcomeChanged",
+                "runId",
+                "contextDigest",
+                "configDigest",
+                "packetDigest",
+                "catalogueDigest",
+                "provider",
+                "requestedModel",
+                "status",
+                "disposition",
+                "freshness",
+                "durationMs",
+                "limits",
+                "attempts",
+                "usage",
+                "independence",
+                "nativeExecution",
+                "selectedPaths",
+                "declaredReviewed",
+                "declaredNotReviewed",
+                "unaccounted",
+                "candidates",
+                "matchedCitations",
+                "unmatchedCitations",
+                "sourceIncluded"
+              ],
+              "additionalProperties": false
+            },
+            { "type": "null" }
+          ]
+        },
+        "sourceIncluded": { "type": "boolean", "const": false },
+        "schemaVersion": { "type": "number", "const": 2 },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "wallMs": { "type": "integer", "minimum": 1, "maximum": 120000 },
+            "maxNativeOutputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            },
+            "nativeBudget": {
+              "type": "object",
+              "properties": {
+                "maxCalls": { "type": "integer", "minimum": 0, "maximum": 16 },
+                "maxOutputBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 16777216
+                }
+              },
+              "required": ["maxCalls", "maxOutputBytes"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["wallMs", "maxNativeOutputBytes", "nativeBudget"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "format",
+        "engineVersion",
+        "channel",
+        "claimsVerified",
+        "deterministicOutcomeChanged",
+        "resolution",
+        "severity",
+        "severityBasis",
+        "contextDigest",
+        "targetDigest",
+        "recipeDigest",
+        "refutationDigest",
+        "probeDigest",
+        "adjudicationDigest",
+        "status",
+        "stopReason",
+        "freshness",
+        "evidenceTier",
+        "budgetScope",
+        "independence",
+        "mechanism",
+        "callerReachability",
+        "intendedPolicy",
+        "consequence",
+        "fixFeasibility",
+        "refutation",
+        "probe",
+        "adjudication",
+        "sourceIncluded",
+        "schemaVersion",
+        "limits"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "families": {
+      "minItems": 1,
+      "maxItems": 9,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "authorization-tenancy",
+          "identifiers-allowlists",
+          "types-numeric-semantics",
+          "lifecycle-ordering",
+          "assembly-wiring",
+          "concurrency-resources",
+          "atomic-artifacts",
+          "dependencies-builds",
+          "test-adequacy"
+        ]
+      }
+    }
+  },
+  "required": ["schemaVersion", "families"],
+  "additionalProperties": false
+}

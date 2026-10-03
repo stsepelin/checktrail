@@ -66,6 +66,10 @@ const packageSchema = z.object({
   DepsErrors: z.array(z.unknown()).optional(),
 });
 
+export function goPackages(text: string) {
+  return objects(text).map((value) => packageSchema.parse(value));
+}
+
 export function goScopeComplete(
   check: Check,
   process: ProcessResult | undefined,
@@ -86,9 +90,7 @@ export function goScopeComplete(
   )
     return false;
   try {
-    const packages = objects(process.stdout).map((value) =>
-      packageSchema.parse(value),
-    );
+    const packages = goPackages(process.stdout);
     const expected = new Set(
       check.scope.map((file) => path.resolve(root, check.project, file)),
     );
@@ -122,8 +124,8 @@ export function goScopeComplete(
       for (const file of [
         ...item.GoFiles,
         ...item.CgoFiles,
-        ...item.TestGoFiles,
-        ...item.XTestGoFiles,
+        ...(check.id === "go.build" ? [] : item.TestGoFiles),
+        ...(check.id === "go.build" ? [] : item.XTestGoFiles),
       ]) {
         if (
           path.basename(file) !== file ||
@@ -142,6 +144,7 @@ export function goScopeComplete(
         seen.add(resolved);
       }
       for (const file of item.IgnoredGoFiles) {
+        if (check.id === "go.build" && file.endsWith("_test.go")) continue;
         if (
           path.basename(file) !== file ||
           file.includes("\\") ||

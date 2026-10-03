@@ -9,6 +9,16 @@ Malformed package output, missing packages, duplicate/unexpected files and load
 errors prevent completeness. Real diagnostic/test failures retain their failure
 status even when scope is incomplete.
 
+Staticcheck's unlocated `compile` records and golangci-lint's column-zero
+`typecheck` records may describe package/cache failures rather than source defects.
+They remain errors with incomplete findings unless the message is a complete
+native Go compiler block whose positioned diagnostics all address selected source.
+Recognized compiler diagnostics are normalized at their actual source lines and
+fail with incomplete analysis. Unknown compiler layouts conservatively remain
+incomplete. Verified source diagnostics in a mixed result retain their failure;
+the accompanying loading error prevents complete findings. A synthetic file
+anchor or a filename mentioned inside an infrastructure message proves no defect.
+
 Files excluded by build tags, OS/architecture suffixes or Go directory conventions
 remain unverified. Without an explicit scope policy, such projects are conservatively incomplete. This includes intentional
 `testdata` Go files if they are inventoried but not compiled. Do not treat that as

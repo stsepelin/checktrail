@@ -63,6 +63,26 @@ test("dependency audit reconciles installed metadata, reports missing notices an
   assert.deepEqual(JSON.parse(result.stdout).gaps, [
     { package: "synthetic-module@1.0.0", reason: "No notice file was located" },
   ]);
+  const thirdParty = path.join(
+    root,
+    "node_modules/synthetic-module/ThirdPartyNoticeText.txt",
+  );
+  await writeFile(thirdParty + ".backup", "Not a shipped notice.\n");
+  assert.equal(
+    invoke().status,
+    2,
+    "a backup filename cannot supply a missing notice",
+  );
+  await writeFile(thirdParty, "Synthetic third-party notice.\n");
+  result = invoke();
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(
+    JSON.parse(result.stdout).packages[0].notices.map(
+      (notice: { file: string }) => notice.file,
+    ),
+    ["ThirdPartyNoticeText.txt"],
+  );
+  await rm(thirdParty);
   await writeFile(
     path.join(root, "node_modules/synthetic-module/package.json"),
     JSON.stringify({ ...dependency, license: "ISC" }),

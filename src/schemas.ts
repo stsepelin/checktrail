@@ -1,4 +1,9 @@
-import { goBuildSelectionSchema } from "./go-build.js";
+import {
+  executionIdSchema,
+  goRepetitionSchema,
+  goTargetEvidenceSchema,
+  goBuildSelectionSchema,
+} from "./go-build.js";
 export { goBuildPolicySchema } from "./go-build.js";
 import { goScopePolicySchema } from "./go-scope-policy.js";
 export { goScopePolicySchema } from "./go-scope-policy.js";
@@ -91,6 +96,7 @@ const processResult = z.strictObject({
   timedOut: z.boolean(),
   cancelled: z.boolean(),
   truncated: z.boolean(),
+  outputBytes: count.optional(),
   errorCode: z.string().optional(),
 });
 const selection = z.strictObject({
@@ -126,6 +132,7 @@ const reportMetadata = {
 
 export const reportSchema = z.strictObject({
   ...reportMetadata,
+  requiredExecutionIds: z.array(executionIdSchema).optional(),
   selection: selection.optional(),
   startedAt: z.iso.datetime(),
   sourceFingerprint: z.string(),
@@ -153,6 +160,8 @@ export const reportSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      executionId: executionIdSchema.optional(),
+      goTarget: goTargetEvidenceSchema.optional(),
       status,
       reason: z.string(),
       processes: z.array(processResult),
@@ -203,6 +212,8 @@ export const reportSummarySchema = z.strictObject({
       tests: tests.optional(),
       goExcludedFileCount: count.optional(),
       goBuildTagCount: count.optional(),
+      executionId: executionIdSchema.optional(),
+      goRepetition: goRepetitionSchema.optional(),
     }),
   ),
 });
@@ -231,6 +242,7 @@ export const planSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      executionId: executionIdSchema.optional(),
       kind,
       parser: z.enum(PARSERS),
       commands: z.array(command),
@@ -255,6 +267,8 @@ export const planSummarySchema = z.strictObject({
       ready: z.boolean(),
       goExcludedFileCount: count.optional(),
       goBuildTagCount: count.optional(),
+      executionId: executionIdSchema.optional(),
+      goRepetition: goRepetitionSchema.optional(),
     }),
   ),
 });
@@ -306,3 +320,54 @@ export {
   reviewReceiptSchema,
   reviewReceiptSummarySchema,
 } from "./review.js";
+
+export {
+  hypothesisSelectionSchema,
+  hypothesisPlanSchema,
+  hypothesisSummarySchema,
+} from "./review-hypotheses.js";
+
+export {
+  reviewProviderConfigSchema,
+  reviewCandidateSchema,
+  reviewModelOutputSchema,
+  reviewProviderRunSchema,
+  reviewProviderSummarySchema,
+} from "./review-provider-schema.js";
+
+export {
+  reviewProbeRecipeSchema,
+  reviewProbeRunSchema,
+  reviewProbeSummarySchema,
+} from "./review-probe-schema.js";
+
+export {
+  reviewRefutationRunSchema,
+  reviewRefutationSummarySchema,
+} from "./review-refutation.js";
+
+export {
+  reviewScoringProtocolSchema,
+  reviewScoringObservationSchema,
+  reviewScoringInputSchema,
+  reviewScoringReportSchema,
+  reviewScoringSummarySchema,
+} from "./review-scoring.js";
+
+export {
+  reviewVerificationRunSchema,
+  reviewVerificationSummarySchema,
+} from "./review-verification.js";
+
+export {
+  reviewWorkflowLimitsSchema,
+  reviewWorkflowResponseSchema,
+  reviewWorkflowCommandSchema,
+  reviewWorkflowAssignmentSchema,
+  reviewWorkflowSummarySchema,
+} from "./review-workflow-schema.js";
+
+export {
+  reviewWorkflowAuditOptionsSchema,
+  reviewWorkflowAuditSummarySchema,
+} from "./review-workflow-audit-schema.js";

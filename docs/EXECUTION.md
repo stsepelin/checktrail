@@ -16,7 +16,10 @@ an unavailable runtime or external service does not count as verification.
 - Verified: strict standard compilation of exported schemas, equivalent URL/path
   boundary cases, and warning-free Claude Code discovery after correcting the
   nonstandard prefix format. Original frozen evaluation artifacts remain separate.
-- Remaining: hosted CI runs and broader client profiles. PHP syntax
+- Recorded hosted verification: the alpha.5 release run passed all jobs at
+  `832a044`; see `RELEASE.md` and `ACCEPTANCE.md`. This is historical recorded
+  evidence, not a fresh remote check or verification of later revisions.
+- Remaining: broader client profiles. PHP syntax
   planning still reports unavailable when PHP is absent from the consumer runtime.
 
 ## M2
@@ -75,7 +78,9 @@ an unavailable runtime or external service does not count as verification.
   occurrence-count reconciliation, stale entries, explicit limits and optional
   comparison against a previous baseline. CLI/library/MCP keep comparison status
   separate from native validation. Partial analysis cannot be baselined.
-- Remaining: broader framework scope and hosted toolchain CI evidence.
+- Recorded hosted toolchain profiles passed at `52ba415`; see `NATIVE-CI.md`
+  and `ACCEPTANCE.md`. Broader framework scope and additional tool/version
+  profiles remain pending and require their own evidence.
 
 ## M3
 
@@ -174,13 +179,17 @@ an unavailable runtime or external service does not count as verification.
   digests, bounded TLS transfers, strict content validation and exclusive atomic
   file publication. Planning and MCP never download automatically. See
   `PACK-DISTRIBUTION.md`. Executable bundle distribution remains separate.
-- Implemented: unpublished registry metadata with matching npm identity, a required
+- Implemented: registry metadata with matching npm identity, a required
   local root, execution disabled by default, official-schema validation and a
   metadata-derived MCP startup regression. See `RELEASE.md` for concrete release
-  gates.
-- Pending: broader runtime/OS/performance matrices and external release gates.
+  gates. Alpha.5 npm, GitHub prerelease and MCP Registry publication are recorded
+  in `RELEASE.md`; those historical observations do not authorize another release.
+- Pending: broader runtime/OS/performance matrices, npm tag cleanup and the
+  concrete gates for subsequent releases.
 - Windows execution needs actual process-tree cancellation evidence before it
-  can be advertised. Hosted CI and a public release have not happened.
+  can be advertised. The alpha.5 hosted run passed all jobs at `832a044` and
+  publication/fresh-install verification are recorded in `RELEASE.md` and
+  `ACCEPTANCE.md`; this ledger update performs no fresh remote verification.
 - Commits, remote creation and publication retain their existing explicit-action
   requirements; local implementation and release preparation can continue.
 
@@ -252,16 +261,18 @@ one successful native TAP case. Hosted CI remains a separate acceptance gate.
 ## External dependencies
 
 The installed MCP server SDK is still 2.0.0. Its standard Tasks routing failure is
-documented in `MCP-COMPATIBILITY.md`. Hosted CI, publication and independent target
-OS/client evidence remain separate acceptance gates. A gate is completed only
-when its implementation and corresponding evidence exist.
+documented in `MCP-COMPATIBILITY.md`. Hosted CI and publication have recorded
+alpha.5 evidence in `RELEASE.md`; subsequent revisions/releases and additional
+target OS/client profiles retain separate acceptance gates. A gate is completed
+only when its implementation and corresponding evidence exist.
 
 ## Agent evaluation workflow
 
 - Implemented a provider-neutral operator harness for freezing public-source cases,
   exporting isolated-by-procedure reviewer packets, sealing exact-source receipts,
   collecting bounded trusted reference processes and producing blinded judging
-  packets plus paired scores and a learning queue. The engine still invokes no model.
+  packets plus paired scores and a learning queue. That harness does not itself invoke a model; the separate optional provider
+  transport is documented in REVIEW-PROVIDERS.md.
 - The first historical JavaScript/Python pilot used actual separate reviewers and
   independent adjudication. Both arms matched the predeclared defects; MCP native
   validation remained incomplete. See `AGENT-EVALUATION-PILOT.md` for evidence,
@@ -287,3 +298,14 @@ when its implementation and corresponding evidence exist.
   evidence IDs before execution, and judge instructions distinguish their own
   completion from an incomplete reviewer receipt. These delivery improvements do
   not establish review-quality improvement; a new frozen cohort is required.
+
+## Expanded reviewer target and prospective field gate
+
+[REVIEWER-ROADMAP.md](REVIEWER-ROADMAP.md) records the planned locally operated
+reviewer, optional operator-authorized provider inference and independent quality
+targets. Its reviewer pipeline remains partial beyond catalogue, stateless API transport and bounded Boolean probes; native deterministic
+outcomes remain separate. Reconcile all unfinished M0–M5 tasks and named language
+integrations before declaring feature completion. No new real-project MCP field
+trial starts before that required implementation inventory is complete; evaluation
+authorization and demonstrated quality are separate later gates. Existing public
+adoption and agent measurements remain historical evidence.
