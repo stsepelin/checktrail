@@ -22,7 +22,7 @@ jobs:
           - os: macos-latest
             node: "24"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -114,6 +114,9 @@ jobs:
         run: node scripts/verify-review-workflow-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
+      - name: Prepare pinned review runtime
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
       - name: Verify review exchange in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: node scripts/verify-review-container.mjs
