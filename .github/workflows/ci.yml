@@ -22,7 +22,7 @@ jobs:
           - os: macos-latest
             node: "24"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -105,6 +105,9 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/smoke-package.mjs
+      - name: Prepare pinned review runtime
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
       - name: Verify review exchange in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: node scripts/verify-review-container.mjs
