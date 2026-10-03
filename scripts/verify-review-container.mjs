@@ -116,20 +116,19 @@ process.stdout.write(
     { encoding: "utf8", maxBuffer: 1024 * 1024 },
   ),
 );
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-budget",
-      "review-workflow",
-      "review-native-budget",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
+for (const profile of [
+  "review-budget",
+  "review-workflow",
+  "review-native-budget",
+]) {
+  process.stdout.write(
+    execFileSync(
+      "docker",
+      [...native, "node", "scripts/verify-required-native-tests.mjs", profile],
+      { encoding: "utf8", maxBuffer: 1024 * 1024 },
+    ),
+  );
+}
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-review-package-"),
 );
