@@ -72,3 +72,7 @@ to distinguish compilation from test execution.
 References: [Cargo check](https://doc.rust-lang.org/cargo/commands/cargo-check.html),
 [JSON messages](https://doc.rust-lang.org/cargo/reference/external-tools.html),
 [rustup environment controls](https://rust-lang.github.io/rustup/environment-variables.html).
+
+The separately selected non-rewriting `rust.cargo-fmt` workspace profile and its
+limits are documented in [RUST-FORMAT.md](RUST-FORMAT.md). It does not change the
+compiler check's default scope or imply Clippy/test execution.

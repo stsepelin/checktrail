@@ -152,6 +152,9 @@ export async function toolsFor(
       { name: "node", source: "engine-runtime" },
       command("rustc", "rustc", ["--version"]),
       command("cargo", "cargo", ["--version"]),
+      ...(check.id === "rust.cargo-fmt"
+        ? [command("rustfmt", "rustfmt", ["--version"])]
+        : []),
     ];
   if (check.adapter === "cpp") {
     const tools: ToolSpec[] = [{ name: "node", source: "engine-runtime" }];
@@ -301,37 +304,39 @@ export async function identifyTool(
             )?.[1]
           : tool.name === "ruby"
             ? /^ruby (\d+\.\d+\.\d+)(?:p\d+)? /.exec(output)?.[1]
-            : tool.name === "cargo" || tool.name === "rustc"
-              ? output.startsWith(`${tool.name} `)
-                ? /^(?:cargo|rustc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
-                    output,
-                  )?.[1]
-                : undefined
-              : tool.name === "php-cs-fixer"
-                ? /^(3\.[0-9]+\.[0-9]+)$/.exec(output)?.[1]
-                : tool.name === "pint"
-                  ? /^Pint (\S+)$/.exec(output)?.[1]
-                  : tool.name === "pest"
-                    ? /^Pest Testing Framework (\S+)\.$/.exec(output)?.[1]
-                    : tool.name === "phpunit"
-                      ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
-                      : tool.name === "phpstan"
-                        ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
-                            output,
-                          )?.[1]
-                        : tool.name === "staticcheck"
-                          ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+            : tool.name === "rustfmt"
+              ? /^rustfmt (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(output)?.[1]
+              : tool.name === "cargo" || tool.name === "rustc"
+                ? output.startsWith(`${tool.name} `)
+                  ? /^(?:cargo|rustc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                      output,
+                    )?.[1]
+                  : undefined
+                : tool.name === "php-cs-fixer"
+                  ? /^(3\.[0-9]+\.[0-9]+)$/.exec(output)?.[1]
+                  : tool.name === "pint"
+                    ? /^Pint (\S+)$/.exec(output)?.[1]
+                    : tool.name === "pest"
+                      ? /^Pest Testing Framework (\S+)\.$/.exec(output)?.[1]
+                      : tool.name === "phpunit"
+                        ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
+                        : tool.name === "phpstan"
+                          ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
                               output,
                             )?.[1]
-                          : tool.name === "go"
-                            ? /^go version go(\S+) \S+$/.exec(output)?.[1]
-                            : tool.name === "php"
-                              ? /^PHP (\S+) /.exec(output)?.[1]
-                              : tool.name === "python"
-                                ? /^Python (\S+)$/.exec(output)?.[1]
-                                : tool.name === "ruff"
-                                  ? /^ruff (\S+)$/.exec(output)?.[1]
-                                  : output;
+                          : tool.name === "staticcheck"
+                            ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+                                output,
+                              )?.[1]
+                            : tool.name === "go"
+                              ? /^go version go(\S+) \S+$/.exec(output)?.[1]
+                              : tool.name === "php"
+                                ? /^PHP (\S+) /.exec(output)?.[1]
+                                : tool.name === "python"
+                                  ? /^Python (\S+)$/.exec(output)?.[1]
+                                  : tool.name === "ruff"
+                                    ? /^ruff (\S+)$/.exec(output)?.[1]
+                                    : output;
   if (
     version &&
     (tool.name === "swift"

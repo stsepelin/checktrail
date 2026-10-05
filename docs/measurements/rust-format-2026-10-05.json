@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T12:26:24.644297+00:00",
+  "basedOn": "a167f0c12cd1356d220537c1126704c9f2f27503",
+  "scope": "Original synthetic Rust formatting readiness only; Clippy/test integration and wider Gate A remain open.",
+  "sourcePins": [
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "8a7eb4fb3ba12372f947ffbd381e125b367aa0a8c2211a7b9bed20650cd05d78"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "af43a5f1efd3dac981420d63a6360342bd3f38c39d80573210b0b17de46e5193"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "9c1a74e851f3d3435d3890cab927e4724c3871f00e960c79731a27c7b2da848f"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "69233aacb579c084f408aa3c45205b57b76bf33b11032a469aba4be5dfea21f3"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "71c041ef813a37ef6e7cf4bbd795866c3350293a14b4b47716be495d68fbe283"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "ebc58eba515871bc474c92f577922852518fde787c4f701b45c934070ba04d07"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "c05957cd7fd8bc4e46e53d9962b786a1f38f97a6bd228592d82a756736199e14"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "33d288c72d4c774bd3f77f866e71e47bc97a2a6e80fe8899ff3bc7f74d07948b"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "33c09b247df454017792e71efd427f416aae91de05b53ce999ea746caf4adb6d"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "test/rustfmt.test.ts",
+      "sha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "file": "test/rust.test.ts",
+      "sha256": "eb8e2cf15fb625182cffa7d3d5766abaa6c27a57e505eca863f901722e40f365"
+    },
+    {
+      "file": "test/tool-versions.test.ts",
+      "sha256": "643ec6b1cbe85d3e21e5ecf28c63c0ae96aebd19be6e159da02c9da6a86958c2"
+    },
+    {
+      "file": "scripts/rust-review-tools.Dockerfile",
+      "sha256": "1e4a1639607ba03e3e411f5846d3155494ba138d0c7eb901052f5ef25894a8c6"
+    },
+    {
+      "file": "scripts/verify-rust-format-package.mjs",
+      "sha256": "8c6bbd79bb83ac74695f65691c098cea3461e3cf0c995cb2af6a97b88c8986a2"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "4a40af63795413dd51e301a63f5d73af0ec29a138572791f2741460a01c40ee3"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "778be48b01d70a85f1d1a03c43273b134d278fe0fcfb254d510e059b35a7f1f7"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "0758d7f6d59b89aed80362473ef540998a13dbae84dc58718371c699f958b0b5"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    }
+  ],
+  "engineRuntimeDigest": "e1d3452472f9a887ad0acb3deffe98e39b8ca87b84f229227365642c0fc04f53",
+  "engineRuntimeDigestScope": "Runtime JavaScript and package declaration only; loaded dependency bytes and tool component authentication are not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 594,
+    "pass": 525,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 69,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true
+  },
+  "nativeProfiles": [
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "cargo": "1.98.1",
+      "rustc": "1.98.1",
+      "rustfmt": "1.9.0-stable",
+      "image": "sha256:1a531d4bc06f3538b25b78e7736da9188be13b38e6cc419ddd8d0a7688a19613",
+      "network": "none",
+      "workspaceMount": "readonly",
+      "rootFilesystemReadonly": false,
+      "cpuLimit": 2,
+      "memoryLimit": "2g",
+      "profile": {
+        "profile": "rust-format",
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "preservedCompilerProfile": {
+    "profile": "rust",
+    "passed": 5,
+    "required": 5,
+    "problems": [],
+    "complete": true
+  },
+  "installedPackage": {
+    "tarballSha256": "82f17a6b064a8d72263eee7e627e92902f91a2977a1468bde3260ef3086f0f40",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "rust-format",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "checktrail-rust-review-1005:tools",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed before this final measurement was added; source/runtime pins identify evaluated behavior. Final embedded documentation bytes may differ.",
+  "mutationControls": [
+    {
+      "name": "inline formatter suppressions",
+      "file": "src/rustfmt-skips.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries",
+        "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete"
+      ],
+      "baselineSha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b",
+      "testSha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "name": "non-rewriting output mode",
+      "file": "src/rustfmt-runner.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete",
+        "native Rust formatting selects all declared workspace members with per-package editions and generated source",
+        "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection"
+      ],
+      "baselineSha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f",
+      "testSha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "name": "configured formatting activation",
+      "file": "src/rustfmt-runner.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete"
+      ],
+      "baselineSha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f",
+      "testSha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "name": "reported output byte identity",
+      "file": "src/rustfmt-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits"
+      ],
+      "baselineSha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d",
+      "testSha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    }
+  ],
+  "controls": [
+    "planning does not evaluate manifests build scripts or installed tools",
+    "operator execution trust and offline locked native metadata",
+    "whole selected virtual workspace membership and per-package editions",
+    "nonmember local dependency boundary and generated source",
+    "native per-file check semantics preserve BOM and CRLF without stdout rendering comparison",
+    "single explicit root configuration; disabled formatting and nested configuration do not pass",
+    "exact attribute skip scanning with comments nested comments strings raw strings Unicode and raw identifiers near misses",
+    "empty files parse errors native prerequisite and output/hash reconciliation",
+    "Cargo native processing addresses stay within declared source scope",
+    "source lockfile and existing build-output preservation",
+    "CLI MCP native outcome agreement argument trust denial and summary privacy",
+    "fresh offline production installation with external acceptance harness"
+  ],
+  "limits": {
+    "clippyIntegrated": false,
+    "rustTestExecutionIntegrated": false,
+    "explicitCompileFeatureTargetProfilesImplemented": false,
+    "macOsNativeFormatterVerified": false,
+    "windowsVerified": false,
+    "otherNativeVersionsVerified": false,
+    "completeComponentArtifactAuthenticationEstablished": false,
+    "developmentNativeContainerLicenseAuditCompleted": false,
+    "forcedTerminationTemporaryCleanupGuaranteed": false,
+    "maliciousProjectCodeContained": false,
+    "hostedCiExecuted": false,
+    "otherRequiredProfilesVerifiedAtThisRevision": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

@@ -1466,5 +1466,35 @@
       "file": "dist/test/php-review-surfaces.test.js",
       "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy"
     }
+  ],
+  "rust-format": [
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting planning retains exact workspace source without evaluating manifests or installing components"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting selects all declared workspace members with per-package editions and generated source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting rejects local dependencies outside selected workspace membership without rewriting either source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection"
+    }
   ]
 }

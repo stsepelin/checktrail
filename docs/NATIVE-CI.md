@@ -116,3 +116,8 @@ plugins and lifecycle scripts during preparation, and requires the exact native
 profile with no network. It also checks the fresh offline production installation;
 the main matrix requires the same profile in its prepared host PHP runtime.
 These configured hosted jobs are not evidence that they have run.
+
+The `rust-format` profile requires the pinned stable formatter component in
+addition to Cargo/rustc. Its helper repeats the exact native and CLI/MCP controls
+against a fresh offline installed package; unavailable components remain failures
+of required acceptance rather than skipped passes. See RUST-FORMAT.md.

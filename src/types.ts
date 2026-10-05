@@ -28,6 +28,7 @@ export const PARSERS = [
   "django-json",
   "laravel-json",
   "rust-json",
+  "rustfmt-json",
   "clang-json",
   "java-json",
   "dotnet-json",
