@@ -88,6 +88,11 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["go", "go version go1.27.1 linux/arm64\n", "1.27.1"],
     ["dotnet", "10.0.401\n", "10.0.401"],
     [
+      "gradle",
+      "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 6.12 aarch64\n",
+      "9.8.0",
+    ],
+    [
       "java",
       "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
       "25.0.4",

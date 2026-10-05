@@ -370,8 +370,10 @@ The [Java profile](docs/JAVA.md) compiles inventoried sources with an explicit
 release and pinned local dependencies. Maven/Gradle, annotation processors and
 application tests are not executed.
 The opt-in [Checkstyle profile](docs/CHECKSTYLE.md) verifies configured Java source
-audits with pinned tools and every-file completion; Maven/Gradle tests, SpotBugs,
-detekt and Kotlin/Scala remain planned.
+audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md)
+and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
+native test evidence. Wrappers, wider JVM source profiles, SpotBugs and detekt
+remain planned.
 
 Reproduce synthetic planning and execution costs with the
 [performance harness](docs/PERFORMANCE.md). Reports retain raw measurements and

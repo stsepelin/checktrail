@@ -1810,5 +1810,59 @@
       "file": "dist/test/maven-surfaces.test.js",
       "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs"
     }
+  ],
+  "gradle": [
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "Gradle planning requires explicit activation and bounded complete source prerequisites"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects filtered skipped modified task and omitted source evidence"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle binds source declarations classpaths native task identities and every terminal"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle planning reads successful project data without executing build code"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle protects client JVM settings against project daemon overrides"
+    }
   ]
 }

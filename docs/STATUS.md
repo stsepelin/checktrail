@@ -15,13 +15,23 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Gradle tests](GRADLE.md) now run declared Java modules with Groovy or
+Kotlin DSL scripts from fresh source/output/home and pinned artifact copies.
+Native task/source/JUnit/XML evidence binds complete participation and test
+display names. Matching client JVM settings and protected Java-home selection
+prevent the observed ordinary single-use daemon cancellation escape. The
+[local record](measurements/gradle-native-2026-10-05.json) binds required native
+and installed CLI/MCP controls, compiling guard mutations and public preparers.
+Wrappers, analyzers, Kotlin/Scala source, generated/JPMS scope and wider profiles
+remain required under E11; Gate A remains open.
+
 Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
 output, home and pinned dependency copies. Native configured-plugin, compiler,
 source-declaration and JUnit events reconcile with fresh reports; skipped,
 filtered, empty, foreign and incomplete participation cannot pass. The
 [local record](measurements/maven-native-2026-10-05.json) binds original controls,
 installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
-for wrappers, Gradle, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
+for wrappers, wider Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
 Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
 remains open.
 
@@ -30,7 +40,7 @@ profile with exact native file/rule/completion accounting, severity controls,
 data-only planning, startup-only MCP trust and owned POSIX cancellation cleanup.
 The [local measurement](measurements/checkstyle-native-2026-10-05.json) binds
 original controls, assertion-verified compiling mutations and a fresh offline
-installed CLI/MCP package profile. E11 remains partial: wider Maven profiles, Gradle tests,
+installed CLI/MCP package profile. E11 remains partial: wider Maven/Gradle profiles,
 SpotBugs, detekt and Kotlin/Scala coverage still need their native profiles.
 Hosted CI for this revision, broader platforms and full bundled provenance are
 unverified; Gate A remains open.

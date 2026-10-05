@@ -17,7 +17,8 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,
 `rust`, `rust-format`, `clippy` and `rust-tests`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
-Ruby and Swift have dedicated required-native jobs. The packaged review and
+Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
+installed CLI/MCP profiles. Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
