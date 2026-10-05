@@ -15,6 +15,8 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+[Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. E12 remains partial while test/TRX, formatting, generator and broader profile work continues.
+
 Maven native packet version 2 now binds its exact temporary repository JAR set
 to the raw operator-pinned manifest and binds the native Maven client PID/home
 to the observed launcher and configured distribution. An original synthetic
@@ -639,7 +641,7 @@ fail. Removing the assembly-file guard produced a false pass using an unpinned
 installation passed the C# library, CLI and MCP checks. Reproduce native and
 packaged verification with `scripts/verify-dotnet-container.mjs`. The hosted
 amd64 job passed at `52ba415`; see `DOTNET.md` for compilation limits and
-unsupported build, language and test profiles.
+the separate bounded SDK build profile and its remaining test, formatting and wider-language limits.
 
 ## GitHub Actions workflow verification
 

@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><AssemblyName>Original.VisualBasic</AssemblyName><RootNamespace></RootNamespace><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><NuGetAudit>false</NuGetAudit><DebugType>portable</DebugType></PropertyGroup></Project>

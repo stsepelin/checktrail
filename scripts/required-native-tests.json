@@ -1864,5 +1864,55 @@
       "file": "dist/test/gradle-builds.test.js",
       "name": "native Gradle protects client JVM settings against project daemon overrides"
     }
+  ],
+  "dotnet-build": [
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": ".NET build is opt-in and incomplete prerequisites cannot execute"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET packet rejects omitted, forged, stale and disabled participation"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": ".NET planning rejects incomplete source, project, role and dependency identities"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": ".NET protected environment cannot be overridden by project requirements"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET preserves inventoried near misses and caller-owned output trees"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET records declared generated inputs and rejects their undeclared presence"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation"
+    },
+    {
+      "file": "dist/test/dotnet-build-surfaces.test.js",
+      "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-build-surfaces.test.js",
+      "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs"
+    }
   ]
 }

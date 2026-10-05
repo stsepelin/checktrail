@@ -1,0 +1,635 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T22:44:36.506793+00:00",
+  "basedOn": "d79364b6bda819e275aadcd7c97d0d88595f3d38",
+  "scope": "Original synthetic C#/F#/VB SDK build readiness under one pinned Linux profile. E12 remains partial and Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "2a2e07081c8c6023554276ee4275617d4a934f05f4c3beecedc8bf03f8cc5635"
+    },
+    {
+      "file": "docs/DOTNET-BUILD.md",
+      "sha256": "a4736d821556f28369ab7d283e0e6d49e863af55febbbf9b24ece743ff12ee88"
+    },
+    {
+      "file": "docs/DOTNET.md",
+      "sha256": "94bcc09905337ccad10d5fe88b8113e7d6d2158590b9f5531388ffab547a786d"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "901364c320e774996988dcb418176e85aa3320c29ef404895c0fc8186022ab92"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "a053ae88dffe11a4b62979902639b1ba2d76076fcd725e8f2fd1d572e5694cdb"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "fa0719d3924765a13a0d2e98f9d55975bafb49a9958354308ef5018ed39bf45d"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "88a6c569679168e190e95c5bd2a12e893f37af6ad71dd4d4156e565d22d8074c"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "e4c15eda952aefd9f76bcb8f613b73264b5b18a0bc8eb9664bb3b89be7e061b1"
+    },
+    {
+      "file": "examples/dotnet-build/.editorconfig",
+      "sha256": "85d9929130a4b7e068a08b5b479bccbde628eeb6c4ba5d60ad33e7b5629237ef"
+    },
+    {
+      "file": "examples/dotnet-build/CSharp/CSharp.csproj",
+      "sha256": "7713e737343187d3b6bc66d277a1cceda00bbc543d63626f4d814f585a9db938"
+    },
+    {
+      "file": "examples/dotnet-build/CSharp/Counter.cs",
+      "sha256": "578853e167bc39e212a6f3406b0195c43335882fa18d9d94143203fb2b0b92a1"
+    },
+    {
+      "file": "examples/dotnet-build/CSharpTests/CSharpTests.csproj",
+      "sha256": "bd3b645196985ae763de0b99a322e676b8a53fe37ea58128a4f5ac295c0349c1"
+    },
+    {
+      "file": "examples/dotnet-build/CSharpTests/CounterTests.cs",
+      "sha256": "1ca394270067359ffd5b829cd06eaecb457324647079b4d002b77db0e9b0a18c"
+    },
+    {
+      "file": "examples/dotnet-build/FSharp/Counter.fs",
+      "sha256": "37c815b661080e4bd126ea07a10325fe0ddec81bbb701ff120b39f6e50f6aecd"
+    },
+    {
+      "file": "examples/dotnet-build/FSharp/FSharp.fsproj",
+      "sha256": "6564be8c8fe87d2200c70797486da0d40fba362a8dfec5b711a288eed8cd13fc"
+    },
+    {
+      "file": "examples/dotnet-build/FSharpTests/CounterTests.fs",
+      "sha256": "c9aeba192bb00d2bc9d627e3cbd837581f28c7c0f761beed1aa01e365a676dbc"
+    },
+    {
+      "file": "examples/dotnet-build/FSharpTests/FSharpTests.fsproj",
+      "sha256": "ae186cfab09d3fe5ee00411400a08eff5e79fedf2de891bfe086302a7b627519"
+    },
+    {
+      "file": "examples/dotnet-build/Original.slnx",
+      "sha256": "e75d1e5d5b723c11e62da076b14764afab9b40432292a4bd05302da104516d06"
+    },
+    {
+      "file": "examples/dotnet-build/VisualBasic/Counter.vb",
+      "sha256": "b4f46f4f3d085964074064552d162a96aea1ac88ec6658dfccb81dfb32f1a283"
+    },
+    {
+      "file": "examples/dotnet-build/VisualBasic/VisualBasic.vbproj",
+      "sha256": "c964bac898a721c9fdb8c2327ec6b4c67c157e9a36b4c90feebfd532fcbe612d"
+    },
+    {
+      "file": "examples/dotnet-build/VisualBasicTests/CounterTests.vb",
+      "sha256": "58d3ad496969253de02aba3f6fe5db1d0a22420d8a83029b51cfb2c73fa52ed7"
+    },
+    {
+      "file": "examples/dotnet-build/VisualBasicTests/VisualBasicTests.vbproj",
+      "sha256": "917758a6e769bb5c98ec0d8fee920e026f1f44855cc05fe86bcbb9786d52819c"
+    },
+    {
+      "file": "examples/dotnet-build/checktrail.json",
+      "sha256": "e6c7cdba9daded10a2a94516ebcf8f96aaf5dfd590d799c9726c750dabf0f26b"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/dotnet-build-config.schema.json",
+      "sha256": "72519a9caa90da9ae45241ca11b21a37a466bd94db3c2dffd6532ce119f85073"
+    },
+    {
+      "file": "schemas/dotnet-build-repository.schema.json",
+      "sha256": "cebcda67844a25b9733358658757c3fad1a2bcee833e37b2df0b7a8d6d31dd8a"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "9ea045a7398c5db2aeae1f0cc16ac4aa00f4751e58490295dfe0f435006774a0"
+    },
+    {
+      "file": "scripts/dotnet-build-fixture-projects.json",
+      "sha256": "cf32b6cec1841d29ee34074fa421b16343d4c1e18aa38b631f97b46dc1419c96"
+    },
+    {
+      "file": "scripts/dotnet-tools.Dockerfile",
+      "sha256": "408043aded8650617373d4a8d70e429c5382817cab29faf68a9f2134911a5f8c"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "cab963b80ecd913401d5605d9f299b6db5353287f3c140390c70c7176064a267"
+    },
+    {
+      "file": "scripts/prepare-dotnet-build-dependencies.mjs",
+      "sha256": "0c330eca6e9513dd028ca99011b968e84ba1dc45915486b3925186440d57c08a"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "5229ea0c923d64858fa99cb547bcf16ee38c1c444547a4fcea366c518f507593"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "scripts/verify-dotnet-build-container.mjs",
+      "sha256": "3fde81cc91b0c90989f395f4905a7fd12e6f29186e477c26fa273c571490b704"
+    },
+    {
+      "file": "scripts/verify-dotnet-build-package.mjs",
+      "sha256": "969f8a61a07f0883fcbe0a1f7f49d166743ad020faf6d76b0b133b454b5a5f3d"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "33e7774fa30d75cb3b63faf03a1b618c2e99bb0641e3ac594248783d28872181"
+    },
+    {
+      "file": "src/dotnet-build-evidence.ts",
+      "sha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf"
+    },
+    {
+      "file": "src/dotnet-build-native.ts",
+      "sha256": "892036523cb32255c743b73f14eaeed04ffe48cb69489f91c218a38c2bcb1cde"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "sha256": "163843326971571b44c0e5170933e768c2bd93085d3a6294985b667e8d0fa240"
+    },
+    {
+      "file": "src/dotnet-build.ts",
+      "sha256": "da644cdaa59d3e5bf3e339774086404f5f3e546de10326de3fbdda8e580adffe"
+    },
+    {
+      "file": "src/dotnet-evidence.ts",
+      "sha256": "b94b9687f59183261866b291f8032a22bb23b977bf0af0604871e2e733cdf6e1"
+    },
+    {
+      "file": "src/dotnet-runner.ts",
+      "sha256": "9ad886ed3cd89f924a724ea623b854aef53eca5bc0cf6721150eafa8dd22d61e"
+    },
+    {
+      "file": "src/dotnet.ts",
+      "sha256": "4d16b454054ff9c00097fd483f71ad1604fa643da99d94dce39582ffd6b53fa5"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "ae120f636a627ce80f4e24c40a87c0440190677e7420390058461b202b7312b4"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "2513c5698ab7a72ee4662536b637c719a8914007d0dc7d271876a1ef1b5c52b5"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "8ac89c2fadbc7b10bd57effb294d14ff8ff0626b117716ee807b3be5265f8a5c"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "c7d35251dd9139d55c8d0c652f702c5ca5ac2b313099a96ce2f788c6ee7d4862"
+    },
+    {
+      "file": "test/dotnet-build-fixture.ts",
+      "sha256": "1d766853040b86d5f622efad5c735af6f5726d35fe23104db32b9fbf416ae5cc"
+    },
+    {
+      "file": "test/dotnet-build-surfaces.test.ts",
+      "sha256": "f7a041e99876fe9cff06679f51ccf3a21c5d2d2acfebada40b6be8bdf7645b07"
+    },
+    {
+      "file": "test/dotnet-build.test.ts",
+      "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+    },
+    {
+      "file": "test/dotnet.test.ts",
+      "sha256": "aec80fea37b54b0a42edca47eb213e3e0ca327608d7b6d3f5a3b7a940d45aa60"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "09ee702cd76d94247c8afc6de310866062100c38add3e6af29a9d58e75b82d91"
+    }
+  ],
+  "engineRuntimeDigest": "5b2d91daf34ca28722d5371f3dcbdb08c7455a2cf818c8f3ed61fea6b8b90b3d",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration. Full dependency/native/container authentication, license closure and wider platform acceptance remain open.",
+  "dependencyPreparation": {
+    "originalPublicFixtureOnly": true,
+    "sdkVersion": "10.0.401",
+    "runtimeVersion": "10.0.12",
+    "testSdk": "18.10.1",
+    "nunit": "4.6.1",
+    "nunitAdapter": "5.0.0",
+    "files": 827,
+    "bytes": 115916008,
+    "rawManifestSha256": "9a6cc980e70d354e81e03e41aacfc72a583796d5008bfa68dfdcad9432fb7880",
+    "fixtureLocks": 6,
+    "explicitPreparationUsedNetwork": true,
+    "engineInstalledDependencies": false,
+    "publisherSignatureVerified": false,
+    "controls": {
+      "schemaVersion": 1,
+      "complete": true,
+      "controls": [
+        {
+          "control": "existing regular cache",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "66c6648ce7d283939d2c67eb881c99cc8465c65f9b8fb20e278b97223300106b"
+        },
+        {
+          "control": "existing corrupt cache",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "47a120b8e903483944e7887c9a42bca9bef251c65a37b76df4e0f821a7180b94"
+        },
+        {
+          "control": "existing destination link",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "6b72c5ec14700d3432b6977f1a6b42a69d6498d05ed8f29d3137172a0e570522"
+        },
+        {
+          "control": "linked cache root",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "4f0451a52202b4010d59a79b922c2092c1b7c2987e455ed2858959c41fc1f08b"
+        },
+        {
+          "control": "unknown image preserves destination",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "3cf6b5028503524e9e034b3408099fa2cd9a0ba6437f4a38160e1a94c98f1ba3"
+        },
+        {
+          "control": "active preparation lease",
+          "exitCode": 1,
+          "rejectedForExpectedReason": true,
+          "existingBytesPreserved": true,
+          "ownedTemporaryDirectories": 0,
+          "complete": true,
+          "logSha256": "823e843e3dc458497573a6100fcb0b616bde399744a44821ea69f497e0c79c5e"
+        }
+      ]
+    }
+  },
+  "acceptance": {
+    "image": "sha256:dd41e4bf14888ca91a298be59fe705a4d8678065d93e70cc8dfe3fbd2cdb8315",
+    "versions": {
+      "node": "v22.23.2",
+      "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+      "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "dotnet-build",
+      "passed": 12,
+      "required": 12,
+      "problems": [],
+      "complete": true
+    },
+    "preservedCsharp": {
+      "profile": "dotnet",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "cc26c34426396f73adb8e76f152c43cf129ada80695d98b99532bd63bcd44572",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "dotnet-build",
+        "passed": 12,
+        "required": 12,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:dd41e4bf14888ca91a298be59fe705a4d8678065d93e70cc8dfe3fbd2cdb8315",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 275270,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "compilingMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Raw manifest bytes",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "576be57a7b70c6992e9507c78377e64ee3f5322a957939efbebb2cd7bb277d68",
+        "compiled": true,
+        "intendedAssertion": "same parsed manifest with unpinned raw bytes",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "36f23ba4c917efb3748499236abdf9b2b2cd3da309b56fb120e164b2d8d1b2ae",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10452
+      },
+      {
+        "guard": "Source digest binding",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "0f678b3583220d3c85592ed713d113966f381cb02cea577aa570a26bc8499a54",
+        "compiled": true,
+        "intendedAssertion": "changed source bytes",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "6546236a11d0b2acca091a25d8b640598098228c91662221dea61d7861f8730f",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10376
+      },
+      {
+        "guard": "Native compiler task",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "1e270086bb867b99662a4477deae9c3f5e3c68f1dd840d42161e0858eae171af",
+        "compiled": true,
+        "intendedAssertion": "foreign task assembly",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "426e278f5b50cba1c998d08f7c6c9008dc4202a91eceaf90d0434a56f6fc34be",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10367
+      },
+      {
+        "guard": "Selected target framework",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "def4b125918ffd340da024f3590822ccb37f214d17aa74a42265afa234a13595",
+        "compiled": true,
+        "intendedAssertion": "framework mismatch",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "8f395ece47a009fd4116327faa611cd778dbfb3342192c582f7c56829a629142",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10340
+      },
+      {
+        "guard": "Native output checksum",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "67d1ebb8e171c293eaef0472464d617f679938479bc138112cc65e3590ecc601",
+        "compiled": true,
+        "intendedAssertion": "wrong symbol checksum",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "ed4b21582fa2db60c2614c21946234badaf8a25297538452ba1a22f2558ff3f6",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10266
+      },
+      {
+        "guard": "Declared test-class binding",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "6834f1a4e82b6da4bcf5cb541bccf64dcc8e0f104b8ec9c8edbc81f69b6c0e8e",
+        "compiled": true,
+        "intendedAssertion": "unbound test class",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "ab8f7b9ad5fe660e9bb467399a9932acbc877be5becf64b11818dc687ddd4439",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10325
+      },
+      {
+        "guard": "Native build call exit",
+        "file": "src/dotnet-build-evidence.ts",
+        "sourceSha256": "40eec4a758937c6ce0d2c1ceec4d44c293a9dcdb1d349fbc08b80964470177cf",
+        "mutationSourceSha256": "6431454f187de090d597349566099bd1b631b3adaa808634759bd42d631b38aa",
+        "compiled": true,
+        "intendedAssertion": "contradictory build ledger",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "d333d8a2d8e38cffbbfdafad7fc137207d48f0464541ddb3ebd362a14c1b6db9",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build.test.ts",
+            "sha256": "46b8a1f516a54a3c72c16cf1174c655be4c74cc93eca01a29eb828e15246f508"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "4772558775cdcd79bb7d47f7604856b9fc338562b46fc1d757816cb7b376b28f",
+        "durationMs": 10417
+      },
+      {
+        "guard": "Owned native scratch",
+        "file": "src/dotnet-build-runner.ts",
+        "sourceSha256": "163843326971571b44c0e5170933e768c2bd93085d3a6294985b667e8d0fa240",
+        "mutationSourceSha256": "bc397953a53409fe1f71e34ff0913eb27f96aa500155d00b80265d99a8260db8",
+        "compiled": true,
+        "intendedAssertion": "Native scratch belongs to the owned command directory",
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "c5e23394282220f03e303038ba2f8ab9a3dc65ebbadd4ad918de55054dffea93",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/dotnet-build-surfaces.test.ts",
+            "sha256": "f7a041e99876fe9cff06679f51ccf3a21c5d2d2acfebada40b6be8bdf7645b07"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "2b7b7e5b2c69614ff404133000191e7025bb89d8ed4376a4c4456ab2c3500b4c",
+        "durationMs": 5671
+      }
+    ]
+  },
+  "repositoryValidation": {
+    "schemaVersion": 1,
+    "complete": true,
+    "checks": [
+      {
+        "command": ["npm", "run", "check"],
+        "exitCode": 0,
+        "durationMs": 45293,
+        "logSha256": "2e30426182a3b3e1086fa2708b773360c3358a62154d89a63a9b96d295caec00",
+        "tests": 676,
+        "passed": 551,
+        "failed": 0,
+        "skipped": 125
+      },
+      {
+        "command": ["./node_modules/.bin/prettier", "--check", "."],
+        "exitCode": 0,
+        "durationMs": 3313,
+        "logSha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      },
+      {
+        "command": ["git", "diff", "--check"],
+        "exitCode": 0,
+        "durationMs": 19,
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "command": [
+          "./node_modules/.bin/eslint",
+          "scripts/generate-schemas.mjs",
+          "scripts/prepare-dotnet-build-dependencies.mjs",
+          "scripts/verify-dotnet-build-container.mjs",
+          "scripts/verify-dotnet-build-package.mjs",
+          "src/adapters.ts",
+          "src/dotnet-build-evidence.ts",
+          "src/dotnet-build-native.ts",
+          "src/dotnet-build-runner.ts",
+          "src/dotnet-build.ts",
+          "src/evidence.ts",
+          "src/schemas.ts",
+          "src/tool-versions.ts",
+          "src/types.ts",
+          "test/dotnet-build-fixture.ts",
+          "test/dotnet-build-surfaces.test.ts",
+          "test/dotnet-build.test.ts",
+          "test/schemas.test.ts"
+        ],
+        "exitCode": 0,
+        "durationMs": 582,
+        "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "evaluatedPackageScope": "The tarball was packed before this measurement and its final documentation links were added. Runtime and regression sources were unchanged; this digest does not identify a later tarball containing this record.",
+  "boundaries": {
+    "gateAComplete": false,
+    "gateBReady": false,
+    "gateCAssessed": false,
+    "fieldEvaluationExecuted": false,
+    "reviewerInferenceInvoked": false,
+    "roslynGeneratorParticipationVerified": false,
+    "dotnetTestTrxIntegrationComplete": false,
+    "dotnetFormattingIntegrationComplete": false,
+    "osSandboxOrHostilePacketAttestationEstablished": false,
+    "windowsVerified": false,
+    "hostedRevisionVerified": false
+  }
+}

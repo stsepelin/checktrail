@@ -24,6 +24,8 @@ an unavailable runtime or external service does not count as verification.
 
 ## M2
 
+- Implemented: opt-in `dotnet.build` for explicit `net10.0` C#/F#/VB projects, with fresh offline locked restore, selected native compiler and analyzer evidence, declared generated sources, portable-symbol binding, source findings and cancellation scratch cleanup. DOTNET-BUILD.md records scope and required native/installed controls. E12 and Gate A remain open.
+
 - Implemented: Maven packet version 2 binds raw pinned repository manifests, exact native JAR closure and observed native client/distribution identities. The original synthetic forgery, compiling guard checks and required source/installed controls are recorded in MAVEN.md; wider E11 and Gate A obligations remain open.
 
 - Implemented: opt-in pinned Gradle Java module tests with fresh source/output, native task/JUnit/XML reconciliation, declared source binding, Kotlin DSL build controls, independent module failures, protected client-JVM launch and reached-test cancellation cleanup. Required source/installed acceptance and compiling guard controls are in GRADLE.md; wrappers, analyzers, wider JVM source/target profiles and E11 remain open.
@@ -264,8 +266,7 @@ one successful native TAP case. Hosted CI remains a separate acceptance gate.
 
 ## External dependencies
 
-The installed MCP server SDK is still 2.0.0. Its standard Tasks routing failure is
-documented in `MCP-COMPATIBILITY.md`. Hosted CI and publication have recorded
+The installed MCP server SDK is pinned to 2.3.0. Its bounded standard Tasks wire acceptance and remaining client/runtime profiles are documented in `MCP-COMPATIBILITY.md`. Hosted CI and publication have recorded
 alpha.5 evidence in `RELEASE.md`; subsequent revisions/releases and additional
 target OS/client profiles retain separate acceptance gates. A gate is completed
 only when its implementation and corresponding evidence exist.

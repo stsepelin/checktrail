@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "solution": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "repository": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "repositoryManifest": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "repositorySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "projects": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "language": {
+            "type": "string",
+            "enum": ["csharp", "fsharp", "visual-basic"]
+          },
+          "assemblyName": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*$"
+          },
+          "targetFramework": { "type": "string", "const": "net10.0" },
+          "kind": { "type": "string", "enum": ["library", "test"] },
+          "sources": {
+            "minItems": 1,
+            "maxItems": 2048,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          },
+          "generatedSources": {
+            "maxItems": 256,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          },
+          "testClasses": {
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+                "className": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][\\w]*(?:\\.[A-Za-z_][\\w]*)*$"
+                }
+              },
+              "required": ["file", "className"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "file",
+          "language",
+          "assemblyName",
+          "targetFramework",
+          "kind",
+          "sources",
+          "generatedSources",
+          "testClasses"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "solution",
+    "repository",
+    "repositoryManifest",
+    "repositorySha256",
+    "projects"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "sdkVersion": "10.0.401",
+  "runtimeVersion": "10.0.12",
+  "projects": [
+    {
+      "file": "CSharp/CSharp.csproj",
+      "language": "csharp",
+      "assemblyName": "Original.CSharp",
+      "targetFramework": "net10.0",
+      "kind": "library",
+      "sources": ["CSharp/Counter.cs"],
+      "generatedSources": [],
+      "testClasses": []
+    },
+    {
+      "file": "CSharpTests/CSharpTests.csproj",
+      "language": "csharp",
+      "assemblyName": "Original.CSharpTests",
+      "targetFramework": "net10.0",
+      "kind": "test",
+      "sources": ["CSharpTests/CounterTests.cs"],
+      "generatedSources": [],
+      "testClasses": [
+        {
+          "file": "CSharpTests/CounterTests.cs",
+          "className": "Example.CounterTests"
+        }
+      ]
+    },
+    {
+      "file": "FSharp/FSharp.fsproj",
+      "language": "fsharp",
+      "assemblyName": "Original.FSharp",
+      "targetFramework": "net10.0",
+      "kind": "library",
+      "sources": ["FSharp/Counter.fs"],
+      "generatedSources": [],
+      "testClasses": []
+    },
+    {
+      "file": "FSharpTests/FSharpTests.fsproj",
+      "language": "fsharp",
+      "assemblyName": "Original.FSharpTests",
+      "targetFramework": "net10.0",
+      "kind": "test",
+      "sources": ["FSharpTests/CounterTests.fs"],
+      "generatedSources": [],
+      "testClasses": [
+        {
+          "file": "FSharpTests/CounterTests.fs",
+          "className": "Example.CounterTests"
+        }
+      ]
+    },
+    {
+      "file": "VisualBasic/VisualBasic.vbproj",
+      "language": "visual-basic",
+      "assemblyName": "Original.VisualBasic",
+      "targetFramework": "net10.0",
+      "kind": "library",
+      "sources": ["VisualBasic/Counter.vb"],
+      "generatedSources": [],
+      "testClasses": []
+    },
+    {
+      "file": "VisualBasicTests/VisualBasicTests.vbproj",
+      "language": "visual-basic",
+      "assemblyName": "Original.VisualBasicTests",
+      "targetFramework": "net10.0",
+      "kind": "test",
+      "sources": ["VisualBasicTests/CounterTests.vb"],
+      "generatedSources": [],
+      "testClasses": [
+        {
+          "file": "VisualBasicTests/CounterTests.vb",
+          "className": "Example.CounterTests"
+        }
+      ]
+    }
+  ]
+}

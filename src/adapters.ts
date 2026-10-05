@@ -9,6 +9,7 @@ import { checkstyleCheck } from "./checkstyle.js";
 import { mavenCheck } from "./maven.js";
 import { gradleCheck } from "./gradle.js";
 import { dotnetCheck } from "./dotnet.js";
+import { dotnetBuildCheck } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
@@ -120,7 +121,7 @@ export const adapters = [
       "jvm.gradle-test",
     ],
   },
-  { id: "dotnet", markers: [], checks: ["dotnet.csharp"] },
+  { id: "dotnet", markers: [], checks: ["dotnet.csharp", "dotnet.build"] },
   { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
   { id: "swift", markers: ["Package.swift"], checks: ["swift.syntax"] },
   {
@@ -501,7 +502,13 @@ export async function checksFor(
         ? [await checkstyleCheck(source, project)]
         : []),
     ];
-  if (project.adapter === "dotnet") return [await dotnetCheck(source, project)];
+  if (project.adapter === "dotnet")
+    return [
+      await dotnetCheck(source, project),
+      ...(requested?.includes("dotnet.build")
+        ? [await dotnetBuildCheck(source, project)]
+        : []),
+    ];
   if (project.adapter === "swift") return [swiftCheck(project)];
   if (project.adapter === "ruby") return [rubyCheck(project)];
   if (project.adapter === "rust") {

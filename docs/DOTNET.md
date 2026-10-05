@@ -1,5 +1,7 @@
 # C# compilation
 
+For the separate opt-in C#/F#/VB SDK build profile, see [DOTNET-BUILD.md](DOTNET-BUILD.md). Test execution and formatting integration remain unfinished.
+
 `dotnet.csharp` compiles all inventoried `.cs` files in a project as one explicitly
 configured assembly. It requires one project-root `.csproj` marker, a prepared
 .NET SDK 10.0.401, Roslyn 5.9.0 from that SDK, and the .NET 10.0.12 runtime and

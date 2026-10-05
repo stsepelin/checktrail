@@ -287,7 +287,7 @@ jobs:
 
   dotnet:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -303,6 +303,8 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-dotnet-container.mjs
+      - run: node scripts/prepare-dotnet-build-dependencies.mjs
+      - run: node scripts/verify-dotnet-build-container.mjs
 
   actionlint:
     runs-on: ubuntu-latest

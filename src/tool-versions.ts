@@ -39,8 +39,9 @@ export async function toolsFor(
       args,
       cwd: check.project,
       ...(check.commands[0]?.env ? { env: check.commands[0].env } : {}),
-      ...(["jvm.maven-test", "jvm.gradle-test"].includes(check.id) &&
-      check.commands[0]?.temporaryDirectory
+      ...(["jvm.maven-test", "jvm.gradle-test", "dotnet.build"].includes(
+        check.id,
+      ) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
     },
@@ -230,6 +231,14 @@ export async function toolsFor(
       { name: "node", source: "engine-runtime" },
       command("actionlint", process.execPath, [
         fileURLToPath(new URL("./actionlint-runner.js", import.meta.url)),
+        "--version",
+      ]),
+    ];
+  if (check.id === "dotnet.build" && check.commands[0])
+    return [
+      { name: "node", source: "engine-runtime" },
+      command("dotnet", process.execPath, [
+        ...check.commands[0].args,
         "--version",
       ]),
     ];
