@@ -94,6 +94,9 @@ jobs:
         run: |
           node scripts/verify-required-native-tests.mjs core
           node scripts/verify-required-native-tests.mjs mcp-tasks-routing
+          node scripts/verify-required-native-tests.mjs mcp-tasks
+          node scripts/verify-required-native-tests.mjs mcp-task-dispatch
+          CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
           node scripts/verify-required-native-tests.mjs javascript
           node scripts/verify-required-native-tests.mjs python
           node scripts/verify-required-native-tests.mjs frameworks
@@ -120,6 +123,8 @@ jobs:
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify sealed synthetic benchmark intake in the production package
         run: node scripts/verify-review-benchmark-package.mjs
+      - name: Verify installed MCP Tasks lifecycle offline on the host
+        run: node scripts/verify-mcp-tasks-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
       - name: Prepare pinned review runtime
@@ -131,6 +136,9 @@ jobs:
       - name: Verify task storage and execution in the packaged Linux runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: node scripts/verify-task-store-container.mjs
+      - name: Verify installed MCP Tasks lifecycle offline in Linux
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: CHECKTRAIL_TASKS_IMAGE=node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
 
   clang:
     runs-on: ubuntu-latest

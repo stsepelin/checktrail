@@ -97,7 +97,7 @@ try {
       await tasks.close(); tasks = await openValidationTasks({...options,allowExecution:false});
       assert.deepEqual(await tasks.get(running.taskId),result);
       await assert.rejects(tasks.start(),/denied/);
-      console.log(JSON.stringify({durableWorker:'passed',installedLibrary:'passed',nativeValidation:'passed',reopen:'passed',interruption:'explicit-tool-error',mcpTasks:'not-advertised'}));
+      console.log(JSON.stringify({durableWorker:'passed',installedLibrary:'passed',nativeValidation:'passed',reopen:'passed',interruption:'explicit-tool-error',mcpTasks:'not-evaluated-by-this-library-profile'}));
     } finally {await tasks?.close(); store?.close(); await rm(temporary,{recursive:true,force:true});}
   `;
   process.stdout.write(

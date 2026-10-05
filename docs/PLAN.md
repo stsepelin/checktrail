@@ -64,8 +64,9 @@ the installed SDK's actual wire behavior. Client compatibility is a separate
 matrix: do not infer it from the protocol version. Older clients may need a later
 compatibility bridge. Optional Tasks support follows only after bounded local
 execution, cancellation and lifecycle tests are solid. These lifecycle checks
-are now exercised; the installed SDK's Tasks routing limitation and the remaining
-implementation gates are recorded in `MCP-COMPATIBILITY.md`.
+are now exercised. SDK 2.3.0 removes the historical routing blocker, and the
+optional standard polling profile has bounded local wire acceptance recorded in
+`MCP-COMPATIBILITY.md`; other client/runtime profiles remain separately required.
 
 Keep the complete report in versioned JSON. Add SARIF export for source findings
 and JUnit import for test evidence without pretending either is a complete model

@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T10:50:36.708862+00:00",
+  "basedOn": "06453506ef40a833fdc50d6dd62b4c885129d971",
+  "scope": "Original synthetic readiness for startup-enabled foreground native validation Tasks polling; no AI, field evaluation, or review-quality measurement.",
+  "protocol": "2026-07-28",
+  "extension": "io.modelcontextprotocol/tasks",
+  "sdkVersions": {
+    "server": "2.3.0",
+    "client": "2.3.0",
+    "core": "2.3.0"
+  },
+  "protectedSettings": [
+    "root",
+    "task-store directory",
+    "execution trust",
+    "summary/detail",
+    "timeout",
+    "Git base",
+    "policy overlay",
+    "environment",
+    "external adapters"
+  ],
+  "sourcePins": [
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "33c09b247df454017792e71efd427f416aae91de05b53ce999ea746caf4adb6d"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/mcp-validation-tasks.ts",
+      "sha256": "3ea8b487c803387950c1986a38055a8223d99ade6955b3033c10c6fd2e596ccf"
+    },
+    {
+      "file": "src/validation-tasks.ts",
+      "sha256": "aa1c0bdd83cd039ae59fb1217dba1ef99b005f4b4d94be12d652fa1601d3a896"
+    },
+    {
+      "file": "src/validation-tasks-protocol.ts",
+      "sha256": "cc6134c2d9ef09bb8be34b6f4921632897ddd1ff3ce688f10e41a0949e2e3546"
+    },
+    {
+      "file": "src/validation-task-worker.ts",
+      "sha256": "9927367c66c5d3292ca2ce63138b7c49f7ac9301ac3ae82a74ac07060e3edb49"
+    },
+    {
+      "file": "src/task-store.ts",
+      "sha256": "a0590debac5d5c23c467947d1fdb87260861163a4f04d26711c977d42b66d03d"
+    },
+    {
+      "file": "test/mcp-validation-tasks.test.ts",
+      "sha256": "1a7341748a84004cbd140b1d7127739997b255693e6714c272a75af91209b0e7"
+    },
+    {
+      "file": "test/mcp-tool-catalog.test.ts",
+      "sha256": "cd0d00dff70027712e8569d28c870e570f4908159133c3d1b1e6895783c2c0bb"
+    },
+    {
+      "file": "test/mcp.test.ts",
+      "sha256": "033402679736ec8834f5453264b28881b0bb2803164674991279c6c68d88c0ca"
+    },
+    {
+      "file": "test/validation-tasks.test.ts",
+      "sha256": "a153fbbb6f63532f9367418cb5ef5052fbafe3ca41290bd3107a3e61402e637f"
+    },
+    {
+      "file": "test/task-store.test.ts",
+      "sha256": "a8ccd0959ab5c0bd7e523af3c061b0ea5d56036b040b54a57d3b52b4fe0c462b"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "919d6040a9c395236ae8c0b582a748d1467c797b214c8e5ded502a69f14cd298"
+    },
+    {
+      "file": "scripts/verify-mcp-tasks-package.mjs",
+      "sha256": "c55860e1886408a606b5f2feb7c131441ee5360e854fbec3ea156ce652863c09"
+    },
+    {
+      "file": "scripts/verify-review-container.mjs",
+      "sha256": "d4ff3ffb11101ebed9a23146868c29cc20acf202c8377b08f5efff6136ff43f0"
+    },
+    {
+      "file": "scripts/verify-task-store-container.mjs",
+      "sha256": "8d9bfd3705644806d0826880551a821b4791226c32b504396c2f8ef72ab60d05"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "2a40caa0d7f7c010b77898cbca1e26a7b43b6eaa80cc001dec460b40d01cfbea"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    }
+  ],
+  "engineRuntimeDigest": "74d794c4f9969dd19d8c1839cb911c50ab46b7b5b0ed9eb2b771b6e1b2f1bd64",
+  "engineRuntimeDigestScope": "Runtime JavaScript and package declaration only; loaded module and dependency byte identity unverified.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 581,
+    "pass": 519,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 62,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true
+  },
+  "nativeProfiles": [
+    {
+      "platform": "darwin",
+      "node": "26.9.0",
+      "architecture": "arm64",
+      "profiles": [
+        {
+          "profile": "mcp-tasks",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        {
+          "profile": "mcp-task-dispatch",
+          "passed": 1,
+          "required": 1,
+          "problems": [],
+          "complete": true
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "node": "22.23.2",
+      "architecture": "arm64",
+      "image": "sha256:33f433f2330139ef0e9b3b031d38b6c6d6c58137929ad39142cde48a56e5a77e",
+      "network": "none",
+      "workspaceMount": "readonly",
+      "rootFilesystemReadonly": false,
+      "profiles": [
+        {
+          "profile": "mcp-tasks",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        {
+          "profile": "mcp-task-dispatch",
+          "passed": 1,
+          "required": 1,
+          "problems": [],
+          "complete": true
+        }
+      ]
+    }
+  ],
+  "ordinaryClientPreservation": [
+    {
+      "platform": "darwin",
+      "profile": "existing ordinary MCP suite with Tasks configured",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "platform": "linux",
+      "profile": "existing ordinary MCP suite with Tasks configured",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "installedPackages": [
+    {
+      "tarballSha256": "c2fa3153a3cb004a41fd8cc0ac071267d8b5c4c2b592170f8614f263bf5d7a60",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "mcp-tasks",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false,
+      "fullTasksConformanceClaimed": false
+    },
+    {
+      "tarballSha256": "c2fa3153a3cb004a41fd8cc0ac071267d8b5c4c2b592170f8614f263bf5d7a60",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "mcp-tasks",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "checktrail-tasks-1005:review",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false,
+      "fullTasksConformanceClaimed": false
+    }
+  ],
+  "evaluatedTarballTiming": "Fresh packages were packed before this final measurement was added. Runtime and acceptance pins identify evaluated code; final embedded docs/measurement bytes may differ.",
+  "mutationControls": [
+    {
+      "control": "per-request-task-creation",
+      "compiled": true,
+      "test": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+      "exitCode": 1,
+      "caught": true
+    },
+    {
+      "control": "ordinary-native-admission",
+      "compiled": true,
+      "test": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+      "exitCode": 1,
+      "caught": true
+    },
+    {
+      "control": "cancellation-cleanup-ack",
+      "compiled": true,
+      "test": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+      "exitCode": 1,
+      "caught": true
+    },
+    {
+      "control": "ordinary-input-validation",
+      "compiled": true,
+      "test": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+      "exitCode": 1,
+      "caught": true
+    }
+  ],
+  "controls": [
+    "operator-only capability enablement; discovery and planning create no store",
+    "per-request negotiation and ordinary completed-call fallback",
+    "durable creation before returned handle; polling and terminal result retrieval",
+    "native passed/failed/empty outcomes preserved",
+    "read-only reopening and terminal cancel/update idempotence",
+    "exact task cancellation; completed creation-request notification leaves background work alive",
+    "native descendant cleanup before cancel acknowledgment and foreground exit",
+    "shared ordinary/task native admission in both directions; responsive data-only operations",
+    "close during pending worker initialization and overlap rejection",
+    "expired/unknown handles remain generic; persisted interruption never resumes",
+    "summary privacy and comparative oversized-detail tool error",
+    "strict original callback inputs/outputs and explicit tool-error preservation"
+  ],
+  "limits": {
+    "pollingOnly": true,
+    "inputRequiredImplemented": false,
+    "subscriptionsImplemented": false,
+    "updateOriginalMalformedFieldShapeAttested": false,
+    "updatesUsePublicSdkLiftedContext": true,
+    "fullTasksConformanceEstablished": false,
+    "windowsVerified": false,
+    "actualModelHostTasksInteroperabilityVerified": false,
+    "otherAdvertisedRuntimeProfilesVerifiedAtThisRevision": false,
+    "hostedCiExecuted": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "independentFindingTruthEstablished": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

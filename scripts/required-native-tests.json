@@ -1392,5 +1392,53 @@
       "file": "dist/test/mcp-tasks-routing.test.js",
       "name": "published official SDK routes standard Tasks get cancel and update without transport interception"
     }
+  ],
+  "mcp-tasks": [
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks admission shares the ordinary native execution slot in both directions"
+    },
+    {
+      "file": "dist/test/mcp-validation-tasks.test.js",
+      "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates"
+    }
+  ],
+  "mcp-task-dispatch": [
+    {
+      "file": "dist/test/mcp-tool-catalog.test.js",
+      "name": "extension dispatcher validates original callback inputs and outputs while preserving tool errors"
+    }
   ]
 }

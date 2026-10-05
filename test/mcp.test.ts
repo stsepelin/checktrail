@@ -27,6 +27,8 @@ async function connect(
   args: string[] = [],
   modern = true,
 ): Promise<Client> {
+  if (process.env.CHECKTRAIL_TEST_TASKS === "1")
+    args = [...args, "--task-store", path.join(await fixture(t, {}), "tasks")];
   const client = new Client(
     { name: "checktrail-test-client", version: "1.0.0" },
     modern ? { versionNegotiation: { mode: { pin: "2026-07-28" } } } : {},
