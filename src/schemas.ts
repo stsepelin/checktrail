@@ -372,3 +372,15 @@ export {
   reviewWorkflowAuditOptionsSchema,
   reviewWorkflowAuditSummarySchema,
 } from "./review-workflow-audit-schema.js";
+
+export {
+  reviewBenchmarkReferenceSchema,
+  reviewBenchmarkPlanSchema,
+  reviewBenchmarkCommandSchema,
+  reviewBenchmarkSummarySchema,
+  reviewBenchmarkPacketSchema,
+  reviewBenchmarkJudgingSchema,
+  reviewBenchmarkWorkerCommandSchema,
+  reviewBenchmarkWorkerSummarySchema,
+} from "./review-benchmark-schema.js";
+export { reviewWorkflowAuditBindingSchema } from "./review-workflow-audit-schema.js";

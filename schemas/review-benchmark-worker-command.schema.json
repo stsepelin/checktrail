@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": { "operation": { "type": "string", "const": "status" } },
+      "required": ["operation"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": { "operation": { "type": "string", "const": "packet" } },
+      "required": ["operation"],
+      "additionalProperties": false
+    }
+  ]
+}

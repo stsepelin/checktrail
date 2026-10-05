@@ -93,6 +93,13 @@ inspection reconciles candidate, recipe, case, runtime and ledger bindings; vers
 1 native journals remain explicitly incomplete for receipt retention. Raw native
 stdout/stderr and complete host-model attempt archives remain unsupported. See
 measurements/review-workflow-native-audit-2026-10-05.json.
+The shared [sealed synthetic benchmark intake](REVIEW-BENCHMARK.md) adds frozen
+paired case/arm/settings identities, private predeclared journal paths, one-trial
+MCP worker packets, complete planned-slot accounting and anonymous judging packet
+preparation on the recorded POSIX development profiles. It collects structured
+workflow evidence; it adds no language semantics, actual host isolation, complete
+provider attempts, independent judging or quality result. Field evaluation remains
+closed while Gate A is open. See measurements/review-benchmark-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
 on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
 language probes, automatic callers and independent claim verification remain pending.

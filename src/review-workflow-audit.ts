@@ -13,6 +13,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
+import { observeReviewEngineDigest } from "./review-engine-identity.js";
 import { VERSION } from "./types.js";
 import {
   reviewWorkflowAssignmentSchema,
@@ -30,6 +31,7 @@ import {
 import type { ReviewWorkflowOptions } from "./review-workflow.js";
 import {
   reviewWorkflowAuditOptionsSchema,
+  reviewWorkflowAuditBindingSchema,
   reviewWorkflowAuditSummarySchema,
   type ReviewWorkflowAuditOptions,
   type ReviewWorkflowAuditSummary,
@@ -59,7 +61,7 @@ const captureSchema = z.strictObject({
   untrustedData: z.literal(true),
 });
 type Capture = z.infer<typeof captureSchema>;
-const settings = z.strictObject({
+export const reviewWorkflowAuditSettingsSchema = z.strictObject({
   allowReviewSource: z.literal(true),
   trusted: z.boolean(),
   workflowLimits: z.record(z.string(), z.number()).nullable(),
@@ -74,15 +76,17 @@ const legacyBodySchema = z.discriminatedUnion("kind", [
   z.strictObject({
     kind: z.literal("header"),
     engineVersion: z.string().min(1).max(128),
+    engineRuntimeDigest: digest.optional(),
     runtime: z.strictObject({
       node: z.string(),
       platform: z.string(),
       arch: z.string(),
     }),
     rootDigest: digest,
+    binding: reviewWorkflowAuditBindingSchema.optional(),
     maxBytes: count,
     maxEvents: count,
-    settings,
+    settings: reviewWorkflowAuditSettingsSchema,
   }),
   z.strictObject({
     kind: z.literal("begin"),
@@ -236,12 +240,14 @@ function prepareAudit(
   const header: Extract<Body, { kind: "header" }> = {
     kind: "header",
     engineVersion: VERSION,
+    engineRuntimeDigest: observeReviewEngineDigest(),
     runtime: {
       node: process.version,
       platform: process.platform,
       arch: process.arch,
     },
     rootDigest: sha(project),
+    ...(limits.binding ? { binding: limits.binding } : {}),
     maxBytes: limits.maxBytes,
     maxEvents: limits.maxEvents,
     settings: {
@@ -590,7 +596,7 @@ function checkSnapshots(
 function checkNativeReceipt(
   receipt: ReviewWorkflowNativeReceipt,
   state: z.infer<typeof reviewWorkflowSummarySchema>,
-  startup: z.infer<typeof settings>,
+  startup: z.infer<typeof reviewWorkflowAuditSettingsSchema>,
 ): void {
   const recipe = parseReviewProbe(receipt.recipe);
   const run = parseReviewProbeRun(receipt.run);
@@ -638,9 +644,11 @@ function checkNativeReceipt(
     );
 }
 /** Inspect a frozen private journal; no resume, source output, execution or host inference. */
-export function inspectReviewWorkflowAudit(
+/** Operator-only snapshot. It contains untrusted source and response text. */
+export function readReviewWorkflowAuditBytes(
   filename: string,
-): ReviewWorkflowAuditSummary {
+  maxBytes = MAX_BYTES,
+): Buffer {
   const fd = openSync(
     filename,
     constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
@@ -649,6 +657,8 @@ export function inspectReviewWorkflowAudit(
   try {
     const before = fstatSync(fd);
     privateStat(before);
+    if (before.size > maxBytes)
+      throw new Error("Audit snapshot exceeds reader bounds");
     content = Buffer.alloc(before.size);
     let read = 0;
     while (read < content.length) {
@@ -671,6 +681,11 @@ export function inspectReviewWorkflowAudit(
   } finally {
     closeSync(fd);
   }
+  return content;
+}
+/** Validates a captured snapshot without reopening the path. */
+export function parseReviewWorkflowAuditArtifact(content: Buffer) {
+  const events: z.infer<typeof eventSchema>[] = [];
   const last = content.lastIndexOf(10),
     prefix = content.subarray(0, last + 1);
   const lines = new TextDecoder("utf-8", { fatal: true })
@@ -697,6 +712,7 @@ export function inspectReviewWorkflowAudit(
       throw new Error("Audit record exceeds bounds");
     const raw: unknown = JSON.parse(line);
     const event = eventSchema.parse(raw);
+    events.push(event);
     // Hash the recorded key order, before schema parsing normalizes it.
     const { digest: hash, ...base } = raw as Record<string, unknown>;
     if (
@@ -866,7 +882,7 @@ export function inspectReviewWorkflowAudit(
   }
   const trailing = content.length - prefix.length;
   if (end && trailing) throw new Error("Bytes follow audit finalization");
-  return reviewWorkflowAuditSummarySchema.parse({
+  const summary = reviewWorkflowAuditSummarySchema.parse({
     schemaVersion: 2,
     journalVersion: journalVersion!,
     format: "review-workflow-audit-summary",
@@ -899,4 +915,12 @@ export function inspectReviewWorkflowAudit(
     commands: { started: seen.size, finished, rejected, pending: pending.size },
     workflows: snapshots,
   });
+  return { summary, header: header!, events };
+}
+export function inspectReviewWorkflowAudit(
+  filename: string,
+): ReviewWorkflowAuditSummary {
+  return parseReviewWorkflowAuditArtifact(
+    readReviewWorkflowAuditBytes(filename),
+  ).summary;
 }

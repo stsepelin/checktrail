@@ -141,7 +141,10 @@ filesystem snapshot is promised. The engine is ephemeral by default. Optional
 [startup command auditing](REVIEW-WORKFLOW-AUDIT.md) persists admitted commands,
 issued packets and accounting snapshots before results are released. It preserves
 interrupted prefixes without resuming them. Complete model/native attempt artifacts
-and sealed benchmark orchestration remain required work.
+and complete host/model attempts remain required work. The bounded synthetic
+[benchmark intake](REVIEW-BENCHMARK.md) now freezes paired slots, restricts MCP
+workers to one trial, collects every predeclared journal and prepares anonymous
+judging packets. Host isolation and quality remain unverified.
 
 ## Independence and remaining gates
 

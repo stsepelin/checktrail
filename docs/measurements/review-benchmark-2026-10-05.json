@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-paired-workflow-journal-intake-v1",
+  "recordedAt": "2026-10-05T08:58:39.332126+00:00",
+  "scope": "Implementation readiness from original synthetic fixtures and declared dummy host responses; no actual model inference, independent model evaluation or field trial.",
+  "sourceBinding": {
+    "baseCommit": "b9d95390a93b0e0dc37c3357c44bebd409d6a465",
+    "kind": "runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "b4ff86c9f80cd0850aa232fa5c0497d0926cef2b0fa187ae5d507f5bda78abe3"
+      },
+      {
+        "file": "schemas/review-benchmark-command.schema.json",
+        "sha256": "ca214fc4234d0ee04affd3c7c5e4d7ce83497a8d705c7ff0e97a7b68f9c555a8"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "sha256": "f284c6f4d4f19821f515b997ab8c6595edabd01db6eea7db1e9412db1956a736"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "sha256": "243e7412f384ed47f102a33421a3b09b7fdc6cc835ea344c3e30731aee504bec"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "sha256": "0033ed6cdeefa63df1b9450641f09eada851501a016eb69d7fd3cdad25f4e757"
+      },
+      {
+        "file": "schemas/review-benchmark-reference.schema.json",
+        "sha256": "c303423f8b61ef5445137a50bf71c68c28d4c30412a68ec2a857195ec32e7771"
+      },
+      {
+        "file": "schemas/review-benchmark-summary.schema.json",
+        "sha256": "1372ca7523cccd53d703d03b84a8fd6f29a250aaf5befb1e24f8a0128ec5f867"
+      },
+      {
+        "file": "schemas/review-benchmark-worker-command.schema.json",
+        "sha256": "ba6289c68224fd1fc42c67f987f3b0d16bfd34f8915cccd435badf60a279b945"
+      },
+      {
+        "file": "schemas/review-benchmark-worker-summary.schema.json",
+        "sha256": "713cad751492f857a92820a163746d759fbdd12e7f4cd82c97751bb0bdb67250"
+      },
+      {
+        "file": "schemas/review-workflow-audit-binding.schema.json",
+        "sha256": "e02145161c5715f730fcffe5cea320d9dadd6291710dbda7b02dd2c2419ed00e"
+      },
+      {
+        "file": "schemas/review-workflow-audit-options.schema.json",
+        "sha256": "300837e1024a18ff006c92fbf43d0f55a17db01ef4cf69d280e3646ef41e33bc"
+      },
+      {
+        "file": "scripts/generate-schemas.mjs",
+        "sha256": "e807c1b26f81ce9def76e7e738b550b8acc0e6ce81c2545cb122ea785408d45f"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "10681cc67649ef7560a2c08af6bc3f3ef6ba41581ef998a59742025f11b65f4f"
+      },
+      {
+        "file": "scripts/verify-review-benchmark-package.mjs",
+        "sha256": "835bbb34aa787415b2abebb87495d5313f63abfe880ba1e187b947bf390957e6"
+      },
+      {
+        "file": "scripts/verify-review-container.mjs",
+        "sha256": "f40fffc60e042482d09c4419f5889bbd31af27196139af59617760a01f41a573"
+      },
+      {
+        "file": "src/cli.ts",
+        "sha256": "e541d20c2881899905c578c02b49a71d37dbd595bc1ea33b7a029abf0f26c352"
+      },
+      {
+        "file": "src/index.ts",
+        "sha256": "6e425b027e9738cc96ced368aeaf776d4acd159c958469ee2f2ae271da4cfed6"
+      },
+      {
+        "file": "src/mcp.ts",
+        "sha256": "da6a26890f66c0706443f054c13ca669c15d8277e677a61ff6b79004860feedc"
+      },
+      {
+        "file": "src/review-benchmark-schema.ts",
+        "sha256": "66860f2a5971ff04e9edb68da79ac4f891b1eb0081ce67fe6390ffd84471b8f1"
+      },
+      {
+        "file": "src/review-benchmark.ts",
+        "sha256": "bf7a282779064574b28af91319f382f0d0bec0dae3ea40e9abbbbc239a55ced8"
+      },
+      {
+        "file": "src/review-engine-identity.ts",
+        "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+      },
+      {
+        "file": "src/review-workflow-audit-schema.ts",
+        "sha256": "ef964ff99c92d12a7f807737bff19c5924d06ebaf6032ef1f30b578c4e187903"
+      },
+      {
+        "file": "src/review-workflow-audit.ts",
+        "sha256": "9130c0a31f698e7fa46da30f9949f5cba4a0b644646b7a42d99a569abd9f933d"
+      },
+      {
+        "file": "src/schemas.ts",
+        "sha256": "e2492949953a4814e9fa9d54e93036adc5422e865e2aff17ca339d015e40da91"
+      },
+      {
+        "file": "test/mcp.test.ts",
+        "sha256": "0779ef8cd4fdd878e1170e7cfbf40996ab22a93b46cf321dc7d4bb710e0222c5"
+      },
+      {
+        "file": "test/review-benchmark.test.ts",
+        "sha256": "e7ea31aee09bbe9846075c2013e7595f3028be52eee025411e3a9c17df8d2162"
+      }
+    ],
+    "observedRuntimeDigest": "e4c70b3358b2909cdb891527bad89f05bf446a231eddbd76bf72c82af3ba9777",
+    "runtimeDigestScope": "Top-level runtime JS files and package declaration; dependency bytes and cached loaded modules are unverified."
+  },
+  "fullDevelopmentCheck": {
+    "command": "npm run check",
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "total": 560,
+    "passed": 498,
+    "failed": 0,
+    "cancelled": 0,
+    "unavailableSkipped": 62,
+    "skipsCountedAsPassing": false
+  },
+  "requiredProfiles": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "node": "v26.9.0",
+      "evidence": {
+        "profile": "review-benchmark",
+        "passed": 14,
+        "required": 14,
+        "problems": [],
+        "complete": true
+      }
+    },
+    {
+      "platform": "linux",
+      "arch": "arm64",
+      "node": "v22.23.2",
+      "git": "git version 2.47.3",
+      "network": "none",
+      "workspaceMount": "read-only",
+      "containerRootReadOnly": false,
+      "image": "sha256:0350b7bea1609dc4156a942b037defb864b8ea0133419fcb5d71d9737e66f1bd",
+      "evidence": {
+        "profile": "review-benchmark",
+        "passed": 14,
+        "required": 14,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "linuxReviewerProfiles": [
+    {
+      "profile": "review",
+      "passed": 30,
+      "required": 23,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-git",
+      "passed": 29,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-provider",
+      "passed": 21,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-probe",
+      "passed": 16,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-refutation",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-scoring",
+      "passed": 6,
+      "required": 6,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-verification",
+      "passed": 17,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-budget",
+      "passed": 34,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow-audit",
+      "passed": 19,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-benchmark",
+      "passed": 14,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-native-budget",
+      "passed": 39,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "installedPackage": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "tarballSha256": "92d4be4167e6388e1dccae4a1a1c9a01f103c768d10c954c808753993dd4edb6",
+    "installation": "offline-production",
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "planned": 4,
+    "accounted": 4,
+    "completed": 3,
+    "missing": 1,
+    "inferenceInvoked": false,
+    "hostIsolationVerified": false,
+    "qualityAssessed": false,
+    "artifactSnapshot": "Packed before this measurement record was finalized. Runtime/acceptance byte pins identify the evaluated implementation; embedded measurement documentation may differ from this final record."
+  },
+  "guardMutations": {
+    "mutations": [
+      {
+        "guard": "trial-binding",
+        "compiles": true,
+        "targetedTestFailed": true,
+        "test": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts",
+        "failureMarker": "foreign"
+      },
+      {
+        "guard": "late-journal-check",
+        "compiles": true,
+        "targetedTestFailed": true,
+        "test": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal",
+        "failureMarker": "Missing expected exception"
+      },
+      {
+        "guard": "reviewer-stage",
+        "compiles": true,
+        "targetedTestFailed": true,
+        "test": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging",
+        "failureMarker": "Replayed response must not duplicate"
+      },
+      {
+        "guard": "runtime-file-byte-digest",
+        "compiles": true,
+        "targetedTestFailed": true,
+        "test": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories",
+        "failureMarker": "Actual runtime byte changes must change the digest"
+      }
+    ],
+    "sourceAndBuildRestored": true
+  },
+  "controls": [
+    "Full paired slot inventory and distinct trial/judging identities",
+    "Version 5 working-tree source/context identity",
+    "Private storage, links, oversized files and exclusive publication",
+    "Startup-only source disclosure and one-trial MCP worker access",
+    "Original broken/fixed/near-miss source probes with structured native receipts",
+    "Rejected replays retained without duplicate accepted judging output",
+    "Missing/invalid/refused/cancelled/malformed/interrupted denominators",
+    "Runtime/settings/host/source and predeclared trial binding reconciliation",
+    "Cross-trial and curator declared-session reuse",
+    "Changed manifests, late journal output, forged collection/judging data and seal reuse",
+    "Observed runtime byte identity under an unchanged package version",
+    "Installed library, CLI and MCP with one missing planned trial kept incomplete",
+    "Actual equal-length runtime JS byte changes, package changes, added files, links, oversized files and empty inventory"
+  ],
+  "limits": {
+    "gateA": "open",
+    "gateB": "pending",
+    "gateC": "not-assessed",
+    "hostIsolationVerified": false,
+    "claimsVerified": false,
+    "qualityAssessed": false,
+    "externalAttemptsComplete": false,
+    "rawNativeOutputIncluded": false,
+    "independentJudgingExecuted": false,
+    "priorWorkflowComparisonValidated": false,
+    "pairedClusterUncertaintyImplemented": false,
+    "fieldEvaluationExecuted": false,
+    "windowsSupported": false
+  }
+}

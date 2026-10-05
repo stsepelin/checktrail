@@ -255,7 +255,7 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -264,6 +264,12 @@ The model cannot grant that permission through a tool argument. Add `--detailed`
 only if the client may receive paths, commands and raw diagnostics. The default
 summary omits those fields. Data returned through an MCP client may be sent to
 that client's model provider.
+
+The `review_benchmark` worker view reads one startup-selected anonymous trial from
+a pinned original synthetic readiness protocol. Operator commands freeze paired
+cases, retain all predeclared journal slots and prepare anonymous judging packets.
+Host isolation, complete model attempts and quality remain unverified; field trials
+still wait for the required implementation gates. See [REVIEW-BENCHMARK.md](docs/REVIEW-BENCHMARK.md).
 
 The model-independent `review_workflow` tool exchanges bounded reviewer/refuter/
 adjudicator assignments with host-owned AI sessions and an operator-pinned live
