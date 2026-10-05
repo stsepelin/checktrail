@@ -1440,5 +1440,31 @@
       "file": "dist/test/mcp-tool-catalog.test.js",
       "name": "extension dispatcher validates original callback inputs and outputs while preserving tool errors"
     }
+  ],
+  "php-review": [
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "PHP-CS-Fixer planning requires local config and tools and does not execute PHP"
+    },
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "native PHP-CS-Fixer processes declared files and catches style syntax exclusions and skipped input without writing source or cache"
+    },
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "PHP-CS-Fixer evidence requires exact native events rules totals exits and active coverage"
+    },
+    {
+      "file": "dist/test/larastan.test.js",
+      "name": "Larastan project configuration remains execution-free during inspection and requires operator trust"
+    },
+    {
+      "file": "dist/test/larastan.test.js",
+      "name": "native Larastan proves typed model accessors with missing-extension broken fixed near-miss exclusion and bootstrap controls"
+    },
+    {
+      "file": "dist/test/php-review-surfaces.test.js",
+      "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy"
+    }
   ]
 }

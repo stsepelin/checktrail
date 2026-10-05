@@ -125,6 +125,7 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["pytest", "9.1.1\n", "9.1.1"],
     ["mypy", "2.3.1\n", "2.3.1"],
     ["pint", "Pint 1.32.1\n", "1.32.1"],
+    ["php-cs-fixer", "3.95.27\n", "3.95.27"],
     ["pest", "  Pest Testing Framework 5.2.1.  \n", "5.2.1"],
   ]) {
     const tool: ToolSpec = { name: name!, source: "version-command", command };

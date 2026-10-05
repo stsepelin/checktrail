@@ -220,7 +220,8 @@
               "pyright-json",
               "phpstan-json",
               "phpunit-junit",
-              "pint-json"
+              "pint-json",
+              "php-cs-fixer-json"
             ]
           },
           "commands": {

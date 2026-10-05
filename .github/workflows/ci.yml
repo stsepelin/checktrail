@@ -64,6 +64,11 @@ jobs:
           mkdir -p .checktrail/php-tools
           cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
           composer install --working-dir=.checktrail/php-tools --no-interaction --no-scripts --prefer-dist --no-progress
+      - name: Prepare locked PHP review tools
+        run: |
+          mkdir -p .checktrail/php-review-tools
+          cp scripts/php-review-tools/composer.json scripts/php-review-tools/composer.lock .checktrail/php-review-tools/
+          composer install --working-dir=.checktrail/php-review-tools --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
       - name: Prepare locked Laravel runtime fixtures
         run: |
           mkdir -p .checktrail/laravel-tools
@@ -102,6 +107,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs frameworks
           node scripts/verify-required-native-tests.mjs go
           node scripts/verify-required-native-tests.mjs php-tools
+          node scripts/verify-required-native-tests.mjs php-review
           node scripts/verify-required-native-tests.mjs laravel
           node scripts/verify-required-native-tests.mjs rust
           node scripts/verify-required-native-tests.mjs review-budget
@@ -125,6 +131,8 @@ jobs:
         run: node scripts/verify-review-benchmark-package.mjs
       - name: Verify installed MCP Tasks lifecycle offline on the host
         run: node scripts/verify-mcp-tasks-package.mjs
+      - name: Verify installed PHP review profiles offline on the host
+        run: node scripts/verify-php-review-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
       - name: Prepare pinned review runtime
@@ -139,6 +147,35 @@ jobs:
       - name: Verify installed MCP Tasks lifecycle offline in Linux
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: CHECKTRAIL_TASKS_IMAGE=node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
+
+  php-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned PHP runtime
+        run: docker build --file scripts/php-review-tools.Dockerfile --tag checktrail-php-review:synthetic-v1 scripts
+      - name: Prepare locked native tools without project lifecycles
+        run: |
+          mkdir -p .checktrail/php-review-tools
+          cp scripts/php-review-tools/composer.json scripts/php-review-tools/composer.lock .checktrail/php-review-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/php-review-tools,target=/tools" --workdir /tools checktrail-php-review:synthetic-v1 composer install --no-plugins --no-scripts --no-interaction --prefer-dist --no-progress
+      - name: Require native PHP evidence offline
+        run: docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-php-review:synthetic-v1 node scripts/verify-required-native-tests.mjs php-review
+      - name: Audit installed PHP review metadata and notices
+        run: node scripts/audit-php-review-tools.mjs
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require installed PHP review evidence offline
+        run: CHECKTRAIL_PHP_REVIEW_IMAGE=checktrail-php-review:synthetic-v1 node scripts/verify-php-review-package.mjs
 
   clang:
     runs-on: ubuntu-latest

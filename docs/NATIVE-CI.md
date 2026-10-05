@@ -14,7 +14,7 @@ Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
-`frameworks`, `go` (including `go-matrix`), `php-tools`, `laravel` and `rust`. Dedicated container jobs
+`frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel` and `rust`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
@@ -110,3 +110,9 @@ baseline; the release commit needs its own CI run before publication.
 +cache. This checks installed library/CLI/MCP accounting and operator controls;
 +it starts no real provider inference or field review. Exact local runtime pins,
 +mutations and cleanup evidence are in +[the dated measurement](measurements/review-budget-native-2026-10-02.json). +
+
+The separate `php-review` job pins its Docker runtime and Composer lock, disables
+plugins and lifecycle scripts during preparation, and requires the exact native
+profile with no network. It also checks the fresh offline production installation;
+the main matrix requires the same profile in its prepared host PHP runtime.
+These configured hosted jobs are not evidence that they have run.
