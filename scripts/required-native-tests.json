@@ -1730,5 +1730,39 @@
       "file": "dist/test/fetch-pack.test.js",
       "name": "remote pack cancellation after connection and invalid output boundaries never publish content"
     }
+  ],
+  "checkstyle": [
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle planning never executes project code requires explicit activation and protects JVM environment"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle XML accepts escaped properties formatting comments and exact built-in names while rejecting inactive or external assembly"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle catches exact style defects retains thresholds IDs and near misses without writing source or cache"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle cancellation kills its active JVM and removes the engine-owned temporary artifacts"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle declared root checks report violations and fixed controls for every supported file-set module"
+    }
   ]
 }

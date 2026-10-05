@@ -131,3 +131,9 @@ standard library before validation and verifies compilation, Clippy and native
 test profiles through the fresh offline package. Foreign tests remain unavailable
 without a supported executor. The configured host jobs have not been run for this
 revision; see RUST-BUILD.md for measured local acceptance.
+
+The separate `checkstyle` job prepares the exact Checkstyle artifact and pinned
+JVM image, disables networking during required native and installed-package
+acceptance, and retains the preserved Java compiler profile. Local Linux arm64
+source-bound evidence is in [CHECKSTYLE.md](CHECKSTYLE.md). This newly configured
+hosted job has not been run at this revision.

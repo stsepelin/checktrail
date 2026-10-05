@@ -6,6 +6,7 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
+import { checkstyleEvidence } from "./checkstyle-evidence.js";
 import { dotnetEvidence } from "./dotnet-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
@@ -333,6 +334,8 @@ export function evaluate(
     return { ...result, ...fastapiEvidence(check, processes) };
   if (check.parser === "clang-json")
     return { ...result, ...clangEvidence(check, processes, root) };
+  if (check.parser === "checkstyle-json")
+    return { ...result, ...checkstyleEvidence(check, processes, root) };
   if (check.parser === "java-json")
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")

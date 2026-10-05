@@ -1,0 +1,565 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T17:18:22.557704+00:00",
+  "basedOn": "ebd78a3d639e26ac2a506d9714f5b0492199e707",
+  "scope": "Original synthetic configured Java Checkstyle audit readiness under one pinned Linux profile. E11 remains partial and Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "49e6aa4bc361d48fca9252e153f975a459253f21e04a8873a0eb2cc093e3df99"
+    },
+    {
+      "file": "README.md",
+      "sha256": "57f9fdff217c141b5bb0532b0b092e411092d84dce4edc512dfddc93d9e69d04"
+    },
+    {
+      "file": "docs/EXTERNAL-ADAPTERS.md",
+      "sha256": "92882ba504a218775f1c22c03758a266c020bdc273faaf0a1f71a460877dc585"
+    },
+    {
+      "file": "docs/JAVA.md",
+      "sha256": "311c0ae5b9baf64b91f1f5b72380c195cd91ea365fb4ef31295a119861a92fd2"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "8ce5136aa5c07e7d3ac3067ffc2d290da29997e1bee0f530f3f751f6df78a321"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "939085b71b328f80c884bd609b4eaf74535b28be433acd23c99359f52b63af12"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "bac8955d8d366881e036f792e8fe74919db22e517abb9193ec402c51683a64d2"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "4eba26ff88cf1d6374fe17b7d7a3fd1041c526fe8cd0efb2a978d7ed007ca115"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "403856649f214565521c941a897aebaf58e99f859721ffe91b50d1283e4b46e9"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "2985becb4d2c45ec66cc9fe448597e325416dedf82f6615a4ce04a12a0be1cd3"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "211cd50bb483d8988d179ea14c750f07baa2e7d1f0daf911cf2339afa583c693"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "078ce0f9258191fb2d61525765514dea337ae9d8871c71c410c71b99564f7646"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "89bbbd1f5a19549b4f6cf7b045ab3768bcd76cf77ba2b7a6fab041a45eaa5181"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "21ad4f449d3789f1a54cb49de1a14916ffdaa2b853abff37179723ec5eddfd80"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "bac7c77f39be9078c96c6a2caf265dd9235c281d1b85978a3db5260fae241f50"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "6e926b3b9eb1f17c44c003d7d01863e0f5c83f38e83982ac5650d8f81b931368"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "04b66352488b149c7d19a72e89e1bfd0e1dc602ec98f6156d998f722478a9e89"
+    },
+    {
+      "file": "test/review-probe.test.ts",
+      "sha256": "a342d8d9832a2868efc07e5174fd33024f1f7f886d6ceb1b349ccff9ce8366e0"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "14b5af2f9dfd28d2e79a7d491f7a6a3acb09af41a3679bea12e89d7223c19a82"
+    },
+    {
+      "file": "docs/CHECKSTYLE.md",
+      "sha256": "cf7a1fca9baecdbb44465a9408e2d3295f365f8aa7182f2a67070e105b69c4df"
+    },
+    {
+      "file": "schemas/checkstyle-config.schema.json",
+      "sha256": "65017e5bda9e402ac8fa50c1d489f2e6e7f58584fc3d7e022ed15ebc5c11c112"
+    },
+    {
+      "file": "scripts/java-review-tools.Dockerfile",
+      "sha256": "0bcaf9ac906bf00d20b68d6dbd1282d81badb66a6265a6561f1a4e3894bd5caf"
+    },
+    {
+      "file": "scripts/prepare-java-review-tools.mjs",
+      "sha256": "444ce194771a37cd5c9b1ff8be061b31fe4afb5c53e881df9ff68ce86053ea33"
+    },
+    {
+      "file": "scripts/verify-checkstyle-container.mjs",
+      "sha256": "e597fccad6a3e877d63a4781547c6318fbfcace0366fa9da34ff4cf9c46f33de"
+    },
+    {
+      "file": "scripts/verify-checkstyle-package.mjs",
+      "sha256": "f1f9b6e873b4c95de06e6f35bdd9b5461b98324d9926eeb3ff452cbd7bfcf6c0"
+    },
+    {
+      "file": "src/checkstyle-evidence.ts",
+      "sha256": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+    },
+    {
+      "file": "src/checkstyle-native.ts",
+      "sha256": "02eea009604ab049bb334efadd5eebf45eb208ea761db6147432e53d4051b320"
+    },
+    {
+      "file": "src/checkstyle-runner.ts",
+      "sha256": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698"
+    },
+    {
+      "file": "src/checkstyle.ts",
+      "sha256": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001"
+    },
+    {
+      "file": "test/checkstyle-fixture.ts",
+      "sha256": "4b3f9eb26d0371277bed27f6a82e4d5ff6c55a4780652e0b7e39834658d459ce"
+    },
+    {
+      "file": "test/checkstyle-surfaces.test.ts",
+      "sha256": "2f8be7da62a5c9f998310f7b860007951d689fd662ccdd37a97869fcf695c747"
+    },
+    {
+      "file": "test/checkstyle.test.ts",
+      "sha256": "7cfb644551505080621ff551bda1efccba42fa19893e2c26d27d1822b9d73407"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/review-probe.ts",
+      "sha256": "19c08ec0046aaf8f2dcfeec2a97852176bf18b9dcc41b560749a27a5b5d14ff0"
+    },
+    {
+      "file": "src/review-probe-worker.ts",
+      "sha256": "86ff795b0319ea2949b4294b35e6fb5c87d20a6ada06f077c00f8710dc05c1fb"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/java.test.ts",
+      "sha256": "44bcaea2d8d0c257202f8282d1fb278e035d67f379b0eada0a8154cad222a473"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "docs/PLAN.md",
+      "sha256": "f4556aa96172da04ebb573ff8946520fac4ef6adec250b20422b7e4dec8546c5"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "8e4c52f8128b9e8676a93d191d2b4c548834028eeb9191d3a303218aa1245aa4"
+    }
+  ],
+  "engineRuntimeDigest": "8f0802ce69ad437d8931b582ed4893d278f3b98bc5120767fba583d40f4e433c",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration; full dependency/native/container artifact authentication is not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 640,
+    "pass": 547,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 93,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true,
+    "formatCheck": true,
+    "diffCheck": true,
+    "node": "v26.9.0",
+    "platform": "Darwin",
+    "architecture": "arm64"
+  },
+  "nativeProfile": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "image": "sha256:f78f8262b960c3354d929488cd0d57e1048fcf5969742663ed6da7775f287fc0",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "checkstyle": "Checkstyle version: 14.3.0"
+    },
+    "network": "none",
+    "init": true,
+    "cpuLimit": 2,
+    "memoryLimit": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "profile": {
+      "profile": "checkstyle",
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    }
+  },
+  "installedPackage": {
+    "tarballSha256": "47987700fddf72c50fc5b931c2236dc6ab92a9f171a99f32568bc7b516550a57",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientVersion": "2.3.0",
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "acceptanceClientCopiedOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "checkstyle",
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "sha256:f78f8262b960c3354d929488cd0d57e1048fcf5969742663ed6da7775f287fc0",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed after the implementation, strengthened controls and profile documentation, before this measurement. The runtime/source pins identify evaluated behavior; the final package also embeds this later measurement.",
+  "preparation": {
+    "download": {
+      "artifact": "checkstyle-14.3.0-all.jar",
+      "bytes": 14731429,
+      "sha256": "754e218ab1fcabb1e1c5f8530e9d3aa37636806c22987bb279dd907a6ee749b2",
+      "cached": false,
+      "publisherSignatureVerified": false
+    },
+    "cached": {
+      "artifact": "checkstyle-14.3.0-all.jar",
+      "bytes": 14731429,
+      "sha256": "754e218ab1fcabb1e1c5f8530e9d3aa37636806c22987bb279dd907a6ee749b2",
+      "cached": true,
+      "publisherSignatureVerified": false
+    },
+    "corruptCacheRejectedWithoutOverwrite": true,
+    "cacheSymbolicLinkRejected": true,
+    "temporaryArtifactsRemoved": true,
+    "manifestClassPath": false,
+    "annotationProcessorService": false,
+    "archiveManifestSha256": "7dc8fa4f37e9bb6e13f3fe79b9d53d452c88505c6ec0da5200c3e132b5fb0921",
+    "observedNoticeFiles": [
+      {
+        "file": "META-INF/LICENSE.txt",
+        "sha256": "b1d2870f1a00e4d7f56576e5f0870cba109e041f8af66866cf5b499478e654e7",
+        "bytes": 11359
+      },
+      {
+        "file": "META-INF/NOTICE.txt",
+        "sha256": "d649e220dd0497197a266b7d7304a009d06bcefce3141fa6ff4f2ceddb438237",
+        "bytes": 177
+      },
+      {
+        "file": "META-INF/LICENSE",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bytes": 11358
+      },
+      {
+        "file": "org/xmlresolver/notices/w3c-license.txt",
+        "sha256": "9a3ac27f4c5954a3e4afcf8311e36be7cd84c32a3681312de7563ce112b9cad0",
+        "bytes": 1829
+      }
+    ],
+    "completeBundledComponentLicenseClosureVerified": false
+  },
+  "artifactAcquisition": {
+    "version": "14.3.0",
+    "artifact": "checkstyle-14.3.0-all.jar",
+    "bytes": 14731429,
+    "sha256": "754e218ab1fcabb1e1c5f8530e9d3aa37636806c22987bb279dd907a6ee749b2",
+    "publishedDigest": "sha256:754e218ab1fcabb1e1c5f8530e9d3aa37636806c22987bb279dd907a6ee749b2",
+    "url": "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-14.3.0/checkstyle-14.3.0-all.jar",
+    "releaseId": 397700413,
+    "assetId": 593192192,
+    "releasePublishedAt": "2026-09-27T15:22:48Z",
+    "publisherSignatureVerified": false
+  },
+  "mutationControls": [
+    {
+      "name": "artifact-digest",
+      "file": "src/checkstyle.ts",
+      "before": "hash(await readFile(jar)) !== config.sha256",
+      "after": "hash(await readFile(jar)) !== hash(await readFile(jar))",
+      "intendedTest": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "falsy value",
+      "rawTapSha256": "f01213ad51b2109f580c64c60b0e46bbbe043a3df891bcbf702f74cdbd91483c"
+    },
+    {
+      "name": "raw-configuration-binding",
+      "file": "src/checkstyle-runner.ts",
+      "before": "inputs.configurationSha256 !== invocation.configurationSha256",
+      "after": "inputs.configurationSha256 !== inputs.configurationSha256",
+      "intendedTest": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "0 !== 2",
+      "rawTapSha256": "f8e07eff4baee8db39b5a3216768406cb721209c4c580836d90b102b38b86925"
+    },
+    {
+      "name": "all-source-completion",
+      "file": "src/checkstyle-evidence.ts",
+      "before": "seen.size !== expected.size",
+      "after": "seen.size > expected.size",
+      "intendedTest": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "missing file",
+      "rawTapSha256": "ff0432a6946454cf252d9b6778bd9d6085bfd55dac55b28310b34f63ac80e3b9"
+    },
+    {
+      "name": "built-in-package-boundary",
+      "file": "src/checkstyle-evidence.ts",
+      "before": "rule.type.startsWith(\"com.puppycrawl.tools.checkstyle.checks.\")",
+      "after": "rule.type.startsWith(\"com.puppycrawl.tools.checkstyle.checks\")",
+      "intendedTest": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "foreign rule",
+      "rawTapSha256": "095e2afa1520c2b7b26a6d7eb07af3e8a31b977ae6a978debc3cde17f8f52cef"
+    },
+    {
+      "name": "native-error-counter",
+      "file": "src/checkstyle-evidence.ts",
+      "before": "data.nativeErrors !==",
+      "after": "false && data.nativeErrors !==",
+      "intendedTest": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "native counter mismatch",
+      "rawTapSha256": "5e93f0aefb2c894c6e2439f104778424a4e5571187a9f13d6bd6845806097ca3"
+    },
+    {
+      "name": "warning-failure-policy",
+      "file": "src/checkstyle-evidence.ts",
+      "before": "planned.config.failOn === \"warning\"",
+      "after": "planned.config.failOn !== planned.config.failOn",
+      "intendedTest": "native Checkstyle catches exact style defects retains thresholds IDs and near misses without writing source or cache",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "expected: 'failed'",
+      "rawTapSha256": "767e55b72b5d704a0f471dc7d04b3daa08820eef42460d19f48a970edb2563d4"
+    },
+    {
+      "name": "strict-source-decoding",
+      "file": "src/checkstyle-runner.ts",
+      "before": "new TextDecoder(\"utf-8\", { fatal: true })",
+      "after": "new TextDecoder(\"utf-8\", { fatal: false })",
+      "intendedTest": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "expected: 'incomplete'",
+      "rawTapSha256": "22dce41442672981a099d799974670754a1055bab78103a2b2d13765a979eccd"
+    },
+    {
+      "name": "owned-cancellation-cleanup",
+      "file": "src/checkstyle.ts",
+      "before": "temporaryDirectory: true",
+      "after": "temporaryDirectory: false",
+      "intendedTest": "native Checkstyle cancellation kills its active JVM and removes the engine-owned temporary artifacts",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "Native input readiness must precede cancellation",
+      "rawTapSha256": "33e5dfccad8162383a1e4db7b25d17109d3509a22cc11fdb4693bfd1511a0ed7"
+    },
+    {
+      "name": "data-only-planning",
+      "file": "src/checkstyle.ts",
+      "before": "  const scope = project.files.filter((file) => file.endsWith(\".java\"));",
+      "after": "  await import(\"node:child_process\").then(({spawnSync}) => spawnSync(\"java\", [\"--version\"]));\n  const scope = project.files.filter((file) => file.endsWith(\".java\"));",
+      "intendedTest": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "Missing expected rejection",
+      "rawTapSha256": "a81c1a2f64198540c8fc40122f0feec5053bed4e5c219288ace642f39f1d6452"
+    },
+    {
+      "name": "decoded-property-expansion",
+      "file": "src/checkstyle.ts",
+      "before": "value.includes(\"${\")",
+      "after": "value.includes(\"${macro-that-is-not-in-the-control}\")",
+      "intendedTest": "Checkstyle XML accepts escaped properties formatting comments and exact built-in names while rejecting inactive or external assembly",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertionCode": "ERR_ASSERTION",
+      "expectedAssertionMarker": "&#36;{rule}",
+      "rawTapSha256": "9d284e4e0b6a0379d81a1bef9333bbb87187ac0f4f55fd81e2afb9c30ec3376f"
+    }
+  ],
+  "mutationSourcePins": {
+    "src/checkstyle.ts": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001",
+    "src/checkstyle-runner.ts": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698",
+    "src/checkstyle-evidence.ts": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+  },
+  "mutationTestPins": {
+    "test/checkstyle.test.ts": "7cfb644551505080621ff551bda1efccba42fa19893e2c26d27d1822b9d73407",
+    "test/checkstyle-fixture.ts": "4b3f9eb26d0371277bed27f6a82e4d5ff6c55a4780652e0b7e39834658d459ce",
+    "test/checkstyle-surfaces.test.ts": "2f8be7da62a5c9f998310f7b860007951d689fd662ccdd37a97869fcf695c747"
+  },
+  "restoredProfile": {
+    "profile": "checkstyle",
+    "passed": 8,
+    "required": 8,
+    "problems": [],
+    "complete": true
+  },
+  "developmentBatchWallMs": 52090,
+  "wallMeasurementScope": "Native and installed acceptance helper, including fresh installation and development controls; not a representative project or model-review latency measurement.",
+  "observedFixtureCorrection": {
+    "test": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+    "observedFailure": "The reader observed an empty readiness file between its creation and synchronous content write.",
+    "correction": "The original synthetic producer writes a staging file, then renames it into place; exact ready payload, byte counts, cancellation, wall allowance and cleanup assertions remain."
+  },
+  "controls": [
+    "explicit activation and data-only planning with an executable tripwire in a ready project",
+    "strict JSON Schema parity, normalized XML declarations, escapes, numeric references and comment near misses",
+    "empty assembly, suppression filters/holders, external/cache properties, ignored severity, token and source-exclusion controls",
+    "all five declared file-set modules have native broken/fixed controls",
+    "selected source addresses, native class/ID/configuration and severity/counter agreement",
+    "exact per-file start/finish and terminal audit accounting with missing duplicate foreign stale and forged controls",
+    "pinned artifact/configuration changes and symbolic links cannot proceed as verified input",
+    "UTF-8 config and source decoding, missing pinned JVM and protected environment controls",
+    "native parse aborts remain incomplete; no fabricated diagnostic or clean analysis",
+    "active JVM observed before cancellation; group stopped and engine-owned temporary artifacts removed",
+    "shared library/CLI/negotiated SDK MCP results and startup-only execution trust with private summaries",
+    "fresh offline production package installation and exact locked external client dependency closure"
+  ],
+  "limits": {
+    "mavenGradleTestsVerified": false,
+    "spotbugsDetektVerified": false,
+    "kotlinScalaAnalysisVerified": false,
+    "multiModuleGeneratedJvmBuildVerified": false,
+    "windowsVerified": false,
+    "otherPlatformRuntimeProfilesClosed": false,
+    "allBuiltinCheckstyleRulesAndConfigurationsVerified": false,
+    "eachRuleBranchOrFrameworkGuardCoverageEstablished": false,
+    "publisherSignatureVerified": false,
+    "completeBundledComponentLicenseClosureVerified": false,
+    "developmentNativeContainerProvenanceAuditCompleted": false,
+    "peakHeapOrProcessMemoryMeasured": false,
+    "byteBoundsAreTotalMemoryLimits": false,
+    "engineCrashCleanupGuaranteed": false,
+    "detachedMaliciousProcessesContained": false,
+    "hostileConcurrentFilesystemContained": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "representativeProjectPerformanceMeasured": false,
+    "hostedCiExecuted": false,
+    "otherRequiredFamiliesVerifiedAtThisRevision": false,
+    "hostSessionIndependenceEstablished": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

@@ -19,6 +19,7 @@ export {
 export { actionlintConfigSchema } from "./actionlint.js";
 export { dotnetConfigSchema } from "./dotnet.js";
 export { javaConfigSchema } from "./java.js";
+export { checkstyleConfigSchema } from "./checkstyle.js";
 export { clangDatabaseSchema } from "./clang.js";
 import { PARSERS } from "./types.js";
 export {

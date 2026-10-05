@@ -33,6 +33,7 @@ export const PARSERS = [
   "rustfmt-json",
   "clang-json",
   "java-json",
+  "checkstyle-json",
   "dotnet-json",
   "actionlint-json",
   "external-json",
