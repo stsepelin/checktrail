@@ -15,7 +15,7 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
-[Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. E12 remains partial while test/TRX, formatting, generator and broader profile work continues.
+[Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. [Measured .NET test readiness](measurements/dotnet-test-native-2026-10-06.json) binds source/installed acceptance and compiling-mutation evidence. The separate [.NET test profile](DOTNET-TEST.md) reconciles native VSTest discovery, every result, declared source roles and TRX. E12 remains partial while formatting, generator, custom-name method provenance and broader profile work continues.
 
 Maven native packet version 2 now binds its exact temporary repository JAR set
 to the raw operator-pinned manifest and binds the native Maven client PID/home

@@ -3,7 +3,14 @@ import path from "node:path";
 import { realpath } from "node:fs/promises";
 import { run } from "node:test";
 
-export async function runRequiredTests(requirements) {
+export async function runRequiredTests(
+  requirements,
+  { timeoutMs = 120000 } = {},
+) {
+  assert.ok(
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 300000,
+    "Required test harness timeout must be bounded",
+  );
   assert.ok(Array.isArray(requirements) && requirements.length > 0);
   const expected = await Promise.all(
     requirements.map(async ({ file, name }) => {
@@ -25,7 +32,7 @@ export async function runRequiredTests(requirements) {
   for await (const { type, data } of run({
     files: [...new Set(expected.map((item) => item.file))],
     concurrency: 1,
-    timeout: 120000,
+    timeout: timeoutMs,
     execArgv: [],
   })) {
     if (type !== "test:pass" && type !== "test:fail") continue;

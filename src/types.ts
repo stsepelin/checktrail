@@ -38,6 +38,7 @@ export const PARSERS = [
   "gradle-json",
   "dotnet-json",
   "dotnet-build-json",
+  "dotnet-test-json",
   "actionlint-json",
   "external-json",
   "ruby-syntax",

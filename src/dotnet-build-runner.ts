@@ -20,6 +20,7 @@ import {
   dotnetBuildRepository,
 } from "./dotnet-build.js";
 import { dotnetBuildNativeSource } from "./dotnet-build-native.js";
+import { collectDotnetTests } from "./dotnet-test-collect.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
 
 const receipts: {
@@ -140,7 +141,7 @@ async function main() {
       process.exitCode = 3;
       return;
     }
-    if (process.argv[4] === "--version") {
+    if (process.argv.slice(4).includes("--version")) {
       process.stdout.write("10.0.401\n");
       return;
     }
@@ -416,6 +417,26 @@ async function main() {
               throw Error("Compiler source count bound");
           }
       }
+    const buildReceipts = [...receipts];
+    const testData =
+      process.argv.slice(4).includes("--test") && build.status === 0
+        ? await collectDotnetTests({
+            sdk,
+            workspace,
+            repository,
+            observer,
+            references: builtins,
+            invocation,
+            ownedPins,
+            invoke,
+            observe,
+            regular,
+            events,
+          })
+        : undefined;
+    for (const [file, pin] of compiledSources)
+      if (mavenHash(await regular(file, 4 * 1024 * 1024)) !== pin.sha256)
+        throw Error("Compiler source changed after native execution");
     for (const [file, pin] of tools)
       if (JSON.stringify(await observe(file)) !== JSON.stringify(pin))
         throw Error("Native tool/input changed after build");
@@ -433,29 +454,42 @@ async function main() {
         throw Error("Native build changed source inputs");
     await dotnetBuildRepository(root, project, invocation.config);
     await verifyMavenTree(repository, dependencies.pins.files);
+    const packet = {
+      version: 1,
+      inputSha256: mavenHash(JSON.stringify(invocation.inputs)),
+      repositoryManifest: dependencies.manifestText,
+      sdkVersion: "10.0.401",
+      runtimeVersion: "10.0.12",
+      sdk,
+      workspace,
+      launcherPid: build.pid,
+      restoreExitCode: restore.status,
+      buildExitCode: build.status,
+      restoreEvents,
+      events: buildEvents,
+      modules,
+      nativeReceipts: buildReceipts,
+      observedArtifacts: [...tools].map(([file, pin]) => ({ file, ...pin })),
+      observerSha256: ownedPins.get(helper),
+      compiledSources: [...compiledSources].map(([file, pin]) => ({
+        file,
+        ...pin,
+      })),
+    };
     process.stdout.write(
-      JSON.stringify({
-        version: 1,
-        inputSha256: mavenHash(JSON.stringify(invocation.inputs)),
-        repositoryManifest: dependencies.manifestText,
-        sdkVersion: "10.0.401",
-        runtimeVersion: "10.0.12",
-        sdk,
-        workspace,
-        launcherPid: build.pid,
-        restoreExitCode: restore.status,
-        buildExitCode: build.status,
-        restoreEvents,
-        events: buildEvents,
-        modules,
-        nativeReceipts: receipts,
-        observedArtifacts: [...tools].map(([file, pin]) => ({ file, ...pin })),
-        observerSha256: ownedPins.get(helper),
-        compiledSources: [...compiledSources].map(([file, pin]) => ({
-          file,
-          ...pin,
-        })),
-      }),
+      JSON.stringify(
+        process.argv.slice(4).includes("--test")
+          ? {
+              version: 1,
+              build: packet,
+              testObserverSha256: testData?.observerSha256 ?? "0".repeat(64),
+              testObserverSourceSha256:
+                testData?.observerSourceSha256 ?? "0".repeat(64),
+              runs: testData?.runs ?? [],
+              nativeReceipts: receipts,
+            }
+          : packet,
+      ),
     );
   } finally {
     await rm(temporary, { recursive: true, force: true });

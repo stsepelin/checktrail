@@ -278,3 +278,28 @@ export async function dotnetBuildCheck(
   }
   return check;
 }
+
+export async function dotnetTestCheck(
+  source: Inventory,
+  project: Project,
+): Promise<Check> {
+  const check = await dotnetBuildCheck(source, project);
+  check.id = "dotnet.test";
+  check.kind = "test";
+  check.parser = "dotnet-test-json";
+  check.reason =
+    "Build fresh C#/F#/VB outputs and reconcile every declared native test with discovery, portable symbols, execution and TRX.";
+  if (check.commands.length) {
+    const invocation = dotnetBuildInvocationSchema.parse(
+      JSON.parse(check.commands[0]!.args[2]!),
+    );
+    if (
+      !invocation.config.projects.some((project) => project.kind === "test")
+    ) {
+      check.commands = [];
+      check.unavailableReason =
+        "Declare a supported .NET test project and source-bound test classes";
+    } else check.commands[0]!.args.push("--test");
+  }
+  return check;
+}

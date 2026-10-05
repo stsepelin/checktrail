@@ -15,6 +15,7 @@ assert.ok(
   Object.hasOwn(profiles, profile),
   "Unknown required native test profile",
 );
-const report = await runRequiredTests(profiles[profile]);
-process.stdout.write(JSON.stringify({ profile, ...report }) + "\n");
+const timeoutMs = profile === "dotnet-test" ? 300000 : 120000;
+const report = await runRequiredTests(profiles[profile], { timeoutMs });
+process.stdout.write(JSON.stringify({ profile, timeoutMs, ...report }) + "\n");
 process.exitCode = report.complete ? 0 : 1;

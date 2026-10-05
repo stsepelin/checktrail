@@ -16,6 +16,11 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
+const profile = process.env.CHECKTRAIL_DOTNET_PROFILE ?? "dotnet-build";
+assert.ok(
+  ["dotnet-build", "dotnet-test"].includes(profile),
+  "Select a supported .NET package profile",
+);
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-dotnet-build-package-"),
 );
@@ -78,6 +83,13 @@ try {
     "dotnet-build-fixture.js",
     "dotnet-build-surfaces.test.js",
     "helpers.js",
+    ...(profile === "dotnet-test"
+      ? [
+          "dotnet-test-fixture.js",
+          "dotnet-test.test.js",
+          "dotnet-test-surfaces.test.js",
+        ]
+      : []),
   ])
     await cp(
       path.join(repository, "dist/test", file),
@@ -155,7 +167,7 @@ try {
   await writeFile(
     path.join(consumer, "scripts/required-native-tests.json"),
     JSON.stringify({
-      "dotnet-build": profiles["dotnet-build"],
+      [profile]: profiles[profile],
     }),
   );
   const image = process.env.CHECKTRAIL_DOTNET_BUILD_IMAGE;
@@ -186,13 +198,13 @@ try {
           image,
           "node",
           "scripts/verify-required-native-tests.mjs",
-          "dotnet-build",
+          profile,
         ],
         { encoding: "utf8", maxBuffer: 1024 * 1024 },
       )
     : execFileSync(
         process.execPath,
-        ["scripts/verify-required-native-tests.mjs", "dotnet-build"],
+        ["scripts/verify-required-native-tests.mjs", profile],
         { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
       );
   const acceptance = JSON.parse(output);

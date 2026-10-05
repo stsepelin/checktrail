@@ -1914,5 +1914,47 @@
       "file": "dist/test/dotnet-build-surfaces.test.js",
       "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs"
     }
+  ],
+  "dotnet-test": [
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": ".NET tests are opt-in and missing declarations cannot execute during planning"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET empty discovery and custom names without method provenance stay incomplete"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET test classes require exact declared source roles including newly compiled siblings"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET tests distinguish source compilation restore and fixture setup failures"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage"
+    },
+    {
+      "file": "dist/test/dotnet-test-surfaces.test.js",
+      "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-test-surfaces.test.js",
+      "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
+    }
   ]
 }

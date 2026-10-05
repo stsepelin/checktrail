@@ -4,8 +4,9 @@
 projects targeting `net10.0`, using SDK 10.0.401, runtime/reference pack 10.0.12
 and its selected native compiler tasks. Default .NET validation remains the
 explicit `dotnet.csharp` compilation profile. This implementation is not part of
-the published alpha.5 package. E12 and Gate A remain open: test/TRX and formatting
-integration, Roslyn generator participation and wider profiles remain unfinished.
+the published alpha.5 package. The separate [test profile](DOTNET-TEST.md) uses these
+fresh outputs. E12 and Gate A remain open: formatting, Roslyn generator
+participation and wider profiles remain unfinished.
 
 ## Prepare and select
 
