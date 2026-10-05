@@ -1764,5 +1764,51 @@
       "file": "dist/test/checkstyle-surfaces.test.js",
       "name": "native Checkstyle declared root checks report violations and fixed controls for every supported file-set module"
     }
+  ],
+  "maven": [
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven planning is data-only and unsupported prerequisites stay unavailable"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven artifact manifests reject corruption, extras, missing files and links"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven detects an assertion regression and repaired scale controls from fresh outputs"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven rejects test filtering, skip switches and omitted test classes"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven retains disabled and empty-test evidence as incomplete"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven binds every compiler input, plugin parameter and test terminal event"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven classifies compiler failures separately from bootstrap errors and protects cache pins"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven successful planning preserves project data and rejects startup and environment overrides"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven accounts for every declared reactor module and refuses hidden siblings"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs"
+    }
   ]
 }

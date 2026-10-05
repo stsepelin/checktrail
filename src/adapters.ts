@@ -6,6 +6,7 @@ import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
+import { mavenCheck } from "./maven.js";
 import { dotnetCheck } from "./dotnet.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
@@ -111,7 +112,7 @@ export const adapters = [
   {
     id: "jvm",
     markers: ["pom.xml", "build.gradle", "build.gradle.kts"],
-    checks: ["jvm.javac", "jvm.checkstyle"],
+    checks: ["jvm.javac", "jvm.checkstyle", "jvm.maven-test"],
   },
   { id: "dotnet", markers: [], checks: ["dotnet.csharp"] },
   { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
@@ -484,6 +485,9 @@ export async function checksFor(
   if (project.adapter === "jvm")
     return [
       await javaCheck(source, project),
+      ...(requested?.includes("jvm.maven-test")
+        ? [await mavenCheck(source, project)]
+        : []),
       ...(requested?.includes("jvm.checkstyle")
         ? [await checkstyleCheck(source, project)]
         : []),

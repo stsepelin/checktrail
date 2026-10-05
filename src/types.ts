@@ -34,6 +34,7 @@ export const PARSERS = [
   "clang-json",
   "java-json",
   "checkstyle-json",
+  "maven-json",
   "dotnet-json",
   "actionlint-json",
   "external-json",

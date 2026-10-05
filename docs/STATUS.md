@@ -15,12 +15,22 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
+output, home and pinned dependency copies. Native configured-plugin, compiler,
+source-declaration and JUnit events reconcile with fresh reports; skipped,
+filtered, empty, foreign and incomplete participation cannot pass. The
+[local record](measurements/maven-native-2026-10-05.json) binds original controls,
+installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
+for wrappers, Gradle, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
+Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
+remains open.
+
 Opt-in [Java Checkstyle](CHECKSTYLE.md) now has a pinned configured source-audit
 profile with exact native file/rule/completion accounting, severity controls,
 data-only planning, startup-only MCP trust and owned POSIX cancellation cleanup.
 The [local measurement](measurements/checkstyle-native-2026-10-05.json) binds
 original controls, assertion-verified compiling mutations and a fresh offline
-installed CLI/MCP package profile. E11 remains partial: Maven/Gradle tests,
+installed CLI/MCP package profile. E11 remains partial: wider Maven profiles, Gradle tests,
 SpotBugs, detekt and Kotlin/Scala coverage still need their native profiles.
 Hosted CI for this revision, broader platforms and full bundled provenance are
 unverified; Gate A remains open.

@@ -137,3 +137,9 @@ JVM image, disables networking during required native and installed-package
 acceptance, and retains the preserved Java compiler profile. Local Linux arm64
 source-bound evidence is in [CHECKSTYLE.md](CHECKSTYLE.md). This newly configured
 hosted job has not been run at this revision.
+
+The separate `maven` job prepares the pinned Apache distribution and executes only
+the original public fixture to acquire a dependency cache. Required native and
+installed acceptance then run with networking disabled and read-only source/cache
+mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
+is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.
