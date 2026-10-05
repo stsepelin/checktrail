@@ -7,6 +7,7 @@ import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
 import { dotnetEvidence } from "./dotnet-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
+import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
 import { laravelEvidence } from "./laravel-evidence.js";
 import { pintEvidence } from "./pint-evidence.js";
@@ -336,6 +337,8 @@ export function evaluate(
     return { ...result, ...dotnetEvidence(check, processes, root) };
   if (check.parser === "rustfmt-json")
     return { ...result, ...rustfmtEvidence(check, processes, root) };
+  if (check.parser === "rust-test-json")
+    return { ...result, ...rustTestEvidence(check, processes, root) };
   if (check.parser === "rust-json")
     return { ...result, ...rustEvidence(check, processes, root) };
   if (check.parser === "laravel-json")

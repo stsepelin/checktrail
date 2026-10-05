@@ -51,3 +51,19 @@ export function rustCheck(
       "This Rust dep-info profile does not support newline, backslash, dollar, hash or colon in source paths.";
   return check;
 }
+
+export function rustTestCheck(source: Inventory, project: Project): Check {
+  const base = rustCheck(source, project);
+  return {
+    ...base,
+    id: "rust.cargo-test",
+    kind: "test",
+    parser: "rust-test-json",
+    reason:
+      "Compile fresh native test artifacts and reconcile complete libtest and rustdoc inventories with terminal cases offline and locked. Ignored empty filtered or incomplete evidence never passes.",
+    commands: base.commands.map((command) => ({
+      ...command,
+      args: [command.args[0]!, "--test", ...command.args.slice(1)],
+    })),
+  };
+}

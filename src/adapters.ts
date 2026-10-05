@@ -7,7 +7,7 @@ import { javaCheck } from "./java.js";
 import { dotnetCheck } from "./dotnet.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
-import { rustCheck } from "./rust.js";
+import { rustCheck, rustTestCheck } from "./rust.js";
 import { rustfmtCheck } from "./rustfmt.js";
 import { golangciCheck } from "./golangci.js";
 import { fastapiCheck } from "./fastapi.js";
@@ -99,7 +99,12 @@ export const adapters = [
   {
     id: "rust",
     markers: ["Cargo.toml"],
-    checks: ["rust.cargo-check", "rust.cargo-fmt", "rust.cargo-clippy"],
+    checks: [
+      "rust.cargo-check",
+      "rust.cargo-fmt",
+      "rust.cargo-clippy",
+      "rust.cargo-test",
+    ],
   },
   {
     id: "jvm",
@@ -481,6 +486,9 @@ export async function checksFor(
   if (project.adapter === "rust")
     return [
       rustCheck(source, project),
+      ...(requested?.includes("rust.cargo-test")
+        ? [rustTestCheck(source, project)]
+        : []),
       ...(requested?.includes("rust.cargo-clippy")
         ? [rustCheck(source, project, true)]
         : []),

@@ -79,3 +79,7 @@ compiler check's default scope or imply Clippy/test execution.
 
 The opt-in recommended lint-group profile, suppression override and native
 readiness controls are documented in [CLIPPY.md](CLIPPY.md).
+
+The opt-in native libtest/doctest profile and its case-count semantics are
+documented in [RUST-TESTS.md](RUST-TESTS.md). Multi-member compilation/testing and
+explicit compiler feature/target profiles remain pending.

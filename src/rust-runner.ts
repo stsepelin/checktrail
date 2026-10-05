@@ -11,12 +11,14 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { z } from "zod";
 import { rustDependencyPaths } from "./rust-dep-info.js";
+import { rustTestsNative } from "./rust-test-native.js";
 
 const target = z.object({
   name: z.string(),
   src_path: z.string(),
   kind: z.array(z.string()),
   test: z.boolean(),
+  doctest: z.boolean(),
 });
 const metadataSchema = z.object({
   version: z.literal(1),
@@ -45,9 +47,10 @@ function invoke(executable: string, args: string[]) {
 async function main() {
   const input = process.argv.slice(2);
   const clippy = input[0] === "--clippy";
-  const [root, ...scope] = clippy ? input.slice(1) : input;
+  const testing = input[0] === "--test";
+  const [root, ...scope] = clippy || testing ? input.slice(1) : input;
   if (!root || !scope.length) throw new Error("Invalid Rust scope");
-  for (const tool of ["rustc", "cargo"]) {
+  for (const tool of ["rustc", "cargo", ...(testing ? ["rustdoc"] : [])]) {
     const version = invoke(tool, ["--version"]);
     if (
       version.status !== 0 ||
@@ -83,7 +86,9 @@ async function main() {
       return;
     }
   }
-  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-rust-"));
+  const temporary = await realpath(
+    await mkdtemp(path.join(tmpdir(), "checktrail-rust-")),
+  );
   try {
     const config = [
       "--config",
@@ -183,7 +188,23 @@ async function main() {
       .sort();
     process.stdout.write(
       JSON.stringify({
-        version: clippy ? 2 : 1,
+        version: clippy ? 2 : testing ? 3 : 1,
+        ...(testing
+          ? {
+              mode: "test",
+              rustdocVersion: "1.98.1",
+              tests:
+                execution.status === 0
+                  ? await rustTestsNative(
+                      invoke,
+                      config,
+                      temporary,
+                      selected.id,
+                      selected.targets,
+                    )
+                  : null,
+            }
+          : {}),
         ...(clippy
           ? {
               mode: "clippy",

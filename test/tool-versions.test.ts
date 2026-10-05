@@ -103,6 +103,7 @@ test("native version identity rejects partial, malformed and nonzero output", as
       "22.1.3",
     ],
     ["rustc", "rustc 1.98.1 (48a229cea 2026-09-01)\n", "1.98.1"],
+    ["rustdoc", "rustdoc 1.98.1 (48a229cea 2026-09-01)\n", "1.98.1"],
     ["cargo", "cargo 1.98.1 (797e8a9bc 2026-08-05)\n", "1.98.1"],
     ["clippy", "clippy 0.1.98 (48a229ceae 2026-09-01)\n", "0.1.98"],
     [

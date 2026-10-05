@@ -152,6 +152,9 @@ export async function toolsFor(
       { name: "node", source: "engine-runtime" },
       command("rustc", "rustc", ["--version"]),
       command("cargo", "cargo", ["--version"]),
+      ...(check.id === "rust.cargo-test"
+        ? [command("rustdoc", "rustdoc", ["--version"])]
+        : []),
       ...(check.id === "rust.cargo-clippy"
         ? [command("clippy", "cargo-clippy", ["--version"])]
         : []),
@@ -311,9 +314,11 @@ export async function identifyTool(
               ? /^clippy (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(output)?.[1]
               : tool.name === "rustfmt"
                 ? /^rustfmt (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(output)?.[1]
-                : tool.name === "cargo" || tool.name === "rustc"
+                : tool.name === "cargo" ||
+                    tool.name === "rustc" ||
+                    tool.name === "rustdoc"
                   ? output.startsWith(`${tool.name} `)
-                    ? /^(?:cargo|rustc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                    ? /^(?:cargo|rustc|rustdoc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
                         output,
                       )?.[1]
                     : undefined
