@@ -269,6 +269,18 @@ a general speedup/graph-completeness claim.
 matched the reviewed artifact, and fresh CLI/library/MCP installation checks passed.
 Publication evidence and the sequence for future releases are in `RELEASE.md`.
 
+## Executable bundle distribution
+
+The explicit `fetch-adapter` CLI/library operation verifies an opaque bundle and
+every decoded artifact before exclusive single-file publication. Registration and
+execution remain separate operator actions; MCP has no download or trust-elevation
+argument. Original pinned Linux Node/Python/PHP/compiled-native controls and an
+offline production installation verify native broken/fixed/near-miss outcomes,
+CLI/MCP agreement, compatibility, privacy, cancellation and concurrent publication.
+The source-bound measurement and limitations are in EXECUTABLE-BUNDLES.md. E17 is
+locally verified for that profile; wider platform/provenance work and Gate A remain
+open. No field evaluation or quality result follows from these checks.
+
 ## Pinned pack distribution
 
 An explicit `fetch-pack` CLI/library operation retrieves bounded data-only policy
@@ -661,8 +673,11 @@ new quality holdout.
    equal-or-better review quality.
 
 Complete dependency/tool/environment fingerprints, automatically inferred workspace graphs,
-remote/executable private plugins, native import-graph collection, remote serving, durable Tasks,
-sandbox execution and automatic fixes are not implemented. Model-assisted review
+broader native import-graph collection and wider trusted lifecycle profiles remain
+incomplete. Remote serving, OS containment and automatic fixes remain outside
+the documented first-version scope. Executable private-bundle distribution and
+optional standard MCP Tasks have bounded local acceptance; neither closes the
+remaining reviewer/platform gates. Model-assisted review
 has optional stateless API transport evidence. Bounded provider-neutral staged
 exchange is implemented; wider reviewer acceptance and independent claim validation
 remain pending; native AI client launching

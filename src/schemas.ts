@@ -43,6 +43,7 @@ export {
   runtimeComparisonSchema,
   runtimeComparisonSummarySchema,
 } from "./runtime-inventory.js";
+export { executableBundleSchema } from "./executable-bundle.js";
 export { configSchema } from "./config.js";
 export { policyPackSchema } from "./policy-pack.js";
 import { workspaceSchema } from "./config.js";

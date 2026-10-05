@@ -1,0 +1,740 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T15:49:40.298619+00:00",
+  "basedOn": "58032dbc4da3abe2716683688f9fcf6f3a4da395",
+  "scope": "Original synthetic pinned Linux executable private-bundle distribution and separately trusted native adapter readiness. Wider Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "6165a4cee4202705892cd5ab2ca8a84ff4d1498ce42617e8f1889e03fa6a35cf"
+    },
+    {
+      "file": "README.md",
+      "sha256": "01af3372159353548f13a11d41a5bed36f398f023484efc2b03d663649e425ad"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "8e4c52f8128b9e8676a93d191d2b4c548834028eeb9191d3a303218aa1245aa4"
+    },
+    {
+      "file": "docs/EXTERNAL-ADAPTERS.md",
+      "sha256": "54fd20a158ca4d41b8a8163d25b1a5a05bd96ff502cf76f70c5ab5dd96fc4494"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "fa21a06c55c7dd9111a76c442d6983001301db15517c93814f81d84dce6c7a8c"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "0fe8f8f66ab3010d61e3552310537c849b92eeebf3f784bb635cb3d438f48a45"
+    },
+    {
+      "file": "docs/PACK-DISTRIBUTION.md",
+      "sha256": "7d7e881fe0dc00ce7751548aa9af3fdb7b9ad95dcb3026e6a18cc2166a1636c8"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "45c86bb539250d8ff13981dd589c1cc0f30ccc2599e14d26b413150b496fefdd"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "d1d229547525be41f19a6cec00169028eeed15f44f3983da73bca57b1dec6ae6"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "f6f62a8a78364cc03e4b654b7bfd7ccbb014fa0463ce6300cd4606ca5f981c72"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "cb31181fc185a25405680972bb1907dcdf517658867ed13103e60de7c68d78fe"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/external-adapter.ts",
+      "sha256": "d6ed57b9a932ba9752afce6f43935c11a0b5dca87984e5b407819c5e683c09dd"
+    },
+    {
+      "file": "src/fetch-pack.ts",
+      "sha256": "6d8d22466fb110ef0cc8c869c4833bfe925b804a587b5a0921f6e0401d5dbfef"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "1d5b09d830352cd987e6266477e4f4f3d375c42fbecc037f9da1b233e8c07121"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "264a76b417772e4b29ad336d6cb53fa9ff2b603db522a1020bb0ca664949ffc9"
+    },
+    {
+      "file": "test/external-adapter.test.ts",
+      "sha256": "f105e9e5db9c9bf95f9573ef9f5788cd5ae82b0caad0a6983a2f861095de4cfb"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "066fd94ad55ee229c74e44a0c35e57136aff10104808f1fae9f2452becf7af18"
+    },
+    {
+      "file": "docs/EXECUTABLE-BUNDLES.md",
+      "sha256": "2b540d7369fa7a76842a13f843d794578defbbe399cf4b3dc7835f0ed47a7a3d"
+    },
+    {
+      "file": "schemas/executable-bundle.schema.json",
+      "sha256": "979b72790bf5d031f85e9453e3815b7ca23bd549d804ed5a7983293350acc8bf"
+    },
+    {
+      "file": "scripts/executable-bundle-tools.Dockerfile",
+      "sha256": "663d97b2002adb4cb5ccbcae262bbe98402f2dda45d2f2e1577574ba1ffc3c6a"
+    },
+    {
+      "file": "scripts/verify-executable-bundle-package.mjs",
+      "sha256": "cc49ee026f90c00f273f676e10fafc963a0d1ad0c40dc1e5396dea4eaeddf5ba"
+    },
+    {
+      "file": "src/executable-bundle.ts",
+      "sha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c"
+    },
+    {
+      "file": "src/external-schema.ts",
+      "sha256": "7e34cf9e1a0add8b9b82fd1e7c32d353ca0bcf0ed223e48d3266a44f6b05df6e"
+    },
+    {
+      "file": "src/fetch-adapter.ts",
+      "sha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111"
+    },
+    {
+      "file": "src/pinned-download.ts",
+      "sha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad"
+    },
+    {
+      "file": "test/executable-bundle-fixture.ts",
+      "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+    },
+    {
+      "file": "test/executable-bundle-interpreters.test.ts",
+      "sha256": "5991fed9115fc301583bbbd8f95eb24f0a87e15d2e55f29081646f4709071dca"
+    },
+    {
+      "file": "test/executable-bundle.test.ts",
+      "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+    },
+    {
+      "file": "src/external-runner.ts",
+      "sha256": "077d9a1dbf1010ea3eb7796e3661be2393bfcd48633a5379a1c1d695268ef818"
+    },
+    {
+      "file": "src/external-evidence.ts",
+      "sha256": "1124c0bda894fa4baa9f5196dda30b2ed4a25ff4d05cb2d7e637122e44df36fa"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "fac8afe2198507c4c1a5d3ba89eebbf31a0ed02c2ceb2e7a9940a98113e6c7a8"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "4f240ea84b7539cb465a9b229be33bc68b88d559938ce4cb76ae0e12b77660db"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "5e187fc41443e4a05a1d46f0f5373405c0dfaf9c6b696d76c34570ec838cf645"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/fetch-pack.test.ts",
+      "sha256": "1e890736c7c81090322661ab1892ab3a2574cada7349f36debf1c033d2cd5960"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "examples/external-adapter/bundle/adapter.mjs",
+      "sha256": "349e1cd03b9d7af58fd247a7e7a3693cad43698117466748ea26b21bb88d72ad"
+    },
+    {
+      "file": "examples/external-adapter/bundle/adapter.json",
+      "sha256": "7d592ed17be54793a0ab82543183b15e99926e858c5245aa302a9180524d77f1"
+    },
+    {
+      "file": "examples/external-adapter/bundle/LICENSE",
+      "sha256": "38fbc60c5849e96fbfb96227eb1eef160e8e3c5a3959b0d51ee0b89b7bca291d"
+    },
+    {
+      "file": "examples/external-adapter/native/adapter.go",
+      "sha256": "c516962d3be3fe8a516057dfd4e721b1a838fb5f4acfeeb49bbcc2a3380482fa"
+    }
+  ],
+  "engineRuntimeDigest": "1b4333e8e5f903834e181d75fbcf3a5cf64bb99fb524b21d6f7863bad4a3ccf6",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration; dependency bytes and complete native artifact authentication are not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 632,
+    "pass": 545,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 87,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true
+  },
+  "hostGuardProfile": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "profile": {
+      "profile": "executable-bundle",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    }
+  },
+  "nativeProfiles": [
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "image": "sha256:447488d0c90cc1b4d03441512661377e6ce06f345a2285061ae7bd1197d13c11",
+      "versions": {
+        "node": "v22.23.2",
+        "php": "PHP 8.5.6 (cli) (built: May  8 2026 16:43:53) (NTS)\nCopyright (c) The PHP Group\nBuilt by https://github.com/docker-library/php\nZend Engine v4.5.6, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.6, Copyright (c), by Zend Technologies",
+        "go": "go version go1.26.5 linux/arm64",
+        "openssl": "OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)",
+        "python": "Python 3.12.13"
+      },
+      "network": "none",
+      "checkoutMount": "readonly",
+      "rootFilesystemReadonly": false,
+      "cpuLimit": 2,
+      "memoryLimit": "2g",
+      "source": {
+        "profile": "executable-bundle",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "interpreters": {
+        "profile": "executable-bundle-interpreters",
+        "passed": 2,
+        "required": 2,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "preservedProfiles": [
+    {
+      "profile": "external-protocol",
+      "passed": 15,
+      "required": 15,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "policy-distribution",
+      "passed": 3,
+      "required": 3,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "installedPackage": {
+    "tarballSha256": "523f6ad73b23cdf3a67ca5ae18ed35739d94947917d6c291d273fe1a40f70bbb",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientVersion": "2.3.0",
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "acceptanceClientCopiedOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "executable-bundle",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "sha256:447488d0c90cc1b4d03441512661377e6ce06f345a2285061ae7bd1197d13c11",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed before final documentation and this measurement. Source/runtime pins identify evaluated behavior; final embedded documentation bytes may differ.",
+  "mutationControls": [
+    {
+      "id": "outer-integrity",
+      "file": "src/fetch-adapter.ts",
+      "baselineSha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111",
+      "mutantSha256": "5119521389e47b85b7358b23af3804cd786a3b271af5063fd0a233662a9ce663",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "failed"
+          },
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "artifact-integrity",
+      "file": "src/executable-bundle.ts",
+      "baselineSha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c",
+      "mutantSha256": "59cca587c104e7cd7c60179592306bceffd2e3770a544d25cbc52f1b63a8860e",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 7,
+        "required": 9,
+        "problems": [
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "failed"
+          },
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "failed"
+          },
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "required-test-not-passed"
+          },
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "file-directory-collision",
+      "file": "src/executable-bundle.ts",
+      "baselineSha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c",
+      "mutantSha256": "8888856f0ff587668bba392501589363d938d7e603aff8c80a2dc4c89b82510b",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "failed"
+          },
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-artifact",
+      "file": "src/executable-bundle.ts",
+      "baselineSha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c",
+      "mutantSha256": "e5b8e5b229449300d45d359c558f288957ee5612a8b39d6517d499be0c68a581",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "failed"
+          },
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "private-malformed-text",
+      "file": "src/executable-bundle.ts",
+      "baselineSha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c",
+      "mutantSha256": "21de1801732210cd73f51ade94d74923ff652b7cc8fff9caa635d82712e7f088",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "failed"
+          },
+          {
+            "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "exclusive-publication",
+      "file": "src/fetch-adapter.ts",
+      "baselineSha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111",
+      "mutantSha256": "6d7cb37eced7dc26f9193b4b3d7c2b6c1b4fe6b93416239eb7bf3ef4300df431",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "concurrent executable bundle publication admits exactly one complete result and preserves a destination created during transfer",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "concurrent executable bundle publication admits exactly one complete result and preserves a destination created during transfer",
+            "reason": "failed"
+          },
+          {
+            "name": "concurrent executable bundle publication admits exactly one complete result and preserves a destination created during transfer",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "active-transfer-cancellation",
+      "file": "src/pinned-download.ts",
+      "baselineSha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad",
+      "mutantSha256": "065e9d22f57e0bf43a71f4af398a7cf18067b5bc8b3a265d85ec532604c14818",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "executable bundle cancellation and normalized path symlink and overwrite controls never publish partial artifacts",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "executable bundle cancellation and normalized path symlink and overwrite controls never publish partial artifacts",
+            "reason": "failed"
+          },
+          {
+            "name": "executable bundle cancellation and normalized path symlink and overwrite controls never publish partial artifacts",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    },
+    {
+      "id": "certificate-verification",
+      "file": "src/pinned-download.ts",
+      "baselineSha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad",
+      "mutantSha256": "a8e889dc844e1901d58f56edf4e2bb52b60113b98278a64e015032fb056ba1ff",
+      "compiled": true,
+      "caught": true,
+      "intendedFailingTest": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+      "requiredTests": 9,
+      "observed": {
+        "profile": "executable-bundle",
+        "passed": 8,
+        "required": 9,
+        "problems": [
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "failed"
+          },
+          {
+            "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      "testPins": [
+        {
+          "file": "test/executable-bundle.test.ts",
+          "sha256": "05c1c3e452e53de6805891643c9714e623fb770c705c0eea4f958b1e009f5a57"
+        },
+        {
+          "file": "test/executable-bundle-fixture.ts",
+          "sha256": "bb8624ad84450d5453a911669fd8122ad9b97e94472f1ad3ac1affc91ea76bc4"
+        },
+        {
+          "file": "test/helpers.ts",
+          "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+        },
+        {
+          "file": "scripts/required-native-tests.json",
+          "sha256": "1205881351ed6f40de039f29d79aae081fb284e392ce8a9e1c61fc3ed1b49af5"
+        }
+      ]
+    }
+  ],
+  "compatibilityRegression": {
+    "test": "legacy loose manifests named bundle JSON retain native registration and their original manifest byte bound",
+    "observedBeforeFix": "Required native registration failed at the packed parser for an existing valid loose manifest.",
+    "restored": "Native planning and broken/fixed execution retain the loose format, and an oversized loose manifest cannot inherit the packed bound."
+  },
+  "controls": [
+    "every artifact including non-entry bytes verified before any publication",
+    "data-only installation, no implicit registration or project trust and no module evaluation",
+    "opaque native binary bytes preserved through HTTPS installation and verified materialization",
+    "Node, Python isolated mode, PHP and compiled Go native broken fixed and valid near-miss controls",
+    "exact outer digest, canonical base64, strict UTF-8, declarations and every artifact digest",
+    "duplicate missing extra escaping colliding invalid-entry and empty-scope controls",
+    "no redirects non-200 encoded oversized-header advertised-body truncated and untrusted TLS acceptance",
+    "fixed diagnostics omit private malformed manifest, endpoint and response body text",
+    "active transfer cancellation after an observed HTTPS request, distinct deadline handling, no partial output",
+    "normalized output path existing-file dangling-link and symlink-parent controls",
+    "concurrent publishers and a destination created during a held transfer preserve exclusive publication",
+    "existing loose manifest filename and byte-bound compatibility",
+    "CLI and official SDK MCP native findings agree; startup-only trust/registration and path-free summaries",
+    "strict generated bundle JSON Schema matches its runtime definition",
+    "every preserved external-protocol and data-only policy-download case required in prepared Linux",
+    "fresh offline production installation keeps client dependency closure in the acceptance harness"
+  ],
+  "limits": {
+    "windowsVerified": false,
+    "otherPlatformRuntimeProfilesClosed": false,
+    "realPrivateEndpointVerified": false,
+    "publisherAuthenticationEstablished": false,
+    "arbitraryAdapterCorrectnessEstablished": false,
+    "completeComponentArtifactAuthenticationEstablished": false,
+    "developmentNativeContainerLicenseAuditCompleted": false,
+    "peakHeapMeasured": false,
+    "byteBoundsAreHeapLimits": false,
+    "forcedTerminationTemporaryCleanupGuaranteed": false,
+    "powerLossDurabilityGuaranteed": false,
+    "hostileConcurrentFilesystemContained": false,
+    "maliciousAdapterCodeContained": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "hostedCiExecuted": false,
+    "otherRequiredFamiliesVerifiedAtThisRevision": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

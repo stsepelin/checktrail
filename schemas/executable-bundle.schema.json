@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "kind": { "type": "string", "const": "checktrail-executable-bundle" },
+    "manifestBase64": { "type": "string", "minLength": 1, "maxLength": 349528 },
+    "files": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "base64": { "type": "string", "maxLength": 44739244 }
+        },
+        "required": ["path", "base64"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schemaVersion", "kind", "manifestBase64", "files"],
+  "additionalProperties": false
+}

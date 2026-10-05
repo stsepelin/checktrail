@@ -136,7 +136,11 @@ versions. Do not equate an executable's presence with adapter compatibility.
 
 Operator-registered Node, Python, PHP and compiled native bundles share the
 [external adapter protocol](EXTERNAL-ADAPTERS.md). This permits checks written in
-different languages without changing the engine. It does not automatically add
+different languages without changing the engine. The separate
+[pinned executable downloader](EXECUTABLE-BUNDLES.md) has original Linux
+Node/Python/PHP/compiled-native and fresh offline installed-package acceptance,
+with no implicit activation or execution. Other platform/runtime profiles remain
+separate. It does not automatically add
 semantic support for the languages they inspect. Each adapter needs its own native
 regression cases, tool identities, platform profile and license provenance.
 

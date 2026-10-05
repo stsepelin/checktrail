@@ -24,7 +24,10 @@ contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
 Tasks configured. `verify-mcp-tasks-package.mjs` evaluates the shipped CLI/runtime
 from a fresh offline production installation, with a separate acceptance harness. The separate PHP syntax helper checks its exact successful TAP test name;
 the external-adapter helper already checks exact required native names for each
-of its different runtime containers.
+of its different runtime containers. The separate executable-bundle image requires
+`executable-bundle`, `executable-bundle-interpreters`, `external-protocol` and
+`policy-distribution`, plus an offline production installation with the official
+client harness outside the installed package. See EXECUTABLE-BUNDLES.md.
 
 The main matrix also prepares the separately locked TypeScript 4.9.5 compiler
 from `scripts/typescript-legacy-tools/`. Its named native regression is mandatory

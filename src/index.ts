@@ -18,6 +18,8 @@ export type {
 } from "./onboarding.js";
 export type { PolicyPack, PackReference } from "./policy-pack.js";
 export { fetchPolicyPack } from "./fetch-pack.js";
+export { fetchExternalAdapter } from "./fetch-adapter.js";
+export type { FetchAdapterOptions, FetchedAdapter } from "./fetch-adapter.js";
 export type { FetchPackOptions, FetchedPack } from "./fetch-pack.js";
 export { projectPlan, projectReport } from "./output.js";
 export type {
