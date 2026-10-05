@@ -33,6 +33,12 @@ offline installed-package controls, recorded in
 This closes one exchange profile, not host isolation, durable evaluation audits,
 general claim validation or the broader R3/R7/R8 requirements.
 
+The bounded synthetic benchmark additionally has a frozen anonymous judgment intake
+profile. It seals every predeclared response path, validates source citations and
+retains unusable/missing/unresolved evidence. It does not close independent host
+isolation, claim truth, full external attempts, paired scoring or R8. See
+[REVIEW-BENCHMARK.md](REVIEW-BENCHMARK.md).
+
 ## Finite capability obligations
 
 Each integration requires a pinned native version, OS/runtime identity, declared

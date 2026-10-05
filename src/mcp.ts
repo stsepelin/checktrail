@@ -2,6 +2,8 @@ import { ReviewBenchmark } from "./review-benchmark.js";
 import {
   reviewBenchmarkWorkerCommandSchema,
   reviewBenchmarkWorkerSummarySchema,
+  reviewBenchmarkJudgePacketSchema,
+  reviewBenchmarkJudgeWorkerSummarySchema,
   reviewBenchmarkPacketSchema,
   type ReviewBenchmarkReference,
 } from "./review-benchmark-schema.js";
@@ -145,6 +147,7 @@ export interface ServerOptions {
   reviewWorkflowAudit?: ReviewWorkflowAuditOptions;
   reviewBenchmark?: ReviewBenchmarkReference;
   reviewBenchmarkTrialId?: string;
+  reviewBenchmarkJudgeId?: string;
   detailed: boolean;
   environment?: Record<string, string>;
   base?: string;
@@ -218,18 +221,33 @@ function createConnectionServer(
     options.externalAdapters ?? [],
   );
   if (
-    Boolean(options.reviewBenchmark) !== Boolean(options.reviewBenchmarkTrialId)
+    Boolean(options.reviewBenchmark) !==
+      Boolean(
+        options.reviewBenchmarkTrialId || options.reviewBenchmarkJudgeId,
+      ) ||
+    Boolean(options.reviewBenchmarkTrialId && options.reviewBenchmarkJudgeId)
   )
-    throw new Error("A benchmark worker requires one startup-pinned trial");
+    throw new Error(
+      "A benchmark worker requires one startup-pinned review trial or judge slot",
+    );
   const benchmark = options.reviewBenchmark
     ? new ReviewBenchmark(options.root, options.reviewBenchmark)
     : undefined;
-  if (benchmark)
-    benchmark.workerCommand(
-      { operation: "status" },
-      false,
-      options.reviewBenchmarkTrialId!,
-    );
+  const benchmarkCommand = (input: unknown, allowSource: boolean) => {
+    if (!benchmark) throw new Error("No benchmark registered");
+    return options.reviewBenchmarkJudgeId
+      ? benchmark.judgeWorkerCommand(
+          input,
+          allowSource,
+          options.reviewBenchmarkJudgeId,
+        )
+      : benchmark.workerCommand(
+          input,
+          allowSource,
+          options.reviewBenchmarkTrialId!,
+        );
+  };
+  if (benchmark) benchmarkCommand({ operation: "status" }, false);
   const workflowEngine =
     sharedWorkflow ?? createWorkflowSession(options, prepared);
   const workflowRequests = new Map<string | number, AbortController>();
@@ -381,25 +399,28 @@ function createConnectionServer(
     "review_benchmark",
     {
       description:
-        "Read progress or an anonymous packet for the single operator-selected trial from an operator-frozen original synthetic readiness run. A startup digest pins the protocol; packet source disclosure requires startup authorization. No answer labels, sibling handles or outputs, journal paths, collection or judging operations are exposed. This tool invokes no AI or project code and does not verify host isolation, findings or quality.",
+        "Read progress or an anonymous packet for the single operator-selected review trial or judge slot from an operator-frozen original synthetic readiness run. A startup digest pins the protocol; packet source disclosure requires startup authorization. No answer labels, sibling handles or outputs, journal paths, collection or sealing operations are exposed. This tool invokes no AI or project code and does not verify host isolation, findings or quality.",
       inputSchema: reviewBenchmarkWorkerCommandSchema,
-      outputSchema: options.allowReviewSource
-        ? z.union([
-            reviewBenchmarkWorkerSummarySchema,
-            reviewBenchmarkPacketSchema,
-          ])
-        : reviewBenchmarkWorkerSummarySchema,
+      outputSchema: options.reviewBenchmarkJudgeId
+        ? options.allowReviewSource
+          ? z.union([
+              reviewBenchmarkJudgeWorkerSummarySchema,
+              reviewBenchmarkJudgePacketSchema,
+            ])
+          : reviewBenchmarkJudgeWorkerSummarySchema
+        : options.allowReviewSource
+          ? z.union([
+              reviewBenchmarkWorkerSummarySchema,
+              reviewBenchmarkPacketSchema,
+            ])
+          : reviewBenchmarkWorkerSummarySchema,
       annotations: readOnly,
     },
     async (input) => {
       try {
         if (!benchmark) throw new Error("No benchmark registered");
         return reply(
-          benchmark.workerCommand(
-            input,
-            Boolean(options.allowReviewSource),
-            options.reviewBenchmarkTrialId!,
-          ),
+          benchmarkCommand(input, Boolean(options.allowReviewSource)),
         );
       } catch {
         return error(

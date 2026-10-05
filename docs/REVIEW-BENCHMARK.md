@@ -1,4 +1,4 @@
-# Sealed synthetic workflow benchmark intake
+# Sealed synthetic workflow and judgment intake
 
 `ReviewBenchmark` connects the shared reviewer workflow and its durable journals to
 an operator-frozen, paired synthetic readiness protocol. The library, operator CLI
@@ -28,6 +28,13 @@ not independently verified facts. The operator supplies:
   version 5 working-tree snapshot from `createReviewContext`. Diff/history contexts
   are unavailable in this readiness profile. Fixed/near-miss labels cannot declare
   expected defects.
+
+An optional `judging` profile freezes the judge instructions and exact declared
+client/version/provider/model before review. Existing plans without it remain
+readable but cannot prepare judge response paths or seal judgments. It cannot be
+added after freezing. This profile predeclares exactly one response slot per
+anonymous judging ID; retries and all external host attempts are not implemented
+by this intake.
 
 Every case/repetition has both arms using the same captured source context. Pair
 order is randomly selected before any trial; trial and judging IDs are independent
@@ -68,13 +75,16 @@ node dist/src/cli.js review-benchmark-freeze --root /path/to/synthetic-source \
 The output contains `{ reference: { directory, sha256 }, summary }`. Subsequent
 operator commands use `--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST`:
 
-| Command                    | Additional input | Result                                      |
-| -------------------------- | ---------------- | ------------------------------------------- |
-| `review-benchmark-status`  | None             | Source-free whole-run accounting            |
-| `review-benchmark-setup`   | `--trial UUID`   | Private journal binding and frozen settings |
-| `review-benchmark-packet`  | `--trial UUID`   | Anonymous source packet, with startup grant |
-| `review-benchmark-collect` | None             | Exclusive all-slot journal snapshot         |
-| `review-benchmark-judge`   | None             | Exclusive anonymous judging packet file     |
+| Command                           | Additional input | Result                                      |
+| --------------------------------- | ---------------- | ------------------------------------------- |
+| `review-benchmark-status`         | None             | Source-free whole-run accounting            |
+| `review-benchmark-setup`          | `--trial UUID`   | Private journal binding and frozen settings |
+| `review-benchmark-packet`         | `--trial UUID`   | Anonymous source packet, with startup grant |
+| `review-benchmark-collect`        | None             | Exclusive all-slot journal snapshot         |
+| `review-benchmark-judge`          | None             | Exclusive anonymous judging packet file     |
+| `review-benchmark-judge-setup`    | `--judge UUID`   | Private fixed response path and binding     |
+| `review-benchmark-judge-packet`   | `--judge UUID`   | One source packet, with startup grant       |
+| `review-benchmark-seal-judgments` | None             | Exclusive all-slot judgment archive         |
 
 Packet disclosure requires `--detailed --allow-review-source`. Setup is an operator
 operation: it returns a path and `{runId, trialId, protocolDigest}` binding. Give a
@@ -154,13 +164,15 @@ Rejected/replayed submissions remain in the private raw archive and do not becom
 extra accepted outputs. Foreign/invalid evidence has no attributed reviewer output.
 Curator labels, arm names, host identity/usage and trial-to-judge mapping remain in
 the operator manifest. Model/recipe/source prose and native observations can reveal
-conditions; the engine does not certify blinding. It neither runs nor archives an
-independent judge, releases an answer book, resolves claims, fits calibration or
-computes paired cluster uncertainty.
+conditions; the engine does not certify blinding. The separate judgment intake below retains bound responses. It does not run an
+independent judge, release an answer book, verify claims, fit calibration or compute
+paired cluster uncertainty.
 
 Every reopen checks the frozen manifest pin. Collection is reconciled against the
 reached journal bytes; late output, a missing path becoming populated, changed
-permissions/content or a forged collection invalidates subsequent status/judging.
+observed permissions/content or a forged collection invalidates subsequent status/judging.
+Unavailable files have no observed byte digest; changes that remain unavailable
+cannot be compared as though their contents were known.
 Prepared judging packets are recomputed from the retained collection and compared
 to their file. Journals are never resumed by this harness. The runtime byte digest covers the shipped top-level JS modules and package
 declaration, with bounded regular-file reads and observed file/inventory stability.
@@ -172,13 +184,73 @@ bytes under the same package version. The chains and receipts
 remain internally checked and externally unanchored; manufactured complete
 artifacts cannot be authenticated.
 
+## Anonymous judgment response intake
+
+After collection and judging preparation, `judgeSetup(blindId)` returns the fixed
+private `judgments/BLIND_UUID.json` path, response bound and binding. `judgeWorkerCommand`
+accepts only the same strict `status`/`packet` operations as a reviewer worker. The
+CLI uses `--judge UUID`; `serve --benchmark REFERENCE --judge UUID` selects one
+judge slot at startup, mutually exclusive with `--trial`. `review_benchmark` then
+returns only that judge's packet or source-free metadata. Packet disclosure still
+requires `--detailed --allow-review-source`. Tool arguments cannot select a sibling,
+write a response, seal results or grant disclosure. Discovery writes no artifacts.
+
+A packet contains the assigned source context, reached native receipts, accepted
+reviewer outputs and occurrence-bound claim IDs. Its assignment digest binds the
+frozen protocol, collected bytes, instructions and exact anonymous evidence. Curator
+answers, arm names, trial mapping, host profile, sibling packets and earlier judgment
+responses are absent. Source, instruction, model and recipe prose can still reveal
+conditions; these omissions do not prove semantic blinding or host isolation.
+
+The host writes one private `0600`, singly linked response to the predeclared path
+before sealing. The distributed `review-benchmark-judgment-response` schema requires
+the blind ID/digest, host/session/isolation declarations, terminal status, nullable
+usage meters and nullable output. A completed output accounts for every issued
+claim exactly once and declares a case label and supported, wrong-mechanism,
+wrong-address, unreachable-fix, out-of-scope, refuted or unresolved dispositions.
+Known labels/dispositions require citations whose file, current revision, digest,
+line range and quote match the frozen source. A supported claim requires a defect
+label. Unresolved labels and claims can omit citations. Refusal/cancellation/other
+incomplete statuses must have null output. No missing token, duration or cost meter
+is changed to zero.
+
+`sealJudgments()` reads every planned response path twice before publishing
+`judgments-sealed.json` exclusively. Raw bounded response bytes, including malformed
+JSON and interrupted tails, are retained. Missing paths, unsafe/oversized/unreadable
+files, invalid responses, foreign bindings/host profiles and incomplete evidence
+remain distinct. Every planned slot is accounted; unavailable bytes have unknown
+digests. A declared session reused by the curator, any retained parseable reviewer
+journal or another judge makes every affected judge row foreign, including malformed
+JSON objects that still declare a session ID. Unknown isolation or unusable review
+trial evidence remains incomplete. The engine cannot authenticate declared IDs or
+recover session identities from unparseable reviewer journals.
+
+`accepted` means that these structural checks passed with a fresh-session declaration;
+it is not a verified claim or independently observed session. `resolved` counts
+accepted outputs with no unresolved label/claim declarations. Neither count is a
+quality result. CLI status/sealing exits `2` after sealing if any planned review is
+incomplete or any judgment is unresolved/unaccepted. The response bound is 256 KiB,
+the archive bound 8 MiB and each disclosed judge packet is bounded to 16 MiB. These
+are engine storage/disclosure bounds, not host inference or billing ceilings.
+
+Reopening compares the archive to the reached response snapshots and the current
+frozen collection/judging artifact. Late population, changed observed bytes or
+permissions, and forged verdicts fail the comparison. Unavailable-to-unavailable
+changes have no authenticated content to compare. Packets and setup close after
+sealing; prior artifacts are never overwritten. Pre-seal host attempts/overwrites
+are not observed, so one retained response does not establish complete external
+attempt accounting. This is a bounded original synthetic readiness profile;
+independent claim validation, full host archives and paired scoring remain required.
+
 Raw provider-side attempts, transport rejections before journal admission,
 requests refused before audit reservation, arbitrary native stdout/stderr and
 unreturned killed-process evidence remain outside the archive. Accordingly every
 public result keeps `externalAttemptsComplete`, `hostIsolationVerified`,
 `claimsVerified` and `qualityAssessed` false. Full independent benchmark execution,
-prior-workflow validity, judged outcomes, all-attempt host archives and quality
+prior-workflow validity, independently verified judged outcomes, all-attempt host archives and quality
 scoring remain required work. No field evaluation ran to implement this profile.
 
 Implementation evidence is recorded in
-[the synthetic readiness measurement](measurements/review-benchmark-2026-10-05.json).
+[the intake readiness measurement](measurements/review-benchmark-2026-10-05.json).
+Judgment acceptance is tracked separately in
+[the judgment readiness measurement](measurements/review-benchmark-judging-2026-10-05.json).

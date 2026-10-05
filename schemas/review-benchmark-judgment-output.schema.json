@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string",
+      "enum": ["defect", "valid", "near-miss", "unresolved"]
+    },
+    "rationale": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "citations": {
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "revision": { "type": "string", "enum": ["base", "current"] },
+          "sourceDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "startLine": { "type": "integer", "minimum": 1, "maximum": 65537 },
+          "endLine": { "type": "integer", "minimum": 1, "maximum": 65537 },
+          "quote": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        },
+        "required": [
+          "file",
+          "revision",
+          "sourceDigest",
+          "startLine",
+          "endLine",
+          "quote"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "claims": {
+      "maxItems": 192,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claimId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "judgement": {
+            "type": "string",
+            "enum": [
+              "supported",
+              "wrong-mechanism",
+              "wrong-address",
+              "unreachable-fix",
+              "out-of-scope",
+              "refuted",
+              "unresolved"
+            ]
+          },
+          "rationale": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "citations": {
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+                "revision": { "type": "string", "enum": ["base", "current"] },
+                "sourceDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "startLine": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65537
+                },
+                "endLine": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65537
+                },
+                "quote": { "type": "string", "minLength": 1, "maxLength": 2048 }
+              },
+              "required": [
+                "file",
+                "revision",
+                "sourceDigest",
+                "startLine",
+                "endLine",
+                "quote"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["claimId", "judgement", "rationale", "citations"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["label", "rationale", "citations", "claims"],
+  "additionalProperties": false
+}

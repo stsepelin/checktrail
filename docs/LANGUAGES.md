@@ -100,6 +100,15 @@ preparation on the recorded POSIX development profiles. It collects structured
 workflow evidence; it adds no language semantics, actual host isolation, complete
 provider attempts, independent judging or quality result. Field evaluation remains
 closed while Gate A is open. See measurements/review-benchmark-2026-10-05.json.
+An optional frozen judge profile now supplies one anonymous source-bound judge
+packet through the same CLI/MCP engine and seals every planned response path.
+Original synthetic controls retain malformed/missing/foreign/incomplete responses,
+validate claim citations and reject declared-session reuse or post-seal changes on
+macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2. A fresh offline production
+package exercises the library, CLI and judge MCP view on macOS. Accepted/resolved
+counts describe structural declarations; independent host isolation and verified
+claim truth remain unimplemented. See
+measurements/review-benchmark-judging-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
 on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
 language probes, automatic callers and independent claim verification remain pending.

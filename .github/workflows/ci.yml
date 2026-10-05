@@ -104,6 +104,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs review-workflow
           node scripts/verify-required-native-tests.mjs review-workflow-audit
           node scripts/verify-required-native-tests.mjs review-benchmark
+          node scripts/verify-required-native-tests.mjs review-benchmark-judging
           node scripts/verify-required-native-tests.mjs review-native-budget
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs

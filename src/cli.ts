@@ -124,6 +124,7 @@ async function main(): Promise<void> {
       "workflow-audit-binding": { type: "string" },
       benchmark: { type: "string" },
       trial: { type: "string" },
+      judge: { type: "string" },
       "workflow-audit-max-bytes": { type: "string" },
       "workflow-audit-max-events": { type: "string" },
       "native-max-calls": { type: "string" },
@@ -138,7 +139,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/judging remain operator commands\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-benchmark-judge-setup|review-benchmark-judge-packet|review-benchmark-seal-judgments|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nReview-benchmark-judge-setup/judge-packet: --benchmark REFERENCE --judge UUID; judge-packet requires --detailed --allow-review-source; seal-judgments closes all frozen judge slots\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/sealing remain operator commands; alternatively --judge UUID exposes one prepared anonymous judge packet\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -166,6 +167,7 @@ async function main(): Promise<void> {
     (!values.detailed ||
       ![
         "review-benchmark-packet",
+        "review-benchmark-judge-packet",
         "review-context",
         "review-receipt",
         "review-run",
@@ -248,6 +250,9 @@ async function main(): Promise<void> {
     "review-benchmark-setup",
     "review-benchmark-collect",
     "review-benchmark-judge",
+    "review-benchmark-judge-setup",
+    "review-benchmark-judge-packet",
+    "review-benchmark-seal-judgments",
   ];
   if (values.benchmark && !["serve", ...benchmarkCommands].includes(command!))
     throw new Error(
@@ -260,15 +265,28 @@ async function main(): Promise<void> {
     )
   )
     throw new Error("Trial applies only to benchmark packet/setup");
+  if (
+    values.judge &&
+    ![
+      "serve",
+      "review-benchmark-judge-setup",
+      "review-benchmark-judge-packet",
+    ].includes(command!)
+  )
+    throw new Error(
+      "Judge applies only to benchmark judge packet/setup or serve",
+    );
+  if (values.judge && values.trial)
+    throw new Error("A worker selects one review trial or judge slot");
   const benchmarkReference = values.benchmark
     ? parseReviewBenchmarkReference(values.benchmark)
     : undefined;
   if (
     command === "serve" &&
-    Boolean(benchmarkReference) !== Boolean(values.trial)
+    Boolean(benchmarkReference) !== Boolean(values.trial || values.judge)
   )
     throw new Error(
-      "Serve benchmark workers require --benchmark and one --trial UUID",
+      "Serve benchmark workers require --benchmark and one --trial or --judge UUID",
     );
   const workflowLimits =
     values["workflow-limits"] !== undefined
@@ -466,7 +484,21 @@ async function main(): Promise<void> {
         "Benchmark command requires an operator-pinned reference",
       );
     const benchmark = new ReviewBenchmark(root, benchmarkReference);
-    if (command === "review-benchmark-setup") {
+    if (command === "review-benchmark-judge-setup") {
+      if (!values.judge)
+        throw new Error("Benchmark judge setup requires a judge ID");
+      print(benchmark.judgeSetup(values.judge));
+    } else if (command === "review-benchmark-judge-packet") {
+      if (!values.judge)
+        throw new Error("Benchmark judge packet requires a judge ID");
+      print(
+        benchmark.judgeWorkerCommand(
+          { operation: "packet" },
+          values["allow-review-source"],
+          values.judge,
+        ),
+      );
+    } else if (command === "review-benchmark-setup") {
       if (!values.trial) throw new Error("Benchmark setup requires a trial ID");
       print(benchmark.trialSetup(values.trial));
     } else if (command === "review-benchmark-packet") {
@@ -484,9 +516,15 @@ async function main(): Promise<void> {
           ? benchmark.collect()
           : command === "review-benchmark-judge"
             ? benchmark.prepareJudging()
-            : benchmark.status();
+            : command === "review-benchmark-seal-judgments"
+              ? benchmark.sealJudgments()
+              : benchmark.status();
       print(result);
-      if (result.state !== "frozen" && result.completed !== result.planned)
+      if (
+        (result.state !== "frozen" && result.completed !== result.planned) ||
+        (result.judgments &&
+          result.judgments.resolved !== result.judgments.planned)
+      )
         process.exitCode = 2;
     }
     return;
@@ -946,7 +984,9 @@ async function main(): Promise<void> {
       ...(benchmarkReference
         ? {
             reviewBenchmark: benchmarkReference,
-            reviewBenchmarkTrialId: values.trial!,
+            ...(values.trial
+              ? { reviewBenchmarkTrialId: values.trial }
+              : { reviewBenchmarkJudgeId: values.judge! }),
           }
         : {}),
       ...(workflowLimits ? { reviewWorkflowLimits: workflowLimits } : {}),

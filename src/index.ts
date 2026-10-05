@@ -183,4 +183,6 @@ export type {
   ReviewBenchmarkPlan,
   ReviewBenchmarkSummary,
   ReviewBenchmarkPacket,
+  ReviewBenchmarkJudgePacket,
+  ReviewBenchmarkJudgmentResponse,
 } from "./review-benchmark-schema.js";

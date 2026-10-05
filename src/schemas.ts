@@ -374,6 +374,13 @@ export {
 } from "./review-workflow-audit-schema.js";
 
 export {
+  reviewBenchmarkJudgeProfileSchema,
+  reviewBenchmarkJudgmentSummarySchema,
+  reviewBenchmarkJudgePacketSchema,
+  reviewBenchmarkJudgmentOutputSchema,
+  reviewBenchmarkJudgmentResponseSchema,
+  reviewBenchmarkJudgeWorkerSummarySchema,
+  reviewBenchmarkJudgmentArchiveSchema,
   reviewBenchmarkReferenceSchema,
   reviewBenchmarkPlanSchema,
   reviewBenchmarkCommandSchema,

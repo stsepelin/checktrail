@@ -1348,5 +1348,43 @@
       "file": "dist/test/review-benchmark.test.js",
       "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations"
     }
+  ],
+  "review-benchmark-judging": [
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels"
+    }
   ]
 }

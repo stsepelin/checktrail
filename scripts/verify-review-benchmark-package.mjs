@@ -107,6 +107,11 @@ try {
     profile: "workflow-journal-paired-synthetic-v1",
     provenance: "operator-declared-original-synthetic",
     curatorSessionId: "OriginalPackageCurator",
+    judging: {
+      instructions:
+        "Judge independently from this one anonymous original source packet.",
+      host: { ...host, model: "fictional-independent-package-judge" },
+    },
     repetitions: 2,
     runtime: {
       node: process.version,
@@ -325,12 +330,142 @@ try {
   const judged = invoke("review-benchmark-judge");
   assert.equal(judged.status, 2, judged.stderr);
   assert.equal(JSON.parse(judged.stdout).state, "judging-prepared");
+  const judgingBook = JSON.parse(
+    await readFile(
+      path.join(frozen.reference.directory, "judging.json"),
+      "utf8",
+    ),
+  );
+  const completedPackets = judgingBook.packets.filter(
+    (p) => p.status === "sealed-completed",
+  );
+  const missingPacket = judgingBook.packets.find((p) => p.status === "missing");
+  const judgeId = completedPackets[0].blindId;
+  const judgePacket = benchmark.judgeWorkerCommand(
+    { operation: "packet" },
+    true,
+    judgeId,
+  );
+  const judgeClient = new Client({
+    name: "original-installed-independent-judge",
+    version: "1",
+  });
+  clients.push(judgeClient);
+  const judgeTransport = new StdioClientTransport({
+    command: process.execPath,
+    args: [
+      binary,
+      "serve",
+      "--root",
+      root,
+      "--benchmark",
+      reference,
+      "--judge",
+      judgeId,
+      "--detailed",
+      "--allow-review-source",
+    ],
+    stderr: "pipe",
+  });
+  await judgeClient.connect(judgeTransport);
+  try {
+    const result = await judgeClient.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet" },
+    });
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(result.structuredContent, judgePacket);
+    const denied = await judgeClient.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet", blindId: completedPackets[1].blindId },
+    });
+    assert.equal(denied.isError, true);
+  } finally {
+    await judgeClient.close();
+  }
+  const responseFor = (blindId) => {
+    const packet = benchmark.judgeWorkerCommand(
+        { operation: "packet" },
+        true,
+        blindId,
+      ),
+      file = packet.evidence.context.files[0];
+    return {
+      schemaVersion: 1,
+      blindId,
+      assignmentDigest: packet.assignmentDigest,
+      host: {
+        ...plan.judging.host,
+        sessionId: randomUUID(),
+        isolation: "fresh",
+      },
+      status: "completed",
+      usage: {
+        inputTokens: null,
+        outputTokens: null,
+        durationMs: null,
+        costUSD: null,
+      },
+      output: {
+        label: "defect",
+        rationale: "Original synthetic installed readiness declaration.",
+        citations: [
+          {
+            file: file.path,
+            revision: "current",
+            sourceDigest: file.sha256,
+            startLine: 1,
+            endLine: 1,
+            quote: file.content.trimEnd(),
+          },
+        ],
+        claims: [],
+      },
+    };
+  };
+  for (const id of [judgeId, missingPacket.blindId])
+    await writeFile(
+      benchmark.judgeSetup(id).file,
+      JSON.stringify(responseFor(id)),
+      { mode: 0o600 },
+    );
+  await writeFile(
+    benchmark.judgeSetup(completedPackets[1].blindId).file,
+    "OriginalInvalidJudgeResponse",
+    { mode: 0o600 },
+  );
+  const seal = invoke("review-benchmark-seal-judgments");
+  assert.equal(seal.status, 2, seal.stderr);
+  const judgmentSummary = JSON.parse(seal.stdout).judgments;
+  assert.deepEqual(
+    { ...judgmentSummary, archiveDigest: null },
+    { planned: 4, accounted: 4, accepted: 1, resolved: 1, archiveDigest: null },
+  );
+  const archive = JSON.parse(
+    await readFile(
+      path.join(frozen.reference.directory, "judgments-sealed.json"),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(archive.judgments.map((j) => j.status).sort(), [
+    "accepted",
+    "incomplete",
+    "invalid",
+    "missing",
+  ]);
+  assert.throws(
+    () => benchmark.judgeWorkerCommand({ operation: "packet" }, true, judgeId),
+    /closed/,
+  );
   assert.equal(benchmark.status().qualityAssessed, false);
   for (const name of [
     "review-benchmark-plan",
     "review-benchmark-packet",
     "review-benchmark-worker-command",
     "review-benchmark-judging",
+    "review-benchmark-judge-packet",
+    "review-benchmark-judgment-response",
+    "review-benchmark-judgment-archive",
     "review-workflow-audit-binding",
   ])
     JSON.parse(
@@ -354,6 +489,7 @@ try {
     accounted: summary.accounted,
     completed: summary.completed,
     missing: 1,
+    judgments: judgmentSummary,
     inferenceInvoked: false,
     hostIsolationVerified: false,
     qualityAssessed: false,

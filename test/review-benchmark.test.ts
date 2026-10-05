@@ -28,6 +28,10 @@ import {
 import {
   reviewBenchmarkPacketSchema,
   reviewBenchmarkJudgingSchema,
+  reviewBenchmarkJudgePacketSchema,
+  reviewBenchmarkJudgeWorkerSummarySchema,
+  reviewBenchmarkJudgmentArchiveSchema,
+  type ReviewBenchmarkJudgmentResponse,
   type ReviewBenchmarkPlan,
 } from "../src/review-benchmark-schema.js";
 import { ReviewWorkflowSession } from "../src/review-workflow-session.js";
@@ -55,6 +59,7 @@ async function prepare(
   count = 1,
   repetitions = 1,
   native = false,
+  judging = false,
 ) {
   const cases = [];
   for (let i = 0; i < count; i++) {
@@ -91,6 +96,15 @@ async function prepare(
     profile: "workflow-journal-paired-synthetic-v1",
     provenance: "operator-declared-original-synthetic",
     curatorSessionId: "OriginalCuratorSessionCanary",
+    ...(judging
+      ? {
+          judging: {
+            instructions:
+              "Judge the supplied source and every claim independently. Leave unknown outcomes unresolved.",
+            host: { ...host, model: "fictional-independent-judge" },
+          },
+        }
+      : {}),
     repetitions,
     runtime: {
       node: process.version,
@@ -1126,3 +1140,472 @@ test(
     }
   },
 );
+
+async function prepareJudgments(
+  t: TestContext,
+  count = 1,
+  repetitions = 1,
+  native = false,
+) {
+  const f = await prepare(t, count, repetitions, native, true);
+  for (let i = 0; i < f.manifest.trials.length; i++)
+    await runTrial(
+      t,
+      f,
+      i,
+      native ? "native" : "empty",
+      `original-review-session-${i}`,
+    );
+  f.benchmark.collect();
+  f.benchmark.prepareJudging();
+  const book = reviewBenchmarkJudgingSchema.parse(
+    JSON.parse(
+      await readFile(path.join(f.reference.directory, "judging.json"), "utf8"),
+    ),
+  );
+  return { ...f, book };
+}
+function judgmentResponse(
+  f: Prepared,
+  blindId: string,
+): ReviewBenchmarkJudgmentResponse {
+  const packet = reviewBenchmarkJudgePacketSchema.parse(
+    f.benchmark.judgeWorkerCommand({ operation: "packet" }, true, blindId),
+  );
+  const file = packet.evidence.context.files[0]!;
+  const citation = {
+    file: file.path,
+    revision: "current" as const,
+    sourceDigest: file.sha256,
+    startLine: 1,
+    endLine: 1,
+    quote: file.content.split("\n")[0]!,
+  };
+  return {
+    schemaVersion: 1,
+    blindId,
+    assignmentDigest: packet.assignmentDigest,
+    host: {
+      ...f.plan.judging!.host,
+      sessionId: randomUUID(),
+      isolation: "fresh",
+    },
+    status: "completed",
+    usage: {
+      inputTokens: null,
+      outputTokens: null,
+      durationMs: null,
+      costUSD: null,
+    },
+    output: {
+      label: "defect",
+      rationale: "Original synthetic source-bound judgment declaration.",
+      citations: [citation],
+      claims: packet.claims.map((c) => ({
+        claimId: c.claimId,
+        judgement: "supported",
+        rationale: "Original synthetic supported declaration.",
+        citations: [structuredClone(citation)],
+      })),
+    },
+  };
+}
+async function putJudgment(f: Prepared, blindId: string, value: unknown) {
+  await privateJson(f.benchmark.judgeSetup(blindId).file, value);
+}
+async function judgmentArchive(f: Prepared) {
+  return reviewBenchmarkJudgmentArchiveSchema.parse(
+    JSON.parse(
+      await readFile(
+        path.join(f.reference.directory, "judgments-sealed.json"),
+        "utf8",
+      ),
+    ),
+  );
+}
+test("benchmark judging requires frozen profiles and complete intake before any source packet or response path", async (t) => {
+  const legacy = await prepare(t);
+  assert.throws(
+    () => legacy.benchmark.judgeSetup(randomUUID()),
+    /No judging profile/,
+  );
+  assert.equal(legacy.benchmark.status().judgments, null);
+  const f = await prepare(t, 1, 1, false, true);
+  assert.throws(
+    () => f.benchmark.judgeSetup(f.manifest.trials[0]!.blindId),
+    /collected/,
+  );
+  assert.throws(() => f.benchmark.sealJudgments(), /collected/);
+  assert.deepEqual(
+    await readdir(path.join(f.reference.directory, "judgments")),
+    [],
+  );
+  for (const judging of [
+    { ...f.plan.judging, host: { ...f.plan.judging!.host, model: "" } },
+    { ...f.plan.judging, maxAttempts: 10 },
+  ]) {
+    const target = path.join(f.operator, randomUUID());
+    assert.throws(() =>
+      freezeReviewBenchmark(f.cases[0]!.root, { ...f.plan, judging }, target),
+    );
+    await assert.rejects(stat(target), { code: "ENOENT" });
+  }
+});
+test("benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations", async (t) => {
+  const f = await prepareJudgments(t, 1, 1, true);
+  const first = f.book.packets[0]!.blindId,
+    second = f.book.packets[1]!.blindId;
+  const packet = reviewBenchmarkJudgePacketSchema.parse(
+    f.benchmark.judgeWorkerCommand({ operation: "packet" }, true, first),
+  );
+  assert.equal(packet.claims.length, 1);
+  assert.equal(packet.evidence.native.length, 1);
+  assert.equal(packet.evidence.native[0]!.run.counts.triggerMismatches, 1);
+  noPrivate(JSON.stringify(packet), f);
+  for (const value of [
+    second,
+    f.manifest.trials[0]!.trialId,
+    f.plan.judging!.host.model,
+  ])
+    assert.equal(JSON.stringify(packet).includes(value), false);
+  assert.throws(
+    () => f.benchmark.judgeWorkerCommand({ operation: "packet" }, false, first),
+    /authorization/,
+  );
+  await putJudgment(f, first, judgmentResponse(f, first));
+  const unresolved = judgmentResponse(f, second);
+  unresolved.output!.label = "unresolved";
+  unresolved.output!.citations = [];
+  unresolved.output!.claims.forEach((c) => {
+    c.judgement = "unresolved";
+    c.citations = [];
+  });
+  await putJudgment(f, second, unresolved);
+  const sealed = f.benchmark.sealJudgments();
+  assert.equal(sealed.state, "judgments-sealed");
+  assert.equal(sealed.judgments!.accepted, 2);
+  assert.equal(sealed.judgments!.resolved, 1);
+  assert.equal(sealed.claimsVerified, false);
+  assert.equal(sealed.qualityAssessed, false);
+  const archive = await judgmentArchive(f);
+  assert.deepEqual(
+    archive.judgments.map((j) => j.status),
+    ["accepted", "accepted"],
+  );
+  assert.equal(
+    archive.judgments[1]!.responseDigest,
+    digest(Buffer.from(JSON.stringify(unresolved))),
+  );
+  const reopen = new ReviewBenchmark(f.cases[0]!.root, f.reference);
+  assert.deepEqual(reopen.status(), sealed);
+  assert.throws(() => reopen.judgeSetup(first), /closed/);
+  assert.throws(
+    () => reopen.judgeWorkerCommand({ operation: "packet" }, true, first),
+    /closed/,
+  );
+  assert.throws(() => reopen.sealJudgments(), /already sealed/);
+  const status = reviewBenchmarkJudgeWorkerSummarySchema.parse(
+    reopen.judgeWorkerCommand({ operation: "status" }, false, first),
+  );
+  assert.equal(status.status, "accepted");
+  noPrivate(JSON.stringify(status), f);
+});
+test("benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control", async (t) => {
+  const f = await prepareJudgments(t, 1, 2, true);
+  const responses = f.book.packets.map((p) => judgmentResponse(f, p.blindId));
+  responses[0]!.output!.claims = [];
+  responses[1]!.output!.claims.push(
+    structuredClone(responses[1]!.output!.claims[0]!),
+  );
+  responses[2]!.output!.claims[0]!.citations[0]!.quote =
+    "OriginalQuoteNeverPresent";
+  for (let i = 0; i < responses.length; i++)
+    await putJudgment(f, f.book.packets[i]!.blindId, responses[i]);
+  const summary = f.benchmark.sealJudgments();
+  assert.equal(summary.judgments!.accounted, 4);
+  assert.equal(summary.judgments!.accepted, 1);
+  assert.deepEqual(
+    (await judgmentArchive(f)).judgments.map((j) => j.status),
+    ["invalid", "invalid", "invalid", "accepted"],
+  );
+});
+test("benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding", async (t) => {
+  const f = await prepareJudgments(t, 4, 2);
+  const responses = f.book.packets.map((p) => judgmentResponse(f, p.blindId));
+  responses[0]!.output!.citations[0]!.file = "missing.mjs";
+  responses[1]!.output!.citations[0]!.revision = "base";
+  responses[2]!.output!.citations[0]!.sourceDigest = "0".repeat(64);
+  responses[3]!.output!.citations[0]!.endLine = 9999;
+  responses[4]!.output!.citations[0]!.endLine = 0;
+  responses[5]!.output!.citations = [];
+  responses[6]!.assignmentDigest = "0".repeat(64);
+  responses[7]!.blindId = responses[8]!.blindId;
+  responses[8]!.host.model = "foreign-judge-model";
+  responses[9]!.host.isolation = "unknown";
+  responses[10]!.status = "refused";
+  responses[10]!.output = null;
+  responses[11]!.status = "cancelled"; // A terminal failure carrying a completed output is invalid.
+  responses[12]!.output = null;
+  for (let i = 0; i < responses.length; i++)
+    await putJudgment(f, f.book.packets[i]!.blindId, responses[i]);
+  const sealed = f.benchmark.sealJudgments();
+  assert.equal(sealed.judgments!.accepted, 3);
+  assert.deepEqual(
+    (await judgmentArchive(f)).judgments.map((j) => j.status),
+    [
+      "invalid",
+      "invalid",
+      "invalid",
+      "invalid",
+      "invalid",
+      "invalid",
+      "foreign",
+      "foreign",
+      "foreign",
+      "incomplete",
+      "incomplete",
+      "invalid",
+      "invalid",
+      "accepted",
+      "accepted",
+      "accepted",
+    ],
+  );
+});
+test("benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output", async (t) => {
+  const f = await prepareJudgments(t, 2, 2);
+  const paths = f.book.packets.map(
+    (p) => f.benchmark.judgeSetup(p.blindId).file,
+  );
+  await writeFile(paths[1]!, '{"interrupted":', { mode: 0o600 });
+  await writeFile(paths[2]!, Buffer.from([255, 254]), { mode: 0o600 });
+  await writeFile(paths[3]!, Buffer.alloc(262145, 32), { mode: 0o600 });
+  await symlink(paths[1]!, paths[4]!);
+  await putJudgment(
+    f,
+    f.book.packets[5]!.blindId,
+    judgmentResponse(f, f.book.packets[5]!.blindId),
+  );
+  await chmod(paths[5]!, 0o644);
+  await putJudgment(
+    f,
+    f.book.packets[6]!.blindId,
+    judgmentResponse(f, f.book.packets[6]!.blindId),
+  );
+  await link(paths[6]!, path.join(f.operator, "judge-hardlink"));
+  await putJudgment(
+    f,
+    f.book.packets[7]!.blindId,
+    judgmentResponse(f, f.book.packets[7]!.blindId),
+  );
+  const sealed = f.benchmark.sealJudgments();
+  assert.equal(sealed.judgments!.accounted, 8);
+  assert.equal(sealed.judgments!.accepted, 1);
+  const archive = await judgmentArchive(f);
+  assert.deepEqual(
+    archive.judgments.map((j) => j.status),
+    [
+      "missing",
+      "invalid",
+      "invalid",
+      "unavailable",
+      "unavailable",
+      "unavailable",
+      "unavailable",
+      "accepted",
+    ],
+  );
+  assert.equal(
+    Buffer.from(archive.judgments[1]!.responseBase64!, "base64").toString(),
+    '{"interrupted":',
+  );
+  for (const i of [0, 3, 4, 5, 6])
+    assert.equal(archive.judgments[i]!.responseDigest, null);
+});
+test("benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations", async (t) => {
+  const f = await prepareJudgments(t, 2, 2);
+  const responses = f.book.packets.map((p) => judgmentResponse(f, p.blindId));
+  responses[0]!.host.sessionId = f.plan.curatorSessionId;
+  responses[1]!.host.sessionId = "original-review-session-0";
+  responses[2]!.host.sessionId = "original-reused-judge-session";
+  responses[3]!.host.sessionId = "original-reused-judge-session";
+  for (let i = 0; i < responses.length; i++)
+    await putJudgment(
+      f,
+      f.book.packets[i]!.blindId,
+      i === 3 ? { ...responses[i], originalMalformed: true } : responses[i],
+    );
+  const sealed = f.benchmark.sealJudgments();
+  assert.equal(sealed.judgments!.accepted, 4);
+  assert.deepEqual(
+    (await judgmentArchive(f)).judgments.map((j) => j.status),
+    [
+      "foreign",
+      "foreign",
+      "foreign",
+      "foreign",
+      "accepted",
+      "accepted",
+      "accepted",
+      "accepted",
+    ],
+  );
+});
+test("benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen", async (t) => {
+  for (const mode of ["late", "content", "permissions", "archive"] as const) {
+    const f = await prepareJudgments(t);
+    const id = f.book.packets[0]!.blindId,
+      setup = f.benchmark.judgeSetup(id),
+      response = judgmentResponse(f, id);
+    if (mode !== "late") await putJudgment(f, id, response);
+    f.benchmark.sealJudgments();
+    if (mode === "late") await privateJson(setup.file, response);
+    else if (mode === "content") {
+      response.output!.rationale = "Changed after seal";
+      await privateJson(setup.file, response);
+    } else if (mode === "permissions") await chmod(setup.file, 0o644);
+    else {
+      const archive = await judgmentArchive(f);
+      archive.judgments[0]!.status = "foreign";
+      await privateJson(
+        path.join(f.reference.directory, "judgments-sealed.json"),
+        archive,
+      );
+    }
+    assert.throws(
+      () => f.benchmark.status(),
+      /judgments or reached responses changed/,
+    );
+    assert.throws(
+      () => f.benchmark.judgeWorkerCommand({ operation: "status" }, false, id),
+      /judgments or reached responses changed/,
+    );
+  }
+});
+test("benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls", async (t) => {
+  const f = await prepareJudgments(t),
+    id = f.book.packets[0]!.blindId;
+  const reference = `${f.reference.directory}#sha256=${f.reference.sha256}`;
+  const args = ["--root", f.cases[0]!.root, "--benchmark", reference];
+  const run = (command: string, extra: string[] = []) =>
+    spawnSync(process.execPath, [cli, command, ...args, ...extra], {
+      encoding: "utf8",
+    });
+  const denied = run("review-benchmark-judge-packet", ["--judge", id]);
+  assert.equal(denied.status, 2);
+  const packet = run("review-benchmark-judge-packet", [
+    "--judge",
+    id,
+    "--detailed",
+    "--allow-review-source",
+  ]);
+  assert.equal(packet.status, 0, packet.stderr);
+  assert.deepEqual(
+    JSON.parse(packet.stdout),
+    f.benchmark.judgeWorkerCommand({ operation: "packet" }, true, id),
+  );
+  assert.equal(run("review-benchmark-judge-setup", ["--judge", id]).status, 0);
+  assert.equal(run("review-benchmark-status", ["--judge", id]).status, 2);
+  assert.equal(
+    run("serve", ["--judge", id, "--trial", f.manifest.trials[0]!.trialId])
+      .status,
+    2,
+  );
+  const client = new Client({
+    name: "original-independent-judge-control",
+    version: "1",
+  });
+  const transport = new StdioClientTransport({
+    command: process.execPath,
+    args: [
+      cli,
+      "serve",
+      ...args,
+      "--judge",
+      id,
+      "--detailed",
+      "--allow-review-source",
+    ],
+    stderr: "pipe",
+  });
+  t.after(() => client.close());
+  await client.connect(transport);
+  try {
+    const inventory = await client.listTools();
+    assert.ok(inventory.tools.some((tool) => tool.name === "review_benchmark"));
+    assert.deepEqual(
+      await readdir(path.join(f.reference.directory, "judgments")),
+      [],
+    );
+    const call = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet" },
+    });
+    assert.equal(call.isError, undefined);
+    assert.deepEqual(call.structuredContent, JSON.parse(packet.stdout));
+    for (const input of [
+      { operation: "packet", judgeId: f.book.packets[1]!.blindId },
+      { operation: "seal" },
+      { operation: "packet", allowSource: true },
+    ]) {
+      const invalid = await client.callTool({
+        name: "review_benchmark",
+        arguments: input,
+      });
+      assert.equal(invalid.isError, true);
+    }
+    const sealed = run("review-benchmark-seal-judgments");
+    assert.equal(sealed.status, 2, sealed.stderr);
+    assert.equal(JSON.parse(sealed.stdout).judgments.accounted, 2);
+    const closed = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet" },
+    });
+    assert.equal(closed.isError, true);
+    const status = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "status" },
+    });
+    const parsed = reviewBenchmarkJudgeWorkerSummarySchema.parse(
+      status.structuredContent,
+    );
+    assert.equal(parsed.status, "missing");
+    noPrivate(JSON.stringify(parsed), f);
+  } finally {
+    await client.close();
+  }
+});
+
+test("benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels", async (t) => {
+  const f = await prepare(t, 1, 1, false, true);
+  await runTrial(t, f, 0);
+  f.benchmark.collect();
+  f.benchmark.prepareJudging();
+  const book = reviewBenchmarkJudgingSchema.parse(
+    JSON.parse(
+      await readFile(path.join(f.reference.directory, "judging.json"), "utf8"),
+    ),
+  );
+  for (const packet of book.packets)
+    await putJudgment(f, packet.blindId, judgmentResponse(f, packet.blindId));
+  const sealed = f.benchmark.sealJudgments();
+  assert.equal(sealed.judgments!.accepted, 1);
+  assert.deepEqual(
+    (await judgmentArchive(f)).judgments.map((j) => j.status).sort(),
+    ["accepted", "incomplete"],
+  );
+  const native = await prepareJudgments(t, 1, 1, true);
+  const responses = native.book.packets.map((p) =>
+    judgmentResponse(native, p.blindId),
+  );
+  responses[0]!.output!.label = "valid";
+  responses[1]!.output!.label = "near-miss";
+  responses[1]!.output!.claims[0]!.judgement = "refuted";
+  for (let i = 0; i < responses.length; i++)
+    await putJudgment(native, native.book.packets[i]!.blindId, responses[i]);
+  native.benchmark.sealJudgments();
+  assert.deepEqual(
+    (await judgmentArchive(native)).judgments.map((j) => j.status),
+    ["invalid", "accepted"],
+  );
+});

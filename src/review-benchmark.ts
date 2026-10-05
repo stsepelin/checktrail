@@ -40,10 +40,17 @@ import {
   reviewBenchmarkJudgingSchema,
   reviewBenchmarkWorkerCommandSchema,
   reviewBenchmarkWorkerSummarySchema,
+  reviewBenchmarkJudgePacketSchema,
+  reviewBenchmarkJudgmentResponseSchema,
+  reviewBenchmarkJudgmentArchiveSchema,
+  reviewBenchmarkJudgeWorkerSummarySchema,
   type ReviewBenchmarkReference,
 } from "./review-benchmark-schema.js";
 const MANIFEST_BYTES = 16_777_216;
 const JOURNAL_BYTES = 4_194_304;
+const JUDGE_PACKET_BYTES = 16_777_216;
+const JUDGMENT_BYTES = 262_144;
+const JUDGMENT_ARCHIVE_BYTES = 8_388_608;
 const COLLECTION_BYTES = 134_217_728;
 const sha = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
@@ -314,6 +321,8 @@ export function freezeReviewBenchmark(
   mkdirSync(target, { mode: 0o700 });
   try {
     mkdirSync(path.join(target, "journals"), { mode: 0o700 });
+    if (plan.judging)
+      mkdirSync(path.join(target, "judgments"), { mode: 0o700 });
     const digest = writeNew(
       path.join(target, "manifest.json"),
       manifest,
@@ -457,7 +466,9 @@ export class ReviewBenchmark {
     const bytes = readPrivate(path.join(root, "manifest.json"), MANIFEST_BYTES);
     if (sha(bytes) !== this.#reference.sha256)
       throw new Error("Benchmark frozen manifest digest disagrees");
-    return { root, manifest: checkedManifest(decode(bytes)) };
+    const manifest = checkedManifest(decode(bytes));
+    if (manifest.plan.judging) directory(path.join(root, "judgments"));
+    return { root, manifest };
   }
   #readJournal(root: string, trial: Trial): Buffer | null {
     const file = path.join(root, "journals", `${trial.trialId}.jsonl`);
@@ -628,6 +639,321 @@ export class ReviewBenchmark {
       packets,
     });
   }
+  #judgeBook(root: string, manifest: Manifest) {
+    if (!manifest.plan.judging)
+      throw new Error("No judging profile was frozen");
+    directory(path.join(root, "judgments"));
+    const collected = this.#collection(root, manifest);
+    if (!collected)
+      throw new Error("All planned trials must be collected before judging");
+    const bytes = readPrivate(
+      path.join(root, "judging.json"),
+      COLLECTION_BYTES,
+    );
+    const book = reviewBenchmarkJudgingSchema.parse(decode(bytes));
+    if (!equal(book, this.#judging(manifest, collected)))
+      throw new Error("Benchmark judging artifact disagrees");
+    return { book, collected, judgingDigest: sha(bytes) };
+  }
+  #judgePacket(
+    manifest: Manifest,
+    book: z.infer<typeof reviewBenchmarkJudgingSchema>,
+    blindId: string,
+  ) {
+    const evidence = book.packets.find((p) => p.blindId === blindId);
+    if (!evidence || !manifest.plan.judging)
+      throw new Error("Unknown benchmark judge slot");
+    const claims = evidence.outputs.flatMap((output, outputIndex) =>
+      output.candidates.map((candidate, candidateIndex) => ({
+        claimId: sha(
+          JSON.stringify({ outputIndex, candidateIndex, candidate }),
+        ),
+        candidate,
+      })),
+    );
+    const instructions = manifest.plan.judging.instructions;
+    const assignmentDigest = sha(
+      JSON.stringify({
+        protocolDigest: this.#reference.sha256,
+        collectionDigest: book.collectionDigest,
+        instructions,
+        evidence,
+        claims,
+      }),
+    );
+    const packet = reviewBenchmarkJudgePacketSchema.parse({
+      schemaVersion: 1,
+      profile: manifest.plan.profile,
+      format: "review-benchmark-judge-packet",
+      blindId,
+      assignmentDigest,
+      instructions,
+      evidence,
+      claims,
+      sessionRequirement: "fresh-host-session",
+      sourceTrust: "untrusted-source-and-review-text",
+      sourceIncluded: true,
+      claimsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      qualityAssessed: false,
+    });
+    if (Buffer.byteLength(JSON.stringify(packet)) > JUDGE_PACKET_BYTES)
+      throw new Error(
+        "Benchmark judge packet exceeds fixed source disclosure bound",
+      );
+    return packet;
+  }
+  #judgeIntakes(
+    root: string,
+    manifest: Manifest,
+    book: z.infer<typeof reviewBenchmarkJudgingSchema>,
+  ) {
+    type Row = z.infer<
+      typeof reviewBenchmarkJudgmentArchiveSchema
+    >["judgments"][number];
+    const rows: Row[] = [],
+      sessions = new Map<string, Set<number>>();
+    const forbidden = new Set([manifest.plan.curatorSessionId]);
+    const collected = this.#collection(root, manifest)!;
+    for (const trial of collected.collection.trials) {
+      if (!trial.journalBase64) continue;
+      try {
+        for (const id of declaredSessions(
+          parseReviewWorkflowAuditArtifact(
+            Buffer.from(trial.journalBase64, "base64"),
+          ),
+        ))
+          forbidden.add(id);
+      } catch {
+        /* Invalid reviewer evidence cannot supply an authenticated session inventory. */
+      }
+    }
+    for (const evidence of book.packets) {
+      const row: Row = {
+        blindId: evidence.blindId,
+        status: "invalid",
+        responseDigest: null,
+        responseBase64: null,
+      };
+      rows.push(row);
+      let bytes: Buffer;
+      try {
+        bytes = readPrivate(
+          path.join(root, "judgments", `${evidence.blindId}.json`),
+          JUDGMENT_BYTES,
+        );
+      } catch (error) {
+        row.status =
+          (error as NodeJS.ErrnoException).code === "ENOENT"
+            ? "missing"
+            : "unavailable";
+        continue;
+      }
+      row.responseDigest = sha(bytes);
+      row.responseBase64 = bytes.toString("base64");
+      let input: unknown;
+      try {
+        input = decode(bytes);
+      } catch {
+        continue;
+      }
+      // A malformed record can still declare an identity; do not exempt it from reuse checks.
+      if (
+        input &&
+        typeof input === "object" &&
+        "host" in input &&
+        input.host &&
+        typeof input.host === "object" &&
+        "sessionId" in input.host &&
+        typeof input.host.sessionId === "string"
+      ) {
+        const indices = sessions.get(input.host.sessionId) ?? new Set<number>();
+        indices.add(rows.length - 1);
+        sessions.set(input.host.sessionId, indices);
+      }
+      const parsed = reviewBenchmarkJudgmentResponseSchema.safeParse(input);
+      if (!parsed.success) continue;
+      const response = parsed.data,
+        packet = this.#judgePacket(manifest, book, evidence.blindId);
+      const isolation = response.host.isolation;
+      const host = {
+        client: response.host.client,
+        clientVersion: response.host.clientVersion,
+        provider: response.host.provider,
+        model: response.host.model,
+      };
+      if (
+        response.blindId !== packet.blindId ||
+        response.assignmentDigest !== packet.assignmentDigest ||
+        !equal(host, manifest.plan.judging!.host)
+      ) {
+        row.status = "foreign";
+        continue;
+      }
+      if (response.status !== "completed") {
+        row.status = response.output === null ? "incomplete" : "invalid";
+        continue;
+      }
+      const output = response.output;
+      if (!output) continue;
+      const expected = new Set(packet.claims.map((c) => c.claimId));
+      const citationsMatch = (citations: typeof output.citations) =>
+        citations.every((c) => {
+          const file = evidence.context.files.find((f) => f.path === c.file);
+          if (
+            !file ||
+            c.revision !== "current" ||
+            file.sha256 !== c.sourceDigest ||
+            c.endLine < c.startLine
+          )
+            return false;
+          const lines = file.content.split("\n");
+          return (
+            c.endLine <= lines.length &&
+            lines
+              .slice(c.startLine - 1, c.endLine)
+              .join("\n")
+              .includes(c.quote)
+          );
+        });
+      if (
+        !citationsMatch(output.citations) ||
+        (output.label !== "unresolved" && !output.citations.length)
+      )
+        continue;
+      let valid = true;
+      for (const claim of output.claims) {
+        if (
+          !expected.delete(claim.claimId) ||
+          !citationsMatch(claim.citations) ||
+          (claim.judgement !== "unresolved" && !claim.citations.length) ||
+          (claim.judgement === "supported" && output.label !== "defect")
+        )
+          valid = false;
+      }
+      if (!valid || expected.size) continue;
+      // A judgment against unusable review evidence cannot become an accepted finding disposition.
+      row.status =
+        isolation === "fresh" && evidence.status === "sealed-completed"
+          ? "accepted"
+          : "incomplete";
+    }
+    for (const [id, indices] of sessions)
+      if (forbidden.has(id) || indices.size > 1)
+        for (const index of indices) rows[index]!.status = "foreign";
+    return rows;
+  }
+  #judgmentArchive(root: string, manifest: Manifest) {
+    let bytes: Buffer;
+    try {
+      bytes = readPrivate(
+        path.join(root, "judgments-sealed.json"),
+        JUDGMENT_ARCHIVE_BYTES,
+      );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw error;
+    }
+    const archive = reviewBenchmarkJudgmentArchiveSchema.parse(decode(bytes));
+    const { book, collected, judgingDigest } = this.#judgeBook(root, manifest);
+    if (
+      archive.protocolDigest !== this.#reference.sha256 ||
+      archive.collectionDigest !== collected.sha256 ||
+      archive.judgingDigest !== judgingDigest ||
+      !equal(archive.judgments, this.#judgeIntakes(root, manifest, book))
+    )
+      throw new Error("Benchmark judgments or reached responses changed");
+    const accepted = archive.judgments.filter((j) => j.status === "accepted");
+    const resolved = accepted.filter((j) => {
+      const output = reviewBenchmarkJudgmentResponseSchema.parse(
+        decode(Buffer.from(j.responseBase64!, "base64")),
+      ).output!;
+      return (
+        output.label !== "unresolved" &&
+        output.claims.every((c) => c.judgement !== "unresolved")
+      );
+    }).length;
+    return {
+      archive,
+      sha256: sha(bytes),
+      summary: {
+        planned: archive.judgments.length,
+        accounted: archive.judgments.length,
+        accepted: accepted.length,
+        resolved,
+        archiveDigest: sha(bytes),
+      },
+    };
+  }
+  /** Operator-only fixed response path; no model execution or host authentication. */
+  judgeSetup(blindId: string) {
+    const { root, manifest } = this.#load();
+    if (this.#judgmentArchive(root, manifest))
+      throw new Error("Benchmark judging is closed after sealing");
+    const { book } = this.#judgeBook(root, manifest),
+      packet = this.#judgePacket(manifest, book, blindId);
+    return {
+      file: path.join(root, "judgments", `${blindId}.json`),
+      maxBytes: JUDGMENT_BYTES,
+      maxPacketBytes: JUDGE_PACKET_BYTES,
+      binding: { blindId, assignmentDigest: packet.assignmentDigest },
+    };
+  }
+  /** One anonymous judge assignment with no curator answers or sibling outputs. */
+  judgeWorkerCommand(input: unknown, allowSource: boolean, blindId: string) {
+    const command = reviewBenchmarkWorkerCommandSchema.parse(input),
+      { root, manifest } = this.#load();
+    const { book } = this.#judgeBook(root, manifest),
+      packet = this.#judgePacket(manifest, book, blindId);
+    const archive = this.#judgmentArchive(root, manifest);
+    if (command.operation === "packet") {
+      if (!allowSource)
+        throw new Error(
+          "Benchmark source disclosure requires operator startup authorization",
+        );
+      if (archive) throw new Error("Benchmark judging is closed after sealing");
+      return packet;
+    }
+    const row = archive?.archive.judgments.find((j) => j.blindId === blindId);
+    return reviewBenchmarkJudgeWorkerSummarySchema.parse({
+      schemaVersion: 1,
+      profile: manifest.plan.profile,
+      format: "review-benchmark-judge-worker-summary",
+      blindId,
+      state: archive ? "judgments-sealed" : "judging-prepared",
+      status: row?.status ?? null,
+      responseDigest: row?.responseDigest ?? null,
+      sourceIncluded: false,
+      claimsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      qualityAssessed: false,
+    });
+  }
+  /** Seal every predeclared judgment path, including rejected or absent raw responses. */
+  sealJudgments() {
+    const { root, manifest } = this.#load(),
+      { book, collected, judgingDigest } = this.#judgeBook(root, manifest);
+    if (existsSync(path.join(root, "judgments-sealed.json")))
+      throw new Error("Benchmark judgments already sealed");
+    const judgments = this.#judgeIntakes(root, manifest, book);
+    if (!equal(judgments, this.#judgeIntakes(root, manifest, book)))
+      throw new Error("Benchmark judgments changed during sealing");
+    writeNew(
+      path.join(root, "judgments-sealed.json"),
+      {
+        schemaVersion: 1,
+        protocolDigest: this.#reference.sha256,
+        collectionDigest: collected.sha256,
+        judgingDigest,
+        createdAt: new Date().toISOString(),
+        judgments,
+      },
+      JUDGMENT_ARCHIVE_BYTES,
+    );
+    return this.status();
+  }
   status() {
     const { root, manifest } = this.#load(),
       collected = this.#collection(root, manifest);
@@ -654,17 +980,21 @@ export class ReviewBenchmark {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
       }
     }
+    const judgments = this.#judgmentArchive(root, manifest);
     return reviewBenchmarkSummarySchema.parse({
       schemaVersion: 1,
       profile: manifest.plan.profile,
       format: "review-benchmark-summary",
       runId: manifest.runId,
       protocolDigest: this.#reference.sha256,
-      state: collected
-        ? judging
-          ? "judging-prepared"
-          : "collected"
-        : "frozen",
+      judgments: judgments?.summary ?? null,
+      state: judgments
+        ? "judgments-sealed"
+        : collected
+          ? judging
+            ? "judging-prepared"
+            : "collected"
+          : "frozen",
       planned: rows.length,
       accounted: collected ? rows.length : 0,
       completed: rows.filter((r) => r.status === "sealed-completed").length,
