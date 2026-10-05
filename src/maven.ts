@@ -146,13 +146,15 @@ export async function mavenTools(
       "Maven dependency manifest exceeds its bound",
     );
   const bytes = await readFile(manifest);
-  if (mavenHash(bytes) !== config.repositorySha256)
+  if (
+    bytes.length > 1024 * 1024 ||
+    mavenHash(bytes) !== config.repositorySha256
+  )
     throw new MavenPrerequisiteError(
       "Maven dependency manifest digest does not match",
     );
-  const pins = mavenRepositorySchema.parse(
-    JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
-  );
+  const manifestText = new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+    pins = mavenRepositorySchema.parse(JSON.parse(manifestText));
   await verifyMavenTree(distribution, mavenDistributionFiles);
   await verifyMavenTree(repository, pins.files);
   for (const name of ["launcher", "engine", "commons"]) {
@@ -167,7 +169,7 @@ export async function mavenTools(
         "Prepare the pinned JUnit Platform 6.1.3 observer dependencies",
       );
   }
-  return { distribution, repository, pins };
+  return { distribution, repository, pins, manifestText };
 }
 export async function mavenCheck(
   source: Inventory,

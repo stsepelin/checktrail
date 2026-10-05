@@ -258,5 +258,5 @@ The [Maven profile](MAVEN.md) reconciles a declared Java reactor, configured nat
 plugins, compiler inputs and source declarations, pinned test classpaths and fresh
 JUnit/Surefire evidence. Original native and installed CLI/MCP controls retain
 skips, empty tests, bootstrap/compile errors and partial reactor failures. Wrappers,
-Gradle, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt remain required;
+wider Maven/Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt remain required;
 this bounded Linux profile does not close E11 or Gate A.

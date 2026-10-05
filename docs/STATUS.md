@@ -15,6 +15,14 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Maven native packet version 2 now binds its exact temporary repository JAR set
+to the raw operator-pinned manifest and binds the native Maven client PID/home
+to the observed launcher and configured distribution. An original synthetic
+control reproduced a previously accepted invented JAR/classpath pair.
+[The repaired-profile record](measurements/maven-closure-2026-10-06.json) retains
+the source pins, compiling mutations and native/installed acceptance; this
+closes that evidence gap, while E11 and Gate A remain open.
+
 Opt-in [Gradle tests](GRADLE.md) now run declared Java modules with Groovy or
 Kotlin DSL scripts from fresh source/output/home and pinned artifact copies.
 Native task/source/JUnit/XML evidence binds complete participation and test

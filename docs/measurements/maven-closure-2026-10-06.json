@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T21:13:23.885628+00:00",
+  "basedOn": "d579f08de2fe04de9fc6807c3625577a6cfd3bb9",
+  "scope": "Original synthetic Maven packet manifest/JAR closure and native client/distribution binding. Required Maven, Gradle and preserved Java profiles repeat at this source revision. E11 remains partial; Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "9fa2ab204c3cfa696e860c4a604a811e0d6d247553919c0a1e429cc2fe4b039d"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "f242ee21380d91e58b43f951c7cd369b00e32fc26d57a8503ec3e9be2d76292f"
+    },
+    {
+      "file": "docs/MAVEN.md",
+      "sha256": "c52016f2b8c02e1206f29a865d919ae2237b92d11c59f31f388b7ca2d1bcd256"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "2adbb068069318b71c0b083c697d294c48a798bfcff58f7b4d1b9b83cc771057"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "scripts/gradle-tools.Dockerfile",
+      "sha256": "d70036e30f32e2437d99826b8709226138c343f8793e57d83a4b5d1b6f6d3905"
+    },
+    {
+      "file": "scripts/maven-tools.Dockerfile",
+      "sha256": "14098704784809769e4eac0bf9a1265db44f4b6bc29528de304e18c875c24f25"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "a4455420f8534f24099b0bffcdafc33f20682d7202f426757342db036dd544f8"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "scripts/verify-gradle-container.mjs",
+      "sha256": "193fd31ca400e91f7a65642cd028e1d7a4e330a8ef1ea95ea9ddf86fd3d95a90"
+    },
+    {
+      "file": "scripts/verify-gradle-package.mjs",
+      "sha256": "429baac5ff329d78f822895271ceacb788302f1e1ad002c2160aea0911a94c34"
+    },
+    {
+      "file": "scripts/verify-maven-container.mjs",
+      "sha256": "652433e231356649971f94c6beb87b1330a360e4d6e5c160d91806ad390ad8f4"
+    },
+    {
+      "file": "scripts/verify-maven-package.mjs",
+      "sha256": "65684ee13d20104a750d14b20fee3104a9c97cac901cb6ce81daafb4b987d5d4"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "05c42be60b9a2d466dfb56fa98750cadad0f2b608a911fa356c4e7c3a5238633"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "9b618c20012384c5bc7ba74cf6d098ec4c6492cdb21295e20d690cbf2cba6879"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ea441a06244c0ed43f3c6bde63aad6c72e53ec5f94699a825b8442d969e7512e"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "2da907fe5afab4a59b0e38d93eac15ada50fd60a709d6927517dfc05420bc1a8"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "ef41126f5fee6ea69ae8bc8c902bc36e78b021c8b822cff51fab337ecbecde79"
+    },
+    {
+      "file": "test/gradle-builds.test.ts",
+      "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+    },
+    {
+      "file": "test/gradle-fixture.ts",
+      "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+    },
+    {
+      "file": "test/gradle-surfaces.test.ts",
+      "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+    },
+    {
+      "file": "test/gradle.test.ts",
+      "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+    },
+    {
+      "file": "test/maven-fixture.ts",
+      "sha256": "b2156610a7902d3010e13587ed57ead21408414df24e787d2746a3d7993cae5a"
+    },
+    {
+      "file": "test/maven-surfaces.test.ts",
+      "sha256": "1c2b23d035830b5a8a635dc5ab9ad5122080b92ae73b3b9ed1503409ace07654"
+    },
+    {
+      "file": "test/maven.test.ts",
+      "sha256": "1b335e7ada281fb62269b1787ccf3964dbcd429e617b4a0c4b8c7e5d1bef0bac"
+    }
+  ],
+  "engineRuntimeDigest": "c7fa714a75d57c66f7db938e6a636870298ab72ac03c2b045577eb87f9fa8d1e",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration. Full dependency/native/container artifact authentication and license closure remain open.",
+  "beforeFix": {
+    "basedOn": "d579f08de2fe04de9fc6807c3625577a6cfd3bb9",
+    "control": "Append an invented JAR inside the fresh repository to the native packet artifact list and testCompile classpath. The parser incorrectly retains passed.",
+    "observed": {
+      "original": "passed",
+      "forgedArtifact": "passed",
+      "sourceDefectReproduced": true
+    }
+  },
+  "nativePacketVersion": 2,
+  "manifestClosure": "The raw repository manifest digest matches operator configuration; every absolute native JAR path must match the exact JAR set derived from that manifest. Extra, omitted and duplicate JARs cannot widen the allowed classpath.",
+  "clientBinding": "The native EventSpy init PID equals spawnSync launcher PID, and native Maven home equals the configured verified distribution. No hostile packet attestation or containment is established.",
+  "publicContainerBuilds": {
+    "maven": {
+      "image": "sha256:c7bba56d0965aef2fdf0d38e67b8b202bdeb35bf40ca4a362e189435df0e2014",
+      "architecture": "arm64",
+      "os": "linux",
+      "task": "checktrail-maven-closure-1005",
+      "publicDockerfile": true
+    },
+    "gradle": {
+      "image": "sha256:3cddaafe8ce5e512a413fbc275a72230e9b8502c2b3f7c619a82f25cbfdcd1e4",
+      "architecture": "arm64",
+      "os": "linux",
+      "publicDockerfile": true,
+      "task": "checktrail-maven-closure-1005"
+    }
+  },
+  "mavenAcceptance": {
+    "image": "sha256:c7bba56d0965aef2fdf0d38e67b8b202bdeb35bf40ca4a362e189435df0e2014",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "maven": "Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)\nMaven home: /opt/checktrail/maven\nJava version: 25.0.4, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en_US, platform encoding: UTF-8, time zone: GMT\nOS name: \"linux\", version: \"7.0.14-orbstack-00380-ga7e0a2dc9535\", arch: \"aarch64\", family: \"unix\""
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "maven",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "a11fcb5aa5538b345c52dfc1f99ec61beeef991a6b38ef9d715c4db9b0cc6bae",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "maven",
+        "passed": 11,
+        "required": 11,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:c7bba56d0965aef2fdf0d38e67b8b202bdeb35bf40ca4a362e189435df0e2014",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 154473,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "evaluatedPackageScope": "The evaluated tarball was packed before this measurement file was added. Its digest does not identify a later tarball containing this receipt."
+  },
+  "preservedGradleAcceptance": {
+    "image": "sha256:3cddaafe8ce5e512a413fbc275a72230e9b8502c2b3f7c619a82f25cbfdcd1e4",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "gradle": "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 7.0.14-orbstack-00380-ga7e0a2dc9535 aarch64"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "gradle",
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "a11fcb5aa5538b345c52dfc1f99ec61beeef991a6b38ef9d715c4db9b0cc6bae",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "gradle",
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:3cddaafe8ce5e512a413fbc275a72230e9b8502c2b3f7c619a82f25cbfdcd1e4",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 322333,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "evaluatedPackageScope": "The evaluated tarball was packed before this measurement file was added. Its digest does not identify a later tarball containing this receipt."
+  },
+  "compilingMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Pinned Maven repository manifest receipt",
+        "file": "src/maven-evidence.ts",
+        "sourceSha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931",
+        "mutationSourceSha256": "557ed4a1c2d201b0f0b934e3a39ce57478884c69cce8c5ef328b21595e9783a4",
+        "compiled": true,
+        "intendedAssertion": "repository manifest bytes changed",
+        "exitCode": 1,
+        "logSha256": "bc1eaf0bd6bfb8e1a47e7372a2ab0bdc9c52df345979405932e1c361f4c83bcf",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/maven.test.ts",
+            "sha256": "1b335e7ada281fb62269b1787ccf3964dbcd429e617b4a0c4b8c7e5d1bef0bac"
+          }
+        ],
+        "durationMs": 3732
+      },
+      {
+        "guard": "Exact Maven native artifact closure",
+        "file": "src/maven-evidence.ts",
+        "sourceSha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931",
+        "mutationSourceSha256": "d0411482c2f4de86ac227b57e1c11157eee7330ff19586d848229f754ec10c46",
+        "compiled": true,
+        "intendedAssertion": "unpinned repository JAR invents an allowed classpath",
+        "exitCode": 1,
+        "logSha256": "7372027082aff140c300fad3fdc6d6700ab13ecead6e6b13f4004da7903cb37b",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/maven.test.ts",
+            "sha256": "1b335e7ada281fb62269b1787ccf3964dbcd429e617b4a0c4b8c7e5d1bef0bac"
+          }
+        ],
+        "durationMs": 3697
+      },
+      {
+        "guard": "Configured native Maven distribution",
+        "file": "src/maven-evidence.ts",
+        "sourceSha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931",
+        "mutationSourceSha256": "c35ab203635fbe3239d54183f9bc3ce3715bc3d556fe24e956fe7f6eb1e2c249",
+        "compiled": true,
+        "intendedAssertion": "wrong configured distribution",
+        "exitCode": 1,
+        "logSha256": "9679a4bc98b7cf8a8808eab84a1e797a32acf4af946c26342af309880122b1e4",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/maven.test.ts",
+            "sha256": "1b335e7ada281fb62269b1787ccf3964dbcd429e617b4a0c4b8c7e5d1bef0bac"
+          }
+        ],
+        "durationMs": 3789
+      },
+      {
+        "guard": "Owned native Maven client and distribution",
+        "file": "src/maven-evidence.ts",
+        "sourceSha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931",
+        "mutationSourceSha256": "b403a5949f46a9fc8273d3068b252df1704458ff2b284cd5ebc1ebaee5d2d07e",
+        "compiled": true,
+        "intendedAssertion": "different native Maven client",
+        "exitCode": 1,
+        "logSha256": "edea97e82551c09dc4749bb414048fd214adb431d31262bd0a64004943aeddc8",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/maven.test.ts",
+            "sha256": "1b335e7ada281fb62269b1787ccf3964dbcd429e617b4a0c4b8c7e5d1bef0bac"
+          }
+        ],
+        "durationMs": 3685
+      }
+    ]
+  },
+  "fullCheck": {
+    "complete": true,
+    "fullCheck": {
+      "tests": 664,
+      "pass": 550,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 114,
+      "todo": 0
+    },
+    "wholeTreeFormatPassed": true,
+    "directChangedFileLintPassed": true,
+    "diffCheckPassed": true,
+    "durationMs": 48322
+  },
+  "limits": {
+    "otherRequiredNativeProfilesVerifiedAtThisRevision": false,
+    "widerMavenGradleWrappersKotlinScalaGeneratedJpmsSpotbugsDetektVerified": false,
+    "fullNativeResourceRawOutputAndProvenanceAuditCompleted": false,
+    "representativeProjectPerformanceMeasured": false,
+    "publisherSignatureOrCompleteLicenseClosureVerified": false,
+    "engineRuntimeDigestCoversFullToolchain": false,
+    "hostilePacketOrFilesystemAttestationEstablished": false,
+    "detachedMaliciousProcessContainmentEstablished": false,
+    "projectPluginNetworkingContainedByEngine": false,
+    "windowsVerified": false,
+    "hostedCiExecuted": false,
+    "hostSessionIndependenceEstablished": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

@@ -1,7 +1,11 @@
 import path from "node:path";
 import { z } from "zod";
 import { importJUnit } from "./junit.js";
-import { mavenHash, mavenInvocationSchema } from "./maven.js";
+import {
+  mavenHash,
+  mavenInvocationSchema,
+  mavenRepositorySchema,
+} from "./maven.js";
 import type {
   Check,
   CheckResult,
@@ -51,10 +55,16 @@ const nodeSchema = z.strictObject({
   failure: z.string().nullable().optional(),
 });
 const schema = z.strictObject({
-  version: z.literal(1),
+  version: z.literal(2),
   inputSha256: z.string().regex(/^[a-f0-9]{64}$/),
   runtime: z.literal("25.0.4+7-LTS"),
   maven: z.literal("3.10.0"),
+  launcherPid: z.number().int().min(1),
+  distribution: z.string().min(1).max(8192),
+  repositoryManifest: z
+    .string()
+    .min(1)
+    .max(1024 * 1024),
   workspace: z.string(),
   artifacts: z.array(z.string()).min(1).max(4096),
   exitCode: z.number().int().min(0).max(255),
@@ -174,6 +184,15 @@ export function mavenEvidence(
       ),
       "Planned source scope",
     );
+    assertEvidence(
+      data.distribution ===
+        path.resolve(
+          check.commands[0]!.args[1]!,
+          check.project,
+          invocation.config.distribution,
+        ),
+      "Configured native Maven distribution",
+    );
     const events = data.events,
       ofType = (type: string) => events.filter((event) => event.type === type);
     assertEvidence(
@@ -182,6 +201,11 @@ export function mavenEvidence(
         ofType("init").length === 1 &&
         ofType("close").length === 1,
       "Collector lifecycle",
+    );
+    assertEvidence(
+      events[0]!.processId === data.launcherPid &&
+        events[0]!.home === data.distribution,
+      "Owned native Maven client and distribution",
     );
     assertEvidence(
       ofType("SessionStarted").length === 1 &&
@@ -215,6 +239,26 @@ export function mavenEvidence(
       "Collected module identities",
     );
     const repository = path.join(path.dirname(data.workspace), "repository");
+    assertEvidence(
+      Buffer.byteLength(data.repositoryManifest) <= 1024 * 1024 &&
+        mavenHash(data.repositoryManifest) ===
+          invocation.config.repositorySha256,
+      "Pinned Maven repository manifest receipt",
+    );
+    const artifactPins = mavenRepositorySchema.parse(
+      JSON.parse(data.repositoryManifest),
+    );
+    assertEvidence(
+      new Set(artifactPins.files.map((item) => item.path)).size ===
+        artifactPins.files.length &&
+        same(
+          data.artifacts,
+          artifactPins.files
+            .filter((item) => item.path.endsWith(".jar"))
+            .map((item) => path.join(repository, item.path)),
+        ),
+      "Exact Maven native artifact closure",
+    );
     assertEvidence(
       new Set(data.artifacts).size === data.artifacts.length &&
         data.artifacts.every(

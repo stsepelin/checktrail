@@ -276,7 +276,67 @@ test(
       check = plan.checks[0]!,
       original = report.checks[0]!.processes[0]!;
     const data = JSON.parse(original.stdout);
+    assert.equal(data.version, 2);
+    assert.equal(
+      mavenHash(data.repositoryManifest),
+      JSON.parse(check.commands[0]!.args[2]!).config.repositorySha256,
+    );
+    assert.equal(data.events[0].processId, data.launcherPid);
+    assert.equal(data.events[0].home, data.distribution);
     const changes: [string, (value: typeof data) => void][] = [
+      [
+        "repository manifest bytes changed",
+        (v) => {
+          v.repositoryManifest += "\n";
+        },
+      ],
+      [
+        "unpinned repository JAR invents an allowed classpath",
+        (v) => {
+          const invented = path.join(
+            path.dirname(v.workspace),
+            "repository/invented/never-pinned.jar",
+          );
+          v.artifacts.push(invented);
+          v.events
+            .find(
+              (e: { type: string; goal: string }) =>
+                e.type === "beforeMojo" && e.goal === "testCompile",
+            )
+            .classPath.push(invented);
+        },
+      ],
+      [
+        "pinned repository JAR omitted",
+        (v) => {
+          v.artifacts.pop();
+        },
+      ],
+      [
+        "pinned repository JAR duplicated",
+        (v) => {
+          v.artifacts.push(v.artifacts[0]);
+        },
+      ],
+      [
+        "wrong configured distribution",
+        (v) => {
+          v.distribution += "-other";
+          v.events[0].home = v.distribution;
+        },
+      ],
+      [
+        "different native Maven client",
+        (v) => {
+          v.events[0].processId += 1;
+        },
+      ],
+      [
+        "different native Maven home",
+        (v) => {
+          v.events[0].home += "-other";
+        },
+      ],
       [
         "unknown native event",
         (v) => {

@@ -262,10 +262,13 @@ async function main() {
     await mavenTools(root, project, invocation.config);
     process.stdout.write(
       JSON.stringify({
-        version: 1,
+        version: 2,
         inputSha256: mavenHash(JSON.stringify(invocation.inputs)),
         runtime: "25.0.4+7-LTS",
         maven: "3.10.0",
+        launcherPid: result.pid,
+        distribution: tools.distribution,
+        repositoryManifest: tools.manifestText,
         workspace,
         artifacts: jars,
         exitCode: result.status,

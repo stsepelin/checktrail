@@ -40,7 +40,7 @@ public class VerifierMavenObserver implements EventSpy, MojoExecutionListener {
     } catch(Exception failure){throw new IllegalStateException("Maven event collection failed",failure);}
   }
   static Map<String,Object> event(String type) {Map<String,Object> result=new LinkedHashMap<>();result.put("type",type);return result;}
-  public void init(Context context){emit(event("init"));}
+  public void init(Context context){var value=event("init");value.put("processId",ProcessHandle.current().pid());value.put("home",System.getProperty("maven.home"));emit(value);}
   public void onEvent(Object input) {
     if(!(input instanceof ExecutionEvent e))return;
     Map<String,Object> value=event(e.getType().name());

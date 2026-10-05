@@ -99,7 +99,12 @@ objects. The admitted lifecycle has exactly the resources, compile,
 test-resources, test-compile and test goals with their pinned plugin versions.
 Compiler roots, fresh native input lists, output paths, UTF-8, javac selection,
 filters, skips and compiler arguments must reconcile. Resolved classpaths must
-remain in the declared reactor outputs or pinned temporary repository.
+remain in the declared reactor outputs or the exact JAR set from the pinned
+repository manifest. Internal packet version 2 retains the raw manifest bytes,
+binds their digest to configuration and rejects invented, omitted or duplicate
+JAR paths. The native observer also binds Maven home and its process ID to the
+configured distribution and the runner's observed client PID. These identity
+checks do not attest hostile project-generated packets or establish containment.
 
 A service-loaded JUnit listener records discovery, dynamic registration, starts,
 skips, terminal outcomes and plan completion. Test classes must originate in the
@@ -128,7 +133,10 @@ The exact `maven` profile in `scripts/required-native-tests.json` identifies the
 original native, planning, integrity, reactor, protocol and cancellation controls.
 Installed-package acceptance re-runs those controls with the official SDK client
 outside the shipped production package. The local record is
-[the source-bound measurement](measurements/maven-native-2026-10-05.json).
+[the initial source-bound measurement](measurements/maven-native-2026-10-05.json).
+[The manifest-closure record](measurements/maven-closure-2026-10-06.json) binds
+the repaired parser, native/installed controls and compiling guard mutations at
+the later measured revision. Earlier receipts remain historical evidence.
 The separate configured hosted job has not been run at this revision.
 
 The controls include broken/repaired assertions, boundary inputs, missing test
@@ -138,7 +146,7 @@ state, invalid native packets and observed running-test cancellation. They do no
 establish every JUnit extension, inheritance, nested class, class loader, compiler
 option, framework guard or language behavior.
 
-E11 remains partial. Maven wrappers and wider profiles, Gradle tests, generated
+E11 remains partial. Maven wrappers and wider Maven/Gradle profiles, generated
 and JPMS scope, explicit Kotlin/Scala, SpotBugs and detekt remain required.
 Broader native/runtime/client/platform profiles, full provenance, host isolation,
 representative performance and the other reviewer tasks remain open. Gate A is
