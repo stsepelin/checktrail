@@ -1257,6 +1257,38 @@
     {
       "file": "dist/test/review-workflow-audit.test.js",
       "name": "workflow audit reconciles serialized assignment ledgers and prevents disappearing history even with recomputed chains"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit native receipts survive early closure incomplete budgets runtime failure output limits and retention rejection without adjudication"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit native receipts reconcile candidate recipe case source and accounting bindings after recomputed chains"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit native receipt storage loss withholds results and leaves pending intent without a false complete archive"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit reads legacy journals without inventing complete native receipts and rejects mixed epoch versions"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit native receipts retain timeout and post-execution stale evidence with cleanup"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit concurrent native receipts remain bound to their own commands and candidate handles"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow audit rejected response and probe replays preserve the first accepted candidate and receipt"
+    },
+    {
+      "file": "dist/test/review-workflow-audit.test.js",
+      "name": "workflow native receipt observers receive detached evidence and failure closes the workflow without erasing reached accounting"
     }
   ]
 }

@@ -6,7 +6,8 @@ export const reviewWorkflowAuditOptionsSchema = z.strictObject({
   maxEvents: z.number().int().min(0).max(4096).default(1024),
 });
 export const reviewWorkflowAuditSummarySchema = z.strictObject({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
+  journalVersion: z.union([z.literal(1), z.literal(2)]),
   format: z.literal("review-workflow-audit-summary"),
   epochId: z.string().uuid(),
   engineVersion: z.string().min(1).max(128),
@@ -22,6 +23,11 @@ export const reviewWorkflowAuditSummarySchema = z.strictObject({
   digest: z.string().regex(/^[a-f0-9]{64}$/),
   allCommandBodiesRetained: z.boolean(),
   nativeAccountingComplete: z.boolean(),
+  nativeReceipts: z.strictObject({
+    retained: z.number().int().nonnegative().max(16),
+    complete: z.boolean(),
+    rawOutputIncluded: z.literal(false),
+  }),
   commands: z.strictObject({
     started: z.number().int().nonnegative().max(2048),
     finished: z.number().int().nonnegative().max(2048),

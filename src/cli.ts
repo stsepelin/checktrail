@@ -405,6 +405,7 @@ async function main(): Promise<void> {
     if (
       audit.journalStatus !== "sealed" ||
       !audit.nativeAccountingComplete ||
+      !audit.nativeReceipts.complete ||
       !audit.allCommandBodiesRetained ||
       !audit.commands.started ||
       audit.workflows.some(

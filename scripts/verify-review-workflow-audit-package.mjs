@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { createHash, randomUUID } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
 import {
@@ -338,6 +339,25 @@ try {
       assert.equal(audit.commands.started, 9);
       assert.equal(audit.commands.pending, 0);
       assert.equal(audit.nativeAccountingComplete, true);
+      assert.equal(audit.journalVersion, 2);
+      assert.deepEqual(audit.nativeReceipts, {
+        retained: 1,
+        complete: true,
+        rawOutputIncluded: false,
+      });
+      const events = readFileSync(file, "utf8")
+        .trimEnd()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+      const receipt = events.find((event) => event.body.nativeReceipt)?.body
+        .nativeReceipt;
+      assert.ok(receipt);
+      assert.deepEqual(receipt.recipe, pinned);
+      assert.deepEqual(receipt.candidate, target);
+      assert.equal(receipt.run.trials.length, 3);
+      assert.equal(receipt.run.trials[1].actual, true);
+      assert.equal(receipt.run.nativeBudget.calls, 3);
+      assert.equal(receipt.run.temporaryArtifacts, "removed");
       assert.equal(audit.allCommandBodiesRetained, true);
       assert.equal(audit.externallyAnchored, false);
       return [
@@ -348,6 +368,7 @@ try {
           sealed: true,
           rawCommandBodiesRetained: true,
           nativeAccountingComplete: true,
+          nativeReceipts: audit.nativeReceipts,
           claimsVerified: false,
           hostIsolationVerified: false,
         },

@@ -20,6 +20,8 @@ import { createInterface } from "node:readline";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { fileURLToPath } from "node:url";
+import { createReviewContext } from "../src/review.js";
+import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import { ReviewWorkflowSession } from "../src/review-workflow-session.js";
 import { inspectReviewWorkflowAudit } from "../src/review-workflow-audit.js";
 import {
@@ -39,7 +41,7 @@ async function auditFile(t: Parameters<typeof setup>[0]) {
   t.after(() => rm(directory, { recursive: true, force: true }));
   return { directory, file: path.join(directory, "epoch.jsonl") };
 }
-async function open(session: ReviewWorkflowSession) {
+async function open(session: Pick<ReviewWorkflowSession, "command">) {
   return summary(
     await session.command({
       operation: "open",
@@ -48,7 +50,7 @@ async function open(session: ReviewWorkflowSession) {
   );
 }
 async function prepare(
-  session: ReviewWorkflowSession,
+  session: Pick<ReviewWorkflowSession, "command">,
   target: Parameters<typeof response>[1],
 ) {
   const opened = await open(session);
@@ -570,6 +572,18 @@ test("workflow audit disposal waits for native cleanup accounting before finaliz
         Buffer.byteLength("original-audit-ready\n"),
     );
     assert.equal(terminal.workflows[0]!.retainedBytes, 0);
+    assert.deepEqual(terminal.nativeReceipts, {
+      retained: 1,
+      complete: true,
+      rawOutputIncluded: false,
+    });
+    const receipt = (await records(file)).find((e) => e.body.nativeReceipt)!
+      .body.nativeReceipt;
+    assert.equal(receipt.run.status, "cancelled");
+    assert.equal(receipt.run.trials[0].reason, "cancelled");
+    assert.equal(receipt.run.trials[1].status, "not-run");
+    assert.equal(receipt.run.nativeBudget.calls, 1);
+    assert.equal(receipt.run.temporaryArtifacts, "removed");
   } finally {
     session.dispose();
   }
@@ -840,4 +854,551 @@ test("workflow audit reconciles serialized assignment ledgers and prevents disap
     assert.throws(() => inspectReviewWorkflowAudit(invalid));
   }
   assert.equal(inspectReviewWorkflowAudit(file).journalStatus, "sealed");
+});
+
+async function records(file: string) {
+  return (await readFile(file, "utf8"))
+    .trimEnd()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+}
+async function rewriteRecords(
+  file: string,
+  events: Awaited<ReturnType<typeof records>>,
+) {
+  let previous: string | null = null;
+  for (const [i, event] of events.entries()) {
+    event.sequence = i;
+    event.previous = previous;
+    const { digest: old, ...base } = event;
+    assert.ok(old);
+    event.digest = digest(JSON.stringify(base));
+    previous = event.digest;
+  }
+  await writeFile(
+    file,
+    events.map((e) => JSON.stringify(e)).join("\n") + "\n",
+    { mode: 0o600 },
+  );
+}
+
+test("workflow audit native receipts survive early closure incomplete budgets runtime failure output limits and retention rejection without adjudication", async (t) => {
+  for (const variant of [
+    "broken",
+    "fixed",
+    "zero",
+    "partial",
+    "runtime",
+    "output",
+    "retention",
+  ] as const) {
+    const { file } = await auditFile(t);
+    const source =
+      variant === "fixed"
+        ? 'export function decision(name){return name.startsWith("grant:");}\n'
+        : variant === "runtime"
+          ? 'export function decision(name){throw new Error("OriginalRuntimeCanary"+name);}\n'
+          : variant === "output"
+            ? 'export function decision(name){process.stdout.write("OriginalOutputCanary".repeat(10000));return name.startsWith("grant");}\n'
+            : undefined;
+    const { root, target } = await setup(t, source);
+    const pinned = pin();
+    if (variant === "retention") {
+      pinned.contents += " ".repeat(48000);
+      pinned.sha256 = digest(pinned.contents);
+    }
+    const session = new ReviewWorkflowSession(root, {
+      allowReviewSource: true,
+      trusted: true,
+      probes: [pinned],
+      audit: { file },
+      ...(variant === "zero" || variant === "partial"
+        ? {
+            nativeBudget: {
+              maxCalls: variant === "zero" ? 0 : 1,
+              maxOutputBytes: 65536,
+            },
+          }
+        : {}),
+      ...(variant === "output" ? { maxNativeOutputBytes: 128 } : {}),
+      ...(variant === "retention"
+        ? {
+            limits: {
+              maxWorkflows: 8,
+              maxAssignments: 6,
+              wallMs: 900000,
+              maxPacketBytes: 524288,
+              maxResponseBytes: 131072,
+              maxRetainedBytes: 40000,
+            },
+          }
+        : {}),
+    });
+    let result;
+    try {
+      const { id } = await prepare(session, [target]);
+      result = summary(
+        await session.command({
+          operation: "probe",
+          workflowId: id,
+          probeId: recipe.id,
+        }),
+      );
+      if (variant === "retention")
+        assert.equal(result.stopReason, "retention-limit");
+      else if (variant === "broken" || variant === "fixed")
+        assert.equal(result.nextStage, "adjudicator");
+      else assert.equal(result.disposition, "not-complete");
+    } finally {
+      session.dispose();
+    }
+    const inspected = inspectReviewWorkflowAudit(file);
+    assert.equal(inspected.schemaVersion, 2);
+    assert.equal(inspected.journalVersion, 2);
+    assert.deepEqual(inspected.nativeReceipts, {
+      retained: 1,
+      complete: true,
+      rawOutputIncluded: false,
+    });
+    const events = await records(file);
+    const receipt = events.find((e) => e.body.nativeReceipt)?.body
+      .nativeReceipt;
+    assert.ok(receipt, variant);
+    assert.equal(receipt.run.trials.length, 3);
+    assert.equal(receipt.run.nativeBudget.calls, result!.native.calls);
+    assert.equal(
+      receipt.run.nativeBudget.outputBytes,
+      result!.native.outputBytes,
+    );
+    assert.deepEqual(receipt.candidate, target);
+    assert.deepEqual(receipt.recipe, pinned);
+    assert.equal(
+      events.some((e) => e.body.result?.stage === "adjudicator"),
+      false,
+    );
+    assert.equal(inspected.workflows[0]!.native.rawEvidenceRetained, false);
+    if (variant === "broken" || variant === "fixed") {
+      assert.equal(receipt.run.status, "completed");
+      assert.equal(
+        receipt.run.behavior,
+        variant === "broken" ? "violated" : "satisfied",
+      );
+    } else if (variant === "zero" || variant === "partial") {
+      assert.equal(receipt.run.counts.notRun, variant === "zero" ? 3 : 2);
+      assert.equal(
+        receipt.run.trials.find(
+          (trial: { status: string }) => trial.status === "not-run",
+        ).reason,
+        "call-limit",
+      );
+      assert.equal(receipt.run.trials.at(-1).reason, "not-started");
+    } else if (variant === "output") {
+      assert.equal(receipt.run.trials[0].execution.truncated, true);
+      assert.ok(receipt.run.nativeBudget.outputBytes > 128);
+    }
+    assert.equal(
+      JSON.stringify(inspected).includes("OriginalRuntimeCanary"),
+      false,
+    );
+    assert.equal(JSON.stringify(inspected).includes("subject.mjs"), false);
+  }
+});
+
+test("workflow audit native receipts reconcile candidate recipe case source and accounting bindings after recomputed chains", async (t) => {
+  const { root, target } = await setup(t),
+    { file, directory } = await auditFile(t);
+  const session = new ReviewWorkflowSession(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+    audit: { file },
+  });
+  try {
+    const { id } = await prepare(session, [target]);
+    await session.command({
+      operation: "probe",
+      workflowId: id,
+      probeId: recipe.id,
+    });
+  } finally {
+    session.dispose();
+  }
+  const original = await records(file);
+  const index = original.findIndex((e) => e.body.nativeReceipt);
+  assert.ok(index > 0);
+  for (const mutate of [
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt = null;
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.contextDigest = "0".repeat(64);
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.sourceDigest = "0".repeat(64);
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.runtime.version = "0.0.0";
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.engineVersion = "original-unknown-engine";
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.targetHandle = randomUUID();
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.probeId = "OtherProbe";
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.trials.reverse();
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.nativeBudget.outputBytes++;
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.run.nativeBudget.limits.maxCalls++;
+    },
+    (body: (typeof original)[number]["body"]) => {
+      body.nativeReceipt.candidate.claim = "OriginalSubstitutedClaim";
+      body.nativeReceipt.run.candidateDigest = digest(
+        JSON.stringify(body.nativeReceipt.candidate),
+      );
+    },
+    (body: (typeof original)[number]["body"]) => {
+      const altered = JSON.parse(body.nativeReceipt.recipe.contents);
+      altered.cases[1].args = ["grant:read"];
+      body.nativeReceipt.recipe.contents = JSON.stringify(altered);
+      body.nativeReceipt.recipe.sha256 = digest(
+        body.nativeReceipt.recipe.contents,
+      );
+      body.nativeReceipt.run.recipeDigest = body.nativeReceipt.recipe.sha256;
+    },
+  ]) {
+    const events = structuredClone(original);
+    mutate(events[index]!.body);
+    const altered = path.join(directory, "altered.jsonl");
+    await rewriteRecords(altered, events);
+    assert.throws(() => inspectReviewWorkflowAudit(altered));
+  }
+  // Moving valid evidence to another command is not a native receipt for that command.
+  const moved = structuredClone(original);
+  moved[index - 2]!.body.nativeReceipt = moved[index]!.body.nativeReceipt;
+  moved[index]!.body.nativeReceipt = null;
+  const altered = path.join(directory, "moved.jsonl");
+  await rewriteRecords(altered, moved);
+  assert.throws(() => inspectReviewWorkflowAudit(altered));
+  assert.equal(inspectReviewWorkflowAudit(file).nativeReceipts.complete, true);
+});
+
+test("workflow audit native receipt storage loss withholds results and leaves pending intent without a false complete archive", async (t) => {
+  const { file } = await auditFile(t);
+  const code = `export function decision(name){process.getBuiltinModule('node:fs').chmodSync(${JSON.stringify(file)},0o640);return name.startsWith('grant');}\n`;
+  const { root, target } = await setup(t, code);
+  const session = new ReviewWorkflowSession(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+    audit: { file },
+  });
+  try {
+    const { id } = await prepare(session, [target]);
+    await assert.rejects(
+      session.command({
+        operation: "probe",
+        workflowId: id,
+        probeId: recipe.id,
+      }),
+    );
+    await assert.rejects(
+      session.command({ operation: "status", workflowId: id }),
+    );
+  } finally {
+    session.dispose();
+    await chmod(file, 0o600);
+  }
+  const inspected = inspectReviewWorkflowAudit(file);
+  assert.equal(inspected.journalStatus, "interrupted");
+  assert.equal(inspected.commands.pending, 1);
+  assert.equal(inspected.nativeAccountingComplete, false);
+  assert.deepEqual(inspected.nativeReceipts, {
+    retained: 0,
+    complete: false,
+    rawOutputIncluded: false,
+  });
+  assert.equal((await records(file)).at(-1)!.body.operation, "probe");
+});
+
+test("workflow audit reads legacy journals without inventing complete native receipts and rejects mixed epoch versions", async (t) => {
+  const { root, target } = await setup(t),
+    { file, directory } = await auditFile(t);
+  const session = new ReviewWorkflowSession(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+    audit: { file },
+  });
+  try {
+    const { id } = await prepare(session, [target]);
+    await session.command({
+      operation: "probe",
+      workflowId: id,
+      probeId: recipe.id,
+    });
+  } finally {
+    session.dispose();
+  }
+  const original = await records(file);
+  const legacy = structuredClone(original);
+  for (const event of legacy) {
+    event.schemaVersion = 1;
+    if (event.body.kind === "finish") delete event.body.nativeReceipt;
+  }
+  const legacyFile = path.join(directory, "legacy.jsonl");
+  await rewriteRecords(legacyFile, legacy);
+  const inspected = inspectReviewWorkflowAudit(legacyFile);
+  assert.equal(inspected.journalVersion, 1);
+  assert.equal(inspected.nativeAccountingComplete, true);
+  assert.deepEqual(inspected.nativeReceipts, {
+    retained: 0,
+    complete: false,
+    rawOutputIncluded: false,
+  });
+  const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
+  const result = spawnSync(
+    process.execPath,
+    [cli, "review-audit", "--input", legacyFile],
+    { encoding: "utf8" },
+  );
+  assert.equal(result.status, 2);
+  assert.equal(JSON.parse(result.stdout).nativeReceipts.complete, false);
+  legacy.at(-1)!.schemaVersion = 2;
+  const mixed = path.join(directory, "mixed.jsonl");
+  await rewriteRecords(mixed, legacy);
+  assert.throws(() => inspectReviewWorkflowAudit(mixed));
+});
+
+test("workflow audit native receipts retain timeout and post-execution stale evidence with cleanup", async (t) => {
+  for (const variant of ["timeout", "stale"] as const) {
+    const { root, target, context } = await setup(t),
+      { file } = await auditFile(t);
+    const code =
+      variant === "timeout"
+        ? "export async function decision(){await new Promise(()=>{setInterval(()=>{},1000)});return false;}\n"
+        : `export function decision(name){process.getBuiltinModule('node:fs').writeFileSync(${JSON.stringify(path.join(root, "subject.mjs"))},'export function decision(){return false;}\\n');return name.startsWith('grant');}\n`;
+    await writeFile(path.join(root, "subject.mjs"), code);
+    const revised = await createReviewContext(root, context.selection);
+    await writeFile(
+      path.join(root, ".checktrail/context.json"),
+      JSON.stringify(revised),
+    );
+    target.citations[0]!.sourceDigest = revised.files[0]!.sha256;
+    target.citations[0]!.quote = code.trimEnd();
+    const session = new ReviewWorkflowSession(root, {
+      allowReviewSource: true,
+      trusted: true,
+      probes: [pin()],
+      audit: { file },
+      nativeWallMs: 1500,
+    });
+    try {
+      const { id } = await prepare(session, [target]);
+      const result = summary(
+        await session.command({
+          operation: "probe",
+          workflowId: id,
+          probeId: recipe.id,
+        }),
+      );
+      assert.equal(
+        result.status,
+        variant === "timeout" ? "timed-out" : "stale",
+      );
+    } finally {
+      session.dispose();
+    }
+    const inspected = inspectReviewWorkflowAudit(file);
+    assert.equal(inspected.nativeReceipts.retained, 1);
+    assert.equal(inspected.nativeReceipts.complete, true);
+    const receipt = (await records(file)).find((e) => e.body.nativeReceipt)!
+      .body.nativeReceipt;
+    assert.equal(
+      receipt.run.status,
+      variant === "timeout" ? "timed-out" : "stale",
+    );
+    assert.equal(receipt.run.nativeBudget.calls, variant === "timeout" ? 1 : 3);
+    assert.equal(receipt.run.temporaryArtifacts, "removed");
+    assert.equal(receipt.run.contextDigest, revised.contextDigest);
+    if (variant === "timeout") {
+      assert.equal(receipt.run.trials[0].reason, "timeout");
+      assert.equal(receipt.run.counts.notRun, 2);
+    } else assert.equal(receipt.run.freshness, "stale");
+  }
+});
+
+test("workflow audit concurrent native receipts remain bound to their own commands and candidate handles", async (t) => {
+  const { root, target } = await setup(t),
+    { file, directory } = await auditFile(t);
+  const session = new ReviewWorkflowSession(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+    audit: { file },
+  });
+  let ids: string[];
+  try {
+    const first = await prepare(session, [target]);
+    const second = await prepare(session, [target]);
+    ids = [first.id, second.id];
+    const results = await Promise.all(
+      ids.map((workflowId) =>
+        session.command({ operation: "probe", workflowId, probeId: recipe.id }),
+      ),
+    );
+    assert.deepEqual(
+      results.map((result) => summary(result).native.calls),
+      [3, 3],
+    );
+  } finally {
+    session.dispose();
+  }
+  const inspected = inspectReviewWorkflowAudit(file);
+  assert.deepEqual(inspected.nativeReceipts, {
+    retained: 2,
+    complete: true,
+    rawOutputIncluded: false,
+  });
+  const events = await records(file);
+  const finishes = events.filter((e) => e.body.nativeReceipt);
+  assert.deepEqual(
+    new Set(finishes.map((e) => e.body.nativeReceipt.workflowId)),
+    new Set(ids),
+  );
+  assert.equal(
+    new Set(finishes.map((e) => e.body.nativeReceipt.targetHandle)).size,
+    2,
+  );
+  const receipt = finishes[0]!.body.nativeReceipt;
+  finishes[0]!.body.nativeReceipt = finishes[1]!.body.nativeReceipt;
+  finishes[1]!.body.nativeReceipt = receipt;
+  const swapped = path.join(directory, "swapped.jsonl");
+  await rewriteRecords(swapped, events);
+  assert.throws(() => inspectReviewWorkflowAudit(swapped));
+});
+
+test("workflow audit rejected response and probe replays preserve the first accepted candidate and receipt", async (t) => {
+  const { root, target } = await setup(t),
+    { file, directory } = await auditFile(t);
+  const session = new ReviewWorkflowSession(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+    audit: { file },
+  });
+  try {
+    const { id, reviewer } = await prepare(session, [target]);
+    const changed = structuredClone(target);
+    changed.claim = "OriginalRejectedReplacement";
+    await assert.rejects(
+      session.command({
+        operation: "submit",
+        workflowId: id,
+        response: response(reviewer, [changed]),
+      }),
+    );
+    await session.command({
+      operation: "probe",
+      workflowId: id,
+      probeId: recipe.id,
+    });
+    await assert.rejects(
+      session.command({
+        operation: "probe",
+        workflowId: id,
+        probeId: recipe.id,
+      }),
+    );
+  } finally {
+    session.dispose();
+  }
+  const inspected = inspectReviewWorkflowAudit(file);
+  assert.equal(inspected.commands.rejected, 2);
+  assert.equal(inspected.nativeReceipts.retained, 1);
+  assert.equal(inspected.nativeReceipts.complete, true);
+  const events = await records(file);
+  assert.equal(
+    events.find((e) => e.body.nativeReceipt)!.body.nativeReceipt.candidate
+      .claim,
+    target.claim,
+  );
+  const inflated = structuredClone(events);
+  inflated.at(-1)!.body.states[0].native.outputBytes++;
+  const altered = path.join(directory, "inflated.jsonl");
+  await rewriteRecords(altered, inflated);
+  assert.throws(() => inspectReviewWorkflowAudit(altered));
+});
+
+test("workflow native receipt observers receive detached evidence and failure closes the workflow without erasing reached accounting", async (t) => {
+  const { root, target } = await setup(t);
+  const engine = new ReviewWorkflowEngine(root, {
+    allowReviewSource: true,
+    trusted: true,
+    probes: [pin()],
+  });
+  try {
+    const success = await prepare(engine, [target]);
+    const completed = summary(
+      await engine.command(
+        { operation: "probe", workflowId: success.id, probeId: recipe.id },
+        undefined,
+        (receipt) => {
+          if (receipt.run.schemaVersion === 2)
+            receipt.run.nativeBudget.calls = 0;
+          receipt.candidate.claim = "OriginalDetachedObserver";
+        },
+      ),
+    );
+    assert.equal(completed.native.calls, 3);
+    const assignment = assigned(
+      await engine.command({ operation: "next", workflowId: success.id }),
+    );
+    assert.equal(assignment.stage, "adjudicator");
+    assert.equal(
+      JSON.parse(assignment.packet).nativeObservations.cases.length,
+      3,
+    );
+    assert.equal(
+      JSON.parse(assignment.packet).nativeObservations.cases[1].actual,
+      true,
+    );
+    assert.equal(assignment.packet.includes("OriginalDetachedObserver"), false);
+    const { id } = await prepare(engine, [target]);
+    let observed = false;
+    await assert.rejects(
+      engine.command(
+        { operation: "probe", workflowId: id, probeId: recipe.id },
+        undefined,
+        (receipt) => {
+          observed = true;
+          assert.equal(receipt.workflowId, id);
+          assert.equal(receipt.run.status, "completed");
+          assert.equal(receipt.run.schemaVersion, 2);
+          if (receipt.run.schemaVersion === 2)
+            receipt.run.nativeBudget.calls = 0;
+          receipt.candidate.claim = "OriginalDetachedObserver";
+          throw new Error("OriginalReceiptObserverFailure");
+        },
+      ),
+      /OriginalReceiptObserverFailure/,
+    );
+    assert.equal(observed, true);
+    const result = engine.status(id);
+    assert.equal(result.status, "incomplete");
+    assert.equal(result.stopReason, "native-error");
+    assert.equal(result.native.calls, 3);
+    assert.equal(result.native.accountingComplete, true);
+    assert.equal(result.native.rawEvidenceRetained, false);
+    assert.equal(result.retainedBytes, 0);
+    await assert.rejects(engine.command({ operation: "next", workflowId: id }));
+  } finally {
+    engine.dispose();
+  }
 });
