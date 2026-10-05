@@ -14,7 +14,8 @@ Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
-`frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel` and `rust`. Dedicated container jobs
+`frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,
+`rust`, `rust-format` and `clippy`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package

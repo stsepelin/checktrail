@@ -1496,5 +1496,35 @@
       "file": "dist/test/rustfmt.test.js",
       "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection"
     }
+  ],
+  "clippy": [
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "Clippy planning is explicit offline and never evaluates build scripts or installs tools"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy evidence requires pinned activation exact source fresh artifacts and native completion"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims"
+    },
+    {
+      "file": "dist/test/clippy-surfaces.test.js",
+      "name": "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy distinguishes configuration failures from source defects and accepts fixed near-miss configuration while offline prerequisites remain errors"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy configuration classification requires the pinned native message and exact local configuration address"
+    }
   ]
 }

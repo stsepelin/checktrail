@@ -43,7 +43,9 @@ function invoke(executable: string, args: string[]) {
   return result;
 }
 async function main() {
-  const [root, ...scope] = process.argv.slice(2);
+  const input = process.argv.slice(2);
+  const clippy = input[0] === "--clippy";
+  const [root, ...scope] = clippy ? input.slice(1) : input;
   if (!root || !scope.length) throw new Error("Invalid Rust scope");
   for (const tool of ["rustc", "cargo"]) {
     const version = invoke(tool, ["--version"]);
@@ -53,6 +55,23 @@ async function main() {
       !new RegExp(`^${tool} 1\\.98\\.1 \\([a-f0-9]+ [0-9-]+\\)$`).test(
         version.stdout.trim(),
       )
+    ) {
+      process.stdout.write(
+        JSON.stringify({
+          unavailable: "rust-toolchain",
+          reason: "unsupported-version",
+        }),
+      );
+      process.exitCode = 3;
+      return;
+    }
+  }
+  if (clippy) {
+    const version = invoke("cargo-clippy", ["--version"]);
+    if (
+      version.status !== 0 ||
+      version.stderr.trim() ||
+      !/^clippy 0\.1\.98 \([a-f0-9]+ [0-9-]+\)$/.test(version.stdout.trim())
     ) {
       process.stdout.write(
         JSON.stringify({
@@ -110,7 +129,7 @@ async function main() {
       return;
     }
     const execution = invoke("cargo", [
-      "check",
+      clippy ? "clippy" : "check",
       "--all-targets",
       "--offline",
       "--locked",
@@ -119,6 +138,7 @@ async function main() {
       "--target-dir",
       temporary,
       ...config,
+      ...(clippy ? ["--", "--force-warn", "clippy::all"] : []),
     ]);
     const events = execution.stdout
       .split("\n")
@@ -163,7 +183,14 @@ async function main() {
       .sort();
     process.stdout.write(
       JSON.stringify({
-        version: 1,
+        version: clippy ? 2 : 1,
+        ...(clippy
+          ? {
+              mode: "clippy",
+              clippyVersion: "0.1.98",
+              forcedLintGroup: "clippy::all",
+            }
+          : {}),
         cargoVersion: "1.98.1",
         rustcVersion: "1.98.1",
         exitCode: execution.status,

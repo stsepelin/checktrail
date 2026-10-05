@@ -99,7 +99,7 @@ export const adapters = [
   {
     id: "rust",
     markers: ["Cargo.toml"],
-    checks: ["rust.cargo-check", "rust.cargo-fmt"],
+    checks: ["rust.cargo-check", "rust.cargo-fmt", "rust.cargo-clippy"],
   },
   {
     id: "jvm",
@@ -481,6 +481,9 @@ export async function checksFor(
   if (project.adapter === "rust")
     return [
       rustCheck(source, project),
+      ...(requested?.includes("rust.cargo-clippy")
+        ? [rustCheck(source, project, true)]
+        : []),
       ...(requested?.includes("rust.cargo-fmt")
         ? [rustfmtCheck(source, project)]
         : []),

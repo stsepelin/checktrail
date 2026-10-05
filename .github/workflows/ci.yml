@@ -111,6 +111,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs laravel
           node scripts/verify-required-native-tests.mjs rust
           node scripts/verify-required-native-tests.mjs rust-format
+          node scripts/verify-required-native-tests.mjs clippy
           node scripts/verify-required-native-tests.mjs review-budget
           node scripts/verify-required-native-tests.mjs review-workflow
           node scripts/verify-required-native-tests.mjs review-workflow-audit
@@ -136,6 +137,8 @@ jobs:
         run: node scripts/verify-php-review-package.mjs
       - name: Verify installed Rust formatting offline on the host
         run: node scripts/verify-rust-format-package.mjs
+      - name: Verify installed Clippy analysis offline on the host
+        run: node scripts/verify-clippy-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
       - name: Prepare pinned review runtime

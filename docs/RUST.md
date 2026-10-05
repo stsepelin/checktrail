@@ -76,3 +76,6 @@ References: [Cargo check](https://doc.rust-lang.org/cargo/commands/cargo-check.h
 The separately selected non-rewriting `rust.cargo-fmt` workspace profile and its
 limits are documented in [RUST-FORMAT.md](RUST-FORMAT.md). It does not change the
 compiler check's default scope or imply Clippy/test execution.
+
+The opt-in recommended lint-group profile, suppression override and native
+readiness controls are documented in [CLIPPY.md](CLIPPY.md).

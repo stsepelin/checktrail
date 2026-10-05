@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T13:00:17.861590+00:00",
+  "basedOn": "e8aa69904e074cf795ffe9b457bb6fa7e76a2e7e",
+  "scope": "Original synthetic Clippy readiness only; Rust tests and explicit compile profiles and wider Gate A remain open.",
+  "sourcePins": [
+    {
+      "file": "src/rust.ts",
+      "sha256": "7ac2cb27aae17293f56432aacc6ac2d37af7a2594d7f57280b025bf5b66a93a6"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "4d1ef9fa2d1b7dfc369c35aa754b57f0ccf87cb6cbcff299bcd26a5399966a6d"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "8a7eb4fb3ba12372f947ffbd381e125b367aa0a8c2211a7b9bed20650cd05d78"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "4b99b8f315bc6e9e7b681e5aa2fb4858936853576e655dacae3b407e354ac651"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "ebc58eba515871bc474c92f577922852518fde787c4f701b45c934070ba04d07"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "aa2ad8aa370aa2878cdfe499ef9c391a854666a8bcc059ed12cd11064f620b64"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "33d288c72d4c774bd3f77f866e71e47bc97a2a6e80fe8899ff3bc7f74d07948b"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "33c09b247df454017792e71efd427f416aae91de05b53ce999ea746caf4adb6d"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "test/clippy.test.ts",
+      "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+    },
+    {
+      "file": "test/clippy-evidence.test.ts",
+      "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+    },
+    {
+      "file": "test/clippy-surfaces.test.ts",
+      "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+    },
+    {
+      "file": "test/rust.test.ts",
+      "sha256": "eb8e2cf15fb625182cffa7d3d5766abaa6c27a57e505eca863f901722e40f365"
+    },
+    {
+      "file": "test/rustfmt.test.ts",
+      "sha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "file": "test/tool-versions.test.ts",
+      "sha256": "e4bd49dfbb6c771895c426ceded7213d735f14dea94bf0d0ed274c9be45f9c3c"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "scripts/rust-review-tools.Dockerfile",
+      "sha256": "1e4a1639607ba03e3e411f5846d3155494ba138d0c7eb901052f5ef25894a8c6"
+    },
+    {
+      "file": "scripts/verify-clippy-package.mjs",
+      "sha256": "0952e347dec74a0c770f9b6d5576b109dd682447eb3cc37bb9bf0f41d7ecc524"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "c297b201b857e90084b89ed4f61ba62fbeba2754d5dda98a322a0011aac148b9"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "a9f606c95666610259d70dcc2a16ffce4d8885d5444cdc83b1c40e037484a05b"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    }
+  ],
+  "engineRuntimeDigest": "5c7f22253e5bca3e35a2d78395b7901845ef4b40b38862ab3235fe0315d7f394",
+  "engineRuntimeDigestScope": "Runtime JavaScript and package declaration only; loaded dependency bytes and complete native artifact authentication are not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 601,
+    "pass": 529,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 72,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true
+  },
+  "nativeProfiles": [
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "cargo": "1.98.1",
+      "rustc": "1.98.1",
+      "clippy": "0.1.98",
+      "image": "sha256:1a531d4bc06f3538b25b78e7736da9188be13b38e6cc419ddd8d0a7688a19613",
+      "network": "none",
+      "workspaceMount": "readonly",
+      "rootFilesystemReadonly": false,
+      "cpuLimit": 2,
+      "memoryLimit": "2g",
+      "profile": {
+        "profile": "clippy",
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "preservedCompilerProfile": {
+    "profile": "rust",
+    "passed": 5,
+    "required": 5,
+    "problems": [],
+    "complete": true
+  },
+  "preservedFormatterProfile": {
+    "profile": "rust-format",
+    "passed": 7,
+    "required": 7,
+    "problems": [],
+    "complete": true
+  },
+  "installedPackage": {
+    "tarballSha256": "9a3de6d8c1b40dc4c40f43a896ac83cf26639830ed06c2ddfb3b8362b8433af2",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "clippy",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "checktrail-rust-review-1005:tools",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed before final documentation updates and this measurement; source/runtime pins identify evaluated behavior. Final embedded documentation bytes may differ.",
+  "mutationControls": [
+    {
+      "name": "recommended lint suppression override",
+      "file": "src/rust-runner.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+      ],
+      "baselineSha256": "4d1ef9fa2d1b7dfc369c35aa754b57f0ccf87cb6cbcff299bcd26a5399966a6d",
+      "testPins": [
+        {
+          "file": "test/clippy.test.ts",
+          "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+        },
+        {
+          "file": "test/clippy-evidence.test.ts",
+          "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+        },
+        {
+          "file": "test/clippy-surfaces.test.ts",
+          "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+        }
+      ]
+    },
+    {
+      "name": "native warning failure status",
+      "file": "src/rust-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims",
+        "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection",
+        "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+      ],
+      "baselineSha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960",
+      "testPins": [
+        {
+          "file": "test/clippy.test.ts",
+          "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+        },
+        {
+          "file": "test/clippy-evidence.test.ts",
+          "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+        },
+        {
+          "file": "test/clippy-surfaces.test.ts",
+          "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+        }
+      ]
+    },
+    {
+      "name": "exact source membership",
+      "file": "src/rust-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Clippy evidence requires pinned activation exact source fresh artifacts and native completion",
+        "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+      ],
+      "baselineSha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960",
+      "testPins": [
+        {
+          "file": "test/clippy.test.ts",
+          "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+        },
+        {
+          "file": "test/clippy-evidence.test.ts",
+          "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+        },
+        {
+          "file": "test/clippy-surfaces.test.ts",
+          "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+        }
+      ]
+    },
+    {
+      "name": "diagnostic duplicate normalization",
+      "file": "src/rust-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims",
+        "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+      ],
+      "baselineSha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960",
+      "testPins": [
+        {
+          "file": "test/clippy.test.ts",
+          "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+        },
+        {
+          "file": "test/clippy-evidence.test.ts",
+          "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+        },
+        {
+          "file": "test/clippy-surfaces.test.ts",
+          "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+        }
+      ]
+    },
+    {
+      "name": "verified diagnostic address completeness",
+      "file": "src/rust-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims"
+      ],
+      "baselineSha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960",
+      "testPins": [
+        {
+          "file": "test/clippy.test.ts",
+          "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+        },
+        {
+          "file": "test/clippy-evidence.test.ts",
+          "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+        },
+        {
+          "file": "test/clippy-surfaces.test.ts",
+          "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+        }
+      ]
+    }
+  ],
+  "controls": [
+    "planning does not execute project code or install tools",
+    "operator-only execution trust; offline locked fresh build and target output",
+    "force-warn recommended Clippy groups override native allow and expect",
+    "lint warning failure versus compiler error versus configuration/execution error",
+    "fixed source valid near miss and exact local configuration address controls",
+    "fresh artifacts and dep-info reconcile every inventoried Rust source and test-mode target",
+    "duplicate target diagnostics normalize once; unverified addresses cannot establish complete analysis",
+    "unlinked source and unavailable offline dependencies retain incomplete outcomes",
+    "source lockfile and existing build-output preservation; test bodies never executed",
+    "CLI MCP native outcome agreement argument trust denial and summary privacy",
+    "fresh offline production installation and external acceptance harness"
+  ],
+  "limits": {
+    "multiMemberCompilerWorkspaceIntegrated": false,
+    "rustTestExecutionIntegrated": false,
+    "explicitCompileFeatureTargetProfilesImplemented": false,
+    "macOsNativeClippyVerified": false,
+    "windowsVerified": false,
+    "otherNativeVersionsVerified": false,
+    "completeComponentArtifactAuthenticationEstablished": false,
+    "developmentNativeContainerLicenseAuditCompleted": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "forcedTerminationTemporaryCleanupGuaranteed": false,
+    "maliciousProjectCodeContained": false,
+    "hostedCiExecuted": false,
+    "otherRequiredProfilesVerifiedAtThisRevision": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}
