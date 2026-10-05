@@ -267,7 +267,7 @@ function createConnectionServer(
     { id: string | number; controller: AbortController } | undefined;
   let contractRunning:
     { id: string | number; controller: AbortController } | undefined;
-  // SDK 2.0.0's cancellation handler drops the valid numeric request ID 0.
+  // Preserve exact request-ID cancellation, including numeric 0. Older SDKs dropped it.
   server.server.setNotificationHandler(
     "notifications/cancelled",
     (notification) => {

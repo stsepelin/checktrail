@@ -1386,5 +1386,11 @@
       "file": "dist/test/review-benchmark.test.js",
       "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels"
     }
+  ],
+  "mcp-tasks-routing": [
+    {
+      "file": "dist/test/mcp-tasks-routing.test.js",
+      "name": "published official SDK routes standard Tasks get cancel and update without transport interception"
+    }
   ]
 }

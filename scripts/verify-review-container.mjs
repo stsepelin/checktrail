@@ -117,6 +117,7 @@ process.stdout.write(
   ),
 );
 for (const profile of [
+  "mcp-tasks-routing",
   "review-budget",
   "review-workflow",
   "review-workflow-audit",

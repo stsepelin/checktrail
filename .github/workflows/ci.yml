@@ -93,6 +93,7 @@ jobs:
       - name: Require prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs core
+          node scripts/verify-required-native-tests.mjs mcp-tasks-routing
           node scripts/verify-required-native-tests.mjs javascript
           node scripts/verify-required-native-tests.mjs python
           node scripts/verify-required-native-tests.mjs frameworks

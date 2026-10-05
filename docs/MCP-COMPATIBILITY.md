@@ -34,7 +34,7 @@ application now handles validation cancellation through the public notification
 registration API, using exact request-ID equality and the request's connection
 abort signal. String `"0"` must not cancel numeric `0`.
 
-## Standard Tasks extension: not implemented
+## Standard Tasks extension: wire integration pending
 
 The current optional Tasks extension is `io.modelcontextprotocol/tasks`. It adds
 negotiated task results, polling, cancellation and durable handles. An asynchronous
@@ -63,6 +63,15 @@ Rechecked on 2026-10-01: the npm registry still selects server 2.2.0. The exact
 published server/client/core 2.2.0 profile again returns `-32601` for get/cancel
 and reaches update; see the [current routing measurement](measurements/mcp-tasks-routing-2026-10-01.json).
 No project SDK dependency was changed and no Tasks capability is advertised.
+
+Rechecked on 2026-10-05: the exact official server/client/core 2.3.0 artifacts
+route get, cancel and update to registered public SDK handlers. The isolated probe
+and the project-pinned profile agree. The project now pins server/client 2.3.0 and
+core 2.3.0 in the lockfile; no unrelated dependency version changed. See
+[the published routing measurement](measurements/mcp-tasks-routing-2026-10-05.json).
+This removes the published routing prerequisite. It does not implement standard
+Tasks wire creation, durable polling/result retrieval or cancellation; no Tasks
+capability is advertised yet. No transport interception or SDK patch was added.
 
 Run `npm run probe:mcp-tasks` from the source checkout to repeat the routing probe. Exit `2` means one or
 more handlers were unreachable; exit `0` means routing works. A routing success

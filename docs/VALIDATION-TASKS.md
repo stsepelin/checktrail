@@ -3,8 +3,8 @@
 `openValidationTasks` connects the shared validation engine to the bounded local
 [task store](TASK-STORAGE.md). This is a library API, not a daemon or an MCP
 extension. The CLI and MCP server still use their existing execution paths.
-Standard MCP Tasks remains unadvertised until its wire contracts and SDK routing
-work; see [MCP compatibility](MCP-COMPATIBILITY.md).
+Standard MCP Tasks remains unadvertised until its wire contracts work; published SDK 2.3.0 routing now passes,
+while worker/store wire integration remains pending; see [MCP compatibility](MCP-COMPATIBILITY.md).
 
 ## Use
 
