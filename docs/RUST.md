@@ -5,8 +5,9 @@ installed Rust/Cargo 1.98.1 and requires an existing local `Cargo.lock`. Plannin
 never invokes Cargo or build scripts. Validation needs the normal operator trust
 permission; Cargo build scripts and procedural macros can execute project code.
 
-The current profile supports one Cargo workspace member rooted at the discovered
-project. Multi-package workspaces and other toolchain versions remain unavailable
+Without a build policy, this profile supports one Cargo workspace member rooted
+at the discovered project. The explicit multi-member feature/target contract is
+in [RUST-BUILD.md](RUST-BUILD.md). Other toolchain versions remain unavailable
 until separately verified. Native fixtures run on Linux with the official
 `rust:1.98.1-alpine` image and Node 22.23.2. The container helper prints resolved
 image digests and disables networking. Host platforms beyond that fixture remain

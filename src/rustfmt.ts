@@ -42,7 +42,7 @@ export function rustfmtCheck(source: Inventory, project: Project): Check {
       },
     ],
     reason:
-      "Run pinned offline Cargo formatting in check mode and native per-file Rustfmt stdout comparisons with explicit root configuration; inline skips, disabled formatting and empty or unaccounted files remain incomplete.",
+      "Run pinned offline Cargo formatting in check mode and native per-file Rustfmt check invocations with explicit root configuration; inline skips, disabled formatting and empty or unaccounted files remain incomplete.",
   };
   if (!files.length || files.length > 1000)
     check.unavailableReason =

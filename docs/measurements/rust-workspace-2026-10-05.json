@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T14:43:19.305360+00:00",
+  "basedOn": "cf2f8142c61b2db8768a072042e9448ed970c8de",
+  "scope": "Original synthetic pinned Linux Cargo workspace profile readiness. Wider Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816"
+    },
+    {
+      "file": "src/rust-workspace-schema.ts",
+      "sha256": "1c914a0d4ca51cc04e2609197659c124f8c543d7c45982c04d9ac06e2c6ae332"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "2f71a9beaed46a797f696ec902aa2a5a2e9422121e7df05005eb645636e92462"
+    },
+    {
+      "file": "src/rust-workspace-evidence.ts",
+      "sha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "9e788b429007941a142b4772c3328d7ab028048248a1ff0a32c8426a38a93e14"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "08cebfe9b8929c8c86aea72c2efd80477e5f147d3b825f8a22f5b281a7304e86"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d6402553b9fc21800e0d19c1cc19f18dbc0479cb53bb73138e52c94ccf02dba6"
+    },
+    {
+      "file": "src/rust-test-events.ts",
+      "sha256": "a01e0afb51f80fc581321e4d84f0d9c589e8d52ac6438ee7a7092e7c6890228b"
+    },
+    {
+      "file": "src/rust-test-evidence.ts",
+      "sha256": "a0ac9b02b0312b721cab0b972c5366ab001a5f2d8f6d365f90b3953ef16717e4"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "9913f3246eb611421eb962d13e0002e07d5f21499f2745ab925311445a0cc458"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "fac8afe2198507c4c1a5d3ba89eebbf31a0ed02c2ceb2e7a9940a98113e6c7a8"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "e8559f7886c8968c4668c4b90ae7716f459a6cee078828d4707baad44804bd89"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "4f240ea84b7539cb465a9b229be33bc68b88d559938ce4cb76ae0e12b77660db"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "5e187fc41443e4a05a1d46f0f5373405c0dfaf9c6b696d76c34570ec838cf645"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "bb914543c9eb66dc598393d2526db485820a17d88395a731cc6f8aae6dff2946"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "33c09b247df454017792e71efd427f416aae91de05b53ce999ea746caf4adb6d"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "test/rust-workspace.test.ts",
+      "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+    },
+    {
+      "file": "test/rust-workspace-surfaces.test.ts",
+      "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+    },
+    {
+      "file": "test/rust-workspace-fixture.ts",
+      "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+    },
+    {
+      "file": "test/rust-tests.test.ts",
+      "sha256": "fe9ba85716aff46c6006b45fe9e118a1cba3a4cdeacb09d165e993b2b6577cb5"
+    },
+    {
+      "file": "test/rust-test-events.test.ts",
+      "sha256": "1bc2dcdf4b983424829760fd46a5b1608953b34cf13b80a13c2c1b4631cc918a"
+    },
+    {
+      "file": "test/rust-test-surfaces.test.ts",
+      "sha256": "226cf22116f517be5914ded1ae7d534fad4d0a9f75866405359425d96468a65e"
+    },
+    {
+      "file": "test/rust.test.ts",
+      "sha256": "eb8e2cf15fb625182cffa7d3d5766abaa6c27a57e505eca863f901722e40f365"
+    },
+    {
+      "file": "test/rustfmt.test.ts",
+      "sha256": "a6ffb7663094b2de1dfa2c8ea3620083fa47e107cadfe625508d97cc06079c47"
+    },
+    {
+      "file": "test/clippy.test.ts",
+      "sha256": "fcf930a7b7fc4731bb1eaf83af331e5a953551e6981fdcaff69d5763ee0b1e44"
+    },
+    {
+      "file": "test/clippy-evidence.test.ts",
+      "sha256": "e35ffb1b8f63f3c5e9132274192f6951150da790affb7ba2b125c2f22abb8619"
+    },
+    {
+      "file": "test/clippy-surfaces.test.ts",
+      "sha256": "922799db7988389ec6c5862d86fea0f14951d6137c8764daa5f93ba111ccf575"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "scripts/rust-review-tools.Dockerfile",
+      "sha256": "94ed9964d0af02f819715bfa742ae6970b1033cf09746a027dbe480317e7bb59"
+    },
+    {
+      "file": "scripts/verify-rust-workspace-package.mjs",
+      "sha256": "b99bb68cdc79872aa8850a78b46fd7b96a1541d2cb57d099c882fa8c920e3d2d"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "baeac18ec53aa548df01ebf87b08733cc54c099607e3e4169bb4c67bcff83808"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "a9602c44def67ba84e96ed4ac32780d58c57ce89165932be7c80da3bbc4835a0"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "9a964823ece03b26f1b1f31076fd1804cfae084777f02756051c33e54697d516"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "98763f29c394dbc9b32d49021ae789cac0cf61780d742d8e99ac7180cb4c445d"
+    },
+    {
+      "file": "schemas/report.schema.json",
+      "sha256": "c438808bf7edb01398365f09569ff96310e2cdc02e28bf4f6010083c18ffa012"
+    },
+    {
+      "file": "schemas/rust-build-policy.schema.json",
+      "sha256": "dc5e3fa49ed5b1ab022f4f51b7a37fb384a4bdce23ed15153286c3040c56691d"
+    },
+    {
+      "file": "docs/RUST-BUILD.md",
+      "sha256": "5a9136c0a0aea0af4fb1150769baee0d3e98938ef9153600eed12c60b9223f51"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "31b085a25aca0a9caf0fc1948946bf0d76ee55506c46e6bb1d95c320ca7bea67"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "fda60c210d41a33757306551b949b0739fb26a618a5cfc4443ae569340450c7b"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "59c695a2b66f1d00a448e4bbba3794d82a4f2bc3c0521b2b7dbc3a885f9ef480"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    }
+  ],
+  "engineRuntimeDigest": "a5838ac240df8be2cc14bceb06b75429559ccf0737ba34201f92fba2c553963f",
+  "engineRuntimeDigestScope": "Runtime JavaScript and package declaration; dependency bytes and complete native artifact authentication are not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 620,
+    "pass": 534,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 86,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true
+  },
+  "nativeProfiles": [
+    {
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "cargo": "1.98.1",
+      "rustc": "1.98.1",
+      "rustdoc": "1.98.1",
+      "clippy": "0.1.98",
+      "nativeTarget": "aarch64-unknown-linux-musl",
+      "foreignCompilationTarget": "wasm32-unknown-unknown",
+      "image": "sha256:28bcfb13fbcc8ca3d66efad0cacaa557f1f83a70df152faf42cd7bd88e13c28b",
+      "network": "none",
+      "workspaceMount": "readonly",
+      "rootFilesystemReadonly": false,
+      "cpuLimit": 2,
+      "memoryLimit": "2g",
+      "profile": {
+        "profile": "rust-workspace",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "preservedProfiles": [
+    {
+      "profile": "rust",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "rust-format",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "clippy",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "rust-tests",
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "installedPackage": {
+    "tarballSha256": "c8756072cf51ae9bee7f8b601b63858b23f67458a531864e4f091c4586abf5bb",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "rust-workspace",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "checktrail-rust-review-1005:workspace",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed before final documentation formatting and this measurement; source/runtime pins identify evaluated behavior. Final embedded documentation bytes may differ.",
+  "mutationControls": [
+    {
+      "name": "whole workspace selection",
+      "file": "src/rust-build.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+        "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+        "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+        "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+        "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+        "native Rust workspace root package and child doctests use the most specific manifest owner"
+      ],
+      "baselineSha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "requested native feature flags",
+      "file": "src/rust-build.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+        "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+        "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+        "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+        "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts"
+      ],
+      "baselineSha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "disabled default feature flags",
+      "file": "src/rust-build.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+        "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+        "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+        "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+        "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts"
+      ],
+      "baselineSha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "explicit native target flag",
+      "file": "src/rust-build.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+        "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+        "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+        "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+        "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+        "native Rust workspace root package and child doctests use the most specific manifest owner"
+      ],
+      "baselineSha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "fresh native test artifact evidence",
+      "file": "src/rust-workspace-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests"
+      ],
+      "baselineSha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "mixed ignored native cases do not pass",
+      "file": "src/rust-workspace-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete"
+      ],
+      "baselineSha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "each member needs completed native cases",
+      "file": "src/rust-workspace-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete"
+      ],
+      "baselineSha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "most specific native doctest owner",
+      "file": "src/rust-workspace-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "native Rust workspace root package and child doctests use the most specific manifest owner"
+      ],
+      "baselineSha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    },
+    {
+      "name": "explicit multi-package trailer reconciliation",
+      "file": "src/rust-workspace-evidence.ts",
+      "compiled": true,
+      "caught": true,
+      "failingTests": [
+        "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+        "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+        "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+        "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+        "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+        "native Rust workspace root package and child doctests use the most specific manifest owner"
+      ],
+      "baselineSha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f",
+      "testPins": [
+        {
+          "file": "test/rust-workspace.test.ts",
+          "sha256": "6685e9aebc43c0c70c5edc6d72210ab816d81de70846cae001f3faa5e5317eec"
+        },
+        {
+          "file": "test/rust-workspace-surfaces.test.ts",
+          "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+        },
+        {
+          "file": "test/rust-workspace-fixture.ts",
+          "sha256": "bdf53fd2a9ed4f70ed35e22db035beb2e8e449c03aa845a6812cc605563fb09d"
+        }
+      ]
+    }
+  ],
+  "controls": [
+    "data-only planning cannot execute project code or grant trust; invalid later profile expansion is atomic",
+    "whole workspace beyond default members; dependency consumers and every required profile identity retained",
+    "native metadata requested features and compiler/test artifact resolution agree",
+    "exact inventoried exclusions become stale when native dep-info observes them",
+    "feature-gated modules and required-feature examples with broken fixed and near-miss controls",
+    "installed WebAssembly compiler/Clippy target remains distinct from native runtime tests and missing target prerequisites",
+    "native test listings cases and ignored inventories reconcile; every member needs completed non-ignored cases",
+    "known libtest failures retained when Cargo stops later doctest execution; aggregate counts stay unknown",
+    "multi-package Rustdoc trailers and most specific root/child manifest ownership",
+    "trusted build-script generated source and proc-macro compilation with native build-failure incompleteness",
+    "exact Clippy sibling addresses and verified native workspace/member configuration errors",
+    "altered selection member features observed sources target paths fresh artifacts filtered/truncated and missing execution manifest controls",
+    "shared CLI/MCP profile identities counts privacy and startup-only trust",
+    "all existing bounded Rust compiler formatter Clippy and test profiles rerun at this revision",
+    "fresh offline production installation with external native CLI/MCP harness"
+  ],
+  "limits": {
+    "macOsNativeWorkspaceVerified": false,
+    "windowsVerified": false,
+    "otherNativeVersionsVerified": false,
+    "otherFeatureResolverConfigurationShapesVerified": false,
+    "foreignRuntimeTestsExecuted": false,
+    "countsAreRuntimeAssertionStatements": false,
+    "allPassedDoctestCasesExecuteProjectBodies": false,
+    "completeComponentArtifactAuthenticationEstablished": false,
+    "developmentNativeContainerLicenseAuditCompleted": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "forcedTerminationTemporaryCleanupGuaranteed": false,
+    "maliciousProjectCodeContained": false,
+    "hermeticBuildIdentityEstablished": false,
+    "hostedCiExecuted": false,
+    "otherRequiredFamiliesVerifiedAtThisRevision": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

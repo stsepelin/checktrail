@@ -20,10 +20,9 @@ Every selected native test executable must be a fresh artifact for the current
 package and declared target, confined to the canonical temporary output tree.
 The collector obtains full and ignored listings, then executes each native
 libtest harness with one test thread, no filters and no color. It similarly lists
-and runs the declared rustdoc target through `cargo test --doc`. The current
-collector supports one workspace member and at most one documentation target.
-Multi-member compilation/testing and explicit feature/target profiles remain
-required work.
+and runs the declared rustdoc target through `cargo test --doc`. Without a build policy, the collector supports one workspace member and at most
+one documentation target. The explicit multi-member feature/target profile is
+documented in [RUST-BUILD.md](RUST-BUILD.md).
 
 The native profile runs whole groups. A controlled native probe showed that a
 listed doctest name containing spaces could select zero cases with an exact

@@ -5,6 +5,7 @@ COPY --from=node /usr/lib/libstdc++.so* /usr/lib/
 COPY --from=node /usr/lib/libgcc_s.so* /usr/lib/
 ENV RUSTUP_AUTO_INSTALL=0
 RUN rustup component add --toolchain 1.98.1 rustfmt clippy
+RUN rustup target add --toolchain 1.98.1 wasm32-unknown-unknown
 RUN compiler="$(rustup which rustc)" && ln -s "$(dirname "$compiler")" /opt/checktrail-rust-bin
 ENV PATH=/opt/checktrail-rust-bin:/usr/local/bin:/usr/bin:/bin
 RUN cargo --version && rustc --version && rustfmt --version && cargo-clippy --version

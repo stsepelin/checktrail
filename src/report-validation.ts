@@ -1,3 +1,4 @@
+import { rustExecutionId } from "./rust-build.js";
 import { goTargetPreflight } from "./go-target.js";
 import { goExecutionGroup, goExecutionId } from "./go-build.js";
 import { reportSchema } from "./schemas.js";
@@ -24,7 +25,18 @@ export function validatedReport(input: unknown) {
   const groups = new Map<string, Set<number>>();
   for (const check of report.checks) {
     const repetition = check.goBuild?.repetition;
-    if (repetition) {
+    if (check.rustBuild) {
+      if (
+        check.adapter !== "rust" ||
+        !["rust.cargo-check", "rust.cargo-clippy", "rust.cargo-test"].includes(
+          check.id,
+        ) ||
+        check.goScope ||
+        check.goBuild ||
+        check.executionId !== rustExecutionId(check)
+      )
+        throw Error("Invalid Rust execution identity in report");
+    } else if (repetition) {
       if (
         check.adapter !== "go" ||
         !check.goScope ||
@@ -85,7 +97,7 @@ export function validatedReport(input: unknown) {
     actual.some((id) => !requiredSet.has(id))
   )
     throw new Error(
-      "Required Go execution manifest does not reconcile with report results",
+      "Required execution manifest does not reconcile with report results",
     );
   return report;
 }

@@ -1,3 +1,4 @@
+import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
 import { nuxtEvidence } from "./nuxt-evidence.js";
@@ -203,6 +204,7 @@ export function evaluate(
     ...(check.executionId ? { executionId: check.executionId } : {}),
     ...(check.goScope ? { goScope: check.goScope } : {}),
     ...(check.goBuild ? { goBuild: check.goBuild } : {}),
+    ...(check.rustBuild ? { rustBuild: check.rustBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
     id: check.id,
     adapter: check.adapter,
@@ -259,6 +261,8 @@ export function evaluate(
     );
   if (processes.some((p) => p.errorCode || p.signal || p.exitCode === null))
     return set("error", "The process could not complete normally.");
+  if (check.rustBuild)
+    return { ...result, ...rustWorkspaceEvidence(check, processes, root) };
   if (check.parser === "external-json")
     return { ...result, ...externalEvidence(check, processes) };
   if (check.parser === "typescript-build-json")

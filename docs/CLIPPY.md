@@ -48,3 +48,6 @@ explicit compiler feature/target integrations remain required.
 References: [Clippy groups](https://doc.rust-lang.org/clippy/index.html),
 [usage](https://doc.rust-lang.org/clippy/usage.html),
 [rustc lint levels](https://doc.rust-lang.org/rustc/lints/levels.html).
+
+The explicit multi-member feature/target contract and workspace configuration
+error accounting are documented in [RUST-BUILD.md](RUST-BUILD.md).

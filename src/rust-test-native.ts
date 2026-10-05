@@ -45,6 +45,11 @@ export async function rustTestsNative(
   directory: string,
   packageId: string,
   targets: z.infer<typeof rustTestTargetSchema>[],
+  options?: {
+    cargoArgs: string[];
+    packageIds: string[];
+    documentation: boolean;
+  },
 ): Promise<RustTestNative> {
   const native = (executable: string, args: string[]) => {
     const result = invoke(executable, args);
@@ -60,6 +65,7 @@ export async function rustTestsNative(
     "test",
     "--no-run",
     "--all-targets",
+    ...(options?.cargoArgs ?? []),
     "--offline",
     "--locked",
     "--message-format=json",
@@ -99,7 +105,7 @@ export async function rustTestsNative(
       .map((e) => rustTestArtifactSchema.parse(e))
       .filter(
         (e) =>
-          e.package_id === packageId &&
+          (options?.packageIds ?? [packageId]).includes(e.package_id) &&
           e.profile.test &&
           e.executable !== null &&
           !e.target.kind.includes("custom-build"),
@@ -150,7 +156,8 @@ export async function rustTestsNative(
       )
     )
       throw new Error("Missing native test target");
-    const docs = targets.filter((t) => t.doctest);
+    const docs =
+      options?.documentation === false ? [] : targets.filter((t) => t.doctest);
     if (docs.length > 1)
       throw new Error("Unsupported documentation target selection");
     for (const target of docs)

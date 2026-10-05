@@ -44,6 +44,7 @@ export function rustTestRun(
   names: string[],
   ignored: string[],
   doctest: boolean,
+  multipleDocPackages = false,
 ): { tests: TestEvidence; cases: RustTestCase[] } {
   const expected = new Set(names);
   const skipped = new Set(ignored);
@@ -65,8 +66,12 @@ export function rustTestRun(
       trailing = true;
       continue;
     }
-    if (trailing) throw new Error("Unexpected native output after trailer");
     const start = /^running (\d+) tests?$/.exec(line);
+    if (trailing) {
+      if (!multipleDocPackages || !doctest || !start)
+        throw new Error("Unexpected native output after trailer");
+      trailing = false;
+    }
     if (start) {
       if (suite) throw new Error("Interrupted native suite");
       const count = Number(start[1]);

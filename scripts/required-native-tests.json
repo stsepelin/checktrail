@@ -1568,5 +1568,43 @@
       "file": "dist/test/rust-tests.test.js",
       "name": "native Rust test artifact identity survives an operator-granted temporary directory alias without touching retained project output"
     }
+  ],
+  "rust-workspace": [
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace planning retains complete profiles without executing project code and rejects late invalid profile expansion atomically"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace root package and child doctests use the most specific manifest owner"
+    },
+    {
+      "file": "dist/test/rust-workspace-surfaces.test.js",
+      "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust"
+    }
   ]
 }

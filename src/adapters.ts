@@ -1,3 +1,4 @@
+import { applyRustBuildPolicy } from "./rust-build.js";
 import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
@@ -483,8 +484,8 @@ export async function checksFor(
   if (project.adapter === "dotnet") return [await dotnetCheck(source, project)];
   if (project.adapter === "swift") return [swiftCheck(project)];
   if (project.adapter === "ruby") return [rubyCheck(project)];
-  if (project.adapter === "rust")
-    return [
+  if (project.adapter === "rust") {
+    const checks = [
       rustCheck(source, project),
       ...(requested?.includes("rust.cargo-test")
         ? [rustTestCheck(source, project)]
@@ -496,6 +497,9 @@ export async function checksFor(
         ? [rustfmtCheck(source, project)]
         : []),
     ];
+    await applyRustBuildPolicy(source, project, checks);
+    return checks;
+  }
   if (project.adapter === "php") {
     const files = project.files.filter((file) => file.endsWith(".php"));
     const check: Check = {
