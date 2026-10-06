@@ -584,19 +584,22 @@ export async function collectReviewBehavior(
           ? unwrap(node.expression)
           : node;
       for (const node of nodes) {
-        if (
-          ts.isImportDeclaration(node) ||
-          (ts.isExportDeclaration(node) && node.moduleSpecifier)
-        ) {
-          const spec = node.moduleSpecifier;
-          if (spec && ts.isStringLiteral(spec))
-            output.modules.push({
-              ...range(node),
-              kind: ts.isImportDeclaration(node) ? "import" : "re-export",
-              specifier: spec.text.length <= 1024 ? spec.text : null,
-              ...resolve(spec.text, node.getSourceFile().fileName),
-            });
-        }
+        const spec =
+          ts.isImportDeclaration(node) || ts.isExportDeclaration(node)
+            ? node.moduleSpecifier
+            : ts.isImportEqualsDeclaration(node) &&
+                ts.isExternalModuleReference(node.moduleReference)
+              ? node.moduleReference.expression
+              : ts.isImportTypeNode(node) && ts.isLiteralTypeNode(node.argument)
+                ? node.argument.literal
+                : undefined;
+        if (spec && ts.isStringLiteral(spec))
+          output.modules.push({
+            ...range(node),
+            kind: ts.isExportDeclaration(node) ? "re-export" : "import",
+            specifier: spec.text.length <= 1024 ? spec.text : null,
+            ...resolve(spec.text, node.getSourceFile().fileName),
+          });
         if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
           if (output.calls.length >= 2048) throw new Error("budget");
           const expression = unwrap(node.expression);

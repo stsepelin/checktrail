@@ -40,7 +40,7 @@ declaration files ending in those extensions. It captures:
 - Call and construction expressions, their enclosing function where present and
   a unique selected lexical implementation when supported. Renamed imports,
   selected reexports and namespace imports can retain a binding.
-- Static import/reexport edges and explicit unknown dynamic import/require edges.
+- Static import/reexport edges, TypeScript import-equals external module and type-import edges, and explicit unknown dynamic import/require edges.
 
 Every address carries its revision, selected path, half-open UTF-16 character
 offsets and one-based inclusive source lines. These offsets address the exact
@@ -119,9 +119,10 @@ grants. Offline package smoke exercises this profile before adding consumer
 development tools.
 
 These checks establish the bounded collector contract, not review quality.
-Broader language collectors, automatic consumer discovery, revision-aware claim
-citations, fresh provider sessions, independent claim refutation and blinded
-quality trials remain in [the task ledger](REVIEWER-TASKS.md). New real-project
+Broader language and historical consumer collection, observed independent host
+sessions, general claim resolution and blinded quality trials remain in
+[the task ledger](REVIEWER-TASKS.md). Bounded current consumer collection,
+revision-aware citations and refutation contracts have their separate profiles. New real-project
 MCP field trials wait for completion of the planned work.
 
 The required review profile names snapshot syntax controls. The review-git
@@ -149,3 +150,8 @@ Context version 5 retains the same syntax profile over the explicitly chosen
 current source view. In index diff assignments, every current syntax address
 refers to the captured stage-zero blob, rather than the unstaged working file.
 Selected executable-mode evidence is separate from syntax and text change overlap.
+
+The bounded [import and consumer collector](IMPORT-CONTEXT.md) automatically captures
+inventoried JS/TS source under explicit disjoint project roots. It retains whole
+source and static consumer edges, with full declared-scope fallback for unresolved
+or incomplete capture. Other languages and historical consumers remain open.

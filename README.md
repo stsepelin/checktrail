@@ -262,7 +262,7 @@ The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
 `review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
-`review_calibration_apply`, and `mutation_experiment`. The first two currently return the same project/check
+`review_calibration_apply`, `import_context`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -292,10 +292,11 @@ The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not
 establish compatibility with every editor or agent application.
 
-Validation runs asynchronously and supports cancellation, but returns its report
-on the original tool call. The optional durable Tasks extension is not implemented.
-See [MCP compatibility](docs/MCP-COMPATIBILITY.md) for lifecycle tests, the reproduced
-SDK routing limitation and the remaining Tasks work.
+Ordinary validation calls run asynchronously and return their report on the original
+call. Startup `--task-store` enables the bounded standard Tasks polling profile for
+capable requests, preserving ordinary-call fallback. See
+[MCP compatibility](docs/MCP-COMPATIBILITY.md) for the tested SDK 2.3.0 routing,
+lifecycle evidence and remaining client/runtime profiles.
 
 Exact finding baselines and exceptions are available through the CLI, library and
 MCP. [Finding policy](docs/FINDING-POLICY.md) describes creation, expiration,
@@ -444,3 +445,8 @@ candidate. Independent refuters and judges receive hypothesis/source/native case
 evidence with prior candidate metadata and aggregate verdicts withheld. These
 structural checks do not establish claim truth, fresh host isolation or calibrated
 confidence.
+
+The bounded [import context](docs/IMPORT-CONTEXT.md) collects JS/TS source and
+static consumer edges without executing project code. Unknown or incomplete
+capture retains every declared project in advisory full fallback. It does not
+narrow validation plans or establish runtime reachability.
