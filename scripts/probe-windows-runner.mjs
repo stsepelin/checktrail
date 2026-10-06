@@ -1,4 +1,5 @@
 import { Buffer } from "node:buffer";
+import { gzipSync } from "node:zlib";
 import console from "node:console";
 import { performance } from "node:perf_hooks";
 import { setTimeout, clearTimeout } from "node:timers";
@@ -27,28 +28,34 @@ const server = createServer((value) => {
 });
 async function invoke(source, label) {
   const started = performance.now();
-  const child = spawn(
-    supervisor,
-    [
-      "-NoLogo",
-      "-NoProfile",
-      "-NonInteractive",
-      "-EncodedCommand",
-      Buffer.from(source, "utf16le").toString("base64"),
-    ],
-    {
-      cwd: root,
-      stdio: ["ignore", "pipe", "pipe"],
-      env: {
-        SYSTEMROOT: process.env.SystemRoot ?? process.env.SYSTEMROOT,
-        PATH: process.env.PATH ?? "",
-        TEMP: root,
-        TMP: root,
-      },
-      windowsHide: true,
-      shell: false,
+  // Keep diagnostic engine code under the native command-line bound as well.
+  // The owning directory remains synthetic; project inputs are never script text.
+  const compressed = gzipSync(Buffer.from(source, "utf8")).toString("base64");
+  const launcher = `$ctBytes = [Convert]::FromBase64String('${compressed}')
+$ctReader = [IO.StreamReader]::new([IO.Compression.GZipStream]::new([IO.MemoryStream]::new($ctBytes), [IO.Compression.CompressionMode]::Decompress), [Text.Encoding]::UTF8)
+try { $ctScript = $ctReader.ReadToEnd() } finally { $ctReader.Dispose() }
+[ScriptBlock]::Create($ctScript).Invoke()`;
+  const encoded = Buffer.from(launcher, "utf16le").toString("base64");
+  const arguments_ = [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-EncodedCommand",
+    encoded,
+  ];
+  windowsCommandLine(supervisor, arguments_);
+  const child = spawn(supervisor, arguments_, {
+    cwd: root,
+    stdio: ["ignore", "pipe", "pipe"],
+    env: {
+      SYSTEMROOT: process.env.SystemRoot ?? process.env.SYSTEMROOT,
+      PATH: process.env.PATH ?? "",
+      TEMP: root,
+      TMP: root,
     },
-  );
+    windowsHide: true,
+    shell: false,
+  });
   const output = [],
     errors = [];
   let timedOut = false;
@@ -76,6 +83,14 @@ try {
   await invoke(
     "[Console]::WriteLine('original plain native PowerShell startup')",
     "plain-powershell-startup",
+  );
+  await invoke(
+    "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false); [Console]::WriteLine('legacy encoding returned')",
+    "plain-legacy-encoding-constructor",
+  );
+  await invoke(
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::WriteLine('managed encoding returned')",
+    "plain-managed-encoding-constructor",
   );
   await new Promise((resolve, reject) => {
     server.once("error", reject);
@@ -116,12 +131,58 @@ try {
     ],
     ["if (-not $api::SetInformationJobObject", "limits-flags-written"],
     ["if (-not $api::AssignProcessToJobObject", "limits-installed"],
+    [
+      "} finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }",
+      "ownership-checked",
+    ],
+    [
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
+      "limits-freed",
+    ],
     ["$line = [IO.File]::ReadAllText", "ownership-established"],
-    ["Add-Type -TypeDefinition $source", "source-decompressed"],
-    ["$result = [ChecktrailWindowsJobV1]::Run", "source-compiled"],
+    [
+      "$compiler = [Microsoft.CSharp.CSharpCodeProvider]::new()",
+      "source-decompressed",
+    ],
+    ["$result = $nativeApi::Run", "source-compiled"],
     ["[Environment]::Exit($result)", "native-returned"],
   ])
     source = source.replace(needle, mark(label) + needle);
+  // Split the two native calls at the last observed boundary. This changes only
+  // the diagnostic copy; the product bootstrap and acceptance callbacks stay intact.
+  source = source.replace(
+    "if (-not $api::AssignProcessToJobObject($outerJob,$api::GetCurrentProcess())) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+    mark("current-process-call") +
+      "$bootstrapProcess = $api::GetCurrentProcess()\n" +
+      "[IO.File]::WriteAllText('startup-process-handle', [string]$bootstrapProcess)\n" +
+      mark("current-process-returned") +
+      "$bootstrapAssigned = $api::AssignProcessToJobObject($outerJob,$bootstrapProcess)\n" +
+      "[IO.File]::WriteAllText('startup-assigned', [string]$bootstrapAssigned)\n" +
+      mark("assignment-returned") +
+      "if (-not $bootstrapAssigned) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+  );
+  source = source.replace(
+    "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)",
+    mark("free-limits-call") +
+      "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)\n" +
+      mark("free-limits-returned"),
+  );
+  source = source.replace(
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
+    mark("console-encoding-call") +
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\n" +
+      mark("console-encoding-returned"),
+  );
+  const nativePreconditionFile = path
+    .join(root, "startup-native-preconditions")
+    .replaceAll("'", "''");
+  source = source.replace(
+    "$result = $nativeApi::Run",
+    "[IO.File]::WriteAllText('" +
+      nativePreconditionFile +
+      "', [string]$request.requestId + [Environment]::NewLine + [Environment]::CurrentDirectory + [Environment]::NewLine + [IO.Path]::GetDirectoryName([string]$request.receipt) + [Environment]::NewLine + [IO.File]::ReadAllText([IO.Path]::Combine([IO.Path]::GetDirectoryName([string]$request.receipt), 'owner-id')))\n" +
+      "$result = $nativeApi::Run",
+  );
   source = source.replace(
     "[Environment]::Exit($result)",
     "[IO.File]::WriteAllText('startup-result', [string]$result); [Environment]::Exit($result)",
@@ -138,6 +199,18 @@ try {
         () => "missing",
       ),
       controlConnected: !!socket,
+      nativePreconditions: await readFile(
+        path.join(root, "startup-native-preconditions"),
+        "utf8",
+      ).catch(() => null),
+      processHandle: await readFile(
+        path.join(root, "startup-process-handle"),
+        "utf8",
+      ).catch(() => null),
+      assigned: await readFile(
+        path.join(root, "startup-assigned"),
+        "utf8",
+      ).catch(() => null),
       result: await readFile(path.join(root, "startup-result"), "utf8").catch(
         () => null,
       ),
