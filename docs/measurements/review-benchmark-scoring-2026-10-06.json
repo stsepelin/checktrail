@@ -1,0 +1,1668 @@
+{
+  "schemaVersion": 1,
+  "measuredAtUTC": "2026-10-06T16:16:31Z",
+  "profile": "sealed-single-claim-paired-synthetic-v1",
+  "codeRevision": "dc410e7b04cd7cf68487383941b3ea0eb3f291b5",
+  "purpose": "original synthetic implementation acceptance; no quality or field evaluation",
+  "sourceRuntime": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "linuxRuntime": {
+    "node": "v22.23.2",
+    "platform": "linux",
+    "arch": "arm64",
+    "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+    "network": "none",
+    "identityObserved": true
+  },
+  "fileDigests": {
+    "src/review-benchmark.ts": "333e712989b2ba110fb1b5d7a8f20f03f13bf3fd442bea16fd4996123b3b9731",
+    "src/review-benchmark-schema.ts": "7c8a11394da1933554e7c5749064dde85d946c9831d29cb190d4c5fc17867a23",
+    "src/cli.ts": "93687e84b836b9fe6cfa58208ff68e764d1a2b897bbdca09b10bfdaa72424fb0",
+    "test/review-benchmark.test.ts": "2444f78145ab8983e488494583f2c24d157bcca332e60686de92fb4278d5f484",
+    "scripts/verify-review-benchmark-score-package.mjs": "ec962b3f0b9254bb047c26340092d01e4ccf7e88c6325080beb809f34c570e8f",
+    "scripts/required-native-tests.json": "5594a31435aa4a6b01f07d4555df4666841f1f1630efde8439c0e2d650685508",
+    "schemas/review-benchmark-plan.schema.json": "2fb9aeda045487d45425a1678ef38663909e009da713844ff68fcf998c7e5845",
+    "schemas/review-benchmark-scoring-profile.schema.json": "3865ee0a60abc96d0eceecefd138a5f8b46da28258cd9773fee006c140f7f1d8",
+    "schemas/review-benchmark-score-report.schema.json": "82f5734d43668e69ed9c1aef39df81bb5a4464cd4d1c9e6918ea8a4df5bf109e",
+    "schemas/review-benchmark-score-summary.schema.json": "f5df734eea8dccd3b55287ac6f76b931ae9a5ba2d1aed22cf9670edb6256ea03"
+  },
+  "scope": "Declared file identities and selected test terminal events; not a complete dependency, host, tool or hermetic environment identity",
+  "acceptance": [
+    {
+      "runtimeProfile": "final-node26",
+      "acceptance": {
+        "profile": "review-benchmark-scoring",
+        "timeoutMs": 120000,
+        "passed": 30,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 30,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "benchmark freezes complete paired synthetic protocols before writes and rejects invalid inventories without artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 222.532542,
+              "required": false
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "benchmark anonymous packets withhold labels sibling state and private paths and require startup source disclosure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 110.420041,
+              "required": false
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2676.058417,
+              "required": false
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "benchmark collection accounts for every missing invalid refused cancelled malformed and interrupted trial before judging",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 268.924959,
+              "required": false
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 266.843541,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "benchmark intake reconciles frozen runtime settings host and source identities rather than trusting sealed audit status",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 248.679584,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "benchmark cross-trial and curator session reuse invalidates both arms including declarations in malformed submissions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 272.957042,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 197.601166,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "benchmark private storage rejects public and linked artifacts and records unreadable journals as unavailable",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 114.845333,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-1",
+              "name": "benchmark per-trial byte bounds retain oversized journals as unavailable alongside a valid completed control",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 102.632958,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-1",
+              "name": "benchmark runtime byte identity rejects a structurally valid journal from a different build under the same version",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 145.038417,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-1",
+              "name": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.654625,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-1",
+              "name": "benchmark CLI freezes operator plans enforces packet grants binds fresh journals and reports incomplete denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2020.445875,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-1",
+              "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 872.081375,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-1",
+              "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 87.965667,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-1",
+              "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1096.767125,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1923.243917,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-1",
+              "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1382.004125,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-1",
+              "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 641.680833,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 652.311833,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 847.125208,
+              "required": false
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-1",
+              "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2039.656792,
+              "required": false
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-1",
+              "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1157.193375,
+              "required": false
+            },
+            {
+              "sequence": 24,
+              "fileId": "file-1",
+              "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 114.651209,
+              "required": true
+            },
+            {
+              "sequence": 25,
+              "fileId": "file-1",
+              "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1219.988666,
+              "required": true
+            },
+            {
+              "sequence": 26,
+              "fileId": "file-1",
+              "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2950.003375,
+              "required": true
+            },
+            {
+              "sequence": 27,
+              "fileId": "file-1",
+              "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6107.373333,
+              "required": true
+            },
+            {
+              "sequence": 28,
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1626.371292,
+              "required": true
+            },
+            {
+              "sequence": 29,
+              "fileId": "file-1",
+              "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 860.456083,
+              "required": true
+            },
+            {
+              "sequence": 30,
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1996.017625,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+              "outcome": "passed",
+              "terminalSequences": [24]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+              "outcome": "passed",
+              "terminalSequences": [25]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+              "outcome": "passed",
+              "terminalSequences": [26]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+              "outcome": "passed",
+              "terminalSequences": [27]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+              "outcome": "passed",
+              "terminalSequences": [28]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+              "outcome": "passed",
+              "terminalSequences": [29]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+              "outcome": "passed",
+              "terminalSequences": [30]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtimeProfile": "node22",
+      "acceptance": {
+        "profile": "review-benchmark-scoring",
+        "timeoutMs": 120000,
+        "passed": 30,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 30,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "benchmark freezes complete paired synthetic protocols before writes and rejects invalid inventories without artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 396.187152,
+              "required": false
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "benchmark anonymous packets withhold labels sibling state and private paths and require startup source disclosure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 179.755235,
+              "required": false
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1629.865136,
+              "required": false
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "benchmark collection accounts for every missing invalid refused cancelled malformed and interrupted trial before judging",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 239.757995,
+              "required": false
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 252.323014,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "benchmark intake reconciles frozen runtime settings host and source identities rather than trusting sealed audit status",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 235.959197,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "benchmark cross-trial and curator session reuse invalidates both arms including declarations in malformed submissions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 234.874529,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 222.129175,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "benchmark private storage rejects public and linked artifacts and records unreadable journals as unavailable",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 124.565608,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-1",
+              "name": "benchmark per-trial byte bounds retain oversized journals as unavailable alongside a valid completed control",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 109.111751,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-1",
+              "name": "benchmark runtime byte identity rejects a structurally valid journal from a different build under the same version",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 138.02688,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-1",
+              "name": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3.540838,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-1",
+              "name": "benchmark CLI freezes operator plans enforces packet grants binds fresh journals and reports incomplete denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2378.784164,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-1",
+              "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1069.51823,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-1",
+              "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 110.130378,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-1",
+              "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 902.220056,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1342.123984,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-1",
+              "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1774.239232,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-1",
+              "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 722.339071,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 795.38385,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-1",
+              "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1022.393283,
+              "required": false
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-1",
+              "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2610.093937,
+              "required": false
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-1",
+              "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 922.692921,
+              "required": false
+            },
+            {
+              "sequence": 24,
+              "fileId": "file-1",
+              "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 178.566192,
+              "required": true
+            },
+            {
+              "sequence": 25,
+              "fileId": "file-1",
+              "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1678.50746,
+              "required": true
+            },
+            {
+              "sequence": 26,
+              "fileId": "file-1",
+              "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2275.156295,
+              "required": true
+            },
+            {
+              "sequence": 27,
+              "fileId": "file-1",
+              "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4467.927132,
+              "required": true
+            },
+            {
+              "sequence": 28,
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1934.174729,
+              "required": true
+            },
+            {
+              "sequence": 29,
+              "fileId": "file-1",
+              "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1079.744871,
+              "required": true
+            },
+            {
+              "sequence": 30,
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1423.208276,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+              "outcome": "passed",
+              "terminalSequences": [24]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+              "outcome": "passed",
+              "terminalSequences": [25]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+              "outcome": "passed",
+              "terminalSequences": [26]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+              "outcome": "passed",
+              "terminalSequences": [27]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+              "outcome": "passed",
+              "terminalSequences": [28]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+              "outcome": "passed",
+              "terminalSequences": [29]
+            },
+            {
+              "fileId": "file-1",
+              "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+              "outcome": "passed",
+              "terminalSequences": [30]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtimeProfile": "installed-node26",
+      "acceptance": {
+        "tarballSha256": "f5d4536737ce71e7ead6a6e457ebbc20d837b45117386baa9d952bafe85c1c89",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-benchmark-scoring",
+          "timeoutMs": 120000,
+          "passed": 30,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 30,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "benchmark freezes complete paired synthetic protocols before writes and rejects invalid inventories without artifacts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 238.455417,
+                "required": false
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "benchmark anonymous packets withhold labels sibling state and private paths and require startup source disclosure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 117.824292,
+                "required": false
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2658.3975,
+                "required": false
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "benchmark collection accounts for every missing invalid refused cancelled malformed and interrupted trial before judging",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 287.526,
+                "required": false
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 282.7295,
+                "required": false
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "benchmark intake reconciles frozen runtime settings host and source identities rather than trusting sealed audit status",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 256.459667,
+                "required": false
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "benchmark cross-trial and curator session reuse invalidates both arms including declarations in malformed submissions",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 290.9895,
+                "required": false
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 200.0685,
+                "required": false
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "benchmark private storage rejects public and linked artifacts and records unreadable journals as unavailable",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 121.183541,
+                "required": false
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-1",
+                "name": "benchmark per-trial byte bounds retain oversized journals as unavailable alongside a valid completed control",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 106.932542,
+                "required": false
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-1",
+                "name": "benchmark runtime byte identity rejects a structurally valid journal from a different build under the same version",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 149.205208,
+                "required": false
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-1",
+                "name": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2.803625,
+                "required": false
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-1",
+                "name": "benchmark CLI freezes operator plans enforces packet grants binds fresh journals and reports incomplete denominators",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2029.478375,
+                "required": false
+              },
+              {
+                "sequence": 14,
+                "fileId": "file-1",
+                "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 883.545042,
+                "required": false
+              },
+              {
+                "sequence": 15,
+                "fileId": "file-1",
+                "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 88.317625,
+                "required": false
+              },
+              {
+                "sequence": 16,
+                "fileId": "file-1",
+                "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1097.462833,
+                "required": false
+              },
+              {
+                "sequence": 17,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1910.913458,
+                "required": false
+              },
+              {
+                "sequence": 18,
+                "fileId": "file-1",
+                "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1441.692458,
+                "required": false
+              },
+              {
+                "sequence": 19,
+                "fileId": "file-1",
+                "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 664.102958,
+                "required": false
+              },
+              {
+                "sequence": 20,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 669.627708,
+                "required": false
+              },
+              {
+                "sequence": 21,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 888.397958,
+                "required": false
+              },
+              {
+                "sequence": 22,
+                "fileId": "file-1",
+                "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2022.972916,
+                "required": false
+              },
+              {
+                "sequence": 23,
+                "fileId": "file-1",
+                "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1152.121125,
+                "required": false
+              },
+              {
+                "sequence": 24,
+                "fileId": "file-1",
+                "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 121.922875,
+                "required": true
+              },
+              {
+                "sequence": 25,
+                "fileId": "file-1",
+                "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1267.932459,
+                "required": true
+              },
+              {
+                "sequence": 26,
+                "fileId": "file-1",
+                "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2925.604708,
+                "required": true
+              },
+              {
+                "sequence": 27,
+                "fileId": "file-1",
+                "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 6151.939708,
+                "required": true
+              },
+              {
+                "sequence": 28,
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1705.356042,
+                "required": true
+              },
+              {
+                "sequence": 29,
+                "fileId": "file-1",
+                "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 870.702333,
+                "required": true
+              },
+              {
+                "sequence": 30,
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2016.75375,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+                "outcome": "passed",
+                "terminalSequences": [24]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+                "outcome": "passed",
+                "terminalSequences": [25]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+                "outcome": "passed",
+                "terminalSequences": [26]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+                "outcome": "passed",
+                "terminalSequences": [27]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+                "outcome": "passed",
+                "terminalSequences": [28]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+                "outcome": "passed",
+                "terminalSequences": [29]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+                "outcome": "passed",
+                "terminalSequences": [30]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v26.9.0",
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    {
+      "runtimeProfile": "final-installed-node22",
+      "acceptance": {
+        "tarballSha256": "aee9c18c3f3bd13f92818830b408905124960c0c1f20649ea99e0fd33453c9b9",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-benchmark-scoring",
+          "timeoutMs": 120000,
+          "passed": 30,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 30,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "fa11d16826cc48208a9e92de846b897aa33ac17a038eabea0137845ea4d74e2d"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "benchmark freezes complete paired synthetic protocols before writes and rejects invalid inventories without artifacts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 416.105213,
+                "required": false
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "benchmark anonymous packets withhold labels sibling state and private paths and require startup source disclosure",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 190.763504,
+                "required": false
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1646.556166,
+                "required": false
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "benchmark collection accounts for every missing invalid refused cancelled malformed and interrupted trial before judging",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 250.021314,
+                "required": false
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 273.01595,
+                "required": false
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "benchmark intake reconciles frozen runtime settings host and source identities rather than trusting sealed audit status",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 233.743884,
+                "required": false
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "benchmark cross-trial and curator session reuse invalidates both arms including declarations in malformed submissions",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 259.446037,
+                "required": false
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 226.826676,
+                "required": false
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "benchmark private storage rejects public and linked artifacts and records unreadable journals as unavailable",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 138.914489,
+                "required": false
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-1",
+                "name": "benchmark per-trial byte bounds retain oversized journals as unavailable alongside a valid completed control",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 114.042592,
+                "required": false
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-1",
+                "name": "benchmark runtime byte identity rejects a structurally valid journal from a different build under the same version",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 146.710869,
+                "required": false
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-1",
+                "name": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3.628313,
+                "required": false
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-1",
+                "name": "benchmark CLI freezes operator plans enforces packet grants binds fresh journals and reports incomplete denominators",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2439.224025,
+                "required": false
+              },
+              {
+                "sequence": 14,
+                "fileId": "file-1",
+                "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1146.686206,
+                "required": false
+              },
+              {
+                "sequence": 15,
+                "fileId": "file-1",
+                "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 118.003032,
+                "required": false
+              },
+              {
+                "sequence": 16,
+                "fileId": "file-1",
+                "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 926.498235,
+                "required": false
+              },
+              {
+                "sequence": 17,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1358.073124,
+                "required": false
+              },
+              {
+                "sequence": 18,
+                "fileId": "file-1",
+                "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1808.39654,
+                "required": false
+              },
+              {
+                "sequence": 19,
+                "fileId": "file-1",
+                "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 737.013531,
+                "required": false
+              },
+              {
+                "sequence": 20,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 832.329512,
+                "required": false
+              },
+              {
+                "sequence": 21,
+                "fileId": "file-1",
+                "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1042.948675,
+                "required": false
+              },
+              {
+                "sequence": 22,
+                "fileId": "file-1",
+                "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2703.985427,
+                "required": false
+              },
+              {
+                "sequence": 23,
+                "fileId": "file-1",
+                "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 937.651761,
+                "required": false
+              },
+              {
+                "sequence": 24,
+                "fileId": "file-1",
+                "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 186.312853,
+                "required": true
+              },
+              {
+                "sequence": 25,
+                "fileId": "file-1",
+                "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1745.433043,
+                "required": true
+              },
+              {
+                "sequence": 26,
+                "fileId": "file-1",
+                "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2303.69839,
+                "required": true
+              },
+              {
+                "sequence": 27,
+                "fileId": "file-1",
+                "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4580.181577,
+                "required": true
+              },
+              {
+                "sequence": 28,
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1993.604679,
+                "required": true
+              },
+              {
+                "sequence": 29,
+                "fileId": "file-1",
+                "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1121.471723,
+                "required": true
+              },
+              {
+                "sequence": 30,
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1493.596718,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake",
+                "outcome": "passed",
+                "terminalSequences": [24]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities",
+                "outcome": "passed",
+                "terminalSequences": [25]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels",
+                "outcome": "passed",
+                "terminalSequences": [26]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+                "outcome": "passed",
+                "terminalSequences": [27]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+                "outcome": "passed",
+                "terminalSequences": [28]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status",
+                "outcome": "passed",
+                "terminalSequences": [29]
+              },
+              {
+                "fileId": "file-1",
+                "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+                "outcome": "passed",
+                "terminalSequences": [30]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    }
+  ],
+  "guardProof": {
+    "mutations": [
+      {
+        "guard": "label-consistency",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "2444f78145ab8983e488494583f2c24d157bcca332e60686de92fb4278d5f484",
+        "test": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "reached-responses",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "2444f78145ab8983e488494583f2c24d157bcca332e60686de92fb4278d5f484",
+        "test": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "all-completed-claims",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "2444f78145ab8983e488494583f2c24d157bcca332e60686de92fb4278d5f484",
+        "test": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim",
+        "mutantExitCode": 1,
+        "killed": true
+      }
+    ],
+    "restored": true,
+    "restoredCallbacksPassed": 3,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "tests": 830,
+    "pass": 605,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 225,
+    "todo": 0
+  },
+  "fullFormattingPassed": true,
+  "directChangedCodeLintPassed": true,
+  "generatedSchemaParityPassed": true,
+  "workflowActionlintVersion": "1.7.12",
+  "limitations": [
+    "Case labels and judgments remain declarations; matching citations and artifact bindings do not prove claims.",
+    "Host isolation and complete external attempts are not verified.",
+    "Profile permits at most one completed claim per trial; broader multi-claim scoring/deduplication remains required.",
+    "No numerical probability exists in the candidate contract; confidence/calibration cannot be invented.",
+    "Partial/interrupted claims are separately counted as unscored; paired metrics describe completed-review claims.",
+    "Optional native skips are unavailable checks, not native acceptance.",
+    "Exact engine/runtime-byte identity still applies to frozen benchmark artifacts; legacy plans are not a cross-build artifact compatibility promise."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "gateA": "open",
+  "hostedAcceptance": "pending"
+}

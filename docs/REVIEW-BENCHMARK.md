@@ -312,3 +312,8 @@ artifact changes, privacy and real CLI/MCP worker boundaries. The installed-pack
 helper repeats these original assertions with the harness outside shipped code.
 Independent authoritative judgments, host isolation, complete external attempts,
 numerical confidence/calibration and broader benchmark cohorts remain required.
+
+[The dated scoring acceptance](measurements/review-benchmark-scoring-2026-10-06.json)
+retains exact code/file/runtime identities, the original required cases, restored
+compiling guard proofs and the bounded scope. Hosted acceptance is recorded
+separately; these development checks make no quality claim.
