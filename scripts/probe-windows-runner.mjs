@@ -116,6 +116,14 @@ try {
     ],
     ["if (-not $api::SetInformationJobObject", "limits-flags-written"],
     ["if (-not $api::AssignProcessToJobObject", "limits-installed"],
+    [
+      "} finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }",
+      "ownership-checked",
+    ],
+    [
+      "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)",
+      "limits-freed",
+    ],
     ["$line = [IO.File]::ReadAllText", "ownership-established"],
     ["Add-Type -TypeDefinition $source", "source-decompressed"],
     ["$result = [ChecktrailWindowsJobV1]::Run", "source-compiled"],
@@ -134,6 +142,18 @@ try {
       "[IO.File]::WriteAllText('startup-assigned', [string]$bootstrapAssigned)\n" +
       mark("assignment-returned") +
       "if (-not $bootstrapAssigned) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+  );
+  source = source.replace(
+    "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)",
+    mark("free-limits-call") +
+      "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)\n" +
+      mark("free-limits-returned"),
+  );
+  source = source.replace(
+    "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)",
+    mark("console-encoding-call") +
+      "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)\n" +
+      mark("console-encoding-returned"),
   );
   source = source.replace(
     "[Environment]::Exit($result)",
