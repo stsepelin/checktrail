@@ -2130,5 +2130,15 @@
       "file": "dist/test/swift-tools-cancel.test.js",
       "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }

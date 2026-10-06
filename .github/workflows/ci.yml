@@ -289,6 +289,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - run: node scripts/verify-required-native-tests.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
       - run: docker build --file scripts/gradle-tools.Dockerfile --tag checktrail-gradle-test:9.8.0 .checktrail/gradle-review-tools
       - run: node scripts/prepare-gradle-dependencies.mjs
