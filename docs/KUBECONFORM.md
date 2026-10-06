@@ -75,8 +75,9 @@ selects exact already acquired archive/schema bytes and
 `CHECKTRAIL_INFRA_BASE_PREPARED=1` uses the prepared immutable base. Local acceptance
 measures that prepared-artifact path; the default network fetch path and hosted CI
 for this revision remain unverified. Release signatures and complete SDK/publisher/
-license closure remain open. The runtime also contains pinned Terraform, Helm and
-Kustomize for subsequent development; their presence is not engine support.
+license closure remain open. The runtime also contains pinned Terraform, Helm and Kustomize. The separate
+[TERRAFORM.md](TERRAFORM.md) profile covers provider-free JSON modules; broader
+Terraform and Helm/Kustomize engine profiles remain pending.
 
 Copy the verified schemas directory into the declared `schemaDirectory` before
 planning a consumer. The public example requires `tools/kubernetes`. Acceptance
@@ -101,6 +102,6 @@ shared foreground dev-env lifecycle and verify cleanup at task end.
 an owned container remains, preserving code and preparation artifacts.
 
 No inference or real-project field evaluation is part of these controls. Broader
-Kubernetes schemas, Helm/Kustomize/Terraform engine profiles, Windows, complete
+Kubernetes schemas, Helm/Kustomize and broader Terraform profiles, Windows, complete
 attempt archives, full provenance and representative-project performance remain
 required and unverified.

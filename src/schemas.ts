@@ -18,6 +18,7 @@ export {
 } from "./external-adapter.js";
 export { actionlintConfigSchema } from "./actionlint.js";
 export { cppToolsConfigSchema } from "./cpp-tools.js";
+export { terraformConfigSchema } from "./terraform.js";
 export { kubeconformConfigSchema } from "./kubeconform.js";
 export { swiftToolsConfigSchema } from "./swift-tools.js";
 export {

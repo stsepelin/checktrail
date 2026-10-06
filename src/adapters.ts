@@ -4,6 +4,7 @@ import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { cppToolsCheck } from "./cpp-tools.js";
+import { terraformCheck } from "./terraform.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
@@ -166,8 +167,13 @@ export const adapters = [
       "Chart.yaml",
       "kustomization.yaml",
       "checktrail.kubeconform.json",
+      "checktrail.terraform.json",
     ],
-    checks: ["infrastructure.actionlint", "infrastructure.kubeconform"],
+    checks: [
+      "infrastructure.actionlint",
+      "infrastructure.kubeconform",
+      "infrastructure.terraform-validate",
+    ],
   },
 ] as const;
 
@@ -180,7 +186,8 @@ function matches(
     (adapter.id === "dotnet" &&
       /\.(csproj|fsproj|vbproj|sln|slnx)$/.test(name)) ||
     (adapter.id === "ruby" && name.endsWith(".gemspec")) ||
-    (adapter.id === "infrastructure" && name.endsWith(".tf"))
+    (adapter.id === "infrastructure" &&
+      (name.endsWith(".tf") || name.endsWith(".tf.json")))
   );
 }
 
@@ -501,9 +508,18 @@ export async function checksFor(
     const other = project.markers.filter(
       (file) =>
         workflowRoot(file) !== project.path &&
-        path.posix.basename(file) !== "checktrail.kubeconform.json",
+        path.posix.basename(file) !== "checktrail.kubeconform.json" &&
+        path.posix.basename(file) !== "checktrail.terraform.json" &&
+        !(
+          project.files.includes("checktrail.terraform.json") &&
+          file.endsWith(".tf.json")
+        ),
     );
     return [
+      ...(project.files.includes("checktrail.terraform.json") ||
+      requested?.includes("infrastructure.terraform-validate")
+        ? [await terraformCheck(source, project)]
+        : []),
       ...(project.files.includes("checktrail.kubeconform.json") ||
       requested?.includes("infrastructure.kubeconform")
         ? [await kubeconformCheck(source, project)]

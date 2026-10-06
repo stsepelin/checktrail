@@ -2218,5 +2218,51 @@
       "file": "dist/test/kubeconform-reached.test.js",
       "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source"
     }
+  ],
+  "terraform": [
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform source changed after the real validator starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/terraform-surfaces.test.js",
+      "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair"
+    }
   ]
 }

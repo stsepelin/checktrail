@@ -34,6 +34,7 @@ export const PARSERS = [
   "clang-json",
   "cpp-tools-json",
   "kubeconform-json",
+  "terraform-json",
   "java-json",
   "checkstyle-json",
   "maven-json",

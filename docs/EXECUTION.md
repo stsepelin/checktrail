@@ -181,7 +181,9 @@ an unavailable runtime or external service does not count as verification.
   per-file completion evidence. The separate KUBECONFORM.md profile adds pinned
   offline Kubernetes schema validation, every-document accounting, physical source
   diagnostics, native/installed CLI/MCP controls and compiling guard proofs.
-  Terraform, Helm and Kustomize engine integrations remain pending under E16.
+  TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
+  source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
+  Terraform providers/modules and Helm/Kustomize integrations remain pending under E16.
   See `ACTIONLINT.md` for profile limits and reproduction steps.
 - Verified: fresh offline tarball install; public library, installed CLI and
   packaged MCP stdio checks against eight synthetic JavaScript toolchain projects.
