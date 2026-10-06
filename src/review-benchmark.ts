@@ -1,3 +1,5 @@
+import { projectReviewCandidateForIndependentStage } from "./review-provider-schema.js";
+import { projectReviewNativeObservations } from "./review-adjudication.js";
 import { createHash, randomInt, randomUUID } from "node:crypto";
 import {
   constants,
@@ -684,15 +686,33 @@ export class ReviewBenchmark {
     book: z.infer<typeof reviewBenchmarkJudgingSchema>,
     blindId: string,
   ) {
-    const evidence = book.packets.find((p) => p.blindId === blindId);
-    if (!evidence || !manifest.plan.judging)
+    const rawEvidence = book.packets.find((p) => p.blindId === blindId);
+    if (!rawEvidence || !manifest.plan.judging)
       throw new Error("Unknown benchmark judge slot");
-    const claims = evidence.outputs.flatMap((output, outputIndex) =>
+    const evidence = {
+      ...rawEvidence,
+      outputs: rawEvidence.outputs.map((output) => ({
+        ...output,
+        candidates: output.candidates.map(
+          projectReviewCandidateForIndependentStage,
+        ),
+      })),
+      native: rawEvidence.native.map((observation) => ({
+        candidate: projectReviewCandidateForIndependentStage(
+          observation.candidate,
+        ),
+        observations: projectReviewNativeObservations(
+          JSON.parse(observation.recipe.contents),
+          observation.run,
+        ),
+      })),
+    };
+    const claims = rawEvidence.outputs.flatMap((output, outputIndex) =>
       output.candidates.map((candidate, candidateIndex) => ({
         claimId: sha(
-          JSON.stringify({ outputIndex, candidateIndex, candidate }),
+          JSON.stringify({ blindId, outputIndex, candidateIndex, candidate }),
         ),
-        candidate,
+        candidate: projectReviewCandidateForIndependentStage(candidate),
       })),
     );
     const instructions = manifest.plan.judging.instructions;
@@ -1030,6 +1050,8 @@ export class ReviewBenchmark {
       labelDisagreements: 0,
       unknownJudgeLabels: 0,
       unexpectedFamilyClaims: 0,
+      declaredClaimProbabilities: 0,
+      unknownClaimProbabilities: 0,
     };
     for (const trial of manifest.trials) {
       const pair = pairs.find(
@@ -1063,6 +1085,15 @@ export class ReviewBenchmark {
           "Benchmark scoring profile requires one completed reviewer output with at most one claim; no partial score is returned",
         );
       const claim = claims[0];
+      // The raw sealed reviewer candidate supplies its own prediction. Judge
+      // outputs, severity, counterclaims and numerical fit artifacts cannot replace it.
+      const probability = claim
+        ? (evidence.outputs[0]!.candidates[0]!.confidence?.probability ?? null)
+        : null;
+      if (claim) {
+        if (probability === null) accounting.unknownClaimProbabilities++;
+        else accounting.declaredClaimProbabilities++;
+      }
       const response =
         intake.status === "accepted"
           ? reviewBenchmarkJudgmentResponseSchema.parse(
@@ -1086,8 +1117,7 @@ export class ReviewBenchmark {
         id: pair.id,
         status: "completed",
         decision: claim ? "finding" : "abstain",
-        // Candidate contracts contain no numerical probability; never invent one from severity.
-        probability: null,
+        probability,
         judgement,
       });
     }
@@ -1130,7 +1160,8 @@ export class ReviewBenchmark {
       artifactBindingsChecked: true,
       pairingBoundToManifest: true,
       labelSource: "frozen-declared-synthetic-case-variants",
-      probabilitiesAvailable: false,
+      probabilitiesAvailable: accounting.declaredClaimProbabilities > 0,
+      probabilitySource: "sealed-host-declared-uncalibrated-claim-probability",
       sourceIncluded: false,
       claimsVerified: false,
       labelsVerified: false,

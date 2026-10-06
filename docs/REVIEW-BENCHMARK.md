@@ -158,8 +158,9 @@ status and judging preparation exit `2` after collection when any planned trial 
 not completed. Worker packets close after collection.
 
 `judging.json` cannot be prepared before all slots have been collected. It contains
-one anonymous packet per planned trial, sorted by independent judging ID, with the
-frozen context, accepted reviewer output and reached structured native receipts.
+one private operator evidence row per planned trial, sorted by independent judging
+ID, with the frozen context, accepted reviewer output and complete reached
+structured native receipts. Worker packets use the independent projection below.
 Rejected/replayed submissions remain in the private raw archive and do not become
 extra accepted outputs. Foreign/invalid evidence has no attributed reviewer output.
 Curator labels, arm names, host identity/usage and trial-to-judge mapping remain in
@@ -195,8 +196,12 @@ returns only that judge's packet or source-free metadata. Packet disclosure stil
 requires `--detailed --allow-review-source`. Tool arguments cannot select a sibling,
 write a response, seal results or grant disclosure. Discovery writes no artifacts.
 
-A packet contains the assigned source context, reached native receipts, accepted
-reviewer outputs and occurrence-bound claim IDs. Its assignment digest binds the
+A worker packet contains the assigned source context, raw per-case native
+observations, accepted hypothesis projections and occurrence/slot-bound claim IDs.
+Prior candidate IDs, severity, confidence, attribution and fix scope are withheld
+from every output, claim and native target. Native aggregate verdicts/counts and
+recipe/run identifiers are withheld; complete receipts stay in the private operator
+artifact. See [the shared independent views](REVIEW-CLAIM-PROBABILITY.md). Its assignment digest binds the
 frozen protocol, collected bytes, instructions and exact anonymous evidence. Curator
 answers, arm names, trial mapping, host profile, sibling packets and earlier judgment
 responses are absent. Source, instruction, model and recipe prose can still reveal
@@ -293,8 +298,11 @@ multi-claim deduplication. An absent, rejected, unresolved or label-disagreeing
 judgment leaves a completed claim unresolved in the conservative precision
 denominator. A claim outside the declared family does the same. Disagreements,
 unknown judge labels and missing/rejected responses have separate counts.
-No probability is inferred from severity: the candidate contract has no numerical
-probability, so proper probability losses remain unscored.
+The scorer reads an optional uncalibrated probability from the original sealed
+reviewer candidate, preserving exact zero/one and unknown values. It never derives
+a probability from severity or lets a judgment override it. Known and unknown
+completed claim probabilities are counted separately; incomplete retained prefixes
+remain unscored. See [declared claim probabilities](REVIEW-CLAIM-PROBABILITY.md).
 
 The report binds observed artifact digests, arm declarations and frozen scoring
 parameters. `artifactBindingsChecked` and `pairingBoundToManifest` describe these

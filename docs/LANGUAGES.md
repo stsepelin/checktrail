@@ -290,3 +290,10 @@ the shared library/CLI/MCP engine. Exact declared trial/cluster/model binding an
 unavailable/outside-support states do not authenticate labels, independent host
 isolation, candidate probabilities or held-out calibration. This adds no native
 language acceptance or field evaluation permission.
+
+The [declared claim probability profile](REVIEW-CLAIM-PROBABILITY.md) binds
+uncalibrated numerical predictions to original sealed single-claim candidates and
+keeps unknown/incomplete predictions separately accounted. Shared independent
+stage views withhold prior candidate metadata and native aggregate verdicts while
+retaining exact source and per-case observations. This adds no native language,
+authoritative label, host-isolation or held-out quality acceptance.

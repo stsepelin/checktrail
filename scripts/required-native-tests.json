@@ -2492,5 +2492,31 @@
       "file": "dist/test/review-calibration.test.js",
       "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference"
     }
+  ],
+  "review-claim-probability": [
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "claim probability accepts exact endpoints unknown and legacy declarations without turning severity into calibrated confidence"
+    },
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "independent refuter and adjudicator packets whitelist hypotheses and withhold every prior candidate identity severity confidence attribution and scope"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "sealed benchmark claim probabilities come from original reviewer candidates preserve exact zero one and unknown losses and never promote quality"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "anonymous benchmark judge packets withhold all prior candidate metadata across outputs claims and native receipts while preserving source and opaque slot binding"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "sealed probability bindings reject changed retained candidates and foreign judgment predictions without accepting numerical overrides or losing incomplete slots"
+    },
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "claim probability transport schemas require nullable confidence on strict provider wires while original legacy null and numerical responses remain valid without remote inference"
+    }
   ]
 }
