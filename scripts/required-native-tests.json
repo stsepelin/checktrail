@@ -2452,5 +2452,15 @@
       "file": "dist/test/ruby-tools-cancellation.test.js",
       "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
     }
+  ],
+  "maven-preparation": [
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven operator acquisition retries only terminal Central artifact rate limits and resets partial repositories before rerunning"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
+    }
   ]
 }
