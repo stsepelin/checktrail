@@ -24,6 +24,14 @@ and runs the declared rustdoc target through `cargo test --doc`. Without a build
 one documentation target. The explicit multi-member feature/target profile is
 documented in [RUST-BUILD.md](RUST-BUILD.md).
 
+On macOS, direct libtest invocations use the canonical installed compiler's
+host library directory and the owned executable's output/dependency directories
+in `DYLD_FALLBACK_LIBRARY_PATH`. Cargo commands keep their own environment.
+This supports the shared standard library used by native proc-macro test
+executables. Arbitrary build-script library search paths are not reconstructed;
+unsupported runtime dependencies remain incomplete. See Cargo's
+[dynamic library paths](https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths).
+
 The native profile runs whole groups. A controlled native probe showed that a
 listed doctest name containing spaces could select zero cases with an exact
 filter. Test inventories therefore have to reconcile against every terminal case

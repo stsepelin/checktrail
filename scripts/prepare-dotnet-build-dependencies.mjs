@@ -58,6 +58,11 @@ const image = execFileSync(
   { encoding: "utf8" },
 ).trim();
 assert.match(image, /^sha256:[a-f0-9]{64}$/);
+assert.ok(
+  typeof process.getuid === "function" && typeof process.getgid === "function",
+  "Dependency preparation requires a POSIX host user identity",
+);
+const containerUser = `${process.getuid()}:${process.getgid()}`;
 const leaseFile = destination + ".preparing";
 const lease = await open(leaseFile, "wx");
 let temporary;
@@ -79,6 +84,8 @@ try {
     "run",
     "--rm",
     "--init",
+    "--user",
+    containerUser,
     "--cpus",
     "2",
     "--memory",
@@ -99,6 +106,8 @@ try {
     "NUGET_HTTP_CACHE_PATH=/preparation/http",
     "--env",
     "DOTNET_CLI_HOME=/preparation/home",
+    "--env",
+    "HOME=/preparation/home",
     "--workdir",
     "/preparation/workspace",
     ...(process.env.CHECKTRAIL_TEST_TASK
