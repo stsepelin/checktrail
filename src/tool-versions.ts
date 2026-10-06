@@ -229,7 +229,12 @@ export async function toolsFor(
       ]),
     ];
   if (check.adapter === "ruby")
-    return [command("ruby", "ruby", ["--disable-gems", "--version"])];
+    return [
+      ...(check.id === "ruby.syntax"
+        ? []
+        : [{ name: "node", source: "engine-runtime" } as const]),
+      command("ruby", "ruby", ["--disable-gems", "--version"]),
+    ];
   if (check.id === "infrastructure.actionlint")
     return [
       { name: "node", source: "engine-runtime" },

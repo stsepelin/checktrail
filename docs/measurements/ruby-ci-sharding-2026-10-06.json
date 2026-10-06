@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "profile": "ruby-ci-sharding",
+  "measuredOn": "2026-10-06",
+  "baseCommit": "6cbc527c81a8b532413f96a536daef8f458e7476",
+  "scope": "Separate the existing required native controls into files so each gets the unchanged bounded file deadline; runtime behavior, original callbacks and completion criteria are unchanged.",
+  "fileDeadlineMs": 300000,
+  "originalCallbackProof": {
+    "unchangedOriginalCallbackBodies": 7,
+    "sharedLifecycleHelperBodyUnchanged": true,
+    "requiredCallbacks": 8,
+    "requiredFileDeadlineMs": 300000,
+    "engineRuntimeChanged": false,
+    "proof": [
+      {
+        "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean",
+        "originalFile": "test/ruby-tools.test.ts",
+        "currentFile": "test/ruby-tools.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "c703abc41a35aea4ed8412be0338a255aaeb0644d9c7bb1c4bc1e45b09facd2b"
+      },
+      {
+        "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair",
+        "originalFile": "test/ruby-tools.test.ts",
+        "currentFile": "test/ruby-tools-tests.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "37d066d634c7241ff25a4b38ec1480c38651d643e6019ee6f986212412957ab1"
+      },
+      {
+        "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+        "originalFile": "test/ruby-tools.test.ts",
+        "currentFile": "test/ruby-tools-evidence.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "203548383e61d17c4a342c2342bffe22a3a24ea5be26374f74c0528cf02f7dee"
+      },
+      {
+        "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+        "originalFile": "test/ruby-tools-lifecycle.test.ts",
+        "currentFile": "test/ruby-tools-lifecycle.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "ba030c7838640e94e18d07316e821a1c558beaba47a6b6bd955b0058355bb7b0"
+      },
+      {
+        "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+        "originalFile": "test/ruby-tools-lifecycle.test.ts",
+        "currentFile": "test/ruby-tools-minitest-lifecycle.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "fc2ce94a4b4ec534adb15c066548c68cc984eb256115c14383acd30f8a39bc9d"
+      },
+      {
+        "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+        "originalFile": "test/ruby-tools-surfaces.test.ts",
+        "currentFile": "test/ruby-tools-surfaces.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "a82cc79abcfd38eafa25a33002e8113abfc5f3d069816d83392d145dca63560f"
+      },
+      {
+        "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs",
+        "originalFile": "test/ruby-tools-surfaces.test.ts",
+        "currentFile": "test/ruby-tools-cancellation.test.ts",
+        "unchangedCallbackAST": true,
+        "callbackASTSha256": "1c09b7a2bfb68d406d861cfd8f0af565253883d073657b44d245a8597d5bf8f7"
+      }
+    ]
+  },
+  "unchangedEngineSourceFiles": [
+    "src/ruby-tools-evidence.ts",
+    "src/ruby-tools-native.ts",
+    "src/ruby-tools-runner.ts",
+    "src/ruby-tools.ts",
+    "src/ruby.ts"
+  ],
+  "sourcePins": [
+    {
+      "file": "docs/RUBY-TOOLS.md",
+      "sha256": "f591c62b6d49fb022e71430731512cd987ea01884451b1a8e6f42a74416a7eec"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "deb2879b6c6b54c8b344553c83d68aef4e5ad60c663a47b0d003858ce643ffdc"
+    },
+    {
+      "file": "scripts/verify-ruby-tools-package.mjs",
+      "sha256": "1b5b6837a475f4686de9f625f5bfae047933c3d1e6abc34ec6f162be75cea283"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "sha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "sha256": "baeb7e6fc30558f04da87c50574162373046cfeaf5cdf93d982e1063d2e06527"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "sha256": "2313d0d5e5432f8ce65b1cf998c2057e7c2342d0046a992a604e0ddcdbdfb211"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "sha256": "8f161a00ce4e23adf5680b04b90c8f16a71fc1535acba7f01bb856d86b6323f4"
+    },
+    {
+      "file": "src/ruby.ts",
+      "sha256": "b38512ae9e9ede83455851b9b62958958fb5401cc6282d7d230db8c7909669d6"
+    },
+    {
+      "file": "test/ruby-tools-cancellation.test.ts",
+      "sha256": "3dc51e76219b0014e873170c5b6959ceafcd4f29a5ae1f5c867d47e1d91eccdf"
+    },
+    {
+      "file": "test/ruby-tools-evidence.test.ts",
+      "sha256": "8887bd172fff97eac55d396313200f50f0a02a51fb8d3d1d7ae0cc8e24dd9c07"
+    },
+    {
+      "file": "test/ruby-tools-lifecycle-fixture.ts",
+      "sha256": "4672e639a5cdeeb3bcb796e18a16ee3c1ed0e0b4edbf03bfebbf6ab305d90cef"
+    },
+    {
+      "file": "test/ruby-tools-lifecycle.test.ts",
+      "sha256": "e09558149925fb488da4be986a1ab48ec687a94d454ded8dbc64e304476d18e2"
+    },
+    {
+      "file": "test/ruby-tools-minitest-lifecycle.test.ts",
+      "sha256": "4fb00fb2723071f1c708bc48151b8dfd0bbec064bc5735268fe843927d3d9938"
+    },
+    {
+      "file": "test/ruby-tools-surfaces.test.ts",
+      "sha256": "b4733a56911f756905a119ad1c73c234b3e80f4cb70db8c7dd1bf061511f8107"
+    },
+    {
+      "file": "test/ruby-tools-tests.test.ts",
+      "sha256": "3767c8a3a83292366cc21a511f124fa0ef3e7857fe430ec019b1a9f34ace87fc"
+    },
+    {
+      "file": "test/ruby-tools.test.ts",
+      "sha256": "31f7abc57e5ac603b16565462178f353b37b1e3ea68899a6267369443754c3d0"
+    }
+  ],
+  "originalIncompleteAttempts": {
+    "combinedMainFile": {
+      "failureType": "testTimeoutFailure",
+      "code": "ERR_TEST_FAILURE",
+      "deadlineMs": 300000
+    },
+    "combinedLifecycleFile": {
+      "failureType": "testTimeoutFailure",
+      "code": "ERR_TEST_FAILURE",
+      "deadlineMs": 300000
+    },
+    "countedAsAcceptance": false
+  },
+  "nativeSource": {
+    "profile": "ruby-tools",
+    "timeoutMs": 300000,
+    "passed": 8,
+    "required": 8,
+    "problems": [],
+    "complete": true
+  },
+  "installed": {
+    "tarballSha256": "79c06012781390954e51ddbe98975fb79ecda6f93312624b586ba7646ab1696f",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientVersion": "2.3.0",
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "acceptanceClientCopiedOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "ruby-tools",
+      "timeoutMs": 300000,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "sha256:7ef6dab09e7ebcf0a74a07a02e2339c8b2f80fd96d1c31d6b4ac5f57b4b1505e",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "runtimeImage": "sha256:7ef6dab09e7ebcf0a74a07a02e2339c8b2f80fd96d1c31d6b4ac5f57b4b1505e",
+  "acceptanceLogSha256": "a5777c714efe2569f30aa9517b2cdcd3636c677102d49d6e6fa3076f0290dccc",
+  "hostedCIRecheckPending": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "broaderGateAComplete": false
+}

@@ -1,3 +1,7 @@
+import {
+  rubyToolsConfigSchema,
+  rubyToolsRepositorySchema,
+} from "../dist/src/ruby-tools.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import { URL } from "node:url";
 import { z } from "zod";
@@ -118,6 +122,8 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "ruby-tools-config": rubyToolsConfigSchema,
+  "ruby-tools-repository": rubyToolsRepositorySchema,
   "dotnet-build-config": dotnetBuildConfigSchema,
   "dotnet-build-repository": dotnetBuildRepositorySchema,
   "java-config": javaConfigSchema,

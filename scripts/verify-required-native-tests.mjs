@@ -23,6 +23,7 @@ const timeoutMs = [
   "dotnet-format",
   "dotnet-generated",
   "dotnet-method",
+  "ruby-tools",
 ].includes(profile)
   ? 300000
   : 120000;
