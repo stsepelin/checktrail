@@ -28,7 +28,7 @@ corrupt existing cache and rejects links. The dependency preparer executes the
 original `examples/maven` fixture with network access and strict Maven checksums.
 It requires an absent dependency-cache destination and publishes the verified
 artifact tree and manifest together. Its reported `repositorySha256` pins that
-particular acquisition; metadata can differ between preparations. Publisher
+particular acquisition; metadata can differ between preparations. The operator preparer retries only a failed Central artifact acquisition reporting HTTP 429, for at most three attempts with 5- and 15-second waits. Each retry recreates the private artifact tree; test/compiler failures, checksum errors, signals and timeouts remain failures. The receipt records the actual acquisition attempt count. Publisher
 signatures and the complete component/license closure have not been verified.
 
 These are operator preparation commands, not engine actions. Agents use the shared
