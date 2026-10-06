@@ -110,6 +110,12 @@ try {
       "$limits = [Runtime.InteropServices.Marshal]::AllocHGlobal(144)",
       "job-created",
     ],
+    [
+      "[Runtime.InteropServices.Marshal]::WriteInt32($limits,16,0x2000)",
+      "limits-zeroed",
+    ],
+    ["if (-not $api::SetInformationJobObject", "limits-flags-written"],
+    ["if (-not $api::AssignProcessToJobObject", "limits-installed"],
     ["$line = [IO.File]::ReadAllText", "ownership-established"],
     ["Add-Type -TypeDefinition $source", "source-decompressed"],
     ["$result = [ChecktrailWindowsJobV1]::Run", "source-compiled"],
