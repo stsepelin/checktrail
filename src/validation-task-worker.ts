@@ -115,7 +115,7 @@ function disconnect(): void {
     try {
       store?.close();
     } finally {
-      if (process.connected) process.disconnect();
+      if (process.connected) process.disconnect?.();
     }
   };
   void shutdown().then(release, release);
@@ -161,7 +161,7 @@ process.on("message", (message: unknown) => {
         await shutdown();
         reply(id, null);
       } finally {
-        if (process.connected) process.disconnect();
+        if (process.connected) process.disconnect?.();
       }
       return;
     }
