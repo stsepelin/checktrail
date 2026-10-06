@@ -4,6 +4,20 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
 import path from "node:path";
 import process from "node:process";
+const profile = process.env.CHECKTRAIL_RUBY_TOOLS_PROFILE ?? "ruby-tools";
+assert.ok(
+  [
+    "ruby-tools",
+    "ruby-tools-rubocop",
+    "ruby-tools-assertions",
+    "ruby-tools-evidence",
+    "ruby-tools-lifecycle",
+    "ruby-tools-defaults",
+    "ruby-tools-surfaces",
+    "ruby-tools-cancellation",
+  ].includes(profile),
+  "Unknown Ruby acceptance profile",
+);
 const root = fileURLToPath(new URL("../", import.meta.url));
 const prepared = JSON.parse(
   await readFile(
@@ -41,7 +55,7 @@ const base = [
 ];
 const output = execFileSync(
   "docker",
-  [...base, "node", "scripts/verify-required-native-tests.mjs", "ruby-tools"],
+  [...base, "node", "scripts/verify-required-native-tests.mjs", profile],
   { encoding: "utf8", maxBuffer: 2 * 1024 * 1024 },
 );
 const source = JSON.parse(output);
@@ -54,6 +68,7 @@ const installed = JSON.parse(
     env: {
       ...process.env,
       CHECKTRAIL_RUBY_TOOLS_IMAGE: prepared.image,
+      CHECKTRAIL_RUBY_TOOLS_PROFILE: profile,
       CHECKTRAIL_TEST_TASK: prepared.task,
     },
   }),

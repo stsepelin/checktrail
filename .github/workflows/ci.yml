@@ -447,10 +447,23 @@ jobs:
       - run: node scripts/verify-ruby-container.mjs
 
   ruby-tools:
+    name: ruby-tools (${{ matrix.profile }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - ruby-tools-rubocop
+          - ruby-tools-assertions
+          - ruby-tools-evidence
+          - ruby-tools-lifecycle
+          - ruby-tools-defaults
+          - ruby-tools-surfaces
+          - ruby-tools-cancellation
     env:
-      CHECKTRAIL_TEST_TASK: ci-ruby-tools
+      CHECKTRAIL_TEST_TASK: ci-${{ matrix.profile }}
+      CHECKTRAIL_RUBY_TOOLS_PROFILE: ${{ matrix.profile }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
