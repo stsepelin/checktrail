@@ -76,6 +76,11 @@ try {
   );
   for (const file of [
     "ruby-tools.test.js",
+    "ruby-tools-tests.test.js",
+    "ruby-tools-evidence.test.js",
+    "ruby-tools-minitest-lifecycle.test.js",
+    "ruby-tools-lifecycle-fixture.js",
+    "ruby-tools-cancellation.test.js",
     "ruby-tools-lifecycle.test.js",
     "ruby-tools-guards.test.js",
     "ruby-tools-fixture.js",

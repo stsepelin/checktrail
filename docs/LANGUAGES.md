@@ -249,6 +249,8 @@ in [RUST-BUILD.md](RUST-BUILD.md). Native tests stay host-only; a successful for
 compiler/Clippy profile provides no runtime test evidence. The bounded macOS
 arm64 Rust test/workspace repair and offline installed workspace profile are
 recorded in [the CI repair measurement](measurements/rust-ci-repair-2026-10-06.json);
+the [GNU loader repair](measurements/rust-gnu-loader-2026-10-06.json) separately
+records Linux arm64 GNU source/installed controls and a macOS workspace regression;
 other platform/runtime combinations and hosted CI remain separately unverified.
 
 The [Checkstyle profile](CHECKSTYLE.md) adds pinned configured Java source audits,
