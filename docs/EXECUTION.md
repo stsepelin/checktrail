@@ -24,7 +24,9 @@ an unavailable runtime or external service does not count as verification.
 
 ## M2
 
-- Implemented: opt-in `dotnet.test` using the same fresh build closure for declared C#/F#/VB NUnit projects. Native discovery, every case, source symbols, execution and TRX reconcile; skipped and unbound cases remain incomplete. DOTNET-TEST.md records the bounded profile; formatting and wider E12 scope remain open.
+- Implemented: opt-in `dotnet.format-whitespace` for bounded C#/VB native documents, effective options, source-byte/text/edit identity and SDK whitespace report reconciliation after fresh compilation. F# remains visibly unavailable. DOTNET-FORMAT.md records original native/installed, CLI/MCP and reached-workspace cancellation controls. Full formatting, generator and wider E12 scope remain open.
+
+- Implemented: opt-in `dotnet.test` using the same fresh build closure for declared C#/F#/VB NUnit projects. Native discovery, every case, source symbols, execution and TRX reconcile; skipped and unbound cases remain incomplete. DOTNET-TEST.md records the bounded profile; broader formatting and wider E12 scope remain open.
 - Implemented: opt-in `dotnet.build` for explicit `net10.0` C#/F#/VB projects, with fresh offline locked restore, selected native compiler and analyzer evidence, declared generated sources, portable-symbol binding, source findings and cancellation scratch cleanup. DOTNET-BUILD.md records scope and required native/installed controls. E12 and Gate A remain open.
 
 - Implemented: Maven packet version 2 binds raw pinned repository manifests, exact native JAR closure and observed native client/distribution identities. The original synthetic forgery, compiling guard checks and required source/installed controls are recorded in MAVEN.md; wider E11 and Gate A obligations remain open.

@@ -44,6 +44,7 @@ export async function toolsFor(
         "jvm.gradle-test",
         "dotnet.build",
         "dotnet.test",
+        "dotnet.format-whitespace",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
@@ -237,7 +238,12 @@ export async function toolsFor(
         "--version",
       ]),
     ];
-  if (["dotnet.build", "dotnet.test"].includes(check.id) && check.commands[0])
+  if (
+    ["dotnet.build", "dotnet.test", "dotnet.format-whitespace"].includes(
+      check.id,
+    ) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("dotnet", process.execPath, [

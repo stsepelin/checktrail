@@ -279,6 +279,29 @@ export async function dotnetBuildCheck(
   return check;
 }
 
+export async function dotnetFormatCheck(
+  source: Inventory,
+  project: Project,
+): Promise<Check> {
+  const check = await dotnetBuildCheck(source, project);
+  check.id = "dotnet.format-whitespace";
+  check.kind = "format";
+  check.parser = "dotnet-format-json";
+  check.reason =
+    "Reconcile fresh C#/VB compilation, every native Roslyn document and non-rewriting SDK whitespace reports.";
+  if (check.commands.length) {
+    const invocation = dotnetBuildInvocationSchema.parse(
+      JSON.parse(check.commands[0]!.args[2]!),
+    );
+    if (invocation.config.projects.some((p) => p.language === "fsharp")) {
+      check.commands = [];
+      check.unavailableReason =
+        "The SDK whitespace formatter supports C# and Visual Basic; F# requires a separately verified formatter profile";
+    } else check.commands[0]!.args.push("--format-whitespace");
+  }
+  return check;
+}
+
 export async function dotnetTestCheck(
   source: Inventory,
   project: Project,

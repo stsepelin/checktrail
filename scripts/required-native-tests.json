@@ -1956,5 +1956,39 @@
       "file": "dist/test/dotnet-test-surfaces.test.js",
       "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
     }
+  ],
+  "dotnet-format": [
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": ".NET whitespace formatting is opt-in and missing declarations cannot execute during planning"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace planning keeps F# unsupported instead of accepting the SDK empty report"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace reconciles C#/VB documents broken edits UTF-8 BOM and repaired valid near misses"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace rejects omitted forged stale filtered malformed and unreconciled native evidence"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace observes effective per-file policy and cannot pass a filtered compiled source"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace retains native compiler failures and preserves caller-owned outputs"
+    },
+    {
+      "file": "dist/test/dotnet-format-surfaces.test.js",
+      "name": "native .NET whitespace CLI and negotiated MCP preserve defects privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-format-surfaces.test.js",
+      "name": "native .NET whitespace cancellation reaches the workspace BuildHost and reaps loader descendants and temporary outputs"
+    }
   ]
 }

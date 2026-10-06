@@ -21,6 +21,7 @@ import {
 } from "./dotnet-build.js";
 import { dotnetBuildNativeSource } from "./dotnet-build-native.js";
 import { collectDotnetTests } from "./dotnet-test-collect.js";
+import { collectDotnetFormatting } from "./dotnet-format-collect.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
 
 const receipts: {
@@ -434,6 +435,22 @@ async function main() {
             events,
           })
         : undefined;
+    const formatData =
+      process.argv.slice(4).includes("--format-whitespace") &&
+      build.status === 0
+        ? await collectDotnetFormatting({
+            sdk,
+            workspace,
+            repository,
+            observer,
+            references: builtins,
+            invocation,
+            ownedPins,
+            invoke,
+            observe,
+            regular,
+          })
+        : undefined;
     for (const [file, pin] of compiledSources)
       if (mavenHash(await regular(file, 4 * 1024 * 1024)) !== pin.sha256)
         throw Error("Compiler source changed after native execution");
@@ -488,7 +505,14 @@ async function main() {
               runs: testData?.runs ?? [],
               nativeReceipts: receipts,
             }
-          : packet,
+          : process.argv.slice(4).includes("--format-whitespace")
+            ? {
+                version: 1,
+                build: packet,
+                format: formatData ?? null,
+                nativeReceipts: receipts,
+              }
+            : packet,
       ),
     );
   } finally {

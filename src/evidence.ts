@@ -12,6 +12,7 @@ import { gradleEvidence } from "./gradle-evidence.js";
 import { dotnetEvidence } from "./dotnet-evidence.js";
 import { dotnetBuildEvidence } from "./dotnet-build-evidence.js";
 import { dotnetTestEvidence } from "./dotnet-test-evidence.js";
+import { dotnetFormatEvidence } from "./dotnet-format-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
@@ -348,6 +349,8 @@ export function evaluate(
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "dotnet-format-json")
+    return { ...result, ...dotnetFormatEvidence(check, processes) };
   if (check.parser === "dotnet-test-json")
     return { ...result, ...dotnetTestEvidence(check, processes) };
   if (check.parser === "dotnet-build-json")

@@ -9,7 +9,11 @@ import { checkstyleCheck } from "./checkstyle.js";
 import { mavenCheck } from "./maven.js";
 import { gradleCheck } from "./gradle.js";
 import { dotnetCheck } from "./dotnet.js";
-import { dotnetBuildCheck, dotnetTestCheck } from "./dotnet-build.js";
+import {
+  dotnetBuildCheck,
+  dotnetTestCheck,
+  dotnetFormatCheck,
+} from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
@@ -124,7 +128,12 @@ export const adapters = [
   {
     id: "dotnet",
     markers: [],
-    checks: ["dotnet.csharp", "dotnet.build", "dotnet.test"],
+    checks: [
+      "dotnet.csharp",
+      "dotnet.build",
+      "dotnet.test",
+      "dotnet.format-whitespace",
+    ],
   },
   { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
   { id: "swift", markers: ["Package.swift"], checks: ["swift.syntax"] },
@@ -511,6 +520,9 @@ export async function checksFor(
       await dotnetCheck(source, project),
       ...(requested?.includes("dotnet.build")
         ? [await dotnetBuildCheck(source, project)]
+        : []),
+      ...(requested?.includes("dotnet.format-whitespace")
+        ? [await dotnetFormatCheck(source, project)]
         : []),
       ...(requested?.includes("dotnet.test")
         ? [await dotnetTestCheck(source, project)]

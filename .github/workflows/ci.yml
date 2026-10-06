@@ -306,6 +306,7 @@ jobs:
       - run: node scripts/prepare-dotnet-build-dependencies.mjs
       - run: node scripts/verify-dotnet-build-container.mjs
       - run: node scripts/verify-dotnet-test-container.mjs
+      - run: node scripts/verify-dotnet-format-container.mjs
 
   actionlint:
     runs-on: ubuntu-latest
