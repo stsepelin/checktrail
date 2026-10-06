@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "jar": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "sha256": {
+      "type": "string",
+      "const": "754e218ab1fcabb1e1c5f8530e9d3aa37636806c22987bb279dd907a6ee749b2"
+    },
+    "config": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "failOn": { "type": "string", "enum": ["error", "warning"] }
+  },
+  "required": ["schemaVersion", "jar", "sha256", "config", "failOn"],
+  "additionalProperties": false
+}

@@ -15,6 +15,44 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Maven native packet version 2 now binds its exact temporary repository JAR set
+to the raw operator-pinned manifest and binds the native Maven client PID/home
+to the observed launcher and configured distribution. An original synthetic
+control reproduced a previously accepted invented JAR/classpath pair.
+[The repaired-profile record](measurements/maven-closure-2026-10-06.json) retains
+the source pins, compiling mutations and native/installed acceptance; this
+closes that evidence gap, while E11 and Gate A remain open.
+
+Opt-in [Gradle tests](GRADLE.md) now run declared Java modules with Groovy or
+Kotlin DSL scripts from fresh source/output/home and pinned artifact copies.
+Native task/source/JUnit/XML evidence binds complete participation and test
+display names. Matching client JVM settings and protected Java-home selection
+prevent the observed ordinary single-use daemon cancellation escape. The
+[local record](measurements/gradle-native-2026-10-05.json) binds required native
+and installed CLI/MCP controls, compiling guard mutations and public preparers.
+Wrappers, analyzers, Kotlin/Scala source, generated/JPMS scope and wider profiles
+remain required under E11; Gate A remains open.
+
+Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
+output, home and pinned dependency copies. Native configured-plugin, compiler,
+source-declaration and JUnit events reconcile with fresh reports; skipped,
+filtered, empty, foreign and incomplete participation cannot pass. The
+[local record](measurements/maven-native-2026-10-05.json) binds original controls,
+installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
+for wrappers, wider Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
+Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
+remains open.
+
+Opt-in [Java Checkstyle](CHECKSTYLE.md) now has a pinned configured source-audit
+profile with exact native file/rule/completion accounting, severity controls,
+data-only planning, startup-only MCP trust and owned POSIX cancellation cleanup.
+The [local measurement](measurements/checkstyle-native-2026-10-05.json) binds
+original controls, assertion-verified compiling mutations and a fresh offline
+installed CLI/MCP package profile. E11 remains partial: wider Maven/Gradle profiles,
+SpotBugs, detekt and Kotlin/Scala coverage still need their native profiles.
+Hosted CI for this revision, broader platforms and full bundled provenance are
+unverified; Gate A remains open.
+
 The bounded [model-independent workflow](REVIEW-MCP-WORKFLOW.md) now exchanges
 reviewer/refuter/adjudicator assignments through one library, foreground CLI and
 MCP contract, around a live operator-pinned Node probe. The

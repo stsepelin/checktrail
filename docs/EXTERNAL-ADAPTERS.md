@@ -133,7 +133,7 @@ Registration allows at most eight bundles. Each decoded manifest is at most 256 
 opaque packed references additionally have a 192 MiB encoded bound. See
 [executable distribution](EXECUTABLE-BUNDLES.md) for representation limits.
 
-each bundle lists at most 512 files, 32 MiB per file and 128 MiB combined. A manifest
+Each bundle lists at most 512 files, 32 MiB per file and 128 MiB combined. A manifest
 has at most 32 markers and 32 checks. A check has at most 20,000 scoped files and a
 100 KiB serialized invocation. Results have at most 2,000 findings and 32 tools;
 combined child stdout/stderr is bounded to 1 MiB. Shared runner limits can make a

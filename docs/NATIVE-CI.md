@@ -37,7 +37,8 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,
 `rust`, `rust-format`, `clippy` and `rust-tests`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
-Ruby and Swift have dedicated required-native jobs. The packaged review and
+Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
+installed CLI/MCP profiles. Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
@@ -151,3 +152,15 @@ standard library before validation and verifies compilation, Clippy and native
 test profiles through the fresh offline package. Foreign tests remain unavailable
 without a supported executor. The configured host jobs have not been run for this
 revision; see RUST-BUILD.md for measured local acceptance.
+
+The separate `checkstyle` job prepares the exact Checkstyle artifact and pinned
+JVM image, disables networking during required native and installed-package
+acceptance, and retains the preserved Java compiler profile. Local Linux arm64
+source-bound evidence is in [CHECKSTYLE.md](CHECKSTYLE.md). This newly configured
+hosted job has not been run at this revision.
+
+The separate `maven` job prepares the pinned Apache distribution and executes only
+the original public fixture to acquire a dependency cache. Required native and
+installed acceptance then run with networking disabled and read-only source/cache
+mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
+is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.

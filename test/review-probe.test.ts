@@ -929,7 +929,7 @@ test("retained native probe budgets reject erased accounting forged totals reord
 test("native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases", async (t) => {
   const waiting = await assignment(
     t,
-    "export async function decision(name,target){process.stdout.write('é');process.stderr.write('😀');process.getBuiltinModule('node:fs').writeFileSync(target,'ready');await new Promise(()=>{setInterval(()=>{},1000)});return true;}\n",
+    "export async function decision(name,target){process.stdout.write('é');process.stderr.write('😀');const fs=process.getBuiltinModule('node:fs');fs.writeFileSync(target+'.prepared','ready');fs.renameSync(target+'.prepared',target);await new Promise(()=>{setInterval(()=>{},1000)});return true;}\n",
   );
   const marker = path.join(waiting.root, ".checktrail/native-ready");
   const selected = structuredClone(recipe);

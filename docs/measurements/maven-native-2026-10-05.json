@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T19:05:13.577646+00:00",
+  "basedOn": "94a9a9b01a342f7cc5865f990c9c24acfc90b518",
+  "scope": "Original synthetic Java Maven reactor build/test readiness under one pinned Linux profile. E11 remains partial and Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "7d5e657bd581d459973491a21eb3e9c7a0e6debf123bb3b2a2c3826c52911f7c"
+    },
+    {
+      "file": "docs/JAVA.md",
+      "sha256": "488e6bce8ed8cf71e643a7f8e9ccbbd854e7d0d217d0e8e93a7e3b155462449d"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "8270c878af5fde705f9a6a8e55c652ac4964217616c898c41e64b7527b76b859"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "36b558ff04c8d34608f6e362e7f46f4fda1745102e30108fed9ec6af484b9d59"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "77be9d62a58ba04d0d4d2f983a1e09109a003aebcb7be7c9c63f4ee56b5fbd0d"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "6079c3b187ab199305acfaf5507da3966b026abc01d07d684354d190c0a95aac"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "a2f2554def5b6b670c5b4dc6d7b7108328007776723390c7dbd88f696073d1f7"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "ef6bb65aaecffe6865550576a562e8400ff6ec474614a1b37fe154676259ae60"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "92485b957404851864e10153e283aed89e4543fa88819303486d4b0ede95047b"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "dd61dcd563ace921e19cd7b046a402cb96d33b548ac45ea4325fe07503cf2dbe"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "cedfc684fa0679e5b592113658907b844b5a96fa4949f17c7d7c4a068c8eda85"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "47e079aeef8b434d6d61308701c4e9ec9ebb532fb5b7eb06c899d00c79d1001c"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "39e1117eace12459fe87221c9e76b6e941989f93a7d966ae8de6f52ca18b8cf9"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "a2949239f3040eacd244847e6870e4d474afe69a0fba6995b3e3ab1fbf5a3424"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "bb878248ecba5a51b6fbec6426c812cc18bb4dfeee460ebd90125abbe59bf2cc"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "a55717022d767eab7c39fd8886f6b38e4d0e0b5490241bd9c4f561ab1e4c7356"
+    },
+    {
+      "file": "docs/MAVEN.md",
+      "sha256": "f9cca1d7523aec6956323530bc4f295609d381891bd5727d45539a289bb6452b"
+    },
+    {
+      "file": "examples/maven/pom.xml",
+      "sha256": "ee8a263338eed11c6fc3bbd8df1e3c865b3c5c452a644b7bdcf671957d588469"
+    },
+    {
+      "file": "examples/maven/src/main/java/example/Counter.java",
+      "sha256": "ef92625372ff28926de2d94987d118f97fc268adcd91f5357dc87d0d8ef9ec7e"
+    },
+    {
+      "file": "examples/maven/src/test/java/example/CounterTest.java",
+      "sha256": "40e94d62967c73b7d6b362325684445877de565636420466eb32b538e87172a6"
+    },
+    {
+      "file": "schemas/maven-config.schema.json",
+      "sha256": "6ddb928159932b9e27ee3c652e30e08ac689f6cf52383ad2c4443aa694e4bf96"
+    },
+    {
+      "file": "schemas/maven-repository.schema.json",
+      "sha256": "df8e3b970217dfe9c2c08c09348373c5acd8d9009eb952a70e73ce575e99401e"
+    },
+    {
+      "file": "scripts/maven-tools.Dockerfile",
+      "sha256": "14098704784809769e4eac0bf9a1265db44f4b6bc29528de304e18c875c24f25"
+    },
+    {
+      "file": "scripts/prepare-maven-dependencies.mjs",
+      "sha256": "81d3505c87480008bebf4325b9d801ebae7519a1e4f1b9a38b273f62e62b9a55"
+    },
+    {
+      "file": "scripts/prepare-maven-tools.mjs",
+      "sha256": "bf618b75b78dea8819f0e4d546767a9b9cd82fb7f929ae6290976bc54f4851b1"
+    },
+    {
+      "file": "scripts/verify-maven-container.mjs",
+      "sha256": "652433e231356649971f94c6beb87b1330a360e4d6e5c160d91806ad390ad8f4"
+    },
+    {
+      "file": "scripts/verify-maven-package.mjs",
+      "sha256": "65684ee13d20104a750d14b20fee3104a9c97cac901cb6ce81daafb4b987d5d4"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "967b459a32a1e1ceeb10b1a8f112b43c7f1324d3973f918dfcd055a0448ef715"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "74453e13b3ed18e9d6735991125f3a8f1ceaf70c44da52a9c3c4ff40e185fe8c"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ab4c661522f9fd09d94716b8059e3f7a69d0b57d6cd89e422476186e6d69e3b5"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "2ec800e7037ee9f762998fae0fd321a6a23bfcebb64bdff991771874e95c2fd2"
+    },
+    {
+      "file": "test/maven-fixture.ts",
+      "sha256": "b2156610a7902d3010e13587ed57ead21408414df24e787d2746a3d7993cae5a"
+    },
+    {
+      "file": "test/maven-surfaces.test.ts",
+      "sha256": "1c2b23d035830b5a8a635dc5ab9ad5122080b92ae73b3b9ed1503409ace07654"
+    },
+    {
+      "file": "test/maven.test.ts",
+      "sha256": "088fcc45a1bb906b0538a654e71c0f69f76200748eb9ac98cbf24a3cf9b92e38"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/java.test.ts",
+      "sha256": "44bcaea2d8d0c257202f8282d1fb278e035d67f379b0eada0a8154cad222a473"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "docs/PLAN.md",
+      "sha256": "f4556aa96172da04ebb573ff8946520fac4ef6adec250b20422b7e4dec8546c5"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "8e4c52f8128b9e8676a93d191d2b4c548834028eeb9191d3a303218aa1245aa4"
+    }
+  ],
+  "engineRuntimeDigest": "1b346368554378f4046cae56143d8e70874f6b4da003c62831768aa88d3e1e20",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration; full dependency/native/container artifact authentication is not established.",
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 651,
+    "pass": 549,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 102,
+    "todo": 0,
+    "unavailableChecksRemainSkipped": true,
+    "formatCheck": true,
+    "diffCheck": true,
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "nativeProfile": {
+    "platform": "linux",
+    "architecture": "arm64",
+    "image": "sha256:511de6676db96d4fe4d5dbf6bd623bd5f3ec61d421b80c35779784339ca60260",
+    "dockerfileSha256": "14098704784809769e4eac0bf9a1265db44f4b6bc29528de304e18c875c24f25",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "maven": "Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)\nMaven home: /opt/checktrail/maven\nJava version: 25.0.4, vendor: Eclipse Adoptium, runtime: /opt/java/openjdk\nDefault locale: en_US, platform encoding: UTF-8, time zone: GMT\nOS name: \"linux\", version: \"7.0.14-orbstack-00380-ga7e0a2dc9535\", arch: \"aarch64\", family: \"unix\""
+    },
+    "network": "none",
+    "init": true,
+    "cpuLimit": 2,
+    "memoryLimit": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "profile": {
+      "profile": "maven",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    }
+  },
+  "installedPackage": {
+    "tarballSha256": "9bcfb017dbdbae23925e210b83c59f2af1b65134adaa687f4e6b05574efa7d35",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientVersion": "2.3.0",
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "acceptanceClientCopiedOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "maven",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "image": "sha256:511de6676db96d4fe4d5dbf6bd623bd5f3ec61d421b80c35779784339ca60260",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "evaluatedTarballTiming": "Packed after the implementation, strengthened controls and profile documentation, before this measurement. The runtime/source pins identify evaluated behavior; the final package also embeds this later measurement.",
+  "distributionPreparation": {
+    "download": {
+      "version": "3.10.0",
+      "sha256": "a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e",
+      "cacheHit": false,
+      "publisherSignatureVerified": false
+    },
+    "cacheHit": {
+      "version": "3.10.0",
+      "sha256": "a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e",
+      "cacheHit": true,
+      "publisherSignatureVerified": false
+    },
+    "corruptionRejectedAndPreserved": true,
+    "symlinkRejectedBeforeWrites": true,
+    "nativeMavenExecutedByToolAcquisition": false
+  },
+  "dependencyPreparation": {
+    "preparation": {
+      "schemaVersion": 1,
+      "repositorySha256": "c0600b808134d70c1d2daacdf2e37d20197fc12c1067543916c855179d6a5b08",
+      "files": 547,
+      "bytes": 11884086,
+      "preparationNetworkAllowed": true,
+      "originalFixtureExecuted": true,
+      "consoleSha256": "af0ec09684aaed2c8ce13b951c1b3b2cc6a6607122c94d7ab071208af0c2a5a9",
+      "publisherSignaturesVerified": false
+    },
+    "scriptSha256": "81d3505c87480008bebf4325b9d801ebae7519a1e4f1b9a38b273f62e62b9a55",
+    "freshNativePreparation": true,
+    "manifestAndEveryArtifactVerified": true,
+    "publishedTogether": true,
+    "failedPreparationPublishedNothing": true,
+    "failedPreparationTemporaryDirectoryRemoved": true,
+    "completeDestinationPreserved": true,
+    "incompleteDestinationPreserved": true,
+    "symlinkCacheRejectedBeforeWrites": true,
+    "fixture": "original examples/maven",
+    "networkAllowedOnlyDuringExplicitPreparation": true,
+    "runtimeSourceCheckoutUsed": true
+  },
+  "evaluatedDependencyClosure": {
+    "manifestSha256": "42b98c69d51d8bad1f7ee659b7c54c20ca7b88d109d19b8490ee14dcd48f44ca",
+    "files": 547,
+    "bytes": 11884060,
+    "manifestAndEveryArtifactVerifiedByPlanningAndExecution": true
+  },
+  "artifactAcquisition": {
+    "version": "3.10.0",
+    "url": "https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz",
+    "bytes": 9979885,
+    "sha256": "a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e",
+    "sha512": "908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799102bffb84518cde74c679bd76870247c6528683abdd620581bffa90f95d92d175aa",
+    "publishedSha512": "908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799102bffb84518cde74c679bd76870247c6528683abdd620581bffa90f95d92d175aa",
+    "publisherSignatureVerified": false,
+    "safeExtraction": true,
+    "observedAt": "2026-10-05T17:29:13.083448+00:00"
+  },
+  "distributionFiles": 113,
+  "mutationControls": [
+    {
+      "id": "artifact-digest",
+      "file": "src/maven.ts",
+      "test": "Maven artifact manifests reject corruption, extras, missing files and links",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "Missing expected rejection.",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "0e2916a7dc3c454d2304dac3b4e6bb9d68adac9bed838312874185b4ec429937"
+    },
+    {
+      "id": "source-receipt",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "wrong source receipt",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "a73f17394ccccb3073faba3b10596656d9ab9259e2925fd52d0ec30293ef7bf3"
+    },
+    {
+      "id": "compiler-inputs",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "missing compiler input",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "31413504c9fa622ccb8b0e8328fa63970c9a17b1127e01591707cd036f80540d"
+    },
+    {
+      "id": "test-skip-policy",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "malformed native skip flag",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "77d4a09e59550eac4fee0d650562743e18c62eae96858b0f0008669484f9da15"
+    },
+    {
+      "id": "native-classpath",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "foreign native classpath",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "38ca8f291f20a8b2e16d625def47ab0a098b45a89b466a67649955519a4a217d"
+    },
+    {
+      "id": "test-source-declaration",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "wrong native source declaration",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "d1c9e0f1e25ea243615aabe58c6ed771724cd4d03a297c7f3d30b7bf7beaa5b2"
+    },
+    {
+      "id": "native-source-file",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "wrong class source file",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "e41ff79522081288a4832117a7046565106457b6328076b1024245f2056b0366"
+    },
+    {
+      "id": "junit-engine-identity",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "wrong native JUnit engine",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "5c5ca7b203e254d23399ce47f23fb585873bd20801d06c650aeca4d33d492a83"
+    },
+    {
+      "id": "xml-native-agreement",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "XML disagreement",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "7cc509cbf322c12ef7d31553373823096924292b0cfa2e1022d5892677186e57"
+    },
+    {
+      "id": "collector-completion",
+      "file": "src/maven-evidence.ts",
+      "test": "native Maven binds every compiler input, plugin parameter and test terminal event",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "unfinished native session",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "6a6ed67c93673a3628d0034a150da3f22664480425addcbcc5b8d97d70aec9e7"
+    },
+    {
+      "id": "planning-does-not-execute",
+      "file": "src/maven.ts",
+      "test": "native Maven successful planning preserves project data and rejects startup and environment overrides",
+      "compiled": true,
+      "guardCaught": true,
+      "intendedAssertionReached": true,
+      "assertion": "Missing expected rejection.",
+      "failureCode": "ERR_ASSERTION",
+      "exitCode": 1,
+      "outputSha256": "6027fad1e3bedcdc4c1f3e1b3dd207c2d2d3fb72c8bafb712b95d1957cdb7cb7"
+    }
+  ],
+  "mutationSourcePins": {
+    "src/maven.ts": "2ec800e7037ee9f762998fae0fd321a6a23bfcebb64bdff991771874e95c2fd2",
+    "src/maven-evidence.ts": "967b459a32a1e1ceeb10b1a8f112b43c7f1324d3973f918dfcd055a0448ef715",
+    "src/maven-runner.ts": "ab4c661522f9fd09d94716b8059e3f7a69d0b57d6cd89e422476186e6d69e3b5",
+    "src/maven-native.ts": "74453e13b3ed18e9d6735991125f3a8f1ceaf70c44da52a9c3c4ff40e185fe8c",
+    "src/maven-distribution.ts": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b",
+    "src/adapters.ts": "cedfc684fa0679e5b592113658907b844b5a96fa4949f17c7d7c4a068c8eda85",
+    "src/evidence.ts": "47e079aeef8b434d6d61308701c4e9ec9ebb532fb5b7eb06c899d00c79d1001c",
+    "src/tool-versions.ts": "a2949239f3040eacd244847e6870e4d474afe69a0fba6995b3e3ab1fbf5a3424",
+    "src/types.ts": "bb878248ecba5a51b6fbec6426c812cc18bb4dfeee460ebd90125abbe59bf2cc"
+  },
+  "mutationTestPins": {
+    "test/maven.test.ts": "088fcc45a1bb906b0538a654e71c0f69f76200748eb9ac98cbf24a3cf9b92e38",
+    "test/maven-fixture.ts": "b2156610a7902d3010e13587ed57ead21408414df24e787d2746a3d7993cae5a",
+    "test/maven-surfaces.test.ts": "1c2b23d035830b5a8a635dc5ab9ad5122080b92ae73b3b9ed1503409ace07654",
+    "scripts/required-native-tests.json": "dd61dcd563ace921e19cd7b046a402cb96d33b548ac45ea4325fe07503cf2dbe"
+  },
+  "restoredProfile": {
+    "profile": "maven",
+    "passed": 11,
+    "required": 11,
+    "problems": [],
+    "complete": true
+  },
+  "mutationWallMs": 134038,
+  "developmentBatchWallMs": 151818,
+  "wallMeasurementScope": "Native and installed acceptance helper including fresh installation and development controls; not a representative project or model-review latency measurement.",
+  "observedNativeContract": {
+    "compilerFailureEvent": "Maven EventSpy MojoFailed carries the observed compiler exception chain. The pinned Maven failure path did not call MojoExecutionListener.afterExecutionFailure; the collector uses the native failed event.",
+    "testClassBinding": "Class-file SourceFile metadata is reconciled with top-level class declarations from JDK JavaCompiler parse-only native source trees, so a differently named declaration in another source file cannot pass as the declared test input."
+  },
+  "controls": [
+    "explicit activation and data-only successful planning with a compiling Maven execution mutation",
+    "pinned distribution and dependency closure with changed missing extra corrupt and symbolic-link controls",
+    "original stale target/report preserved and excluded; current inputs compiled into fresh outputs",
+    "all native lifecycle tasks configured compiler inputs plugin fields roots outputs and classpaths reconciled",
+    "declared test-class source files native declarations and classfile source metadata must agree",
+    "pinned JUnit launcher/engine origins and native discovered/dynamic/started/skipped/finished/plan accounting",
+    "valid fresh Surefire XML cases/counters reconcile with native terminal counts",
+    "test failure repaired scale and boundary near misses; empty/all-skipped/disabled parameterized and dynamic tests",
+    "test includes method filters skip flags retries ignored failures and omitted test classes cannot pass",
+    "strict native event enums complete sessions unknown malformed stale duplicate cyclic foreign and contradictory evidence controls",
+    "compiler failures remain failed but incomplete; runtime/bootstrap failures are not attributed as source findings",
+    "whole root/aggregator/child reactor participation; independent failures retained and dependent skipped modules remain incomplete",
+    "UTF-8 source/config protected environment and rejected project startup .mvn overrides",
+    "running fork observed before cancellation; descendant reaped and temporary artifacts removed",
+    "shared library/CLI/negotiated SDK MCP preserve startup-only execution trust and private summaries",
+    "fresh offline production package installation and exact locked external client dependency closure",
+    "actual public Dockerfile and fresh explicit dependency preparation with failure/preservation/link controls"
+  ],
+  "limits": {
+    "mavenWrappersVerified": false,
+    "gradleTestsVerified": false,
+    "spotbugsDetektVerified": false,
+    "kotlinScalaVerified": false,
+    "generatedOrJpmsJvmBuildVerified": false,
+    "nonstandardOrMixedLanguageSourceRootsVerified": false,
+    "allJUnitExtensionsInheritanceNestedClassesOrClassLoadersVerified": false,
+    "allCompilerOptionsFrameworkGuardsOrNativeRuleBranchesVerified": false,
+    "windowsVerified": false,
+    "otherPlatformRuntimeProfilesClosed": false,
+    "publisherSignatureVerified": false,
+    "completeBundledComponentLicenseClosureVerified": false,
+    "developmentNativeContainerProvenanceAuditCompleted": false,
+    "peakHeapOrProcessMemoryMeasured": false,
+    "byteBoundsAreTotalMemoryLimits": false,
+    "engineCrashCleanupGuaranteed": false,
+    "detachedMaliciousProcessesContained": false,
+    "hostileConcurrentFilesystemContained": false,
+    "projectPluginNetworkActivityContainedByEngine": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "representativeProjectPerformanceMeasured": false,
+    "hostedCiExecuted": false,
+    "otherRequiredFamiliesVerifiedAtThisRevision": false,
+    "hostSessionIndependenceEstablished": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

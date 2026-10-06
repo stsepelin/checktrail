@@ -5,6 +5,9 @@ import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
+import { checkstyleCheck } from "./checkstyle.js";
+import { mavenCheck } from "./maven.js";
+import { gradleCheck } from "./gradle.js";
 import { dotnetCheck } from "./dotnet.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
@@ -110,7 +113,12 @@ export const adapters = [
   {
     id: "jvm",
     markers: ["pom.xml", "build.gradle", "build.gradle.kts"],
-    checks: ["jvm.javac"],
+    checks: [
+      "jvm.javac",
+      "jvm.checkstyle",
+      "jvm.maven-test",
+      "jvm.gradle-test",
+    ],
   },
   { id: "dotnet", markers: [], checks: ["dotnet.csharp"] },
   { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
@@ -480,7 +488,19 @@ export async function checksFor(
     ];
   }
   if (project.adapter === "cpp") return [await clangCheck(source, project)];
-  if (project.adapter === "jvm") return [await javaCheck(source, project)];
+  if (project.adapter === "jvm")
+    return [
+      await javaCheck(source, project),
+      ...(requested?.includes("jvm.gradle-test")
+        ? [await gradleCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.maven-test")
+        ? [await mavenCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.checkstyle")
+        ? [await checkstyleCheck(source, project)]
+        : []),
+    ];
   if (project.adapter === "dotnet") return [await dotnetCheck(source, project)];
   if (project.adapter === "swift") return [swiftCheck(project)];
   if (project.adapter === "ruby") return [rubyCheck(project)];

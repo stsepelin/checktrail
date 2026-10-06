@@ -1,0 +1,831 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T20:55:45.337266+00:00",
+  "basedOn": "34228e20ed8b7362275d2e250e44616c9183d39b",
+  "scope": "Original synthetic Java Gradle build/test readiness under one pinned Linux profile. E11 remains partial and Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "34a35263e405ee2e13f54debdf38d47d135cec6795797820c7931af76e100ffd"
+    },
+    {
+      "file": "README.md",
+      "sha256": "124366d1192a06651e3bec66bf30a96166ddf639d2fc350fc9f598f74ca79091"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "9996500c971d4c24fee4551a85fddd7544486665b766e7561038f16841889039"
+    },
+    {
+      "file": "docs/GRADLE.md",
+      "sha256": "a56559da81ac825f798bf5ca816ef5b6eb1694e8aed782457482de23880cb359"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "ccc2d05b323d1c8bf9f5deec75c11cf93103d68becf391f02e9eb93ab560bdda"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "a8e78ac79816e33cdec240903ab70c2da9679fe02a0fd06f4c5cc2f1146baa42"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "535242208c1ce9097d2b4d877aa7d477662f82bfc04f463ca64f23d845142078"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "cfc893087ea2e0532d5bbc1fce46bc3c43df1b030cbb98ba55102bee661c480f"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "9750d0fa9d995285f62bbe0c88e6d097ea24734ec539e6fa674f967b080bb298"
+    },
+    {
+      "file": "examples/gradle/build.gradle",
+      "sha256": "a6994f1f5f7708c3be33e270bb1398994ca3f2ba22937b2c377eb7574eceac23"
+    },
+    {
+      "file": "examples/gradle/settings.gradle",
+      "sha256": "4ede4567fbdd834ac04de8236383f8c83c0ca728f57b4eb872ef3fa6af652811"
+    },
+    {
+      "file": "examples/gradle/src/main/java/example/Counter.java",
+      "sha256": "1d59739afdd973fd9d390c2d56d12d973c2797dcacf5a90b796508dd0def8103"
+    },
+    {
+      "file": "examples/gradle/src/test/java/example/CounterTest.java",
+      "sha256": "22956ba26a4dd76fb724a5f5f14c626dfeacbd2a3f5556f7a195acae9e21fdea"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/gradle-config.schema.json",
+      "sha256": "4c10bbe326cd88f430a14a474f7e216880d6d3733388d9ceb343afc2b334a932"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "46bbd5bd7c78e2a9fdee4e6724e2d6ea41fdab8669c29ee6ebfcc64ca873eb04"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "9da95d640324f38d7e5684df451bd8791661706ad7fdf46e308861c478ee2cd7"
+    },
+    {
+      "file": "scripts/gradle-fixture-dependencies.json",
+      "sha256": "52994a09ad9a529938047ffa180f07ef79489dfed9d34bbf34a7160d350d694f"
+    },
+    {
+      "file": "scripts/gradle-tools.Dockerfile",
+      "sha256": "d70036e30f32e2437d99826b8709226138c343f8793e57d83a4b5d1b6f6d3905"
+    },
+    {
+      "file": "scripts/prepare-gradle-dependencies.mjs",
+      "sha256": "9c419f503b3da82022aa8375619b2640f026c070f6aa597c7e9da6d0a27a41c0"
+    },
+    {
+      "file": "scripts/prepare-gradle-tools.mjs",
+      "sha256": "327a3b9adb6ebef8582dcbc0b971dc4fa2139ac4d97b82c3add46b0d686ea279"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "a4455420f8534f24099b0bffcdafc33f20682d7202f426757342db036dd544f8"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "6ff59f15feade3ef88c00a0c17c6d7dc85c59714379c27f07dacdaf79b9ec4e2"
+    },
+    {
+      "file": "scripts/verify-gradle-container.mjs",
+      "sha256": "193fd31ca400e91f7a65642cd028e1d7a4e330a8ef1ea95ea9ddf86fd3d95a90"
+    },
+    {
+      "file": "scripts/verify-gradle-package.mjs",
+      "sha256": "429baac5ff329d78f822895271ceacb788302f1e1ad002c2160aea0911a94c34"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "8d941fa44e799518d9a259e3b45313182aba85cf4efeb6a5f02ca88a0d2a557d"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "c9af56cd5163329b51f2f2a268e15bffa0dfa3b8021f65fde6ba1e4bb460c20e"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "05c42be60b9a2d466dfb56fa98750cadad0f2b608a911fa356c4e7c3a5238633"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "74453e13b3ed18e9d6735991125f3a8f1ceaf70c44da52a9c3c4ff40e185fe8c"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "2ec800e7037ee9f762998fae0fd321a6a23bfcebb64bdff991771874e95c2fd2"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "fea205d3080f15dcc4bdc5e9663acc2352c06b37b9a80cc03c4243369013ec4d"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "2da907fe5afab4a59b0e38d93eac15ada50fd60a709d6927517dfc05420bc1a8"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "ef41126f5fee6ea69ae8bc8c902bc36e78b021c8b822cff51fab337ecbecde79"
+    },
+    {
+      "file": "test/gradle-builds.test.ts",
+      "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+    },
+    {
+      "file": "test/gradle-fixture.ts",
+      "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+    },
+    {
+      "file": "test/gradle-surfaces.test.ts",
+      "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+    },
+    {
+      "file": "test/gradle.test.ts",
+      "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "d89fb8a062b11f0768e6059065542ea6f2f2537ef2a1c4661647b1430284b901"
+    },
+    {
+      "file": "test/tool-versions.test.ts",
+      "sha256": "e8e6f9dd734241a60e48d25cb7941816705e4b465a08a9a220dc3e8177056968"
+    }
+  ],
+  "engineRuntimeDigest": "c97ae3ce3af9cdd8f50d87720046acdd5d3affec483665ce316920c52484739d",
+  "engineRuntimeDigestScope": "Compiled runtime JavaScript and package declaration; full dependency/native/container artifact authentication is not established.",
+  "distribution": {
+    "version": "9.8.0",
+    "url": "https://services.gradle.org/distributions/gradle-9.8.0-bin.zip",
+    "bytes": 151611662,
+    "sha256": "bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c",
+    "publisherChecksumVerified": true,
+    "publisherSignatureVerified": false,
+    "expandedFiles": 716,
+    "expandedBytes": 170451591
+  },
+  "fixtureRepository": {
+    "sha256": "52994a09ad9a529938047ffa180f07ef79489dfed9d34bbf34a7160d350d694f",
+    "files": 21,
+    "bytes": 1787330,
+    "acquisition": "Explicit public data-only JAR/POM preparer; original fixture tested separately offline."
+  },
+  "publicContainerBuild": {
+    "id": "sha256:fc09c89d141260b113eb7f046ccadfbbc936d5c816ee7be204b93a8bdc1e34ed",
+    "architecture": "arm64",
+    "labels": {
+      "checktrail.task": "checktrail-gradle-1005"
+    },
+    "publicDockerfile": true
+  },
+  "restoredSourceAndInstalledAcceptance": {
+    "image": "sha256:fc09c89d141260b113eb7f046ccadfbbc936d5c816ee7be204b93a8bdc1e34ed",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "gradle": "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 7.0.14-orbstack-00380-ga7e0a2dc9535 aarch64"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "gradle",
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "f2a021cc1dbf87f28309f9059b163cf32fc618b6e870a561481dd7a0af2ba4ce",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "gradle",
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:fc09c89d141260b113eb7f046ccadfbbc936d5c816ee7be204b93a8bdc1e34ed",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 321227,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "evaluatedPackageScope": "The tarball was packed from the verified implementation before this measurement file was added; its digest does not identify a later tarball containing the receipt."
+  },
+  "compilingMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "mutations": [
+      {
+        "guard": "Current input receipt",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "f5a67f4fb7a82650b04fb3ed61e2c3e67057a34b3b97a21e2210c2e797682234",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "wrong source receipt",
+        "exitCode": 1,
+        "logSha256": "5cc450c236fa2e4cdd492606a466b879373cfd199fffdabcbf8a971733b38aad",
+        "durationMs": 6591,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Pinned dependency manifest receipt",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "803d4fecae3588da2ad89338f9b66fd82c15b9a99cdf2911ca88c10b89093275",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "wrong repository manifest receipt",
+        "exitCode": 1,
+        "logSha256": "593a98d13a099a210f8aaa3a28c9f1a3508231ca32f0aef0bbd4627a29256027",
+        "durationMs": 6270,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Exact pinned native artifact closure",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "86c58d010dcea5694dbb0e4948fba9f725a94138e29ef58b29720f2271fff869",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "forged additional artifact",
+        "exitCode": 1,
+        "logSha256": "0985c7e08bb68b2c796105dab0e24365500b5a4aac96e02b9cbe94c4bd05d919",
+        "durationMs": 6355,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Configured native distribution binding",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "56ff798957023fe265cb1e6784984b6d663a8e799885f0c944fe8b7de85fb97d",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "wrong configured distribution",
+        "exitCode": 1,
+        "logSha256": "81c04d75c737a9e2dde99655e42a092c374bb56daee1db6412d313c05951429b",
+        "durationMs": 6229,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Native build runs in the owned client process",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "1420e056573bee55b34e5efc2ae51d65baf13b9b3a69375c47595f90aac863d5",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "detached build process",
+        "exitCode": 1,
+        "logSha256": "3ec8ad6fbc6cf634dff28a347755f20e9749e88f200316829646e8dffe800d4b",
+        "durationMs": 6364,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Every native Gradle descriptor terminal",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "26e7b7dc1ae36d4d77420df3c451400dd905603cbacb4e68cb99c62c2d47f74d",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "missing Gradle suite terminal",
+        "exitCode": 1,
+        "logSha256": "586aa1eb60a12f23588b59eea5eb2cd1a7002bbf9de26fb3cbdd17afc9e9bd05",
+        "durationMs": 6173,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Native XML test names and outcomes",
+        "file": "src/gradle-evidence.ts",
+        "sourceSha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0",
+        "mutationSourceSha256": "823516fc49600d6aaa112ab51e70f583539fb4591b49e2221141519fa3df6ab5",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "native XML name disagreement",
+        "exitCode": 1,
+        "logSha256": "77f72653e887a4e12b64a8c2833b9cd882c73e5b37431d34cdbb7ffe7bbb8c37",
+        "durationMs": 6315,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Complete JUnit plan",
+        "file": "src/junit-native.ts",
+        "sourceSha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53",
+        "mutationSourceSha256": "7fcdf9af72294344c72d063cd69b575816144e852e89f5eb2748218c716494e9",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "unfinished JUnit plan",
+        "exitCode": 1,
+        "logSha256": "2c102708e1b72f8fb07b092355c36031b009be6e5d0da0ef72c5b0367bde7480",
+        "durationMs": 6263,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Actual declared test source binding",
+        "file": "src/junit-native.ts",
+        "sourceSha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53",
+        "mutationSourceSha256": "7004da3122e3c6e62d8973ccaca9fbd9866684e7ba7f9ef55ef87547fa0fdb2f",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "wrong actual source declaration",
+        "exitCode": 1,
+        "logSha256": "5c073a1d41da9bd1779f197dc886d0a5570f6ad12f6f48a973c58bd4f4d9d675",
+        "durationMs": 6382,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Exactly one native terminal",
+        "file": "src/junit-native.ts",
+        "sourceSha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53",
+        "mutationSourceSha256": "8d98bfef81e4d668aa74ce6e16297d0cdce16972dc11be5b9ceb8c341d516bff",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "duplicate native terminal",
+        "exitCode": 1,
+        "logSha256": "298eb6dd68c29481a8961355f3caced028306f5c891fc8e478666b88461b7558",
+        "durationMs": 6191,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Protected Java home",
+        "file": "src/gradle-runner.ts",
+        "sourceSha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b",
+        "mutationSourceSha256": "998a0007e9393166d9c56f2b7b303ef0a4fb2c23631f9ea4c9a346cdb86e3ad3",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "native Gradle protects client JVM settings",
+        "exitCode": 1,
+        "logSha256": "48d18ed088b45b8c5f192946e88fde9864b0a3808344a6c76ec230009bfd0ba3",
+        "durationMs": 2675,
+        "killedAtIntendedAssertion": true
+      },
+      {
+        "guard": "Matched client JVM settings",
+        "file": "src/gradle-runner.ts",
+        "sourceSha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b",
+        "mutationSourceSha256": "c404e13c6b6811d6c79e02800c076c31d6f93a9a977ddd74f22f387d98734e0f",
+        "compiled": true,
+        "testPins": [
+          {
+            "file": "test/gradle-builds.test.ts",
+            "sha256": "f56e709b2e834cead1d5c887603185fd21c4bf92df6e1ccff3ee218b5e787ce2"
+          },
+          {
+            "file": "test/gradle-fixture.ts",
+            "sha256": "8ada7b6f2793047e82bace81644c1e23f1f3a2bf6664466b9b3c392acbcd8220"
+          },
+          {
+            "file": "test/gradle-surfaces.test.ts",
+            "sha256": "7ec103da8781dc181ca4b464fe650e71f53adcf09ef80c8f2a8961542189f032"
+          },
+          {
+            "file": "test/gradle.test.ts",
+            "sha256": "1c065712c12da76a58f026574fd44a4b7dc653b848b2437ae37962089832ef17"
+          }
+        ],
+        "intendedAssertion": "Native build stays in the owned client JVM before cancellation",
+        "exitCode": 1,
+        "logSha256": "af1c3f43c456b80a143b0f60d773a0ad0297b1f3afd49402e56569aa397f4a4c",
+        "durationMs": 6172,
+        "killedAtIntendedAssertion": true
+      }
+    ],
+    "sourcesRestored": true,
+    "restoredBuildPassed": true
+  },
+  "publicPreparerControls": {
+    "schemaVersion": 1,
+    "controls": [
+      {
+        "case": "fresh-pinned-tool-acquisition",
+        "result": {
+          "version": "9.8.0",
+          "sha256": "bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c",
+          "bytes": 151611662,
+          "cacheHit": false,
+          "publisherSignatureVerified": false
+        }
+      },
+      {
+        "case": "verified-tool-cache-hit",
+        "result": {
+          "version": "9.8.0",
+          "sha256": "bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c",
+          "cacheHit": true,
+          "publisherSignatureVerified": false
+        }
+      },
+      {
+        "case": "corrupt-tool-cache-preserved",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      },
+      {
+        "case": "fresh-pinned-dependency-acquisition",
+        "result": {
+          "schemaVersion": 1,
+          "repositorySha256": "52994a09ad9a529938047ffa180f07ef79489dfed9d34bbf34a7160d350d694f",
+          "files": 21,
+          "bytes": 1787330,
+          "preparationNetworkAllowed": true,
+          "projectCodeExecuted": false,
+          "publisherSignaturesVerified": false
+        }
+      },
+      {
+        "case": "complete-dependency-destination-preserved",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      },
+      {
+        "case": "incomplete-dependency-destination-preserved",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      },
+      {
+        "case": "failed-dependency-preparation-published-nothing",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      },
+      {
+        "case": "linked-cache-denied-prepare-gradle-tools.mjs",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      },
+      {
+        "case": "linked-cache-denied-prepare-gradle-dependencies.mjs",
+        "result": {
+          "exitCode": 1,
+          "failureObserved": true
+        }
+      }
+    ],
+    "complete": true
+  },
+  "fullCheck": {
+    "complete": true,
+    "fullCheck": {
+      "tests": 664,
+      "pass": 550,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 114,
+      "todo": 0
+    },
+    "wholeTreeFormatPassed": true,
+    "diffCheckPassed": true,
+    "changedFilesDirectLintPassed": true,
+    "durationMs": 49749
+  },
+  "observedNativeContract": {
+    "singleUseDaemon": "The native daemon used its own process group despite --no-daemon; cancellation raced ENOTEMPTY cleanup in its owned home. Matching owned JVM flags run the build in the client PID. A compiling mismatch mutation reaches the native parent-client assertion before cancellation.",
+    "testDisplayNames": "Parameterized/dynamic internal TestDescriptor names differ from XML; Gradle getDisplayName and JUnit getDisplayName reconcile exact case class/name/outcome tuples.",
+    "testFailureClass": "The observed native task exception chain includes MarkedVerificationException, rather than TestExecutionException."
+  },
+  "wallMeasurementScope": "Acceptance helper wall time includes native controls and fresh installation; no representative project or model-review latency or peak memory was measured.",
+  "limits": {
+    "gradleWrappersVerified": false,
+    "mavenArtifactPacketClosureAtThisRevisionVerified": false,
+    "spotbugsDetektVerified": false,
+    "kotlinScalaGroovySourceVerified": false,
+    "generatedOrJpmsJvmBuildVerified": false,
+    "nonstandardOrCompositeOrRemappedSourceRootsVerified": false,
+    "allJUnitExtensionsInheritanceNestedClassesOrClassLoadersVerified": false,
+    "allCompilerOptionsFrameworkGuardsOrNativeRuleBranchesVerified": false,
+    "windowsVerified": false,
+    "otherPlatformRuntimeProfilesClosed": false,
+    "publisherSignatureVerified": false,
+    "completeBundledComponentLicenseClosureVerified": false,
+    "developmentNativeContainerProvenanceAuditCompleted": false,
+    "peakHeapOrProcessMemoryMeasured": false,
+    "byteBoundsAreTotalMemoryLimits": false,
+    "engineCrashCleanupGuaranteed": false,
+    "detachedMaliciousProcessesContained": false,
+    "hostileConcurrentFilesystemContained": false,
+    "projectPluginNetworkActivityContainedByEngine": false,
+    "allInternalNativeCallsAndRawOutputAudited": false,
+    "representativeProjectPerformanceMeasured": false,
+    "hostedCiExecuted": false,
+    "otherRequiredFamiliesVerifiedAtThisRevision": false,
+    "hostSessionIndependenceEstablished": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGateEstablished": false
+  },
+  "gates": {
+    "A": "open",
+    "B": "pending",
+    "C": "not-assessed"
+  }
+}

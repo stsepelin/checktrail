@@ -1734,5 +1734,149 @@
       "file": "dist/test/fetch-pack.test.js",
       "name": "remote pack cancellation after connection and invalid output boundaries never publish content"
     }
+  ],
+  "checkstyle": [
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle planning never executes project code requires explicit activation and protects JVM environment"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle XML accepts escaped properties formatting comments and exact built-in names while rejecting inactive or external assembly"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle catches exact style defects retains thresholds IDs and near misses without writing source or cache"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle cancellation kills its active JVM and removes the engine-owned temporary artifacts"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle declared root checks report violations and fixed controls for every supported file-set module"
+    }
+  ],
+  "maven": [
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven planning is data-only and unsupported prerequisites stay unavailable"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven artifact manifests reject corruption, extras, missing files and links"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven detects an assertion regression and repaired scale controls from fresh outputs"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven rejects test filtering, skip switches and omitted test classes"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven retains disabled and empty-test evidence as incomplete"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven binds every compiler input, plugin parameter and test terminal event"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven classifies compiler failures separately from bootstrap errors and protects cache pins"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven successful planning preserves project data and rejects startup and environment overrides"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven accounts for every declared reactor module and refuses hidden siblings"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs"
+    }
+  ],
+  "gradle": [
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "Gradle planning requires explicit activation and bounded complete source prerequisites"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects filtered skipped modified task and omitted source evidence"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle binds source declarations classpaths native task identities and every terminal"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle planning reads successful project data without executing build code"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle protects client JVM settings against project daemon overrides"
+    }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }
