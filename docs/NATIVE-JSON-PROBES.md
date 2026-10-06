@@ -75,3 +75,8 @@ preserved behavior. Exact revision/runtime/package pins and compiling guard
 measurements belong in the dated measurement; wider languages, Windows, native
 framework/tool contracts and the rest of Gate A remain open. No actual AI turn or
 held-out/real-project field evaluation is started by these synthetic checks.
+
+The [dated measurement](measurements/native-json-probes-2026-10-06.json) pins
+source and fresh offline macOS/Linux acceptance, preserved Boolean/physical
+profiles and compiling guard controls to their measured revision. It does not
+certify later source or complete Gate A.
