@@ -109,3 +109,10 @@ These local checks satisfy only the named client profiles. Claude Desktop,
 Cursor, VS Code integrations, other client versions and target operating systems
 remain unverified. These original snapshots do not establish public installation or hosted CI;
 alpha.5 publication and hosted evidence are recorded separately in [RELEASE.md](RELEASE.md).
+
+The [dated exact inventory reconciliation](measurements/client-inventory-reconciliation-2026-10-06.json)
+records fresh production-package Codex 0.160.0 discovery/direct-tool checks and
+Claude Code 2.1.290 health/discovery. Both discover the existing benchmark and
+workflow tools; the acceptance inventory now names both exactly. The observed
+client/MCP processes stopped. No model review, independent host-session acceptance
+or quality evaluation was run.
