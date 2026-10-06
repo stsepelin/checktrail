@@ -271,6 +271,9 @@ only if the client may receive paths, commands and raw diagnostics. The default
 summary omits those fields. Data returned through an MCP client may be sent to
 that client's model provider.
 
+The operator-only `review-benchmark-score` command derives descriptive paired metrics
+from frozen, sealed synthetic benchmark artifacts; see [benchmark scoring](docs/REVIEW-BENCHMARK.md#scoring-sealed-synthetic-artifacts). Claims, labels, host isolation and quality remain unverified.
+
 The `review_benchmark` worker view reads one startup-selected anonymous trial from
 a pinned original synthetic readiness protocol. Operator commands freeze paired
 cases, retain all predeclared journal slots and prepare anonymous judging packets.

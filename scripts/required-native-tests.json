@@ -2432,5 +2432,35 @@
       "file": "dist/test/native-process-observer.test.js",
       "name": "native process observer retains exact native command arguments and propagates unexplained IO failures"
     }
+  ],
+  "review-benchmark-scoring": [
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim"
+    }
   ]
 }
