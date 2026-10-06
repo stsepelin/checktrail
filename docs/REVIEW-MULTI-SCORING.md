@@ -80,3 +80,7 @@ losses, common-defect duplicates, unequal incident clusters, missing/unfinished
 reviews, unknown labels, identity/family/budget boundaries, forgery and real CLI/MCP
 calls. The package helper repeats these same assertions outside a fresh offline
 production installation. These are synthetic readiness controls, not field results.
+
+[The dated acceptance measurement](measurements/review-multi-scoring-2026-10-07.json)
+records source/installed assertions on the declared macOS and Linux runtimes,
+compiled guard removals, exact identities and the unverified boundaries.
