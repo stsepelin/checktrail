@@ -92,7 +92,8 @@ F# generator consumers need separate acceptance. Generated-source whitespace,
 code-style and analyzer-fix formatting are unavailable; the formatter keeps the
 whole declared generator plan unavailable instead of narrowing its scope.
 
-Wider SDK/framework/target/platforms, custom test-name method provenance, full SDK
-and publisher/license attestation, and hostile-project OS containment remain open.
+Bounded C#/F#/VB custom-name method provenance is recorded separately in
+DOTNET-METHOD.md. Wider SDK/framework/target/platforms, ambiguous method identities,
+full SDK and publisher/license attestation, and hostile-project OS containment remain open.
 Fresh directories and the prepared offline development container are not an OS
 security sandbox.

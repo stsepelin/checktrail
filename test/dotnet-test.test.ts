@@ -449,8 +449,17 @@ test(
         ),
       );
       const custom = (await run(root)).checks[0]!;
-      expect(custom, "inconclusive");
-      assert.equal(custom.findingsComplete, false);
+      expect(custom, "passed");
+      assert.equal(custom.findingsComplete, true);
+      const check = (await createPlan(root)).plan.checks[0]!,
+        process = custom.processes[0]!,
+        missing = dotnetTestPacketSchema.parse(JSON.parse(process.stdout));
+      missing.runs[0]!.nunit = null;
+      const unsupported = dotnetTestEvidence(check, [
+        { ...process, stdout: JSON.stringify(missing) },
+      ]);
+      assert.equal(unsupported.status, "inconclusive");
+      assert.equal(unsupported.findingsComplete, false);
     } finally {
       await writeFile(path.join(root, file), original);
     }

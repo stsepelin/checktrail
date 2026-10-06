@@ -28,6 +28,8 @@ an unavailable runtime or external service does not count as verification.
 
 - Implemented: opt-in `dotnet.format-whitespace` for bounded C#/VB native documents, effective options, source-byte/text/edit identity and SDK whitespace report reconciliation after fresh compilation. F# remains visibly unavailable. DOTNET-FORMAT.md records original native/installed, CLI/MCP and reached-workspace cancellation controls. Full formatting, generator and wider E12 scope remain open.
 
+- Implemented: native NUnit discovery/result method provenance for C#/F#/VB custom case names, with owned settings, complete XML tree/VSTest/TRX reconciliation and unique compiled source binding. DOTNET-METHOD.md records original native/installed, ambiguity, assertion/privacy and reached-test cancellation controls; E12 remains partial.
+
 - Implemented: opt-in `dotnet.test` using the same fresh build closure for declared C#/F#/VB NUnit projects. Native discovery, every case, source symbols, execution and TRX reconcile; skipped and unbound cases remain incomplete. DOTNET-TEST.md records the bounded profile; broader formatting and wider E12 scope remain open.
 - Implemented: opt-in `dotnet.build` for explicit `net10.0` C#/F#/VB projects, with fresh offline locked restore, selected native compiler and analyzer evidence, declared generated sources, portable-symbol binding, source findings and cancellation scratch cleanup. DOTNET-BUILD.md records scope and required native/installed controls. E12 and Gate A remain open.
 

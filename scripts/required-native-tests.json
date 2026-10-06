@@ -2024,5 +2024,35 @@
       "file": "dist/test/dotnet-generated-surfaces.test.js",
       "name": "native Roslyn cancellation reaches the original generator and reaps compiler descendants and temporary outputs"
     }
+  ],
+  "dotnet-method": [
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "NUnit owned settings escape data and select complete native discovery without a result dump"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit method provenance reconciles C#/F#/VB custom names escaped literals broken boundaries and repair"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit method evidence rejects missing forged stale duplicate hidden and mismatched XML and settings"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit duplicate custom full names remain ambiguous without assigning a guessed method"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit custom-name parent fixture skips and setup failures retain promoted case counts source addresses and repair"
+    },
+    {
+      "file": "dist/test/dotnet-method-surfaces.test.js",
+      "name": "native NUnit custom-name CLI and negotiated MCP preserve source-bound assertion failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-method-surfaces.test.js",
+      "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
+    }
   ]
 }

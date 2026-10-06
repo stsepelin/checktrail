@@ -2,6 +2,7 @@ import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 import type { SpawnSyncReturns } from "node:child_process";
 import { dotnetTestNativeSource } from "./dotnet-test-native.js";
+import { dotnetNunitSettings } from "./dotnet-nunit.js";
 import { mavenHash } from "./maven.js";
 import type { z } from "zod";
 import type { dotnetBuildInvocationSchema } from "./dotnet-build.js";
@@ -102,10 +103,28 @@ export async function collectDotnetTests(context: Context) {
     const discoveryFile = path.join(directory, "discovery.jsonl"),
       executionFile = path.join(directory, "execution.jsonl"),
       trxFile = path.join(directory, "result.trx");
+    const settingsFile = path.join(directory, "checktrail.runsettings"),
+      settings = dotnetNunitSettings(directory);
+    await writeFile(settingsFile, settings, { flag: "wx" });
+    ownedPins.set(settingsFile, mavenHash(settings));
+    const nativeXml = async (file: string) => {
+      try {
+        const bytes = await regular(file, 1024 * 1024);
+        return {
+          file,
+          text: new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+          sha256: mavenHash(bytes),
+        };
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+        throw error;
+      }
+    };
     const common = [
       "exec",
       console,
       assembly,
+      `/Settings:${settingsFile}`,
       "/Framework:.NETCoreApp,Version=v10.0",
       `/TestAdapterPath:${observer};${adapter}`,
     ];
@@ -119,6 +138,9 @@ export async function collectDotnetTests(context: Context) {
       workspace,
     );
     const discoveryEvents = await events(discoveryFile);
+    const discoveryXml = await nativeXml(
+      path.join(base, "Dump", "D_" + project.assemblyName + ".dll.dump"),
+    );
     const execution = invoke(
       "test-execution:" + project.file,
       [
@@ -130,6 +152,9 @@ export async function collectDotnetTests(context: Context) {
       workspace,
     );
     const executionEvents = await events(executionFile);
+    const executionXml = await nativeXml(
+      path.join(directory, project.assemblyName + ".xml"),
+    );
     let trx = "";
     try {
       trx = new TextDecoder("utf-8", { fatal: true }).decode(
@@ -157,6 +182,12 @@ export async function collectDotnetTests(context: Context) {
       discoveryEvents,
       executionEvents,
       trx,
+      nunit: {
+        settingsFile,
+        settingsSha256: mavenHash(settings),
+        discovery: discoveryXml,
+        execution: executionXml,
+      },
     });
   }
   return {

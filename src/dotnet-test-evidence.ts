@@ -7,6 +7,11 @@ import {
 } from "./dotnet-build-evidence.js";
 import { dotnetBuildInvocationSchema } from "./dotnet-build.js";
 import { dotnetTestNativeSource } from "./dotnet-test-native.js";
+import {
+  dotnetNunitSettings,
+  dotnetNunitSchema,
+  dotnetNunitCases,
+} from "./dotnet-nunit.js";
 import { mavenHash } from "./maven.js";
 import type {
   Finding,
@@ -73,6 +78,7 @@ export const dotnetTestPacketSchema = z.strictObject({
         discoveryEvents: z.array(event).min(1).max(20000),
         executionEvents: z.array(event).min(1).max(20000),
         trx: z.string().max(1024 * 1024),
+        nunit: dotnetNunitSchema.nullable().default(null),
       }),
     )
     .max(64),
@@ -371,6 +377,42 @@ export function dotnetTestEvidence(
         start.sources[0] === run.assembly,
         "Native test run starts against exactly the selected assembly",
       );
+      const native = run.nunit,
+        directory = path.join(
+          path.dirname(data.build.workspace),
+          "observer/tests-" + data.runs.indexOf(run),
+        );
+      requireEvidence(
+        native && native.discovery,
+        "Native NUnit discovery and result method provenance",
+      );
+      requireEvidence(
+        native.settingsFile ===
+          path.join(directory, "checktrail.runsettings") &&
+          native.settingsSha256 === mavenHash(dotnetNunitSettings(directory)) &&
+          native.discovery.file ===
+            path.join(
+              base,
+              "Dump",
+              "D_" + project.assemblyName + ".dll.dump",
+            ) &&
+          (!native.execution ||
+            native.execution.file ===
+              path.join(directory, project.assemblyName + ".xml")),
+        "Owned exact native NUnit settings and output paths",
+      );
+      const nativeDiscovery = dotnetNunitCases(
+        native.discovery,
+        run.assembly,
+        "discovery",
+      );
+      requireEvidence(
+        same(
+          nativeDiscovery.rows.map((r) => r.fullname),
+          discovered.map((r) => r.name),
+        ),
+        "Every native NUnit discovery case matches VSTest",
+      );
       const roles = new Set<string>(),
         caseFiles = new Map<string, string>();
       for (const candidate of discovered) {
@@ -379,21 +421,26 @@ export function dotnetTestEvidence(
           "Selected native test source assembly",
         );
         const matching = project.testClasses.filter((role) => {
-          if (!candidate.name.startsWith(role.className + ".")) return false;
-          const method = candidate.name
-            .slice(role.className.length + 1)
-            .split("(")[0]!;
-          return module.metadata!.types.some(
-            (type) =>
-              type.className === role.className &&
-              type.methods.some(
-                (item) =>
-                  item.name === method &&
-                  item.files.includes(
-                    path.join(data.build.workspace, role.file),
-                  ),
-              ),
-          );
+          const nativeCase = nativeDiscovery.rows.find(
+            (r) => r.fullname === candidate.name,
+          )!;
+          if (
+            nativeCase.className !== role.className ||
+            nativeCase.name !== candidate.displayName
+          )
+            return false;
+          const method = nativeCase.methodName;
+          const types = module.metadata!.types.filter(
+              (t) => t.className === role.className,
+            ),
+            methods = types
+              .flatMap((t) => t.methods)
+              .filter(
+                (m) =>
+                  m.name === method &&
+                  m.files.includes(path.join(data.build.workspace, role.file)),
+              );
+          return types.length === 1 && methods.length === 1;
         });
         requireEvidence(
           matching.length === 1,
@@ -476,6 +523,50 @@ export function dotnetTestEvidence(
       }
       if (counts.Failed > 0) observedFailure = true;
       requireEvidence(
+        native.execution,
+        "Native NUnit execution method provenance",
+      );
+      const nativeExecution = dotnetNunitCases(
+        native.execution,
+        run.assembly,
+        "execution",
+        nativeDiscovery,
+      );
+      requireEvidence(
+        nativeExecution.commandLine?.startsWith(
+          path.join(base, "testhost.dll") + " --port ",
+        ) &&
+          nativeExecution.commandLine.includes(
+            " --parentprocessid " +
+              run.executionLauncherPid +
+              " --telemetryoptedin false",
+          ),
+        "Native NUnit result belongs to the actual VSTest launcher",
+      );
+      requireEvidence(
+        same(
+          nativeExecution.rows.map((r) => r.fullname),
+          results.map((r) => r.test.name),
+        ),
+        "Every native NUnit result matches VSTest",
+      );
+      for (const result of results) {
+        const n = nativeExecution.rows.find(
+            (r) => r.fullname === result.test.name,
+          )!,
+          d = nativeDiscovery.rows.find(
+            (r) => r.fullname === result.test.name,
+          )!;
+        requireEvidence(
+          n.className === d.className &&
+            n.methodName === d.methodName &&
+            n.name === result.test.displayName &&
+            n.result === result.outcome,
+          "Native NUnit result identity method and outcome",
+        );
+      }
+
+      requireEvidence(
         !/<!DOCTYPE|<!ENTITY/i.test(run.trx) &&
           XMLValidator.validate(run.trx) === true,
         "Bounded native TRX XML",
@@ -484,7 +575,7 @@ export function dotnetTestEvidence(
         ignoreAttributes: false,
         attributeNamePrefix: "@_",
         parseAttributeValue: false,
-        processEntities: false,
+        processEntities: true,
       }).parse(run.trx).TestRun;
       requireEvidence(
         trx &&

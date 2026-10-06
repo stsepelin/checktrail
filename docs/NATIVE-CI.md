@@ -18,7 +18,7 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `rust`, `rust-format`, `clippy` and `rust-tests`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
-installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format` and `dotnet-generated` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The packaged review and
+installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with

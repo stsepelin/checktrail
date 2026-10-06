@@ -5,8 +5,9 @@ declared C#, F# and Visual Basic projects targeting `net10.0`, SDK 10.0.401,
 runtime/reference pack 10.0.12, NUnit 4.6.1, NUnit adapter 5.0.0 and Test SDK
 18.10.1 in the original prepared fixture. It is not in the published alpha.5
 package. E12 and Gate A remain open. Broader formatting, wider Roslyn generator shapes,
-custom-name method provenance, other frameworks/targets and wider native profiles
-are unfinished.
+other frameworks/targets and wider native profiles are unfinished.
+[Custom-name method provenance](DOTNET-METHOD.md) now has a separate bounded
+C#/F#/VB native profile; ambiguous signatures remain incomplete.
 
 ## Select and execute
 
@@ -52,10 +53,11 @@ The selected adapter emits no source file for the original fixture. The parser
 therefore requires the exact declared class and compiled method in fresh assembly
 metadata, with that method's portable symbols bound to its declared source and
 compiler-input checksum. Prefix/suffix class near misses and undeclared siblings
-remain incomplete. A native `TestName` that replaces the method name without
-method provenance also remains incomplete; its execution does not establish a
-source binding. Other name/generic/dynamic conventions require their own native
-profiles before promotion.
+remain incomplete. The selected NUnit adapter's complete discovery and clean result XML now supply
+method provenance for custom `TestName` values, with exact settings, native tree
+and VSTest reconciliation described in DOTNET-METHOD.md. Missing provenance,
+duplicate full names and overloaded method identities remain incomplete. Other
+name/generic/dynamic conventions require their own native profiles before promotion.
 
 This pinned TRX logger emits per-case `NotExecuted` for NUnit skips, excludes
 those cases from its `executed` counter and leaves `notExecuted` at zero. Native
@@ -65,7 +67,7 @@ inconclusive, including all-skipped runs. Empty discovery is incomplete. Failed
 native cases produce a failed check with source-bound test-file findings, including
 assertion and fixture setup failures. Those addresses bind the registered case,
 not proof of entry into its method, production cause or a remedy. A validated
-native case failure remains failed with incomplete findings if later TRX evidence
+native case failure remains failed with incomplete findings if later NUnit result XML or TRX evidence
 does not reconcile.
 
 ## Trust, packaging and limits
@@ -89,8 +91,9 @@ logs. Request arguments cannot grant execution trust.
 The frozen `dotnet-test` names in `scripts/required-native-tests.json` cover
 original native regression/repair, skip/zero, roles, near misses, altered packets,
 restore/build boundaries, source preservation, CLI/MCP and reached-test cancellation.
-The required harness has an explicit five-minute file timeout for `dotnet-test`;
-other profiles retain their two-minute default. The timeout is retained in the
+The required harness has an explicit five-minute file timeout for `dotnet-test`,
+`dotnet-format`, `dotnet-generated` and `dotnet-method`; other profiles retain
+their two-minute default. The timeout is retained in the
 profile receipt and does not increase the engine's protected execution budget.
 `scripts/verify-dotnet-test-container.mjs` requires those cases against source and
 a fresh offline production install. The external harness imports shipped runtime

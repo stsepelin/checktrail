@@ -266,3 +266,8 @@ bounded C#/VB fresh build/test profile, with native producer/analyzer selection,
 emission settings, generated-source hashes and consumer portable-symbol evidence.
 Unsupported generator shapes and all generated-source formatting remain incomplete;
 this does not close E12 or Gate A.
+
+[Native NUnit method provenance](DOTNET-METHOD.md) binds C#/F#/VB custom case
+names to complete native discovery/result identities and fresh compiled source
+symbols. Duplicate full names and overloaded methods remain incomplete; this
+profile does not close wider E12 or platform requirements.
