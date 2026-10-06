@@ -18,6 +18,7 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyMavenTree } from "../dist/src/maven.js";
+import { acquireMavenDependencies } from "./retry-maven-acquisition.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const cache = path.join(repository, ".checktrail"),
   destination = path.join(cache, "maven-dependencies");
@@ -38,41 +39,50 @@ try {
   });
   const image =
     process.env.CHECKTRAIL_MAVEN_IMAGE ?? "checktrail-maven-test:3.10.0";
-  const output = execFileSync(
-    "docker",
-    [
-      "run",
-      "--rm",
-      "--init",
-      "--user",
-      containerUser,
-      "--cpus",
-      "2",
-      "--memory",
-      "2g",
-      "--mount",
-      `type=bind,src=${workspace},target=/workspace`,
-      "--mount",
-      `type=bind,src=${artifacts},target=/artifacts`,
-      "--workdir",
-      "/workspace",
-      "--env",
-      "HOME=/workspace/.preparation-home",
-      "--env",
-      "MAVEN_OPTS=-Duser.home=/workspace/.preparation-home",
-      ...(process.env.CHECKTRAIL_TEST_TASK
-        ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
-        : []),
-      image,
-      "mvn",
-      "--batch-mode",
-      "--no-transfer-progress",
-      "--strict-checksums",
-      "-Dmaven.repo.local=/artifacts",
-      "test",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 120000 },
-  );
+  const acquisition = await acquireMavenDependencies({
+    // Recreate the private local repository after a failed acquisition so Maven
+    // cannot reuse negative-resolution markers or partial downloaded artifacts.
+    beforeRetry: async () => {
+      await rm(artifacts, { recursive: true, force: true });
+      await mkdir(artifacts);
+    },
+    invoke: () =>
+      execFileSync(
+        "docker",
+        [
+          "run",
+          "--rm",
+          "--init",
+          "--user",
+          containerUser,
+          "--cpus",
+          "2",
+          "--memory",
+          "2g",
+          "--mount",
+          `type=bind,src=${workspace},target=/workspace`,
+          "--mount",
+          `type=bind,src=${artifacts},target=/artifacts`,
+          "--workdir",
+          "/workspace",
+          "--env",
+          "HOME=/workspace/.preparation-home",
+          "--env",
+          "MAVEN_OPTS=-Duser.home=/workspace/.preparation-home",
+          ...(process.env.CHECKTRAIL_TEST_TASK
+            ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
+            : []),
+          image,
+          "mvn",
+          "--batch-mode",
+          "--no-transfer-progress",
+          "--strict-checksums",
+          "-Dmaven.repo.local=/artifacts",
+          "test",
+        ],
+        { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 120000 },
+      ),
+  });
   await rm(path.join(artifacts, ".locks"), { recursive: true, force: true });
   const files = [];
   let total = 0;
@@ -126,7 +136,10 @@ try {
       bytes: total,
       preparationNetworkAllowed: true,
       originalFixtureExecuted: true,
-      consoleSha256: createHash("sha256").update(output).digest("hex"),
+      acquisitionAttempts: acquisition.attempts,
+      consoleSha256: createHash("sha256")
+        .update(acquisition.output)
+        .digest("hex"),
       publisherSignaturesVerified: false,
     }) + "\n",
   );
