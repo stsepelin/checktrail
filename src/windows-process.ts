@@ -294,6 +294,9 @@ export async function runWindowsProcess(
           TMP: directory,
         },
         shell: false,
+        // libuv's parent job must not kill the guardian before EOF cleanup.
+        // The guardian owns its compiler and project children in native jobs.
+        detached: true,
         windowsHide: true,
         stdio: ["ignore", "pipe", "pipe"],
       });

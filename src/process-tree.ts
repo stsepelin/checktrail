@@ -130,30 +130,75 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
   if (rows.length > 65536) throw Error("Process snapshot exceeds bound");
   return rows;
 }
-/** Stop observed descendants before their waiting parents, including separate groups. */
-export async function stopDescendants(root: number) {
-  const selected = ownedDescendants(await processSnapshot(), root);
+interface StopDescendantIo {
+  snapshot(): Promise<ProcessIdentity[]>;
+  kill(pid: number): void;
+  exists(pid: number): boolean;
+  now(): number;
+  wait(ms: number): Promise<void>;
+}
+const nativeControl: StopDescendantIo = {
+  snapshot: processSnapshot,
+  kill: (pid) => {
+    process.kill(pid, "SIGKILL");
+  },
+  exists: (pid) => {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ESRCH") return false;
+      throw error;
+    }
+  },
+  now: () => performance.now(),
+  wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+};
+/** Stop observed descendants before their waiting parents, including separate groups.
+ * Confirm their observed identities disappeared before advancing; sending SIGKILL
+ * is not proof of exit or reaping. All depths share a bounded cleanup deadline.
+ */
+export async function stopDescendants(root: number, io = nativeControl) {
+  const deadline = io.now() + 2000;
+  const selected = ownedDescendants(await io.snapshot(), root);
+  const sameProcess = (
+    child: ProcessIdentity,
+    current: Map<number, ProcessIdentity>,
+  ) => {
+    const identity = current.get(child.pid);
+    if (!identity) {
+      if (io.exists(child.pid))
+        throw Error("Process cleanup identity unavailable");
+      return false;
+    }
+    if (identity.identity !== child.identity) return false;
+    if (identity.group !== child.group)
+      throw Error("Process cleanup identity changed group");
+    return true;
+  };
   for (const depth of [...new Set(selected.map((r) => r.depth))].sort(
     (a, b) => b - a,
   )) {
-    const current = new Map((await processSnapshot()).map((p) => [p.pid, p]));
-    for (const { process: child } of selected.filter(
-      (r) => r.depth === depth,
-    )) {
-      const identity = current.get(child.pid);
-      if (
-        !identity ||
-        identity.identity !== child.identity ||
-        identity.group !== child.group
-      )
-        continue;
+    const children = selected
+      .filter((r) => r.depth === depth)
+      .map((r) => r.process);
+    const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+    for (const child of children) {
+      if (!sameProcess(child, current)) continue;
+      if (io.now() >= deadline)
+        throw Error("Process cleanup deadline exceeded");
       try {
-        process.kill(child.pid, "SIGKILL");
+        io.kill(child.pid);
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
       }
     }
-    if (selected.some((r) => r.depth === depth))
-      await new Promise((resolve) => setTimeout(resolve, 25));
+    while (true) {
+      const remaining = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      if (!children.some((child) => sameProcess(child, remaining))) break;
+      if (io.now() >= deadline)
+        throw Error("Process cleanup deadline exceeded");
+      await io.wait(25);
+    }
   }
 }
