@@ -15,6 +15,14 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [Helm profile](HELM.md) validates a declared root application chart
+with pinned strict lint and client-only rendering. Frozen source/tool bytes, typed
+values and complete template participation bind native evidence to original
+source. Physical Go-template diagnostics are resolved; rendered YAML offsets
+remain inconclusive. The [local record](measurements/helm-native-2026-10-06.json)
+retains source and fresh offline installed CLI/MCP controls and two compiling
+guard proofs. Wider charts, Kubernetes API acceptance, E16 and Gate A remain open.
+
 The bounded [Kustomize profile](KUSTOMIZE.md) reconciles complete local assemblies
 with pinned native output and offline Kubernetes validation. Original controls
 cover source-bound defects/repair, supported overlay near misses, CLI/MCP trust and
@@ -28,7 +36,7 @@ JSON modules with pinned native Terraform. It binds source ranges/snippets,
 module/config/tool bytes, native counters and exact commands, with original
 defect/repair, CLI/MCP and reached lifecycle controls in the
 [local record](measurements/terraform-native-2026-10-06.json). Wider Terraform
-providers/modules, Helm, wider Kustomize transforms and Gate A remain open.
+providers/modules, wider Helm charts and Kustomize transforms and Gate A remain open.
 
 The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
 Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
@@ -37,7 +45,7 @@ JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
 collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
 binds native source/offline installed CLI/MCP controls and compiling guard proofs.
 The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
-Helm, wider Kustomize transforms and wider Terraform profiles remain pending.
+Wider Helm charts, Kustomize transforms and Terraform profiles remain pending.
 E16 and Gate A remain open.
 
 The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20

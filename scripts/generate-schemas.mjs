@@ -2,6 +2,7 @@ import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
 import { terraformConfigSchema } from "../dist/src/terraform.js";
 import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
 import { kustomizeConfigSchema } from "../dist/src/kustomize.js";
+import { helmConfigSchema } from "../dist/src/helm.js";
 import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
 import {
   rubyToolsConfigSchema,
@@ -130,6 +131,7 @@ for (const [name, schema] of Object.entries({
   "cpp-tools-config": cppToolsConfigSchema,
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,
+  "helm-config": helmConfigSchema,
   "terraform-config": terraformConfigSchema,
   "swift-tools-config": swiftToolsConfigSchema,
   "ruby-tools-config": rubyToolsConfigSchema,

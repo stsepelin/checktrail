@@ -1879,35 +1879,35 @@
       "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-evidence.test.js",
       "name": "native .NET packet rejects omitted, forged, stale and disabled participation"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-scope.test.js",
       "name": ".NET planning rejects incomplete source, project, role and dependency identities"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-environment.test.js",
       "name": ".NET protected environment cannot be overridden by project requirements"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-disabled.test.js",
       "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-outputs.test.js",
       "name": "native .NET preserves inventoried near misses and caller-owned output trees"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-generated.test.js",
       "name": "native .NET records declared generated inputs and rejects their undeclared presence"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-analyzers.test.js",
       "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair"
     },
     {
-      "file": "dist/test/dotnet-build.test.js",
+      "file": "dist/test/dotnet-build-cache.test.js",
       "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation"
     },
     {
@@ -1915,7 +1915,7 @@
       "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust"
     },
     {
-      "file": "dist/test/dotnet-build-surfaces.test.js",
+      "file": "dist/test/dotnet-build-cancellation.test.js",
       "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs"
     }
   ],
@@ -1929,27 +1929,27 @@
       "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-evidence.test.js",
       "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-lifecycle.test.js",
       "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-names.test.js",
       "name": "native .NET empty discovery and custom names without method provenance stay incomplete"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-scope.test.js",
       "name": "native .NET test classes require exact declared source roles including newly compiled siblings"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-failures.test.js",
       "name": "native .NET tests distinguish source compilation restore and fixture setup failures"
     },
     {
-      "file": "dist/test/dotnet-test.test.js",
+      "file": "dist/test/dotnet-test-outputs.test.js",
       "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage"
     },
     {
@@ -1957,7 +1957,7 @@
       "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust"
     },
     {
-      "file": "dist/test/dotnet-test-surfaces.test.js",
+      "file": "dist/test/dotnet-test-cancellation.test.js",
       "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
     }
   ],
@@ -2325,6 +2325,44 @@
     {
       "file": "dist/test/kustomize-surfaces.test.js",
       "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    }
+  ],
+  "helm": [
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes"
+    },
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm frozen collection rejects source and configuration changed after planning"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm startup environment cannot override native chart cluster plugin and credential settings"
+    },
+    {
+      "file": "dist/test/helm-surfaces.test.js",
+      "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm omitted and duplicate resources never become complete coverage"
     }
   ]
 }

@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "profile": "bounded-root-chart-helm-lint-render-v1",
+  "date": "2026-10-06",
+  "syntheticOnly": true,
+  "toolVersions": {
+    "node": "22.23.2",
+    "helm": "4.3.0",
+    "kubernetesVersionArgument": "1.36.0",
+    "mcpAcceptanceClient": "2.3.0"
+  },
+  "platform": "linux_arm64",
+  "nativeImage": "sha256:817f6d91a4258c514ac2a0f5d82deb279b37affe5cb6437de10cf28fd3d06820",
+  "binarySha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+  "source": {
+    "profile": "helm",
+    "timeoutMs": 120000,
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true
+  },
+  "installedProfile": {
+    "profile": "helm",
+    "timeoutMs": 120000,
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true
+  },
+  "installation": {
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientCopiedOutsideInstalledPackage": true
+  },
+  "environment": {
+    "image": "sha256:817f6d91a4258c514ac2a0f5d82deb279b37affe5cb6437de10cf28fd3d06820",
+    "network": "none",
+    "consumerMount": "readonly",
+    "rootFilesystemReadonly": false
+  },
+  "runtimeControlPins": [
+    {
+      "file": "src/helm.ts",
+      "sha256": "50f76acb0a0e680e0d2bde62f37122d779c7f5b8ebd80299b4ae48fbab212c39"
+    },
+    {
+      "file": "src/helm-runner.ts",
+      "sha256": "2f1faaea5796e8402de93ad489bd8b1c37b8c96c6d3c9c10351f4856ea0a2904"
+    },
+    {
+      "file": "src/helm-evidence.ts",
+      "sha256": "c8668e2b9d208bc174ef32d5c2a12bb83aa1f3f7be553a9c703369bcfcf7c8f4"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "1c186f40dd6778281d62325beaa9d9328dae164b5844e6c95b1b2a80200b0a2f"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "658e5aec1bd1b41eea975f537ae4e7479a5df750698a853d91cd47e5105e4633"
+    },
+    {
+      "file": "test/helm-fixture.ts",
+      "sha256": "ba9a7c0d221b7dc5e06b4cec6fc475547c54f6a7e73331deb4903ea2e807e538"
+    },
+    {
+      "file": "test/helm.test.ts",
+      "sha256": "21a5717c00c146d47b26d62820787d09ebeaab4213bb893840437484b2ffa82f"
+    },
+    {
+      "file": "test/helm-scope.test.ts",
+      "sha256": "4e02404e5b629932bf93d0f85e41992d1b40227390c96e3f424d7d9c5d432aae"
+    },
+    {
+      "file": "test/helm-lifecycle.test.ts",
+      "sha256": "349424165ffdb4edd3aff59e94af4f7306c434629281e1155bd2c42d888571cf"
+    },
+    {
+      "file": "test/helm-surfaces.test.ts",
+      "sha256": "a90068f9e78b4a6d189dbc2595a59d42b4da622ba8fa346aeb521b8d9123a334"
+    },
+    {
+      "file": "scripts/verify-helm-container.mjs",
+      "sha256": "d122df3107b1b5e09772e48421b5f232fd9ab0835a9b00c119539388e8da82d8"
+    },
+    {
+      "file": "scripts/verify-helm-package.mjs",
+      "sha256": "c309268afc1e81db314e49c0ea1cdad56241d8867454e8ca22313356207c245a"
+    },
+    {
+      "file": "scripts/install-acceptance-package.mjs",
+      "sha256": "16e8e89aef422aa0c49964a68184da32c98df197ffbb32f778c9b9670d05c372"
+    },
+    {
+      "file": "schemas/helm-config.schema.json",
+      "sha256": "2d2ead9d16b07cb450eb63360e5703afc59b0775b7770e82d967ab462b8005cb"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "7b6c0f54efbbe757d4737e034fe661e3ceaa21ed09e9f68be540dac53c3b4ffc"
+    }
+  ],
+  "guardControls": [
+    {
+      "guard": "tool-after-pin",
+      "compilationPassed": true,
+      "originalCallback": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+      "callbackSha256": "0413da7035ee7b7106667f668b514515dbbd46a65c6d1f45e8c4c83984c50878",
+      "mutantSourceSha256": "64d92e41a5c8162e8169950157110114626544c294270773e1cab4eee8275440",
+      "wrapperFailureCode": "ERR_TEST_FAILURE",
+      "testFailureType": "testCodeFailure",
+      "expected": "inconclusive",
+      "observed": "passed",
+      "required": 1,
+      "passed": 0,
+      "skippedOrTodo": 0
+    },
+    {
+      "guard": "template-participation",
+      "compilationPassed": true,
+      "originalCallback": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+      "callbackSha256": "0413da7035ee7b7106667f668b514515dbbd46a65c6d1f45e8c4c83984c50878",
+      "mutantSourceSha256": "8ac72f565ce16e78a5d9decc76103e887f3ad6629c3fe36b3d664db31e8e3dac",
+      "wrapperFailureCode": "ERR_TEST_FAILURE",
+      "testFailureType": "testCodeFailure",
+      "expected": "inconclusive",
+      "observed": "passed",
+      "required": 1,
+      "passed": 0,
+      "skippedOrTodo": 0
+    }
+  ],
+  "guardBaseline": {
+    "passed": 1,
+    "required": 1,
+    "problems": [],
+    "complete": true
+  },
+  "guardRestored": {
+    "passed": 1,
+    "required": 1,
+    "problems": [],
+    "complete": true
+  },
+  "compiler": "TypeScript 6.0.3",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "kubernetesApiOrSchemaAcceptanceVerified": false,
+  "gateAComplete": false,
+  "windowsVerified": false,
+  "releaseSignaturesVerified": false,
+  "publisherAndLicenseClosureVerified": false,
+  "broaderHelmProfilesVerified": false,
+  "fullSuite": "Recorded separately from native required controls; optional native profiles are not credited as passing."
+}

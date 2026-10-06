@@ -1,3 +1,4 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
@@ -21,23 +22,10 @@ try {
     ),
   );
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      path.join(temporary, packed.filename),
-    ],
-    { cwd: consumer, stdio: "pipe" },
+  await installAcceptancePackage(
+    repository,
+    path.join(temporary, packed.filename),
+    consumer,
   );
   const goEnv = JSON.parse(
     execFileSync("go", ["env", "-json", "GOHOSTOS", "GOHOSTARCH"], {

@@ -21,6 +21,7 @@ export { cppToolsConfigSchema } from "./cpp-tools.js";
 export { terraformConfigSchema } from "./terraform.js";
 export { kubeconformConfigSchema } from "./kubeconform.js";
 export { kustomizeConfigSchema } from "./kustomize.js";
+export { helmConfigSchema } from "./helm.js";
 export { swiftToolsConfigSchema } from "./swift-tools.js";
 export {
   rubyToolsConfigSchema,

@@ -3,3 +3,6 @@ dist
 coverage
 package-lock.json
 test/fixtures
+
+# Go templates are checked by native Helm; their source is not plain YAML.
+examples/helm/templates/*.yaml
