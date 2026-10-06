@@ -108,6 +108,7 @@ jobs:
       - run: npm run check
       - name: Require prepared native regression profiles
         run: |
+          node scripts/verify-required-native-tests.mjs windows-contract
           node scripts/verify-required-native-tests.mjs core
           node scripts/verify-required-native-tests.mjs native-acceptance-ledger
           node scripts/verify-required-native-tests.mjs native-process-observer
@@ -613,3 +614,32 @@ jobs:
       - run: node scripts/verify-helm-container.mjs
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  windows:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - name: Record native Windows profile identity
+        shell: pwsh
+        run: |
+          node --version
+          [Environment]::OSVersion.VersionString
+          $env:ImageVersion
+          & "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command '$PSVersionTable | ConvertTo-Json -Depth 3'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Require native Windows argument environment process tree and shared engine controls
+        run: node scripts/verify-required-native-tests.mjs windows-process
+      - name: Require native compiling mutation guards with unchanged callbacks
+        run: node scripts/verify-windows-guards.mjs
+      - run: npm run format:check
+      - name: Prepare package install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - name: Repeat original controls in an offline locked production installation
+        run: node scripts/verify-windows-package.mjs

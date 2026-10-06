@@ -182,7 +182,7 @@ export interface DoctorIssue {
     | "unavailable-check"
     | "missing-executable"
     | "package-metadata"
-    | "unsupported-platform";
+    | "limited-platform-support";
   check?: string;
   adapter?: string;
   project?: string;
@@ -248,7 +248,12 @@ export async function diagnose(
     delete summary.detail;
     issues.push(options.detailed ? issue : summary);
   };
-  if (process.platform === "win32") add({ code: "unsupported-platform" });
+  if (process.platform === "win32")
+    add({
+      code: "limited-platform-support",
+      detail:
+        "Windows execution currently has a bounded direct .exe profile; broader tool, Git and persistence profiles remain unverified.",
+    });
   try {
     root = await realpath(root);
     await configurationExists(root);

@@ -284,6 +284,109 @@
             "items": {
               "type": "object",
               "properties": {
+                "windowsExecution": {
+                  "type": "object",
+                  "properties": {
+                    "profile": { "type": "string", "const": "windows-job-v1" },
+                    "requestId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "phase": {
+                      "type": "string",
+                      "enum": ["assigned", "running", "completed", "failed"]
+                    },
+                    "supervisorPid": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4294967295
+                    },
+                    "childPid": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4294967295
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "jobAssigned": { "type": "boolean" },
+                    "resumed": { "type": "boolean" },
+                    "childExitCode": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4294967295
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "activeBeforeCleanup": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4294967295
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "activeAfterCleanup": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4294967295
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "cleanup": {
+                      "type": "string",
+                      "enum": ["confirmed", "unavailable", "not-started"]
+                    },
+                    "nativeError": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4294967295
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "supervisorSha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "ownership": {
+                      "type": "string",
+                      "const": "creation-job-list"
+                    },
+                    "executionSandboxed": { "type": "boolean", "const": false }
+                  },
+                  "required": [
+                    "profile",
+                    "requestId",
+                    "phase",
+                    "supervisorPid",
+                    "childPid",
+                    "jobAssigned",
+                    "resumed",
+                    "childExitCode",
+                    "activeBeforeCleanup",
+                    "activeAfterCleanup",
+                    "cleanup",
+                    "nativeError",
+                    "supervisorSha256",
+                    "ownership",
+                    "executionSandboxed"
+                  ],
+                  "additionalProperties": false
+                },
                 "command": {
                   "type": "object",
                   "properties": {
@@ -547,6 +650,115 @@
                 "process": {
                   "type": "object",
                   "properties": {
+                    "windowsExecution": {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "type": "string",
+                          "const": "windows-job-v1"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "phase": {
+                          "type": "string",
+                          "enum": ["assigned", "running", "completed", "failed"]
+                        },
+                        "supervisorPid": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4294967295
+                        },
+                        "childPid": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 4294967295
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "jobAssigned": { "type": "boolean" },
+                        "resumed": { "type": "boolean" },
+                        "childExitCode": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "activeBeforeCleanup": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "activeAfterCleanup": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "cleanup": {
+                          "type": "string",
+                          "enum": ["confirmed", "unavailable", "not-started"]
+                        },
+                        "nativeError": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "supervisorSha256": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "ownership": {
+                          "type": "string",
+                          "const": "creation-job-list"
+                        },
+                        "executionSandboxed": {
+                          "type": "boolean",
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "profile",
+                        "requestId",
+                        "phase",
+                        "supervisorPid",
+                        "childPid",
+                        "jobAssigned",
+                        "resumed",
+                        "childExitCode",
+                        "activeBeforeCleanup",
+                        "activeAfterCleanup",
+                        "cleanup",
+                        "nativeError",
+                        "supervisorSha256",
+                        "ownership",
+                        "executionSandboxed"
+                      ],
+                      "additionalProperties": false
+                    },
                     "command": {
                       "type": "object",
                       "properties": {

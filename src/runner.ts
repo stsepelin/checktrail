@@ -40,7 +40,11 @@ export async function runProcess(
   };
   if (options.signal?.aborted) return { ...result, cancelled: true };
   if (process.platform === "win32")
-    return { ...result, errorCode: "UNSUPPORTED_PLATFORM" };
+    return (await import("./windows-process.js")).runWindowsProcess(
+      root,
+      command,
+      options,
+    );
   const cwd = await withinRoot(root, command.cwd);
   const env: NodeJS.ProcessEnv = {};
   for (const key of [
