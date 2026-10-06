@@ -41,6 +41,7 @@ export const PARSERS = [
   "phpstan-json",
   "phpunit-junit",
   "pint-json",
+  "php-cs-fixer-json",
 ] as const;
 
 export type Status =

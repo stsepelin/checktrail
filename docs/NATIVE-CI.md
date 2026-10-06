@@ -1,5 +1,25 @@
 # Required native CI evidence
 
+## Workflow scheduling
+
+Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
+account and runner capacity decides when queued jobs receive a runner. Steps
+within an individual job remain ordered.
+
+Stack branches under `pr/**` use pull-request events for verification rather than
+duplicating the full workflow on their branch push. Other branch pushes and all
+tag pushes retain verification. A newly opened PR triggers its checks even when
+its initial branch push did not. Each PR has its own workflow concurrency group;
+a newer merge-candidate run supersedes older runs for that PR, including runs
+caused by predecessor updates. This does not serialize jobs within a run or other
+PRs. Non-PR runs use unique run IDs, so main, tags and independent pushes do not
+cancel each other. Native profiles, matrix entries and assertions are unchanged.
+
+Superseded results are cancelled, not credited as successful acceptance. Check
+the current head and latest merge-candidate run before claiming hosted success.
+
+## Required regression profiles
+
 The ordinary test suite permits explicit skips for unavailable optional tools.
 That makes it useful on a developer machine, but its aggregate exit code cannot
 establish that a native adapter ran. CI's prepared profiles additionally use
@@ -14,7 +34,7 @@ Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
-`frameworks`, `go` (including `go-matrix`), `php-tools`, `laravel` and `rust`. Dedicated container jobs
+`frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel` and `rust`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
@@ -110,3 +130,9 @@ baseline; the release commit needs its own CI run before publication.
 +cache. This checks installed library/CLI/MCP accounting and operator controls;
 +it starts no real provider inference or field review. Exact local runtime pins,
 +mutations and cleanup evidence are in +[the dated measurement](measurements/review-budget-native-2026-10-02.json). +
+
+The separate `php-review` job pins its Docker runtime and Composer lock, disables
+plugins and lifecycle scripts during preparation, and requires the exact native
+profile with no network. It also checks the fresh offline production installation;
+the main matrix requires the same profile in its prepared host PHP runtime.
+These configured hosted jobs are not evidence that they have run.

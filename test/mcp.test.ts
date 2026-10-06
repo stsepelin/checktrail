@@ -401,10 +401,11 @@ test('waits', async () => {
         ready =
           (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
           "ready";
-        break;
+        if (ready) break;
       } catch {
-        await delay(25);
+        // The native fixture has not created its readiness marker yet.
       }
+      await delay(25);
     }
     assert.equal(ready, true);
     await client.notification({

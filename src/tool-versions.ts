@@ -202,6 +202,15 @@ export async function toolsFor(
           check.commands[0].args[2],
         ]),
       );
+    if (check.id === "php.php-cs-fixer" && check.commands[0]?.args[3])
+      tools.push(
+        command("php-cs-fixer", "php", [
+          "-r",
+          "require $argv[1]; echo PhpCsFixer\\Console\\Application::VERSION;",
+          "--",
+          check.commands[0].args[3],
+        ]),
+      );
     if (check.id === "php.pint" && check.commands[0]?.args[3])
       tools.push(
         command("pint", "php", [
@@ -298,29 +307,31 @@ export async function identifyTool(
                     output,
                   )?.[1]
                 : undefined
-              : tool.name === "pint"
-                ? /^Pint (\S+)$/.exec(output)?.[1]
-                : tool.name === "pest"
-                  ? /^Pest Testing Framework (\S+)\.$/.exec(output)?.[1]
-                  : tool.name === "phpunit"
-                    ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
-                    : tool.name === "phpstan"
-                      ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
-                          output,
-                        )?.[1]
-                      : tool.name === "staticcheck"
-                        ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+              : tool.name === "php-cs-fixer"
+                ? /^(3\.[0-9]+\.[0-9]+)$/.exec(output)?.[1]
+                : tool.name === "pint"
+                  ? /^Pint (\S+)$/.exec(output)?.[1]
+                  : tool.name === "pest"
+                    ? /^Pest Testing Framework (\S+)\.$/.exec(output)?.[1]
+                    : tool.name === "phpunit"
+                      ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
+                      : tool.name === "phpstan"
+                        ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
                             output,
                           )?.[1]
-                        : tool.name === "go"
-                          ? /^go version go(\S+) \S+$/.exec(output)?.[1]
-                          : tool.name === "php"
-                            ? /^PHP (\S+) /.exec(output)?.[1]
-                            : tool.name === "python"
-                              ? /^Python (\S+)$/.exec(output)?.[1]
-                              : tool.name === "ruff"
-                                ? /^ruff (\S+)$/.exec(output)?.[1]
-                                : output;
+                        : tool.name === "staticcheck"
+                          ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+                              output,
+                            )?.[1]
+                          : tool.name === "go"
+                            ? /^go version go(\S+) \S+$/.exec(output)?.[1]
+                            : tool.name === "php"
+                              ? /^PHP (\S+) /.exec(output)?.[1]
+                              : tool.name === "python"
+                                ? /^Python (\S+)$/.exec(output)?.[1]
+                                : tool.name === "ruff"
+                                  ? /^ruff (\S+)$/.exec(output)?.[1]
+                                  : output;
   if (
     version &&
     (tool.name === "swift"

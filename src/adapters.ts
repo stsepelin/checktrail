@@ -16,6 +16,7 @@ import { nuxtCheck } from "./nuxt.js";
 import { vueRouterCheck } from "./vue-router.js";
 import { goEnvironment, goScopeCommand } from "./go-scope.js";
 import { pintCheck } from "./pint.js";
+import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
@@ -90,6 +91,7 @@ export const adapters = [
       "php.phpunit",
       "php.pest",
       "php.pint",
+      "php.php-cs-fixer",
       "php.laravel-runtime",
     ],
   },
@@ -496,6 +498,7 @@ export async function checksFor(
           await phpunitCheck(source, project),
           await phpunitCheck(source, project, true),
           await pintCheck(source, project),
+          await phpCsFixerCheck(source, project),
           ...(requested?.includes("php.laravel-runtime")
             ? [await laravelCheck(source, project)]
             : []),

@@ -1,3 +1,4 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -37,6 +38,7 @@ const expectedTools = [
   "finding_comparison",
   "mutation_experiment",
   "project_context",
+  "review_benchmark",
   "review_context",
   "review_guidance",
   "review_hypotheses",
@@ -46,6 +48,7 @@ const expectedTools = [
   "review_run",
   "review_score",
   "review_verify",
+  "review_workflow",
   "runtime_comparison",
   "validation_plan",
   "validation_report",
@@ -118,7 +121,7 @@ try {
   const fixture = path.join(temporary, "fixture");
   const consumer = path.join(temporary, "consumer");
   await mkdir(fixture);
-  await mkdir(consumer);
+
   await writeFile(
     path.join(fixture, "package.json"),
     JSON.stringify({
@@ -132,7 +135,7 @@ try {
   const source = (expected) =>
     `import {test} from 'node:test';import assert from 'node:assert/strict';test('adds',()=>assert.equal(2+3,${expected}));\n`;
   await writeFile(testFile, source(5));
-  await writeFile(path.join(consumer, "package.json"), '{"private":true}');
+
   const [packed] = JSON.parse(
     run(
       "npm",
@@ -141,19 +144,7 @@ try {
     ),
   );
   const tarball = path.join(temporary, packed.filename);
-  run(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      tarball,
-    ],
-    consumer,
-  );
+  await installAcceptancePackage(repository, tarball, consumer);
   const cli = path.join(
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src/cli.js",

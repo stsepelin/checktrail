@@ -1,0 +1,20 @@
+{
+  "name": "checktrail/synthetic-php-review-tools",
+  "description": "Pinned native PHP toolchain for original synthetic reviewer controls",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "friendsofphp/php-cs-fixer": "3.95.27",
+    "larastan/larastan": "3.12.3",
+    "phpstan/phpstan": "2.2.14",
+    "laravel/framework": "13.32.0"
+  },
+  "config": {
+    "allow-plugins": false,
+    "sort-packages": true,
+    "platform": {
+      "php": "8.5.6"
+    }
+  }
+}

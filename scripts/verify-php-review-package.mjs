@@ -15,53 +15,52 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
-
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "checktrail-mcp-tasks-package-"),
+  path.join(tmpdir(), "checktrail-php-review-package-"),
 );
 try {
   const [packed] = JSON.parse(
     execFileSync(
       "npm",
-      ["pack", "--json", "--ignore-scripts", "--pack-destination", temporary],
+      [
+        "pack",
+        "--offline",
+        "--json",
+        "--ignore-scripts",
+        "--pack-destination",
+        temporary,
+      ],
       { cwd: repository, encoding: "utf8" },
     ),
   );
   const tarball = path.join(temporary, packed.filename);
-  const tarballSha256 = createHash("sha256")
-    .update(await readFile(tarball))
-    .digest("hex");
   const consumer = path.join(temporary, "consumer");
   await installAcceptancePackage(repository, tarball, consumer);
   const installed = path.join(
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src",
   );
-  for (const name of ["server", "core"]) {
-    const manifest = JSON.parse(
-      await readFile(
-        path.join(
-          consumer,
-          `node_modules/@modelcontextprotocol/${name}/package.json`,
-        ),
-        "utf8",
-      ),
-    );
-    assert.equal(manifest.version, "2.3.0");
-  }
-  // The acceptance harness is outside the installed package. Its src link points
-  // to shipped bytes, so internal imports and the CLI both exercise that install.
   await mkdir(path.join(consumer, "dist/test"), { recursive: true });
   await symlink(
     path.relative(path.join(consumer, "dist"), installed),
     path.join(consumer, "dist/src"),
   );
-  for (const file of ["mcp-validation-tasks.test.js", "helpers.js"])
+  for (const file of [
+    "php-cs-fixer.test.js",
+    "larastan.test.js",
+    "php-review-surfaces.test.js",
+    "helpers.js",
+  ])
     await cp(
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  await cp(
+    path.join(repository, ".checktrail/php-review-tools"),
+    path.join(consumer, ".checktrail/php-review-tools"),
+    { recursive: true },
+  );
   await mkdir(path.join(consumer, "scripts"));
   for (const file of [
     "verify-required-native-tests.mjs",
@@ -79,9 +78,9 @@ try {
   );
   await writeFile(
     path.join(consumer, "scripts/required-native-tests.json"),
-    JSON.stringify({ "mcp-tasks": profiles["mcp-tasks"] }),
+    JSON.stringify({ "php-review": profiles["php-review"] }),
   );
-  const image = process.env.CHECKTRAIL_TASKS_IMAGE;
+  const image = process.env.CHECKTRAIL_PHP_REVIEW_IMAGE;
   const output = image
     ? execFileSync(
         "docker",
@@ -90,6 +89,10 @@ try {
           "--rm",
           "--network",
           "none",
+          "--cpus",
+          "2",
+          "--memory",
+          "2g",
           "--mount",
           `type=bind,src=${consumer},target=/consumer,readonly`,
           "--workdir",
@@ -97,20 +100,27 @@ try {
           image,
           "node",
           "scripts/verify-required-native-tests.mjs",
-          "mcp-tasks",
+          "php-review",
         ],
-        { encoding: "utf8", maxBuffer: 1024 * 1024 },
+        { encoding: "utf8", maxBuffer: 1024 * 1024, timeout: 240000 },
       )
     : execFileSync(
         process.execPath,
-        ["scripts/verify-required-native-tests.mjs", "mcp-tasks"],
-        { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
+        ["scripts/verify-required-native-tests.mjs", "php-review"],
+        {
+          cwd: consumer,
+          encoding: "utf8",
+          maxBuffer: 1024 * 1024,
+          timeout: 240000,
+        },
       );
   const acceptance = JSON.parse(output);
   assert.equal(acceptance.complete, true);
   process.stdout.write(
     JSON.stringify({
-      tarballSha256,
+      tarballSha256: createHash("sha256")
+        .update(await readFile(tarball))
+        .digest("hex"),
       offlineProductionInstall: true,
       lifecycleScriptsExecuted: false,
       installedCliEvaluated: true,
@@ -132,7 +142,6 @@ try {
       inferenceInvoked: false,
       fieldEvaluationExecuted: false,
       windowsVerified: false,
-      fullTasksConformanceClaimed: false,
     }) + "\n",
   );
 } finally {

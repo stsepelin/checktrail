@@ -9,6 +9,7 @@ import { dotnetEvidence } from "./dotnet-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { laravelEvidence } from "./laravel-evidence.js";
 import { pintEvidence } from "./pint-evidence.js";
+import { phpCsFixerEvidence } from "./php-cs-fixer-evidence.js";
 import { fastapiEvidence } from "./fastapi-evidence.js";
 import { vueRouterEvidence } from "./vue-router-evidence.js";
 import { djangoEvidence } from "./django-evidence.js";
@@ -302,6 +303,8 @@ export function evaluate(
   }
   if (check.parser === "eslint-json")
     return { ...result, ...eslintEvidence(check, processes, root) };
+  if (check.parser === "php-cs-fixer-json")
+    return { ...result, ...phpCsFixerEvidence(check, processes, root) };
   if (check.parser === "pint-json")
     return { ...result, ...pintEvidence(check, processes, root) };
   if (check.parser === "phpunit-junit")
