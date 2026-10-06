@@ -138,6 +138,11 @@ complete receipt and is not credited as acceptance. This ledger improves native
 acceptance accounting; it does not close the wider R7/E6 all-attempt, raw-output,
 provenance or host-isolation requirements.
 
+The [dated ledger acceptance](measurements/native-acceptance-ledger-2026-10-06.json)
+records exact runtime, helper/test identities, original guard mutations and native
+source/fresh-installed adapter results. Its acceptance is scoped to the recorded
+revision and profiles.
+
 ## Fresh-runner package preparation
 
 `npm ci` installs from the repository lockfile but does not necessarily cache

@@ -1,0 +1,1408 @@
+{
+  "schemaVersion": 1,
+  "profile": "required-native-terminal-ledger-v1",
+  "measurementKind": "original-synthetic-development-acceptance",
+  "codeRevision": "0e03b2d50ec7d009de6c922aebbb82f5d7380b82",
+  "scope": "Selected required test files and retained terminal test events. Imported source, dependencies, raw output and whole-process identity are not captured by the ledger.",
+  "identities": {
+    "scripts/required-test-evidence.mjs": "9aec2e9a83c15bd5e1eec94107d1673339f10a5cb1ee429d0df022182691a98b",
+    "scripts/required-native-tests.json": "873fd919edb9f9dfba495d6ffb8831093d3532795bb66bebf943e0d9e38d32cf",
+    "scripts/verify-required-native-tests.mjs": "0e800e4cc3ad8ddfef11c1a5b61f72f61d155277f40e9d52bf60ca2e97e7d14a",
+    "test/required-native-tests.test.ts": "9de9d395f1421aebf26fad29592320d9238e29dc1074574488fe0b0937cc3059",
+    "dist/test/required-native-tests.test.js": "b020045ba3cbcd594f572c0ccb27c9b8784327bfb9ccc460e4f89d1224711123"
+  },
+  "sourceProfiles": [
+    {
+      "runtime": {
+        "node": "26.9.0",
+        "os": "macOS",
+        "arch": "arm64"
+      },
+      "result": {
+        "profile": "native-acceptance-ledger",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "b020045ba3cbcd594f572c0ccb27c9b8784327bfb9ccc460e4f89d1224711123"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b020045ba3cbcd594f572c0ccb27c9b8784327bfb9ccc460e4f89d1224711123"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1814.6265,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native acceptance ledger binds every reached outcome and missing required case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 976.756667,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 526.976167,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5170.449416,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native acceptance ledger preflights every selected file within exact byte limits",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 556.002792,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger binds every reached outcome and missing required case",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger preflights every selected file within exact byte limits",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtime": {
+        "node": "22.23.2",
+        "os": "Linux",
+        "arch": "arm64",
+        "imageDigest": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+        "network": "none",
+        "readOnlyRootFilesystem": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "result": {
+        "profile": "native-acceptance-ledger",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "b020045ba3cbcd594f572c0ccb27c9b8784327bfb9ccc460e4f89d1224711123"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b020045ba3cbcd594f572c0ccb27c9b8784327bfb9ccc460e4f89d1224711123"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 613.916861,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native acceptance ledger binds every reached outcome and missing required case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 319.767287,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 162.681745,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1052.047682,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native acceptance ledger preflights every selected file within exact byte limits",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 205.482779,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger binds every reached outcome and missing required case",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger preflights every selected file within exact byte limits",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "preservedNativeAdapter": {
+    "runtime": {
+      "node": "v22.23.2",
+      "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+      "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)"
+    },
+    "imageDigest": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+    "os": "Linux",
+    "arch": "arm64",
+    "network": "none",
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "source": {
+      "profile": "dotnet-build",
+      "timeoutMs": 300000,
+      "passed": 12,
+      "required": 12,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 12,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-10",
+            "before": {
+              "state": "present",
+              "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-11",
+            "before": {
+              "state": "present",
+              "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21.506434,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 29279.31596,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7201.438976,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-3",
+            "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 802.868029,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-4",
+            "name": ".NET protected environment cannot be overridden by project requirements",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6076.249727,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-5",
+            "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16347.067336,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-6",
+            "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6685.190555,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-7",
+            "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12800.289415,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-8",
+            "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18742.070584,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-9",
+            "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2415.664884,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-10",
+            "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24315.73923,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-11",
+            "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2527.296833,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-3",
+            "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-4",
+            "name": ".NET protected environment cannot be overridden by project requirements",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-10",
+            "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-11",
+            "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          }
+        ]
+      }
+    },
+    "preservedCsharp": {
+      "profile": "dotnet",
+      "timeoutMs": 120000,
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 7,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "7ab93b5ad5e288b00fd14b7a369d12dea72096ccda6ca4d015c2fe2420d67ce4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7ab93b5ad5e288b00fd14b7a369d12dea72096ccda6ca4d015c2fe2420d67ce4"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "C# planning reads explicit settings without running build targets, and rejects unsupported compilation shapes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 45.217633,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "C# missing tooling and malformed unavailable evidence cannot produce a pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 279.157183,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native C# validates the public record, catches a type-error/fix pair and never executes application initialization or build targets",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2306.857786,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native C# accounts for empty files, partial types and semantic analysis; incomplete or inconsistent native evidence is rejected",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 728.810996,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native C# honors explicit nullability, warnings, defines, output kind and unsafe settings without implicit source inclusion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9378.689814,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "native C# consumes pinned metadata without executing modules or source generators and respects the declared assembly identity",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3523.690266,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "native C# compiler suppressions cannot silently establish complete findings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1452.409791,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "C# planning reads explicit settings without running build targets, and rejects unsupported compilation shapes",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "C# missing tooling and malformed unavailable evidence cannot produce a pass",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native C# validates the public record, catches a type-error/fix pair and never executes application initialization or build targets",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native C# accounts for empty files, partial types and semantic analysis; incomplete or inconsistent native evidence is rejected",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native C# honors explicit nullability, warnings, defines, output kind and unsafe settings without implicit source inclusion",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native C# consumes pinned metadata without executing modules or source generators and respects the declared assembly identity",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native C# compiler suppressions cannot silently establish complete findings",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "010d54952f28442878e4b3659e195baf42b44d4208205d429b2f25289978d7e2",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "dotnet-build",
+        "timeoutMs": 300000,
+        "passed": 12,
+        "required": 12,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 12,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-5",
+              "before": {
+                "state": "present",
+                "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-6",
+              "before": {
+                "state": "present",
+                "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-7",
+              "before": {
+                "state": "present",
+                "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-8",
+              "before": {
+                "state": "present",
+                "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-9",
+              "before": {
+                "state": "present",
+                "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-10",
+              "before": {
+                "state": "present",
+                "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-11",
+              "before": {
+                "state": "present",
+                "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 20.59272,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29193.548699,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-2",
+              "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7381.843832,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-3",
+              "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 801.019599,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-4",
+              "name": ".NET protected environment cannot be overridden by project requirements",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6022.042738,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-5",
+              "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16598.138403,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-6",
+              "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6799.837309,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-7",
+              "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12827.768377,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-8",
+              "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18555.714083,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-9",
+              "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2407.073492,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-10",
+              "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24333.548804,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-11",
+              "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2596.349472,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-3",
+              "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-4",
+              "name": ".NET protected environment cannot be overridden by project requirements",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-5",
+              "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-6",
+              "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-7",
+              "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-8",
+              "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-9",
+              "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-10",
+              "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-11",
+              "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 278534
+  },
+  "guardMutations": {
+    "schemaVersion": 1,
+    "originalCallbackSha256": "327e58e16567c4c599216ae105f0cf842cbf707f8acf4589f608097a070d3434",
+    "callbackUnchanged": true,
+    "tool": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "attempts": [
+      {
+        "variant": "baseline",
+        "compiles": true,
+        "callbackUnchanged": true,
+        "exitCode": 0,
+        "complete": true,
+        "required": 1,
+        "passed": 1,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 1,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 530.462833,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            }
+          ]
+        },
+        "problems": []
+      },
+      {
+        "variant": "remove-truncation-rejection",
+        "compiles": true,
+        "callbackUnchanged": true,
+        "exitCode": 1,
+        "complete": false,
+        "required": 1,
+        "passed": 0,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 1,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "failed",
+              "durationMs": 155.908709,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "failed",
+              "terminalSequences": [1]
+            }
+          ]
+        },
+        "problems": [
+          {
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly equal:\n\ntrue !== false\n"
+          },
+          {
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "reason": "required-test-not-passed"
+          }
+        ]
+      },
+      {
+        "variant": "remove-stale-file-rejection",
+        "compiles": true,
+        "callbackUnchanged": true,
+        "exitCode": 1,
+        "complete": false,
+        "required": 1,
+        "passed": 0,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 1,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "failed",
+              "durationMs": 306.1635,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "failed",
+              "terminalSequences": [1]
+            }
+          ]
+        },
+        "problems": [
+          {
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly equal:\n\ntrue !== false\n"
+          },
+          {
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "reason": "required-test-not-passed"
+          }
+        ]
+      },
+      {
+        "variant": "restored",
+        "compiles": true,
+        "callbackUnchanged": true,
+        "exitCode": 0,
+        "complete": true,
+        "required": 1,
+        "passed": 1,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 1,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7d28e3e21317fd04d5ef26c9bb90707faca89816e886a80039d48de08b54438d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 532.021708,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            }
+          ]
+        },
+        "problems": []
+      }
+    ]
+  },
+  "fullCheck": {
+    "tests": 813,
+    "pass": 588,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 225,
+    "todo": 0
+  },
+  "fullFormatting": "passed",
+  "directChangedCodeLint": "passed",
+  "nativeWorkflowSyntax": {
+    "tool": "actionlint",
+    "version": "1.7.12",
+    "outcome": "passed"
+  },
+  "allPublicFixturesOriginal": true,
+  "modelInferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "limits": [
+    "The ledger retains at most 1024 terminal events and 512 characters per name; truncation cannot produce complete acceptance.",
+    "The 4 MiB selected-file bound has exact-limit and one-byte-over controls; all files are preflighted before any test runs.",
+    "Node test timeouts are not universal hard process deadlines or descendant-cleanup evidence.",
+    "Repeated source and installed profile counts are separate runs of the same assertions, not independent detection coverage.",
+    "Optional skips in the full suite remain unavailable coverage.",
+    "Raw-output archives, full source/tool/dependency/environment identities, external model attempts, host independence and wider Gate A work remain required."
+  ]
+}
