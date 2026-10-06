@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "alpine": "3.24.2",
+  "architectures": {
+    "aarch64": {
+      "repository": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/aarch64/",
+      "archives": [
+        {
+          "path": "binutils-2.45.1-r1.apk",
+          "bytes": 3321769,
+          "sha256": "bac4a00e73296dfebf5f587c2b304b7d110e7de658cd2b05491f87c2b228420c"
+        },
+        {
+          "path": "g++-15.2.0-r5.apk",
+          "bytes": 17241310,
+          "sha256": "dc16babd6fdd7154ece263ca625ff832b03528d58f5060f9e92ca3b0bc0c079a"
+        },
+        {
+          "path": "gcc-15.2.0-r5.apk",
+          "bytes": 52501295,
+          "sha256": "ff3fecfc32c9a1bed4a47a32ccfee6f6f575708258f912c218dce8ed0d892221"
+        },
+        {
+          "path": "gmp-6.3.0-r4.apk",
+          "bytes": 221014,
+          "sha256": "4dab6e86b850fe1b5bc0cf2fac17efa4d7f648bea44f3d9019694cc1e1cb12b7"
+        },
+        {
+          "path": "isl26-0.26-r2.apk",
+          "bytes": 870482,
+          "sha256": "c195ea26929ada2bb9e66b7bc6d64b340123591b8f4c8ed158693e4dac0923d8"
+        },
+        {
+          "path": "jansson-2.15.0-r0.apk",
+          "bytes": 49825,
+          "sha256": "a13822f5ca1772cced4bb7d3d178ec5dee770d8accba5b4816b2ddc413e6f055"
+        },
+        {
+          "path": "libatomic-15.2.0-r5.apk",
+          "bytes": 10362,
+          "sha256": "31a45fec053c43a006370f83238f16f959838a9a703fbf26bfd1a36da4f538b2"
+        },
+        {
+          "path": "libgcc-15.2.0-r5.apk",
+          "bytes": 66323,
+          "sha256": "369aaa6e9d099a737bad6dd3e6c2fe7bb1547ca26d22b94ee0411228f709b403"
+        },
+        {
+          "path": "libgcc-static-15.2.0-r5.apk",
+          "bytes": 2187958,
+          "sha256": "2ec3dc4be953d842cc51193248367d86829ed699a1ed094fb5149b1b3fc62919"
+        },
+        {
+          "path": "libgomp-15.2.0-r5.apk",
+          "bytes": 146527,
+          "sha256": "90576a8899c560d3983b8ac8442b5b75957a917bc1c4e950e005945080f8682f"
+        },
+        {
+          "path": "libstdc++-15.2.0-r5.apk",
+          "bytes": 908984,
+          "sha256": "2302e766d4e4926038ec166ecb85837ee884576115236ddb565e3a5fca4a11d7"
+        },
+        {
+          "path": "libstdc++-dev-15.2.0-r5.apk",
+          "bytes": 4132711,
+          "sha256": "8385c811d93b64ee1877005a5473cde8ebabe82d346301f2b153ff8cb6a71510"
+        },
+        {
+          "path": "make-4.4.1-r4.apk",
+          "bytes": 117543,
+          "sha256": "0a2c6c3fa0d90b652bbaeac362d1bfe54b75aae57631a6b448826f8b51c85170"
+        },
+        {
+          "path": "mpc1-1.3.1-r1.apk",
+          "bytes": 53688,
+          "sha256": "c4e03923cf1b958ba0d3665196f521a00fb091132e79c39493298019fb59ae60"
+        },
+        {
+          "path": "mpfr4-4.2.2-r0.apk",
+          "bytes": 294772,
+          "sha256": "81cb276c1e050138fed90c8f1ef584cf5bfce26739733753fce138fc0a092b35"
+        },
+        {
+          "path": "musl-1.2.6-r2.apk",
+          "bytes": 417710,
+          "sha256": "5e9674b7f41152fe2119093b5cb4c13eaaadb19c2d5422b2d7267913e663ee6e"
+        },
+        {
+          "path": "musl-dev-1.2.6-r2.apk",
+          "bytes": 2539434,
+          "sha256": "ca72b84f4eb3c36bbbec04d919eb10159d414c7a43413cc2253841d301fa9486"
+        },
+        {
+          "path": "zlib-1.3.2-r0.apk",
+          "bytes": 54312,
+          "sha256": "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+        },
+        {
+          "path": "zstd-libs-1.5.7-r2.apk",
+          "bytes": 365383,
+          "sha256": "2bb5136c89f5b0bbe1554c8915a3b520d5aa63ae2a51d4d821eb81698db5a818"
+        }
+      ]
+    },
+    "x86_64": {
+      "repository": "https://dl-cdn.alpinelinux.org/alpine/v3.24/main/x86_64/",
+      "archives": [
+        {
+          "path": "binutils-2.45.1-r1.apk",
+          "bytes": 3229647,
+          "sha256": "15682887459d216585feb438bbfb7ec63e1f33e77c453f44637d2d9d8c35977d"
+        },
+        {
+          "path": "g++-15.2.0-r5.apk",
+          "bytes": 18449957,
+          "sha256": "35c39e8d3667d8603fe209dbafe67681c64b1cda66bf9c836bfb4d05b19a71fd"
+        },
+        {
+          "path": "gcc-15.2.0-r5.apk",
+          "bytes": 60496469,
+          "sha256": "d1d482472ed91240731c60dbae8176bc1e32e1dfb694856da6759f6d32716325"
+        },
+        {
+          "path": "gmp-6.3.0-r4.apk",
+          "bytes": 220074,
+          "sha256": "85323ef5bce8ff234736dc2d6592ea37aebdc6348a531e27430bdfe38364d256"
+        },
+        {
+          "path": "isl26-0.26-r2.apk",
+          "bytes": 915985,
+          "sha256": "30999fb66e296c8ea7aa102cad0d3095519b3022abb622d2951dd29367310ea9"
+        },
+        {
+          "path": "jansson-2.15.0-r0.apk",
+          "bytes": 48950,
+          "sha256": "7681b41486e1f2b2efce11875c839533464ae8857d30fc49130f0039c6585fdb"
+        },
+        {
+          "path": "libatomic-15.2.0-r5.apk",
+          "bytes": 10241,
+          "sha256": "c5ec550c73dd7b4e81e206fdff3cf4c46b0ae1b29fec1db5cd4e12d88416abbf"
+        },
+        {
+          "path": "libgcc-15.2.0-r5.apk",
+          "bytes": 80348,
+          "sha256": "393dcd32629f06d7d85409c272d142d0c082772d10b87ef55ee82f47de3be637"
+        },
+        {
+          "path": "libgcc-static-15.2.0-r5.apk",
+          "bytes": 2249602,
+          "sha256": "563244a562f5c48b921f7f0b4a571e373cfcba65175fe2d4f752c5f975738bcd"
+        },
+        {
+          "path": "libgomp-15.2.0-r5.apk",
+          "bytes": 153729,
+          "sha256": "e7204aad00e31d544e0a34eac5a7eb7d3586d2b7b22afd6e5907189c4e0337cc"
+        },
+        {
+          "path": "libstdc++-15.2.0-r5.apk",
+          "bytes": 961295,
+          "sha256": "14c987b556f5385a5db18376e788c75f37d85321b8dc1920d926ea7daac1d6f6"
+        },
+        {
+          "path": "libstdc++-dev-15.2.0-r5.apk",
+          "bytes": 4145023,
+          "sha256": "62ce308cdbf127dcac6eee1520a4ffec8dc98b30974653908842fe4cc7d90b43"
+        },
+        {
+          "path": "make-4.4.1-r4.apk",
+          "bytes": 116285,
+          "sha256": "a916626a876f64c6b6fb32a6bf0fa93351d09fae0aa7684135642390da647e60"
+        },
+        {
+          "path": "mpc1-1.3.1-r1.apk",
+          "bytes": 48549,
+          "sha256": "c2247438e163f1c11646428f07576ceb3cf3167f9a9a5c6526021f778d77adb6"
+        },
+        {
+          "path": "mpfr4-4.2.2-r0.apk",
+          "bytes": 313348,
+          "sha256": "93620a803d416e8c05150fb14413796df14ea370322dff6bd106455deab15646"
+        },
+        {
+          "path": "musl-1.2.6-r2.apk",
+          "bytes": 415475,
+          "sha256": "573712e2f49c15bfc20a2699f204acdfc74c772722b15e7353d768057fae0e71"
+        },
+        {
+          "path": "musl-dev-1.2.6-r2.apk",
+          "bytes": 3421233,
+          "sha256": "6831e8b9e4821dae2c9121f0641f81e543f4ac27c03144c4876980ee84e6988f"
+        },
+        {
+          "path": "zlib-1.3.2-r0.apk",
+          "bytes": 56195,
+          "sha256": "b636306cbf8a0c15493b38de608ba11605fd8f11ade631f5ece6f7fdf5a1e09e"
+        },
+        {
+          "path": "zstd-libs-1.5.7-r2.apk",
+          "bytes": 376646,
+          "sha256": "23c6065b0049b2406441564bcf0032515a43f78e80d76fcb85535a3803ef5d4e"
+        }
+      ]
+    }
+  }
+}
