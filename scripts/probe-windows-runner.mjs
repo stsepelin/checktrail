@@ -77,6 +77,14 @@ try {
     "[Console]::WriteLine('original plain native PowerShell startup')",
     "plain-powershell-startup",
   );
+  await invoke(
+    "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false); [Console]::WriteLine('legacy encoding returned')",
+    "plain-legacy-encoding-constructor",
+  );
+  await invoke(
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::WriteLine('managed encoding returned')",
+    "plain-managed-encoding-constructor",
+  );
   await new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen("\\\\.\\pipe\\" + controlPipe, resolve);
@@ -121,7 +129,7 @@ try {
       "ownership-checked",
     ],
     [
-      "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)",
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
       "limits-freed",
     ],
     ["$line = [IO.File]::ReadAllText", "ownership-established"],
@@ -150,9 +158,9 @@ try {
       mark("free-limits-returned"),
   );
   source = source.replace(
-    "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)",
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
     mark("console-encoding-call") +
-      "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)\n" +
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\n" +
       mark("console-encoding-returned"),
   );
   source = source.replace(

@@ -222,7 +222,7 @@ try {
   if (-not $api::AssignProcessToJobObject($outerJob,$api::GetCurrentProcess())) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }
 } finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }
 # Keep this non-inherited handle until process exit, including early/failed preparation.
-[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $line = [IO.File]::ReadAllText([IO.Path]::Combine([Environment]::CurrentDirectory, 'request.json'), [Text.Encoding]::UTF8)
 if ($null -eq $line -or $line.Length -gt 1048576) { exit 253 }
 $request = ConvertFrom-Json -InputObject $line
