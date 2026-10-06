@@ -135,3 +135,20 @@ describes the single-use daemon behavior when JVM settings differ. The
 [TestDescriptor API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestDescriptor.html)
 distinguishes internal and display names. Both behaviors were checked against
 the pinned distribution before their native acceptance assertions were added.
+
+Distribution preparation retries request failures from the pinned origin at most
+three times under one 120-second abort signal. Each attempt permits at most five
+HTTP hops, cancels rejected response bodies and preserves the exact HTTPS host
+and distribution/release-path boundaries. A final unexpected response reports
+its numeric HTTP status and host without logging signed redirect queries. The
+archive's exact byte count, SHA-256 and every extracted-file digest still gate
+installation; retries cannot accept different bytes. Preparation is setup, not
+native acceptance.
+
+The first observed new-head Gradle CI failure stopped on an unexpected HTTP
+status, before archive verification or native tests. Its original assertion did
+not retain that status, so its cause is not established. Subsequent live requests
+to the official pinned distribution reached HTTP 200 with the declared content
+length. Original controls now exercise request failure/recovery, exhausted
+attempts and redirects, abort, rejected hosts/paths/credentials and a direct valid
+response. This does not claim that all remote failures are temporary.
