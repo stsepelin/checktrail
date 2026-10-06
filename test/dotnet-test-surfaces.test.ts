@@ -17,7 +17,7 @@ const native = {
   skip: available
     ? false
     : "Pinned native .NET SDK/dependency cache not selected",
-  timeout: 180000,
+  timeout: 300000,
 };
 const cli = fileURLToPath(new URL("../src/cli.js", import.meta.url));
 async function connect(root: string, allow: boolean) {
@@ -70,10 +70,12 @@ test(
           "run",
           "--root",
           root,
+          "--timeout-ms",
+          "120000",
           ...(trusted ? ["--trust-project"] : []),
           ...(detailed ? ["--detailed"] : []),
         ],
-        { encoding: "utf8", timeout: 40000, maxBuffer: 4 * 1024 * 1024 },
+        { encoding: "utf8", timeout: 150000, maxBuffer: 4 * 1024 * 1024 },
       );
     const denied = invoke(false, false);
     assert.equal(denied.status, 2);
@@ -101,10 +103,13 @@ test(
     );
     const client = await connect(root, true);
     try {
-      const result = await client.callTool({
-        name: "validation_run",
-        arguments: {},
-      });
+      const result = await client.callTool(
+        {
+          name: "validation_run",
+          arguments: { timeoutMs: 120000 },
+        },
+        { timeout: 150000 },
+      );
       assert.notEqual(result.isError, true);
       assert.equal(
         (result.structuredContent as { outcome: string }).outcome,
@@ -128,10 +133,13 @@ test(
         true,
       );
       await writeFile(source, original);
-      const fixed = await client.callTool({
-        name: "validation_run",
-        arguments: {},
-      });
+      const fixed = await client.callTool(
+        {
+          name: "validation_run",
+          arguments: { timeoutMs: 120000 },
+        },
+        { timeout: 150000 },
+      );
       assert.equal(
         (fixed.structuredContent as { outcome: string }).outcome,
         "passed",

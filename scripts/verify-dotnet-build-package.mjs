@@ -72,6 +72,16 @@ try {
     "dotnet-build.test.js",
     "dotnet-build-fixture.js",
     "dotnet-build-surfaces.test.js",
+    "dotnet-build-evidence.test.js",
+    "dotnet-build-scope.test.js",
+    "dotnet-build-environment.test.js",
+    "dotnet-build-disabled.test.js",
+    "dotnet-build-outputs.test.js",
+    "dotnet-build-generated.test.js",
+    "dotnet-build-analyzers.test.js",
+    "dotnet-build-cache.test.js",
+    "dotnet-build-cancellation.test.js",
+    "dotnet-build-controls.js",
     "helpers.js",
     ...(profile === "dotnet-format"
       ? [
