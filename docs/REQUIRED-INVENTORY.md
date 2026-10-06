@@ -122,3 +122,9 @@ families. Exact source/fresh-package and preserved-profile evidence is in
 [native-json-probes-2026-10-06.json](measurements/native-json-probes-2026-10-06.json).
 This R4 profile does not replace wider language/tool/framework obligations or
 establish intended production policy, caller reachability or claim truth.
+
+The `declared-multi-claim-paired-v1` numerical profile retains all declared claims,
+common defect mappings, duplicates, missing/incomplete slots and whole incident
+clusters. Its inputs remain operator declarations. Multi-claim sealed-artifact
+binding, authoritative labels/judgments and the other R5–R8 requirements remain
+open; see [REVIEW-MULTI-SCORING.md](REVIEW-MULTI-SCORING.md).

@@ -326,3 +326,10 @@ The [SpotBugs profile](SPOTBUGS.md) adds pinned built-in analysis of freshly com
 Java classes, exact detector and completed-pass accounting, current-source diagnostic
 binding and native/installed CLI/MCP controls. Wider JVM languages, analyzers, wrappers
 and platform profiles remain E11/E4–E6 requirements.
+
+[Descriptive multi-claim scoring](REVIEW-MULTI-SCORING.md) supports multiple
+retained claims and common expected defect mappings per case, distinct duplicate
+precision and material recall, incomplete slots, proper claim losses and whole
+incident clusters through one library/CLI/MCP engine. These operator declarations
+remain unverified; sealed multi-claim binding and independent judgments are still
+required. No model or field evaluation is invoked by numerical scoring.

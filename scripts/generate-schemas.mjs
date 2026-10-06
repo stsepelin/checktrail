@@ -1,3 +1,9 @@
+import {
+  reviewMultiProtocolSchema,
+  reviewMultiInputSchema,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "../dist/src/review-multi-scoring.js";
 import { capturedProcessOutputSchema } from "../dist/src/process-output.js";
 import { windowsExecutionSchema } from "../dist/src/windows-execution.js";
 import {
@@ -181,6 +187,10 @@ for (const [name, schema] of Object.entries({
     reviewCalibrationApplicationReportSchema,
   "review-calibration-application-summary":
     reviewCalibrationApplicationSummarySchema,
+  "review-multi-protocol": reviewMultiProtocolSchema,
+  "review-multi-input": reviewMultiInputSchema,
+  "review-multi-report": reviewMultiReportSchema,
+  "review-multi-summary": reviewMultiSummarySchema,
   "review-paired-protocol": reviewPairedProtocolSchema,
   "review-paired-input": reviewPairedInputSchema,
   "review-paired-report": reviewPairedReportSchema,
