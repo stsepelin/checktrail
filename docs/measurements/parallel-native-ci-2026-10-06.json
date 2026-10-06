@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "profile": "parallel-native-acceptance-jobs-v1",
+  "measuredOn": "2026-10-06",
+  "scope": "CI scheduling and one completed-marker fixture handshake. This is structural and local verification, not a replacement for required native acceptance.",
+  "codeCommit": "ae66104ce6ef05f19a0ee117e41fd04d28757912",
+  "engineSourceChanged": false,
+  "originalNativeCallbacksChanged": false,
+  "nativeRequiredProfiles": {
+    "dotnet": {
+      "originalCompleteCommands": 6,
+      "matrixJobs": 6,
+      "requiredCallbacks": 52,
+      "profileCommandsPreserved": true,
+      "jobTimeoutMinutes": 30,
+      "failFast": false
+    },
+    "ruby": {
+      "originalRequiredCallbacks": 8,
+      "matrixJobs": 7,
+      "exactUnionWithNoDuplicates": true,
+      "sourceAndOfflineInstalledChecksPerJob": true,
+      "originalDefaultWholeProfileStillAvailable": true,
+      "fileDeadlineMs": 300000,
+      "jobTimeoutMinutes": 25,
+      "failFast": false
+    }
+  },
+  "mcpMarkerControl": {
+    "originalFailedFullCheck": "Native mutation baseline did not start; returned marker contents were empty.",
+    "originalIsolatedReplayPassed": true,
+    "repair": "Continue the same bounded polling loop until the writer supplies the marker contents.",
+    "startupAndCleanupAssertionsPreserved": true,
+    "targetedReplayPassed": true
+  },
+  "localChecks": {
+    "ciCoverageInvariant": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullSuite": {
+      "tests": 849,
+      "passed": 624,
+      "failed": 0,
+      "optionalNativeSkipped": 225
+    },
+    "directChangedFileLintPassed": true,
+    "formatPassed": true,
+    "actionlintVersion": "1.7.12",
+    "actionlintPassed": true
+  },
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "af099b3d9957719918018a6275121119ab248d343b47d21f8010873d96522d02"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "4b6b5ce449c48738d93077b9974241bf4098af9450353310da627775a66d6886"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "db18855d79344bbc32cb673495b77f28f109aea960770a9eac0ac3d94f17ce64"
+    },
+    {
+      "file": "scripts/verify-ruby-tools-container.mjs",
+      "sha256": "d90ef8f9869e0aa6fc5dc8bdad2b2ecef3ec5ad9760dee7bd73fc0234b26ac05"
+    },
+    {
+      "file": "scripts/verify-ruby-tools-package.mjs",
+      "sha256": "29821cf29195ecc78d7d4702c69aefc91394578c10391978684552c87d5534f1"
+    },
+    {
+      "file": "test/ci-native-profiles.test.ts",
+      "sha256": "b0dd5af6e96129ac09f9b63bd1f025ff74b2f186c723cee45c61b0e8dc91d39d"
+    },
+    {
+      "file": "test/mcp.test.ts",
+      "sha256": "90c7794bd4c361d28d4e9cc1bfca1d13fdd454237c25e58b5175ca2f3d3343bc"
+    }
+  ],
+  "observedInterruptedJobs": [
+    {
+      "profile": "dotnet",
+      "job": "112394840512",
+      "configuredMinutes": 60,
+      "nativeAcceptanceComplete": false
+    },
+    {
+      "profile": "ruby-tools",
+      "job": "112394830175",
+      "configuredMinutes": 45,
+      "nativeAcceptanceComplete": false
+    }
+  ],
+  "hostedMatrixRecheckPending": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "broaderGateAComplete": false
+}

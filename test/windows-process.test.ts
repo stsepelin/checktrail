@@ -523,7 +523,7 @@ test(
   },
 );
 test(
-  "native Windows parent loss triggers private stdin EOF job termination and owned temporary directory cleanup",
+  "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
   native,
   async (t) => {
     const root = await fixture(t, {}),

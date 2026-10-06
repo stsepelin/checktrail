@@ -318,8 +318,25 @@ jobs:
       - run: node scripts/verify-gradle-container.mjs
 
   dotnet:
+    name: dotnet (${{ matrix.profile }})
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: compiler
+            script: verify-dotnet-container.mjs
+          - profile: build
+            script: verify-dotnet-build-container.mjs
+          - profile: tests
+            script: verify-dotnet-test-container.mjs
+          - profile: format
+            script: verify-dotnet-format-container.mjs
+          - profile: generated
+            script: verify-dotnet-generated-container.mjs
+          - profile: method
+            script: verify-dotnet-method-container.mjs
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -334,13 +351,8 @@ jobs:
         run: docker build --file scripts/dotnet-tools.Dockerfile --tag checktrail-dotnet-test:10.0.401 scripts
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
-      - run: node scripts/verify-dotnet-container.mjs
       - run: node scripts/prepare-dotnet-build-dependencies.mjs
-      - run: node scripts/verify-dotnet-build-container.mjs
-      - run: node scripts/verify-dotnet-test-container.mjs
-      - run: node scripts/verify-dotnet-format-container.mjs
-      - run: node scripts/verify-dotnet-generated-container.mjs
-      - run: node scripts/verify-dotnet-method-container.mjs
+      - run: node scripts/${{ matrix.script }}
 
   actionlint:
     runs-on: ubuntu-latest
@@ -456,10 +468,23 @@ jobs:
       - run: node scripts/verify-ruby-container.mjs
 
   ruby-tools:
+    name: ruby-tools (${{ matrix.profile }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - ruby-tools-rubocop
+          - ruby-tools-assertions
+          - ruby-tools-evidence
+          - ruby-tools-lifecycle
+          - ruby-tools-defaults
+          - ruby-tools-surfaces
+          - ruby-tools-cancellation
     env:
-      CHECKTRAIL_TEST_TASK: ci-ruby-tools
+      CHECKTRAIL_TEST_TASK: ci-${{ matrix.profile }}
+      CHECKTRAIL_RUBY_TOOLS_PROFILE: ${{ matrix.profile }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -637,6 +662,8 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
+      - name: Diagnose original native Windows startup
+        run: node scripts/probe-windows-runner.mjs
       - name: Require native Windows argument environment process tree and shared engine controls
         run: node scripts/verify-required-native-tests.mjs windows-process
       - name: Require physical process output controls on native Windows

@@ -9,6 +9,7 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
+import { createServer, type Socket } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -200,6 +201,9 @@ export async function runWindowsProcess(
   if (options.signal?.aborted) return { ...result, cancelled: true };
   const cwd = await withinRoot(root, command.cwd);
   let directory: string | undefined;
+  let controlServer: ReturnType<typeof createServer> | undefined;
+  let controlSocket: Socket | undefined;
+  let controlClosed = false;
   try {
     if (!localDrive(cwd)) throw invalid("WINDOWS_LOCAL_DRIVE_REQUIRED");
     const env = windowsEnvironment(
@@ -226,6 +230,7 @@ export async function runWindowsProcess(
     );
     const receiptFile = path.join(directory, "receipt.json");
     const requestId = randomUUID();
+    const controlPipe = "checktrail-" + requestId;
     await writeFile(path.join(directory, "owner-id"), requestId, {
       flag: "wx",
     });
@@ -235,6 +240,7 @@ export async function runWindowsProcess(
     }
     const request = JSON.stringify({
       requestId,
+      controlPipe,
       executable,
       commandLine: windowsCommandLine(executable, command.args),
       cwd,
@@ -249,6 +255,22 @@ export async function runWindowsProcess(
       result.cancelled = true;
       return result;
     }
+    await writeFile(path.join(directory, "request.json"), request, {
+      flag: "wx",
+    });
+    // PowerShell's redirected-input reader must never compete for this channel.
+    // The private pipe carries only lifetime; closing it cancels source execution.
+    controlServer = createServer((socket) => {
+      if (controlClosed || controlSocket) socket.destroy();
+      else controlSocket = socket;
+    });
+    await new Promise<void>((resolve, reject) => {
+      controlServer!.once("error", reject);
+      controlServer!.listen("\\\\.\\pipe\\" + controlPipe, () => {
+        controlServer!.removeListener("error", reject);
+        resolve();
+      });
+    });
     const supervisorArguments = [
       "-NoLogo",
       "-NoProfile",
@@ -268,7 +290,7 @@ export async function runWindowsProcess(
         },
         shell: false,
         windowsHide: true,
-        stdio: ["pipe", "pipe", "pipe"],
+        stdio: ["ignore", "pipe", "pipe"],
       });
       const stdout: Buffer[] = [],
         stderr: Buffer[] = [];
@@ -279,8 +301,10 @@ export async function runWindowsProcess(
       const stop = () => {
         if (stopping) return;
         stopping = true;
-        // EOF also triggers this path after an abrupt parent exit.
-        child.stdin.end("cancel\n");
+        // The OS also closes this exact pipe handle after abrupt parent exit.
+        controlClosed = true;
+        controlSocket?.destroy();
+        controlServer?.close();
         force = setTimeout(() => {
           result.errorCode = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
           child.kill("SIGKILL");
@@ -298,10 +322,6 @@ export async function runWindowsProcess(
       };
       child.stdout.on("data", (chunk: Buffer) => collect(stdout, chunk));
       child.stderr.on("data", (chunk: Buffer) => collect(stderr, chunk));
-      child.stdin.on("error", (error: NodeJS.ErrnoException) => {
-        if (error.code !== "EPIPE" && error.code !== "ERR_STREAM_DESTROYED")
-          result.errorCode = error.code ?? "WINDOWS_INPUT_ERROR";
-      });
       child.on("error", (error: NodeJS.ErrnoException) => {
         result.errorCode = error.code ?? "WINDOWS_SUPERVISOR_UNAVAILABLE";
       });
@@ -309,12 +329,10 @@ export async function runWindowsProcess(
         // An exited guardian cannot hold the call open through inherited pipes.
         drain = setTimeout(() => {
           result.errorCode ??= "WINDOWS_OUTPUT_INCOMPLETE";
-          child.stdin.destroy();
           child.stdout.destroy();
           child.stderr.destroy();
         }, 500);
       });
-      child.stdin.write(request + "\n");
       const cancel = () => {
         result.cancelled = true;
         stop();
@@ -397,6 +415,9 @@ export async function runWindowsProcess(
     result.durationMs = Math.round(performance.now() - started);
     return result;
   } finally {
+    controlClosed = true;
+    controlSocket?.destroy();
+    controlServer?.close();
     if (directory) {
       try {
         await cleanup(directory);
