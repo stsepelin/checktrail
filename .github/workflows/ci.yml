@@ -320,6 +320,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - run: node scripts/verify-required-native-tests.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
       - run: docker build --file scripts/maven-tools.Dockerfile --tag checktrail-maven-test:3.10.0 .checktrail/maven-review-tools
       - run: node scripts/prepare-maven-dependencies.mjs

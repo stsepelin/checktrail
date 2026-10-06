@@ -2776,5 +2776,15 @@
       "file": "dist/test/review-multi-scoring.test.js",
       "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality"
     }
+  ],
+  "maven-preparation": [
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven operator acquisition retries only terminal Central artifact rate limits and resets partial repositories before rerunning"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
+    }
   ]
 }
