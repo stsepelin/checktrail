@@ -15,6 +15,15 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
+Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
+schemas. Raw document identity, native resource metadata/counters and physical
+JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
+collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
+binds native source/offline installed CLI/MCP controls and compiling guard proofs.
+The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
+those engine integrations remain pending. E16 and Gate A remain open.
+
 The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20
 CMake targets, generates integer-valued headers, links static libraries and
 executables, runs CTest callbacks, and checks clang-format and explicit clang-tidy

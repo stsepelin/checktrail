@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "kubeconformVersion": { "type": "string", "const": "0.8.0" },
+    "kubernetesVersion": { "type": "string", "const": "1.36.0" },
+    "platform": { "type": "string", "const": "linux_arm64" },
+    "schemaDirectory": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+    },
+    "manifests": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kubeconformVersion",
+    "kubernetesVersion",
+    "platform",
+    "schemaDirectory",
+    "manifests"
+  ],
+  "additionalProperties": false
+}

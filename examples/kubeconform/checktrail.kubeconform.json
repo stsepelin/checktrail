@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "kubeconformVersion": "0.8.0",
+  "kubernetesVersion": "1.36.0",
+  "platform": "linux_arm64",
+  "schemaDirectory": "tools/kubernetes",
+  "manifests": ["manifests/original.yaml"]
+}

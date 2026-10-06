@@ -4,6 +4,7 @@ import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { cppToolsCheck } from "./cpp-tools.js";
+import { kubeconformCheck } from "./kubeconform.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
@@ -161,8 +162,12 @@ export const adapters = [
   },
   {
     id: "infrastructure",
-    markers: ["Chart.yaml", "kustomization.yaml"],
-    checks: ["infrastructure.actionlint"],
+    markers: [
+      "Chart.yaml",
+      "kustomization.yaml",
+      "checktrail.kubeconform.json",
+    ],
+    checks: ["infrastructure.actionlint", "infrastructure.kubeconform"],
   },
 ] as const;
 
@@ -494,9 +499,15 @@ export async function checksFor(
       (file) => workflowRoot(file) === project.path,
     );
     const other = project.markers.filter(
-      (file) => workflowRoot(file) !== project.path,
+      (file) =>
+        workflowRoot(file) !== project.path &&
+        path.posix.basename(file) !== "checktrail.kubeconform.json",
     );
     return [
+      ...(project.files.includes("checktrail.kubeconform.json") ||
+      requested?.includes("infrastructure.kubeconform")
+        ? [await kubeconformCheck(source, project)]
+        : []),
       ...(workflow || requested?.includes("infrastructure.actionlint")
         ? [await actionlintCheck(source, project)]
         : []),

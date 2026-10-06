@@ -92,7 +92,7 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | C / C++                             | Prepared Clang checks; bounded C17/C++20 CMake builds, CTest, clang-format and clang-tidy                  |
 | Java                                | Explicit classpath compilation and bounded pinned Checkstyle, Maven reactor and Gradle module tests        |
 | C# / .NET                           | Explicit C# compilation; bounded opt-in C#/F#/VB build/NUnit and C#/VB whitespace checks                   |
-| GitHub Actions                      | Static workflow checking with local input and per-file native evidence; no job execution                   |
+| GitHub Actions                      | Static workflow checking; bounded offline Kubernetes schema validation with source/document accounting     |
 | Kotlin, Scala, other infrastructure | Discovery only; execution reports unavailable                                                              |
 
 Tools must already be installed. No dependency installation, automatic fixes,

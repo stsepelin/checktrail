@@ -135,6 +135,7 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["php", "PHP 8.4.23 (cli)\nCopyright text\n", "8.4.23"],
     ["ruff", "ruff 0.16.8\n", "0.16.8"],
     ["pytest", "9.1.1\n", "9.1.1"],
+    ["kubeconform", "v0.8.0\n", "0.8.0"],
     ["mypy", "2.3.1\n", "2.3.1"],
     ["pint", "Pint 1.32.1\n", "1.32.1"],
     ["php-cs-fixer", "3.95.27\n", "3.95.27"],

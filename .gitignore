@@ -9,3 +9,4 @@ coverage/
 .DS_Store
 .repo-verifier/
 .repo-verifier.local.json
+/examples/kubeconform/tools/
