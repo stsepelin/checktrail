@@ -83,8 +83,14 @@ results. Framework errors outside cases are incomplete, with no invented test co
 
 The `ruby-tools` profile in
 [required-native-tests.json](../scripts/required-native-tests.json) requires exact
-original callback identities with zero skips. The split files keep native restore
-cost within the bounded harness timeout. Its controls cover literal near misses,
+original callback identities with zero skips. Each original native control runs in
+its own test file under the same 300-second file deadline. The earlier combined
+main and lifecycle files exhausted that deadline on the local pinned runtime;
+those incomplete attempts do not count as acceptance. The shared lifecycle
+helper and the offline installed harness retain every original callback. Engine
+command limits are unchanged. The [CI repair receipt](measurements/ruby-ci-sharding-2026-10-06.json)
+records the unchanged callback bodies and separate source/installed results.
+Its controls cover literal near misses,
 production boundary regressions and repair, artifact/runtime/settings/source/case
 mutations, empty/filtered/skipped/setup/teardown/after-run behavior, protected host
 options, changed archives and sources, CLI/MCP privacy and startup trust, and reached
