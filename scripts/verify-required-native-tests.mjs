@@ -24,6 +24,13 @@ const timeoutMs = [
   "dotnet-generated",
   "dotnet-method",
   "ruby-tools",
+  "ruby-tools-rubocop",
+  "ruby-tools-assertions",
+  "ruby-tools-evidence",
+  "ruby-tools-lifecycle",
+  "ruby-tools-defaults",
+  "ruby-tools-surfaces",
+  "ruby-tools-cancellation",
   "swift-tools",
 ].includes(profile)
   ? 300000
