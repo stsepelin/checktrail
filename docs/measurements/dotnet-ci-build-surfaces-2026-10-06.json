@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "profile": "dotnet-native-build-sharding-and-surface-allowances-v1",
+  "syntheticOnly": true,
+  "measurementRevision": "5abb443b36ab83c48b44f20535648c4f446dc4a1",
+  "observations": [
+    "Hosted dotnet-build and dotnet-test aggregate files exhausted the existing 300000 ms required-file deadline.",
+    "A hosted CLI assertion observed exit 2 instead of 1; the captured failure did not include CLI output, so that status alone does not establish its cause.",
+    "Native library fixtures explicitly selected timeoutMs 120000; the corresponding CLI/MCP validation calls previously used the engine default 30000."
+  ],
+  "changes": [
+    "Redistribute original build callbacks into bounded files and update installed-harness copying and required identities.",
+    "Use the supported 120000 ms validation allowance for native build/test/format/generated/method CLI and trusted MCP calls. Parent CLI/MCP response ceilings are 150000 ms; surface callback ceilings and required-file deadlines are 300000 ms."
+  ],
+  "buildCallbackProof": {
+    "callbacks": [
+      {
+        "file": "dist/test/dotnet-build.test.js",
+        "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+        "originalAssertionsSha256": "5611ee39ca01839f3f4d9b0e803563d69e94574b737fc0f4086be5a19ba781fa",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build.test.js",
+        "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+        "originalAssertionsSha256": "29891f72529956b71c96b105211eea11ebfd259c5f4fb94cee2a02ee9f2ee571",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-evidence.test.js",
+        "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+        "originalAssertionsSha256": "98705f4319858e2d8faee7ce019183792ea94511f878b7a6d4056d9a418426cf",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-scope.test.js",
+        "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+        "originalAssertionsSha256": "b7efd959bc5af387bd2a47c98ff29e50964d45eb856f2ca27c4048c08903d05e",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-environment.test.js",
+        "name": ".NET protected environment cannot be overridden by project requirements",
+        "originalAssertionsSha256": "19311aefe4f5afa1ffab5653c6c557af9d3f04da0f7348b962554a912668419c",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-disabled.test.js",
+        "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+        "originalAssertionsSha256": "5ab8e842ef5144a3c4a7509dbba15eec01a9fd0a4eb38141c49badf6ad763325",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-outputs.test.js",
+        "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+        "originalAssertionsSha256": "f166c43ca809858aed6d0ada9082726c1045eee011e80bfdd72c3c03f2714767",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-generated.test.js",
+        "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+        "originalAssertionsSha256": "ebb48e1cf5bf1083f867a4f511125ccbaa160a0bdc76b087769c9ce52410f383",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-analyzers.test.js",
+        "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+        "originalAssertionsSha256": "7f50cd32921b14b0537b3e498069e553fde0295dd8d710c61884472056282d8d",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-cache.test.js",
+        "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+        "originalAssertionsSha256": "e0990743ba815bb1f6e3b9bfadca0884c197d6642131b0a319ce87e5baa151e4",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      },
+      {
+        "file": "dist/test/dotnet-build-surfaces.test.js",
+        "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+        "originalAssertionsSha256": "b2e6d656ff3d21cddad89d193d19d35e9e7b96e06e7d0c63c90a328a8a4ecae8",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": false
+      },
+      {
+        "file": "dist/test/dotnet-build-cancellation.test.js",
+        "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+        "originalAssertionsSha256": "31251b7b3fa3429543ebda84f658bf7c05acea88cc875ec46375421ef9249bb9",
+        "originalAssertionsPreserved": true,
+        "callbackTokensUnchanged": true
+      }
+    ],
+    "assertionsChanged": false,
+    "coreCallbackBodiesChanged": false,
+    "surfaceInvocationAllowanceChanged": true,
+    "engineLimitsChanged": false,
+    "fileDeadlineMs": 300000
+  },
+  "surfaceAssertionProof": {
+    "files": [
+      {
+        "file": "test/dotnet-build-surfaces.test.ts",
+        "assertions": 16,
+        "originalAssertionsSha256": "c256c0e8fb77f143df65b1894e8a08552331780bf6faac7937eb83f3e39d8277",
+        "originalAssertionsPreserved": true,
+        "cliTimeoutMs": 120000,
+        "cliProcessCeilingMs": 150000,
+        "mcpTimeoutMs": 120000,
+        "mcpResponseCeilingMs": 150000,
+        "callbackCeilingMs": 300000,
+        "fileCeilingMs": 300000,
+        "engineDefaultOrMaximumChanged": false
+      },
+      {
+        "file": "test/dotnet-test-surfaces.test.ts",
+        "assertions": 17,
+        "originalAssertionsSha256": "c27435e1181d182a7a80bfe158be9b314502f5a73234e86c2d902a96fc0d8f40",
+        "originalAssertionsPreserved": true,
+        "cliTimeoutMs": 120000,
+        "cliProcessCeilingMs": 150000,
+        "mcpTimeoutMs": 120000,
+        "mcpResponseCeilingMs": 150000,
+        "callbackCeilingMs": 300000,
+        "fileCeilingMs": 300000,
+        "engineDefaultOrMaximumChanged": false
+      },
+      {
+        "file": "test/dotnet-format-surfaces.test.ts",
+        "assertions": 28,
+        "originalAssertionsSha256": "c9a298876c02ea35d3919ed9141a221daa46c7ab8498fb4e40a99ba6ede3b161",
+        "originalAssertionsPreserved": true,
+        "cliTimeoutMs": 120000,
+        "cliProcessCeilingMs": 150000,
+        "mcpTimeoutMs": 120000,
+        "mcpResponseCeilingMs": 150000,
+        "callbackCeilingMs": 300000,
+        "fileCeilingMs": 300000,
+        "engineDefaultOrMaximumChanged": false
+      },
+      {
+        "file": "test/dotnet-generated-surfaces.test.ts",
+        "assertions": 29,
+        "originalAssertionsSha256": "2a51e12bec41fb0366517fdc5de0222c5d869b53dda9b2a0b3857a335b23cb36",
+        "originalAssertionsPreserved": true,
+        "cliTimeoutMs": 120000,
+        "cliProcessCeilingMs": 150000,
+        "mcpTimeoutMs": 120000,
+        "mcpResponseCeilingMs": 150000,
+        "callbackCeilingMs": 300000,
+        "fileCeilingMs": 300000,
+        "engineDefaultOrMaximumChanged": false
+      },
+      {
+        "file": "test/dotnet-method-surfaces.test.ts",
+        "assertions": 28,
+        "originalAssertionsSha256": "3bf9a421a78a8b5f6d719d73739f8f0d6ae2a6d00a5fe8dec48b8133c7d75b3d",
+        "originalAssertionsPreserved": true,
+        "cliTimeoutMs": 120000,
+        "cliProcessCeilingMs": 150000,
+        "mcpTimeoutMs": 120000,
+        "mcpResponseCeilingMs": 150000,
+        "callbackCeilingMs": 300000,
+        "fileCeilingMs": 300000,
+        "engineDefaultOrMaximumChanged": false
+      }
+    ],
+    "engineLimitsChanged": false,
+    "assertionsChanged": false
+  },
+  "proofMethod": {
+    "build": "TypeScript-printer assertion expressions compared as scanner-token arrays, keyed by original required callback name. Non-surface callback tokens are unchanged.",
+    "surface": "TypeScript-printer assertion-expression arrays compared before and after invocation-policy edits, including untrusted startup and request-level trust rejection assertions."
+  },
+  "engineLimitsChanged": false,
+  "assertionsChanged": false,
+  "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+  "versions": {
+    "node": "v22.23.2",
+    "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+    "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)"
+  },
+  "environment": {
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false
+  },
+  "profiles": [
+    {
+      "source": {
+        "profile": "dotnet-build",
+        "timeoutMs": 300000,
+        "passed": 12,
+        "required": 12,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "profile": "dotnet-build",
+        "timeoutMs": 300000,
+        "passed": 12,
+        "required": 12,
+        "problems": [],
+        "complete": true
+      },
+      "durationMs": 291817,
+      "tarballSha256": "954fa73d114bff12956001eb549349c32474cf74a1baa3c6cdfe1ca98e0bd621",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "acceptanceClientCopiedOutsideInstalledPackage": true
+    },
+    {
+      "source": {
+        "profile": "dotnet-test",
+        "timeoutMs": 300000,
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "profile": "dotnet-test",
+        "timeoutMs": 300000,
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "durationMs": 437891,
+      "tarballSha256": "954fa73d114bff12956001eb549349c32474cf74a1baa3c6cdfe1ca98e0bd621",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "acceptanceClientCopiedOutsideInstalledPackage": true
+    },
+    {
+      "source": {
+        "profile": "dotnet-format",
+        "timeoutMs": 300000,
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "profile": "dotnet-format",
+        "timeoutMs": 300000,
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "durationMs": 236116,
+      "tarballSha256": "954fa73d114bff12956001eb549349c32474cf74a1baa3c6cdfe1ca98e0bd621",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "acceptanceClientCopiedOutsideInstalledPackage": true
+    },
+    {
+      "source": {
+        "profile": "dotnet-generated",
+        "timeoutMs": 300000,
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "profile": "dotnet-generated",
+        "timeoutMs": 300000,
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      "durationMs": 195046,
+      "tarballSha256": "954fa73d114bff12956001eb549349c32474cf74a1baa3c6cdfe1ca98e0bd621",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "acceptanceClientCopiedOutsideInstalledPackage": true
+    },
+    {
+      "source": {
+        "profile": "dotnet-method",
+        "timeoutMs": 300000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "profile": "dotnet-method",
+        "timeoutMs": 300000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      },
+      "durationMs": 299171,
+      "tarballSha256": "954fa73d114bff12956001eb549349c32474cf74a1baa3c6cdfe1ca98e0bd621",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "acceptanceClientCopiedOutsideInstalledPackage": true
+    }
+  ],
+  "preservedCsharp": {
+    "profile": "dotnet",
+    "timeoutMs": 120000,
+    "passed": 7,
+    "required": 7,
+    "problems": [],
+    "complete": true
+  },
+  "sourcePins": [
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "2a0d4d1b25fdb8663ccf79568f56a9190de525320640ba8cac24a0d2cf73051a"
+    },
+    {
+      "file": "scripts/verify-dotnet-build-package.mjs",
+      "sha256": "d8fd3f93cfe557ea7f80d75047be806fef51dabbd0e0e460c610ee2bb97a64f9"
+    },
+    {
+      "file": "test/dotnet-build-analyzers.test.ts",
+      "sha256": "00f988660393459ecb52218bc48a0644c86762ac4e118f12704e6aa55261f254"
+    },
+    {
+      "file": "test/dotnet-build-cache.test.ts",
+      "sha256": "a5ebda9d354de022fc880c4e78be5a75de324d560e222abf8f1faba181c8f492"
+    },
+    {
+      "file": "test/dotnet-build-cancellation.test.ts",
+      "sha256": "7ff6ddceef0165eb0519cf0d913046ee650ff0a1207bd2dae21da71e0673dcb7"
+    },
+    {
+      "file": "test/dotnet-build-controls.ts",
+      "sha256": "d7a937b3ad290dd6a76098fb002bbd739a46611d00456b8005b499e82e747894"
+    },
+    {
+      "file": "test/dotnet-build-disabled.test.ts",
+      "sha256": "e3ce6284f725810b43528041f152aba9921955c7705805615c4e2655921023d1"
+    },
+    {
+      "file": "test/dotnet-build-environment.test.ts",
+      "sha256": "27b671cd2a3714cb6b3737b070cd7238d62105ba79e00a1c7d73e93b9d254516"
+    },
+    {
+      "file": "test/dotnet-build-evidence.test.ts",
+      "sha256": "d92f27eb76416fed0be015fe41cca58d6e7b7ed4e85d001a19fae159306906dc"
+    },
+    {
+      "file": "test/dotnet-build-generated.test.ts",
+      "sha256": "12e6b6fa48b3154053e640f1d1dfb457df010fc9da79aa2cef8d82432c8bd599"
+    },
+    {
+      "file": "test/dotnet-build-outputs.test.ts",
+      "sha256": "d0d32ef8a32c3ec889edca26e3406d0de41dfd654b436613e8e69b907155da25"
+    },
+    {
+      "file": "test/dotnet-build-scope.test.ts",
+      "sha256": "998d292a41b160824c36f9860c2973dd0b64166ee1e7f4da55bf5f86b34975d5"
+    },
+    {
+      "file": "test/dotnet-build-surfaces.test.ts",
+      "sha256": "aac4ea48e6f69456d2824bfe3ba771d9a8a937a1d08e7343ef6c2fd6f93cca98"
+    },
+    {
+      "file": "test/dotnet-build.test.ts",
+      "sha256": "06429f645a1f0f4eb4ce661c1fafea7296278c3cfd09ee44cb148fac85cce645"
+    },
+    {
+      "file": "test/dotnet-format-surfaces.test.ts",
+      "sha256": "d864f3ba8fbc54b8d2e876ddebea9d820ceaa759cbd74cf4c6ef00e38b56973c"
+    },
+    {
+      "file": "test/dotnet-generated-surfaces.test.ts",
+      "sha256": "a92ed20dba27311b08c7a1637e9382175e4710ce6773b20b9d73f0e34abe2b8b"
+    },
+    {
+      "file": "test/dotnet-method-surfaces.test.ts",
+      "sha256": "1e71feed2075ad6ef34d7f01c93bf9b16ca97ac3f3cb0a87c90b5a224bdd8ad1"
+    },
+    {
+      "file": "test/dotnet-test-surfaces.test.ts",
+      "sha256": "3602b40f40f304633324b5362cce5474660ee1fac0e805f46d2d9c5fd1e5441f"
+    }
+  ],
+  "fullCheckSnapshot": {
+    "tests": 800,
+    "passed": 582,
+    "failed": 0,
+    "optionalNativeSkipped": 218
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "windowsVerified": false
+}
