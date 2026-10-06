@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { stopDescendants } from "./process-tree.js";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -71,17 +72,25 @@ export async function runProcess(
       const stderr: Buffer[] = [];
       let bytes = 0;
       let stopping = false;
+      let termination: Promise<void> | undefined;
       const maximum = options.maxOutputBytes ?? 1024 * 1024;
       const terminate = (): void => {
         if (stopping) return;
         stopping = true;
-        if (child.pid) {
-          try {
-            process.kill(-child.pid, "SIGKILL");
-          } catch {
-            child.kill("SIGKILL");
-          }
-        }
+        if (child.pid)
+          termination = (async () => {
+            try {
+              await stopDescendants(child.pid!);
+            } catch {
+              result.errorCode = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
+            } finally {
+              try {
+                process.kill(-child.pid!, "SIGKILL");
+              } catch {
+                child.kill("SIGKILL");
+              }
+            }
+          })();
       };
       const collect = (chunks: Buffer[], chunk: Buffer): void => {
         const available = Math.max(0, maximum - bytes);
@@ -108,9 +117,10 @@ export async function runProcess(
       };
       options.signal?.addEventListener("abort", cancel, { once: true });
       if (options.signal?.aborted) cancel();
-      child.on("close", (code, signal) => {
+      child.on("close", async (code, signal) => {
         clearTimeout(timer);
         options.signal?.removeEventListener("abort", cancel);
+        await termination;
         result.exitCode = code;
         result.signal = signal;
         result.stdout = Buffer.concat(stdout).toString("utf8");
