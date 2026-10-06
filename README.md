@@ -292,10 +292,11 @@ The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not
 establish compatibility with every editor or agent application.
 
-Validation runs asynchronously and supports cancellation, but returns its report
-on the original tool call. The optional durable Tasks extension is not implemented.
-See [MCP compatibility](docs/MCP-COMPATIBILITY.md) for lifecycle tests, the reproduced
-SDK routing limitation and the remaining Tasks work.
+Ordinary validation calls run asynchronously and return their report on the original
+call. Startup `--task-store` enables the bounded standard Tasks polling profile for
+capable requests, preserving ordinary-call fallback. See
+[MCP compatibility](docs/MCP-COMPATIBILITY.md) for the tested SDK 2.3.0 routing,
+lifecycle evidence and remaining client/runtime profiles.
 
 Exact finding baselines and exceptions are available through the CLI, library and
 MCP. [Finding policy](docs/FINDING-POLICY.md) describes creation, expiration,

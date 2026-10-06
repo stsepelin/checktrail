@@ -119,9 +119,10 @@ grants. Offline package smoke exercises this profile before adding consumer
 development tools.
 
 These checks establish the bounded collector contract, not review quality.
-Broader language collectors, automatic consumer discovery, revision-aware claim
-citations, fresh provider sessions, independent claim refutation and blinded
-quality trials remain in [the task ledger](REVIEWER-TASKS.md). New real-project
+Broader language and historical consumer collection, observed independent host
+sessions, general claim resolution and blinded quality trials remain in
+[the task ledger](REVIEWER-TASKS.md). Bounded current consumer collection,
+revision-aware citations and refutation contracts have their separate profiles. New real-project
 MCP field trials wait for completion of the planned work.
 
 The required review profile names snapshot syntax controls. The review-git

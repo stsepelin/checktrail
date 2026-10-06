@@ -1,0 +1,2448 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-06",
+  "profile": "js-ts-selected-imports-v1",
+  "codeCommit": "62f12a8461e3ae3aab4b8c07216bfc4a7906fa51",
+  "scope": "Original synthetic parser/import/consumer controls; no project module or configuration execution, model inference or field review.",
+  "environments": {
+    "sourceMacOS": {
+      "node": "26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "sourceLinux": {
+      "node": "22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystem": "readonly",
+      "temporaryFilesystemMiB": 256,
+      "temporaryExecutability": "disabled"
+    },
+    "preservedLinux": {
+      "sameImageAsSourceLinux": true,
+      "temporaryExecutability": "enabled-for-host-git-fixture"
+    },
+    "offlineInstalled": {
+      "installerNode": "26.9.0",
+      "installerPlatform": "darwin",
+      "installerArch": "arm64",
+      "runtimeProfiles": [
+        "darwin-arm64-node-26.9.0",
+        "linux-arm64-node-22.23.2"
+      ],
+      "linuxRuntimeUsesHostPreparedProductionInstallation": true
+    }
+  },
+  "requiredProfiles": {
+    "sourceMacOS": {
+      "profile": "import-context",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 155.480416,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 29.458042,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 117.492209,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 62.192125,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2615.654416,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "sourceLinux": {
+      "profile": "import-context",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 338.626827,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 50.045341,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 384.107395,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 252.760195,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4511.172069,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "installedMacOS": {
+      "tarballSha256": "f84b517d2c0e546f4637eb28f8ec3b20dbb542363ae2de0060a172f7d1a304d2",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "import-context",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 195.1535,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 40.671708,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.416333,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 80.077291,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3262.964875,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "installedLinux": {
+      "tarballSha256": "f84b517d2c0e546f4637eb28f8ec3b20dbb542363ae2de0060a172f7d1a304d2",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "import-context",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 321.103702,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52.110839,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 335.086937,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.780407,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4596.370654,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    }
+  },
+  "preservedProfiles": {
+    "sourceMacOS": {
+      "profile": "review",
+      "timeoutMs": 120000,
+      "passed": 30,
+      "required": 23,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 30,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14.221333,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "snapshot assignments exclude Git history and disclose context omissions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 40.872167,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "diff assignments retain committed, staged, working, added and deleted evidence without filters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 503.493541,
+            "required": false
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "diff context rejects excluded historical source, binary data, symlinks, oversized pairs and forged hunks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 608.036042,
+            "required": false
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "review replacement ranges reconstruct exact line endings, additions and deletions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.21275,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "diff collection rejects HEAD and index races before returning evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1771.6435,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "versioned diff contexts share CLI and MCP source gates and exact engine evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3002.621583,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.548208,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 306.736,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.267083,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 837.293209,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1120.510292,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 123.626125,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.905875,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.021083,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.219083,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6.700917,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19.523333,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2284.23125,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5.46275,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "diff behavior retains moved helper behavior, unchanged decisions and deleted cross-project callers",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 106.9,
+            "required": false
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13.812834,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 415.398667,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 285.199166,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 111.5725,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10.710792,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.684417,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 387.812792,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2658.997958,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 352.678,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          }
+        ]
+      }
+    },
+    "sourceLinux": {
+      "profile": "review",
+      "timeoutMs": 120000,
+      "passed": 30,
+      "required": 23,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 30,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.718559,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "snapshot assignments exclude Git history and disclose context omissions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.785465,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "diff assignments retain committed, staged, working, added and deleted evidence without filters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 95.141295,
+            "required": false
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "diff context rejects excluded historical source, binary data, symlinks, oversized pairs and forged hunks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 95.309254,
+            "required": false
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "review replacement ranges reconstruct exact line endings, additions and deletions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.447211,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "diff collection rejects HEAD and index races before returning evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 267.200461,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "versioned diff contexts share CLI and MCP source gates and exact engine evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3482.470162,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 38.25506,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 120.248999,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.29214,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 925.379816,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1295.458734,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 223.671333,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 34.022664,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.093038,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.728371,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.240601,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 51.981836,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2870.731948,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10.903553,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "diff behavior retains moved helper behavior, unchanged decisions and deleted cross-project callers",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.72599,
+            "required": false
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.898174,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 267.666546,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 59.596622,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.951741,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22.467734,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6.887575,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 86.400918,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2495.643173,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 63.528683,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          }
+        ]
+      }
+    }
+  },
+  "environmentDiagnostic": {
+    "initialPreservedLinuxComplete": false,
+    "initialEvidence": {
+      "profile": "review",
+      "timeoutMs": 120000,
+      "passed": 29,
+      "required": 23,
+      "problems": [
+        {
+          "name": "diff collection rejects HEAD and index races before returning evidence",
+          "reason": "failed",
+          "failureType": "testCodeFailure",
+          "code": "ERR_TEST_FAILURE",
+          "message": "Missing expected rejection: HEAD"
+        }
+      ],
+      "complete": false,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 30,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.991634,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "snapshot assignments exclude Git history and disclose context omissions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 49.213212,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "diff assignments retain committed, staged, working, added and deleted evidence without filters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 123.776179,
+            "required": false
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "diff context rejects excluded historical source, binary data, symlinks, oversized pairs and forged hunks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 113.620876,
+            "required": false
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "review replacement ranges reconstruct exact line endings, additions and deletions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.453586,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "diff collection rejects HEAD and index races before returning evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "failed",
+            "durationMs": 22.733617,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "versioned diff contexts share CLI and MCP source gates and exact engine evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4423.233697,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 44.601636,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 128.837883,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 26.216504,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1112.846464,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1575.895906,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 248.138344,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 58.008285,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 37.460434,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 52.749718,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.684729,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 63.407562,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2894.020753,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11.389139,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "diff behavior retains moved helper behavior, unchanged decisions and deleted cross-project callers",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27.116717,
+            "required": false
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 41.602579,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 276.752901,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 59.265624,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.497417,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19.893556,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5.244942,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 86.115298,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2492.939325,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 61.559428,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          }
+        ]
+      }
+    },
+    "observedResolverError": "EACCES for the temporary Git wrapper; system Git was selected instead",
+    "fixtureEffect": "HEAD mutation was never triggered",
+    "correctedPreparation": "Explicit executable temporary mount for the unchanged host Git wrapper",
+    "codeOrAssertionChanged": false,
+    "unchangedProfileComplete": true
+  },
+  "guards": {
+    "mutations": [
+      {
+        "guard": "consumer-direction",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "ce2865e8cb4d957a4024c96095881d090080d4f5bf34c8fa683c385b1b649b8b",
+        "test": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "unknown-full-fallback",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "ce2865e8cb4d957a4024c96095881d090080d4f5bf34c8fa683c385b1b649b8b",
+        "test": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "fresh-reconstruction",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "ce2865e8cb4d957a4024c96095881d090080d4f5bf34c8fa683c385b1b649b8b",
+        "test": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "type-import-edge",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "ce2865e8cb4d957a4024c96095881d090080d4f5bf34c8fa683c385b1b649b8b",
+        "test": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+        "mutantExitCode": 1,
+        "killed": true
+      }
+    ],
+    "restored": true,
+    "restoredCallbacksPassed": 4,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "excludedGuardExperiment": {
+    "guard": "type-import-edge",
+    "reason": "noncompiling initial mutation",
+    "countedAsKilled": false
+  },
+  "sourceFiles": [
+    {
+      "path": "src/import-context.ts",
+      "sha256": "fd038451a400accc54bcfce85cfb895c805c066311178ce77eb6dcbca666d253"
+    },
+    {
+      "path": "src/review-behavior.ts",
+      "sha256": "1b85796e7cb998cb44207c93b181bfccf486cf8e4669471d1b91de754e53f1de"
+    },
+    {
+      "path": "src/cli.ts",
+      "sha256": "419af2453ca09c6d1495280d094bbe079758ea762e5dfe97fb152ebfb1ac5d41"
+    },
+    {
+      "path": "src/mcp.ts",
+      "sha256": "e14872d13fd3b6ed2b543f90a857633245b8ad961d612b38e2394e378706cc3d"
+    },
+    {
+      "path": "test/import-context.test.ts",
+      "sha256": "ce2865e8cb4d957a4024c96095881d090080d4f5bf34c8fa683c385b1b649b8b"
+    },
+    {
+      "path": "scripts/verify-import-context-package.mjs",
+      "sha256": "93d808cbf123b2f8e8f1a945cdd1f7836414f918e16c853ac845fda824b962dc"
+    },
+    {
+      "path": "scripts/required-native-tests.json",
+      "sha256": "84747db2a7019606cf951ae5da6c8c94e52f20c46f1255bc2fc553af156a1da5"
+    },
+    {
+      "path": "scripts/verify-mcp-clients.mjs",
+      "sha256": "cf4a9e98456c63a15c11a0a9011fc9fc735c2ed2a5215695583e97aa7b60c800"
+    }
+  ],
+  "fullCheck": {
+    "command": "npm run check",
+    "outcome": "passed",
+    "counts": {
+      "tests": 848,
+      "pass": 623,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 225,
+      "todo": 0
+    },
+    "optionalSkipsReportedSeparately": true
+  },
+  "directChangedFileLint": {
+    "command": "eslint with the 12 changed JS/TS/MJS paths",
+    "files": 12,
+    "outcome": "passed"
+  },
+  "format": {
+    "command": "prettier --check .",
+    "outcome": "passed"
+  },
+  "schemaParity": {
+    "command": "node --test dist/test/schemas.test.js",
+    "outcome": "passed"
+  },
+  "workflowLint": {
+    "version": "1.7.12",
+    "outcome": "passed"
+  },
+  "clients": {
+    "codex": {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T17:50:43.191Z",
+      "profile": "codex-app-server-direct-tools",
+      "clientVersion": "codex-cli 0.160.0",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "f84b517d2c0e546f4637eb28f8ec3b20dbb542363ae2de0060a172f7d1a304d2",
+        "runtimeArtifactsSha256": "e0e17779b372af80ed557c704467a3755c670262ba6418a2cc4640486c525577"
+      },
+      "harnessSha256": "cf4a9e98456c63a15c11a0a9011fc9fc735c2ed2a5215695583e97aa7b60c800",
+      "observations": [
+        {
+          "check": "project_context",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "validation_plan",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "guidance-https-result",
+          "outcome": "passed",
+          "references": ["https://nodejs.org/api/test.html"]
+        },
+        {
+          "check": "default-execution-denied",
+          "outcome": "passed"
+        },
+        {
+          "check": "tool-cannot-grant-trust",
+          "outcome": "passed"
+        },
+        {
+          "check": "native-passed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "passed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "passed",
+              "tests": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "native-failed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "failed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "failed",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "all-skipped-is-incomplete",
+          "outcome": "passed",
+          "validationOutcome": "incomplete",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "inconclusive",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 0,
+                "skipped": 1
+              }
+            }
+          ]
+        }
+      ],
+      "providerRequests": [
+        {
+          "method": "GET",
+          "path": "/models?client_version=0.160.0"
+        }
+      ],
+      "inferenceRequests": 0,
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "import_context",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        },
+        {
+          "label": "trusted",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "import_context",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    },
+    "claude": {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T17:50:43.576Z",
+      "profile": "claude-code-health-discovery",
+      "clientVersion": "2.1.290 (Claude Code)",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "f84b517d2c0e546f4637eb28f8ec3b20dbb542363ae2de0060a172f7d1a304d2",
+        "runtimeArtifactsSha256": "e0e17779b372af80ed557c704467a3755c670262ba6418a2cc4640486c525577"
+      },
+      "harnessSha256": "cf4a9e98456c63a15c11a0a9011fc9fc735c2ed2a5215695583e97aa7b60c800",
+      "observations": [
+        {
+          "check": "health-and-discovery",
+          "outcome": "passed",
+          "warnings": []
+        }
+      ],
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 1,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": 130,
+              "signal": null
+            }
+          ],
+          "requestedProtocol": "2025-11-25",
+          "negotiatedProtocol": "2025-11-25",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "import_context",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    },
+    "newImportToolCallThroughSdk": true,
+    "newImportToolCallThroughNativeClients": false,
+    "nativeClientScope": "Actual discovery and existing direct validation tools; no AI turn."
+  },
+  "runtimeReachabilityVerified": false,
+  "runtimeGraphComplete": false,
+  "validationPlanChanged": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "gateAComplete": false,
+  "remaining": "Other language collectors, historical consumers, project module resolution, framework assembly/live contracts and the broader required inventory remain open."
+}

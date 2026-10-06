@@ -100,7 +100,7 @@ real shared library, CLI and SDK MCP calls. The offline production-package helpe
 runs the same selected tests without installing project development tools; acceptance
 client dependencies remain outside the product.
 
-The measurement receipt records the exact source and installed runtime identities,
+The [measurement receipt](measurements/import-context-2026-10-06.json) records the exact source and installed runtime identities,
 unchanged-assertion mutations and limits. It establishes this bounded parser profile,
 not reviewer quality. R1/R5/E3 still require other language collectors, wider caller
 and framework context, historical consumer discovery and live integrations. Gate A
