@@ -2058,5 +2058,15 @@
       "file": "dist/test/dotnet-method-surfaces.test.js",
       "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }
