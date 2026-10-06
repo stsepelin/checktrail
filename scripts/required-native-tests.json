@@ -2462,5 +2462,35 @@
       "file": "dist/test/review-benchmark.test.js",
       "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim"
     }
+  ],
+  "review-calibration": [
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference"
+    }
   ]
 }

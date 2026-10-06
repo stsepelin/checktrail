@@ -1,0 +1,4787 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "declared-family-isotonic-application-v1"
+    },
+    "method": {
+      "type": "string",
+      "const": "tie-pooled-weighted-pava-with-linear-interpolation"
+    },
+    "outsideSupport": { "type": "string", "const": "unknown-no-extrapolation" },
+    "channel": { "type": "string", "const": "advisory" },
+    "nativeExecution": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "labelsVerified": { "type": "boolean", "const": false },
+    "calibratedConfidence": { "type": "boolean", "const": false },
+    "modelIdentityVerified": { "type": "boolean", "const": false },
+    "splitIsolationVerified": { "type": "boolean", "const": false },
+    "protocolFreezeVerified": { "type": "boolean", "const": false },
+    "independenceVerified": { "type": "boolean", "const": false },
+    "declaredSplitDisjoint": { "type": "boolean", "const": true },
+    "qualityGate": { "type": "string", "const": "not-assessed" },
+    "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+    "inferenceInvoked": { "type": "boolean", "const": false },
+    "fieldEvaluationExecuted": { "type": "boolean", "const": false },
+    "fitDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evaluationProtocolDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "observationsDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "modelBindingChecked": { "type": "boolean", "const": true },
+    "mappings": {
+      "type": "object",
+      "properties": {
+        "observed": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "available": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "notAFinding": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "unknownProbability": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
+        },
+        "unseenFamily": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "fitUnavailable": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "outsideTrainingSupport": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
+        }
+      },
+      "required": [
+        "observed",
+        "available",
+        "notAFinding",
+        "unknownProbability",
+        "unseenFamily",
+        "fitUnavailable",
+        "outsideTrainingSupport"
+      ],
+      "additionalProperties": false
+    },
+    "raw": {
+      "type": "object",
+      "properties": {
+        "aggregate": {
+          "type": "object",
+          "properties": {
+            "selected": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "statuses": {
+              "type": "object",
+              "properties": {
+                "completed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unsupported": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "incomplete": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "budget-exhausted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unreviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "stale": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "cancelled": { "type": "integer", "minimum": 0, "maximum": 512 }
+              },
+              "required": [
+                "completed",
+                "unsupported",
+                "incomplete",
+                "budget-exhausted",
+                "unreviewed",
+                "stale",
+                "cancelled"
+              ],
+              "additionalProperties": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "defect": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "valid": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "near-miss": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unresolved": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                }
+              },
+              "required": ["defect", "valid", "near-miss", "unresolved"],
+              "additionalProperties": false
+            },
+            "findings": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "supported": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "errors": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "unresolvedFindings": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "unknownProbabilities": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "missingObservations": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "precision": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "materialDefectRecall": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "completedCoverage": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "falseAlarmRate": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "nearMissFalseAlarmRate": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "oneSided95": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "const": "exact-binomial-inversion"
+                },
+                "assumption": {
+                  "type": "string",
+                  "const": "independent-Bernoulli-trials-not-verified"
+                },
+                "eligible": { "type": "boolean" },
+                "precisionLower": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "falseAlarmUpper": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "nearMissFalseAlarmUpper": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": [
+                "method",
+                "assumption",
+                "eligible",
+                "precisionLower",
+                "falseAlarmUpper",
+                "nearMissFalseAlarmUpper"
+              ],
+              "additionalProperties": false
+            },
+            "properScores": {
+              "type": "object",
+              "properties": {
+                "scored": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "unscoredFindings": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "brier": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "negativeLogLikelihood": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1000 },
+                    { "type": "null" }
+                  ]
+                },
+                "infiniteLogLoss": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                }
+              },
+              "required": [
+                "scored",
+                "unscoredFindings",
+                "brier",
+                "negativeLogLikelihood",
+                "infiniteLogLoss"
+              ],
+              "additionalProperties": false
+            },
+            "reliability": {
+              "minItems": 10,
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lower": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "upper": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "scored": { "type": "integer", "minimum": 0, "maximum": 512 },
+                  "unscored": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "meanProbability": {
+                    "anyOf": [
+                      { "type": "number", "minimum": 0, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "supportedFraction": {
+                    "anyOf": [
+                      { "type": "number", "minimum": 0, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  }
+                },
+                "required": [
+                  "lower",
+                  "upper",
+                  "scored",
+                  "unscored",
+                  "meanProbability",
+                  "supportedFraction"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "riskCoverage": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "selected": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "findings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "supported": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "unresolved": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "coverage": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "conservativeRisk": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "threshold",
+                  "selected",
+                  "findings",
+                  "supported",
+                  "unresolved",
+                  "coverage",
+                  "conservativeRisk"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "selected",
+            "statuses",
+            "labels",
+            "findings",
+            "supported",
+            "errors",
+            "unresolvedFindings",
+            "unknownProbabilities",
+            "missingObservations",
+            "precision",
+            "materialDefectRecall",
+            "completedCoverage",
+            "falseAlarmRate",
+            "nearMissFalseAlarmRate",
+            "oneSided95",
+            "properScores",
+            "reliability",
+            "riskCoverage"
+          ],
+          "additionalProperties": false
+        },
+        "families": {
+          "minItems": 1,
+          "maxItems": 9,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "family": {
+                "type": "string",
+                "enum": [
+                  "authorization-tenancy",
+                  "identifiers-allowlists",
+                  "types-numeric-semantics",
+                  "lifecycle-ordering",
+                  "assembly-wiring",
+                  "concurrency-resources",
+                  "atomic-artifacts",
+                  "dependencies-builds",
+                  "test-adequacy"
+                ]
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "selected": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "statuses": {
+                    "type": "object",
+                    "properties": {
+                      "completed": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unsupported": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "incomplete": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "budget-exhausted": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unreviewed": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "stale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "cancelled": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": [
+                      "completed",
+                      "unsupported",
+                      "incomplete",
+                      "budget-exhausted",
+                      "unreviewed",
+                      "stale",
+                      "cancelled"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "labels": {
+                    "type": "object",
+                    "properties": {
+                      "defect": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "valid": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "near-miss": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unresolved": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": ["defect", "valid", "near-miss", "unresolved"],
+                    "additionalProperties": false
+                  },
+                  "findings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "supported": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "errors": { "type": "integer", "minimum": 0, "maximum": 512 },
+                  "unresolvedFindings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "unknownProbabilities": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "missingObservations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "precision": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "materialDefectRecall": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "completedCoverage": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "falseAlarmRate": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "nearMissFalseAlarmRate": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "oneSided95": {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "const": "exact-binomial-inversion"
+                      },
+                      "assumption": {
+                        "type": "string",
+                        "const": "independent-Bernoulli-trials-not-verified"
+                      },
+                      "eligible": { "type": "boolean" },
+                      "precisionLower": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "falseAlarmUpper": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "nearMissFalseAlarmUpper": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "method",
+                      "assumption",
+                      "eligible",
+                      "precisionLower",
+                      "falseAlarmUpper",
+                      "nearMissFalseAlarmUpper"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "properScores": {
+                    "type": "object",
+                    "properties": {
+                      "scored": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unscoredFindings": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "brier": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "negativeLogLikelihood": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1000 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "infiniteLogLoss": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": [
+                      "scored",
+                      "unscoredFindings",
+                      "brier",
+                      "negativeLogLikelihood",
+                      "infiniteLogLoss"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "reliability": {
+                    "minItems": 10,
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "lower": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "upper": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unscored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "meanProbability": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "supportedFraction": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "lower",
+                        "upper",
+                        "scored",
+                        "unscored",
+                        "meanProbability",
+                        "supportedFraction"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "riskCoverage": {
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "threshold": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "findings": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "supported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "coverage": {
+                          "type": "object",
+                          "properties": {
+                            "numerator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "denominator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "value": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["numerator", "denominator", "value"],
+                          "additionalProperties": false
+                        },
+                        "conservativeRisk": {
+                          "type": "object",
+                          "properties": {
+                            "numerator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "denominator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "value": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["numerator", "denominator", "value"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "threshold",
+                        "selected",
+                        "findings",
+                        "supported",
+                        "unresolved",
+                        "coverage",
+                        "conservativeRisk"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "selected",
+                  "statuses",
+                  "labels",
+                  "findings",
+                  "supported",
+                  "errors",
+                  "unresolvedFindings",
+                  "unknownProbabilities",
+                  "missingObservations",
+                  "precision",
+                  "materialDefectRecall",
+                  "completedCoverage",
+                  "falseAlarmRate",
+                  "nearMissFalseAlarmRate",
+                  "oneSided95",
+                  "properScores",
+                  "reliability",
+                  "riskCoverage"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": ["family", "metrics"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["aggregate", "families"],
+      "additionalProperties": false
+    },
+    "mapped": {
+      "type": "object",
+      "properties": {
+        "aggregate": {
+          "type": "object",
+          "properties": {
+            "selected": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "statuses": {
+              "type": "object",
+              "properties": {
+                "completed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unsupported": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "incomplete": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "budget-exhausted": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unreviewed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "stale": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "cancelled": { "type": "integer", "minimum": 0, "maximum": 512 }
+              },
+              "required": [
+                "completed",
+                "unsupported",
+                "incomplete",
+                "budget-exhausted",
+                "unreviewed",
+                "stale",
+                "cancelled"
+              ],
+              "additionalProperties": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "defect": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "valid": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "near-miss": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unresolved": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                }
+              },
+              "required": ["defect", "valid", "near-miss", "unresolved"],
+              "additionalProperties": false
+            },
+            "findings": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "supported": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "errors": { "type": "integer", "minimum": 0, "maximum": 512 },
+            "unresolvedFindings": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "unknownProbabilities": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "missingObservations": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 512
+            },
+            "precision": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "materialDefectRecall": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "completedCoverage": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "falseAlarmRate": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "nearMissFalseAlarmRate": {
+              "type": "object",
+              "properties": {
+                "numerator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "denominator": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "value": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": ["numerator", "denominator", "value"],
+              "additionalProperties": false
+            },
+            "oneSided95": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "const": "exact-binomial-inversion"
+                },
+                "assumption": {
+                  "type": "string",
+                  "const": "independent-Bernoulli-trials-not-verified"
+                },
+                "eligible": { "type": "boolean" },
+                "precisionLower": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "falseAlarmUpper": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "nearMissFalseAlarmUpper": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                }
+              },
+              "required": [
+                "method",
+                "assumption",
+                "eligible",
+                "precisionLower",
+                "falseAlarmUpper",
+                "nearMissFalseAlarmUpper"
+              ],
+              "additionalProperties": false
+            },
+            "properScores": {
+              "type": "object",
+              "properties": {
+                "scored": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "unscoredFindings": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "brier": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1 },
+                    { "type": "null" }
+                  ]
+                },
+                "negativeLogLikelihood": {
+                  "anyOf": [
+                    { "type": "number", "minimum": 0, "maximum": 1000 },
+                    { "type": "null" }
+                  ]
+                },
+                "infiniteLogLoss": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                }
+              },
+              "required": [
+                "scored",
+                "unscoredFindings",
+                "brier",
+                "negativeLogLikelihood",
+                "infiniteLogLoss"
+              ],
+              "additionalProperties": false
+            },
+            "reliability": {
+              "minItems": 10,
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lower": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "upper": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "scored": { "type": "integer", "minimum": 0, "maximum": 512 },
+                  "unscored": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "meanProbability": {
+                    "anyOf": [
+                      { "type": "number", "minimum": 0, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "supportedFraction": {
+                    "anyOf": [
+                      { "type": "number", "minimum": 0, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  }
+                },
+                "required": [
+                  "lower",
+                  "upper",
+                  "scored",
+                  "unscored",
+                  "meanProbability",
+                  "supportedFraction"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "riskCoverage": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "selected": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "findings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "supported": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "unresolved": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "coverage": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "conservativeRisk": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "threshold",
+                  "selected",
+                  "findings",
+                  "supported",
+                  "unresolved",
+                  "coverage",
+                  "conservativeRisk"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "selected",
+            "statuses",
+            "labels",
+            "findings",
+            "supported",
+            "errors",
+            "unresolvedFindings",
+            "unknownProbabilities",
+            "missingObservations",
+            "precision",
+            "materialDefectRecall",
+            "completedCoverage",
+            "falseAlarmRate",
+            "nearMissFalseAlarmRate",
+            "oneSided95",
+            "properScores",
+            "reliability",
+            "riskCoverage"
+          ],
+          "additionalProperties": false
+        },
+        "families": {
+          "minItems": 1,
+          "maxItems": 9,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "family": {
+                "type": "string",
+                "enum": [
+                  "authorization-tenancy",
+                  "identifiers-allowlists",
+                  "types-numeric-semantics",
+                  "lifecycle-ordering",
+                  "assembly-wiring",
+                  "concurrency-resources",
+                  "atomic-artifacts",
+                  "dependencies-builds",
+                  "test-adequacy"
+                ]
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "selected": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "statuses": {
+                    "type": "object",
+                    "properties": {
+                      "completed": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unsupported": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "incomplete": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "budget-exhausted": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unreviewed": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "stale": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "cancelled": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": [
+                      "completed",
+                      "unsupported",
+                      "incomplete",
+                      "budget-exhausted",
+                      "unreviewed",
+                      "stale",
+                      "cancelled"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "labels": {
+                    "type": "object",
+                    "properties": {
+                      "defect": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "valid": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "near-miss": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unresolved": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": ["defect", "valid", "near-miss", "unresolved"],
+                    "additionalProperties": false
+                  },
+                  "findings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "supported": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "errors": { "type": "integer", "minimum": 0, "maximum": 512 },
+                  "unresolvedFindings": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "unknownProbabilities": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "missingObservations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "precision": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "materialDefectRecall": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "completedCoverage": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "falseAlarmRate": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "nearMissFalseAlarmRate": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "oneSided95": {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "const": "exact-binomial-inversion"
+                      },
+                      "assumption": {
+                        "type": "string",
+                        "const": "independent-Bernoulli-trials-not-verified"
+                      },
+                      "eligible": { "type": "boolean" },
+                      "precisionLower": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "falseAlarmUpper": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "nearMissFalseAlarmUpper": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "method",
+                      "assumption",
+                      "eligible",
+                      "precisionLower",
+                      "falseAlarmUpper",
+                      "nearMissFalseAlarmUpper"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "properScores": {
+                    "type": "object",
+                    "properties": {
+                      "scored": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "unscoredFindings": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      },
+                      "brier": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "negativeLogLikelihood": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1000 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "infiniteLogLoss": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 512
+                      }
+                    },
+                    "required": [
+                      "scored",
+                      "unscoredFindings",
+                      "brier",
+                      "negativeLogLikelihood",
+                      "infiniteLogLoss"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "reliability": {
+                    "minItems": 10,
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "lower": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "upper": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unscored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "meanProbability": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "supportedFraction": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "lower",
+                        "upper",
+                        "scored",
+                        "unscored",
+                        "meanProbability",
+                        "supportedFraction"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "riskCoverage": {
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "threshold": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "selected": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "findings": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "supported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "coverage": {
+                          "type": "object",
+                          "properties": {
+                            "numerator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "denominator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "value": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["numerator", "denominator", "value"],
+                          "additionalProperties": false
+                        },
+                        "conservativeRisk": {
+                          "type": "object",
+                          "properties": {
+                            "numerator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "denominator": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "value": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["numerator", "denominator", "value"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "threshold",
+                        "selected",
+                        "findings",
+                        "supported",
+                        "unresolved",
+                        "coverage",
+                        "conservativeRisk"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "selected",
+                  "statuses",
+                  "labels",
+                  "findings",
+                  "supported",
+                  "errors",
+                  "unresolvedFindings",
+                  "unknownProbabilities",
+                  "missingObservations",
+                  "precision",
+                  "materialDefectRecall",
+                  "completedCoverage",
+                  "falseAlarmRate",
+                  "nearMissFalseAlarmRate",
+                  "oneSided95",
+                  "properScores",
+                  "reliability",
+                  "riskCoverage"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": ["family", "metrics"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["aggregate", "families"],
+      "additionalProperties": false
+    },
+    "format": {
+      "type": "string",
+      "const": "review-calibration-application-report"
+    },
+    "rows": {
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "available",
+              "not-a-finding",
+              "unknown-probability",
+              "unseen-family",
+              "fit-unavailable",
+              "outside-training-support"
+            ]
+          },
+          "rawProbability": {
+            "anyOf": [
+              { "type": "number", "minimum": 0, "maximum": 1 },
+              { "type": "null" }
+            ]
+          },
+          "mappedProbability": {
+            "anyOf": [
+              { "type": "number", "minimum": 0, "maximum": 1 },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": ["id", "state", "rawProbability", "mappedProbability"],
+        "additionalProperties": false
+      }
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": {
+          "type": "string",
+          "const": "declared-family-isotonic-application-v1"
+        },
+        "model": {
+          "type": "object",
+          "properties": {
+            "client": { "type": "string", "minLength": 1, "maxLength": 256 },
+            "clientVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "provider": { "type": "string", "minLength": 1, "maxLength": 256 },
+            "model": { "type": "string", "minLength": 1, "maxLength": 256 }
+          },
+          "required": ["client", "clientVersion", "provider", "model"],
+          "additionalProperties": false
+        },
+        "fit": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 1 },
+            "profile": {
+              "type": "string",
+              "const": "declared-family-isotonic-v1"
+            },
+            "method": {
+              "type": "string",
+              "const": "tie-pooled-weighted-pava-with-linear-interpolation"
+            },
+            "outsideSupport": {
+              "type": "string",
+              "const": "unknown-no-extrapolation"
+            },
+            "channel": { "type": "string", "const": "advisory" },
+            "nativeExecution": { "type": "boolean", "const": false },
+            "claimsVerified": { "type": "boolean", "const": false },
+            "labelsVerified": { "type": "boolean", "const": false },
+            "calibratedConfidence": { "type": "boolean", "const": false },
+            "modelIdentityVerified": { "type": "boolean", "const": false },
+            "splitIsolationVerified": { "type": "boolean", "const": false },
+            "protocolFreezeVerified": { "type": "boolean", "const": false },
+            "independenceVerified": { "type": "boolean", "const": false },
+            "declaredSplitDisjoint": { "type": "boolean", "const": true },
+            "qualityGate": { "type": "string", "const": "not-assessed" },
+            "deterministicOutcomeChanged": {
+              "type": "boolean",
+              "const": false
+            },
+            "inferenceInvoked": { "type": "boolean", "const": false },
+            "fieldEvaluationExecuted": { "type": "boolean", "const": false },
+            "fitDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "trainingProtocolDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "observationsDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "reservedProtocolDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "state": {
+              "type": "string",
+              "enum": ["available", "partial", "unavailable"]
+            },
+            "accounting": {
+              "type": "object",
+              "properties": {
+                "selected": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "eligible": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "missing": { "type": "integer", "minimum": 0, "maximum": 512 },
+                "incomplete": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "abstained": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unknownJudgement": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                },
+                "unknownProbability": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 512
+                }
+              },
+              "required": [
+                "selected",
+                "eligible",
+                "missing",
+                "incomplete",
+                "abstained",
+                "unknownJudgement",
+                "unknownProbability"
+              ],
+              "additionalProperties": false
+            },
+            "trainingRaw": {
+              "type": "object",
+              "properties": {
+                "aggregate": {
+                  "type": "object",
+                  "properties": {
+                    "selected": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "statuses": {
+                      "type": "object",
+                      "properties": {
+                        "completed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unsupported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "incomplete": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "budget-exhausted": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unreviewed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "stale": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "cancelled": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "completed",
+                        "unsupported",
+                        "incomplete",
+                        "budget-exhausted",
+                        "unreviewed",
+                        "stale",
+                        "cancelled"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "labels": {
+                      "type": "object",
+                      "properties": {
+                        "defect": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "valid": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "near-miss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "defect",
+                        "valid",
+                        "near-miss",
+                        "unresolved"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "findings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "supported": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "errors": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "unresolvedFindings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "unknownProbabilities": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "missingObservations": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "precision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "materialDefectRecall": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "completedCoverage": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "falseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "nearMissFalseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "oneSided95": {
+                      "type": "object",
+                      "properties": {
+                        "method": {
+                          "type": "string",
+                          "const": "exact-binomial-inversion"
+                        },
+                        "assumption": {
+                          "type": "string",
+                          "const": "independent-Bernoulli-trials-not-verified"
+                        },
+                        "eligible": { "type": "boolean" },
+                        "precisionLower": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "falseAlarmUpper": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "nearMissFalseAlarmUpper": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "method",
+                        "assumption",
+                        "eligible",
+                        "precisionLower",
+                        "falseAlarmUpper",
+                        "nearMissFalseAlarmUpper"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "properScores": {
+                      "type": "object",
+                      "properties": {
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unscoredFindings": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "brier": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "negativeLogLikelihood": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1000 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "infiniteLogLoss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "scored",
+                        "unscoredFindings",
+                        "brier",
+                        "negativeLogLikelihood",
+                        "infiniteLogLoss"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "reliability": {
+                      "minItems": 10,
+                      "maxItems": 10,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lower": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "upper": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "scored": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unscored": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "meanProbability": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          },
+                          "supportedFraction": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "lower",
+                          "upper",
+                          "scored",
+                          "unscored",
+                          "meanProbability",
+                          "supportedFraction"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "riskCoverage": {
+                      "minItems": 1,
+                      "maxItems": 16,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "threshold": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "selected": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "findings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "supported": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unresolved": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "coverage": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "conservativeRisk": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "threshold",
+                          "selected",
+                          "findings",
+                          "supported",
+                          "unresolved",
+                          "coverage",
+                          "conservativeRisk"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "selected",
+                    "statuses",
+                    "labels",
+                    "findings",
+                    "supported",
+                    "errors",
+                    "unresolvedFindings",
+                    "unknownProbabilities",
+                    "missingObservations",
+                    "precision",
+                    "materialDefectRecall",
+                    "completedCoverage",
+                    "falseAlarmRate",
+                    "nearMissFalseAlarmRate",
+                    "oneSided95",
+                    "properScores",
+                    "reliability",
+                    "riskCoverage"
+                  ],
+                  "additionalProperties": false
+                },
+                "families": {
+                  "minItems": 1,
+                  "maxItems": 9,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "family": {
+                        "type": "string",
+                        "enum": [
+                          "authorization-tenancy",
+                          "identifiers-allowlists",
+                          "types-numeric-semantics",
+                          "lifecycle-ordering",
+                          "assembly-wiring",
+                          "concurrency-resources",
+                          "atomic-artifacts",
+                          "dependencies-builds",
+                          "test-adequacy"
+                        ]
+                      },
+                      "metrics": {
+                        "type": "object",
+                        "properties": {
+                          "selected": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "statuses": {
+                            "type": "object",
+                            "properties": {
+                              "completed": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unsupported": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "incomplete": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "budget-exhausted": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unreviewed": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "stale": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "cancelled": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "completed",
+                              "unsupported",
+                              "incomplete",
+                              "budget-exhausted",
+                              "unreviewed",
+                              "stale",
+                              "cancelled"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "labels": {
+                            "type": "object",
+                            "properties": {
+                              "defect": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "valid": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "near-miss": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unresolved": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "defect",
+                              "valid",
+                              "near-miss",
+                              "unresolved"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "findings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "supported": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "errors": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unresolvedFindings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unknownProbabilities": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "missingObservations": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "precision": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "materialDefectRecall": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "completedCoverage": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "falseAlarmRate": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "nearMissFalseAlarmRate": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "oneSided95": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "const": "exact-binomial-inversion"
+                              },
+                              "assumption": {
+                                "type": "string",
+                                "const": "independent-Bernoulli-trials-not-verified"
+                              },
+                              "eligible": { "type": "boolean" },
+                              "precisionLower": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "falseAlarmUpper": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "nearMissFalseAlarmUpper": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "method",
+                              "assumption",
+                              "eligible",
+                              "precisionLower",
+                              "falseAlarmUpper",
+                              "nearMissFalseAlarmUpper"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "properScores": {
+                            "type": "object",
+                            "properties": {
+                              "scored": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unscoredFindings": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "brier": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "negativeLogLikelihood": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "infiniteLogLoss": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "scored",
+                              "unscoredFindings",
+                              "brier",
+                              "negativeLogLikelihood",
+                              "infiniteLogLoss"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "reliability": {
+                            "minItems": 10,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "lower": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "upper": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "scored": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "unscored": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "meanProbability": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "supportedFraction": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "lower",
+                                "upper",
+                                "scored",
+                                "unscored",
+                                "meanProbability",
+                                "supportedFraction"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "riskCoverage": {
+                            "minItems": 1,
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "threshold": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "selected": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "findings": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "supported": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "unresolved": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "coverage": {
+                                  "type": "object",
+                                  "properties": {
+                                    "numerator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "denominator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 1
+                                        },
+                                        { "type": "null" }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "numerator",
+                                    "denominator",
+                                    "value"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "conservativeRisk": {
+                                  "type": "object",
+                                  "properties": {
+                                    "numerator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "denominator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 1
+                                        },
+                                        { "type": "null" }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "numerator",
+                                    "denominator",
+                                    "value"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "threshold",
+                                "selected",
+                                "findings",
+                                "supported",
+                                "unresolved",
+                                "coverage",
+                                "conservativeRisk"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "selected",
+                          "statuses",
+                          "labels",
+                          "findings",
+                          "supported",
+                          "errors",
+                          "unresolvedFindings",
+                          "unknownProbabilities",
+                          "missingObservations",
+                          "precision",
+                          "materialDefectRecall",
+                          "completedCoverage",
+                          "falseAlarmRate",
+                          "nearMissFalseAlarmRate",
+                          "oneSided95",
+                          "properScores",
+                          "reliability",
+                          "riskCoverage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["family", "metrics"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["aggregate", "families"],
+              "additionalProperties": false
+            },
+            "trainingMapped": {
+              "type": "object",
+              "properties": {
+                "aggregate": {
+                  "type": "object",
+                  "properties": {
+                    "selected": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "statuses": {
+                      "type": "object",
+                      "properties": {
+                        "completed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unsupported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "incomplete": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "budget-exhausted": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unreviewed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "stale": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "cancelled": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "completed",
+                        "unsupported",
+                        "incomplete",
+                        "budget-exhausted",
+                        "unreviewed",
+                        "stale",
+                        "cancelled"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "labels": {
+                      "type": "object",
+                      "properties": {
+                        "defect": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "valid": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "near-miss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "defect",
+                        "valid",
+                        "near-miss",
+                        "unresolved"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "findings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "supported": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "errors": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "unresolvedFindings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "unknownProbabilities": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "missingObservations": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 512
+                    },
+                    "precision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "materialDefectRecall": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "completedCoverage": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "falseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "nearMissFalseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "oneSided95": {
+                      "type": "object",
+                      "properties": {
+                        "method": {
+                          "type": "string",
+                          "const": "exact-binomial-inversion"
+                        },
+                        "assumption": {
+                          "type": "string",
+                          "const": "independent-Bernoulli-trials-not-verified"
+                        },
+                        "eligible": { "type": "boolean" },
+                        "precisionLower": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "falseAlarmUpper": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "nearMissFalseAlarmUpper": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "method",
+                        "assumption",
+                        "eligible",
+                        "precisionLower",
+                        "falseAlarmUpper",
+                        "nearMissFalseAlarmUpper"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "properScores": {
+                      "type": "object",
+                      "properties": {
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "unscoredFindings": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        },
+                        "brier": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "negativeLogLikelihood": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1000 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "infiniteLogLoss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 512
+                        }
+                      },
+                      "required": [
+                        "scored",
+                        "unscoredFindings",
+                        "brier",
+                        "negativeLogLikelihood",
+                        "infiniteLogLoss"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "reliability": {
+                      "minItems": 10,
+                      "maxItems": 10,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lower": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "upper": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "scored": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unscored": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "meanProbability": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          },
+                          "supportedFraction": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "lower",
+                          "upper",
+                          "scored",
+                          "unscored",
+                          "meanProbability",
+                          "supportedFraction"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "riskCoverage": {
+                      "minItems": 1,
+                      "maxItems": 16,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "threshold": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "selected": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "findings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "supported": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unresolved": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "coverage": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "conservativeRisk": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "threshold",
+                          "selected",
+                          "findings",
+                          "supported",
+                          "unresolved",
+                          "coverage",
+                          "conservativeRisk"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "selected",
+                    "statuses",
+                    "labels",
+                    "findings",
+                    "supported",
+                    "errors",
+                    "unresolvedFindings",
+                    "unknownProbabilities",
+                    "missingObservations",
+                    "precision",
+                    "materialDefectRecall",
+                    "completedCoverage",
+                    "falseAlarmRate",
+                    "nearMissFalseAlarmRate",
+                    "oneSided95",
+                    "properScores",
+                    "reliability",
+                    "riskCoverage"
+                  ],
+                  "additionalProperties": false
+                },
+                "families": {
+                  "minItems": 1,
+                  "maxItems": 9,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "family": {
+                        "type": "string",
+                        "enum": [
+                          "authorization-tenancy",
+                          "identifiers-allowlists",
+                          "types-numeric-semantics",
+                          "lifecycle-ordering",
+                          "assembly-wiring",
+                          "concurrency-resources",
+                          "atomic-artifacts",
+                          "dependencies-builds",
+                          "test-adequacy"
+                        ]
+                      },
+                      "metrics": {
+                        "type": "object",
+                        "properties": {
+                          "selected": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "statuses": {
+                            "type": "object",
+                            "properties": {
+                              "completed": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unsupported": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "incomplete": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "budget-exhausted": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unreviewed": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "stale": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "cancelled": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "completed",
+                              "unsupported",
+                              "incomplete",
+                              "budget-exhausted",
+                              "unreviewed",
+                              "stale",
+                              "cancelled"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "labels": {
+                            "type": "object",
+                            "properties": {
+                              "defect": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "valid": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "near-miss": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unresolved": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "defect",
+                              "valid",
+                              "near-miss",
+                              "unresolved"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "findings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "supported": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "errors": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unresolvedFindings": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "unknownProbabilities": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "missingObservations": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 512
+                          },
+                          "precision": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "materialDefectRecall": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "completedCoverage": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "falseAlarmRate": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "nearMissFalseAlarmRate": {
+                            "type": "object",
+                            "properties": {
+                              "numerator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "denominator": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "value": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": ["numerator", "denominator", "value"],
+                            "additionalProperties": false
+                          },
+                          "oneSided95": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "const": "exact-binomial-inversion"
+                              },
+                              "assumption": {
+                                "type": "string",
+                                "const": "independent-Bernoulli-trials-not-verified"
+                              },
+                              "eligible": { "type": "boolean" },
+                              "precisionLower": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "falseAlarmUpper": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "nearMissFalseAlarmUpper": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "method",
+                              "assumption",
+                              "eligible",
+                              "precisionLower",
+                              "falseAlarmUpper",
+                              "nearMissFalseAlarmUpper"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "properScores": {
+                            "type": "object",
+                            "properties": {
+                              "scored": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unscoredFindings": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "brier": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "negativeLogLikelihood": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "infiniteLogLoss": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "scored",
+                              "unscoredFindings",
+                              "brier",
+                              "negativeLogLikelihood",
+                              "infiniteLogLoss"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "reliability": {
+                            "minItems": 10,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "lower": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "upper": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "scored": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "unscored": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "meanProbability": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "supportedFraction": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "lower",
+                                "upper",
+                                "scored",
+                                "unscored",
+                                "meanProbability",
+                                "supportedFraction"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "riskCoverage": {
+                            "minItems": 1,
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "threshold": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                "selected": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "findings": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "supported": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "unresolved": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 512
+                                },
+                                "coverage": {
+                                  "type": "object",
+                                  "properties": {
+                                    "numerator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "denominator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 1
+                                        },
+                                        { "type": "null" }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "numerator",
+                                    "denominator",
+                                    "value"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "conservativeRisk": {
+                                  "type": "object",
+                                  "properties": {
+                                    "numerator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "denominator": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 512
+                                    },
+                                    "value": {
+                                      "anyOf": [
+                                        {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "maximum": 1
+                                        },
+                                        { "type": "null" }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "numerator",
+                                    "denominator",
+                                    "value"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "threshold",
+                                "selected",
+                                "findings",
+                                "supported",
+                                "unresolved",
+                                "coverage",
+                                "conservativeRisk"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "selected",
+                          "statuses",
+                          "labels",
+                          "findings",
+                          "supported",
+                          "errors",
+                          "unresolvedFindings",
+                          "unknownProbabilities",
+                          "missingObservations",
+                          "precision",
+                          "materialDefectRecall",
+                          "completedCoverage",
+                          "falseAlarmRate",
+                          "nearMissFalseAlarmRate",
+                          "oneSided95",
+                          "properScores",
+                          "reliability",
+                          "riskCoverage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["family", "metrics"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["aggregate", "families"],
+              "additionalProperties": false
+            },
+            "format": {
+              "type": "string",
+              "const": "review-calibration-report"
+            },
+            "curves": {
+              "minItems": 1,
+              "maxItems": 9,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "family": {
+                    "type": "string",
+                    "enum": [
+                      "authorization-tenancy",
+                      "identifiers-allowlists",
+                      "types-numeric-semantics",
+                      "lifecycle-ordering",
+                      "assembly-wiring",
+                      "concurrency-resources",
+                      "atomic-artifacts",
+                      "dependencies-builds",
+                      "test-adequacy"
+                    ]
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "available",
+                      "insufficient-training",
+                      "one-class",
+                      "constant-predictor"
+                    ]
+                  },
+                  "eligible": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "positives": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "negatives": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "distinctProbabilities": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "distinctDeclaredClusters": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 512
+                  },
+                  "points": {
+                    "anyOf": [
+                      {
+                        "maxItems": 512,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "score": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "fittedProbability": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            },
+                            "positives": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 512
+                            }
+                          },
+                          "required": [
+                            "score",
+                            "fittedProbability",
+                            "count",
+                            "positives"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      { "type": "null" }
+                    ]
+                  }
+                },
+                "required": [
+                  "family",
+                  "state",
+                  "eligible",
+                  "positives",
+                  "negatives",
+                  "distinctProbabilities",
+                  "distinctDeclaredClusters",
+                  "points"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "profile": {
+                  "type": "string",
+                  "const": "declared-family-isotonic-v1"
+                },
+                "model": {
+                  "type": "object",
+                  "properties": {
+                    "client": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "clientVersion": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "provider": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "model": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    }
+                  },
+                  "required": ["client", "clientVersion", "provider", "model"],
+                  "additionalProperties": false
+                },
+                "training": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": {
+                      "type": "object",
+                      "properties": {
+                        "schemaVersion": { "type": "number", "const": 1 },
+                        "profile": {
+                          "type": "string",
+                          "const": "declared-claim-probability-v1"
+                        },
+                        "purpose": {
+                          "type": "string",
+                          "enum": ["development", "held-out"]
+                        },
+                        "confidenceThresholds": {
+                          "minItems": 1,
+                          "maxItems": 16,
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "trials": {
+                          "minItems": 1,
+                          "maxItems": 512,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                              },
+                              "clusterId": {
+                                "type": "string",
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                              },
+                              "family": {
+                                "type": "string",
+                                "enum": [
+                                  "authorization-tenancy",
+                                  "identifiers-allowlists",
+                                  "types-numeric-semantics",
+                                  "lifecycle-ordering",
+                                  "assembly-wiring",
+                                  "concurrency-resources",
+                                  "atomic-artifacts",
+                                  "dependencies-builds",
+                                  "test-adequacy"
+                                ]
+                              }
+                            },
+                            "required": ["id", "clusterId", "family"],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "schemaVersion",
+                        "profile",
+                        "purpose",
+                        "confidenceThresholds",
+                        "trials"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "observations": {
+                      "maxItems": 512,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "completed",
+                              "unsupported",
+                              "incomplete",
+                              "budget-exhausted",
+                              "unreviewed",
+                              "stale",
+                              "cancelled"
+                            ]
+                          },
+                          "decision": {
+                            "type": "string",
+                            "enum": ["finding", "abstain"]
+                          },
+                          "probability": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          },
+                          "label": {
+                            "type": "string",
+                            "enum": [
+                              "defect",
+                              "valid",
+                              "near-miss",
+                              "unresolved"
+                            ]
+                          },
+                          "judgement": {
+                            "type": "string",
+                            "enum": [
+                              "supported",
+                              "wrong-mechanism",
+                              "wrong-address",
+                              "unreachable-fix",
+                              "out-of-scope",
+                              "refuted",
+                              "unresolved",
+                              "none"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "decision",
+                          "probability",
+                          "label",
+                          "judgement"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["protocol", "observations"],
+                  "additionalProperties": false
+                },
+                "reservedEvaluation": {
+                  "type": "object",
+                  "properties": {
+                    "schemaVersion": { "type": "number", "const": 1 },
+                    "profile": {
+                      "type": "string",
+                      "const": "declared-claim-probability-v1"
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "enum": ["development", "held-out"]
+                    },
+                    "confidenceThresholds": {
+                      "minItems": 1,
+                      "maxItems": 16,
+                      "type": "array",
+                      "items": { "type": "number", "minimum": 0, "maximum": 1 }
+                    },
+                    "trials": {
+                      "minItems": 1,
+                      "maxItems": 512,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                          },
+                          "clusterId": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                          },
+                          "family": {
+                            "type": "string",
+                            "enum": [
+                              "authorization-tenancy",
+                              "identifiers-allowlists",
+                              "types-numeric-semantics",
+                              "lifecycle-ordering",
+                              "assembly-wiring",
+                              "concurrency-resources",
+                              "atomic-artifacts",
+                              "dependencies-builds",
+                              "test-adequacy"
+                            ]
+                          }
+                        },
+                        "required": ["id", "clusterId", "family"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "schemaVersion",
+                    "profile",
+                    "purpose",
+                    "confidenceThresholds",
+                    "trials"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "profile",
+                "model",
+                "training",
+                "reservedEvaluation"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "profile",
+            "method",
+            "outsideSupport",
+            "channel",
+            "nativeExecution",
+            "claimsVerified",
+            "labelsVerified",
+            "calibratedConfidence",
+            "modelIdentityVerified",
+            "splitIsolationVerified",
+            "protocolFreezeVerified",
+            "independenceVerified",
+            "declaredSplitDisjoint",
+            "qualityGate",
+            "deterministicOutcomeChanged",
+            "inferenceInvoked",
+            "fieldEvaluationExecuted",
+            "fitDigest",
+            "trainingProtocolDigest",
+            "observationsDigest",
+            "reservedProtocolDigest",
+            "state",
+            "accounting",
+            "trainingRaw",
+            "trainingMapped",
+            "format",
+            "curves",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        "evaluation": {
+          "type": "object",
+          "properties": {
+            "protocol": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "profile": {
+                  "type": "string",
+                  "const": "declared-claim-probability-v1"
+                },
+                "purpose": {
+                  "type": "string",
+                  "enum": ["development", "held-out"]
+                },
+                "confidenceThresholds": {
+                  "minItems": 1,
+                  "maxItems": 16,
+                  "type": "array",
+                  "items": { "type": "number", "minimum": 0, "maximum": 1 }
+                },
+                "trials": {
+                  "minItems": 1,
+                  "maxItems": 512,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      },
+                      "clusterId": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      },
+                      "family": {
+                        "type": "string",
+                        "enum": [
+                          "authorization-tenancy",
+                          "identifiers-allowlists",
+                          "types-numeric-semantics",
+                          "lifecycle-ordering",
+                          "assembly-wiring",
+                          "concurrency-resources",
+                          "atomic-artifacts",
+                          "dependencies-builds",
+                          "test-adequacy"
+                        ]
+                      }
+                    },
+                    "required": ["id", "clusterId", "family"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "profile",
+                "purpose",
+                "confidenceThresholds",
+                "trials"
+              ],
+              "additionalProperties": false
+            },
+            "observations": {
+              "maxItems": 512,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "completed",
+                      "unsupported",
+                      "incomplete",
+                      "budget-exhausted",
+                      "unreviewed",
+                      "stale",
+                      "cancelled"
+                    ]
+                  },
+                  "decision": {
+                    "type": "string",
+                    "enum": ["finding", "abstain"]
+                  },
+                  "probability": {
+                    "anyOf": [
+                      { "type": "number", "minimum": 0, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "label": {
+                    "type": "string",
+                    "enum": ["defect", "valid", "near-miss", "unresolved"]
+                  },
+                  "judgement": {
+                    "type": "string",
+                    "enum": [
+                      "supported",
+                      "wrong-mechanism",
+                      "wrong-address",
+                      "unreachable-fix",
+                      "out-of-scope",
+                      "refuted",
+                      "unresolved",
+                      "none"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "status",
+                  "decision",
+                  "probability",
+                  "label",
+                  "judgement"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["protocol", "observations"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["schemaVersion", "profile", "model", "fit", "evaluation"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "method",
+    "outsideSupport",
+    "channel",
+    "nativeExecution",
+    "claimsVerified",
+    "labelsVerified",
+    "calibratedConfidence",
+    "modelIdentityVerified",
+    "splitIsolationVerified",
+    "protocolFreezeVerified",
+    "independenceVerified",
+    "declaredSplitDisjoint",
+    "qualityGate",
+    "deterministicOutcomeChanged",
+    "inferenceInvoked",
+    "fieldEvaluationExecuted",
+    "fitDigest",
+    "evaluationProtocolDigest",
+    "observationsDigest",
+    "modelBindingChecked",
+    "mappings",
+    "raw",
+    "mapped",
+    "format",
+    "rows",
+    "input"
+  ],
+  "additionalProperties": false
+}

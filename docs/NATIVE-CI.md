@@ -239,3 +239,11 @@ labels, multiple claims and worker access boundaries. The matrix additionally
 runs `verify-review-benchmark-score-package.mjs` against a fresh offline production
 installation; its harness stays outside the installed product. These original
 synthetic checks do not run model inference or real-project evaluation.
+
+The mandatory `review-calibration` profile checks the original weighted analytic
+controls, split/model boundaries, missing/unknown accounting, unavailable families,
+artifact recomputation and read-only library/CLI/MCP agreement. The matrix runs
+`verify-review-calibration-package.mjs` against a fresh offline production install
+with its harness outside the product. This is configured development acceptance;
+hosted results must be checked at the exact revision before claiming a pass. It
+performs no model inference or field evaluation.

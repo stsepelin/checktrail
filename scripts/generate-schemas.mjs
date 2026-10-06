@@ -63,6 +63,12 @@ import {
   reviewBenchmarkScoringProfileSchema,
   reviewBenchmarkScoreReportSchema,
   reviewBenchmarkScoreSummarySchema,
+  reviewCalibrationInputSchema,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationInputSchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
   reviewPairedProtocolSchema,
   reviewPairedInputSchema,
   reviewPairedReportSchema,
@@ -154,6 +160,15 @@ for (const [name, schema] of Object.entries({
   "mutation-recipe": mutationRecipeSchema,
   "mutation-report": mutationReportSchema,
   "mutation-summary": mutationSummarySchema,
+  "review-calibration-input": reviewCalibrationInputSchema,
+  "review-calibration-report": reviewCalibrationReportSchema,
+  "review-calibration-summary": reviewCalibrationSummarySchema,
+  "review-calibration-application-input":
+    reviewCalibrationApplicationInputSchema,
+  "review-calibration-application-report":
+    reviewCalibrationApplicationReportSchema,
+  "review-calibration-application-summary":
+    reviewCalibrationApplicationSummarySchema,
   "review-paired-protocol": reviewPairedProtocolSchema,
   "review-paired-input": reviewPairedInputSchema,
   "review-paired-report": reviewPairedReportSchema,
