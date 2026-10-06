@@ -77,6 +77,14 @@ try {
     "[Console]::WriteLine('original plain native PowerShell startup')",
     "plain-powershell-startup",
   );
+  await invoke(
+    "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false); [Console]::WriteLine('legacy encoding returned')",
+    "plain-legacy-encoding-constructor",
+  );
+  await invoke(
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::WriteLine('managed encoding returned')",
+    "plain-managed-encoding-constructor",
+  );
   await new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen("\\\\.\\pipe\\" + controlPipe, resolve);
@@ -116,12 +124,45 @@ try {
     ],
     ["if (-not $api::SetInformationJobObject", "limits-flags-written"],
     ["if (-not $api::AssignProcessToJobObject", "limits-installed"],
+    [
+      "} finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }",
+      "ownership-checked",
+    ],
+    [
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
+      "limits-freed",
+    ],
     ["$line = [IO.File]::ReadAllText", "ownership-established"],
     ["Add-Type -TypeDefinition $source", "source-decompressed"],
     ["$result = [ChecktrailWindowsJobV1]::Run", "source-compiled"],
     ["[Environment]::Exit($result)", "native-returned"],
   ])
     source = source.replace(needle, mark(label) + needle);
+  // Split the two native calls at the last observed boundary. This changes only
+  // the diagnostic copy; the product bootstrap and acceptance callbacks stay intact.
+  source = source.replace(
+    "if (-not $api::AssignProcessToJobObject($outerJob,$api::GetCurrentProcess())) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+    mark("current-process-call") +
+      "$bootstrapProcess = $api::GetCurrentProcess()\n" +
+      "[IO.File]::WriteAllText('startup-process-handle', [string]$bootstrapProcess)\n" +
+      mark("current-process-returned") +
+      "$bootstrapAssigned = $api::AssignProcessToJobObject($outerJob,$bootstrapProcess)\n" +
+      "[IO.File]::WriteAllText('startup-assigned', [string]$bootstrapAssigned)\n" +
+      mark("assignment-returned") +
+      "if (-not $bootstrapAssigned) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+  );
+  source = source.replace(
+    "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)",
+    mark("free-limits-call") +
+      "[Runtime.InteropServices.Marshal]::FreeHGlobal($limits)\n" +
+      mark("free-limits-returned"),
+  );
+  source = source.replace(
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
+    mark("console-encoding-call") +
+      "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\n" +
+      mark("console-encoding-returned"),
+  );
   source = source.replace(
     "[Environment]::Exit($result)",
     "[IO.File]::WriteAllText('startup-result', [string]$result); [Environment]::Exit($result)",
@@ -138,6 +179,14 @@ try {
         () => "missing",
       ),
       controlConnected: !!socket,
+      processHandle: await readFile(
+        path.join(root, "startup-process-handle"),
+        "utf8",
+      ).catch(() => null),
+      assigned: await readFile(
+        path.join(root, "startup-assigned"),
+        "utf8",
+      ).catch(() => null),
       result: await readFile(path.join(root, "startup-result"), "utf8").catch(
         () => null,
       ),
