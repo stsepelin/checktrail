@@ -85,7 +85,10 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. No automatic dependency installation,
+POSIX hosts, and propagate cancellation. The experimental bounded Windows
+runner uses creation-time Job Object ownership and explicit completion/cleanup
+receipts; native acceptance and wider Windows profiles remain pending in
+[WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md). No automatic dependency installation,
 source rewriting, infrastructure startup or deployment. The explicit `init --write`
 setup command can create a new `checktrail.json`; it preserves existing
 configuration and grants no execution. See [ONBOARDING.md](ONBOARDING.md).

@@ -1,3 +1,4 @@
+import { windowsExecutionSchema } from "./windows-execution.js";
 import { rustBuildSelectionSchema } from "./rust-build.js";
 export { rustBuildPolicySchema } from "./rust-build.js";
 import {
@@ -107,6 +108,7 @@ const toolSpec = z.discriminatedUnion("source", [
   }),
 ]);
 const processResult = z.strictObject({
+  windowsExecution: windowsExecutionSchema.optional(),
   command,
   exitCode: z.number().int().nullable(),
   signal: z.string().nullable(),
@@ -442,3 +444,5 @@ export {
   importContextReportSchema,
   importContextSummarySchema,
 } from "./import-context.js";
+
+export { windowsExecutionSchema } from "./windows-execution.js";

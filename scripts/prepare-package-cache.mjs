@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { runAcceptanceNpm } from "./install-acceptance-package.mjs";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -9,8 +9,7 @@ const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-cache-"));
 try {
   const [packed] = JSON.parse(
-    execFileSync(
-      "npm",
+    runAcceptanceNpm(
       ["pack", "--json", "--ignore-scripts", "--pack-destination", temporary],
       { cwd: repository, encoding: "utf8" },
     ),
@@ -21,8 +20,7 @@ try {
     path.join(consumer, "package.json"),
     JSON.stringify({ private: true, type: "module" }),
   );
-  execFileSync(
-    "npm",
+  runAcceptanceNpm(
     [
       "install",
       "--ignore-scripts",

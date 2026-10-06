@@ -36,6 +36,13 @@ The [Pyright profile](PYRIGHT.md) requires a pinned local compiler, explicit sou
 and native diagnostic accounting. Its JSON/TOML and namespace/virtual-environment
 controls are bounded; suppression exceptions and native Windows are not promoted.
 
+## Windows execution profile
+
+[WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
+local-drive `.exe` runner and dedicated native source/offline-install CI profile.
+Native acceptance remains pending. Other Windows tool/framework/Git/persistence
+profiles are unverified; this does not promote them or close E4/E5.
+
 ## Advisory review context support
 
 Review context collection accepts bounded UTF-8 regular source files regardless

@@ -1,3 +1,4 @@
+import type { WindowsExecution } from "./windows-execution.js";
 import type { RustBuildSelection } from "./rust-build.js";
 import type { GoTargetEvidence, GoBuildSelection } from "./go-build.js";
 import type { GoScopePolicy } from "./go-scope-policy.js";
@@ -151,6 +152,7 @@ export interface Plan {
 }
 
 export interface ProcessResult {
+  windowsExecution?: WindowsExecution;
   command: Command;
   exitCode: number | null;
   signal: string | null;

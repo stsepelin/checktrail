@@ -1,3 +1,4 @@
+import { windowsExecutionSchema } from "../src/windows-execution.js";
 import {
   importContextInputSchema,
   importContextReportSchema,
@@ -107,6 +108,7 @@ test("published schemas match runtime definitions and compile in a strict standa
   const ajv = new Ajv2020({ strict: true });
   (addFormatsImport.default ?? addFormatsImport)(ajv);
   for (const [name, schema] of Object.entries({
+    "windows-execution": windowsExecutionSchema,
     "vue-router-config": vueRouterConfigSchema,
     "nuxt-config": nuxtConfigSchema,
     "external-manifest": externalManifestSchema,
