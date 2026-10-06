@@ -97,3 +97,9 @@ judgments, candidate-to-probability evidence binding, general multi-claim scorin
 observed host isolation, frozen cohort eligibility and held-out quality acceptance
 remain required. No field evaluation or model inference is opened by a fit or by
 a passing development test. Gate A remains open.
+
+The [dated implementation acceptance](measurements/review-calibration-2026-10-06.json)
+records exact source and fresh offline installation profiles, original guard
+mutations, file identities, full-check accounting and actual application-client
+discovery without inference. The profiles certify their recorded code revision;
+hosted results and reviewer quality remain unverified.
