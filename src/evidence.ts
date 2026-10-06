@@ -2,6 +2,7 @@ import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
 import { cppToolsEvidence } from "./cpp-tools-evidence.js";
 import { terraformEvidence } from "./terraform-evidence.js";
 import { kubeconformEvidence } from "./kubeconform-evidence.js";
+import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
@@ -344,6 +345,8 @@ export function evaluate(
     return { ...result, ...fastapiEvidence(check, processes) };
   if (check.parser === "terraform-json")
     return { ...result, ...terraformEvidence(check, processes) };
+  if (check.parser === "kustomize-json")
+    return { ...result, ...kustomizeEvidence(check, processes) };
   if (check.parser === "kubeconform-json")
     return { ...result, ...kubeconformEvidence(check, processes) };
   if (check.parser === "cpp-tools-json")

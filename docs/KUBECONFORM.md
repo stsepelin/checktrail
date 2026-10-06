@@ -77,7 +77,8 @@ measures that prepared-artifact path; the default network fetch path and hosted 
 for this revision remain unverified. Release signatures and complete SDK/publisher/
 license closure remain open. The runtime also contains pinned Terraform, Helm and Kustomize. The separate
 [TERRAFORM.md](TERRAFORM.md) profile covers provider-free JSON modules; broader
-Terraform and Helm/Kustomize engine profiles remain pending.
+Terraform profiles, Helm and broader Kustomize transforms remain pending;
+KUSTOMIZE.md records the bounded local assembly profile.
 
 Copy the verified schemas directory into the declared `schemaDirectory` before
 planning a consumer. The public example requires `tools/kubernetes`. Acceptance

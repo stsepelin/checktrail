@@ -6,6 +6,7 @@ import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { cppToolsCheck } from "./cpp-tools.js";
 import { terraformCheck } from "./terraform.js";
 import { kubeconformCheck } from "./kubeconform.js";
+import { kustomizeCheck } from "./kustomize.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
@@ -167,11 +168,13 @@ export const adapters = [
       "Chart.yaml",
       "kustomization.yaml",
       "checktrail.kubeconform.json",
+      "checktrail.kustomize.json",
       "checktrail.terraform.json",
     ],
     checks: [
       "infrastructure.actionlint",
       "infrastructure.kubeconform",
+      "infrastructure.kustomize",
       "infrastructure.terraform-validate",
     ],
   },
@@ -509,6 +512,7 @@ export async function checksFor(
       (file) =>
         workflowRoot(file) !== project.path &&
         path.posix.basename(file) !== "checktrail.kubeconform.json" &&
+        path.posix.basename(file) !== "checktrail.kustomize.json" &&
         path.posix.basename(file) !== "checktrail.terraform.json" &&
         !(
           project.files.includes("checktrail.terraform.json") &&
@@ -516,6 +520,10 @@ export async function checksFor(
         ),
     );
     return [
+      ...(project.files.includes("checktrail.kustomize.json") ||
+      requested?.includes("infrastructure.kustomize")
+        ? [await kustomizeCheck(source, project)]
+        : []),
       ...(project.files.includes("checktrail.terraform.json") ||
       requested?.includes("infrastructure.terraform-validate")
         ? [await terraformCheck(source, project)]

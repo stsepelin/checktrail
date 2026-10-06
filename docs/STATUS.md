@@ -15,12 +15,20 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [Kustomize profile](KUSTOMIZE.md) reconciles complete local assemblies
+with pinned native output and offline Kubernetes validation. Original controls
+cover source-bound defects/repair, supported overlay near misses, CLI/MCP trust and
+privacy, forged evidence, concurrent cleanup and observed native build/validator
+cancellation and source changes. Its [local record](measurements/kustomize-native-2026-10-06.json)
+binds source and fresh offline installed-package acceptance. Wider transforms and
+Gate A remain open.
+
 The bounded [Terraform profile](TERRAFORM.md) validates complete provider-free
 JSON modules with pinned native Terraform. It binds source ranges/snippets,
 module/config/tool bytes, native counters and exact commands, with original
 defect/repair, CLI/MCP and reached lifecycle controls in the
 [local record](measurements/terraform-native-2026-10-06.json). Wider Terraform
-providers/modules, Helm/Kustomize integrations and Gate A remain open.
+providers/modules, Helm, wider Kustomize transforms and Gate A remain open.
 
 The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
 Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
@@ -29,7 +37,7 @@ JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
 collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
 binds native source/offline installed CLI/MCP controls and compiling guard proofs.
 The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
-Helm/Kustomize engine integrations and wider Terraform profiles remain pending.
+Helm, wider Kustomize transforms and wider Terraform profiles remain pending.
 E16 and Gate A remain open.
 
 The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20

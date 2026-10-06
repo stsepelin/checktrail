@@ -183,7 +183,9 @@ an unavailable runtime or external service does not count as verification.
   diagnostics, native/installed CLI/MCP controls and compiling guard proofs.
   TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
   source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
-  Terraform providers/modules and Helm/Kustomize integrations remain pending under E16.
+  KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
+  native render reconciliation and source-bound schema findings. Wider Terraform
+  providers/modules, Helm and wider Kustomize transforms remain pending under E16.
   See `ACTIONLINT.md` for profile limits and reproduction steps.
 - Verified: fresh offline tarball install; public library, installed CLI and
   packaged MCP stdio checks against eight synthetic JavaScript toolchain projects.

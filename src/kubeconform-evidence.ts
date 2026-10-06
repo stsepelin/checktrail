@@ -8,6 +8,7 @@ import {
   kubeNativeArgs,
   kubePointerLine,
   kubeRequire,
+  type KubeDocument,
 } from "./kubeconform.js";
 import { mavenHash } from "./maven.js";
 import type { Check, CheckResult, ProcessResult, Finding } from "./types.js";
@@ -172,112 +173,129 @@ export function kubeconformEvidence(
       kubeNativeArgs(invocation.config, packet.workspace, documents.length),
     );
     kubeRequire(!validation.stderr, "Native validation stderr is incomplete");
-    const result = z
-      .strictObject({
-        resources: z
-          .array(
-            z.strictObject({
-              filename: file,
-              kind: file,
-              name: file,
-              version: file,
-              status: z.enum([
-                "statusValid",
-                "statusInvalid",
-                "statusError",
-                "statusSkipped",
-              ]),
-              msg: z.string().max(65536),
-              validationErrors: z
-                .array(
-                  z.strictObject({
-                    path: z.string().max(8192),
-                    msg: z.string().min(1).max(8192),
-                  }),
-                )
-                .max(256)
-                .optional(),
-            }),
-          )
-          .min(1)
-          .max(64),
-        summary: z.strictObject({
-          valid: integer,
-          invalid: integer,
-          errors: integer,
-          skipped: integer,
-        }),
-      })
-      .parse(JSON.parse(validation.stdout));
-    kubeRequire(
-      result.resources.length === documents.length,
-      "Native resource total differs",
-    );
-    const seen = new Set<string>(),
-      counts = { valid: 0, invalid: 0, errors: 0, skipped: 0 };
-    const findings: Finding[] = [];
-    for (const row of result.resources) {
-      const index = packet.documents.findIndex((d) => d.file === row.filename);
-      kubeRequire(
-        index >= 0 && !seen.has(row.filename),
-        "Foreign or repeated native resource",
-      );
-      seen.add(row.filename);
-      const document = documents[index]!;
-      kubeRequire(
-        row.kind === document.kind &&
-          row.version === document.version &&
-          row.name === document.name,
-        "Native resource identity differs",
-      );
-      if (row.status === "statusValid") {
-        counts.valid++;
-        kubeRequire(
-          row.msg === "" && !row.validationErrors?.length,
-          "Valid resource has errors",
-        );
-      } else if (row.status === "statusInvalid") {
-        counts.invalid++;
-        kubeRequire(
-          row.msg.length > 0 &&
-            row.validationErrors &&
-            row.validationErrors.length > 0,
-          "Native invalid resource lacks diagnostics",
-        );
-        for (const error of row.validationErrors)
-          findings.push({
-            ruleId: "kubeconform/schema",
-            level: "error",
-            file: document.file,
-            line: kubePointerLine(document, error.path),
-            message: `${document.kind} ${document.name}: ${error.path || "/"}: ${error.msg}`,
-          });
-      } else if (row.status === "statusError") counts.errors++;
-      else counts.skipped++;
-    }
-    kubeRequire(
-      JSON.stringify(result.summary) === JSON.stringify(counts),
-      "Native summary differs",
-    );
-    kubeRequire(
-      counts.errors === 0 &&
-        counts.skipped === 0 &&
-        counts.valid + counts.invalid === documents.length,
-      "Native resources incomplete",
-    );
-    kubeRequire(
-      validation.exitCode === (counts.invalid ? 1 : 0),
-      "Native exit differs",
-    );
-    return {
-      status: counts.invalid ? "failed" : "passed",
-      reason: counts.invalid
-        ? "Native Kubernetes schema validation found invalid resources"
-        : "All declared Kubernetes documents passed native schema validation",
-      findings,
-      findingsComplete: true,
-    };
+    return kubeValidationEvidence(validation, documents);
   } catch {
     return incomplete;
   }
+}
+
+export function kubeValidationEvidence(
+  validation: { stdout: string; stderr: string; exitCode: number },
+  documents: KubeDocument[],
+  address: (
+    document: KubeDocument,
+    pointer: string,
+  ) => { file: string; line: number } = (document, pointer) => ({
+    file: document.file,
+    line: kubePointerLine(document, pointer),
+  }),
+  ruleId = "kubeconform/schema",
+): Pick<CheckResult, "status" | "reason" | "findings" | "findingsComplete"> {
+  kubeRequire(!validation.stderr, "Native validation stderr is incomplete");
+  const result = z
+    .strictObject({
+      resources: z
+        .array(
+          z.strictObject({
+            filename: file,
+            kind: file,
+            name: file,
+            version: file,
+            status: z.enum([
+              "statusValid",
+              "statusInvalid",
+              "statusError",
+              "statusSkipped",
+            ]),
+            msg: z.string().max(65536),
+            validationErrors: z
+              .array(
+                z.strictObject({
+                  path: z.string().max(8192),
+                  msg: z.string().min(1).max(8192),
+                }),
+              )
+              .max(256)
+              .optional(),
+          }),
+        )
+        .min(1)
+        .max(64),
+      summary: z.strictObject({
+        valid: integer,
+        invalid: integer,
+        errors: integer,
+        skipped: integer,
+      }),
+    })
+    .parse(JSON.parse(validation.stdout));
+  kubeRequire(
+    result.resources.length === documents.length,
+    "Native resource total differs",
+  );
+  const seen = new Set<string>(),
+    counts = { valid: 0, invalid: 0, errors: 0, skipped: 0 };
+  const findings: Finding[] = [];
+  for (const row of result.resources) {
+    const index = documents.findIndex(
+      (_d, index) => `documents/${index}.yaml` === row.filename,
+    );
+    kubeRequire(
+      index >= 0 && !seen.has(row.filename),
+      "Foreign or repeated native resource",
+    );
+    seen.add(row.filename);
+    const document = documents[index]!;
+    kubeRequire(
+      row.kind === document.kind &&
+        row.version === document.version &&
+        row.name === document.name,
+      "Native resource identity differs",
+    );
+    if (row.status === "statusValid") {
+      counts.valid++;
+      kubeRequire(
+        row.msg === "" && !row.validationErrors?.length,
+        "Valid resource has errors",
+      );
+    } else if (row.status === "statusInvalid") {
+      counts.invalid++;
+      kubeRequire(
+        row.msg.length > 0 &&
+          row.validationErrors &&
+          row.validationErrors.length > 0,
+        "Native invalid resource lacks diagnostics",
+      );
+      for (const error of row.validationErrors)
+        findings.push({
+          ruleId,
+          level: "error",
+          ...address(document, error.path),
+          message: `${document.kind} ${document.name}: ${error.path || "/"}: ${error.msg}`,
+        });
+    } else if (row.status === "statusError") counts.errors++;
+    else counts.skipped++;
+  }
+  kubeRequire(
+    JSON.stringify(result.summary) === JSON.stringify(counts),
+    "Native summary differs",
+  );
+  kubeRequire(
+    counts.errors === 0 &&
+      counts.skipped === 0 &&
+      counts.valid + counts.invalid === documents.length,
+    "Native resources incomplete",
+  );
+  kubeRequire(
+    validation.exitCode === (counts.invalid ? 1 : 0),
+    "Native exit differs",
+  );
+  return {
+    status: counts.invalid ? "failed" : "passed",
+    reason: counts.invalid
+      ? "Native Kubernetes schema validation found invalid resources"
+      : "All declared Kubernetes documents passed native schema validation",
+    findings,
+    findingsComplete: true,
+  };
 }

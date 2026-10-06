@@ -156,3 +156,8 @@ the original public fixture to acquire a dependency cache. Required native and
 installed acceptance then run with networking disabled and read-only source/cache
 mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
 is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.
+
+The separate `kustomize` job uses the prepared pinned infrastructure image and
+requires the bounded local assembly/render/schema profile through source and a
+fresh offline installed package. Native acceptance runs with no network. This
+configured hosted job has not been run for this revision; see KUSTOMIZE.md.

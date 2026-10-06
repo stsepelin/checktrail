@@ -2264,5 +2264,63 @@
       "file": "dist/test/terraform.test.js",
       "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair"
     }
+  ],
+  "kustomize": [
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero"
+    },
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize source changed after the actual build starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-surfaces.test.js",
+      "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    }
   ]
 }

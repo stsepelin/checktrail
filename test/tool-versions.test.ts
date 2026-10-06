@@ -136,6 +136,7 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["ruff", "ruff 0.16.8\n", "0.16.8"],
     ["pytest", "9.1.1\n", "9.1.1"],
     ["kubeconform", "v0.8.0\n", "0.8.0"],
+    ["kustomize", "v5.8.2\n", "5.8.2"],
     ["terraform", "Terraform v1.16.5\n", "1.16.5"],
     ["mypy", "2.3.1\n", "2.3.1"],
     ["pint", "Pint 1.32.1\n", "1.32.1"],
@@ -267,6 +268,58 @@ test("Terraform native wrapper reports only exact completed unavailable receipts
     {
       stdout: JSON.stringify({
         unavailable: "terraform-toolchain",
+        extra: true,
+      }),
+    },
+    { stdout: JSON.stringify({ unavailable: "other-toolchain" }) },
+  ])
+    assert.equal(
+      (
+        await identifyTool("/synthetic", tool, async () => ({
+          ...result,
+          ...patch,
+        }))
+      ).status,
+      "inconclusive",
+    );
+});
+test("Kustomize native wrapper reports only exact completed unavailable receipts as unavailable", async () => {
+  const command = {
+    executable: process.execPath,
+    args: ["kustomize-runner.js", "--version"],
+    cwd: ".",
+  };
+  const tool: ToolSpec = {
+    name: "kustomize",
+    source: "version-command",
+    command,
+  };
+  const result: ProcessResult = {
+    command,
+    exitCode: 3,
+    signal: null,
+    stdout: JSON.stringify({ unavailable: "kustomize-toolchain" }),
+    stderr: "",
+    durationMs: 1,
+    timedOut: false,
+    cancelled: false,
+    truncated: false,
+  };
+  assert.equal(
+    (await identifyTool("/synthetic", tool, async () => result)).status,
+    "unavailable",
+  );
+  for (const patch of [
+    { exitCode: 2 },
+    { exitCode: 0 },
+    { cancelled: true },
+    { timedOut: true },
+    { truncated: true },
+    { stderr: "original warning" },
+    { signal: "SIGTERM" },
+    {
+      stdout: JSON.stringify({
+        unavailable: "kustomize-toolchain",
         extra: true,
       }),
     },
