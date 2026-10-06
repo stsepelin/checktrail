@@ -14,7 +14,7 @@ const native = {
   timeout: 300000,
 };
 test(
-  "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+  "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
   native,
-  (t) => lifecycle(t, "rspec"),
+  (t) => lifecycle(t, "minitest"),
 );
