@@ -2364,5 +2364,25 @@
       "file": "dist/test/helm.test.js",
       "name": "native Helm omitted and duplicate resources never become complete coverage"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
+  ],
+  "native-process-observer": [
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body"
+    },
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer retains exact native command arguments and propagates unexplained IO failures"
+    }
   ]
 }

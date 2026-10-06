@@ -109,6 +109,7 @@ jobs:
       - name: Require prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs core
+          node scripts/verify-required-native-tests.mjs native-process-observer
           node scripts/verify-required-native-tests.mjs mcp-tasks-routing
           node scripts/verify-required-native-tests.mjs mcp-tasks
           node scripts/verify-required-native-tests.mjs mcp-task-dispatch
@@ -289,6 +290,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - run: node scripts/verify-required-native-tests.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
       - run: docker build --file scripts/gradle-tools.Dockerfile --tag checktrail-gradle-test:9.8.0 .checktrail/gradle-review-tools
       - run: node scripts/prepare-gradle-dependencies.mjs

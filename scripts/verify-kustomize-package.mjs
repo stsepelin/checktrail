@@ -64,6 +64,7 @@ try {
     "kubeconform-fixture.js",
     "kustomize-lifecycle.test.js",
     "kustomize-reached.test.js",
+    "native-process-observer.js",
     "kustomize-fixture.js",
     "kustomize-surfaces.test.js",
     "helpers.js",
