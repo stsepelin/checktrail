@@ -2786,5 +2786,23 @@
       "file": "dist/test/maven-preparation.test.js",
       "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
     }
+  ],
+  "posix-cleanup": [
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion"
+    }
   ]
 }

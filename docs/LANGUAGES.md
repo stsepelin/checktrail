@@ -333,3 +333,10 @@ precision and material recall, incomplete slots, proper claim losses and whole
 incident clusters through one library/CLI/MCP engine. These operator declarations
 remain unverified; sealed multi-claim binding and independent judgments are still
 required. No model or field evaluation is invoked by numerical scoring.
+
+## POSIX process lifetime
+
+The bounded observed-descendant cancellation profile is described in
+[POSIX-CLEANUP.md](POSIX-CLEANUP.md). It confirms selected process identities
+disappeared and reports unavailable cleanup evidence. Windows lifecycle acceptance
+remains separate; process observation is not hostile-code containment.

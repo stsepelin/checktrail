@@ -106,6 +106,8 @@ jobs:
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run check
+      - run: node scripts/verify-required-native-tests.mjs posix-cleanup
+      - run: node scripts/verify-posix-cleanup-guards.mjs
       - name: Require prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs native-raw-evidence
@@ -147,6 +149,8 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/smoke-package.mjs
+      - name: Verify POSIX cleanup in the production package
+        run: node scripts/verify-posix-cleanup-package.mjs
       - name: Verify aggregate review budgets in the production package
         run: node scripts/verify-review-budget-package.mjs
       - name: Verify model-independent workflow in the production package
