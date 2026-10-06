@@ -1,6 +1,7 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -57,23 +58,10 @@ try {
     ),
   );
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      path.join(temporary, packed.filename),
-    ],
-    { cwd: consumer, stdio: "pipe" },
+  await installAcceptancePackage(
+    repository,
+    path.join(temporary, packed.filename),
+    consumer,
   );
   const installed = [
     "run",

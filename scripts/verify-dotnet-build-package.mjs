@@ -1,3 +1,4 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -43,24 +44,7 @@ try {
     .update(await readFile(tarball))
     .digest("hex");
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      tarball,
-    ],
-    { cwd: consumer, stdio: "pipe" },
-  );
+  await installAcceptancePackage(repository, tarball, consumer);
   const installed = path.join(
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src",
@@ -88,6 +72,16 @@ try {
     "dotnet-build.test.js",
     "dotnet-build-fixture.js",
     "dotnet-build-surfaces.test.js",
+    "dotnet-build-evidence.test.js",
+    "dotnet-build-scope.test.js",
+    "dotnet-build-environment.test.js",
+    "dotnet-build-disabled.test.js",
+    "dotnet-build-outputs.test.js",
+    "dotnet-build-generated.test.js",
+    "dotnet-build-analyzers.test.js",
+    "dotnet-build-cache.test.js",
+    "dotnet-build-cancellation.test.js",
+    "dotnet-build-controls.js",
     "helpers.js",
     ...(profile === "dotnet-format"
       ? [
@@ -117,6 +111,14 @@ try {
           "dotnet-test-fixture.js",
           "dotnet-test.test.js",
           "dotnet-test-surfaces.test.js",
+          "dotnet-test-evidence.test.js",
+          "dotnet-test-lifecycle.test.js",
+          "dotnet-test-names.test.js",
+          "dotnet-test-scope.test.js",
+          "dotnet-test-failures.test.js",
+          "dotnet-test-outputs.test.js",
+          "dotnet-test-cancellation.test.js",
+          "dotnet-test-controls.js",
         ]
       : []),
   ])
