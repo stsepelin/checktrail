@@ -2593,6 +2593,54 @@
       "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt"
     }
   ],
+  "physical-process-output": [
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    }
+  ],
+  "native-raw-evidence": [
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases"
+    }
+  ],
   "ruby-tools-rubocop": [
     {
       "file": "dist/test/ruby-tools.test.js",

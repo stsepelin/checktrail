@@ -1,3 +1,4 @@
+import { capturedProcessOutputSchema } from "./process-output.js";
 import { z } from "zod";
 import { reviewFamilySchema } from "./review-hypotheses.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
@@ -44,6 +45,17 @@ const execution = z.strictObject({
   outputLimitBytes: z.number().int().min(1).max(1_048_576),
   outputBytes: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
   truncated: z.boolean(),
+});
+export const nativeProbeAttemptSchema = z.strictObject({
+  profile: z.literal("native-probe-process-attempt-v1"),
+  requestDigest: digest,
+  exitCode: z.number().int().nullable(),
+  signal: z.string().max(64).nullable(),
+  timedOut: z.boolean(),
+  cancelled: z.boolean(),
+  truncated: z.boolean(),
+  errorCode: z.string().max(256).nullable(),
+  output: capturedProcessOutputSchema.nullable(),
 });
 const nativeBudget = z.strictObject({
   scope: z.literal("native-probe-run"),
@@ -143,6 +155,20 @@ export const reviewProbeRunSchema = z.discriminatedUnion("schemaVersion", [
     nativeBudget,
     trials: z.array(trial.extend({ execution: execution.nullable() })).max(16),
   }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(3),
+    nativeBudget,
+    trials: z
+      .array(
+        trial.extend({
+          execution: execution
+            .extend({ artifact: nativeProbeAttemptSchema })
+            .nullable(),
+        }),
+      )
+      .max(16),
+  }),
 ]);
 export const reviewProbeSummarySchema = z.discriminatedUnion("schemaVersion", [
   z.strictObject({
@@ -153,6 +179,12 @@ export const reviewProbeSummarySchema = z.discriminatedUnion("schemaVersion", [
   z.strictObject({
     ...metadata,
     schemaVersion: z.literal(2),
+    nativeBudget,
+    sourceIncluded: z.literal(false),
+  }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(3),
     nativeBudget,
     sourceIncluded: z.literal(false),
   }),

@@ -448,7 +448,7 @@ export function parseReviewVerification(input: unknown): ReviewVerificationRun {
     parseReviewProbeRun(probe);
     if (
       run.schemaVersion === 2 &&
-      (probe.schemaVersion !== 2 ||
+      (probe.schemaVersion === 1 ||
         !isDeepStrictEqual(probe.nativeBudget.limits, {
           ...run.limits.nativeBudget,
           wallMs: run.limits.wallMs,

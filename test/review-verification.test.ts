@@ -1201,7 +1201,7 @@ test("verification native run budgets retain unfunded cases and prevent later ad
       run.probe!.temporaryArtifacts,
       maxCalls ? "removed" : "not-created",
     );
-    if (run.probe!.schemaVersion !== 2)
+    if (run.probe!.schemaVersion !== 3)
       throw new Error("Missing native budget version");
     assert.equal(run.probe!.nativeBudget.calls, maxCalls);
     parseReviewVerification(run);

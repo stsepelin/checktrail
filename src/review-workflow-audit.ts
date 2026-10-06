@@ -607,7 +607,7 @@ function checkNativeReceipt(
     registered.sha256 !== receipt.recipe.sha256 ||
     recipe.id !== receipt.probeId ||
     recipe.family !== receipt.candidate.family ||
-    run.schemaVersion !== 2 ||
+    run.schemaVersion === 1 ||
     run.recipeDigest !== receipt.recipe.sha256 ||
     run.contextDigest !== state.contextDigest ||
     run.candidateDigest !== sha(JSON.stringify(receipt.candidate)) ||
@@ -746,7 +746,7 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     for (const [id, receipt] of nativeReceipts) {
       const native = snapshots.find((s) => s.workflowId === id)!.native;
       if (
-        receipt.run.schemaVersion !== 2 ||
+        receipt.run.schemaVersion === 1 ||
         native.calls !== receipt.run.nativeBudget.calls ||
         native.outputBytes !== receipt.run.nativeBudget.outputBytes ||
         !native.accountingComplete
