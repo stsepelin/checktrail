@@ -88,3 +88,8 @@ required test or treating an inaccessible process as a successful observation.
 The `native-process-observer` required profile covers rejected identities,
 permissions, disappearance and unexplained errors; all three native source and
 fresh-installed sibling profiles are rechecked.
+
+The [dated observer repair](measurements/native-process-ci-observation-2026-10-06.json)
+records all three native source/fresh-installed sibling profiles, exact helper
+identity, original guard mutations and scope limits. Hosted repaired-head
+acceptance remains pending.
