@@ -195,7 +195,7 @@ export const windowsCompressedNative = gzipSync(
 ).toString("base64");
 export const windowsSupervisorScript = `
 $ErrorActionPreference = 'Stop'
-# Own the bootstrap/compiler children before Add-Type may start csc.exe.
+# Own the bootstrap/compiler children before the fixed CodeDom provider starts csc.exe.
 # Reflection.Emit defines only fixed P/Invoke signatures and does not compile source.
 if ([IntPtr]::Size -ne 8) { throw 'WINDOWS_X64_PROFILE_REQUIRED' }
 $assembly = [AppDomain]::CurrentDomain.DefineDynamicAssembly([Reflection.AssemblyName]::new('ChecktrailBootstrapJob'), [Reflection.Emit.AssemblyBuilderAccess]::Run)
@@ -223,16 +223,43 @@ try {
 } finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }
 # Keep this non-inherited handle until process exit, including early/failed preparation.
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
-$line = [IO.File]::ReadAllText([IO.Path]::Combine([Environment]::CurrentDirectory, 'request.json'), [Text.Encoding]::UTF8)
+$ownedDirectory = [Environment]::CurrentDirectory
+$line = [IO.File]::ReadAllText([IO.Path]::Combine($ownedDirectory, 'request.json'), [Text.Encoding]::UTF8)
 if ($null -eq $line -or $line.Length -gt 1048576) { exit 253 }
-$request = ConvertFrom-Json -InputObject $line
+[void][Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+$json = [Web.Script.Serialization.JavaScriptSerializer]::new()
+$json.MaxJsonLength = 1048576
+$json.RecursionLimit = 16
+$request = $json.DeserializeObject($line)
 $buffer = [Convert]::FromBase64String('${windowsCompressedNative}')
 $stream = [IO.MemoryStream]::new($buffer)
 $gzip = [IO.Compression.GZipStream]::new($stream, [IO.Compression.CompressionMode]::Decompress)
 $reader = [IO.StreamReader]::new($gzip, [Text.Encoding]::UTF8)
 try { $source = $reader.ReadToEnd() } finally { $reader.Dispose(); $gzip.Dispose(); $stream.Dispose() }
-Add-Type -TypeDefinition $source
-$result = [ChecktrailWindowsJobV1]::Run([string]$request.executable, [string]$request.commandLine,
+$compiler = [Microsoft.CSharp.CSharpCodeProvider]::new()
+$parameters = [CodeDom.Compiler.CompilerParameters]::new()
+$parameters.GenerateInMemory = $true
+$parameters.GenerateExecutable = $false
+$parameters.TempFiles = [CodeDom.Compiler.TempFileCollection]::new($ownedDirectory, $false)
+[void]$parameters.ReferencedAssemblies.Add('System.dll')
+[void]$parameters.ReferencedAssemblies.Add('System.Core.dll')
+try {
+  $compiled = $compiler.CompileAssemblyFromSource($parameters, [string[]]@($source))
+  if ($compiled.Errors.HasErrors) { throw 'WINDOWS_NATIVE_COMPILATION_UNAVAILABLE' }
+  $nativeApi = $compiled.CompiledAssembly.GetType('ChecktrailWindowsJobV1', $true)
+} finally { $compiler.Dispose(); $parameters.TempFiles.Delete() }
+$result = $nativeApi::Run([string]$request.executable, [string]$request.commandLine,
   [string[]]@($request.environment), [string]$request.cwd, [string]$request.receipt, [string]$request.requestId, [string]$request.controlPipe)
 [Environment]::Exit($result)
 `.replace(/^#.*\n/gm, "");
+
+// Compress only fixed engine source. Project data remains in the owned JSON file.
+export const windowsCompressedSupervisor = gzipSync(
+  Buffer.from(windowsSupervisorScript, "utf8"),
+).toString("base64");
+export const windowsLauncherScript = `
+$ctBytes = [Convert]::FromBase64String('${windowsCompressedSupervisor}')
+$ctReader = [IO.StreamReader]::new([IO.Compression.GZipStream]::new([IO.MemoryStream]::new($ctBytes), [IO.Compression.CompressionMode]::Decompress), [Text.Encoding]::UTF8)
+try { $ctScript = $ctReader.ReadToEnd() } finally { $ctReader.Dispose() }
+[ScriptBlock]::Create($ctScript).Invoke()
+`;

@@ -94,7 +94,7 @@ for (const guard of guards) {
     assert.match(result.stdout, /ERR_ASSERTION/);
     assert.doesNotMatch(
       result.stdout + result.stderr,
-      /error CS\d|SyntaxError|CompilerError|Add-Type.*failed/i,
+      /error CS\d|SyntaxError|CompilerError|Add-Type.*failed|WINDOWS_NATIVE_COMPILATION_UNAVAILABLE/i,
     );
     assert.deepEqual(
       await readFile(file),
