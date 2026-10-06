@@ -16,6 +16,7 @@ assert.ok(
   "Unknown required native test profile",
 );
 const timeoutMs = [
+  "dotnet-build",
   "gradle",
   "dotnet-test",
   "dotnet-format",
