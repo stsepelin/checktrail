@@ -139,6 +139,41 @@
                     "type": "string",
                     "enum": ["suggestion", "concern"]
                   },
+                  "confidence": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "profile": {
+                            "type": "string",
+                            "const": "declared-claim-support-probability-v1"
+                          },
+                          "event": {
+                            "type": "string",
+                            "const": "supported-in-scope-actionable"
+                          },
+                          "probability": {
+                            "anyOf": [
+                              { "type": "number", "minimum": 0, "maximum": 1 },
+                              { "type": "null" }
+                            ]
+                          },
+                          "calibratedConfidence": {
+                            "type": "boolean",
+                            "const": false
+                          }
+                        },
+                        "required": [
+                          "profile",
+                          "event",
+                          "probability",
+                          "calibratedConfidence"
+                        ],
+                        "additionalProperties": false
+                      },
+                      { "type": "null" }
+                    ]
+                  },
                   "claim": {
                     "type": "string",
                     "minLength": 1,

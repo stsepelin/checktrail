@@ -191,12 +191,14 @@ async function runTrial(
   sourceCaseIndex?: number,
   model?: string,
   candidateCount = 1,
+  confidence?: import("../src/review-provider-schema.js").ReviewCandidate["confidence"],
 ) {
   const trial = fixture.manifest.trials[index]!,
     c = fixture.cases[sourceCaseIndex ?? trial.caseIndex]!;
   // Every trial gets fresh source storage; identical contexts must not depend on its absolute location.
   const fresh = await setup(t, c.context.files[0]!.content);
   assert.equal(fresh.context.contextDigest, c.context.contextDigest);
+  if (confidence !== undefined) fresh.target.confidence = confidence;
   const startup = fixture.benchmark.trialSetup(trial.trialId);
   const session = new ReviewWorkflowSession(fresh.root, {
     allowReviewSource: true,
@@ -1171,6 +1173,7 @@ async function prepareJudgments(
   repetitions = 1,
   native = false,
   scoring = false,
+  confidenceValues?: (number | null | undefined)[],
 ) {
   const f = await prepare(t, count, repetitions, native, true, scoring);
   for (let i = 0; i < f.manifest.trials.length; i++)
@@ -1180,6 +1183,23 @@ async function prepareJudgments(
       i,
       native ? "native" : "empty",
       `original-review-session-${i}`,
+      undefined,
+      undefined,
+      1,
+      confidenceValues?.[
+        f.manifest.trials[i]!.caseIndex * 2 + f.manifest.trials[i]!.armIndex
+      ] === undefined
+        ? undefined
+        : {
+            profile: "declared-claim-support-probability-v1",
+            event: "supported-in-scope-actionable",
+            probability:
+              confidenceValues[
+                f.manifest.trials[i]!.caseIndex * 2 +
+                  f.manifest.trials[i]!.armIndex
+              ]!,
+            calibratedConfidence: false,
+          },
     );
   f.benchmark.collect();
   f.benchmark.prepareJudging();
@@ -1285,7 +1305,12 @@ test("benchmark judging seals independent anonymous source-bound responses and d
   );
   assert.equal(packet.claims.length, 1);
   assert.equal(packet.evidence.native.length, 1);
-  assert.equal(packet.evidence.native[0]!.run.counts.triggerMismatches, 1);
+  assert.equal(
+    packet.evidence.native[0]!.observations.cases.filter(
+      (c) => c.role === "trigger" && c.actual !== c.expected,
+    ).length,
+    1,
+  );
   noPrivate(JSON.stringify(packet), f);
   for (const value of [
     second,
@@ -1707,6 +1732,8 @@ test("benchmark scoring binds every paired repetition and keeps common frozen la
     labelDisagreements: 0,
     unknownJudgeLabels: 0,
     unexpectedFamilyClaims: 0,
+    declaredClaimProbabilities: 0,
+    unknownClaimProbabilities: 0,
   });
   assert.equal(report.paired.aggregate.selected, 6);
   assert.equal(report.paired.aggregate.clusters, 1);
@@ -2066,4 +2093,255 @@ test("benchmark scoring rejects multiple completed claims and keeps unexpected f
   assert.equal(score.accounting.retainedClaims, 2);
   assert.equal(score.paired.aggregate.arms.a.precision.value, 0);
   assert.equal(score.paired.aggregate.arms.b.precision.value, 0);
+});
+
+test("sealed benchmark claim probabilities come from original reviewer candidates preserve exact zero one and unknown losses and never promote quality", async (t) => {
+  const f = await prepareJudgments(t, 3, 1, true, true, [
+    0,
+    1,
+    0.8,
+    0.2,
+    1,
+    null,
+  ]);
+  for (const packet of f.book.packets) {
+    const trial = f.manifest.trials.find((r) => r.blindId === packet.blindId)!;
+    const value = judgmentResponse(f, packet.blindId);
+    value.output!.label =
+      trial.caseIndex === 0
+        ? "defect"
+        : trial.caseIndex === 1
+          ? "valid"
+          : "near-miss";
+    value.output!.claims[0]!.judgement =
+      trial.caseIndex === 0 ? "supported" : "refuted";
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const score = reviewBenchmarkScoreReportSchema.parse(f.benchmark.score(true));
+  assert.equal(score.scoringReady, true);
+  assert.equal(score.accounting.declaredClaimProbabilities, 5);
+  assert.equal(score.accounting.unknownClaimProbabilities, 1);
+  assert.equal(score.accounting.retainedClaims, 6);
+  assert.equal(score.probabilitiesAvailable, true);
+  assert.equal(
+    score.probabilitySource,
+    "sealed-host-declared-uncalibrated-claim-probability",
+  );
+  const a = score.paired.aggregate.arms.a,
+    b = score.paired.aggregate.arms.b;
+  assert.equal(a.findings, 3);
+  assert.equal(b.findings, 3);
+  assert.equal(a.properScores.scored, 3);
+  assert.equal(b.properScores.scored, 2);
+  assert.ok(Math.abs(a.properScores.brier! - 0.88) < 1e-14);
+  assert.ok(Math.abs(b.properScores.brier! - 0.02) < 1e-14);
+  assert.equal(a.properScores.infiniteLogLoss, 2);
+  assert.equal(a.properScores.negativeLogLikelihood, null);
+  assert.equal(b.properScores.infiniteLogLoss, 0);
+  assert.ok(
+    Math.abs(b.properScores.negativeLogLikelihood! - -Math.log(0.8) / 2) <
+      1e-14,
+  );
+  assert.equal(a.unknownProbabilities, 0);
+  assert.equal(b.unknownProbabilities, 1);
+  assert.equal(a.falseAlarmRate.value, 1);
+  assert.equal(b.falseAlarmRate.value, 1);
+  assert.equal(a.nearMissFalseAlarmRate.value, 1);
+  assert.equal(b.nearMissFalseAlarmRate.value, 1);
+  assert.equal(score.calibratedConfidence, false);
+  assert.equal(score.claimsVerified, false);
+  assert.equal(score.hostIsolationVerified, false);
+  assert.equal(score.paired.qualityGate, "not-assessed");
+  const command = spawnSync(
+    process.execPath,
+    [
+      cli,
+      "review-benchmark-score",
+      "--root",
+      f.cases[0]!.root,
+      "--benchmark",
+      f.reference.directory + "#sha256=" + f.reference.sha256,
+      "--detailed",
+    ],
+    { encoding: "utf8", timeout: 10000, maxBuffer: 1048576 },
+  );
+  assert.equal(command.status, 0, command.stderr);
+  assert.deepEqual(JSON.parse(command.stdout), score);
+});
+test("anonymous benchmark judge packets withhold all prior candidate metadata across outputs claims and native receipts while preserving source and opaque slot binding", async (t) => {
+  const f = await prepareJudgments(t, 1, 1, true, true, [0.731234, 0.731234]);
+  const packets = f.manifest.trials.map((r) =>
+    reviewBenchmarkJudgePacketSchema.parse(
+      f.benchmark.judgeWorkerCommand({ operation: "packet" }, true, r.blindId),
+    ),
+  );
+  assert.deepEqual(
+    f.book.packets[0]!.outputs[0]!.candidates,
+    f.book.packets[1]!.outputs[0]!.candidates,
+  );
+  assert.notEqual(
+    packets[0]!.claims[0]!.claimId,
+    packets[1]!.claims[0]!.claimId,
+  );
+  for (const packet of packets) {
+    const candidates = [
+      ...packet.claims.map((c) => c.candidate),
+      ...packet.evidence.outputs.flatMap((o) => o.candidates),
+      ...packet.evidence.native.map((n) => n.candidate),
+    ];
+    assert.equal(candidates.length, 3);
+    for (const candidate of candidates) {
+      assert.deepEqual(Object.keys(candidate), [
+        "family",
+        "claim",
+        "trigger",
+        "consequence",
+        "evidenceGaps",
+        "citations",
+      ]);
+      for (const name of [
+        "id",
+        "severity",
+        "confidence",
+        "attribution",
+        "fixScope",
+      ])
+        assert.equal(Object.hasOwn(candidate, name), false, name);
+      assert.equal(candidate.citations[0]!.quote, source.trimEnd());
+    }
+    assert.equal(Object.hasOwn(packet.evidence.native[0]!, "run"), false);
+    assert.equal(Object.hasOwn(packet.evidence.native[0]!, "recipe"), false);
+    assert.equal(
+      Object.hasOwn(packet.evidence.native[0]!.observations, "behavior"),
+      false,
+    );
+    assert.equal(
+      Object.hasOwn(packet.evidence.native[0]!.observations, "counts"),
+      false,
+    );
+    assert.equal(packet.evidence.native[0]!.observations.cases.length, 3);
+    assert.equal(JSON.stringify(packet).includes("0.731234"), false);
+    assert.equal(
+      JSON.stringify(packet).includes("OriginalReviewerTargetIdentity"),
+      false,
+    );
+    assert.equal(
+      packet.evidence.native[0]!.observations.cases.filter(
+        (c) => c.role === "trigger" && c.actual !== c.expected,
+      ).length,
+      1,
+    );
+  }
+  const first = f.manifest.trials[0]!,
+    client = new Client({
+      name: "original-confidence-blind-judge",
+      version: "1",
+    });
+  try {
+    await client.connect(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          cli,
+          "serve",
+          "--root",
+          f.cases[0]!.root,
+          "--benchmark",
+          f.reference.directory + "#sha256=" + f.reference.sha256,
+          "--judge",
+          first.blindId,
+          "--detailed",
+          "--allow-review-source",
+        ],
+        stderr: "pipe",
+      }),
+    );
+    const result = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet" },
+    });
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(result.structuredContent, packets[0]);
+    const denied = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "score", confidence: 0.99 },
+    });
+    assert.equal(denied.isError, true);
+  } finally {
+    await client.close();
+  }
+});
+test("sealed probability bindings reject changed retained candidates and foreign judgment predictions without accepting numerical overrides or losing incomplete slots", async (t) => {
+  const f = await prepareJudgments(t, 1, 1, true, true, [0.6, 0.6]);
+  for (const packet of f.book.packets) {
+    const value = judgmentResponse(f, packet.blindId);
+    (
+      value.output!.claims[0] as unknown as Record<string, unknown>
+    ).probability = 0.99;
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const score = f.benchmark.score(true);
+  assert.equal(score.scoringReady, false);
+  assert.equal(score.accounting.rejectedJudgments, 2);
+  assert.equal(score.accounting.declaredClaimProbabilities, 2);
+  for (const arm of [
+    score.paired.aggregate.arms.a,
+    score.paired.aggregate.arms.b,
+  ]) {
+    assert.equal(arm.findings, 1);
+    assert.equal(arm.precision.value, 0);
+    assert.equal(arm.properScores.scored, 0);
+    assert.equal(arm.properScores.unscoredFindings, 1);
+  }
+  const file = path.join(f.reference.directory, "judging.json"),
+    original = await readFile(file);
+  try {
+    const changed = JSON.parse(original.toString());
+    changed.packets[0].outputs[0].candidates[0].confidence.probability = 0.1;
+    await writeFile(file, JSON.stringify(changed));
+    assert.throws(() => f.benchmark.score(true), /judging artifact disagrees/);
+  } finally {
+    await writeFile(file, original);
+  }
+  assert.deepEqual(f.benchmark.score(true), score);
+  const partial = await prepare(t, 1, 1, true, true, true);
+  const confidence = {
+    profile: "declared-claim-support-probability-v1" as const,
+    event: "supported-in-scope-actionable" as const,
+    probability: 0.6,
+    calibratedConfidence: false as const,
+  };
+  const torn = await runTrial(
+    t,
+    partial,
+    0,
+    "native",
+    undefined,
+    undefined,
+    undefined,
+    1,
+    confidence,
+  );
+  const bytes = await readFile(torn, "utf8");
+  await writeFile(
+    torn,
+    bytes.slice(0, bytes.lastIndexOf("\n", bytes.length - 2) + 1) + '{"torn":',
+  );
+  partial.benchmark.collect();
+  partial.benchmark.prepareJudging();
+  partial.benchmark.sealJudgments();
+  const incomplete = partial.benchmark.score(true);
+  assert.equal(incomplete.accounting.retainedClaims, 1);
+  assert.equal(incomplete.accounting.unscoredClaims, 1);
+  assert.equal(incomplete.accounting.declaredClaimProbabilities, 0);
+  assert.equal(incomplete.accounting.unknownClaimProbabilities, 0);
+  assert.equal(incomplete.paired.aggregate.selected, 1);
+  assert.equal(
+    incomplete.paired.aggregate.arms.a.findings +
+      incomplete.paired.aggregate.arms.b.findings,
+    0,
+  );
+  assert.equal(incomplete.probabilitiesAvailable, false);
 });

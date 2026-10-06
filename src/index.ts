@@ -223,3 +223,5 @@ export type {
   ReviewCalibrationReport,
   ReviewCalibrationApplicationReport,
 } from "./review-calibration.js";
+
+export { reviewClaimProbabilitySchema } from "./review-provider-schema.js";

@@ -73,10 +73,17 @@ export const reviewProviderConfigSchema = z.strictObject({
     .nullable(),
 });
 const relative = z.string().min(1).max(1024);
+export const reviewClaimProbabilitySchema = z.strictObject({
+  profile: z.literal("declared-claim-support-probability-v1"),
+  event: z.literal("supported-in-scope-actionable"),
+  probability: z.number().min(0).max(1).nullable(),
+  calibratedConfidence: z.literal(false),
+});
 export const reviewCandidateSchema = z.strictObject({
   id: z.string().min(1).max(128),
   family: reviewFamilySchema,
   severity: z.enum(["suggestion", "concern"]),
+  confidence: reviewClaimProbabilitySchema.nullable().optional(),
   claim: z.string().min(1).max(4096),
   trigger: z.string().min(1).max(2048),
   consequence: z.string().min(1).max(2048),
@@ -97,6 +104,27 @@ export const reviewCandidateSchema = z.strictObject({
     .min(1)
     .max(8),
 });
+/** Whitelist only evidence needed to independently investigate the hypothesis. */
+export const reviewBlindCandidateSchema = reviewCandidateSchema.pick({
+  family: true,
+  claim: true,
+  trigger: true,
+  consequence: true,
+  evidenceGaps: true,
+  citations: true,
+});
+export function projectReviewCandidateForIndependentStage(value: unknown) {
+  const { family, claim, trigger, consequence, evidenceGaps, citations } =
+    reviewCandidateSchema.parse(value);
+  return reviewBlindCandidateSchema.parse({
+    family,
+    claim,
+    trigger,
+    consequence,
+    evidenceGaps,
+    citations,
+  });
+}
 export const reviewModelOutputSchema = z.strictObject({
   files: z
     .array(

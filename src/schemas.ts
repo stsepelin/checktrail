@@ -352,6 +352,7 @@ export {
 export {
   reviewProviderConfigSchema,
   reviewCandidateSchema,
+  reviewClaimProbabilitySchema,
   reviewModelOutputSchema,
   reviewProviderRunSchema,
   reviewProviderSummarySchema,
