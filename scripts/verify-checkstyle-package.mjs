@@ -1,3 +1,4 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -32,24 +33,7 @@ try {
     .update(await readFile(tarball))
     .digest("hex");
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      tarball,
-    ],
-    { cwd: consumer, stdio: "pipe" },
-  );
+  await installAcceptancePackage(repository, tarball, consumer);
   const installed = path.join(
     consumer,
     "node_modules/@stsepelin/checktrail/dist/src",
