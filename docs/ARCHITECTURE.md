@@ -27,8 +27,11 @@ budget per verification run. An engine-owned ledger spans both independent API
 assignments and all retries; it is never included in the model packet. Standalone
 review/refutation gets a fresh ledger for that invocation. Retained reports bind
 the shared ID, exact earlier attempts, numeric usage and transport-body bytes.
-Version 2 native probe receipts also bind one call/output ledger across fresh
+Version 2 and 3 native probe receipts bind one call/output ledger across fresh
 cases, with shrinking output allowances and every reached/unrun case retained.
+Version 3 additionally retains bounded physical process stdout/stderr and replays
+valid worker observations; summaries and independent model packets omit those
+private artifacts. See [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md).
 Verification binds it to frozen operator startup limits and stops before later
 adjudicator disclosure when native evidence is incomplete. Delivered chunks can
 exceed retention ceilings before cancellation. Wider native/tool and optional provider

@@ -108,6 +108,7 @@ jobs:
       - run: npm run check
       - name: Require prepared native regression profiles
         run: |
+          node scripts/verify-required-native-tests.mjs native-raw-evidence
           node scripts/verify-required-native-tests.mjs windows-contract
           node scripts/verify-required-native-tests.mjs core
           node scripts/verify-required-native-tests.mjs native-acceptance-ledger
@@ -152,6 +153,8 @@ jobs:
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify import context in the production package
         run: node scripts/verify-import-context-package.mjs
+      - name: Repeat physical native evidence controls in an offline installed package
+        run: node scripts/verify-native-raw-package.mjs
       - name: Verify sealed claim probabilities in the production package
         run: node scripts/verify-review-claim-probability-package.mjs
       - name: Verify calibration fitting and application in the production package
@@ -636,6 +639,8 @@ jobs:
       - run: npm run build
       - name: Require native Windows argument environment process tree and shared engine controls
         run: node scripts/verify-required-native-tests.mjs windows-process
+      - name: Require physical process output controls on native Windows
+        run: node scripts/verify-required-native-tests.mjs physical-process-output
       - name: Require native compiling mutation guards with unchanged callbacks
         run: node scripts/verify-windows-guards.mjs
       - run: npm run format:check

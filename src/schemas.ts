@@ -1,3 +1,4 @@
+import { capturedProcessOutputSchema } from "./process-output.js";
 import { windowsExecutionSchema } from "./windows-execution.js";
 import { rustBuildSelectionSchema } from "./rust-build.js";
 export { rustBuildPolicySchema } from "./rust-build.js";
@@ -108,6 +109,7 @@ const toolSpec = z.discriminatedUnion("source", [
   }),
 ]);
 const processResult = z.strictObject({
+  capturedOutput: capturedProcessOutputSchema.optional(),
   windowsExecution: windowsExecutionSchema.optional(),
   command,
   exitCode: z.number().int().nullable(),
@@ -446,3 +448,5 @@ export {
 } from "./import-context.js";
 
 export { windowsExecutionSchema } from "./windows-execution.js";
+
+export { capturedProcessOutputSchema } from "./process-output.js";

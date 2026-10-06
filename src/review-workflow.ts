@@ -671,11 +671,11 @@ export class ReviewWorkflowEngine {
           this.#end(workflow, "incomplete", "native-error");
         return this.status(id);
       }
-      workflow.report.native.accountingComplete = run.schemaVersion === 2;
+      workflow.report.native.accountingComplete = run.schemaVersion !== 1;
       workflow.report.native.calls =
-        run.schemaVersion === 2 ? run.nativeBudget.calls : null;
+        run.schemaVersion !== 1 ? run.nativeBudget.calls : null;
       workflow.report.native.outputBytes =
-        run.schemaVersion === 2 ? run.nativeBudget.outputBytes : null;
+        run.schemaVersion !== 1 ? run.nativeBudget.outputBytes : null;
       workflow.report.native.status =
         run.status === "unsupported" ? "incomplete" : run.status;
       // Capture reached evidence before freshness, cancellation or retention cleanup.
@@ -695,7 +695,7 @@ export class ReviewWorkflowEngine {
         throw error;
       }
       if (!(await this.#guard(workflow, signal))) return this.status(id);
-      if (run.schemaVersion !== 2 || run.status !== "completed") {
+      if (run.schemaVersion === 1 || run.status !== "completed") {
         this.#end(
           workflow,
           run.status === "cancelled" ||

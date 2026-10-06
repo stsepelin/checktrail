@@ -1350,7 +1350,7 @@ test("workflow native receipt observers receive detached evidence and failure cl
         { operation: "probe", workflowId: success.id, probeId: recipe.id },
         undefined,
         (receipt) => {
-          if (receipt.run.schemaVersion === 2)
+          if (receipt.run.schemaVersion === 3)
             receipt.run.nativeBudget.calls = 0;
           receipt.candidate.claim = "OriginalDetachedObserver";
         },
@@ -1380,8 +1380,8 @@ test("workflow native receipt observers receive detached evidence and failure cl
           observed = true;
           assert.equal(receipt.workflowId, id);
           assert.equal(receipt.run.status, "completed");
-          assert.equal(receipt.run.schemaVersion, 2);
-          if (receipt.run.schemaVersion === 2)
+          assert.equal(receipt.run.schemaVersion, 3);
+          if (receipt.run.schemaVersion === 3)
             receipt.run.nativeBudget.calls = 0;
           receipt.candidate.claim = "OriginalDetachedObserver";
           throw new Error("OriginalReceiptObserverFailure");
