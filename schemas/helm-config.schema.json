@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "helmVersion": { "type": "string", "const": "4.3.0" },
+    "kubernetesVersion": { "type": "string", "const": "1.36.0" },
+    "platform": { "type": "string", "const": "linux_arm64" },
+    "release": { "type": "string", "const": "original" },
+    "namespace": { "type": "string", "const": "original" },
+    "templates": {
+      "minItems": 1,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^templates\\/[A-Za-z0-9][A-Za-z0-9_.-]*\\.yaml$"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "helmVersion",
+    "kubernetesVersion",
+    "platform",
+    "release",
+    "namespace",
+    "templates"
+  ],
+  "additionalProperties": false
+}

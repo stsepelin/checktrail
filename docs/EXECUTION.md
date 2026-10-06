@@ -185,7 +185,10 @@ an unavailable runtime or external service does not count as verification.
   source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
   KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
   native render reconciliation and source-bound schema findings. Wider Terraform
-  providers/modules, Helm and wider Kustomize transforms remain pending under E16.
+  providers/modules and wider Kustomize transforms remain pending under E16.
+  HELM.md records a bounded root-chart Helm strict lint/client-only rendering
+  profile with original native, source-bound diagnostic, CLI/MCP, frozen-closure,
+  mutation and fresh offline package controls. Broader Helm profiles remain pending.
   See `ACTIONLINT.md` for profile limits and reproduction steps.
 - Verified: fresh offline tarball install; public library, installed CLI and
   packaged MCP stdio checks against eight synthetic JavaScript toolchain projects.

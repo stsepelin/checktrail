@@ -7,6 +7,7 @@ import { cppToolsCheck } from "./cpp-tools.js";
 import { terraformCheck } from "./terraform.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { kustomizeCheck } from "./kustomize.js";
+import { helmCheck } from "./helm.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
@@ -170,12 +171,14 @@ export const adapters = [
       "checktrail.kubeconform.json",
       "checktrail.kustomize.json",
       "checktrail.terraform.json",
+      "checktrail.helm.json",
     ],
     checks: [
       "infrastructure.actionlint",
       "infrastructure.kubeconform",
       "infrastructure.kustomize",
       "infrastructure.terraform-validate",
+      "infrastructure.helm",
     ],
   },
 ] as const;
@@ -514,12 +517,21 @@ export async function checksFor(
         path.posix.basename(file) !== "checktrail.kubeconform.json" &&
         path.posix.basename(file) !== "checktrail.kustomize.json" &&
         path.posix.basename(file) !== "checktrail.terraform.json" &&
+        path.posix.basename(file) !== "checktrail.helm.json" &&
+        !(
+          project.files.includes("checktrail.helm.json") &&
+          path.posix.basename(file) === "Chart.yaml"
+        ) &&
         !(
           project.files.includes("checktrail.terraform.json") &&
           file.endsWith(".tf.json")
         ),
     );
     return [
+      ...(project.files.includes("checktrail.helm.json") ||
+      requested?.includes("infrastructure.helm")
+        ? [await helmCheck(source, project)]
+        : []),
       ...(project.files.includes("checktrail.kustomize.json") ||
       requested?.includes("infrastructure.kustomize")
         ? [await kustomizeCheck(source, project)]

@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "replicas": { "type": "integer" },
+    "label": { "type": "string" }
+  },
+  "required": ["replicas", "label"],
+  "additionalProperties": false
+}
