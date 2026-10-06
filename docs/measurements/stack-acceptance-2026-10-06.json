@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "profile": "combined-helm-and-ci-repair-acceptance-v1",
+  "syntheticOnly": true,
+  "codeRevision": "10aff300668d071f78b7efa52386c39625a483d3",
+  "subsequentChanges": "Documentation and measured acceptance receipts only.",
+  "fullCheckSnapshot": {
+    "tests": 809,
+    "passed": 584,
+    "failed": 0,
+    "optionalNativeSkipped": 225
+  },
+  "checks": {
+    "typecheck": true,
+    "fullLint": true,
+    "fullFormat": true,
+    "changedCodeLint": true,
+    "schemaParity": true,
+    "diffWhitespace": true
+  },
+  "directChangedCodeLintFiles": 75,
+  "helm": {
+    "source": {
+      "profile": "helm",
+      "timeoutMs": 120000,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "profile": "helm",
+      "timeoutMs": 120000,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    "image": "sha256:817f6d91a4258c514ac2a0f5d82deb279b37affe5cb6437de10cf28fd3d06820",
+    "tarballSha256": "56bb7b317965b8b3c0771fdd8aa07cddb669f48fa470952d399d6a3026b2568b",
+    "network": "none",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false
+  },
+  "dotnet": "Five source/fresh-install profiles and assertion-preservation proofs were measured separately at the revision and file pins in dotnet-ci-build-surfaces-2026-10-06.json. Those native runs preceded Helm integration.",
+  "otherNativeProfiles": "Historical receipts retain their exact revisions; optional skips in this full check do not revalidate unavailable native toolchains.",
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
