@@ -62,6 +62,7 @@ try {
     "terraform.test.js",
     "terraform-lifecycle.test.js",
     "terraform-reached.test.js",
+    "native-process-observer.js",
     "terraform-fixture.js",
     "terraform-surfaces.test.js",
     "helpers.js",

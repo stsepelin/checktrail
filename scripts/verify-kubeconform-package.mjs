@@ -62,6 +62,7 @@ try {
     "kubeconform.test.js",
     "kubeconform-lifecycle.test.js",
     "kubeconform-reached.test.js",
+    "native-process-observer.js",
     "kubeconform-fixture.js",
     "kubeconform-surfaces.test.js",
     "helpers.js",

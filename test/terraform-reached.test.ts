@@ -1,3 +1,4 @@
+import { readNativeProcCommand } from "./native-process-observer.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -23,11 +24,11 @@ async function reached(owner: string, version = false) {
     for (const pid of await readdir("/proc")) {
       if (!/^\d+$/.test(pid)) continue;
       try {
-        const exe = await readlink(`/proc/${pid}/exe`);
-        if (exe !== "/usr/local/bin/terraform") continue;
-        const args = (await readFile(`/proc/${pid}/cmdline`, "utf8")).split(
-          "\0",
+        const args = await readNativeProcCommand(
+          pid,
+          "/usr/local/bin/terraform",
         );
+        if (!args) continue;
         if (
           !args.includes(version ? "version" : "validate") ||
           !args.includes("-json") ||
@@ -43,7 +44,8 @@ async function reached(owner: string, version = false) {
       } catch (error) {
         if (
           (error as NodeJS.ErrnoException).code !== "ENOENT" &&
-          (error as NodeJS.ErrnoException).code !== "ESRCH"
+          (error as NodeJS.ErrnoException).code !== "ESRCH" &&
+          (error as NodeJS.ErrnoException).code !== "EACCES"
         )
           throw error;
       }
