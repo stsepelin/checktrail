@@ -152,3 +152,7 @@ to the official pinned distribution reached HTTP 200 with the declared content
 length. Original controls now exercise request failure/recovery, exhausted
 attempts and redirects, abort, rejected hosts/paths/credentials and a direct valid
 response. This does not claim that all remote failures are temporary.
+
+The [dated preparation repair](measurements/gradle-ci-preparation-2026-10-06.json)
+records the fresh pinned download, original request controls and preserved native
+source/installed profiles. Hosted acceptance of the repaired head remains pending.
