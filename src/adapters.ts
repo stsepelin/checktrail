@@ -1,13 +1,18 @@
+import { applyRustBuildPolicy } from "./rust-build.js";
 import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
+import { checkstyleCheck } from "./checkstyle.js";
+import { mavenCheck } from "./maven.js";
+import { gradleCheck } from "./gradle.js";
 import { dotnetCheck } from "./dotnet.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
-import { rustCheck } from "./rust.js";
+import { rustCheck, rustTestCheck } from "./rust.js";
+import { rustfmtCheck } from "./rustfmt.js";
 import { golangciCheck } from "./golangci.js";
 import { fastapiCheck } from "./fastapi.js";
 import { laravelCheck } from "./laravel.js";
@@ -16,6 +21,7 @@ import { nuxtCheck } from "./nuxt.js";
 import { vueRouterCheck } from "./vue-router.js";
 import { goEnvironment, goScopeCommand } from "./go-scope.js";
 import { pintCheck } from "./pint.js";
+import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
@@ -90,14 +96,29 @@ export const adapters = [
       "php.phpunit",
       "php.pest",
       "php.pint",
+      "php.php-cs-fixer",
       "php.laravel-runtime",
     ],
   },
-  { id: "rust", markers: ["Cargo.toml"], checks: ["rust.cargo-check"] },
+  {
+    id: "rust",
+    markers: ["Cargo.toml"],
+    checks: [
+      "rust.cargo-check",
+      "rust.cargo-fmt",
+      "rust.cargo-clippy",
+      "rust.cargo-test",
+    ],
+  },
   {
     id: "jvm",
     markers: ["pom.xml", "build.gradle", "build.gradle.kts"],
-    checks: ["jvm.javac"],
+    checks: [
+      "jvm.javac",
+      "jvm.checkstyle",
+      "jvm.maven-test",
+      "jvm.gradle-test",
+    ],
   },
   { id: "dotnet", markers: [], checks: ["dotnet.csharp"] },
   { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
@@ -467,11 +488,38 @@ export async function checksFor(
     ];
   }
   if (project.adapter === "cpp") return [await clangCheck(source, project)];
-  if (project.adapter === "jvm") return [await javaCheck(source, project)];
+  if (project.adapter === "jvm")
+    return [
+      await javaCheck(source, project),
+      ...(requested?.includes("jvm.gradle-test")
+        ? [await gradleCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.maven-test")
+        ? [await mavenCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.checkstyle")
+        ? [await checkstyleCheck(source, project)]
+        : []),
+    ];
   if (project.adapter === "dotnet") return [await dotnetCheck(source, project)];
   if (project.adapter === "swift") return [swiftCheck(project)];
   if (project.adapter === "ruby") return [rubyCheck(project)];
-  if (project.adapter === "rust") return [rustCheck(source, project)];
+  if (project.adapter === "rust") {
+    const checks = [
+      rustCheck(source, project),
+      ...(requested?.includes("rust.cargo-test")
+        ? [rustTestCheck(source, project)]
+        : []),
+      ...(requested?.includes("rust.cargo-clippy")
+        ? [rustCheck(source, project, true)]
+        : []),
+      ...(requested?.includes("rust.cargo-fmt")
+        ? [rustfmtCheck(source, project)]
+        : []),
+    ];
+    await applyRustBuildPolicy(source, project, checks);
+    return checks;
+  }
   if (project.adapter === "php") {
     const files = project.files.filter((file) => file.endsWith(".php"));
     const check: Check = {
@@ -496,6 +544,7 @@ export async function checksFor(
           await phpunitCheck(source, project),
           await phpunitCheck(source, project, true),
           await pintCheck(source, project),
+          await phpCsFixerCheck(source, project),
           ...(requested?.includes("php.laravel-runtime")
             ? [await laravelCheck(source, project)]
             : []),

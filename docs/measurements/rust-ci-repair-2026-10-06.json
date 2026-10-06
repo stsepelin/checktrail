@@ -1,0 +1,255 @@
+{
+  "schemaVersion": 1,
+  "profile": "rust-ci-repair",
+  "measuredOn": "2026-10-06",
+  "baseCommit": "58032dbc4da3abe2716683688f9fcf6f3a4da395",
+  "scope": "Correct canonical target/host identifiers and macOS direct libtest shared-library discovery. Existing wider acceptance gates remain open.",
+  "sourcePins": [
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "9c7f3ec920b0937b2c97706e98e96b5536685c4c41f5e0f281417d6f302e7957"
+    },
+    {
+      "file": "docs/RUST-BUILD.md",
+      "sha256": "999bd87ba81775989d21405a0a2a75580a39382399fce08994ed44d2a89619f0"
+    },
+    {
+      "file": "docs/RUST-TESTS.md",
+      "sha256": "ea7e4647f37570ccebca1f8c0cb52f0bf23a648bebb5fec5e5c3a4b997c4f559"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "df71728442adeb983a3ef94173adaca4cf91b20bd139c03f18d1f680f702224d"
+    },
+    {
+      "file": "schemas/report.schema.json",
+      "sha256": "6439b6c18d3ac474675c1a8e2815409bfb534da798fb97d44ede6dda8dbfc2d0"
+    },
+    {
+      "file": "schemas/rust-build-policy.schema.json",
+      "sha256": "8f729d6e9f7df58304936942696c091d78598585c2833fcbe98e6d7f4f3e1763"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "3ad351bacda99ef7f069a8b36bda6fdef817209503432a45edf0919c8083480b"
+    },
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "35108bb77e7afdb407ea4316a100b35dfaa0d6803a0c50c30dacfe8f0d16c2be"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "74b7c6a9159fad18167627501b0797c94c7b20b13b2f3b298d70c90e416bca57"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "ccf95a1ddf8a78e4df24c089bb4e7d6699028f68458303235a09d211f84a3f8b"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "431a57cf2ab08e4fb64abb57c65a779a079b4a918da27056fbf8a817513d3f15"
+    },
+    {
+      "file": "test/rust-workspace.test.ts",
+      "sha256": "6220ebcf4e4a4966921f1689f16bef86e59893bf8a2d3b1a44986a4e59f6d6a6"
+    }
+  ],
+  "compiledRuntimeSha256": "93ebf0ba67276d5c78e02ef1941449f56e9479d69e8578e2584b6187ac0448d1",
+  "nativeProfiles": [
+    {
+      "name": "macos-workspace",
+      "profile": {
+        "profile": "rust-workspace",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "logSha256": "fbfee9c659bb0256edc03525cc4081577577be5997f7aa035165d6240525846f"
+    },
+    {
+      "name": "macos-single-member",
+      "profile": {
+        "profile": "rust-tests",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "logSha256": "108f6a51005e9aa2da442ee2c84519d5a5d127180fd4ba7d3f7b977ea0e1e7e1"
+    },
+    {
+      "name": "linux-workspace",
+      "profile": {
+        "profile": "rust-workspace",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "logSha256": "fbfee9c659bb0256edc03525cc4081577577be5997f7aa035165d6240525846f"
+    }
+  ],
+  "installedMacos": {
+    "profile": {
+      "profile": "rust-workspace",
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    },
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "tarballSha256": "b30364c6789fb132bdf803732a9824cc28c930924d858bb0bdee534ff37fdc76",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false
+  },
+  "macosToolPreparation": {
+    "version": "1.98.1",
+    "platform": "aarch64-apple-darwin",
+    "manifestSha256": "a7c8774a5fd8441c997d94c029776cbc5eb111e9d72ab5d256fa69866644347e",
+    "records": [
+      {
+        "name": "rustc",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustc-1.98.1-aarch64-apple-darwin.tar.xz",
+        "bytes": 48951152,
+        "sha256": "738e3f60114b20550fcf4f8a57c9cea0544239f214709f45594ff3fde327f577"
+      },
+      {
+        "name": "cargo",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/cargo-1.98.1-aarch64-apple-darwin.tar.xz",
+        "bytes": 8898152,
+        "sha256": "de51d4fade4f31ad8ec405261cc96bedc000d905f98980027610d6e288dbe21b"
+      },
+      {
+        "name": "rust-std",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-aarch64-apple-darwin.tar.xz",
+        "bytes": 29763340,
+        "sha256": "2de831ef563ce772519a4d18ba2659f0f7428d497ef66dad24b5a35e8f8cd177"
+      },
+      {
+        "name": "clippy-preview",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/clippy-1.98.1-aarch64-apple-darwin.tar.xz",
+        "bytes": 2916564,
+        "sha256": "1ad080040ff0f4f8af0751bd7fa1fb1901212f8d164cecaa3c47b0654e0916f2"
+      },
+      {
+        "name": "rust-std",
+        "target": "wasm32-unknown-unknown",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-wasm32-unknown-unknown.tar.xz",
+        "bytes": 22423420,
+        "sha256": "cf1fcf68880d8b2b90128cede7416cfb82ad3584357ce9fb668f2b6244c26e55"
+      },
+      {
+        "name": "rustfmt-preview",
+        "target": "aarch64-apple-darwin",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustfmt-1.98.1-aarch64-apple-darwin.tar.xz",
+        "bytes": 1499184,
+        "sha256": "86aa28e2f23edb0045a85288c3f69998dd30294fd2d3f1480efa9485cf137bfd"
+      }
+    ],
+    "signatureVerified": false
+  },
+  "guardProofs": {
+    "records": [
+      {
+        "label": "target-schema",
+        "file": "src/rust-build.ts",
+        "test": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components",
+        "sourceSha256": "35108bb77e7afdb407ea4316a100b35dfaa0d6803a0c50c30dacfe8f0d16c2be",
+        "testSha256": "6220ebcf4e4a4966921f1689f16bef86e59893bf8a2d3b1a44986a4e59f6d6a6",
+        "mutantSha256": "6ee0f5742015da46d1f5971bb9a360f3f33ed56fdc849e64254408a804181203",
+        "compiled": true,
+        "executedOriginalCallbacks": 1,
+        "skipped": 0,
+        "failed": 1,
+        "killedAtIntendedAssertion": true,
+        "logSha256": "170237d640c84179ac71ae4a6662e80076201311bdcf965e2a1816967d156e78"
+      },
+      {
+        "label": "compiler-host",
+        "file": "src/rust-build.ts",
+        "test": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components",
+        "sourceSha256": "35108bb77e7afdb407ea4316a100b35dfaa0d6803a0c50c30dacfe8f0d16c2be",
+        "testSha256": "6220ebcf4e4a4966921f1689f16bef86e59893bf8a2d3b1a44986a4e59f6d6a6",
+        "mutantSha256": "4b2dba62329e834310574c68b33f5c36ed8f8a141610ce85b95bbf59a6e33550",
+        "compiled": true,
+        "executedOriginalCallbacks": 1,
+        "skipped": 0,
+        "failed": 1,
+        "killedAtIntendedAssertion": true,
+        "logSha256": "bdc80db37bee13ecfe523a5293fcfc2ff419e292240e703fdd5b483c086d8dd4"
+      },
+      {
+        "label": "macos-runtime-libraries",
+        "file": "src/rust-test-native.ts",
+        "test": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+        "sourceSha256": "ccf95a1ddf8a78e4df24c089bb4e7d6699028f68458303235a09d211f84a3f8b",
+        "testSha256": "6220ebcf4e4a4966921f1689f16bef86e59893bf8a2d3b1a44986a4e59f6d6a6",
+        "mutantSha256": "3bada9ddbbb06d04dc7dd7aaf9efe3626ce6ac6a08a11914c49226c2db3bc3d8",
+        "compiled": true,
+        "executedOriginalCallbacks": 1,
+        "skipped": 0,
+        "failed": 1,
+        "killedAtIntendedAssertion": true,
+        "logSha256": "fbf08506b176952990c3822a409a214f5d2535f85dd71ba93ba0a5831ea0ff68"
+      }
+    ],
+    "productionRestored": true
+  },
+  "logPins": [
+    {
+      "label": "checktrail-rust-ci-macos-proc-macro-2.log",
+      "sha256": "d5d2820471588ec35f70de35750b389b7e51ed9fe8481f7492f2eff6b55eb681"
+    },
+    {
+      "label": "checktrail-rust-ci-macos-proc-macro-fixed-1.log",
+      "sha256": "ef7cb14753788c2ff7ff119ce5cfebe8001bfb50363d7f876bc590142bbf9a78"
+    },
+    {
+      "label": "checktrail-rust-ci-check-final.log",
+      "sha256": "26d24f023717ce5e2eb3c0894b8ea9d338d06a45e57577689013c2ac2d970f55"
+    },
+    {
+      "label": "checktrail-rust-ci-format-final.log",
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "label": "checktrail-rust-ci-host-target-final-2.log",
+      "sha256": "66a2725f0b3491ecfa87c0e82bc8b5a01eea926fa33819ee7421720b621ea7ab"
+    },
+    {
+      "label": "checktrail-rust-ci-guards-driver-3.log",
+      "sha256": "a8dc742e0abe254c24d56d17e75c795c2f89e1ef263ebca78694c5a87686377d"
+    }
+  ],
+  "developmentAttemptsExcluded": [
+    "Private mutation preflight anchor mismatch stopped before changing source.",
+    "Earlier schema-mutant callback threw its Zod admission error before an explicit assertion; the final original callback includes a doesNotThrow admission expectation.",
+    "Intermediate host control incorrectly treated an output line terminator as part of the target, and its assertion had a TypeScript overload error; neither counted as acceptance.",
+    "A Linux preparation without Clippy and the foreign target failed required completeness; final preparation includes both."
+  ],
+  "repositoryChecks": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "tests": {
+      "total": 621,
+      "passed": 535,
+      "skippedOptionalNative": 86,
+      "failed": 0
+    },
+    "format": "passed",
+    "changedFileLint": "passed",
+    "diffWhitespace": "passed"
+  },
+  "fieldEvaluationExecuted": false,
+  "checktrailInferenceInvoked": false,
+  "reviewQualityMeasured": false,
+  "windowsVerified": false,
+  "hostedCiVerified": false,
+  "gateAComplete": false,
+  "receiptContainingTarballVerified": false
+}

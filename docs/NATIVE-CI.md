@@ -1,5 +1,25 @@
 # Required native CI evidence
 
+## Workflow scheduling
+
+Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
+account and runner capacity decides when queued jobs receive a runner. Steps
+within an individual job remain ordered.
+
+Stack branches under `pr/**` use pull-request events for verification rather than
+duplicating the full workflow on their branch push. Other branch pushes and all
+tag pushes retain verification. A newly opened PR triggers its checks even when
+its initial branch push did not. Each PR has its own workflow concurrency group;
+a newer merge-candidate run supersedes older runs for that PR, including runs
+caused by predecessor updates. This does not serialize jobs within a run or other
+PRs. Non-PR runs use unique run IDs, so main, tags and independent pushes do not
+cancel each other. Native profiles, matrix entries and assertions are unchanged.
+
+Superseded results are cancelled, not credited as successful acceptance. Check
+the current head and latest merge-candidate run before claiming hosted success.
+
+## Required regression profiles
+
 The ordinary test suite permits explicit skips for unavailable optional tools.
 That makes it useful on a developer machine, but its aggregate exit code cannot
 establish that a native adapter ran. CI's prepared profiles additionally use
@@ -14,16 +34,21 @@ Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
-`frameworks`, `go` (including `go-matrix`), `php-tools`, `laravel` and `rust`. Dedicated container jobs
+`frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,
+`rust`, `rust-format`, `clippy` and `rust-tests`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
-Ruby and Swift have dedicated required-native jobs. The packaged review and
+Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
+installed CLI/MCP profiles. Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
 Tasks configured. `verify-mcp-tasks-package.mjs` evaluates the shipped CLI/runtime
 from a fresh offline production installation, with a separate acceptance harness. The separate PHP syntax helper checks its exact successful TAP test name;
 the external-adapter helper already checks exact required native names for each
-of its different runtime containers.
+of its different runtime containers. The separate executable-bundle image requires
+`executable-bundle`, `executable-bundle-interpreters`, `external-protocol` and
+`policy-distribution`, plus an offline production installation with the official
+client harness outside the installed package. See EXECUTABLE-BUNDLES.md.
 
 The main matrix also prepares the separately locked TypeScript 4.9.5 compiler
 from `scripts/typescript-legacy-tools/`. Its named native regression is mandatory
@@ -102,11 +127,40 @@ environments. Optional skips in the general suite still do not count as native
 coverage. The `0.1.0-alpha.1` release metadata and documentation follow this
 baseline; the release commit needs its own CI run before publication.
 
--
+The `review-budget` required profile covers shared verification-run API admission
+with original synthetic transports and native Boolean controls. The main CI
+matrix runs the profile explicitly and invokes
+`scripts/verify-review-budget-package.mjs` after preparing the offline package
+cache. This checks installed library/CLI/MCP accounting and operator controls;
+it starts no real provider inference or field review. Exact local runtime pins,
+mutations and cleanup evidence are in
+[the dated measurement](measurements/review-budget-native-2026-10-02.json).
 
-+The `review-budget` required profile covers shared verification-run API admission
-+with original synthetic transports and native Boolean controls. The main CI
-+matrix runs the profile explicitly and invokes +`scripts/verify-review-budget-package.mjs` after preparing the offline package
-+cache. This checks installed library/CLI/MCP accounting and operator controls;
-+it starts no real provider inference or field review. Exact local runtime pins,
-+mutations and cleanup evidence are in +[the dated measurement](measurements/review-budget-native-2026-10-02.json). +
+The separate `php-review` job pins its Docker runtime and Composer lock, disables
+plugins and lifecycle scripts during preparation, and requires the exact native
+profile with no network. It also checks the fresh offline production installation;
+the main matrix requires the same profile in its prepared host PHP runtime.
+These configured hosted jobs are not evidence that they have run.
+
+The `rust-format` profile requires the pinned stable formatter component in
+addition to Cargo/rustc. Its helper repeats the exact native and CLI/MCP controls
+against a fresh offline installed package; unavailable components remain failures
+of required acceptance rather than skipped passes. See RUST-FORMAT.md.
+
+The `rust-workspace` required profile prepares the pinned wasm32-unknown-unknown
+standard library before validation and verifies compilation, Clippy and native
+test profiles through the fresh offline package. Foreign tests remain unavailable
+without a supported executor. The configured host jobs have not been run for this
+revision; see RUST-BUILD.md for measured local acceptance.
+
+The separate `checkstyle` job prepares the exact Checkstyle artifact and pinned
+JVM image, disables networking during required native and installed-package
+acceptance, and retains the preserved Java compiler profile. Local Linux arm64
+source-bound evidence is in [CHECKSTYLE.md](CHECKSTYLE.md). This newly configured
+hosted job has not been run at this revision.
+
+The separate `maven` job prepares the pinned Apache distribution and executes only
+the original public fixture to acquire a dependency cache. Required native and
+installed acceptance then run with networking disabled and read-only source/cache
+mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
+is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.

@@ -1,3 +1,4 @@
+import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
 import { nuxtEvidence } from "./nuxt-evidence.js";
@@ -5,10 +6,16 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
+import { checkstyleEvidence } from "./checkstyle-evidence.js";
+import { mavenEvidence } from "./maven-evidence.js";
+import { gradleEvidence } from "./gradle-evidence.js";
 import { dotnetEvidence } from "./dotnet-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
+import { rustTestEvidence } from "./rust-test-evidence.js";
+import { rustfmtEvidence } from "./rustfmt-evidence.js";
 import { laravelEvidence } from "./laravel-evidence.js";
 import { pintEvidence } from "./pint-evidence.js";
+import { phpCsFixerEvidence } from "./php-cs-fixer-evidence.js";
 import { fastapiEvidence } from "./fastapi-evidence.js";
 import { vueRouterEvidence } from "./vue-router-evidence.js";
 import { djangoEvidence } from "./django-evidence.js";
@@ -200,6 +207,7 @@ export function evaluate(
     ...(check.executionId ? { executionId: check.executionId } : {}),
     ...(check.goScope ? { goScope: check.goScope } : {}),
     ...(check.goBuild ? { goBuild: check.goBuild } : {}),
+    ...(check.rustBuild ? { rustBuild: check.rustBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
     id: check.id,
     adapter: check.adapter,
@@ -256,6 +264,8 @@ export function evaluate(
     );
   if (processes.some((p) => p.errorCode || p.signal || p.exitCode === null))
     return set("error", "The process could not complete normally.");
+  if (check.rustBuild)
+    return { ...result, ...rustWorkspaceEvidence(check, processes, root) };
   if (check.parser === "external-json")
     return { ...result, ...externalEvidence(check, processes) };
   if (check.parser === "typescript-build-json")
@@ -302,6 +312,8 @@ export function evaluate(
   }
   if (check.parser === "eslint-json")
     return { ...result, ...eslintEvidence(check, processes, root) };
+  if (check.parser === "php-cs-fixer-json")
+    return { ...result, ...phpCsFixerEvidence(check, processes, root) };
   if (check.parser === "pint-json")
     return { ...result, ...pintEvidence(check, processes, root) };
   if (check.parser === "phpunit-junit")
@@ -324,12 +336,22 @@ export function evaluate(
     return { ...result, ...fastapiEvidence(check, processes) };
   if (check.parser === "clang-json")
     return { ...result, ...clangEvidence(check, processes, root) };
+  if (check.parser === "gradle-json")
+    return { ...result, ...gradleEvidence(check, processes) };
+  if (check.parser === "maven-json")
+    return { ...result, ...mavenEvidence(check, processes) };
+  if (check.parser === "checkstyle-json")
+    return { ...result, ...checkstyleEvidence(check, processes, root) };
   if (check.parser === "java-json")
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
   if (check.parser === "dotnet-json")
     return { ...result, ...dotnetEvidence(check, processes, root) };
+  if (check.parser === "rustfmt-json")
+    return { ...result, ...rustfmtEvidence(check, processes, root) };
+  if (check.parser === "rust-test-json")
+    return { ...result, ...rustTestEvidence(check, processes, root) };
   if (check.parser === "rust-json")
     return { ...result, ...rustEvidence(check, processes, root) };
   if (check.parser === "laravel-json")

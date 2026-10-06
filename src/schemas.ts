@@ -1,3 +1,5 @@
+import { rustBuildSelectionSchema } from "./rust-build.js";
+export { rustBuildPolicySchema } from "./rust-build.js";
 import {
   executionIdSchema,
   goRepetitionSchema,
@@ -17,6 +19,9 @@ export {
 export { actionlintConfigSchema } from "./actionlint.js";
 export { dotnetConfigSchema } from "./dotnet.js";
 export { javaConfigSchema } from "./java.js";
+export { checkstyleConfigSchema } from "./checkstyle.js";
+export { mavenConfigSchema, mavenRepositorySchema } from "./maven.js";
+export { gradleConfigSchema } from "./gradle.js";
 export { clangDatabaseSchema } from "./clang.js";
 import { PARSERS } from "./types.js";
 export {
@@ -41,6 +46,7 @@ export {
   runtimeComparisonSchema,
   runtimeComparisonSummarySchema,
 } from "./runtime-inventory.js";
+export { executableBundleSchema } from "./executable-bundle.js";
 export { configSchema } from "./config.js";
 export { policyPackSchema } from "./policy-pack.js";
 import { workspaceSchema } from "./config.js";
@@ -160,6 +166,7 @@ export const reportSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),
       goTarget: goTargetEvidenceSchema.optional(),
       status,
@@ -242,6 +249,7 @@ export const planSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),
       kind,
       parser: z.enum(PARSERS),

@@ -39,6 +39,10 @@ export async function toolsFor(
       args,
       cwd: check.project,
       ...(check.commands[0]?.env ? { env: check.commands[0].env } : {}),
+      ...(["jvm.maven-test", "jvm.gradle-test"].includes(check.id) &&
+      check.commands[0]?.temporaryDirectory
+        ? { temporaryDirectory: true }
+        : {}),
     },
   });
   if (check.external) {
@@ -152,6 +156,15 @@ export async function toolsFor(
       { name: "node", source: "engine-runtime" },
       command("rustc", "rustc", ["--version"]),
       command("cargo", "cargo", ["--version"]),
+      ...(check.id === "rust.cargo-test"
+        ? [command("rustdoc", "rustdoc", ["--version"])]
+        : []),
+      ...(check.id === "rust.cargo-clippy"
+        ? [command("clippy", "cargo-clippy", ["--version"])]
+        : []),
+      ...(check.id === "rust.cargo-fmt"
+        ? [command("rustfmt", "rustfmt", ["--version"])]
+        : []),
     ];
   if (check.adapter === "cpp") {
     const tools: ToolSpec[] = [{ name: "node", source: "engine-runtime" }];
@@ -166,6 +179,42 @@ export async function toolsFor(
   }
   if (check.adapter === "swift")
     return [command("swift", "swiftc", ["--version"])];
+  if (check.id === "jvm.gradle-test" && check.commands[0])
+    return [
+      { name: "node", source: "engine-runtime" },
+      command("java", process.execPath, [
+        fileURLToPath(new URL("./java-runner.js", import.meta.url)),
+        "--version",
+      ]),
+      command("gradle", process.execPath, [
+        ...check.commands[0].args,
+        "--version",
+      ]),
+    ];
+  if (check.id === "jvm.maven-test" && check.commands[0])
+    return [
+      { name: "node", source: "engine-runtime" },
+      command("java", process.execPath, [
+        fileURLToPath(new URL("./java-runner.js", import.meta.url)),
+        "--version",
+      ]),
+      command("maven", process.execPath, [
+        ...check.commands[0].args,
+        "--version",
+      ]),
+    ];
+  if (check.id === "jvm.checkstyle" && check.commands[0])
+    return [
+      { name: "node", source: "engine-runtime" },
+      command("java", process.execPath, [
+        fileURLToPath(new URL("./java-runner.js", import.meta.url)),
+        "--version",
+      ]),
+      command("checkstyle", process.execPath, [
+        ...check.commands[0].args,
+        "--version",
+      ]),
+    ];
   if (check.adapter === "jvm")
     return [
       { name: "node", source: "engine-runtime" },
@@ -200,6 +249,15 @@ export async function toolsFor(
           "-r",
           "require $argv[1]; echo Illuminate\\Foundation\\Application::VERSION;",
           check.commands[0].args[2],
+        ]),
+      );
+    if (check.id === "php.php-cs-fixer" && check.commands[0]?.args[3])
+      tools.push(
+        command("php-cs-fixer", "php", [
+          "-r",
+          "require $argv[1]; echo PhpCsFixer\\Console\\Application::VERSION;",
+          "--",
+          check.commands[0].args[3],
         ]),
       );
     if (check.id === "php.pint" && check.commands[0]?.args[3])
@@ -284,43 +342,67 @@ export async function identifyTool(
       ? /^openjdk (\d+\.\d+\.\d+) \d{4}-\d{2}-\d{2} LTS\nOpenJDK Runtime Environment [^\n]+\nOpenJDK 64-Bit Server VM [^\n]+$/.exec(
           output,
         )?.[1]
-      : tool.name === "clang" || tool.name === "clang++"
-        ? clangVersion(output)
-        : tool.name === "swift"
-          ? /^(?:Apple )?Swift version (\d+\.\d+(?:\.\d+)?) \([^\r\n]+\)\r?\nTarget: [a-zA-Z0-9_.-]+$/.exec(
+      : tool.name === "gradle"
+        ? /^(?:Welcome to Gradle 9\.8\.0!\n\nHere are the highlights of this release:\n - Java 27 support\n - Maven mirror settings reuse\n - Linked problem locations in build output\n\nFor more details see https:\/\/docs\.gradle\.org\/9\.8\.0\/release-notes\.html\n\n\n)?-+\nGradle (9\.8\.0)\n-+\n\nBuild time: +2026-09-24 13:40:00 UTC\nRevision: +a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin: +2\.4\.10\nGroovy: +4\.0\.33\nAnt: +Apache Ant\(TM\) version 1\.10\.17 compiled on April 6 2026\nLauncher JVM: +25\.0\.4 \(Eclipse Adoptium 25\.0\.4\+7-LTS\)\nDaemon JVM: +[^\n]+\nOS: +[^\n]+$/.exec(
+            output,
+          )?.[1]
+        : tool.name === "maven"
+          ? /^Apache Maven (3\.10\.0) \([a-f0-9]{40}\)\nMaven home: [^\n]+\nJava version: 25\.0\.4, vendor: Eclipse Adoptium, runtime: [^\n]+\nDefault locale: [^\n]+\nOS name: [^\n]+$/.exec(
               output,
             )?.[1]
-          : tool.name === "ruby"
-            ? /^ruby (\d+\.\d+\.\d+)(?:p\d+)? /.exec(output)?.[1]
-            : tool.name === "cargo" || tool.name === "rustc"
-              ? output.startsWith(`${tool.name} `)
-                ? /^(?:cargo|rustc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+          : tool.name === "checkstyle"
+            ? /^Checkstyle version: (\d+\.\d+\.\d+)$/.exec(output)?.[1]
+            : tool.name === "clang" || tool.name === "clang++"
+              ? clangVersion(output)
+              : tool.name === "swift"
+                ? /^(?:Apple )?Swift version (\d+\.\d+(?:\.\d+)?) \([^\r\n]+\)\r?\nTarget: [a-zA-Z0-9_.-]+$/.exec(
                     output,
                   )?.[1]
-                : undefined
-              : tool.name === "pint"
-                ? /^Pint (\S+)$/.exec(output)?.[1]
-                : tool.name === "pest"
-                  ? /^Pest Testing Framework (\S+)\.$/.exec(output)?.[1]
-                  : tool.name === "phpunit"
-                    ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
-                    : tool.name === "phpstan"
-                      ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
+                : tool.name === "ruby"
+                  ? /^ruby (\d+\.\d+\.\d+)(?:p\d+)? /.exec(output)?.[1]
+                  : tool.name === "clippy"
+                    ? /^clippy (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(output)?.[1]
+                    : tool.name === "rustfmt"
+                      ? /^rustfmt (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
                           output,
                         )?.[1]
-                      : tool.name === "staticcheck"
-                        ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
-                            output,
-                          )?.[1]
-                        : tool.name === "go"
-                          ? /^go version go(\S+) \S+$/.exec(output)?.[1]
-                          : tool.name === "php"
-                            ? /^PHP (\S+) /.exec(output)?.[1]
-                            : tool.name === "python"
-                              ? /^Python (\S+)$/.exec(output)?.[1]
-                              : tool.name === "ruff"
-                                ? /^ruff (\S+)$/.exec(output)?.[1]
-                                : output;
+                      : tool.name === "cargo" ||
+                          tool.name === "rustc" ||
+                          tool.name === "rustdoc"
+                        ? output.startsWith(`${tool.name} `)
+                          ? /^(?:cargo|rustc|rustdoc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                              output,
+                            )?.[1]
+                          : undefined
+                        : tool.name === "php-cs-fixer"
+                          ? /^(3\.[0-9]+\.[0-9]+)$/.exec(output)?.[1]
+                          : tool.name === "pint"
+                            ? /^Pint (\S+)$/.exec(output)?.[1]
+                            : tool.name === "pest"
+                              ? /^Pest Testing Framework (\S+)\.$/.exec(
+                                  output,
+                                )?.[1]
+                              : tool.name === "phpunit"
+                                ? /^PHPUnit (\S+) by .+$/.exec(output)?.[1]
+                                : tool.name === "phpstan"
+                                  ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
+                                      output,
+                                    )?.[1]
+                                  : tool.name === "staticcheck"
+                                    ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+                                        output,
+                                      )?.[1]
+                                    : tool.name === "go"
+                                      ? /^go version go(\S+) \S+$/.exec(
+                                          output,
+                                        )?.[1]
+                                      : tool.name === "php"
+                                        ? /^PHP (\S+) /.exec(output)?.[1]
+                                        : tool.name === "python"
+                                          ? /^Python (\S+)$/.exec(output)?.[1]
+                                          : tool.name === "ruff"
+                                            ? /^ruff (\S+)$/.exec(output)?.[1]
+                                            : output;
   if (
     version &&
     (tool.name === "swift"

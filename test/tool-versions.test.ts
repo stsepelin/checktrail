@@ -88,6 +88,11 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["go", "go version go1.27.1 linux/arm64\n", "1.27.1"],
     ["dotnet", "10.0.401\n", "10.0.401"],
     [
+      "gradle",
+      "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 6.12 aarch64\n",
+      "9.8.0",
+    ],
+    [
       "java",
       "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
       "25.0.4",
@@ -103,7 +108,14 @@ test("native version identity rejects partial, malformed and nonzero output", as
       "22.1.3",
     ],
     ["rustc", "rustc 1.98.1 (48a229cea 2026-09-01)\n", "1.98.1"],
+    ["rustdoc", "rustdoc 1.98.1 (48a229cea 2026-09-01)\n", "1.98.1"],
     ["cargo", "cargo 1.98.1 (797e8a9bc 2026-08-05)\n", "1.98.1"],
+    ["clippy", "clippy 0.1.98 (48a229ceae 2026-09-01)\n", "0.1.98"],
+    [
+      "rustfmt",
+      "rustfmt 1.9.0-stable (48a229ceae 2026-09-01)\n",
+      "1.9.0-stable",
+    ],
     [
       "ruby",
       "ruby 4.0.7 (2026-09-01 revision abcdef) [aarch64-linux-musl]\n",
@@ -125,6 +137,7 @@ test("native version identity rejects partial, malformed and nonzero output", as
     ["pytest", "9.1.1\n", "9.1.1"],
     ["mypy", "2.3.1\n", "2.3.1"],
     ["pint", "Pint 1.32.1\n", "1.32.1"],
+    ["php-cs-fixer", "3.95.27\n", "3.95.27"],
     ["pest", "  Pest Testing Framework 5.2.1.  \n", "5.2.1"],
   ]) {
     const tool: ToolSpec = { name: name!, source: "version-command", command };

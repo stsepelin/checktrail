@@ -1,3 +1,4 @@
+import type { RustBuildSelection } from "./rust-build.js";
 import type { GoTargetEvidence, GoBuildSelection } from "./go-build.js";
 import type { GoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalIdentity } from "./external-adapter.js";
@@ -28,8 +29,13 @@ export const PARSERS = [
   "django-json",
   "laravel-json",
   "rust-json",
+  "rust-test-json",
+  "rustfmt-json",
   "clang-json",
   "java-json",
+  "checkstyle-json",
+  "maven-json",
+  "gradle-json",
   "dotnet-json",
   "actionlint-json",
   "external-json",
@@ -41,6 +47,7 @@ export const PARSERS = [
   "phpstan-json",
   "phpunit-junit",
   "pint-json",
+  "php-cs-fixer-json",
 ] as const;
 
 export type Status =
@@ -86,6 +93,7 @@ export interface ToolEvidence {
 export interface Check {
   goScope?: GoScopePolicy;
   goBuild?: GoBuildSelection;
+  rustBuild?: RustBuildSelection;
   executionId?: string;
   external?: ExternalIdentity;
   id: string;
@@ -166,6 +174,7 @@ export interface CheckResult {
   goTarget?: GoTargetEvidence;
   goScope?: GoScopePolicy;
   goBuild?: GoBuildSelection;
+  rustBuild?: RustBuildSelection;
   executionId?: string;
   external?: ExternalIdentity & {
     tools?: { name: string; version: string; source: "adapter-reported" }[];

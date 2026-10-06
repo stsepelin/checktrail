@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { link, lstat, mkdtemp, open, realpath, rm } from "node:fs/promises";
-import { request } from "node:https";
+import { downloadPinnedArtifact } from "./pinned-download.js";
 import path from "node:path";
 import { z } from "zod";
 import { withinRoot } from "./inventory.js";
@@ -25,88 +25,6 @@ export interface FetchedPack {
   version: string;
   bytes: number;
   reference: PackReference;
-}
-
-async function download(
-  url: URL,
-  timeoutMs: number,
-  signal?: AbortSignal,
-): Promise<Buffer> {
-  if (signal?.aborted) throw new Error("Policy pack download cancelled");
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    let bytes = 0;
-    let settled = false;
-    const finish = (error?: Error): void => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      signal?.removeEventListener("abort", cancel);
-      if (error) {
-        req.destroy();
-        reject(error);
-      } else resolve(Buffer.concat(chunks));
-    };
-    const cancel = (): void =>
-      finish(new Error("Policy pack download cancelled"));
-    const req = request(
-      url,
-      {
-        method: "GET",
-        agent: false,
-        rejectUnauthorized: true,
-        maxHeaderSize: 16 * 1024,
-        headers: { Accept: "application/json", "Accept-Encoding": "identity" },
-      },
-      (response) => {
-        response.on("error", () =>
-          finish(new Error("Policy pack transfer failed")),
-        );
-        if (response.statusCode !== 200) {
-          finish(
-            new Error(
-              "Policy pack endpoint must return HTTP 200; redirects are not followed",
-            ),
-          );
-          return;
-        }
-        const length = response.headers["content-length"];
-        if (
-          (length && (!/^\d+$/.test(length) || Number(length) > 64 * 1024)) ||
-          (response.headers["content-encoding"] &&
-            response.headers["content-encoding"] !== "identity")
-        ) {
-          finish(
-            new Error(
-              "Policy pack response exceeds limits or uses content encoding",
-            ),
-          );
-          return;
-        }
-        response.on("data", (chunk: Buffer) => {
-          bytes += chunk.length;
-          if (bytes > 64 * 1024)
-            finish(new Error("Policy pack exceeds 64 KiB limit"));
-          else chunks.push(chunk);
-        });
-        response.on("end", () => {
-          if (!response.complete)
-            finish(new Error("Policy pack transfer is incomplete"));
-          else finish();
-        });
-      },
-    );
-    const timer = setTimeout(
-      () => finish(new Error("Policy pack download timed out")),
-      timeoutMs,
-    );
-    req.on("error", () =>
-      finish(new Error("Policy pack HTTPS connection failed")),
-    );
-    signal?.addEventListener("abort", cancel, { once: true });
-    if (signal?.aborted) cancel();
-    else req.end();
-  });
 }
 
 export async function fetchPolicyPack(
@@ -158,7 +76,12 @@ export async function fetchPolicyPack(
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
-  const bytes = await download(url, options.timeoutMs, signal);
+  const bytes = await downloadPinnedArtifact(
+    url,
+    options.timeoutMs,
+    signal,
+    "policy-pack",
+  );
   if (createHash("sha256").update(bytes).digest("hex") !== options.sha256)
     throw new Error("Policy pack integrity mismatch");
   let pack;

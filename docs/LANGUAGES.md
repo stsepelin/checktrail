@@ -10,19 +10,19 @@ initial scope column describes the experimental implementation. Node, Python,
 Go, TypeScript, ESLint, Vitest, Jest and vue-tsc execution have been exercised locally. Vitest accepts stable major versions 4 and 5; native compatibility is exercised at 4.1.9 and 5.0.1 (see [Vitest validation](VITEST.md)). PHP syntax
 has been verified separately in an isolated official Linux container. Tool versions and remaining gaps are tracked in `STATUS.md`.
 
-| Family                        | Project boundaries                                                      | Initial scope                                                                                                                                        | Subsequent native integrations                      | Important constraints                                                                                                   |
-| ----------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| JavaScript / TypeScript       | package.json                                                            | Discovery; Node/Vitest/Jest/Playwright tests; explicit local tsc/vue-tsc, solution references, ESLint and opt-in Vue Router/Nuxt SSR route contracts | framework scope profiles                            | ESLint JavaScript is exercised; parser/processor combinations need their own verification; TS tests need a loader/build |
-| Python                        | pyproject.toml, pyrightconfig.json, setup.py, requirements.txt          | Discovery; unittest/pytest, Ruff/mypy, pinned local Pyright and opt-in FastAPI/Django route inventories                                              | Wider Python/tool configurations                    | Never import setup.py for discovery; virtual environments, namespace packages and plugins matter                        |
-| Go                            | go.mod                                                                  | Discovery; gofmt, production builds, vet/tests, race/Staticcheck/golangci-lint, repeated tag/target profiles; native scope accounting                | broader golangci-lint settings                      | Module/workspace boundaries, build tags, cgo, platform constraints and test caching                                     |
-| PHP                           | composer.json                                                           | Discovery; syntax, PHPStan, PHPUnit, Pest, Pint and opt-in Laravel assembly capture                                                                  | Larastan integration, PHP-CS-Fixer                  | Syntax is not type/test validation; runtime extensions, generated proxies and framework bootstrapping matter            |
-| Rust                          | Cargo.toml                                                              | Single-package Cargo check with locked offline dependencies and dep-info scope                                                                       | cargo fmt, clippy, test                             | Build scripts and proc macros execute code; feature/target matrix; offline dependencies                                 |
-| Java / Kotlin / Scala         | pom.xml, build.gradle, build.gradle.kts                                 | Explicit Java classpath compilation with native parse/analysis evidence; Kotlin/Scala discovery only                                                 | Maven/Gradle test, Checkstyle, SpotBugs, detekt     | Multi-module builds, wrappers, JVM versions, generated sources and plugins                                              |
-| C# / F# / Visual Basic / .NET | *.csproj, *.fsproj, *.vbproj, *.sln, *.slnx                             | Explicit C# compilation with native syntax/semantic evidence; F#/VB discovery only                                                                   | dotnet format, build, test                          | Restore policy, analyzers, target frameworks, generated code and TRX parsing                                            |
-| Ruby                          | Gemfile, *.gemspec                                                      | MRI syntax checking of Ruby source and DSL manifests                                                                                                 | RuboCop, RSpec, Minitest                            | Bundler versions and runtime config execute code                                                                        |
-| Swift                         | Package.swift                                                           | Native Swift grammar checking without manifest evaluation                                                                                            | swift build/test, SwiftLint                         | Manifest evaluation executes code; platform/SDK requirements                                                            |
-| C / C++                       | CMakeLists.txt, meson.build, compile_commands.json                      | Prepared Clang front-end checks with native source/header accounting                                                                                 | clang-format, clang-tidy, compiler checks, CTest    | Compilation database, toolchain and build configuration are required                                                    |
-| Infrastructure                | .github/workflows/*.yml or *.yaml, *.tf, Chart.yaml, kustomization.yaml | Static GitHub Actions analysis with explicit local inputs and native per-file evidence                                                               | terraform validate, helm lint/template, kubeconform | No workflow execution; remote actions are not downloaded; YAML aliases and merge keys require another profile           |
+| Family                        | Project boundaries                                                      | Initial scope                                                                                                                                               | Subsequent native integrations                      | Important constraints                                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| JavaScript / TypeScript       | package.json                                                            | Discovery; Node/Vitest/Jest/Playwright tests; explicit local tsc/vue-tsc, solution references, ESLint and opt-in Vue Router/Nuxt SSR route contracts        | framework scope profiles                            | ESLint JavaScript is exercised; parser/processor combinations need their own verification; TS tests need a loader/build |
+| Python                        | pyproject.toml, pyrightconfig.json, setup.py, requirements.txt          | Discovery; unittest/pytest, Ruff/mypy, pinned local Pyright and opt-in FastAPI/Django route inventories                                                     | Wider Python/tool configurations                    | Never import setup.py for discovery; virtual environments, namespace packages and plugins matter                        |
+| Go                            | go.mod                                                                  | Discovery; gofmt, production builds, vet/tests, race/Staticcheck/golangci-lint, repeated tag/target profiles; native scope accounting                       | broader golangci-lint settings                      | Module/workspace boundaries, build tags, cgo, platform constraints and test caching                                     |
+| PHP                           | composer.json                                                           | Discovery; syntax, PHPStan with project-enabled Larastan, PHPUnit, Pest, Pint, PHP-CS-Fixer and opt-in Laravel assembly capture                             | Wider framework/type profiles                       | Syntax is not type/test validation; runtime extensions, generated proxies and framework bootstrapping matter            |
+| Rust                          | Cargo.toml                                                              | Offline locked Cargo check, opt-in Clippy/libtest/doctests and Cargo/Rustfmt; explicit workspace feature/target profiles                                    | Other toolchain/platform/profile acceptance         | Build scripts/proc macros execute code; exact source exclusions, installed targets and operator trust                   |
+| Java / Kotlin / Scala         | pom.xml, build.gradle, build.gradle.kts                                 | Explicit Java classpath compilation, configured Checkstyle audits and opt-in pinned Java Maven reactor and Gradle module tests; Kotlin/Scala discovery only | Wider Maven/Gradle profiles, SpotBugs, detekt       | Multi-module builds, wrappers, JVM versions, generated sources and plugins                                              |
+| C# / F# / Visual Basic / .NET | *.csproj, *.fsproj, *.vbproj, *.sln, *.slnx                             | Explicit C# compilation with native syntax/semantic evidence; F#/VB discovery only                                                                          | dotnet format, build, test                          | Restore policy, analyzers, target frameworks, generated code and TRX parsing                                            |
+| Ruby                          | Gemfile, *.gemspec                                                      | MRI syntax checking of Ruby source and DSL manifests                                                                                                        | RuboCop, RSpec, Minitest                            | Bundler versions and runtime config execute code                                                                        |
+| Swift                         | Package.swift                                                           | Native Swift grammar checking without manifest evaluation                                                                                                   | swift build/test, SwiftLint                         | Manifest evaluation executes code; platform/SDK requirements                                                            |
+| C / C++                       | CMakeLists.txt, meson.build, compile_commands.json                      | Prepared Clang front-end checks with native source/header accounting                                                                                        | clang-format, clang-tidy, compiler checks, CTest    | Compilation database, toolchain and build configuration are required                                                    |
+| Infrastructure                | .github/workflows/*.yml or *.yaml, *.tf, Chart.yaml, kustomization.yaml | Static GitHub Actions analysis with explicit local inputs and native per-file evidence                                                                      | terraform validate, helm lint/template, kubeconform | No workflow execution; remote actions are not downloaded; YAML aliases and merge keys require another profile           |
 
 Nuxt, Vue Router, FastAPI, Django and Laravel profiles have separately pinned framework compatibility gates
 and capture only their documented native assembly projections; see `FASTAPI.md`,
@@ -136,7 +136,11 @@ versions. Do not equate an executable's presence with adapter compatibility.
 
 Operator-registered Node, Python, PHP and compiled native bundles share the
 [external adapter protocol](EXTERNAL-ADAPTERS.md). This permits checks written in
-different languages without changing the engine. It does not automatically add
+different languages without changing the engine. The separate
+[pinned executable downloader](EXECUTABLE-BUNDLES.md) has original Linux
+Node/Python/PHP/compiled-native and fresh offline installed-package acceptance,
+with no implicit activation or execution. Other platform/runtime profiles remain
+separate. It does not automatically add
 semantic support for the languages they inspect. Each adapter needs its own native
 regression cases, tool identities, platform profile and license provenance.
 
@@ -235,3 +239,29 @@ The experimental [verification profile](REVIEW-VERIFICATION.md) combines live
 adjudication. It inherits the probe's plain ESM function and selected-dependency
 limits. Native expectation mismatches do not establish production consequences
 or widen language, framework or Windows support.
+
+The bounded PHP formatter/Larastan profile and its explicit limits are in
+[PHPCS-LARASTAN.md](PHPCS-LARASTAN.md). Its pinned Linux evidence does not
+verify other native versions or platforms.
+
+Rust workspace feature/target selections and exact source exclusions are recorded
+in [RUST-BUILD.md](RUST-BUILD.md). Native tests stay host-only; a successful foreign
+compiler/Clippy profile provides no runtime test evidence. The bounded macOS
+arm64 Rust test/workspace repair and offline installed workspace profile are
+recorded in [the CI repair measurement](measurements/rust-ci-repair-2026-10-06.json);
+the [GNU loader repair](measurements/rust-gnu-loader-2026-10-06.json) separately
+records Linux arm64 GNU source/installed controls and a macOS workspace regression;
+other platform/runtime combinations and hosted CI remain separately unverified.
+
+The [Checkstyle profile](CHECKSTYLE.md) adds pinned configured Java source audits,
+with every-file completion, native rule/diagnostic reconciliation, source and
+artifact identity controls, original near misses and offline installed CLI/MCP
+acceptance. This bounded Linux profile leaves wider Maven/Gradle tests, SpotBugs,
+detekt, Kotlin/Scala and broader E11/platform requirements open.
+
+The [Maven profile](MAVEN.md) reconciles a declared Java reactor, configured native
+plugins, compiler inputs and source declarations, pinned test classpaths and fresh
+JUnit/Surefire evidence. Original native and installed CLI/MCP controls retain
+skips, empty tests, bootstrap/compile errors and partial reactor failures. Wrappers,
+wider Maven/Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt remain required;
+this bounded Linux profile does not close E11 or Gate A.

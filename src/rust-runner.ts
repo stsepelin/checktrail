@@ -11,12 +11,14 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { z } from "zod";
 import { rustDependencyPaths } from "./rust-dep-info.js";
+import { rustTestsNative } from "./rust-test-native.js";
 
 const target = z.object({
   name: z.string(),
   src_path: z.string(),
   kind: z.array(z.string()),
   test: z.boolean(),
+  doctest: z.boolean(),
 });
 const metadataSchema = z.object({
   version: z.literal(1),
@@ -33,9 +35,10 @@ const metadataSchema = z.object({
   ),
 });
 
-function invoke(executable: string, args: string[]) {
+function invoke(executable: string, args: string[], env?: NodeJS.ProcessEnv) {
   const result = spawnSync(executable, args, {
     encoding: "utf8",
+    ...(env ? { env } : {}),
     maxBuffer: 1024 * 1024,
   });
   if (result.error || result.signal || result.status === null)
@@ -43,9 +46,12 @@ function invoke(executable: string, args: string[]) {
   return result;
 }
 async function main() {
-  const [root, ...scope] = process.argv.slice(2);
+  const input = process.argv.slice(2);
+  const clippy = input[0] === "--clippy";
+  const testing = input[0] === "--test";
+  const [root, ...scope] = clippy || testing ? input.slice(1) : input;
   if (!root || !scope.length) throw new Error("Invalid Rust scope");
-  for (const tool of ["rustc", "cargo"]) {
+  for (const tool of ["rustc", "cargo", ...(testing ? ["rustdoc"] : [])]) {
     const version = invoke(tool, ["--version"]);
     if (
       version.status !== 0 ||
@@ -64,7 +70,26 @@ async function main() {
       return;
     }
   }
-  const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-rust-"));
+  if (clippy) {
+    const version = invoke("cargo-clippy", ["--version"]);
+    if (
+      version.status !== 0 ||
+      version.stderr.trim() ||
+      !/^clippy 0\.1\.98 \([a-f0-9]+ [0-9-]+\)$/.test(version.stdout.trim())
+    ) {
+      process.stdout.write(
+        JSON.stringify({
+          unavailable: "rust-toolchain",
+          reason: "unsupported-version",
+        }),
+      );
+      process.exitCode = 3;
+      return;
+    }
+  }
+  const temporary = await realpath(
+    await mkdtemp(path.join(tmpdir(), "checktrail-rust-")),
+  );
   try {
     const config = [
       "--config",
@@ -110,7 +135,7 @@ async function main() {
       return;
     }
     const execution = invoke("cargo", [
-      "check",
+      clippy ? "clippy" : "check",
       "--all-targets",
       "--offline",
       "--locked",
@@ -119,6 +144,7 @@ async function main() {
       "--target-dir",
       temporary,
       ...config,
+      ...(clippy ? ["--", "--force-warn", "clippy::all"] : []),
     ]);
     const events = execution.stdout
       .split("\n")
@@ -163,7 +189,30 @@ async function main() {
       .sort();
     process.stdout.write(
       JSON.stringify({
-        version: 1,
+        version: clippy ? 2 : testing ? 3 : 1,
+        ...(testing
+          ? {
+              mode: "test",
+              rustdocVersion: "1.98.1",
+              tests:
+                execution.status === 0
+                  ? await rustTestsNative(
+                      invoke,
+                      config,
+                      temporary,
+                      selected.id,
+                      selected.targets,
+                    )
+                  : null,
+            }
+          : {}),
+        ...(clippy
+          ? {
+              mode: "clippy",
+              clippyVersion: "0.1.98",
+              forcedLintGroup: "clippy::all",
+            }
+          : {}),
         cargoVersion: "1.98.1",
         rustcVersion: "1.98.1",
         exitCode: execution.status,

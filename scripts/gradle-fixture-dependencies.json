@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar",
+      "bytes": 6806,
+      "sha256": "b509448ac506d607319f182537f0b35d71007582ec741832a1f111e5b5b70b38"
+    },
+    {
+      "path": "org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.pom",
+      "bytes": 1526,
+      "sha256": "32355081d109095c3d5d374d5a43b4f4c1b75d549e983ef50723e2772e5302a0"
+    },
+    {
+      "path": "org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar",
+      "bytes": 3819,
+      "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+    },
+    {
+      "path": "org/jspecify/jspecify/1.0.0/jspecify-1.0.0.pom",
+      "bytes": 1511,
+      "sha256": "cdab929a3b95211f43d2090c5e2d0dfe8465960e378bc32b35841dab324433a6"
+    },
+    {
+      "path": "org/junit/junit-bom/6.1.3/junit-bom-6.1.3.pom",
+      "bytes": 5416,
+      "sha256": "a9000043610a3e90c852e779a6b1a8eb724a9f312cf5f7ddd57862b010c65dc8"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-api/6.1.3/junit-jupiter-api-6.1.3.jar",
+      "bytes": 312568,
+      "sha256": "555d6cf20fa1710884dd01b86cc5785397ba73e21ada2d4b784f5f1a14dcafc4"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-api/6.1.3/junit-jupiter-api-6.1.3.pom",
+      "bytes": 3512,
+      "sha256": "a9d6347da0329bf118e9878617e50b5537eb9ec3c5fcd08852650713832d1ac1"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-engine/6.1.3/junit-jupiter-engine-6.1.3.jar",
+      "bytes": 352591,
+      "sha256": "414559e78bbfa3bdb2eab009ac3ab1e22369ac31117c270a0bd666da115c5c6c"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-engine/6.1.3/junit-jupiter-engine-6.1.3.pom",
+      "bytes": 3530,
+      "sha256": "051fc65d97c15e7cd646831368af8afec590b008c804d293aff114c74a1e2530"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-params/6.1.3/junit-jupiter-params-6.1.3.jar",
+      "bytes": 303149,
+      "sha256": "05c51cedba2c06a9770707391e006cee825876937dea580b94a265ce145d4939"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter-params/6.1.3/junit-jupiter-params-6.1.3.pom",
+      "bytes": 3338,
+      "sha256": "10f7e85b5ce53014c946b14c750b09097bed1892ecaf2cea05d12aab6e8677d2"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter/6.1.3/junit-jupiter-6.1.3.jar",
+      "bytes": 6378,
+      "sha256": "6b0a14075c74221de53047e363860b7d19fce802bebc152df2c35c4089c6c379"
+    },
+    {
+      "path": "org/junit/jupiter/junit-jupiter/6.1.3/junit-jupiter-6.1.3.pom",
+      "bytes": 3354,
+      "sha256": "ebfffb41861ab1ccc989de2c9c2d11924e5ddded2728b053f5f2fddc8409c0e1"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-commons/6.1.3/junit-platform-commons-6.1.3.jar",
+      "bytes": 175869,
+      "sha256": "a4774ae923c109544034aeae7c762cf017fbcdd1342403ba90e0921984b608c3"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-commons/6.1.3/junit-platform-commons-6.1.3.pom",
+      "bytes": 3158,
+      "sha256": "a5a3a1aec96113b1e953545c3d8c5117ff0220c56f7293c6fff7d35b1cd37c14"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-engine/6.1.3/junit-platform-engine-6.1.3.jar",
+      "bytes": 324855,
+      "sha256": "21ad7ad3a35beda16387979317be1833a72a71d812f9a66ee4b9a7bafb56334c"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-engine/6.1.3/junit-platform-engine-6.1.3.pom",
+      "bytes": 3529,
+      "sha256": "5194dad25d878985646a49df71bd985e8d2dd4c6b6765717093ac8a31bdb32e4"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-launcher/6.1.3/junit-platform-launcher-6.1.3.jar",
+      "bytes": 252729,
+      "sha256": "1dec64b1fc0b7c47a11302aa5b4d37d8160c041b396e27067709ce775601a7b6"
+    },
+    {
+      "path": "org/junit/platform/junit-platform-launcher/6.1.3/junit-platform-launcher-6.1.3.pom",
+      "bytes": 3353,
+      "sha256": "2daf3b4360ba9e07344210ccf29b6be9703d0abc66de4121f65d90119fe996ca"
+    },
+    {
+      "path": "org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar",
+      "bytes": 14304,
+      "sha256": "48e2df636cab6563ced64dcdff8abb2355627cb236ef0bf37598682ddf742f1b"
+    },
+    {
+      "path": "org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.pom",
+      "bytes": 2035,
+      "sha256": "9bf7cffc410f3e8372c2522578df9ca56d9d43bd937e30948706c232a943b355"
+    }
+  ]
+}

@@ -1440,5 +1440,443 @@
       "file": "dist/test/mcp-tool-catalog.test.js",
       "name": "extension dispatcher validates original callback inputs and outputs while preserving tool errors"
     }
+  ],
+  "php-review": [
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "PHP-CS-Fixer planning requires local config and tools and does not execute PHP"
+    },
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "native PHP-CS-Fixer processes declared files and catches style syntax exclusions and skipped input without writing source or cache"
+    },
+    {
+      "file": "dist/test/php-cs-fixer.test.js",
+      "name": "PHP-CS-Fixer evidence requires exact native events rules totals exits and active coverage"
+    },
+    {
+      "file": "dist/test/larastan.test.js",
+      "name": "Larastan project configuration remains execution-free during inspection and requires operator trust"
+    },
+    {
+      "file": "dist/test/larastan.test.js",
+      "name": "native Larastan proves typed model accessors with missing-extension broken fixed near-miss exclusion and bootstrap controls"
+    },
+    {
+      "file": "dist/test/php-review-surfaces.test.js",
+      "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy"
+    }
+  ],
+  "rust-format": [
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting planning retains exact workspace source without evaluating manifests or installing components"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting selects all declared workspace members with per-package editions and generated source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting rejects local dependencies outside selected workspace membership without rewriting either source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection"
+    }
+  ],
+  "clippy": [
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "Clippy planning is explicit offline and never evaluates build scripts or installs tools"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy evidence requires pinned activation exact source fresh artifacts and native completion"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims"
+    },
+    {
+      "file": "dist/test/clippy-surfaces.test.js",
+      "name": "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy distinguishes configuration failures from source defects and accepts fixed near-miss configuration while offline prerequisites remain errors"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy configuration classification requires the pinned native message and exact local configuration address"
+    }
+  ],
+  "rust-tests": [
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "Rust test planning is explicit locked offline and cannot execute build scripts or test bodies or grant operator trust"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust tests execute both guarded bodies and doctest suites catch broken fixed and valid near-miss source and retain panicking fake-output failures"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust tests retain mixed all-ignored empty excluded-target and incomplete-source evidence without passing zero cases"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "Rust test evidence rejects missing duplicate stale escaped filtered and truncated native result identities"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust doctests preserve compile-only expected-failure ignored and expected-panic modes without filtering out listed whitespace identities"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust native test events reconcile multiple doctest suites compile-only modes exact names and ignored bodies"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust event parsing rejects empty interrupted duplicate benchmark and filtered evidence without treating captured failure text as success"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust expected-panic labels preserve the exact listed unit identity while unsupported suffixes stay incomplete"
+    },
+    {
+      "file": "dist/test/rust-test-surfaces.test.js",
+      "name": "Rust test CLI and MCP agree on native assertion failures retain counts preserve summary privacy and reject argument trust injection"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust test artifact identity survives an operator-granted temporary directory alias without touching retained project output"
+    }
+  ],
+  "rust-workspace": [
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace planning retains complete profiles without executing project code and rejects late invalid profile expansion atomically"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace root package and child doctests use the most specific manifest owner"
+    },
+    {
+      "file": "dist/test/rust-workspace-surfaces.test.js",
+      "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust"
+    }
+  ],
+  "executable-bundle": [
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapter registration verifies every artifact without executing code or granting project trust and preserves native broken fixed near-miss results"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle HTTPS installation publishes exact verified private bytes with no implicit activation or code execution"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle cancellation and normalized path symlink and overwrite controls never publish partial artifacts"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "concurrent executable bundle publication admits exactly one complete result and preserves a destination created during transfer"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapter CLI and MCP share native findings keep code and paths out of summaries and reject request-level trust or registration"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "fetch-adapter CLI installs verified bytes without registering code and rejects execution registration and malformed private manifest disclosure"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "compiled native packed adapters preserve binary bytes and report broken fixed and valid near-miss source after separate trusted registration"
+    }
+  ],
+  "executable-bundle-interpreters": [
+    {
+      "file": "dist/test/executable-bundle-interpreters.test.js",
+      "name": "packed python3 adapters install without project imports and preserve native broken fixed and near-miss outcomes after explicit trusted registration"
+    },
+    {
+      "file": "dist/test/executable-bundle-interpreters.test.js",
+      "name": "packed php adapters install without project imports and preserve native broken fixed and near-miss outcomes after explicit trusted registration"
+    }
+  ],
+  "external-protocol": [
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external empty scopes and unavailable runtimes never become passing checks"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external planning verifies pinned metadata without executing code or granting repository trust"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external bundle integrity rejects altered files, unpinned entries, duplicates, escapes and symbolic links"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external Node checks execute verified copies, report broken/fixed text and preserve nested project scope"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external result accounting rejects omitted files, forged identity, malformed payloads and inconsistent exits"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external test adapters require non-skipped tests per file and reconcile failure counts"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external Python adapters use the same protocol without importing project startup modules"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external artifact changes during execution invalidate findings even outside the project inventory"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external cancellation kills a running adapter child and cleans its verified temporary bundle"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external CLI references and public example remain pinned and do not grant execution implicitly"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external MCP adapters are startup-only and summary reports omit bundle paths and delegated tool metadata"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external PHP adapters report real source findings through the same protocol"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external warnings respect declared failure levels and protected environment values cannot be overwritten"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "compiled native adapters report real broken and fixed source through the same protocol"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "legacy loose manifests named bundle JSON retain native registration and their original manifest byte bound"
+    }
+  ],
+  "policy-distribution": [
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote policy downloads pin exact bytes, compose offline and publish without replacing concurrent files"
+    },
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote policy transport and content failures leave no files or private endpoint diagnostics"
+    },
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote pack cancellation after connection and invalid output boundaries never publish content"
+    }
+  ],
+  "checkstyle": [
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle planning never executes project code requires explicit activation and protects JVM environment"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "Checkstyle XML accepts escaped properties formatting comments and exact built-in names while rejecting inactive or external assembly"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle catches exact style defects retains thresholds IDs and near misses without writing source or cache"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle completion rejects missing duplicate foreign stale forged and interrupted audit evidence"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle rejects malformed Java inactive tokens unknown modules and changed pinned inputs"
+    },
+    {
+      "file": "dist/test/checkstyle.test.js",
+      "name": "native Checkstyle cancellation kills its active JVM and removes the engine-owned temporary artifacts"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    },
+    {
+      "file": "dist/test/checkstyle-surfaces.test.js",
+      "name": "native Checkstyle declared root checks report violations and fixed controls for every supported file-set module"
+    }
+  ],
+  "maven": [
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven planning is data-only and unsupported prerequisites stay unavailable"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "Maven artifact manifests reject corruption, extras, missing files and links"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven detects an assertion regression and repaired scale controls from fresh outputs"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven rejects test filtering, skip switches and omitted test classes"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven retains disabled and empty-test evidence as incomplete"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven binds every compiler input, plugin parameter and test terminal event"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven classifies compiler failures separately from bootstrap errors and protects cache pins"
+    },
+    {
+      "file": "dist/test/maven.test.js",
+      "name": "native Maven successful planning preserves project data and rejects startup and environment overrides"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven accounts for every declared reactor module and refuses hidden siblings"
+    },
+    {
+      "file": "dist/test/maven-surfaces.test.js",
+      "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs"
+    }
+  ],
+  "gradle": [
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "Gradle planning requires explicit activation and bounded complete source prerequisites"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects filtered skipped modified task and omitted source evidence"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle binds source declarations classpaths native task identities and every terminal"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle planning reads successful project data without executing build code"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration"
+    },
+    {
+      "file": "dist/test/gradle.test.js",
+      "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/gradle-surfaces.test.js",
+      "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs"
+    },
+    {
+      "file": "dist/test/gradle-builds.test.js",
+      "name": "native Gradle protects client JVM settings against project daemon overrides"
+    }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }

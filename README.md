@@ -90,7 +90,7 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | Ruby                                                  | MRI syntax checking of Ruby source and DSL manifests; no gem loading or test execution                              |
 | Swift                                                 | Native grammar checking of Swift source and Package.swift; no type checking or tests                                |
 | C / C++                                               | Prepared Clang compilation databases, native diagnostics and source/header accounting; no linking or tests          |
-| Java                                                  | Explicit classpath compilation, pinned JARs and native source/analysis accounting; no tests                         |
+| Java                                                  | Explicit classpath compilation and opt-in pinned Checkstyle source audits with native accounting; no JVM tests      |
 | C# / .NET                                             | Explicit Roslyn compilation, pinned DLL references and native syntax/semantic accounting; no build targets or tests |
 | GitHub Actions                                        | Static workflow checking with local input and per-file native evidence; no job execution                            |
 | Kotlin, Scala, F#, Visual Basic, other infrastructure | Discovery only; execution reports unavailable                                                                       |
@@ -128,7 +128,10 @@ validated by the engine. Private configuration and rules need not be published.
 Local public/private JSON packs and additive operator overlays are implemented;
 see [policy packs](docs/POLICY-PACKS.md). An explicit
 [`fetch-pack` command](docs/PACK-DISTRIBUTION.md) can download a pinned data-only
-pack over HTTPS for later offline use.
+pack over HTTPS for later offline use. The explicit
+[`fetch-adapter` command](docs/EXECUTABLE-BUNDLES.md) verifies every artifact in
+a pinned executable bundle before publishing a private file; registration and
+trusted execution are separate actions.
 
 Operator-registered [external adapters](docs/EXTERNAL-ADAPTERS.md) can run a pinned
 local Node, Python, PHP or native executable bundle. Repository configuration can
@@ -366,6 +369,11 @@ It does not run build systems, generate missing headers, link or execute tests.
 The [Java profile](docs/JAVA.md) compiles inventoried sources with an explicit
 release and pinned local dependencies. Maven/Gradle, annotation processors and
 application tests are not executed.
+The opt-in [Checkstyle profile](docs/CHECKSTYLE.md) verifies configured Java source
+audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md)
+and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
+native test evidence. Wrappers, wider JVM source profiles, SpotBugs and detekt
+remain planned.
 
 Reproduce synthetic planning and execution costs with the
 [performance harness](docs/PERFORMANCE.md). Reports retain raw measurements and

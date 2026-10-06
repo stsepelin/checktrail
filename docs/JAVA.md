@@ -77,3 +77,11 @@ The Dockerfile pins the multi-platform base image manifests. Local evidence is
 arm64 Linux; the separate hosted amd64 job passed at `52ba415` (see `NATIVE-CI.md`).
 Host macOS without a JDK
 reports the native cases as skipped, not verified.
+
+For separately selected style rules, [CHECKSTYLE.md](CHECKSTYLE.md) describes the
+pinned native audit and its incomplete-run controls. These checks share the
+engine while retaining distinct scope, prerequisites and results.
+
+Opt-in Maven reactor tests have their own fresh build/test and native participation
+contract in [MAVEN.md](MAVEN.md). That profile does not change the javac-only
+contract described above or establish full JVM ecosystem support.

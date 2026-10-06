@@ -1,0 +1,1 @@
+package example; import org.junit.jupiter.api.Test; import static org.junit.jupiter.api.Assertions.*; public class CounterTest { @Test void next(){assertEquals(3,Counter.next(2));} @Test void boundary(){assertEquals(0,Counter.next(-1));} }

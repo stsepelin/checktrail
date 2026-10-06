@@ -69,8 +69,8 @@ This requires a filesystem supporting hard links. Power-loss durability, cleanup
 after a process crash and containment of hostile concurrent filesystem changes
 are not guaranteed. The operator must trust the local destination environment.
 No downloaded code is executed by this operation. Executable external adapter
-distribution is separate; its local registration contract is documented in
-`EXTERNAL-ADAPTERS.md`.
+distribution uses the separate [`fetch-adapter` command](EXECUTABLE-BUNDLES.md);
+its local registration contract is documented in `EXTERNAL-ADAPTERS.md`.
 
 ## Reproduce verification
 
