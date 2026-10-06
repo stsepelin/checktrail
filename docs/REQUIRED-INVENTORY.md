@@ -106,3 +106,12 @@ project roots. Unknown or incomplete capture keeps all declared projects selecte
 and validation plans remain unchanged. This is one R1/E3 profile; wider language,
 historical and framework/import/impact requirements remain open. See
 [IMPORT-CONTEXT.md](IMPORT-CONTEXT.md).
+
+The bounded `bounded-node-physical-attempts-v1` profile now retains physical
+stdout/stderr bytes for every reached Node probe attempt, including malformed,
+interrupted and over-limit attempts, and replays usable observations against
+those bytes. Its macOS/Linux source and fresh-package evidence is revision-pinned
+in [native-raw-evidence-2026-10-06.json](measurements/native-raw-evidence-2026-10-06.json).
+The selected-test acceptance ledger remains distinct from product capture. Wider
+tool/model archives, Windows acceptance and the remaining R7/R8 inventory stay
+open; see [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md).

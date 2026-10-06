@@ -1,0 +1,2598 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-06",
+  "profile": "bounded-node-physical-attempts-v1",
+  "codeCommit": "9a213ee023b7a7c5ac10324e512a020ce9cc2312",
+  "scope": "Original synthetic Node Boolean probe and physical byte controls at the pinned code revision; no AI turn, held-out evaluation or real-project field review. Imported receipts establish byte/semantic consistency, not kernel provenance or claim truth.",
+  "environments": {
+    "sourceMacOS": {
+      "node": "26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "sourceLinux": {
+      "node": "22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryExecutability": "enabled-for-original-POSIX-executable-fixture"
+    },
+    "offlineInstalled": "Fresh host-prepared locked production installs; runtime harness outside the product; lifecycle scripts disabled; Linux and macOS runtime checks recorded independently."
+  },
+  "requiredProfiles": {
+    "sourceMacOS": {
+      "profile": "native-raw-evidence",
+      "timeoutMs": 120000,
+      "passed": 23,
+      "required": 7,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 23,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 145.660041,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 338.228334,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 82.754458,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.666917,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 965.570709,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 849.157958,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1116.735417,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8.8085,
+            "required": false
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 577.150167,
+            "required": false
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-2",
+            "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 284.780917,
+            "required": false
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-2",
+            "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6685.978208,
+            "required": false
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-2",
+            "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 423.089417,
+            "required": false
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "native probe source changes during execution stay stale despite complete observed controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 282.678916,
+            "required": false
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1150.92925,
+            "required": false
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14.958375,
+            "required": false
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 130.986792,
+            "required": false
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 280.821208,
+            "required": false
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2743.992292,
+            "required": false
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 523.73375,
+            "required": false
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "native probe preparation that spends the wall allowance cannot start a project process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1218.610875,
+            "required": false
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 309.758916,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 697.518375,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-2",
+            "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 139.554875,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          }
+        ]
+      }
+    },
+    "sourceLinux": {
+      "profile": "native-raw-evidence",
+      "timeoutMs": 120000,
+      "passed": 23,
+      "required": 7,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 23,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 37.949276,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 55.829032,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 98.609957,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.770186,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 635.396299,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 379.17771,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 525.484283,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.383411,
+            "required": false
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 384.285111,
+            "required": false
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-2",
+            "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 141.683009,
+            "required": false
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-2",
+            "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7013.780952,
+            "required": false
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-2",
+            "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 188.236628,
+            "required": false
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "native probe source changes during execution stay stale despite complete observed controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 131.434372,
+            "required": false
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 517.205121,
+            "required": false
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31.659494,
+            "required": false
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 55.672877,
+            "required": false
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 136.870725,
+            "required": false
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2511.219533,
+            "required": false
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 236.221017,
+            "required": false
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "native probe preparation that spends the wall allowance cannot start a project process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1227.102763,
+            "required": false
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 170.19256,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 328.789826,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-2",
+            "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 61.474024,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "physical output invalid admission limits reject before a project command can execute",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          }
+        ]
+      }
+    },
+    "installedMacOS": {
+      "tarballSha256": "4536f80f8775e1be14ad5944d06cb1fc5ea687f93098be71287895f1b1aa1700",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "native-raw-evidence",
+        "timeoutMs": 120000,
+        "passed": 23,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 23,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 138.736166,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 335.3435,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 79.212375,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.661167,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 975.965125,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 863.903542,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1130.337834,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.888167,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 584.59325,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-2",
+              "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 288.264625,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-2",
+              "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6753.032583,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-2",
+              "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 412.481542,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-2",
+              "name": "native probe source changes during execution stay stale despite complete observed controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 284.359958,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-2",
+              "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1156.915334,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-2",
+              "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14.650583,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-2",
+              "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 133.558625,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-2",
+              "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 284.988084,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-2",
+              "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2822.187375,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-2",
+              "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 535.237333,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-2",
+              "name": "native probe preparation that spends the wall allowance cannot start a project process",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1217.429959,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 304.806,
+              "required": true
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 696.124166,
+              "required": true
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 136.378916,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "outcome": "passed",
+              "terminalSequences": [21]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "outcome": "passed",
+              "terminalSequences": [22]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "outcome": "passed",
+              "terminalSequences": [23]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "installedLinux": {
+      "tarballSha256": "4536f80f8775e1be14ad5944d06cb1fc5ea687f93098be71287895f1b1aa1700",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "native-raw-evidence",
+        "timeoutMs": 120000,
+        "passed": 23,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 23,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 35.627761,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 56.638949,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 93.629925,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3.384559,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 622.109019,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 380.121604,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 522.822816,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13.161691,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 376.020125,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-2",
+              "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 139.107402,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-2",
+              "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7121.876433,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-2",
+              "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 190.90241,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-2",
+              "name": "native probe source changes during execution stay stale despite complete observed controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 153.598932,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-2",
+              "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 530.784272,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-2",
+              "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21.118938,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-2",
+              "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 55.126275,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-2",
+              "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 133.864334,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-2",
+              "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2541.846301,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-2",
+              "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 238.298188,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-2",
+              "name": "native probe preparation that spends the wall allowance cannot start a project process",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1240.26456,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 146.70619,
+              "required": true
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 306.636071,
+              "required": true
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 48.867994,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "outcome": "passed",
+              "terminalSequences": [21]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "outcome": "passed",
+              "terminalSequences": [22]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "outcome": "passed",
+              "terminalSequences": [23]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    }
+  },
+  "guards": {
+    "guards": [
+      {
+        "id": "canonical-base64",
+        "callbackSha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205",
+        "compilingMutant": true,
+        "originalPositive": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "1c10b4aecadfc13e255bf9612b39e091a4dedd6022c9b2043bb0eda87fc165e2"
+      },
+      {
+        "id": "physical-output-sha256",
+        "callbackSha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205",
+        "compilingMutant": true,
+        "originalPositive": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "7c5e22b29bad50bef202aa6fbf902bb1675db80c5e9071dd908be14d7c1fe365"
+      },
+      {
+        "id": "parsed-boolean-replay",
+        "callbackSha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a",
+        "compilingMutant": true,
+        "originalPositive": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "7b6e5584e5c7bc70ad903a402c782d10ffd8adaf91c07e9285c631bca4d900ce"
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f6a5c3618f84e08eef4f82c08612253a7a8d873ea0269cb574642dbda67ded52"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "c3b3c5278b2e8cffb42f4ef9a1ddbcab022ffb54fe6f2a4164cac48b7c6658fc"
+    },
+    {
+      "path": "docs/LANGUAGES.md",
+      "sha256": "d69f4f44efb3536fe2cee15bbb3b14d83b5770ba08463da1e02688c200feaeef"
+    },
+    {
+      "path": "docs/NATIVE-RAW-EVIDENCE.md",
+      "sha256": "b7e16fd081c1f9884b86038e01b4f8f0781f7d1f51572ac882715470d14d1f81"
+    },
+    {
+      "path": "docs/REVIEW-PROBES.md",
+      "sha256": "0d6fb7c0db03d3a009634816da391bcaed987a17a3fbf3722f369043d8defcf7"
+    },
+    {
+      "path": "docs/REVIEW-WORKFLOW-AUDIT.md",
+      "sha256": "b46b31e28a9456b77c356ae16f807dcd05169e47a0cad28425fc8cb14ff49d99"
+    },
+    {
+      "path": "docs/REVIEWER-TASKS.md",
+      "sha256": "05d9212050d0c83a37ae416e35647a13b1929a67852d47dd6639610d6f1467c5"
+    },
+    {
+      "path": "docs/WINDOWS-EXECUTION.md",
+      "sha256": "05e8d8c63efdcf1f1f99b37c831a684ae7693382b4cb479371f1af51de4d1801"
+    },
+    {
+      "path": "docs/measurements/parallel-native-ci-2026-10-06.json",
+      "sha256": "764ea56c3e108f63718074dea622070e30afe8feb165a4fe218a6374fbbad3b8"
+    },
+    {
+      "path": "schemas/captured-process-output.schema.json",
+      "sha256": "5b07be42a5801a1dd54b7de61cc913d631adc29df5fc0548261554eb4375daf2"
+    },
+    {
+      "path": "schemas/report.schema.json",
+      "sha256": "fef186b45b0317bbc858bf532d4277157a6a9b9e2545877c32fb777f3c1626c3"
+    },
+    {
+      "path": "schemas/review-benchmark-judging.schema.json",
+      "sha256": "f04092b6bde3357e2855e802757221c29b2dfb73f0a597a7fe2f0e0f057a8e50"
+    },
+    {
+      "path": "schemas/review-probe-run.schema.json",
+      "sha256": "dabed82f176c941fa0512aa72de56ca4b5e388ab707f5bb4b9db96fbab3d0768"
+    },
+    {
+      "path": "schemas/review-probe-summary.schema.json",
+      "sha256": "38b961df6aa79ff28d26d12d57808312e9240350761cbcc67afa14450969258f"
+    },
+    {
+      "path": "schemas/review-verification-run.schema.json",
+      "sha256": "f111c16836e52df922f42518c5ae312b35233c9fc022661313fa37a2ff1af5ac"
+    },
+    {
+      "path": "schemas/review-verification-summary.schema.json",
+      "sha256": "c2de9ccd4a35c56401a14a74379d07590bbd0a8cf98e34d0252038a748b9eef2"
+    },
+    {
+      "path": "schemas/review-workflow-native-receipt.schema.json",
+      "sha256": "32e5812ff0333b2521b5bad625f2a409a7cc373ff7d7e2268617b62af75c10c3"
+    },
+    {
+      "path": "scripts/generate-schemas.mjs",
+      "sha256": "ad47d59ef6497f6a94b1254c81ef278cb1d6732af644d5784fb1a8bb03284f0c"
+    },
+    {
+      "path": "scripts/probe-windows-runner.mjs",
+      "sha256": "fa0c9357f4f48a03b4965a03e3c7e0b2d0f3201d81da9d6a18d1cf91745a3a6d"
+    },
+    {
+      "path": "scripts/required-native-tests.json",
+      "sha256": "c6cf7fad39a2c3abbf2095379878ee47bf47307a795c8f09643df6b5651cf935"
+    },
+    {
+      "path": "scripts/verify-native-raw-package.mjs",
+      "sha256": "6bec548d9dd5e13b83e02579f0500d49f468c50d4427f74f82c81c4b36225b50"
+    },
+    {
+      "path": "scripts/verify-required-native-tests.mjs",
+      "sha256": "db18855d79344bbc32cb673495b77f28f109aea960770a9eac0ac3d94f17ce64"
+    },
+    {
+      "path": "scripts/verify-ruby-tools-container.mjs",
+      "sha256": "d90ef8f9869e0aa6fc5dc8bdad2b2ecef3ec5ad9760dee7bd73fc0234b26ac05"
+    },
+    {
+      "path": "scripts/verify-ruby-tools-package.mjs",
+      "sha256": "29821cf29195ecc78d7d4702c69aefc91394578c10391978684552c87d5534f1"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "37e079920a346216299e71fff75ef345d80e4de50e22e37ef78e84597eec1b38"
+    },
+    {
+      "path": "src/process-output.ts",
+      "sha256": "dd0664cbf167a09c4ec301e9e2263cf9d77494391557e3a01d171ddce080abd7"
+    },
+    {
+      "path": "src/review-probe-schema.ts",
+      "sha256": "f4c8741453096385c141445fc48a2fd05d42b3850f1c81eec0909d53793c44fa"
+    },
+    {
+      "path": "src/review-probe.ts",
+      "sha256": "814b8f2b797e6c9545d3762705c93203d449e23174678f666c84710240a39708"
+    },
+    {
+      "path": "src/review-verification.ts",
+      "sha256": "7d327c58d24b7b88afd473dd7e33e184b405bbf02ac877bf66177aa15fd831f2"
+    },
+    {
+      "path": "src/review-workflow-audit.ts",
+      "sha256": "80561b9d580f1b98e2148dc180e664decc8faea9a1de3a5663682bb011c15049"
+    },
+    {
+      "path": "src/review-workflow.ts",
+      "sha256": "6f3fd0f59774700f6049eda039a39169b4338b868a9c0480ea378590ce835c39"
+    },
+    {
+      "path": "src/runner.ts",
+      "sha256": "8364a483c5f6fd5b717b9c0783a59c9325f46ec55328ff424fa2bcb324b1fa10"
+    },
+    {
+      "path": "src/schemas.ts",
+      "sha256": "1f48513596f800c720b3ba028b57a7a01591b25bc6bdacdf64e29a4bf47a9244"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "35920ee2fd130f4b0bb7cf0e4c67f1957bbe5eec635854f23ac9803ba56e2166"
+    },
+    {
+      "path": "src/windows-native.ts",
+      "sha256": "007b33ece34fe595a11d373cad60ca36082daa355df8f592786611db9c368a78"
+    },
+    {
+      "path": "src/windows-process.ts",
+      "sha256": "8b8981b62f7450467679a79d0bc0bb109405de2fca876c17fc3f30a4b4b76e1c"
+    },
+    {
+      "path": "test/ci-native-profiles.test.ts",
+      "sha256": "b0dd5af6e96129ac09f9b63bd1f025ff74b2f186c723cee45c61b0e8dc91d39d"
+    },
+    {
+      "path": "test/mcp.test.ts",
+      "sha256": "90c7794bd4c361d28d4e9cc1bfca1d13fdd454237c25e58b5175ca2f3d3343bc"
+    },
+    {
+      "path": "test/process-output.test.ts",
+      "sha256": "7abd5d5c10669337c2a9a22e4180d88a62470d3e0d4cb472bff3dec9db6461a8"
+    },
+    {
+      "path": "test/review-probe.test.ts",
+      "sha256": "26b4814acc1e6449032173a197467688e45b90c6d757ce89da5cb419f336cf58"
+    },
+    {
+      "path": "test/review-verification.test.ts",
+      "sha256": "82101a8a88c4cbed803f2a732de91ade849665505fe2f575908326f0733cffac"
+    },
+    {
+      "path": "test/review-workflow-audit.test.ts",
+      "sha256": "295c4abb2056056c8f5d10e716a877cc9b7a7a92f35e160aff31b1b07b90e38f"
+    },
+    {
+      "path": "test/schemas.test.ts",
+      "sha256": "0c0109e94855c43d6c26ee7c3536146de0403bd517d23ee1abc394ba16534ff9"
+    },
+    {
+      "path": "test/windows-process.test.ts",
+      "sha256": "c68c27052ce1ba8cbe7e2936bed80f19e9152d333f491d4d3c82f53dfcb07f5c"
+    }
+  ],
+  "compiledRuntimeFiles": [
+    {
+      "path": "dist/src/actionlint-evidence.js",
+      "sha256": "0222f7c068bd0898ce2e86ac921e30aa6151d9b98e6ea8eb1f839aa928cb22fc"
+    },
+    {
+      "path": "dist/src/actionlint-inputs.js",
+      "sha256": "fe13655ae8e20ba8d3b4b96291b75e83b0c98a439ab7a7fd7d3b075e4fbcd4f7"
+    },
+    {
+      "path": "dist/src/actionlint-runner.js",
+      "sha256": "d9ea8f8b435110fa756c5884905cb267578ffe9615266152392746fc7daf9be4"
+    },
+    {
+      "path": "dist/src/actionlint.js",
+      "sha256": "60a90dec207436968a7e082cc39175e9e8f2c5a3f2db01e312319724db2f3bf2"
+    },
+    {
+      "path": "dist/src/adapters.js",
+      "sha256": "8622893b10e9ddd2793873cbe44c4090a1288e7cd43c6a7d015b73c79e2d764d"
+    },
+    {
+      "path": "dist/src/architecture.js",
+      "sha256": "184aa786406186e87ed497ef2d367c7bacad38e224f59bd1edc01d87c530be3f"
+    },
+    {
+      "path": "dist/src/checkstyle-evidence.js",
+      "sha256": "5d836ac059ec45894c74295436cf95975b006d8ea705d0ee7912da26eb1ea896"
+    },
+    {
+      "path": "dist/src/checkstyle-native.js",
+      "sha256": "15e0a3f184d8755037d19664f1ebd0182b11ed501cb59eef83f3762dc6521ee8"
+    },
+    {
+      "path": "dist/src/checkstyle-runner.js",
+      "sha256": "feabff2830630b26fe707321dc0e15476005c254a556577aa9602f52f8f4dfde"
+    },
+    {
+      "path": "dist/src/checkstyle.js",
+      "sha256": "a5cc68c1c8cf45a6ddc3c0e715cd2cf96013addd7dbf6994945438463c82ff07"
+    },
+    {
+      "path": "dist/src/clang-evidence.js",
+      "sha256": "34de8cdc1472959ba7797f0b5237f2b9fc60ef70fd8641bf0b280716e9e2c2c1"
+    },
+    {
+      "path": "dist/src/clang-protocol.js",
+      "sha256": "2c6471b5a79d8dac987114cb67f4aa939948535366bf839d19da1244d5f7d28c"
+    },
+    {
+      "path": "dist/src/clang-runner.js",
+      "sha256": "d77222c1ee97876cf3d2f21420dc5457fb05f652018ff23df65e844ee2947c3e"
+    },
+    {
+      "path": "dist/src/clang.js",
+      "sha256": "d05cc9b9747e559c08b2db9d6c90e8ce8601eccf3395cc3487728d6ae894c8f7"
+    },
+    {
+      "path": "dist/src/cli.js",
+      "sha256": "7243cb18a352970d4e9708e98df66a396d4e1ba0d1e4827eef4309cb30de60ac"
+    },
+    {
+      "path": "dist/src/config.js",
+      "sha256": "2ea3f3f6664abfd3aaab054052be5b9ab2f08f7d510608c79afa97d5c15719c5"
+    },
+    {
+      "path": "dist/src/contract-schema.js",
+      "sha256": "8fdbad8d03b1e74aa0072e29a319f93fcc515387a8f6e6829c81b6d6a9a4301b"
+    },
+    {
+      "path": "dist/src/contract-worker.js",
+      "sha256": "c6bd817f2e7db9cb487cdc0b9e5c08200f3cbc322b5a20d647fcc86b7bdfda44"
+    },
+    {
+      "path": "dist/src/contracts.js",
+      "sha256": "43997afe31950bea35362d40c53bbd0f9c1661e4b97161be2ea766a1a1ee99f6"
+    },
+    {
+      "path": "dist/src/cpp-cmake.js",
+      "sha256": "687c4ecc6e29444bd8150b2cf7353a4570901e01f27ddb8c06abac6de612d6ca"
+    },
+    {
+      "path": "dist/src/cpp-native.js",
+      "sha256": "7c00a0e17d73445b2079250f2f74f28aeab2d4641c74e4eae738ba4570f1839a"
+    },
+    {
+      "path": "dist/src/cpp-tools-evidence.js",
+      "sha256": "317e3e7b4c71206f231e99175e2b492eeee0f48747645a68db2454f7f45025cd"
+    },
+    {
+      "path": "dist/src/cpp-tools-runner.js",
+      "sha256": "5818a793d8357aa25865d8c673c6d8a70f96ec307b9e08e84dce281b04a2f0cd"
+    },
+    {
+      "path": "dist/src/cpp-tools.js",
+      "sha256": "82bd270b39e14b6adacc02061adb051374c831bb51a688417ab2fa304f84056e"
+    },
+    {
+      "path": "dist/src/django-evidence.js",
+      "sha256": "aeefc2d7ef7e862918e60fecd27d06f0d345c7a44001c9c9043ffd795cea5197"
+    },
+    {
+      "path": "dist/src/django-runner.js",
+      "sha256": "2525b360e10e78117b94578240f17450959eb0edec00c9e09a5791574392b1d8"
+    },
+    {
+      "path": "dist/src/django.js",
+      "sha256": "084d9a5a1033a087ce2727176da94b6197bd4f3dee31e846e53d46ecc848321d"
+    },
+    {
+      "path": "dist/src/dotnet-build-evidence.js",
+      "sha256": "49f359843f4e1e0ee2b3ba169ff73bd90763ea28ac5833fe81ddabeef516722f"
+    },
+    {
+      "path": "dist/src/dotnet-build-native.js",
+      "sha256": "7fe3d46fe61cf837202273446f95e51a034f75e3ec9544f94f19c29b0ce1674c"
+    },
+    {
+      "path": "dist/src/dotnet-build-runner.js",
+      "sha256": "7f901725390eb9c8f5fe3a46732ad0b5a1213e62c57dbea17e8c7df9cbb2894b"
+    },
+    {
+      "path": "dist/src/dotnet-build.js",
+      "sha256": "b22aeeb3419eb889225c5fe2d84048afd310a5b935092d31e1d1ec0d406e4400"
+    },
+    {
+      "path": "dist/src/dotnet-compiler.js",
+      "sha256": "3c19fa067c4e6ed6ceb8d34a77b3ff367530fd4853b83b83e9c02771cae7b7bc"
+    },
+    {
+      "path": "dist/src/dotnet-evidence.js",
+      "sha256": "4f1a0bff91f2697188fe050569a8031244b3e0c84785c062cd3d4693a8821db3"
+    },
+    {
+      "path": "dist/src/dotnet-format-collect.js",
+      "sha256": "d86587aecdb80d5502831b0313484aa424e66b4b092bb54f73837b96a5f4d2cc"
+    },
+    {
+      "path": "dist/src/dotnet-format-evidence.js",
+      "sha256": "7db758c703a7c6605d58f625ec3fda70adb2f603b2a189e4a410af3bd1153ee1"
+    },
+    {
+      "path": "dist/src/dotnet-format-native.js",
+      "sha256": "f644412e558d2c0f0b9ea8e19d2c4476fe3dea07a4264d6ec6d86bb3c5ce37fc"
+    },
+    {
+      "path": "dist/src/dotnet-generated-collect.js",
+      "sha256": "fd06b6a18c0960321f826e27cb404f55bd90d37aa19e692c2cf55dd431b01531"
+    },
+    {
+      "path": "dist/src/dotnet-nunit.js",
+      "sha256": "3e09e71c52dd588dbdbf3b9faa63028c4d3674a040234ad8684aa6e209c05dcf"
+    },
+    {
+      "path": "dist/src/dotnet-runner.js",
+      "sha256": "0d4770db45b42affd12d15cac4dfd510f69db7bb4b271de958e3e20ae4754347"
+    },
+    {
+      "path": "dist/src/dotnet-test-collect.js",
+      "sha256": "0ab465bd458bd603f7b0e4131d0906a3c49aff3c49ae98331e8e15aa26d43661"
+    },
+    {
+      "path": "dist/src/dotnet-test-evidence.js",
+      "sha256": "248ed4236b02dd8aa840b01523baa77efb42e55983a7b7db7bf127bf2404bd92"
+    },
+    {
+      "path": "dist/src/dotnet-test-native.js",
+      "sha256": "127168eef9d0905046faa880b7b0b05e1bedc63d0ecf41d57b334fee280daab5"
+    },
+    {
+      "path": "dist/src/dotnet.js",
+      "sha256": "371b11c7df4d482327453b06d28307c17b608d80b7387ad33ea59b3fbbf1e405"
+    },
+    {
+      "path": "dist/src/engine.js",
+      "sha256": "581c891225f64e1c5eca23dbdd47b4e2085df2efe520c7fb7f001a57eaf91ee7"
+    },
+    {
+      "path": "dist/src/environment.js",
+      "sha256": "86aeb65967bf67c508efc73e93ae6d511de7e666aa1c4f0232d401e51820c1b0"
+    },
+    {
+      "path": "dist/src/eslint-evidence.js",
+      "sha256": "2daaab9a9266d173f01b8d82a886b0676edd16b4076fd6242d3d0cedcc54ddec"
+    },
+    {
+      "path": "dist/src/eslint-runner.js",
+      "sha256": "eba277b9150b49baa9d9929c18acfd713785641e131c0bb54652ddbe4f4c6388"
+    },
+    {
+      "path": "dist/src/eslint.js",
+      "sha256": "abd244d30e8643ad573b272d88bb7317998e561e7db88d6348bd3cba41b5c1c7"
+    },
+    {
+      "path": "dist/src/evidence.js",
+      "sha256": "77277aac4d93d1cdac9cb0c58f0ec47e7cfe6b739fdb80daabd7226066396ed1"
+    },
+    {
+      "path": "dist/src/executable-bundle.js",
+      "sha256": "2a4cdc4277b3877693a2ff60df79068d099ba2355ee8800afc166bf50035b2c6"
+    },
+    {
+      "path": "dist/src/external-adapter.js",
+      "sha256": "a4a3204da516ca02b78f08280448c3a695e82be7dfa43b9fa2d31aa2301930c7"
+    },
+    {
+      "path": "dist/src/external-evidence.js",
+      "sha256": "24cbfc38c8a5132401de68ffd63b2a6292e6dcaf38c6b4d086a8344d7cf94ec5"
+    },
+    {
+      "path": "dist/src/external-runner.js",
+      "sha256": "e5791b71c2afb339d780fab85692727729dab9b94c7b984417ee5d39866e3f3e"
+    },
+    {
+      "path": "dist/src/external-schema.js",
+      "sha256": "3f352d18a8559ceb8d637c0527c05e7e717b7c5b19b9fcf3f54573722444dc1b"
+    },
+    {
+      "path": "dist/src/fastapi-evidence.js",
+      "sha256": "2c29177da37e2446d34e8bc58122bd4ec0cf91b22729f62c87cd12f294a8415c"
+    },
+    {
+      "path": "dist/src/fastapi-runner.js",
+      "sha256": "f95f7c32d7465529590059cb7538b97b8a9e9fbc272684538d8e255978dad348"
+    },
+    {
+      "path": "dist/src/fastapi.js",
+      "sha256": "e6a598123a454c0269b112197ee9f9f3e270cc91c3df4966f42f88e862bb34c7"
+    },
+    {
+      "path": "dist/src/fetch-adapter.js",
+      "sha256": "fd1dfbbfe26443db3fcb8ca1bf887450db74236c6516e35b619f1fecb0556a53"
+    },
+    {
+      "path": "dist/src/fetch-pack.js",
+      "sha256": "cac535d4a5d41b5e6a1b32315f876e249758aa586281d0f5d7246bf1577fb1c1"
+    },
+    {
+      "path": "dist/src/finding-policy-schema.js",
+      "sha256": "421989aeab1270ff75e11089dcd4a098c032c6771398683c50e353c5d79c1d6f"
+    },
+    {
+      "path": "dist/src/finding-policy.js",
+      "sha256": "ed575a852b2b0286140e5fee6a6e3d70db6b3e728b66c6def84ecda4048f1ee0"
+    },
+    {
+      "path": "dist/src/git-selection.js",
+      "sha256": "739df92016f2c56289321332abe4126a574de809b2fae6c89055ca8066f35824"
+    },
+    {
+      "path": "dist/src/go-build-evidence.js",
+      "sha256": "5deb1b483148a70b9bdbc89285c14d6032e9bea02996fcce4a2cd95bcda40bb2"
+    },
+    {
+      "path": "dist/src/go-build-runner.js",
+      "sha256": "eb017a83b23178b956c7abcc446ea29e47d42153319bc1c6825341b18afcde21"
+    },
+    {
+      "path": "dist/src/go-build.js",
+      "sha256": "4dfa5a7a2247e89f9f71f0d8cb17dbaa982ec22a542ecfb35eb3fadcd050d417"
+    },
+    {
+      "path": "dist/src/go-compile-evidence.js",
+      "sha256": "ee5f930df7000d49f1d25db9f8c9d67d626d368a668f09c14d53de481a6136dc"
+    },
+    {
+      "path": "dist/src/go-directives.js",
+      "sha256": "98eeea3ae6df2ab921d57dea37cd1594987a328da936df1891db4f32c2e88d89"
+    },
+    {
+      "path": "dist/src/go-scope-policy.js",
+      "sha256": "17bfb4e79292b20257c8c1069490f7367eed3d185aaa06f3ccc6d62763c70f79"
+    },
+    {
+      "path": "dist/src/go-scope.js",
+      "sha256": "e15130c82c9eb9205908524cbc023b860fbc6feeedb214c9b9db4a218830d9b2"
+    },
+    {
+      "path": "dist/src/go-target.js",
+      "sha256": "922174cf93f9cb489b5012c94918d5020d6000f0de3b80aa2ec8090ecb4fe7e6"
+    },
+    {
+      "path": "dist/src/golangci-evidence.js",
+      "sha256": "7a5c03d4e640d5abd350e45f075641f77b4fe9ee69be66ac1006e79520bd9137"
+    },
+    {
+      "path": "dist/src/golangci-runner.js",
+      "sha256": "bec097a5a4b6b20927ee06500403b82079845323c2834ac930783a4d1df5898e"
+    },
+    {
+      "path": "dist/src/golangci.js",
+      "sha256": "e93bf27debfd4eb46d67638afadccc9a0f091b0d7933920c030b99301ab4fe8b"
+    },
+    {
+      "path": "dist/src/gradle-distribution.js",
+      "sha256": "aafaa4df28af6584ae7eb1ff938a2c726c8868fe09a4dfc80e4f08d81ae55c9f"
+    },
+    {
+      "path": "dist/src/gradle-evidence.js",
+      "sha256": "814c3d9d0d6b53f3790717cc0f30dbba1f5414d73f7bb408c77835a46b8c7ae8"
+    },
+    {
+      "path": "dist/src/gradle-native.js",
+      "sha256": "b7b8e62a632e0ac43c23de7f24455704f71b208aae3fbffde16640a47bb8d012"
+    },
+    {
+      "path": "dist/src/gradle-runner.js",
+      "sha256": "04917a960b282994dd9c6a298f84d170c4de17bdbe028b5bcb98580e0eb6d93e"
+    },
+    {
+      "path": "dist/src/gradle.js",
+      "sha256": "b916a29f1cf8651bab17fd2744bcf4a7051aaa521d565e01f024ff0682ba0e5c"
+    },
+    {
+      "path": "dist/src/guidance.js",
+      "sha256": "d8d4cea524c0b59b80ec8e5b46bf0d18c5e1826af07e20a801ea893f58f8558f"
+    },
+    {
+      "path": "dist/src/helm-evidence.js",
+      "sha256": "ba447a25c02b0702b6ba5855f6567b72c0fb19ba598fc3b661cd1b93e85eb583"
+    },
+    {
+      "path": "dist/src/helm-runner.js",
+      "sha256": "77574a0cbf440d6be2968d3368ff370bc907808fc4a2f2ebddf7db65427d4411"
+    },
+    {
+      "path": "dist/src/helm.js",
+      "sha256": "cdeef620ada75a994548c70a5b348577c5a32bb1bf8178c2cb338742aca06408"
+    },
+    {
+      "path": "dist/src/import-context.js",
+      "sha256": "7ad01d104953b200fa5c9288501d6ba12a02c23d923ae24728978abb8faadf9e"
+    },
+    {
+      "path": "dist/src/index.js",
+      "sha256": "c7a2a8b64c6c720fe1df96a54129c8a81074ba493e211eeb8bddd3ccf35b0bf7"
+    },
+    {
+      "path": "dist/src/inventory.js",
+      "sha256": "efdeef5765150e5f0df89f966ee6c800ee31eaf38ea552e5b5f9c78ee8882320"
+    },
+    {
+      "path": "dist/src/java-compiler.js",
+      "sha256": "6e171997a777f94c76ca9c83e2c122b604e28c3ddfb2af208edbe54605fa8a65"
+    },
+    {
+      "path": "dist/src/java-evidence.js",
+      "sha256": "276dfd2e21bb038a83c70e5b5659a23f85f03112709e427b18dda7931cc8b75e"
+    },
+    {
+      "path": "dist/src/java-runner.js",
+      "sha256": "094e6e37370b8fa6455ebc355ff51abb735782e28dbd787f4e587a111a422e9d"
+    },
+    {
+      "path": "dist/src/java.js",
+      "sha256": "251c228bfc3a0b6969f145f7d70b29cf956fc4e3088e8995bce4f0b43d527af2"
+    },
+    {
+      "path": "dist/src/jest-evidence.js",
+      "sha256": "ea262f6ccc8e15ff0ce4fed363c34c5231c750a4538ed60dd4969464acaca464"
+    },
+    {
+      "path": "dist/src/jest-runner.js",
+      "sha256": "9cb1495916b1b931b80938b5ffd04b03f1f51c4a3e501def4ebd5944e61dd669"
+    },
+    {
+      "path": "dist/src/jest.js",
+      "sha256": "888301d3b0c31db3dc59d38c904f81538a04b0219f5501bbf60e753f9aa8d9a5"
+    },
+    {
+      "path": "dist/src/junit-native.js",
+      "sha256": "65e5db79aa25cc52a2a8bddf1154899f5748d61ddae6c8688a5b669dbdafb790"
+    },
+    {
+      "path": "dist/src/junit.js",
+      "sha256": "27fb7b0e42c7070e62c6425e1eb621ca7aec203cbe71da6014ab12abe543c644"
+    },
+    {
+      "path": "dist/src/kubeconform-evidence.js",
+      "sha256": "1f1e951b21e43434fca988fa3053ddba57c53bf3dd9ac20941e1bf6aa9d19eac"
+    },
+    {
+      "path": "dist/src/kubeconform-runner.js",
+      "sha256": "023a4a731a0a8bc155f30604124fe1794d421c076bfaf1bc28e832c9b489f847"
+    },
+    {
+      "path": "dist/src/kubeconform.js",
+      "sha256": "6d9c82396a4ab0e826425a95166119cf1900f62fe6230b85b4eedc0472d72670"
+    },
+    {
+      "path": "dist/src/kustomize-evidence.js",
+      "sha256": "3246fb875a489c6f001da901ba942c0da7499685f5017be2e8803d10e8f9c478"
+    },
+    {
+      "path": "dist/src/kustomize-runner.js",
+      "sha256": "cad1b0ddd9a8148d6d7a4e13141039285b4805aec7a3397a946c505153670248"
+    },
+    {
+      "path": "dist/src/kustomize.js",
+      "sha256": "d02dc67d7268a461e0d015a8c960ea2aeb050dc253cc8715f17460efa865672a"
+    },
+    {
+      "path": "dist/src/laravel-evidence.js",
+      "sha256": "be4a3db4c2ac295f2f6a22b70590fa1e746c54f678f0e055d54c25717659b299"
+    },
+    {
+      "path": "dist/src/laravel-runner.js",
+      "sha256": "2e0453957ebd38e50a726ea5bb87682c7007f3df7df362b62920762da4d3a9e7"
+    },
+    {
+      "path": "dist/src/laravel.js",
+      "sha256": "1fd8edfc7e0721b5bad9d79e17224a2d443cba87b18ff60b2578f58f1f8e01e0"
+    },
+    {
+      "path": "dist/src/local-tool.js",
+      "sha256": "f4dd7b61f141789c60459da86f294c8185c33dc60fc4bbe7839564ee7da5a6a3"
+    },
+    {
+      "path": "dist/src/maven-distribution.js",
+      "sha256": "5ba51386578b83f32f1019683030c688511d0353521617bde7afd315ba972252"
+    },
+    {
+      "path": "dist/src/maven-evidence.js",
+      "sha256": "96c5b4cd2f263f70f8cb9263a355e12e7206075a7b7bdbd0548150116ba49b38"
+    },
+    {
+      "path": "dist/src/maven-native.js",
+      "sha256": "088c4231c20e7073d140745419baa3e5ba250cfa443abb3d9ff764de62931847"
+    },
+    {
+      "path": "dist/src/maven-runner.js",
+      "sha256": "7767e5837fb9d63520c310251412eda8b04ebde2ffac8de3e2d315e8b65f6d2e"
+    },
+    {
+      "path": "dist/src/maven.js",
+      "sha256": "82eb0e08c797bf2eb61f9156321b56ccabc384780130250fff4134bd484a982d"
+    },
+    {
+      "path": "dist/src/mcp-tool-catalog.js",
+      "sha256": "cc80ed183f669f33323e70212a3a2e838270447bbfca9c85e03e502cfcac5e78"
+    },
+    {
+      "path": "dist/src/mcp-validation-tasks.js",
+      "sha256": "d332a3bd8e693411d414dd55c38325e0bc2c282e69740ce3e95477509cbf45df"
+    },
+    {
+      "path": "dist/src/mcp.js",
+      "sha256": "a784f59a66588b75d63da2836c2898e2dfac0b6317ec39874da0a9cf401f7455"
+    },
+    {
+      "path": "dist/src/mutation.js",
+      "sha256": "9d89ae565b0679a76de99e7956b1cccbbaf201d31da0dc2b9bec466eaf9c5c0c"
+    },
+    {
+      "path": "dist/src/mypy-evidence.js",
+      "sha256": "7cec412561d809dbd5b925b22419e57e479910f97671022c81ec31d42881ff2e"
+    },
+    {
+      "path": "dist/src/mypy.js",
+      "sha256": "0fc9534860702c668360e687ba1de7b7afcd8f6a393d3bf47b59fa34f668e79d"
+    },
+    {
+      "path": "dist/src/node-reporter.js",
+      "sha256": "707578bc76a73f5601c77ac50b48422a64036ed4e124cda9d2f9b88a5029c908"
+    },
+    {
+      "path": "dist/src/nuxt-evidence.js",
+      "sha256": "03b22c02afb29233db6a42ff58d793544ecfd7cfb598b1c0f0487725df46bb9d"
+    },
+    {
+      "path": "dist/src/nuxt-protocol.js",
+      "sha256": "8d92d2cc21980c1091809d4088e716bb1de30e83817026f095ce6c65fb1e9af4"
+    },
+    {
+      "path": "dist/src/nuxt-runner.js",
+      "sha256": "5d4ba9c7c59db246b51735e603cffb9d5198dc8fc9ec64d2929e9cf9d494544e"
+    },
+    {
+      "path": "dist/src/nuxt.js",
+      "sha256": "d237ccd478b428615555491afdaca403839c2c57840ceb5a6f462c8d01c362ad"
+    },
+    {
+      "path": "dist/src/onboarding.js",
+      "sha256": "c53cdf0dfc1d8f550cbcd6050e62d29aefb0b4cde69b9f25ff96fa62aa804208"
+    },
+    {
+      "path": "dist/src/output.js",
+      "sha256": "d4a090aa72e4012ec86246c40a705dcd8b5a5a8c161bb7e5853dde7b21ced1e6"
+    },
+    {
+      "path": "dist/src/php-cs-fixer-evidence.js",
+      "sha256": "ea14ee44a767444f31ccd2cac4f695eb36a97124ff5733ad28d2459adbfd7fe6"
+    },
+    {
+      "path": "dist/src/php-cs-fixer-runner.js",
+      "sha256": "a8f3c15f22d5379ef895d86c0184c739ca5bf9de63ab03ad7215641b5eff0baa"
+    },
+    {
+      "path": "dist/src/php-cs-fixer.js",
+      "sha256": "ad84dd3877b24065b938de304215d612b7b86728f0f90510f910bf6d96d6c374"
+    },
+    {
+      "path": "dist/src/phpstan-evidence.js",
+      "sha256": "324b57e87bd29cec0665eb071026249f413a2d4bb0e254d869df6c600043c2a0"
+    },
+    {
+      "path": "dist/src/phpstan.js",
+      "sha256": "4f53ffa5a11a2d870f95d150b600763b5675629080c28a0d947b291d47988602"
+    },
+    {
+      "path": "dist/src/phpunit-evidence.js",
+      "sha256": "26e521277850dd67e52cc8bbc5ba210cdcae227eeb966850b9d56829739b6d6d"
+    },
+    {
+      "path": "dist/src/phpunit.js",
+      "sha256": "fb3ccf3e5c28fc88cdceab57101251fa5a596c08860ee0c670b1a1be7ffa98be"
+    },
+    {
+      "path": "dist/src/pinned-download.js",
+      "sha256": "e5e729bc1ba65003f835ee6132772dcfbaec1a645b3063262018f3de059f0043"
+    },
+    {
+      "path": "dist/src/pint-evidence.js",
+      "sha256": "aea837105996855ec30d2aff9791a51e8686158e0d6ba99bbd7237438913c31b"
+    },
+    {
+      "path": "dist/src/pint-runner.js",
+      "sha256": "e9de09cd8d46c0abc82437b2248a9f1a628419325adde5fc7d16c642912b334a"
+    },
+    {
+      "path": "dist/src/pint.js",
+      "sha256": "157b8e56f3780adea679dc0197891bdb1e30e6c404ff7f352b7b8ee0bf29848d"
+    },
+    {
+      "path": "dist/src/playwright-evidence.js",
+      "sha256": "2e3898e8976d4781b8d03f2446480ef08df847f0bb121a46fdadf04d5bc127ce"
+    },
+    {
+      "path": "dist/src/playwright-reporter.js",
+      "sha256": "22a19f45b0ae30051c5641769491068959d22cb30ff3dd1438e041769588f590"
+    },
+    {
+      "path": "dist/src/playwright-runner.js",
+      "sha256": "9aa1e787e88609e584778be821037709068cbd1c0f54e720b920b97be3abb345"
+    },
+    {
+      "path": "dist/src/playwright.js",
+      "sha256": "75098de92428e9dc7610db3f9c89bef7d562b1f3f71f851391deb4556a2918e0"
+    },
+    {
+      "path": "dist/src/policy-pack.js",
+      "sha256": "04cb2c4148d73858ee90b2a1f07e601c34e538520ec68a6fb38a3cacd8cb6624"
+    },
+    {
+      "path": "dist/src/process-output.js",
+      "sha256": "6bf7824ca933db1d4a18ade1fe77354f4475171ccfee2f5abd35f96dcc842a43"
+    },
+    {
+      "path": "dist/src/process-tree.js",
+      "sha256": "50a9574a353c60b71cbf2d3da46e7c8139b36a464cfb1fff9479934befc2f816"
+    },
+    {
+      "path": "dist/src/pyright-evidence.js",
+      "sha256": "501664438fb12e0f2f214ba2f617c1bb7868af03b707810af49c564278403921"
+    },
+    {
+      "path": "dist/src/pyright-runner.js",
+      "sha256": "f273c595b95b46c0a6081a634c026e000d7b115a2e41f6226252516202799397"
+    },
+    {
+      "path": "dist/src/pyright.js",
+      "sha256": "2e76de5c7a9762cd57725fbc0c0224befcda066dd52695c239bf2c464f304533"
+    },
+    {
+      "path": "dist/src/pytest-evidence.js",
+      "sha256": "476beec33596a20e3585aaa4eba25f6989a6972a3e5338a55848bb8b4ef69cf3"
+    },
+    {
+      "path": "dist/src/pytest-runner.js",
+      "sha256": "69269d82e9fd6d4c55a3c62c351107475a724933126bfadb82bf54287fdebd62"
+    },
+    {
+      "path": "dist/src/pytest.js",
+      "sha256": "ca6125678eb9907e7b4e592da1a1d4c82a0277ffb548e383af6e9703ef11d5b1"
+    },
+    {
+      "path": "dist/src/report-validation.js",
+      "sha256": "08c407cd897a2f306916a5c81b26f3501044e06663af8ab695b5de3832c90919"
+    },
+    {
+      "path": "dist/src/review-adjudication.js",
+      "sha256": "683eb9832f1ed97de36438f57449594dbb864b87e0bcb0486b64407740e09ff8"
+    },
+    {
+      "path": "dist/src/review-behavior-schema.js",
+      "sha256": "ba171a2b8f8a0a16f3e2b7a59a0cd93cb8c7e450263e231bf853bf18c988c2de"
+    },
+    {
+      "path": "dist/src/review-behavior-validation.js",
+      "sha256": "5aa80d390f95a49bbddb66bc8fe6c376702bfa0ec3847b2812c04f48f5606f0b"
+    },
+    {
+      "path": "dist/src/review-behavior.js",
+      "sha256": "522eb3c42c5109415a48fe2f53e8634ab9fa72681ccfaa364f913d92ad70d6c6"
+    },
+    {
+      "path": "dist/src/review-benchmark-schema.js",
+      "sha256": "490bb2c4992003b255f502355b84ea419be8d149ee07c93f773f13a3c4724ace"
+    },
+    {
+      "path": "dist/src/review-benchmark.js",
+      "sha256": "c79b062fd7207f71ee42978dc12b811ba9c9c7045a3dc83237f870a171aaa8ab"
+    },
+    {
+      "path": "dist/src/review-calibration.js",
+      "sha256": "faf9bc82bbf476e6a7f32d4be29cf20167cc4eebf78eb6a38b444dc85c9186c1"
+    },
+    {
+      "path": "dist/src/review-diff.js",
+      "sha256": "cde0d8e4ad889c8d716e1ee739c5789f4d6e72dac6cb83d68cc9238697808534"
+    },
+    {
+      "path": "dist/src/review-engine-identity.js",
+      "sha256": "c173302dfa099d4a701d0ce3979f2d9dfc0e71345223f7474d2abb418e4b4f44"
+    },
+    {
+      "path": "dist/src/review-hypotheses.js",
+      "sha256": "1a45877a50bab38cd9a6ef827015aa47d4205050950932f63d303e8579cb1f3a"
+    },
+    {
+      "path": "dist/src/review-paired-scoring.js",
+      "sha256": "0ca5439a55df3df1e9b9b9c369b9dfb670e94ece55564acaad1d71d8365ad242"
+    },
+    {
+      "path": "dist/src/review-probe-schema.js",
+      "sha256": "7bcccbea2a05a94d891c175b7f0e1211183dc3006523539950f9e7409b26c0d9"
+    },
+    {
+      "path": "dist/src/review-probe-worker.js",
+      "sha256": "67063de3ed86173645df55b8526a9445031d8f140eeeffd5318c848202ee5b51"
+    },
+    {
+      "path": "dist/src/review-probe.js",
+      "sha256": "123e1c7cc44b5789efe95d6749489b652c629c57eefb971ca690bf52cf0bc616"
+    },
+    {
+      "path": "dist/src/review-provider-aggregate.js",
+      "sha256": "e00a970f34dcf02e9cf1c3efd7ee6e5fabba151d909c196dc8811c180ca6b4ab"
+    },
+    {
+      "path": "dist/src/review-provider-budget.js",
+      "sha256": "141d08826b4a7b248352582a5a33775d38ccce3cb033996fdfe6ac063086424d"
+    },
+    {
+      "path": "dist/src/review-provider-schema.js",
+      "sha256": "fbbac559e34a6daadb100113b2e08418509c1cf45a709d456ba317b2f856c4cf"
+    },
+    {
+      "path": "dist/src/review-provider.js",
+      "sha256": "bb1d8b43704c1b82a2aa0b96c775bc36898e0999d8581051d5a0870a4d29a1fb"
+    },
+    {
+      "path": "dist/src/review-refutation.js",
+      "sha256": "e5e60546020cb9c335ee1a702643ea582770f169814bc46bf27ae6ca1d918a32"
+    },
+    {
+      "path": "dist/src/review-scoring.js",
+      "sha256": "6b79148d055b6dba032bbbe68218d78871c4a67c06e64894a99b7e9c0e7f206b"
+    },
+    {
+      "path": "dist/src/review-verification.js",
+      "sha256": "441f31714e820006473b09ca9947a11e5598a55412e21b5e299454a8ab9f7af4"
+    },
+    {
+      "path": "dist/src/review-workflow-audit-schema.js",
+      "sha256": "c15748083194d269102d83eb10e1e03e3ed10d4f3a6d6453fc1bfcfdce22bb1b"
+    },
+    {
+      "path": "dist/src/review-workflow-audit.js",
+      "sha256": "e44c2ec2abfbe322f2b48ba1593ae7457526a9ec9f061c1b75f0a5149d1b112f"
+    },
+    {
+      "path": "dist/src/review-workflow-cli.js",
+      "sha256": "7b1c5d4908eee4fe7b17a5be875e3e419189e2b663576282b45211106c8c6ec4"
+    },
+    {
+      "path": "dist/src/review-workflow-schema.js",
+      "sha256": "d2bc613bc19f44a6f8ed609df7fc917c091e06f5b85903f1ee5fe5076f56a9b4"
+    },
+    {
+      "path": "dist/src/review-workflow-session.js",
+      "sha256": "76568a3c0d3c9f9e7cb70ac1c1165be97936fab8e42cf685d2cc87d11cb00fc2"
+    },
+    {
+      "path": "dist/src/review-workflow.js",
+      "sha256": "6177de3e3605884ce2dcca46b558104938a3d7dacaf76fb60c32b91389045889"
+    },
+    {
+      "path": "dist/src/review.js",
+      "sha256": "17c183132b644f520353746c37a8f73c8fe06502d29743d9b9fb169c03323520"
+    },
+    {
+      "path": "dist/src/ruby-tools-evidence.js",
+      "sha256": "22abe59ce65855805729b35e8ad206384ae38f212ab2c36ad04d1c1ef068aaf0"
+    },
+    {
+      "path": "dist/src/ruby-tools-native.js",
+      "sha256": "279efae6c0cfb44be9bef722be12e65019fdfff8e73249f005f7cccf588526b8"
+    },
+    {
+      "path": "dist/src/ruby-tools-runner.js",
+      "sha256": "d5f08213205aa115a11be772916ec6114301c61e89c9c3510922611d05ee809d"
+    },
+    {
+      "path": "dist/src/ruby-tools.js",
+      "sha256": "a1ecafa386b9b7c3d697df465e72b1829828071deb36e177a6cf057e5b29bd61"
+    },
+    {
+      "path": "dist/src/ruby.js",
+      "sha256": "214cefd1b599917b061f49f51b6c3a4094190282b87c591d5a82f7abd994277a"
+    },
+    {
+      "path": "dist/src/ruff-evidence.js",
+      "sha256": "d213997d47e27f89947af3c384869ae8c787c62c6174131fe7ea8053f1745412"
+    },
+    {
+      "path": "dist/src/ruff.js",
+      "sha256": "99a511b912fb4db26e8ddd20c010187d8c1bebb5efd6f481602640e7b1d0083b"
+    },
+    {
+      "path": "dist/src/runner.js",
+      "sha256": "96370184d8152c4625978fa346d94a9585e758eba19fa149bc03dca631665e89"
+    },
+    {
+      "path": "dist/src/runtime-inventory.js",
+      "sha256": "1276c739aa295bd22b2ab18ae38611fcd3f43eb20b7209eb4bbaecb523500a80"
+    },
+    {
+      "path": "dist/src/rust-build.js",
+      "sha256": "1d526f4ddc733efd1f167dd0ecd0ad6d6cdb998a37afb39fca3796d796e0708e"
+    },
+    {
+      "path": "dist/src/rust-dep-info.js",
+      "sha256": "1dbda29fb3fe99914a4f9fff8a1bcad08946559ee9af466a235d1ee8a9fcf450"
+    },
+    {
+      "path": "dist/src/rust-evidence.js",
+      "sha256": "3f28dd3977c676dc584166fdea46f53ab3af4160a3c9c83a3ffeda5f0bb4f922"
+    },
+    {
+      "path": "dist/src/rust-runner.js",
+      "sha256": "4a06da427abd5bb015e06be1ba96810a25974b32fb9b23f3028e4af48f801e5d"
+    },
+    {
+      "path": "dist/src/rust-test-events.js",
+      "sha256": "c81ccf32cff881487dd66a2777874070a28623597b55ec6e0ada33748f134281"
+    },
+    {
+      "path": "dist/src/rust-test-evidence.js",
+      "sha256": "84a73ce77067548a2d5bb93fa0cbf581f0b525ddfbf80c70bcb5153af1ab76b1"
+    },
+    {
+      "path": "dist/src/rust-test-native.js",
+      "sha256": "9a2a8f37f530275a81ab9fc59b6357f72dd72255b8a92d3415069e2f256e6bdf"
+    },
+    {
+      "path": "dist/src/rust-workspace-evidence.js",
+      "sha256": "706402ce31f9e82dac45fb19d4ab029442fe8c72dffb139b8ba129ada4e78ff8"
+    },
+    {
+      "path": "dist/src/rust-workspace-runner.js",
+      "sha256": "bab8cfe8a4f025f6a179da990d188c723954d58814886c8cbcc4b2e2177f4fec"
+    },
+    {
+      "path": "dist/src/rust-workspace-schema.js",
+      "sha256": "dddc55f25f5bfd09dc3929db861fb6432f30d997fa4d046e2f743ff30345869c"
+    },
+    {
+      "path": "dist/src/rust.js",
+      "sha256": "1384026851f002205b12a1959390bab3656e609f2ff3b3d109dc689cbce2c269"
+    },
+    {
+      "path": "dist/src/rustfmt-evidence.js",
+      "sha256": "762c70a794f5b12a87f0843a04deb7aad65351dac11e5fc18078df95170b1cdc"
+    },
+    {
+      "path": "dist/src/rustfmt-runner.js",
+      "sha256": "f3dda2b50906f239563cdfe1c5504fd708ea66dc64fb10acb110469a1286af5e"
+    },
+    {
+      "path": "dist/src/rustfmt-skips.js",
+      "sha256": "ee1037a164054dd6721b95403e32a4537ea293bb4a13d29ec7f32bc799389803"
+    },
+    {
+      "path": "dist/src/rustfmt.js",
+      "sha256": "684a8c22528fc036b4eb8c869ba1fecbd447daa8f0a7d74b9de29984419211d9"
+    },
+    {
+      "path": "dist/src/sarif.js",
+      "sha256": "e5e549e59edbfb73fb3397152cd4eb0349800bba9043c561ab8dbda02b74ab95"
+    },
+    {
+      "path": "dist/src/schemas.js",
+      "sha256": "6f5790edece1609058d1831d8b9585b63eb27c2fd888a217d7555e96e3213090"
+    },
+    {
+      "path": "dist/src/staticcheck-evidence.js",
+      "sha256": "16bf021292b657a376f49cf387d6f57d9c11b9a3f28f7bcbbde5a52f711d8b57"
+    },
+    {
+      "path": "dist/src/swift-ast.js",
+      "sha256": "ccef319e590af311cd6af741ffa5f7700b66b10f1eed8641552e3a07fda455a3"
+    },
+    {
+      "path": "dist/src/swift-native.js",
+      "sha256": "b9a5cce97af720577e3c6e86eadc450fc9c2f948c452a751b9e3f47ae4051599"
+    },
+    {
+      "path": "dist/src/swift-testing.js",
+      "sha256": "0c724733aac4207a84337923f25dede909100db98bb637ce8ed86e9fbd2b3677"
+    },
+    {
+      "path": "dist/src/swift-tools-evidence.js",
+      "sha256": "5a7bee50745578d1c53b9a0d82d892122171b3c1c7e02998f61ad83c530c6546"
+    },
+    {
+      "path": "dist/src/swift-tools-runner.js",
+      "sha256": "ff57056604aa11ab703871595088da3396b37272e450854794fe76780c3ab808"
+    },
+    {
+      "path": "dist/src/swift-tools.js",
+      "sha256": "50f2ff2df1d7b330feee444a50216792b5a2759e36625231e89b925dedf7f820"
+    },
+    {
+      "path": "dist/src/swift.js",
+      "sha256": "2f19173c688b0b72b352cc3da6eaec393d25c520ec846301d24ac695336a5671"
+    },
+    {
+      "path": "dist/src/task-store.js",
+      "sha256": "d2ebbda30b40c5aa172111798ebcb148e3cb920e750cae998920db8437366638"
+    },
+    {
+      "path": "dist/src/terraform-evidence.js",
+      "sha256": "d089f52ce562072c0c27f3e8d6e07d74a75a94af3506e6a8695b060e9bfdfc66"
+    },
+    {
+      "path": "dist/src/terraform-runner.js",
+      "sha256": "75365b42f4550397b678d46f2ea0556ee070926b52b81bb92a91fca0ea406114"
+    },
+    {
+      "path": "dist/src/terraform.js",
+      "sha256": "17da4f46e33132d3accddb4631f7f1d1b563bbf4e4a09a8cca38600a96c63562"
+    },
+    {
+      "path": "dist/src/tool-versions.js",
+      "sha256": "02b1a5d40512140ea05852dbb66eb56149586cac1a956a3dc554b80935de3936"
+    },
+    {
+      "path": "dist/src/types.js",
+      "sha256": "3e235ff4fd6ada312c8fbdc94efb46b19ead27e59287e0268c9dcbc4aea8bd8a"
+    },
+    {
+      "path": "dist/src/typescript-arguments.js",
+      "sha256": "7d2eef0f362207e406b7487e62db4744808e72bb913beef0e9f148c161661293"
+    },
+    {
+      "path": "dist/src/typescript-build-evidence.js",
+      "sha256": "6a01c8359f010a819190b82a3b29a44810867c32f5f8411cfb4145678800a6d6"
+    },
+    {
+      "path": "dist/src/typescript-build-runner.js",
+      "sha256": "6f2f83f0ce2389a8b13db12a21cef61fd433552d031150d8c71ede3afb9a0195"
+    },
+    {
+      "path": "dist/src/typescript-build.js",
+      "sha256": "e8055bc8f3f2a19fca7efab903841dd6d5258a490a5aa58c9ca0b14956eef681"
+    },
+    {
+      "path": "dist/src/typescript-runner.js",
+      "sha256": "1b3f2e04ccd883ec93f0310c5e4dda4ed940fb0b71dbc39f6cb8f1db335ba6ce"
+    },
+    {
+      "path": "dist/src/typescript.js",
+      "sha256": "b78164173807b9c6fa781c93c109b805b8ede8e2f88d83aac2eef7c4b4776c25"
+    },
+    {
+      "path": "dist/src/validation-task-worker.js",
+      "sha256": "fa5c620fe64c926d98a669ac618e6ceab846b48de450637833b0bf43b6901bf9"
+    },
+    {
+      "path": "dist/src/validation-tasks-protocol.js",
+      "sha256": "7112e976e1df5bd525a269794a36ab3ead98ecefcb7aacc3f2c13aad684b27bb"
+    },
+    {
+      "path": "dist/src/validation-tasks.js",
+      "sha256": "80eaaa06f0dcb965fb6c1ab876fe350c00c309ba964f733c38f4534b9c055552"
+    },
+    {
+      "path": "dist/src/vitest-evidence.js",
+      "sha256": "88d956015a385d7d873dc740eeb3dc28108183a5f3c8c6a28727dc31980d7988"
+    },
+    {
+      "path": "dist/src/vitest-runner.js",
+      "sha256": "a279b63ab14d114e91a33bec8111c36334e6f05ce205ca5b4dd2fd48d015551e"
+    },
+    {
+      "path": "dist/src/vitest-version.js",
+      "sha256": "44d973c98fa08ec2913a77d6d95b2dda8c13f760ce42083b7a84b867b3d162cd"
+    },
+    {
+      "path": "dist/src/vitest.js",
+      "sha256": "16af7827d91b566be16cc479f4e7e5dd14c6055fa0c75398acf2073fe8b471d9"
+    },
+    {
+      "path": "dist/src/vue-router-capture.js",
+      "sha256": "48185d33b110f96ff96db8f4d85a9b3d706d006e16407de8e35f86b8a5de6667"
+    },
+    {
+      "path": "dist/src/vue-router-evidence.js",
+      "sha256": "635718d1d51fbac44022aa86aab23e05e07a3a465a86c2dc120236d0dedfc6f1"
+    },
+    {
+      "path": "dist/src/vue-router-protocol.js",
+      "sha256": "776fba6a01a25a3fad55e212ea9adfcfc8ae1685b20261e7645089fd254679f7"
+    },
+    {
+      "path": "dist/src/vue-router-runner.js",
+      "sha256": "0f1e9f64fb218a1cbc594f6e14842f4ee6b546ba1c13ce3ddab9d2285896295c"
+    },
+    {
+      "path": "dist/src/vue-router.js",
+      "sha256": "a2998718ab2a69214275455e680aebf14281b77515e41a835b466f90cb56d66c"
+    },
+    {
+      "path": "dist/src/vue-tsc-runner.js",
+      "sha256": "9b635f7b2651b3cb48f74f7235db7bc1655b6b116faddd86973184b25f5ae8d8"
+    },
+    {
+      "path": "dist/src/windows-execution.js",
+      "sha256": "76f45ae686d288889c03260419b1c7295ec1b96eec8808dad10c3f6624953a32"
+    },
+    {
+      "path": "dist/src/windows-native.js",
+      "sha256": "1b49201cd1533b52bcef5f14fbdacfe13109bc1a337fc4420771de3973237335"
+    },
+    {
+      "path": "dist/src/windows-process.js",
+      "sha256": "c5d6112b327a3c6c50be518b7d131326083e3321c1070f5437048c0ef214c7a8"
+    },
+    {
+      "path": "dist/src/workspace.js",
+      "sha256": "4d01cdc058cd8a7c4e1e690d9a898e23e9172bba3a25c17d5ef63e187e3c2c0e"
+    }
+  ],
+  "compiledRuntimeIndexSha256": "6373f91418014728f2bf073e9eefd8030a0e1165aadfc0915aedcc3d2f0d7a82",
+  "fullCheck": {
+    "command": "npm run check",
+    "outcome": "passed",
+    "counts": {
+      "tests": 866,
+      "pass": 633,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 233,
+      "todo": 0
+    },
+    "optionalNativeSkipsRemainUnverified": true
+  },
+  "directChangedFileLint": {
+    "files": [
+      "scripts/generate-schemas.mjs",
+      "scripts/probe-windows-runner.mjs",
+      "scripts/verify-native-raw-package.mjs",
+      "scripts/verify-required-native-tests.mjs",
+      "scripts/verify-ruby-tools-container.mjs",
+      "scripts/verify-ruby-tools-package.mjs",
+      "src/index.ts",
+      "src/process-output.ts",
+      "src/review-probe-schema.ts",
+      "src/review-probe.ts",
+      "src/review-verification.ts",
+      "src/review-workflow-audit.ts",
+      "src/review-workflow.ts",
+      "src/runner.ts",
+      "src/schemas.ts",
+      "src/types.ts",
+      "src/windows-native.ts",
+      "src/windows-process.ts",
+      "test/ci-native-profiles.test.ts",
+      "test/mcp.test.ts",
+      "test/process-output.test.ts",
+      "test/review-probe.test.ts",
+      "test/review-verification.test.ts",
+      "test/review-workflow-audit.test.ts",
+      "test/schemas.test.ts",
+      "test/windows-process.test.ts"
+    ],
+    "outcome": "passed"
+  },
+  "format": {
+    "command": "prettier --check .",
+    "outcome": "passed"
+  },
+  "schemaParity": {
+    "scope": "All generated public schemas reconciled by the full source test suite",
+    "outcome": "passed"
+  },
+  "workflowLint": {
+    "version": "1.7.12",
+    "outcome": "passed"
+  },
+  "ordinaryRunRawCaptureDefault": false,
+  "summaryIncludesPhysicalOutput": false,
+  "independentModelPacketsIncludePhysicalOutput": false,
+  "historicalNativeReceiptVersionsReadable": [1, 2],
+  "currentNativeReceiptVersion": 3,
+  "physicalStreamsPreserveCrossStreamOrdering": false,
+  "enginePrivateJournalRetention": "Uses the existing startup-selected retained-payload byte bound; oversized complete artifacts remain incomplete rather than silently truncated.",
+  "physicalWindowsAcceptance": {
+    "requiredProfile": "physical-process-output",
+    "state": "pending",
+    "countedAsPassing": false
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "gateAComplete": false,
+  "remaining": "Wider native tool and host-model all-attempt artifacts, Windows acceptance, authoritative claim validation, broader language/framework profiles and the unfrozen required inventory remain open."
+}
