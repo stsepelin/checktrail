@@ -122,12 +122,27 @@ try {
     ["[Environment]::Exit($result)", "native-returned"],
   ])
     source = source.replace(needle, mark(label) + needle);
+  source = source.replace(
+    "[Environment]::Exit($result)",
+    "[IO.File]::WriteAllText('startup-result', [string]$result); [Environment]::Exit($result)",
+  );
+  source =
+    "try {\n" +
+    source +
+    "\n} catch { [IO.File]::WriteAllText('startup-error', [string]$_.Exception); [Environment]::Exit(253) }";
   await invoke(source, "instrumented-fixed-bootstrap");
   console.log(
     JSON.stringify({
       label: "fixed-bootstrap-stages",
       stages: await readFile(path.join(root, "startup-stages"), "utf8").catch(
         () => "missing",
+      ),
+      controlConnected: !!socket,
+      result: await readFile(path.join(root, "startup-result"), "utf8").catch(
+        () => null,
+      ),
+      error: await readFile(path.join(root, "startup-error"), "utf8").catch(
+        () => null,
       ),
       receipt: await readFile(path.join(root, "receipt.json"), "utf8")
         .then(JSON.parse)
