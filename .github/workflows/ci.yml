@@ -60,7 +60,8 @@ jobs:
           php --version
       - name: Prepare pinned Rust compiler
         run: |
-          rustup toolchain install 1.98.1 --profile minimal
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          rustup target add --toolchain 1.98.1 wasm32-unknown-unknown
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
@@ -120,6 +121,10 @@ jobs:
           node scripts/verify-required-native-tests.mjs php-review
           node scripts/verify-required-native-tests.mjs laravel
           node scripts/verify-required-native-tests.mjs rust
+          node scripts/verify-required-native-tests.mjs rust-format
+          node scripts/verify-required-native-tests.mjs clippy
+          node scripts/verify-required-native-tests.mjs rust-tests
+          node scripts/verify-required-native-tests.mjs rust-workspace
           node scripts/verify-required-native-tests.mjs review-budget
           node scripts/verify-required-native-tests.mjs review-workflow
           node scripts/verify-required-native-tests.mjs review-workflow-audit
@@ -143,6 +148,14 @@ jobs:
         run: node scripts/verify-mcp-tasks-package.mjs
       - name: Verify installed PHP review profiles offline on the host
         run: node scripts/verify-php-review-package.mjs
+      - name: Verify installed Rust formatting offline on the host
+        run: node scripts/verify-rust-format-package.mjs
+      - name: Verify installed Clippy analysis offline on the host
+        run: node scripts/verify-clippy-package.mjs
+      - name: Verify installed Rust test execution offline on the host
+        run: node scripts/verify-rust-test-package.mjs
+      - name: Verify installed Rust workspace profiles offline on the host
+        run: node scripts/verify-rust-workspace-package.mjs
       - name: Verify repeated Go profiles in the production package
         run: node scripts/verify-go-matrix-package.mjs
       - name: Prepare pinned review runtime

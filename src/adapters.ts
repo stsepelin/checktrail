@@ -1,3 +1,4 @@
+import { applyRustBuildPolicy } from "./rust-build.js";
 import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
@@ -7,7 +8,8 @@ import { javaCheck } from "./java.js";
 import { dotnetCheck } from "./dotnet.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
-import { rustCheck } from "./rust.js";
+import { rustCheck, rustTestCheck } from "./rust.js";
+import { rustfmtCheck } from "./rustfmt.js";
 import { golangciCheck } from "./golangci.js";
 import { fastapiCheck } from "./fastapi.js";
 import { laravelCheck } from "./laravel.js";
@@ -95,7 +97,16 @@ export const adapters = [
       "php.laravel-runtime",
     ],
   },
-  { id: "rust", markers: ["Cargo.toml"], checks: ["rust.cargo-check"] },
+  {
+    id: "rust",
+    markers: ["Cargo.toml"],
+    checks: [
+      "rust.cargo-check",
+      "rust.cargo-fmt",
+      "rust.cargo-clippy",
+      "rust.cargo-test",
+    ],
+  },
   {
     id: "jvm",
     markers: ["pom.xml", "build.gradle", "build.gradle.kts"],
@@ -473,7 +484,22 @@ export async function checksFor(
   if (project.adapter === "dotnet") return [await dotnetCheck(source, project)];
   if (project.adapter === "swift") return [swiftCheck(project)];
   if (project.adapter === "ruby") return [rubyCheck(project)];
-  if (project.adapter === "rust") return [rustCheck(source, project)];
+  if (project.adapter === "rust") {
+    const checks = [
+      rustCheck(source, project),
+      ...(requested?.includes("rust.cargo-test")
+        ? [rustTestCheck(source, project)]
+        : []),
+      ...(requested?.includes("rust.cargo-clippy")
+        ? [rustCheck(source, project, true)]
+        : []),
+      ...(requested?.includes("rust.cargo-fmt")
+        ? [rustfmtCheck(source, project)]
+        : []),
+    ];
+    await applyRustBuildPolicy(source, project, checks);
+    return checks;
+  }
   if (project.adapter === "php") {
     const files = project.files.filter((file) => file.endsWith(".php"));
     const check: Check = {

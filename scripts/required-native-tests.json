@@ -1466,5 +1466,149 @@
       "file": "dist/test/php-review-surfaces.test.js",
       "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy"
     }
+  ],
+  "rust-format": [
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting planning retains exact workspace source without evaluating manifests or installing components"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting selects all declared workspace members with per-package editions and generated source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "native Rust formatting rejects local dependencies outside selected workspace membership without rewriting either source"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits"
+    },
+    {
+      "file": "dist/test/rustfmt.test.js",
+      "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection"
+    }
+  ],
+  "clippy": [
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "Clippy planning is explicit offline and never evaluates build scripts or installs tools"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy evidence requires pinned activation exact source fresh artifacts and native completion"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims"
+    },
+    {
+      "file": "dist/test/clippy-surfaces.test.js",
+      "name": "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection"
+    },
+    {
+      "file": "dist/test/clippy.test.js",
+      "name": "native Clippy distinguishes configuration failures from source defects and accepts fixed near-miss configuration while offline prerequisites remain errors"
+    },
+    {
+      "file": "dist/test/clippy-evidence.test.js",
+      "name": "Clippy configuration classification requires the pinned native message and exact local configuration address"
+    }
+  ],
+  "rust-tests": [
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "Rust test planning is explicit locked offline and cannot execute build scripts or test bodies or grant operator trust"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust tests execute both guarded bodies and doctest suites catch broken fixed and valid near-miss source and retain panicking fake-output failures"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust tests retain mixed all-ignored empty excluded-target and incomplete-source evidence without passing zero cases"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "Rust test evidence rejects missing duplicate stale escaped filtered and truncated native result identities"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust doctests preserve compile-only expected-failure ignored and expected-panic modes without filtering out listed whitespace identities"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust native test events reconcile multiple doctest suites compile-only modes exact names and ignored bodies"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust event parsing rejects empty interrupted duplicate benchmark and filtered evidence without treating captured failure text as success"
+    },
+    {
+      "file": "dist/test/rust-test-events.test.js",
+      "name": "Rust expected-panic labels preserve the exact listed unit identity while unsupported suffixes stay incomplete"
+    },
+    {
+      "file": "dist/test/rust-test-surfaces.test.js",
+      "name": "Rust test CLI and MCP agree on native assertion failures retain counts preserve summary privacy and reject argument trust injection"
+    },
+    {
+      "file": "dist/test/rust-tests.test.js",
+      "name": "native Rust test artifact identity survives an operator-granted temporary directory alias without touching retained project output"
+    }
+  ],
+  "rust-workspace": [
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace planning retains complete profiles without executing project code and rejects late invalid profile expansion atomically"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
+      "name": "native Rust workspace root package and child doctests use the most specific manifest owner"
+    },
+    {
+      "file": "dist/test/rust-workspace-surfaces.test.js",
+      "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust"
+    }
   ]
 }

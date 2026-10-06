@@ -52,6 +52,13 @@ const schema = z.strictObject({
   scopeError: z.boolean(),
 });
 
+const clippySchema = schema.extend({
+  version: z.literal(2),
+  mode: z.literal("clippy"),
+  clippyVersion: z.literal("0.1.98"),
+  forcedLintGroup: z.literal("clippy::all"),
+});
+
 export function rustEvidence(
   check: Check,
   processes: ProcessResult[],
@@ -86,23 +93,47 @@ export function rustEvidence(
         "Rust tooling could not resolve the package or complete native evidence collection.",
     };
   try {
-    const data = schema.parse(JSON.parse(process.stdout));
+    const data = (
+      check.id === "rust.cargo-clippy" ? clippySchema : schema
+    ).parse(JSON.parse(process.stdout));
     if (data.project !== check.project) return incomplete;
     const expected = new Set(
       check.scope.map((file) => path.resolve(root, check.project, file)),
     );
     const findings: Finding[] = [];
+    const seenFindings = new Set<string>();
     let errors = 0;
+    let configurationErrors = 0;
     for (const item of data.events) {
       if (item.reason !== "compiler-message") continue;
       if (item.message.level === "error") errors++;
+      if (
+        check.id === "rust.cargo-clippy" &&
+        item.message.level === "error" &&
+        item.message.code === null &&
+        item.message.message.startsWith(
+          "error reading Clippy's configuration file:",
+        ) &&
+        item.message.spans.some(
+          (span) =>
+            span.is_primary &&
+            ["clippy.toml", ".clippy.toml"].some(
+              (name) =>
+                path.resolve(root, check.project, span.file_name) ===
+                path.resolve(root, check.project, name),
+            ),
+        )
+      )
+        configurationErrors++;
       if (!["error", "warning"].includes(item.message.level)) continue;
       const location = item.message.spans.find((span) => span.is_primary);
       const absolute = location
         ? path.resolve(root, check.project, location.file_name)
         : undefined;
-      findings.push({
-        ruleId: `rustc/${item.message.code?.code ?? "diagnostic"}`,
+      const finding: Finding = {
+        ruleId: item.message.code?.code.startsWith("clippy::")
+          ? "clippy/" + item.message.code.code.slice("clippy::".length)
+          : `rustc/${item.message.code?.code ?? "diagnostic"}`,
         level: item.message.level === "error" ? "error" : "warning",
         message: item.message.message,
         ...(absolute && expected.has(absolute) && location!.line_start > 0
@@ -111,8 +142,20 @@ export function rustEvidence(
               line: location!.line_start,
             }
           : {}),
-      });
+      };
+      const key = JSON.stringify(finding);
+      if (check.id !== "rust.cargo-clippy" || !seenFindings.has(key))
+        findings.push(finding);
+      seenFindings.add(key);
     }
+    if (configurationErrors)
+      return {
+        status: "error",
+        reason:
+          "Clippy could not read its project configuration; source analysis is incomplete.",
+        findings,
+        findingsComplete: false,
+      };
     if (errors)
       return {
         status: "failed",
@@ -167,12 +210,24 @@ export function rustEvidence(
       )
     )
       return { ...incomplete, findings, findingsComplete: false };
+    const lintFailure =
+      check.id === "rust.cargo-clippy" &&
+      findings.some((finding) => finding.ruleId.startsWith("clippy/"));
+    const complete =
+      check.id !== "rust.cargo-clippy" ||
+      findings.every((finding) => finding.file !== undefined);
     return {
-      status: "passed",
+      status: lintFailure ? "failed" : complete ? "passed" : "inconclusive",
       reason:
-        "Cargo checked all declared targets with fresh output and dep-info coverage of inventoried Rust source; no tests were executed.",
+        check.id === "rust.cargo-clippy"
+          ? !complete
+            ? "Clippy retained diagnostics without verified source addresses; complete analysis is not established."
+            : lintFailure
+              ? "Clippy reported lint diagnostics after fresh complete native target/source accounting; no tests were executed."
+              : "Clippy checked all declared targets with fresh output and exact inventoried dep-info scope; no tests were executed."
+          : "Cargo checked all declared targets with fresh output and dep-info coverage of inventoried Rust source; no tests were executed.",
       findings,
-      findingsComplete: true,
+      findingsComplete: complete,
     };
   } catch {
     return incomplete;

@@ -1,3 +1,4 @@
+import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
 import { nuxtEvidence } from "./nuxt-evidence.js";
@@ -7,6 +8,8 @@ import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
 import { dotnetEvidence } from "./dotnet-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
+import { rustTestEvidence } from "./rust-test-evidence.js";
+import { rustfmtEvidence } from "./rustfmt-evidence.js";
 import { laravelEvidence } from "./laravel-evidence.js";
 import { pintEvidence } from "./pint-evidence.js";
 import { phpCsFixerEvidence } from "./php-cs-fixer-evidence.js";
@@ -201,6 +204,7 @@ export function evaluate(
     ...(check.executionId ? { executionId: check.executionId } : {}),
     ...(check.goScope ? { goScope: check.goScope } : {}),
     ...(check.goBuild ? { goBuild: check.goBuild } : {}),
+    ...(check.rustBuild ? { rustBuild: check.rustBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
     id: check.id,
     adapter: check.adapter,
@@ -257,6 +261,8 @@ export function evaluate(
     );
   if (processes.some((p) => p.errorCode || p.signal || p.exitCode === null))
     return set("error", "The process could not complete normally.");
+  if (check.rustBuild)
+    return { ...result, ...rustWorkspaceEvidence(check, processes, root) };
   if (check.parser === "external-json")
     return { ...result, ...externalEvidence(check, processes) };
   if (check.parser === "typescript-build-json")
@@ -333,6 +339,10 @@ export function evaluate(
     return { ...result, ...actionlintEvidence(check, processes) };
   if (check.parser === "dotnet-json")
     return { ...result, ...dotnetEvidence(check, processes, root) };
+  if (check.parser === "rustfmt-json")
+    return { ...result, ...rustfmtEvidence(check, processes, root) };
+  if (check.parser === "rust-test-json")
+    return { ...result, ...rustTestEvidence(check, processes, root) };
   if (check.parser === "rust-json")
     return { ...result, ...rustEvidence(check, processes, root) };
   if (check.parser === "laravel-json")

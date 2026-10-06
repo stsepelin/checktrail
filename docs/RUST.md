@@ -5,8 +5,9 @@ installed Rust/Cargo 1.98.1 and requires an existing local `Cargo.lock`. Plannin
 never invokes Cargo or build scripts. Validation needs the normal operator trust
 permission; Cargo build scripts and procedural macros can execute project code.
 
-The current profile supports one Cargo workspace member rooted at the discovered
-project. Multi-package workspaces and other toolchain versions remain unavailable
+Without a build policy, this profile supports one Cargo workspace member rooted
+at the discovered project. The explicit multi-member feature/target contract is
+in [RUST-BUILD.md](RUST-BUILD.md). Other toolchain versions remain unavailable
 until separately verified. Native fixtures run on Linux with the official
 `rust:1.98.1-alpine` image and Node 22.23.2. The container helper prints resolved
 image digests and disables networking. Host platforms beyond that fixture remain
@@ -72,3 +73,14 @@ to distinguish compilation from test execution.
 References: [Cargo check](https://doc.rust-lang.org/cargo/commands/cargo-check.html),
 [JSON messages](https://doc.rust-lang.org/cargo/reference/external-tools.html),
 [rustup environment controls](https://rust-lang.github.io/rustup/environment-variables.html).
+
+The separately selected non-rewriting `rust.cargo-fmt` workspace profile and its
+limits are documented in [RUST-FORMAT.md](RUST-FORMAT.md). It does not change the
+compiler check's default scope or imply Clippy/test execution.
+
+The opt-in recommended lint-group profile, suppression override and native
+readiness controls are documented in [CLIPPY.md](CLIPPY.md).
+
+The opt-in native libtest/doctest profile and its case-count semantics are
+documented in [RUST-TESTS.md](RUST-TESTS.md). Multi-member compilation/testing and
+explicit compiler feature/target profiles remain pending.

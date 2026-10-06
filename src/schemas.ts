@@ -1,3 +1,5 @@
+import { rustBuildSelectionSchema } from "./rust-build.js";
+export { rustBuildPolicySchema } from "./rust-build.js";
 import {
   executionIdSchema,
   goRepetitionSchema,
@@ -160,6 +162,7 @@ export const reportSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),
       goTarget: goTargetEvidenceSchema.optional(),
       status,
@@ -242,6 +245,7 @@ export const planSchema = z.strictObject({
       scope: strings,
       goScope: goScopePolicySchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
+      rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),
       kind,
       parser: z.enum(PARSERS),
