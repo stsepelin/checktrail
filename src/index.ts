@@ -200,3 +200,9 @@ export {
   reviewPairedReportSchema,
   reviewPairedSummarySchema,
 } from "./review-paired-scoring.js";
+
+export {
+  reviewBenchmarkScoringProfileSchema,
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
+} from "./review-benchmark-schema.js";

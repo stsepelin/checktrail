@@ -132,6 +132,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs review-workflow-audit
           node scripts/verify-required-native-tests.mjs review-benchmark
           node scripts/verify-required-native-tests.mjs review-benchmark-judging
+          node scripts/verify-required-native-tests.mjs review-benchmark-scoring
           node scripts/verify-required-native-tests.mjs review-paired-scoring
           node scripts/verify-required-native-tests.mjs review-native-budget
       - run: npm run format:check
@@ -147,6 +148,8 @@ jobs:
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify paired scoring in the production package
         run: node scripts/verify-review-paired-package.mjs
+      - name: Verify sealed benchmark scoring in the production package
+        run: node scripts/verify-review-benchmark-score-package.mjs
       - name: Verify sealed synthetic benchmark intake in the production package
         run: node scripts/verify-review-benchmark-package.mjs
       - name: Verify installed MCP Tasks lifecycle offline on the host
