@@ -22,12 +22,17 @@ this profile. Wrapper and wider tool profiles remain required separately.
 
 A fixed engine PowerShell bootstrap first assigns itself to an outer kill-on-close
 job through fixed Reflection.Emit P/Invoke signatures. This owns compiler children
-before Windows PowerShell can launch them during `Add-Type`. It then decodes
-compressed engine-owned C# source.
+before the framework CodeDom compiler can launch them. It decodes compressed
+engine-owned C# source and compiles it in owned temporary storage with fixed
+framework references. Bounded JSON decoding and compilation use framework APIs
+without bootstrap cmdlet/module auto-loading. Native Windows acceptance remains
+required for this experimental profile.
 Project commands, arguments, working directory and environment arrive as JSON
 data in an exclusively created, bounded engine request file. A separate private
 Windows named pipe carries only the parent lifetime signal; PowerShell stdin is
-ignored so its pipeline reader cannot consume engine control data. The bootstrap uses the host SystemRoot's Windows
+ignored so its pipeline reader cannot consume engine control data. The command
+line carries a compressed fixed engine bootstrap; project data never enters its
+script block. The receipt digest binds that actual launcher. The bootstrap uses the host SystemRoot's Windows
 PowerShell executable, never PATH or a project shell command. It does not change
 execution policy. Command data is quoted according to the documented Windows CRT
 argument rules and bounded before startup. Runtime-specific argument parsers

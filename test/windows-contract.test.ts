@@ -4,6 +4,9 @@ import { gunzipSync } from "node:zlib";
 import {
   windowsNativeCode,
   windowsCompressedNative,
+  windowsCompressedSupervisor,
+  windowsSupervisorScript,
+  windowsLauncherScript,
 } from "../src/windows-native.js";
 import {
   quoteWindowsArgument,
@@ -15,6 +18,16 @@ test("Windows literal argument encoding follows exact quote backslash empty and 
   assert.equal(
     gunzipSync(Buffer.from(windowsCompressedNative, "base64")).toString("utf8"),
     windowsNativeCode,
+  );
+  assert.equal(
+    gunzipSync(Buffer.from(windowsCompressedSupervisor, "base64")).toString(
+      "utf8",
+    ),
+    windowsSupervisorScript,
+  );
+  assert.equal(
+    Buffer.from(windowsEncodedSupervisor, "base64").toString("utf16le"),
+    windowsLauncherScript,
   );
   assert.equal(quoteWindowsArgument(""), '""');
   assert.equal(quoteWindowsArgument("ordinary"), '"ordinary"');

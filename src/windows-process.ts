@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { withinRoot } from "./inventory.js";
-import { windowsSupervisorScript } from "./windows-native.js";
+import { windowsLauncherScript } from "./windows-native.js";
 import {
   windowsReceiptSchema,
   windowsExecutionSchema,
@@ -23,10 +23,10 @@ import type { Command, ProcessResult } from "./types.js";
 import type { RunOptions } from "./runner.js";
 
 export const windowsSupervisorSha256 = createHash("sha256")
-  .update(windowsSupervisorScript)
+  .update(windowsLauncherScript)
   .digest("hex");
 export const windowsEncodedSupervisor = Buffer.from(
-  windowsSupervisorScript,
+  windowsLauncherScript,
   "utf16le",
 ).toString("base64");
 const invalid = (code: string) => Object.assign(new Error(code), { code });
