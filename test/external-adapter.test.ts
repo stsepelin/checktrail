@@ -759,3 +759,37 @@ test(
     assert.equal((await validate(root, options)).outcome, "passed");
   },
 );
+
+test("legacy loose manifests named bundle JSON retain native registration and their original manifest byte bound", async (t) => {
+  const root = await fixture(t, input);
+  const text = JSON.stringify(manifest);
+  const store = await fixture(t, {
+    "adapter.bundle.json": text,
+    "adapter.mjs": sample,
+  });
+  const reference = {
+    path: path.join(store, "adapter.bundle.json"),
+    sha256: hash(text),
+  };
+  const plan = await createPlan(root, { externalAdapters: [reference] });
+  assert.equal(plan.plan.checks[0]!.id, "external.fixture.whitespace");
+  assert.equal(
+    (await validate(root, { trusted: true, externalAdapters: [reference] }))
+      .outcome,
+    "passed",
+  );
+  await writeFile(path.join(root, "value with spaces.txt"), "broken  \n");
+  assert.equal(
+    (await validate(root, { trusted: true, externalAdapters: [reference] }))
+      .outcome,
+    "failed",
+  );
+  const oversized = text + " ".repeat(256 * 1024);
+  await writeFile(reference.path, oversized);
+  await assert.rejects(
+    createPlan(root, {
+      externalAdapters: [{ ...reference, sha256: hash(oversized) }],
+    }),
+    /bounded|limit/,
+  );
+});

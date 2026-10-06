@@ -292,6 +292,18 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-external-container.mjs
+      - name: Prepare pinned bundle verification and native compilation runtimes
+        run: docker build --file scripts/executable-bundle-tools.Dockerfile --tag checktrail-executable-bundle-test:1 scripts
+      - name: Require packed executable installation and separate trusted execution
+        run: |
+          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle
+          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs executable-bundle-interpreters
+          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs external-protocol
+          docker run --rm --network none --cpus 2 --memory 2g --mount "type=bind,src=$PWD,target=/workspace,readonly" --workdir /workspace checktrail-executable-bundle-test:1 node scripts/verify-required-native-tests.mjs policy-distribution
+      - name: Verify packed executable adapters in a fresh offline production installation
+        env:
+          CHECKTRAIL_EXECUTABLE_BUNDLE_IMAGE: checktrail-executable-bundle-test:1
+        run: node scripts/verify-executable-bundle-package.mjs
 
   vue-router:
     runs-on: ubuntu-latest

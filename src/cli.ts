@@ -50,6 +50,7 @@ import {
   projectHypothesisPlan,
 } from "./review-hypotheses.js";
 import { fetchPolicyPack } from "./fetch-pack.js";
+import { fetchExternalAdapter } from "./fetch-adapter.js";
 import {
   externalReferencesSchema,
   loadExternalAdapters,
@@ -140,7 +141,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-benchmark-judge-setup|review-benchmark-judge-packet|review-benchmark-seal-judgments|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...] [--task-store PRIVATE_DIRECTORY --timeout-ms 30000]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nReview-benchmark-judge-setup/judge-packet: --benchmark REFERENCE --judge UUID; judge-packet requires --detailed --allow-review-source; seal-judgments closes all frozen judge slots\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/sealing remain operator commands; alternatively --judge UUID exposes one prepared anonymous judge packet\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-benchmark-judge-setup|review-benchmark-judge-packet|review-benchmark-seal-judgments|review-run|review-refute|review-probe|review-verify|review-score|mutate|fetch-pack|fetch-adapter> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...] [--task-store PRIVATE_DIRECTORY --timeout-ms 30000]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nReview-benchmark-judge-setup/judge-packet: --benchmark REFERENCE --judge UUID; judge-packet requires --detailed --allow-review-source; seal-judgments closes all frozen judge slots\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/sealing remain operator commands; alternatively --judge UUID exposes one prepared anonymous judge packet\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nFetch-adapter: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_BUNDLE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -337,12 +338,14 @@ async function main(): Promise<void> {
       "Inference requires --provider-config and --allow-provider-source",
     );
   if (
-    command !== "fetch-pack" &&
+    !["fetch-pack", "fetch-adapter"].includes(command!) &&
     (values.url !== undefined ||
       values.sha256 !== undefined ||
       (values.output !== undefined && command !== "review-benchmark-freeze"))
   )
-    throw new Error("Download options apply only to fetch-pack");
+    throw new Error(
+      "Download options apply only to fetch-pack or fetch-adapter",
+    );
   const externalAdapters = externalReferencesSchema.parse(
     (values.adapter ?? []).map((value) => {
       const split = value.lastIndexOf("#sha256=");
@@ -432,10 +435,10 @@ async function main(): Promise<void> {
     print(await mcpConfiguration(root, values.client as McpClient));
     return;
   }
-  if (command === "fetch-pack") {
+  if (command === "fetch-pack" || command === "fetch-adapter") {
     if (!values.url || !values.sha256 || !values.output)
       throw new Error(
-        "fetch-pack requires --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH",
+        `${command} requires --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH`,
       );
     if (
       values["trust-project"] ||
@@ -445,7 +448,7 @@ async function main(): Promise<void> {
       values["allow-env"]?.length
     )
       throw new Error(
-        "Policy pack download does not accept execution or project policy options",
+        "Artifact download does not accept execution or project policy options",
       );
     const controller = new AbortController();
     const cancel = (): void => controller.abort();
@@ -453,7 +456,9 @@ async function main(): Promise<void> {
     process.once("SIGTERM", cancel);
     try {
       print(
-        await fetchPolicyPack(root, {
+        await (
+          command === "fetch-pack" ? fetchPolicyPack : fetchExternalAdapter
+        )(root, {
           url: values.url,
           sha256: values.sha256,
           output: values.output,

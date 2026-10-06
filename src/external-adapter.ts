@@ -6,81 +6,24 @@ import { z } from "zod";
 import { withinRoot } from "./inventory.js";
 import type { Check, Inventory, Project } from "./types.js";
 
-const sha256 = z.string().regex(/^[a-f0-9]{64}$/);
-const identifier = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/);
-const relativePath = z
-  .string()
-  .min(1)
-  .max(4096)
-  .refine(
-    (value) =>
-      !path.posix.isAbsolute(value) &&
-      path.posix.normalize(value) === value &&
-      value !== "." &&
-      value !== ".." &&
-      !value.startsWith("../") &&
-      [...value].every(
-        (character) =>
-          character.charCodeAt(0) >= 32 &&
-          character.charCodeAt(0) !== 127 &&
-          character !== "\\",
-      ),
-  );
-export const externalReferenceSchema = z.strictObject({
-  path: z
-    .string()
-    .min(1)
-    .max(4096)
-    .refine((value) => path.isAbsolute(value) && !value.includes("\0")),
-  sha256,
-});
-export const externalReferencesSchema = z.array(externalReferenceSchema).max(8);
-export const externalIdentitySchema = z.strictObject({
-  id: z.string().regex(/^external\.[a-z][a-z0-9-]{0,63}$/),
-  version: z
-    .string()
-    .regex(/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/)
-    .max(128),
-  sha256,
-});
-export const externalManifestSchema = z.strictObject({
-  schemaVersion: z.literal(1),
-  id: externalIdentitySchema.shape.id,
-  version: externalIdentitySchema.shape.version,
-  description: z.string().min(1).max(4096),
-  runtime: z.enum(["node", "python3", "php", "native"]),
-  entry: relativePath,
-  files: z
-    .array(z.strictObject({ path: relativePath, sha256 }))
-    .min(1)
-    .max(512),
-  markers: z
-    .array(
-      z
-        .string()
-        .regex(/^[A-Za-z0-9_.-]{1,128}$/)
-        .refine((value) => value !== "." && value !== ".."),
-    )
-    .min(1)
-    .max(32),
-  checks: z
-    .array(
-      z.strictObject({
-        id: identifier,
-        kind: z.enum(["analysis", "syntax", "format", "test"]),
-        description: z.string().min(1).max(4096),
-        failOn: z.enum(["error", "warning"]),
-        scope: z.strictObject({
-          extensions: z
-            .array(z.string().regex(/^\.[A-Za-z0-9_.-]{1,64}$/))
-            .max(32),
-          names: z.array(z.string().regex(/^[A-Za-z0-9_.-]{1,128}$/)).max(32),
-        }),
-      }),
-    )
-    .min(1)
-    .max(32),
-});
+import {
+  externalDigestSchema as sha256,
+  externalPathSchema as relativePath,
+  externalReferenceSchema,
+  externalReferencesSchema,
+  externalIdentitySchema,
+  externalManifestSchema,
+} from "./external-schema.js";
+export {
+  externalReferenceSchema,
+  externalReferencesSchema,
+  externalIdentitySchema,
+  externalManifestSchema,
+} from "./external-schema.js";
+import {
+  parseExecutableBundle,
+  EXECUTABLE_BUNDLE_MAX_BYTES,
+} from "./executable-bundle.js";
 export type ExternalReference = z.infer<typeof externalReferenceSchema>;
 export type ExternalIdentity = z.infer<typeof externalIdentitySchema>;
 export interface ExternalAdapter {
@@ -100,16 +43,43 @@ export async function loadExternalAdapter(
   const directory = await realpath(path.dirname(reference.path));
   const manifestFile = path.join(directory, path.basename(reference.path));
   const manifestInfo = await lstat(manifestFile);
-  if (!manifestInfo.isFile() || manifestInfo.size > 256 * 1024)
-    throw new Error(
-      "External adapter manifest must be a regular file within 256 KiB",
-    );
+  const packed = manifestFile.endsWith(".bundle.json");
+  const maxBytes = packed ? EXECUTABLE_BUNDLE_MAX_BYTES : 256 * 1024;
+  if (!manifestInfo.isFile() || manifestInfo.size > maxBytes)
+    throw Error("External adapter reference must be a bounded regular file");
   const bytes = await readFile(manifestFile);
-  if (bytes.length > 256 * 1024 || hash(bytes) !== reference.sha256)
-    throw new Error("External adapter manifest integrity mismatch");
-  const manifest = externalManifestSchema.parse(
-    JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
-  );
+  if (bytes.length > maxBytes || hash(bytes) !== reference.sha256)
+    throw Error("External adapter manifest integrity mismatch");
+  if (packed) {
+    let bundle;
+    try {
+      bundle = parseExecutableBundle(bytes, retainBytes);
+    } catch {
+      // This suffix was valid for loose manifests before packed distribution.
+      // Fallback retains the original strict manifest and per-file checks below.
+      if (bytes.length > 256 * 1024)
+        throw Error("External adapter manifest must be a bounded regular file");
+    }
+    if (bundle)
+      return {
+        reference: { path: manifestFile, sha256: reference.sha256 },
+        manifest: bundle.manifest,
+        identity: {
+          id: bundle.manifest.id,
+          version: bundle.manifest.version,
+          sha256: reference.sha256,
+        },
+        contents: bundle.contents,
+      };
+  }
+  let manifest;
+  try {
+    manifest = externalManifestSchema.parse(
+      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
+    );
+  } catch {
+    throw Error("External adapter manifest is not valid UTF-8 manifest JSON");
+  }
   if (
     new Set(manifest.files.map((file) => file.path)).size !==
       manifest.files.length ||

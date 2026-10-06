@@ -1610,5 +1610,129 @@
       "file": "dist/test/rust-workspace-surfaces.test.js",
       "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust"
     }
+  ],
+  "executable-bundle": [
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapter registration verifies every artifact without executing code or granting project trust and preserves native broken fixed near-miss results"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapters reject missing duplicate unpinned colliding escaping corrupt and noncanonical artifact content without leaking malformed manifest text"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle HTTPS installation publishes exact verified private bytes with no implicit activation or code execution"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle download validates every artifact before publication and hides endpoint and body text on transport or content failures"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "executable bundle cancellation and normalized path symlink and overwrite controls never publish partial artifacts"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "concurrent executable bundle publication admits exactly one complete result and preserves a destination created during transfer"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "packed adapter CLI and MCP share native findings keep code and paths out of summaries and reject request-level trust or registration"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "fetch-adapter CLI installs verified bytes without registering code and rejects execution registration and malformed private manifest disclosure"
+    },
+    {
+      "file": "dist/test/executable-bundle.test.js",
+      "name": "compiled native packed adapters preserve binary bytes and report broken fixed and valid near-miss source after separate trusted registration"
+    }
+  ],
+  "executable-bundle-interpreters": [
+    {
+      "file": "dist/test/executable-bundle-interpreters.test.js",
+      "name": "packed python3 adapters install without project imports and preserve native broken fixed and near-miss outcomes after explicit trusted registration"
+    },
+    {
+      "file": "dist/test/executable-bundle-interpreters.test.js",
+      "name": "packed php adapters install without project imports and preserve native broken fixed and near-miss outcomes after explicit trusted registration"
+    }
+  ],
+  "external-protocol": [
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external empty scopes and unavailable runtimes never become passing checks"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external planning verifies pinned metadata without executing code or granting repository trust"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external bundle integrity rejects altered files, unpinned entries, duplicates, escapes and symbolic links"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external Node checks execute verified copies, report broken/fixed text and preserve nested project scope"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external result accounting rejects omitted files, forged identity, malformed payloads and inconsistent exits"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external test adapters require non-skipped tests per file and reconcile failure counts"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external Python adapters use the same protocol without importing project startup modules"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external artifact changes during execution invalidate findings even outside the project inventory"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external cancellation kills a running adapter child and cleans its verified temporary bundle"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external CLI references and public example remain pinned and do not grant execution implicitly"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external MCP adapters are startup-only and summary reports omit bundle paths and delegated tool metadata"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external PHP adapters report real source findings through the same protocol"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "external warnings respect declared failure levels and protected environment values cannot be overwritten"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "compiled native adapters report real broken and fixed source through the same protocol"
+    },
+    {
+      "file": "dist/test/external-adapter.test.js",
+      "name": "legacy loose manifests named bundle JSON retain native registration and their original manifest byte bound"
+    }
+  ],
+  "policy-distribution": [
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote policy downloads pin exact bytes, compose offline and publish without replacing concurrent files"
+    },
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote policy transport and content failures leave no files or private endpoint diagnostics"
+    },
+    {
+      "file": "dist/test/fetch-pack.test.js",
+      "name": "remote pack cancellation after connection and invalid output boundaries never publish content"
+    }
   ]
 }

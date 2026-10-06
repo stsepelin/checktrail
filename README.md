@@ -128,7 +128,10 @@ validated by the engine. Private configuration and rules need not be published.
 Local public/private JSON packs and additive operator overlays are implemented;
 see [policy packs](docs/POLICY-PACKS.md). An explicit
 [`fetch-pack` command](docs/PACK-DISTRIBUTION.md) can download a pinned data-only
-pack over HTTPS for later offline use.
+pack over HTTPS for later offline use. The explicit
+[`fetch-adapter` command](docs/EXECUTABLE-BUNDLES.md) verifies every artifact in
+a pinned executable bundle before publishing a private file; registration and
+trusted execution are separate actions.
 
 Operator-registered [external adapters](docs/EXTERNAL-ADAPTERS.md) can run a pinned
 local Node, Python, PHP or native executable bundle. Repository configuration can

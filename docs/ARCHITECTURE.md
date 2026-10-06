@@ -59,6 +59,10 @@ checks for detected project roots. Unknown keys, IDs and project roots fail befo
 any process starts. A missing config uses conservative registered defaults. Pinned JSON packs add
 registered checks, and an operator-selected private overlay adds requirements to
 an explicit base policy. See `POLICY-PACKS.md`.
+Explicit pinned downloads share the data-only policy and executable-bundle HTTPS
+transport. The executable installer verifies all embedded artifacts before
+exclusive publication of one complete file; startup registration and trusted
+execution remain separate. See EXECUTABLE-BUNDLES.md.
 Local operator trust and output settings cannot be enabled by this file. Projects
 can require named environment variables, but values are supplied only through
 operator CLI/library/MCP startup permissions. Values are not recorded in commands;

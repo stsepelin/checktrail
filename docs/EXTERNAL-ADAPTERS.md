@@ -10,6 +10,11 @@ identifies bytes; it does not authenticate an author, prove an analysis correct 
 pin system libraries and tools. A trusted adapter can fabricate protocol evidence.
 Review its implementation, licenses and native regression cases before using it.
 
+The separate [pinned executable downloader](EXECUTABLE-BUNDLES.md) can publish
+one verified opaque `.bundle.json` file for later explicit registration. The same
+shared runner accepts its Node/Python/PHP/native artifacts. Loose manifests retain
+their original contract, including existing `.bundle.json` filenames.
+
 ## Try the original example
 
 From a built checkout, compute the digest of the exact manifest bytes:
@@ -43,7 +48,8 @@ Git narrowing because the engine cannot establish an external tool's impact mode
 ## Bundle contract
 
 The generated schemas are `schemas/external-manifest.schema.json`,
-`external-reference.schema.json`, `external-request.schema.json` and
+`external-reference.schema.json`, `executable-bundle.schema.json`,
+`external-request.schema.json` and
 `external-result.schema.json`. Runtime validation also enforces cross-field
 constraints such as uniqueness, test accounting and exact scope matching.
 
@@ -123,7 +129,10 @@ metadata, raw output and source paths; check IDs and outcomes remain visible.
 
 ## Execution limits and cleanup
 
-Registration allows at most eight bundles. Each manifest is at most 256 KiB;
+Registration allows at most eight bundles. Each decoded manifest is at most 256 KiB;
+opaque packed references additionally have a 192 MiB encoded bound. See
+[executable distribution](EXECUTABLE-BUNDLES.md) for representation limits.
+
 each bundle lists at most 512 files, 32 MiB per file and 128 MiB combined. A manifest
 has at most 32 markers and 32 checks. A check has at most 20,000 scoped files and a
 100 KiB serialized invocation. Results have at most 2,000 findings and 32 tools;
