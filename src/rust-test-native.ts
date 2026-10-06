@@ -53,7 +53,7 @@ export async function rustTestsNative(
   },
 ): Promise<RustTestNative> {
   let libraryDirectory: string | undefined;
-  if (process.platform === "darwin") {
+  if (process.platform === "darwin" || process.platform === "linux") {
     const library = invoke("rustc", ["--print", "target-libdir"]);
     const directory = library.stdout.trim();
     if (
@@ -73,7 +73,9 @@ export async function rustTestsNative(
       libraryDirectory && path.isAbsolute(executable)
         ? {
             ...process.env,
-            DYLD_FALLBACK_LIBRARY_PATH: [
+            [process.platform === "darwin"
+              ? "DYLD_FALLBACK_LIBRARY_PATH"
+              : "LD_LIBRARY_PATH"]: [
               path.dirname(executable),
               path.dirname(path.dirname(executable)),
               libraryDirectory,
