@@ -183,7 +183,16 @@ export async function toolsFor(
     return tools;
   }
   if (check.adapter === "swift")
-    return [command("swift", "swiftc", ["--version"])];
+    return [
+      command("swift", "swiftc", ["--version"]),
+      ...(check.id === "swift.syntax"
+        ? []
+        : [
+            { name: "node", source: "engine-runtime" } as const,
+            command("swiftpm", "swift", ["package", "--version"]),
+            command("swiftlint", "swiftlint", ["version"]),
+          ]),
+    ];
   if (check.id === "jvm.gradle-test" && check.commands[0])
     return [
       { name: "node", source: "engine-runtime" },
@@ -425,7 +434,11 @@ export async function identifyTool(
                                           ? /^Python (\S+)$/.exec(output)?.[1]
                                           : tool.name === "ruff"
                                             ? /^ruff (\S+)$/.exec(output)?.[1]
-                                            : output;
+                                            : tool.name === "swiftpm"
+                                              ? /^Swift Package Manager - Swift (\d+\.\d+\.\d+)$/.exec(
+                                                  output,
+                                                )?.[1]
+                                              : output;
   if (
     version &&
     (tool.name === "swift"

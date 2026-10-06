@@ -21,6 +21,7 @@ const timeoutMs = [
   "dotnet-generated",
   "dotnet-method",
   "ruby-tools",
+  "swift-tools",
 ].includes(profile)
   ? 300000
   : 120000;

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "swiftVersion": "6.2.3",
+  "toolsVersion": "6.2.0",
+  "platform": "aarch64-unknown-linux-gnu",
+  "packageName": "OriginalQuantity",
+  "products": [
+    {
+      "name": "OriginalQuantity",
+      "type": "library",
+      "targets": ["OriginalQuantity"]
+    }
+  ],
+  "targets": [
+    {
+      "name": "OriginalQuantity",
+      "type": "regular",
+      "path": "Sources/OriginalQuantity",
+      "sources": ["Sources/OriginalQuantity/Quantity.swift"],
+      "dependencies": []
+    },
+    {
+      "name": "OriginalQuantityTests",
+      "type": "test",
+      "path": "Tests/OriginalQuantityTests",
+      "sources": [
+        "Tests/OriginalQuantityTests/QuantityTests.swift",
+        "Tests/OriginalQuantityTests/TestSupport.swift"
+      ],
+      "dependencies": ["OriginalQuantity"]
+    }
+  ],
+  "tests": {
+    "framework": "xctest",
+    "files": ["Tests/OriginalQuantityTests/QuantityTests.swift"],
+    "support": ["Tests/OriginalQuantityTests/TestSupport.swift"]
+  },
+  "swiftlintVersion": "0.65.1",
+  "rules": ["force_try", "force_unwrapping"]
+}

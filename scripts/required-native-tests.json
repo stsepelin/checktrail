@@ -2088,5 +2088,43 @@
       "file": "dist/test/ruby-tools-surfaces.test.js",
       "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
     }
+  ],
+  "swift-tools": [
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native Swift build and XCTest bind complete compiler scope and two callbacks across support files with regression and repair"
+    },
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native SwiftLint explicit rules reconcile every source and expose forced unwrap diagnostics with literal near miss and repair"
+    },
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities"
+    },
+    {
+      "file": "dist/test/swift-tools-lifecycle.test.js",
+      "name": "native Swift XCTest empty skipped setup and teardown cases preserve complete lifecycle accounting"
+    },
+    {
+      "file": "dist/test/swift-tools-lifecycle.test.js",
+      "name": "native Swift protects startup filters and refuses stale copied source omitted manifest scope and unaudited inline suppression"
+    },
+    {
+      "file": "dist/test/swift-testing.test.js",
+      "name": "native Swift Testing binds macro source methods and parameter cases with regression repair disabled and empty-case accounting"
+    },
+    {
+      "file": "dist/test/swift-testing.test.js",
+      "name": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence"
+    },
+    {
+      "file": "dist/test/swift-tools-surfaces.test.js",
+      "name": "native Swift CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/swift-tools-cancel.test.js",
+      "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs"
+    }
   ]
 }

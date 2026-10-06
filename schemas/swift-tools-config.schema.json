@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "swiftVersion": { "type": "string", "const": "6.2.3" },
+    "toolsVersion": { "type": "string", "const": "6.2.0" },
+    "platform": { "type": "string", "const": "aarch64-unknown-linux-gnu" },
+    "packageName": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+    },
+    "products": {
+      "minItems": 1,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "type": { "type": "string", "enum": ["library", "executable"] },
+          "targets": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            }
+          }
+        },
+        "required": ["name", "type", "targets"],
+        "additionalProperties": false
+      }
+    },
+    "targets": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["regular", "executable", "test"]
+          },
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "sources": {
+            "minItems": 1,
+            "maxItems": 256,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          },
+          "dependencies": {
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            }
+          }
+        },
+        "required": ["name", "type", "path", "sources", "dependencies"],
+        "additionalProperties": false
+      }
+    },
+    "tests": {
+      "type": "object",
+      "properties": {
+        "framework": { "type": "string", "enum": ["xctest", "swift-testing"] },
+        "files": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "support": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        }
+      },
+      "required": ["framework", "files", "support"],
+      "additionalProperties": false
+    },
+    "swiftlintVersion": { "type": "string", "const": "0.65.1" },
+    "rules": {
+      "minItems": 1,
+      "maxItems": 2,
+      "type": "array",
+      "items": { "type": "string", "enum": ["force_try", "force_unwrapping"] }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "swiftVersion",
+    "toolsVersion",
+    "platform",
+    "packageName",
+    "products",
+    "targets",
+    "tests",
+    "swiftlintVersion",
+    "rules"
+  ],
+  "additionalProperties": false
+}

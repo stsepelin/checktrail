@@ -568,7 +568,17 @@ Swift grammar checking is verified with Apple Swift 6.4 on arm64 macOS. It parse
 inventoried source and Package.swift without evaluating the manifest, records the
 native compiler and driver evidence, and excludes generated .build contents. The
 native fixture explicitly distinguishes valid syntax from incorrect types. See
-`SWIFT.md`; SwiftPM builds, type checks, tests and Linux support remain unverified.
+`SWIFT.md` for that independent grammar profile.
+
+The separate bounded SwiftPM/XCTest/Swift Testing/SwiftLint profile passes required
+native source and offline installed CLI/MCP controls with pinned Swift 6.2.3,
+SwiftLint 0.65.1 and Node 22.23.3 on ARM64 Linux. Compiling guard controls defend
+raw identities, ordered commands, native manifest/compiler participation, physical
+source points, case lifecycles and counters. Actual compiled XCTest cancellation
+exposed and now checks a shared POSIX runner fix for descendants in separate process
+groups; a detached-child control also passes on macOS. See SWIFT-TOOLS.md and its
+measurement receipt. Wider Swift profiles, hosted CI for this revision, Windows,
+full SDK/publisher/license closure and Gate A remain open.
 
 Advisory guidance is now available through CLI/library/MCP using exact public
 check/topic triggers. It returns review questions and references, never automated
