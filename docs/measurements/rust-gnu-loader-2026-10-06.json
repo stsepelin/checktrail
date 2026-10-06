@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "profile": "rust-gnu-loader-repair",
+  "measuredOn": "2026-10-06",
+  "baseCommit": "b22f02a9261dd0fbf7339309f3daf1281604fe16",
+  "scope": "Give direct Linux libtest executables the canonical compiler and owned artifact library paths; Cargo invocations and existing native callbacks are unchanged.",
+  "sourcePins": [
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "37aa2fa626747412dbf3153905501f12f3ba6238ca5cb6cf4569f0f617374d07"
+    },
+    {
+      "file": "docs/RUST-BUILD.md",
+      "sha256": "027ae33a7de9cf29b74a6cd7987886cad64cba89efc32fdbd380044218c9dc47"
+    },
+    {
+      "file": "docs/RUST-TESTS.md",
+      "sha256": "9a76cb1da88f71fb9071183060193264a76a2dde5e7a2366040cdd3c999d9611"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "3ad351bacda99ef7f069a8b36bda6fdef817209503432a45edf0919c8083480b"
+    },
+    {
+      "file": "scripts/verify-rust-workspace-package.mjs",
+      "sha256": "b99bb68cdc79872aa8850a78b46fd7b96a1541d2cb57d099c882fa8c920e3d2d"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d15100346d1919a271e2b569c891e1d2c0d02b686e2ebe84ebb7bfdf34f51ac5"
+    },
+    {
+      "file": "test/rust-tests.test.ts",
+      "sha256": "fe9ba85716aff46c6006b45fe9e118a1cba3a4cdeacb09d165e993b2b6577cb5"
+    },
+    {
+      "file": "test/rust-workspace-surfaces.test.ts",
+      "sha256": "25d2cc3d67a1954ef67a8d87f8fc43c437e41c9938cf1648077815224c611c7d"
+    },
+    {
+      "file": "test/rust-workspace.test.ts",
+      "sha256": "6220ebcf4e4a4966921f1689f16bef86e59893bf8a2d3b1a44986a4e59f6d6a6"
+    }
+  ],
+  "compiledRuntimeSha256": "9a2a8f37f530275a81ab9fc59b6357f72dd72255b8a92d3415069e2f256e6bdf",
+  "runtime": {
+    "rust": "1.98.1",
+    "node": "22.23.3",
+    "target": "aarch64-unknown-linux-gnu",
+    "image": "sha256:60aaa70d3e91d224194327f65fd4d2b4d1990dff4c24a602d86b1d7d45ccf51e",
+    "buildNetwork": "none",
+    "acceptanceNetwork": "none",
+    "sourceMount": "readonly",
+    "publicComponents": [
+      {
+        "name": "rustc",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rustc-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustc-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 66438268,
+        "sha256": "89fb83041993b48816514815606f53a5264729b8b449671a6b291e6f0ae74f40"
+      },
+      {
+        "name": "cargo",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "cargo-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/cargo-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 11108572,
+        "sha256": "c09425a7f300af148c0bdfded0e7d5f1fe7c075b2b9674e8935afa769297b2f6"
+      },
+      {
+        "name": "rust-std",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rust-std-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 30815124,
+        "sha256": "9bf796a6ec5b004813ebd0b650775a7c6a4f3aae97ad362ae294798dca4f3b23"
+      },
+      {
+        "name": "clippy-preview",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "clippy-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/clippy-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 3915700,
+        "sha256": "396e17c0a669399823d0e59073686a4e5f50b2d41f062f1d3afc9210f9d3553d"
+      },
+      {
+        "name": "rustfmt-preview",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rustfmt-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustfmt-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 2288788,
+        "sha256": "7d4c136278b61096d46ef23019c29acb7ee5a2a1412cbfee5050316110c6fd8c"
+      },
+      {
+        "name": "rust-std",
+        "target": "wasm32-unknown-unknown",
+        "file": "rust-std-1.98.1-wasm32-unknown-unknown.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-wasm32-unknown-unknown.tar.xz",
+        "bytes": 22423420,
+        "sha256": "cf1fcf68880d8b2b90128cede7416cfb82ad3584357ce9fb668f2b6244c26e55"
+      }
+    ],
+    "manifestSha256": "a7c8774a5fd8441c997d94c029776cbc5eb111e9d72ab5d256fa69866644347e",
+    "signatureVerified": false
+  },
+  "acceptance": {
+    "source": [
+      {
+        "name": "rust-workspace",
+        "profile": {
+          "profile": "rust-workspace",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        "logSha256": "fbfee9c659bb0256edc03525cc4081577577be5997f7aa035165d6240525846f"
+      },
+      {
+        "name": "rust-tests",
+        "profile": {
+          "profile": "rust-tests",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        "logSha256": "108f6a51005e9aa2da442ee2c84519d5a5d127180fd4ba7d3f7b977ea0e1e7e1"
+      }
+    ],
+    "installed": {
+      "tarballSha256": "12fc9c5d923cb417637fe77f97042a480cefcd4fe1b22e636ed0f6f50054bfb2",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "rust-workspace",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:60aaa70d3e91d224194327f65fd4d2b4d1990dff4c24a602d86b1d7d45ccf51e",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "macosRegression": {
+      "profile": "rust-workspace",
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    },
+    "loaderGuard": {
+      "originalCallback": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+      "tests": 1,
+      "failed": 1,
+      "skipped": 0,
+      "compiled": true,
+      "mutantSourceSha256": "53d5e5cc0ab74c0f5b72958c9cd262690588d8e0aca1244c3ece99c8f5aa5479",
+      "mutantRuntimeSha256": "0ffbd64cad2de2684cbdba6674581a88c5ca45a024fb1f3646effecf746b076d",
+      "originalRuntimeSha256": "9a2a8f37f530275a81ab9fc59b6357f72dd72255b8a92d3415069e2f256e6bdf",
+      "intendedAssertion": "incomplete differs from passed",
+      "logSha256": "214242296f6d654762a8941515d68e44d7778ab213185807963d84fda87aefff",
+      "sourceAndRuntimeRestored": true
+    },
+    "image": "sha256:60aaa70d3e91d224194327f65fd4d2b4d1990dff4c24a602d86b1d7d45ccf51e",
+    "target": "aarch64-unknown-linux-gnu",
+    "durationSeconds": 108,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "excludedPreparationAttempts": [
+    {
+      "reason": "Incomplete private runtime lacked extract/install prerequisites",
+      "nativeSkipped": 1,
+      "countedAsAcceptance": false
+    },
+    {
+      "reason": "Compiler/linker preflight unavailable",
+      "countedAsAcceptance": false
+    }
+  ],
+  "hostedLinuxX8664RecheckPending": true,
+  "broaderGateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
