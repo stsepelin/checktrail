@@ -99,3 +99,10 @@ The task ledger must keep these unfinished profile decisions visible. Gate A
 requires both frozen profiles and their completed acceptance evidence. Gate B
 also requires the concrete existing operator permissions; Gate C requires the
 independent measured outcomes. Development tests close none of those by themselves.
+
+The bounded current-source `js-ts-selected-imports-v1` collector adds engine-parsed
+JS/TS edges and automatically captured declarations/consumers under explicit
+project roots. Unknown or incomplete capture keeps all declared projects selected,
+and validation plans remain unchanged. This is one R1/E3 profile; wider language,
+historical and framework/import/impact requirements remain open. See
+[IMPORT-CONTEXT.md](IMPORT-CONTEXT.md).

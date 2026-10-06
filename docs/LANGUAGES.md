@@ -297,3 +297,11 @@ keeps unknown/incomplete predictions separately accounted. Shared independent
 stage views withhold prior candidate metadata and native aggregate verdicts while
 retaining exact source and per-case observations. This adds no native language,
 authoritative label, host-isolation or held-out quality acceptance.
+
+The `js-ts-selected-imports-v1` [consumer-context profile](IMPORT-CONTEXT.md) uses
+the pinned engine TypeScript parser over inventoried strings under declared roots.
+It collects static relative module edges and whole decisions/defaults, preserving
+full fallback for unresolved or incomplete capture. Project compiler resolution,
+other languages, historical consumers and runtime reachability remain unsupported
+by this profile. Its exact runtime acceptance is recorded separately from adapter
+execution acceptance.

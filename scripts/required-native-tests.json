@@ -2518,5 +2518,27 @@
       "file": "dist/test/review-claim-probability.test.js",
       "name": "claim probability transport schemas require nullable confidence on strict provider wires while original legacy null and numerical responses remain valid without remote inference"
     }
+  ],
+  "import-context": [
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans"
+    }
   ]
 }

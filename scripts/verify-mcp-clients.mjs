@@ -36,6 +36,7 @@ const expectedTools = [
   "architecture_validation",
   "contract_validation",
   "finding_comparison",
+  "import_context",
   "mutation_experiment",
   "project_context",
   "review_benchmark",

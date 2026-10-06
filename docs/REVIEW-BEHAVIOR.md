@@ -40,7 +40,7 @@ declaration files ending in those extensions. It captures:
 - Call and construction expressions, their enclosing function where present and
   a unique selected lexical implementation when supported. Renamed imports,
   selected reexports and namespace imports can retain a binding.
-- Static import/reexport edges and explicit unknown dynamic import/require edges.
+- Static import/reexport edges, TypeScript import-equals external module and type-import edges, and explicit unknown dynamic import/require edges.
 
 Every address carries its revision, selected path, half-open UTF-16 character
 offsets and one-based inclusive source lines. These offsets address the exact
@@ -149,3 +149,8 @@ Context version 5 retains the same syntax profile over the explicitly chosen
 current source view. In index diff assignments, every current syntax address
 refers to the captured stage-zero blob, rather than the unstaged working file.
 Selected executable-mode evidence is separate from syntax and text change overlap.
+
+The bounded [import and consumer collector](IMPORT-CONTEXT.md) automatically captures
+inventoried JS/TS source under explicit disjoint project roots. It retains whole
+source and static consumer edges, with full declared-scope fallback for unresolved
+or incomplete capture. Other languages and historical consumers remain open.

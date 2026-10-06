@@ -225,3 +225,12 @@ export type {
 } from "./review-calibration.js";
 
 export { reviewClaimProbabilitySchema } from "./review-provider-schema.js";
+export {
+  collectImportContext,
+  assertImportContextCurrent,
+  projectImportContext,
+} from "./import-context.js";
+export type {
+  ImportContextInput,
+  ImportContextReport,
+} from "./import-context.js";
