@@ -274,6 +274,7 @@ export async function runWindowsProcess(
       let bytes = 0,
         stopping = false;
       let force: ReturnType<typeof setTimeout> | undefined;
+      let drain: ReturnType<typeof setTimeout> | undefined;
       const stop = () => {
         if (stopping) return;
         stopping = true;
@@ -303,6 +304,15 @@ export async function runWindowsProcess(
       child.on("error", (error: NodeJS.ErrnoException) => {
         result.errorCode = error.code ?? "WINDOWS_SUPERVISOR_UNAVAILABLE";
       });
+      child.on("exit", () => {
+        // An exited guardian cannot hold the call open through inherited pipes.
+        drain = setTimeout(() => {
+          result.errorCode ??= "WINDOWS_OUTPUT_INCOMPLETE";
+          child.stdin.destroy();
+          child.stdout.destroy();
+          child.stderr.destroy();
+        }, 500);
+      });
       child.stdin.write(request + "\n");
       const cancel = () => {
         result.cancelled = true;
@@ -320,6 +330,7 @@ export async function runWindowsProcess(
       child.on("close", async () => {
         clearTimeout(timer);
         if (force) clearTimeout(force);
+        if (drain) clearTimeout(drain);
         options.signal?.removeEventListener("abort", cancel);
         result.stdout = Buffer.concat(stdout).toString("utf8");
         result.stderr = Buffer.concat(stderr).toString("utf8");
