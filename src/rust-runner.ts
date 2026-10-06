@@ -35,9 +35,10 @@ const metadataSchema = z.object({
   ),
 });
 
-function invoke(executable: string, args: string[]) {
+function invoke(executable: string, args: string[], env?: NodeJS.ProcessEnv) {
   const result = spawnSync(executable, args, {
     encoding: "utf8",
+    ...(env ? { env } : {}),
     maxBuffer: 1024 * 1024,
   });
   if (result.error || result.signal || result.status === null)
