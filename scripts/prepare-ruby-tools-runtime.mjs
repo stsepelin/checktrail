@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
 import {
   lstat,
@@ -79,44 +80,6 @@ try {
   await mkdir(artifacts);
   docker(["pull", ruby]);
   docker(["pull", node]);
-  docker([
-    "run",
-    "--rm",
-    "--init",
-    "--cpus",
-    "2",
-    "--memory",
-    "2g",
-    "--network",
-    "bridge",
-    "--label",
-    `checktrail.task=${task}`,
-    "--mount",
-    `type=bind,src=${artifacts},target=/artifacts`,
-    ruby,
-    "sh",
-    "-ec",
-    "apk update; apk fetch --recursive --output /artifacts gcc=15.2.0-r5 g++=15.2.0-r5 make=4.4.1-r4 musl-dev=1.2.6-r2",
-  ]);
-  assert.deepEqual(
-    (await readdir(artifacts)).sort(),
-    [...packages].sort(),
-    "The pinned compiler closure changed",
-  );
-  const files = [];
-  for (const file of packages) {
-    const target = path.join(artifacts, file),
-      stat = await lstat(target);
-    assert.ok(
-      stat.isFile() &&
-        !stat.isSymbolicLink() &&
-        stat.size > 0 &&
-        stat.size <= 64 * 1024 * 1024,
-    );
-    const bytes = await readFile(target);
-    files.push({ path: file, bytes: bytes.length, sha256: mavenHash(bytes) });
-  }
-  await verifyMavenTree(artifacts, files);
   const raw = docker([
     "run",
     "--rm",
@@ -133,6 +96,92 @@ try {
   assert.match(rubyVersion, /^ruby 4\.0\.7 /);
   assert.ok(["aarch64", "x86_64"].includes(architecture));
   assert.equal(alpine, "3.24.2");
+  const manifest = JSON.parse(
+    await readFile(path.join(root, "scripts/ruby-tools-archives.json"), "utf8"),
+  );
+  assert.equal(manifest.schemaVersion, 1);
+  assert.equal(manifest.alpine, alpine);
+  const selected = manifest.architectures[architecture];
+  assert.equal(
+    selected.repository,
+    `https://dl-cdn.alpinelinux.org/alpine/v3.24/main/${architecture}/`,
+  );
+  assert.equal(selected.archives.length, packages.length);
+  assert.deepEqual(
+    selected.archives.map((pin) => pin.path).sort(),
+    [...packages].sort(),
+    "The pinned compiler closure changed",
+  );
+  const local = process.env.CHECKTRAIL_RUBY_APK_DIRECTORY
+    ? await realpath(path.resolve(process.env.CHECKTRAIL_RUBY_APK_DIRECTORY))
+    : undefined;
+  const files = [];
+  for (let offset = 0; offset < selected.archives.length; offset += 4) {
+    const rows = await Promise.allSettled(
+      selected.archives.slice(offset, offset + 4).map(async (pin) => {
+        assert.match(pin.path, /^[A-Za-z0-9_+.-]+\.apk$/);
+        assert.match(pin.sha256, /^[a-f0-9]{64}$/);
+        assert.ok(
+          Number.isSafeInteger(pin.bytes) &&
+            pin.bytes > 0 &&
+            pin.bytes <= 64 * 1024 * 1024,
+        );
+        let bytes;
+        if (local) {
+          const file = path.join(local, pin.path),
+            stat = await lstat(file);
+          assert.ok(
+            stat.isFile() &&
+              !stat.isSymbolicLink() &&
+              stat.size === pin.bytes &&
+              (await realpath(file)) === file,
+          );
+          bytes = await readFile(file);
+        } else {
+          // Retrieve every original signed APK by exact URL. Resolving current indexes
+          // would replace transitive revisions even when compiler roots are pinned.
+          const response = await globalThis.fetch(
+            selected.repository + pin.path,
+            {
+              redirect: "error",
+              signal: globalThis.AbortSignal.timeout(60000),
+            },
+          );
+          assert.equal(response.status, 200);
+          assert.ok(response.body);
+          let count = 0;
+          const chunks = [];
+          for await (const chunk of response.body) {
+            count += chunk.length;
+            assert.ok(
+              count <= pin.bytes,
+              "Pinned compiler archive exceeded its byte bound",
+            );
+            chunks.push(Buffer.from(chunk));
+          }
+          bytes = Buffer.concat(chunks);
+        }
+        assert.equal(bytes.length, pin.bytes);
+        assert.equal(mavenHash(bytes), pin.sha256);
+        await writeFile(path.join(artifacts, pin.path), bytes, {
+          flag: "wx",
+          mode: 0o600,
+        });
+        return { path: pin.path, bytes: pin.bytes, sha256: pin.sha256 };
+      }),
+    );
+    // Settle every download before cleaning the owned staging tree on failure.
+    for (const row of rows) {
+      if (row.status === "rejected") throw row.reason;
+      files.push(row.value);
+    }
+  }
+  assert.deepEqual(
+    (await readdir(artifacts)).sort(),
+    [...packages].sort(),
+    "The pinned compiler closure changed",
+  );
+  await verifyMavenTree(artifacts, files);
   docker([
     "build",
     "--network",
@@ -188,6 +237,10 @@ try {
     gccVersion: lines[2],
     makeVersion: lines[3],
     files,
+    compilerArchiveManifestSha256: mavenHash(
+      await readFile(path.join(root, "scripts/ruby-tools-archives.json")),
+    ),
+    transitiveIndexResolution: false,
     apkSignatureChecksDisabled: false,
     buildNetwork: "none",
     publisherAndLicenseClosureVerified: false,
