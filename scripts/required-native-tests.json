@@ -2326,5 +2326,15 @@
       "file": "dist/test/kustomize-surfaces.test.js",
       "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }
