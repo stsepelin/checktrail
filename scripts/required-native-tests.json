@@ -2746,5 +2746,15 @@
       "file": "dist/test/spotbugs.test.js",
       "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list"
     }
+  ],
+  "maven-preparation": [
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven operator acquisition retries only terminal Central artifact rate limits and resets partial repositories before rerunning"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
+    }
   ]
 }

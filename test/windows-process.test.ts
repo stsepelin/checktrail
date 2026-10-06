@@ -2,7 +2,14 @@ import { diagnose } from "../src/onboarding.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { spawn, spawnSync } from "node:child_process";
-import { copyFile, lstat, mkdir, readFile, writeFile } from "node:fs/promises";
+import {
+  copyFile,
+  lstat,
+  mkdir,
+  readFile,
+  readdir,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
@@ -356,7 +363,7 @@ test(
         trusted: true,
         timeoutMs: 15000,
       });
-      assert.equal(library.outcome, outcome);
+      assert.equal(library.outcome, outcome, JSON.stringify(library.checks));
       assert.deepEqual(library.checks[0]!.tests, {
         total: 1,
         passed,
@@ -557,7 +564,17 @@ test(
             : true,
         5000,
       );
-      await assert.rejects(lstat(path.dirname(state.temp)), { code: "ENOENT" });
+      await assert.rejects(
+        lstat(path.dirname(state.temp)),
+        { code: "ENOENT" },
+        JSON.stringify({
+          files: await readdir(path.dirname(state.temp)).catch(() => []),
+          cleanupError: await readFile(
+            path.join(path.dirname(state.temp), "cleanup-error"),
+            "utf8",
+          ).catch(() => null),
+        }),
+      );
       assert.equal(stderr, "");
     } finally {
       if (driver.exitCode === null) driver.kill("SIGKILL");
