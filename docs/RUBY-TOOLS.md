@@ -104,9 +104,15 @@ CHECKTRAIL_TEST_TASK=original-ruby-task node scripts/prepare-ruby-tools-runtime.
 node scripts/prepare-ruby-tools-container-dependencies.mjs
 ```
 
-The runtime preparer fetches the exact Alpine compiler package closure, checks its
-regular raw artifacts and builds the pinned Ruby/Node image with network disabled
-and normal APK signature checks. Prepare gems inside that image by running
+The runtime preparer retrieves each original Alpine compiler package from its
+exact official URL, using the architecture-specific size and SHA-256 pins in
+`scripts/ruby-tools-archives.json`. It does not resolve a current package index:
+new transitive package revisions cannot silently replace the pinned closure.
+It checks regular raw artifacts and builds the pinned Ruby/Node image with network
+disabled and normal APK signature checks. The declared ARM64 package hashes match
+the original recorded profile; x86-64 package pins support the hosted preparer.
+An operator-prepared cache can be selected with `CHECKTRAIL_RUBY_APK_DIRECTORY`;
+every cached file receives the same path, size and digest checks. Prepare gems inside that image by running
 `scripts/prepare-ruby-tools-dependencies.mjs` in an explicitly network-enabled
 preparation container with the checkout mounted writable. That command validates
 all raw gem checksums, leaves the public Gemfile/lock unchanged and installs no gems.
