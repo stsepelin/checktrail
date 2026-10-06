@@ -1,0 +1,979 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-06T23:43:58.550146+00:00",
+  "codeCommit": "55c1a813418bc4920c220d839b073af47eef86a8",
+  "profile": "posix-observed-cleanup-v1",
+  "scope": "Observed process identities, bounded descendant exit ordering and retained MCP cancellation; no kernel ownership or universal fork tracking",
+  "sourceFiles": {
+    "src/process-tree.ts": "c7626fd0c2da4742de9493e25229d08aa78688ea40e94d9663d55727f3e532d8",
+    "test/process-tree.test.ts": "4299f750aa9c710a795fda7ed1fc18f336e3b7ce0b3e94882cd4fbceaac04c9a",
+    "src/runner.ts": "8364a483c5f6fd5b717b9c0783a59c9325f46ec55328ff424fa2bcb324b1fa10",
+    "scripts/verify-posix-cleanup-package.mjs": "4742a46fe01ab1bef41ab825bd257835ae8f81b620b914fedf3d803a1f74b579",
+    "scripts/verify-posix-cleanup-guards.mjs": "c9c3af9c44c585b9ffd53b1cfbeb2da111138410235654824a0a58792c2f8411"
+  },
+  "source": {
+    "macOS": {
+      "profile": "posix-cleanup",
+      "timeoutMs": 120000,
+      "passed": 4,
+      "required": 4,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 4,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.647541,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 185.316459,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.237459,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.478916,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          }
+        ]
+      }
+    },
+    "Linux": {
+      "profile": "posix-cleanup",
+      "timeoutMs": 120000,
+      "passed": 4,
+      "required": 4,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 4,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.06734,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24.652073,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.370294,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.130382,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          }
+        ]
+      }
+    }
+  },
+  "installedBeforeThisMeasurement": {
+    "macOS": {
+      "tarballSha256": "94de8617632b32d398a832875f19478caac2c9197b1bb64889f58605556770c2",
+      "productionDependencyLockSha256": "433ac0b254542e9e1ef586eeeabc36b357bdf9d56fa5ec5b6c1baa739c58e5c9",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "installedRuntimeEvaluated": true,
+      "installedCliEvaluated": false,
+      "installedMcpEvaluated": false,
+      "profile": {
+        "profile": "posix-cleanup",
+        "timeoutMs": 120000,
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.641708,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 181.658166,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.246125,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.474833,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "Linux": {
+      "tarballSha256": "94de8617632b32d398a832875f19478caac2c9197b1bb64889f58605556770c2",
+      "productionDependencyLockSha256": "27b75c6803160c243bc6697e2c9ce73cf5b2b675649928c272920e6faa7e86fe",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "installedRuntimeEvaluated": true,
+      "installedCliEvaluated": false,
+      "installedMcpEvaluated": false,
+      "profile": {
+        "profile": "posix-cleanup",
+        "timeoutMs": 120000,
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.993173,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31.273075,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.321127,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.001632,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    }
+  },
+  "compilingGuards": {
+    "macOS": {
+      "profile": "posix-observed-cleanup-guards-v1",
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "confirmed-exit-before-parent",
+          "callback": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "d518bd11c989a8ea4b4ed7b7bd9597f853af60a1ba6abbce6e0b4b54e146b88c",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings\nnot ok 1 - POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings\n  ---\n  duration_ms: 0.71525\n  type: 'test'\n  location: '/Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:100:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    waiting parent must remain until its child exited\n    \n    true !== false\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: false\n  actual: true\n  operator: 'strictEqual'\n  stack: |-\n    Object.kill (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:124:24)\n    stopDescendants (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/src/process-tree.js:165:20)\n    async TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:109:5)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 93.682666\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "reused-start-identity",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "9b8427e49b9483357ff73377b34a681321ae6dda2dd9a8c19b6767a7c279b1a1",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 1.440458\n  type: 'test'\n  location: '/Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Got unwanted rejection.\n    Actual message: \"Process cleanup deadline exceeded\"\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  actual:\n  error: 'Process cleanup deadline exceeded'\n  stack: |-\n    stopDescendants (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/src/process-tree.js:177:23)\n    async waitForActual (node:assert:615:5)\n    async strict.doesNotReject (node:assert:758:33)\n    async TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:173:13)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  operator: 'doesNotReject'\n  stack: |-\n    async TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:173:13)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 93.489333\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "missing-row-is-not-absence",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "b284a1a44aca9be9e070982ad24a792631d6a9daad6ecf78d00fe52d8d90a1c7",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 1.197208\n  type: 'test'\n  location: '/Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: 'Missing expected rejection.'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  operator: 'rejects'\n  stack: |-\n    async TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:177:13)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 93.94075\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "changed-group-refusal",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "f02fb7defb0e518fb754eb82253187802601641d9a7d487fcc3d273b4f94d3ed",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 1.547917\n  type: 'test'\n  location: '/Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + [\n    +   42\n    + ]\n    - []\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  actual:\n    0: 42\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:178:20)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 94.728041\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "aggregate-cleanup-bound",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "3d17aa7e85730719e865030a0858121ba3f739b542fbe34ed11c82160d644b10",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 5.747584\n  type: 'test'\n  location: '/Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: 'all depths share the cleanup bound'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    TestContext.<anonymous> (file:///Users/stsepelin/.local/state/agent-environments/checktrail-posix-cleanup-1007/repo/dist/test/process-tree.test.js:180:16)\n    async Test.run (node:internal/test_runner/test:1409:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 104.139042\n",
+          "mutantStderr": ""
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "Linux": {
+      "profile": "posix-observed-cleanup-guards-v1",
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "confirmed-exit-before-parent",
+          "callback": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "d518bd11c989a8ea4b4ed7b7bd9597f853af60a1ba6abbce6e0b4b54e146b88c",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings\nnot ok 1 - POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings\n  ---\n  duration_ms: 0.960256\n  type: 'test'\n  location: '/tmp/dist/test/process-tree.test.js:100:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    waiting parent must remain until its child exited\n    \n    true !== false\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: false\n  actual: true\n  operator: 'strictEqual'\n  stack: |-\n    Object.kill (file:///tmp/dist/test/process-tree.test.js:124:24)\n    stopDescendants (file:///tmp/dist/src/process-tree.js:165:20)\n    async TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:109:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 64.502203\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "reused-start-identity",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "9b8427e49b9483357ff73377b34a681321ae6dda2dd9a8c19b6767a7c279b1a1",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 2.337682\n  type: 'test'\n  location: '/tmp/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Got unwanted rejection.\n    Actual message: \"Process cleanup deadline exceeded\"\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  actual:\n  error: 'Process cleanup deadline exceeded'\n  stack: |-\n    stopDescendants (file:///tmp/dist/src/process-tree.js:177:23)\n    async waitForActual (node:assert:644:5)\n    async Function.doesNotReject (node:assert:787:33)\n    async TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:173:13)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  operator: 'doesNotReject'\n  stack: |-\n    async TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:173:13)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 63.843782\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "missing-row-is-not-absence",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "b284a1a44aca9be9e070982ad24a792631d6a9daad6ecf78d00fe52d8d90a1c7",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 1.782928\n  type: 'test'\n  location: '/tmp/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: 'Missing expected rejection.'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  operator: 'rejects'\n  stack: |-\n    async TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:177:13)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 59.818923\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "changed-group-refusal",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "f02fb7defb0e518fb754eb82253187802601641d9a7d487fcc3d273b4f94d3ed",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 2.551058\n  type: 'test'\n  location: '/tmp/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + [\n    +   42\n    + ]\n    - []\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  actual:\n    0: 42\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:178:20)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 62.519399\n",
+          "mutantStderr": ""
+        },
+        {
+          "id": "aggregate-cleanup-bound",
+          "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+          "callbackSha256": "aa51ecb9f506a2116c3c02db406490a7ec501e66259c6ffe54db9f5444772aa4",
+          "sourceSha256": "1fd2661114a2aa3ff4597fb5cb3acc3e944fc68d8d28435a32da2283ef7d155a",
+          "mutantSha256": "3d17aa7e85730719e865030a0858121ba3f739b542fbe34ed11c82160d644b10",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutput": "TAP version 13\n# Subtest: POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\nnot ok 1 - POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion\n  ---\n  duration_ms: 16.051602\n  type: 'test'\n  location: '/tmp/dist/test/process-tree.test.js:137:1'\n  failureType: 'testCodeFailure'\n  error: 'all depths share the cleanup bound'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    TestContext.<anonymous> (file:///tmp/dist/test/process-tree.test.js:180:16)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 77.944955\n",
+          "mutantStderr": ""
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    }
+  },
+  "preservedMcpTasks": {
+    "macOS": {
+      "profile": "mcp-tasks",
+      "timeoutMs": 120000,
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 10,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 511.178833,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1202.093542,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 853.355041,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1054.172458,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1056.783916,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1079.216417,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 359.065,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 348.969458,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 857.674042,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 538.563458,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          }
+        ]
+      }
+    },
+    "Linux": {
+      "profile": "mcp-tasks",
+      "timeoutMs": 120000,
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 10,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 487.132314,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 980.913545,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 816.267162,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 728.799146,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 885.54052,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 941.048415,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 336.411687,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 380.822552,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 613.36716,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 479.267806,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          }
+        ]
+      }
+    }
+  },
+  "fullCheck": {
+    "tests": 891,
+    "pass": 652,
+    "skipped": 239,
+    "fail": 0,
+    "skippedChecksPassing": false
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "hostIsolationVerified": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
