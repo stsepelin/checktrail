@@ -10,15 +10,16 @@ import {
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { rustDependencyPaths } from "./rust-dep-info.js";
-import { rustCargoSelection } from "./rust-build.js";
+import { rustCargoSelection, rustCompilerHost } from "./rust-build.js";
 import { rustTestsNative } from "./rust-test-native.js";
 import {
   rustWorkspaceInputSchema,
   rustWorkspaceMetadataSchema,
 } from "./rust-workspace-schema.js";
-function invoke(executable: string, args: string[]) {
+function invoke(executable: string, args: string[], env?: NodeJS.ProcessEnv) {
   const r = spawnSync(executable, args, {
     encoding: "utf8",
+    ...(env ? { env } : {}),
     maxBuffer: 1024 * 1024,
   });
   if (r.error || r.signal || r.status === null)
@@ -65,10 +66,9 @@ async function main() {
       return unavailable("unsupported-version");
   }
   const verbose = invoke("rustc", ["-vV"]);
-  const hosts = [...verbose.stdout.matchAll(/^host: ([a-z0-9-]+)$/gm)];
-  if (verbose.status !== 0 || verbose.stderr.trim() || hosts.length !== 1)
+  if (verbose.status !== 0 || verbose.stderr.trim())
     throw Error("Unknown Rust host target");
-  const hostTarget = hosts[0]![1]!;
+  const hostTarget = rustCompilerHost(verbose.stdout);
   const target = input.selection.target;
   if (input.mode === "test" && target !== null && target !== hostTarget)
     return unavailable("cross-target-tests");

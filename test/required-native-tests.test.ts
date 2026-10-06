@@ -22,6 +22,8 @@ test("required native runner rejects skipped, todo, absent, duplicate and failin
       "import {test} from 'node:test';test('native-required',()=>{});test('native-required',()=>{});",
     "failure.mjs":
       "import {test} from 'node:test';test('native-required',()=>{});test('other',()=>{throw new Error('synthetic failure')});",
+    "bounded-failure.mjs":
+      "import {test} from 'node:test';test('native-required',()=>{});test('other',()=>{throw new Error('x'.repeat(1200))});",
     "suite.mjs":
       "import {describe,it} from 'node:test';describe('native-required',()=>{it('other',()=>{})});",
     "other-file.mjs":
@@ -44,7 +46,13 @@ test("required native runner rejects skipped, todo, absent, duplicate and failin
     return JSON.parse(result.stdout) as {
       complete: boolean;
       passed: number;
-      problems: { name: string; reason: string }[];
+      problems: {
+        name: string;
+        reason: string;
+        failureType?: string;
+        code?: string;
+        message?: string;
+      }[];
     };
   }
   const required = (file: string) => ({
@@ -68,6 +76,25 @@ test("required native runner rejects skipped, todo, absent, duplicate and failin
     assert.equal(result.complete, false, file);
     assert.ok(result.problems.length > 0, file);
   }
+  const failure = run([required("failure.mjs")]);
+  assert.equal(failure.complete, false);
+  assert.deepEqual(
+    failure.problems.find((problem) => problem.name === "other"),
+    {
+      name: "other",
+      reason: "failed",
+      failureType: "testCodeFailure",
+      code: "ERR_TEST_FAILURE",
+      message: "synthetic failure",
+    },
+  );
+  const boundedFailure = run([required("bounded-failure.mjs")]);
+  assert.equal(boundedFailure.complete, false);
+  assert.equal(
+    boundedFailure.problems.find((problem) => problem.name === "other")
+      ?.message,
+    "x".repeat(1000),
+  );
   const wrongFile = run([
     required("absent.mjs"),
     { file: path.join(root, "other-file.mjs"), name: "other" },

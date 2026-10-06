@@ -1576,6 +1576,10 @@
     },
     {
       "file": "dist/test/rust-workspace.test.js",
+      "name": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components"
+    },
+    {
+      "file": "dist/test/rust-workspace.test.js",
       "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source"
     },
     {
