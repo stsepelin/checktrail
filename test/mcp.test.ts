@@ -628,10 +628,11 @@ test("MCP mutation cancellation leaves planning responsive and cleans temporary 
   for (let i = 0; i < 100; i++) {
     try {
       copy = await readFile(probe, "utf8");
-      break;
+      if (copy) break;
     } catch {
-      await delay(20);
+      // A created marker is not ready until the writer supplies its contents.
     }
+    await delay(20);
   }
   assert.ok(copy, "Native mutation baseline did not start");
   assert.equal(
