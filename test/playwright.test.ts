@@ -68,8 +68,8 @@ test(
       ],
       ["throw new Error('synthetic import error');", "failed"],
       ["", "failed"],
-    ]) {
-      await writeFile(path.join(root, "math.spec.js"), prelude + source!);
+    ] as const) {
+      await writeFile(path.join(root, "math.spec.js"), prelude + source);
       const report = await validate(root, { trusted: true });
       assert.equal(
         report.outcome,
