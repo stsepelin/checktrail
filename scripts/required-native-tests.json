@@ -2054,5 +2054,39 @@
       "file": "dist/test/dotnet-method-surfaces.test.js",
       "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
     }
+  ],
+  "ruby-tools": [
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean"
+    },
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair"
+    },
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass"
+    },
+    {
+      "file": "dist/test/ruby-tools-lifecycle.test.js",
+      "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-lifecycle.test.js",
+      "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-guards.test.js",
+      "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives"
+    },
+    {
+      "file": "dist/test/ruby-tools-surfaces.test.js",
+      "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/ruby-tools-surfaces.test.js",
+      "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
+    }
   ]
 }

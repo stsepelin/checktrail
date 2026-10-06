@@ -17,6 +17,10 @@ export {
   externalResultSchema,
 } from "./external-adapter.js";
 export { actionlintConfigSchema } from "./actionlint.js";
+export {
+  rubyToolsConfigSchema,
+  rubyToolsRepositorySchema,
+} from "./ruby-tools.js";
 export { dotnetConfigSchema } from "./dotnet.js";
 export {
   dotnetBuildConfigSchema,

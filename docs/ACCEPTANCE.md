@@ -6,9 +6,10 @@ Local implementation, local native evidence, hosted CI and publication are
 separate states. Follow the linked evidence for tested versions and limits.
 
 The expanded [reviewer roadmap](REVIEWER-ROADMAP.md) targets model-independent
-MCP review and claim validation, with host-owned AI/authentication. Neutral stage
-exchange and independent claim validation remain unfinished; engine-owned
-inference or native AI client orchestration is optional. No achieved quality
+MCP review and claim validation, with host-owned AI/authentication. The neutral stage
+exchange has bounded synthetic acceptance; independent host-session evidence and
+general claim validation remain unfinished. Engine-owned inference or native AI
+client orchestration is optional. No achieved quality
 claim follows from the current exchange. Its required inventory retains unfinished M0–M5 work and every
 subsequent integration in `LANGUAGES.md`. Feature completion precedes any new
 real-project MCP field evaluation; applicable operator permissions and a frozen
@@ -23,9 +24,15 @@ Historical adoption/client/agent observations remain historical evidence.
 | M2: practical language validation | Explicit JS/TS, Python, Go and PHP native tool profiles, structured diagnostics/test evidence, versions, environments, workspace selection, scope accounting, SARIF/JUnit and finding ratchets. `LANGUAGES.md`, adapter documents, `WORKSPACES.md`, `FINDING-POLICY.md`, `NATIVE-CI.md`.                                                                                                                                                                                                              | Hosted toolchain profiles passed at `52ba415`. Wider tool versions/framework configurations must be promoted separately; detection is not execution support.                                                                                   |
 | M3: framework/contracts           | Native Laravel, Vue Router/Nuxt, Django/FastAPI assembly projections; imported runtime comparison, explicit architecture boundaries, producer/consumer schemas and a built package consumer. `RUNTIME-INVENTORY.md`, framework documents, `CONTRACTS.md`, `ARCHITECTURE-POLICY.md`, `examples/package-contract/README.md`.                                                                                                                                                                            | Broader native semantics/import collection and live service integration are not implemented. Synthetic evidence does not establish equivalent results in a private application; private integration feedback must remain private.              |
 | M4: ecosystem/distribution        | Bounded Rust, Java, C#, Ruby, Swift, Clang and actionlint profiles; trusted external adapters, pinned data-only pack distribution, fresh offline package checks, production notice audit, measured performance and published MCP Registry metadata. `LANGUAGES.md`, `EXTERNAL-ADAPTERS.md`, `PACK-DISTRIBUTION.md`, `PERFORMANCE.md`, `RELEASE.md`.                                                                                                                                                   | npm tag cleanup remains unresolved. Windows execution and the unimplemented subsequent integrations in `LANGUAGES.md` remain unsupported. Runtime/container/development dependency provenance is broader than the production npm notice audit. |
-| M5: measured assistance           | Advisory guidance, bounded Node mutation experiments, explicit-graph impact measurements, optional local/model review exchange, independent-session agent evaluation with a historical pilot, durable library task storage/worker, development evaluation and externally authored ESLint and Ruff integration cohorts. `GUIDANCE.md`, `MUTATIONS.md`, `IMPACT-MEASUREMENT.md`, `REVIEW-EXCHANGE.md`, `VALIDATION-TASKS.md`, `EVALUATION.md`, `EXTERNAL-EVALUATION.md`, `EXTERNAL-RUFF-EVALUATION.md`. | Standard MCP Tasks wire integration; wider held-out rule-family/review evidence, prior-workflow comparison and representative cost/latency measurement. No general equal-or-better review-quality claim is supported.                          |
+| M5: measured assistance           | Advisory guidance, bounded Node mutation experiments, explicit-graph impact measurements, optional local/model review exchange, independent-session agent evaluation with a historical pilot, durable library task storage/worker, development evaluation and externally authored ESLint and Ruff integration cohorts. `GUIDANCE.md`, `MUTATIONS.md`, `IMPACT-MEASUREMENT.md`, `REVIEW-EXCHANGE.md`, `VALIDATION-TASKS.md`, `EVALUATION.md`, `EXTERNAL-EVALUATION.md`, `EXTERNAL-RUFF-EVALUATION.md`. | Wider standard MCP Tasks client/runtime profiles; held-out rule-family/review evidence, prior-workflow comparison and representative cost/latency measurement. No general equal-or-better review-quality claim is supported.                   |
 
-## Remaining work that can proceed locally
+## Remaining implementation and evaluation readiness work
+
+Complete the required inventory in `REQUIRED-INVENTORY.md` before any new
+real-project MCP field evaluation. Cohort acquisition, licensing checks and
+protocol preparation may proceed independently. Running held-out reviews or the
+prior-workflow comparison additionally requires Gate A and the concrete Gate B
+authorizations; the historical results below do not authorize a new trial.
 
 [Public adoption measurements](PUBLIC-ADOPTION.md) now cover five pinned
 JavaScript, TypeScript, Python, Go and PHP libraries. They expose an older
@@ -37,10 +44,11 @@ accounts for explicitly acknowledged native exclusions. Alpha.5 [per-check build
 add explicit tag selection; broader target coverage remains follow-up work. The observations do not establish full upstream CI coverage or
 general review effectiveness.
 
-1. Extend independently authored evaluation cohorts to additional implemented
-   language/rule families, preserving the verifier freeze and recording exact
-   selection, exclusions, native baselines and interpretation limits. New fixtures
-   authored after inspecting the implementation remain development tests.
+1. Prepare independently authored evaluation cohorts for additional implemented
+   language/rule families, recording exact eligibility, licensing, exclusions,
+   native baselines and the verifier-freeze protocol. Keep held-out reviews closed
+   until the implementation and evaluation gates permit them. New fixtures authored
+   after inspecting the implementation remain development tests.
 2. Run the comparison prepared in `PRIOR-WORKFLOW-EVALUATION.md` after resolving
    the actual baseline, independently labeled public cases and reviewer/adjudicator. A native-tool comparison alone is not this baseline.
    Model-assisted comparisons need declared model/version and actual inference
@@ -59,10 +67,11 @@ be silently substituted into that frozen holdout.
 
 ## External gates
 
-The pinned MCP server SDK routing probe still rejects `tasks/get` and `tasks/cancel` before their extension handlers
-run. The local worker/store are available independently; standard Tasks must stay
-unadvertised until routing and the integrated wire/lifecycle suite pass. See
-`MCP-COMPATIBILITY.md` for the reproduction and upstream issue.
+The historical MCP SDK routing blocker is resolved in the pinned SDK 2.3.0
+profile. Optional standard Tasks polling has bounded synthetic wire/lifecycle
+acceptance, including source and offline installed-package controls. Other
+client/runtime profiles and full conformance remain unverified. See
+`MCP-COMPATIBILITY.md` for the measured scope and historical reproduction.
 
 The public repository, npm preview `0.1.0-alpha.5` and its MCP Registry entry are
 published. The [hosted run at 832a044](https://github.com/stsepelin/checktrail/actions/runs/35694375091)

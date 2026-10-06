@@ -1,0 +1,1505 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-06T04:25:33.096999+00:00",
+  "basedOn": "3329253627337038fd7e2483c4752c361d0437fd",
+  "scope": "Original synthetic RuboCop/RSpec/Minitest checks under a bounded pinned offline Linux profile. Wider Ruby configurations remain unpromoted; Gate A remains open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "8213ddfa22608b59dbaf50b2d24eb89a43654fadd9a7072abb6bab8a32c9fcfe"
+    },
+    {
+      "file": "docs/ACCEPTANCE.md",
+      "sha256": "0f0c8078ca738ed7ad8ff95a3f8f7bc60c2475b4a63b89708a08cfb94c9cd366"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "6e601dee3919de4d25850846af80495cd0b0a0ac05d706a34f1e4ff35e81a93e"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "778521cfbc3c1484b955152e19b54d73fea8e51d9ba969eec1f339a4d0bae9fe"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "2fdb4bf134a0c9196a1a9b6a63541a8a3212f48d1e13bc8731541800f7e05969"
+    },
+    {
+      "file": "docs/RUBY-TOOLS.md",
+      "sha256": "a45fca9c05f7d7adcd4661ea299eff57878344cac569a10bf18bb8fd2fd21d21"
+    },
+    {
+      "file": "examples/ruby-tools/.rubocop.yml",
+      "sha256": "9bb8ace9fd655b49d01fedec5de82a1d5229fc7f2aa531a4de24b39b8f07b9c6"
+    },
+    {
+      "file": "examples/ruby-tools/Gemfile",
+      "sha256": "975cee1146439aeb0697c82c54ad26bd231edd4adaccb135ea4474782ca3cebc"
+    },
+    {
+      "file": "examples/ruby-tools/Gemfile.lock",
+      "sha256": "67af6541b24845fa57721e91ab01a319d45d62dd3f89682c3e16869361149f0d"
+    },
+    {
+      "file": "examples/ruby-tools/lib/quantity.rb",
+      "sha256": "f5ca35d0446cc651315d62b81a01d32fa2dc9708deee3da335e9aa9ed19ea0d8"
+    },
+    {
+      "file": "examples/ruby-tools/spec/quantity_spec.rb",
+      "sha256": "ea2b2ba390fdd54a849344bbd27b5f65bf16b6cd76fb68d208784179a35440c6"
+    },
+    {
+      "file": "examples/ruby-tools/test/quantity_test.rb",
+      "sha256": "89aae1f239d5169107184020fdd1be2bbbf8c878beee8dace3f336996c3c2a0c"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "55356bc981b41a23d0a5f0817b67a63b5d75d7778ffa68b0c0014455970bcf3d"
+    },
+    {
+      "file": "schemas/ruby-tools-config.schema.json",
+      "sha256": "4d4e1e684763e086713f22223e214f7cadd1c24d0c4425bfa1fb9d9f11ed049a"
+    },
+    {
+      "file": "schemas/ruby-tools-repository.schema.json",
+      "sha256": "5ce63a9ce95c5e87aaa805127e41db3cba876e1b0d881b4d77727d30a17e51af"
+    },
+    {
+      "file": "scripts/cleanup-ruby-tools-runtime.mjs",
+      "sha256": "2cbae382a3cac610c953d662453ff19ceee781a563d2f665413d57e2572adf9b"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "abc0347b1badbc518bcc49489fd7080b023cc166fdde39331b55d2ca02a2a734"
+    },
+    {
+      "file": "scripts/prepare-ruby-tools-container-dependencies.mjs",
+      "sha256": "9a7a220fc8f9d985890f1eb8e8566f06a435d53641547914aaa15ff910cf1b57"
+    },
+    {
+      "file": "scripts/prepare-ruby-tools-dependencies.mjs",
+      "sha256": "5c7f6032d2a3900ad2218a4a550afcf88a2f3b0b07d655916ce42e1b219faa3f"
+    },
+    {
+      "file": "scripts/prepare-ruby-tools-runtime.mjs",
+      "sha256": "c2f3e5aa92411d72bf7c8fffd91f49c462d81c0ac99a6833d9c39eea85088bdd"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "66be05f6b93337dab3b86ed02194f12750d895f4576f3b81a8175cff337c24d0"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "c51e394bc0e935df9a3a7410a236fcb8adad918f65fccdabb8b4ce81c40e03a9"
+    },
+    {
+      "file": "scripts/ruby-tools.Dockerfile",
+      "sha256": "747a4a1a1c251d85467022b6b92687388023cba65d694e6682b7c760fe6aacf5"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "b0fe233e40d04df9e207dda51556df716b652deafbd44c0c607d85d9cee74aba"
+    },
+    {
+      "file": "scripts/verify-ruby-tools-container.mjs",
+      "sha256": "5404cbeef63726a1bd30d86368306b688ec928a5ef301da11ff535876ab92a21"
+    },
+    {
+      "file": "scripts/verify-ruby-tools-package.mjs",
+      "sha256": "3e1ac7fad158902a5893fdd92dea0f72c245caead13bcbe0f6981dcba731f1c6"
+    },
+    {
+      "file": "src/actionlint-evidence.ts",
+      "sha256": "97e08e82caeefa67a738415125b3ad5aaa585a7786e6eda7f4d60967b428fc1b"
+    },
+    {
+      "file": "src/actionlint-inputs.ts",
+      "sha256": "3065829880ec825eef4a540530b8aacb755aff1ed2915d570d96662de2698952"
+    },
+    {
+      "file": "src/actionlint-runner.ts",
+      "sha256": "18132cbc4ca06e70c7b757608fdb27e728a9d65213612d249b83154037137802"
+    },
+    {
+      "file": "src/actionlint.ts",
+      "sha256": "195252c69ff9242ffae45db6bf875d264a0b3b6abdc169f1338d80839ed8a45a"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "67b3d045bc0ff339b641b40cc269b34db6986ca8320361faddbc519054e79f92"
+    },
+    {
+      "file": "src/architecture.ts",
+      "sha256": "de3fadd649acf5d4dbb9b8356849d9ccef47068850c1bd25b2a4f74527e61444"
+    },
+    {
+      "file": "src/checkstyle-evidence.ts",
+      "sha256": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+    },
+    {
+      "file": "src/checkstyle-native.ts",
+      "sha256": "02eea009604ab049bb334efadd5eebf45eb208ea761db6147432e53d4051b320"
+    },
+    {
+      "file": "src/checkstyle-runner.ts",
+      "sha256": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698"
+    },
+    {
+      "file": "src/checkstyle.ts",
+      "sha256": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001"
+    },
+    {
+      "file": "src/clang-evidence.ts",
+      "sha256": "f2ce6e888dd5537bac6654f5a52861d3af770c978c57019c7bb4a95c86be1715"
+    },
+    {
+      "file": "src/clang-protocol.ts",
+      "sha256": "f25a5451f90872792b8f56251520513ea0eb3091b7c7cf36fac6a6f9e557094d"
+    },
+    {
+      "file": "src/clang-runner.ts",
+      "sha256": "ddd46a932f92a41dda9e4703510a83b20b06a356fd6abe585592c54a0034fe00"
+    },
+    {
+      "file": "src/clang.ts",
+      "sha256": "1f432ea34687d35115ca43f93b4ada4d3f9b81f634d82fe137908b6dc1ed377d"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/config.ts",
+      "sha256": "1ec576984c49f69dce4b52aabbc76040931ebc9b8fb3c84ca15fcf197977a517"
+    },
+    {
+      "file": "src/contract-schema.ts",
+      "sha256": "a05c8cf27548b70999281fa61ce79af24c307a94fe75c1c8b8bf602d9f36b012"
+    },
+    {
+      "file": "src/contract-worker.ts",
+      "sha256": "9ee35ca9b81cea63557fd49c8606b2592927d7dfd8a10adffd7b0ae6515019ed"
+    },
+    {
+      "file": "src/contracts.ts",
+      "sha256": "42e56f344d01763cfb80b38c8c9e755519f2ed755f1e850ff5fafb0083d1e035"
+    },
+    {
+      "file": "src/django-evidence.ts",
+      "sha256": "f54f78efe68120e96edbe720748d0cfb8888248ada0479783a80182493e27879"
+    },
+    {
+      "file": "src/django-runner.ts",
+      "sha256": "515ad80c22ac789f25757a0a1532c53c974e09926b6038e667179fd89bacbf35"
+    },
+    {
+      "file": "src/django.ts",
+      "sha256": "61c1abbceffd9901f0351a882c2b08ce6a193836ccfa25b33e1ea3691f46666c"
+    },
+    {
+      "file": "src/dotnet-build-evidence.ts",
+      "sha256": "4f02bcb362af49bfdd667925a1dc413c5bdde513888feec7f253d35fc2061271"
+    },
+    {
+      "file": "src/dotnet-build-native.ts",
+      "sha256": "5ef7a29fe2acbccfdd42ff3d63de13f418cafa7434d261542bdeebfb34dd52c3"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "sha256": "06442930fb4e2937c085ff34ca94a2b639314b155249b3fcb1ee90ed6c0b18c3"
+    },
+    {
+      "file": "src/dotnet-build.ts",
+      "sha256": "53a4f360602a6276985b4c242c467a2cc954604ed0df90d2947525bdc24fc930"
+    },
+    {
+      "file": "src/dotnet-compiler.ts",
+      "sha256": "95926905826b21dc95010fe9ce009048706958a780dc1cc5bcb18d932b2119b0"
+    },
+    {
+      "file": "src/dotnet-evidence.ts",
+      "sha256": "b94b9687f59183261866b291f8032a22bb23b977bf0af0604871e2e733cdf6e1"
+    },
+    {
+      "file": "src/dotnet-format-collect.ts",
+      "sha256": "f8ec77658f0b959f76144d3308905db468df0dbcc2473f3e7ab150bc1a657160"
+    },
+    {
+      "file": "src/dotnet-format-evidence.ts",
+      "sha256": "f2a78bb3885d2ae6925cc102c360ded87061abb218104a06a215da2c6f6e7a63"
+    },
+    {
+      "file": "src/dotnet-format-native.ts",
+      "sha256": "ce7564d4b2fecea0c0fe9a96a25a3f7980c4e7c294fdd6b5fe94efc8b4a5db50"
+    },
+    {
+      "file": "src/dotnet-generated-collect.ts",
+      "sha256": "de97a564c3e5672ac4905f1a5641ba30718c1ea388d2772213fdd6f566647e2d"
+    },
+    {
+      "file": "src/dotnet-nunit.ts",
+      "sha256": "fc3279fa1b4a204e59d7ce4d810987aba074387529512c782a2eb087948ad1cd"
+    },
+    {
+      "file": "src/dotnet-runner.ts",
+      "sha256": "9ad886ed3cd89f924a724ea623b854aef53eca5bc0cf6721150eafa8dd22d61e"
+    },
+    {
+      "file": "src/dotnet-test-collect.ts",
+      "sha256": "1afe643385a91b948fcbc195b7ce44282dafc2465ff7683c08b99a78a3d700e6"
+    },
+    {
+      "file": "src/dotnet-test-evidence.ts",
+      "sha256": "ca87cf3254a82fd2c5fc37e18b66913951309de975f438cbd1de27aab8ffb4f9"
+    },
+    {
+      "file": "src/dotnet-test-native.ts",
+      "sha256": "b16366b5361e1abdbddaf76b879fc23ad924594e2f3ad481c803e972939bcef4"
+    },
+    {
+      "file": "src/dotnet.ts",
+      "sha256": "4d16b454054ff9c00097fd483f71ad1604fa643da99d94dce39582ffd6b53fa5"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/eslint-evidence.ts",
+      "sha256": "e719f9ec14d71166a8df9d2161b8ee31e6768e4125e915a06462e5d6e835db2a"
+    },
+    {
+      "file": "src/eslint-runner.ts",
+      "sha256": "96b3bbdf68d2b78ad8e1f65f11173c87151a22f152c98f729be1c08759715d5a"
+    },
+    {
+      "file": "src/eslint.ts",
+      "sha256": "a6c6829df8812b6ad612606f63db8d62e14f4555eb95dafd45e8cab705bd1913"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "301b62a02d8af87dfb631c34229ceaf8ea0ea00d2266a0b6ea7f008c73839cbf"
+    },
+    {
+      "file": "src/executable-bundle.ts",
+      "sha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c"
+    },
+    {
+      "file": "src/external-adapter.ts",
+      "sha256": "d6ed57b9a932ba9752afce6f43935c11a0b5dca87984e5b407819c5e683c09dd"
+    },
+    {
+      "file": "src/external-evidence.ts",
+      "sha256": "1124c0bda894fa4baa9f5196dda30b2ed4a25ff4d05cb2d7e637122e44df36fa"
+    },
+    {
+      "file": "src/external-runner.ts",
+      "sha256": "077d9a1dbf1010ea3eb7796e3661be2393bfcd48633a5379a1c1d695268ef818"
+    },
+    {
+      "file": "src/external-schema.ts",
+      "sha256": "7e34cf9e1a0add8b9b82fd1e7c32d353ca0bcf0ed223e48d3266a44f6b05df6e"
+    },
+    {
+      "file": "src/fastapi-evidence.ts",
+      "sha256": "1732be84f30b257a4db34a4436c75ff7ad66874df4fc6bd4a5f33cdbb0942838"
+    },
+    {
+      "file": "src/fastapi-runner.ts",
+      "sha256": "6909bd115f534cf0981bf84cd1b1f85bd94f8a8be03534f6ffddc3469a2fafa1"
+    },
+    {
+      "file": "src/fastapi.ts",
+      "sha256": "22495597c5c346e1143ef72572e934e06ac3a3cfba287638db127921ecc671d0"
+    },
+    {
+      "file": "src/fetch-adapter.ts",
+      "sha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111"
+    },
+    {
+      "file": "src/fetch-pack.ts",
+      "sha256": "6d8d22466fb110ef0cc8c869c4833bfe925b804a587b5a0921f6e0401d5dbfef"
+    },
+    {
+      "file": "src/finding-policy-schema.ts",
+      "sha256": "95f50f34fb816d648cdcf6ef38567ab0f20a444f0a6bc4acd95b6a9abaadc766"
+    },
+    {
+      "file": "src/finding-policy.ts",
+      "sha256": "c6b941308cd5e178021c186a6904e322ec761b979c7d6065dbdb676de432c537"
+    },
+    {
+      "file": "src/git-selection.ts",
+      "sha256": "b3dd2f7896741e6e303857392c5fe4009f309032d788c435c15622beacbe59ab"
+    },
+    {
+      "file": "src/go-build-evidence.ts",
+      "sha256": "2d4c8deb681be05055e1ceb0daee343d792ba24e82655951b23584c490eb26f2"
+    },
+    {
+      "file": "src/go-build-runner.ts",
+      "sha256": "adf6ddcb1516bfe2982af751ebc65fd5626f6803048e98726222eab32086bb00"
+    },
+    {
+      "file": "src/go-build.ts",
+      "sha256": "a9d29de1ea0eeab5d4e6b8fa5f520179cb6846553e7d2fc6dd9bd09d25864fe6"
+    },
+    {
+      "file": "src/go-compile-evidence.ts",
+      "sha256": "3fb540653f4a823ff8b78670c4d4487c43544bf38f71f4780e2dff84060a958a"
+    },
+    {
+      "file": "src/go-directives.ts",
+      "sha256": "02e4a0db32b87f0b25f41bcce5e9cb4dcab6b1ef54b17054930b361e48cd0e50"
+    },
+    {
+      "file": "src/go-scope-policy.ts",
+      "sha256": "79b6a5ce5862a2ab45928f8b3f5921bc4490fc985f810221209aa2708168bc69"
+    },
+    {
+      "file": "src/go-scope.ts",
+      "sha256": "1457221c7191af0a8d312c54a8793b40f365f15ac935c5737e2fcb51caf1947a"
+    },
+    {
+      "file": "src/go-target.ts",
+      "sha256": "a6264e52f329ef8381c39a3f985880f99da069907da3e2bf1567fc72a9ed458d"
+    },
+    {
+      "file": "src/golangci-evidence.ts",
+      "sha256": "a30a7eb6e73f9b8952a079019a47bc5f58c62942d0c48a21aba78b4771ebc041"
+    },
+    {
+      "file": "src/golangci-runner.ts",
+      "sha256": "097e2959ec30bd2ace63bbb9593c9b22a3f811e4deeb937dd582630d944db1cc"
+    },
+    {
+      "file": "src/golangci.ts",
+      "sha256": "79a6cef76add6ee3566766a32619a0b4355e28632989febff9fe37c6bd24dd10"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/guidance.ts",
+      "sha256": "b0b499f55dd5652cbc662628342fa798978514938f9bea1964fbb781ae7625f3"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "1d5b09d830352cd987e6266477e4f4f3d375c42fbecc037f9da1b233e8c07121"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-compiler.ts",
+      "sha256": "871f147f11a185e57d21cfe2dfbe43d0ceeeb11c844dcc49cb6b965adc29159a"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/jest-evidence.ts",
+      "sha256": "de7509e6218097154cdd7ea75671b13528dd9685adee896051540fc6ca77abaf"
+    },
+    {
+      "file": "src/jest-runner.ts",
+      "sha256": "ec20aca6cde95f08637d159fbfd81e119b91d28860fd2b9a82d2326a89518986"
+    },
+    {
+      "file": "src/jest.ts",
+      "sha256": "94626f08c579f1fdbaf049ebe6209c8cc0a0434bffd414993ef017eaa03a0a83"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/laravel-evidence.ts",
+      "sha256": "7feb0adcb08c3a5f7eb3344a32db30e63c3a9a3c59f1ca0cbf54f027cceda335"
+    },
+    {
+      "file": "src/laravel-runner.ts",
+      "sha256": "fe58168cc8343a7c556d0909bd9478b99012e6f733c24cc1e1643ab52876013a"
+    },
+    {
+      "file": "src/laravel.ts",
+      "sha256": "fe5935b59b43bb3a4713120f110bd5845608dcf4379dab86c387eae14eb5ba32"
+    },
+    {
+      "file": "src/local-tool.ts",
+      "sha256": "c3e9ef806e2569c7526be775f271c46f33e824c911ab8eab94724fe29317f13a"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "9b618c20012384c5bc7ba74cf6d098ec4c6492cdb21295e20d690cbf2cba6879"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ea441a06244c0ed43f3c6bde63aad6c72e53ec5f94699a825b8442d969e7512e"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/mcp-validation-tasks.ts",
+      "sha256": "3ea8b487c803387950c1986a38055a8223d99ade6955b3033c10c6fd2e596ccf"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mutation.ts",
+      "sha256": "dc5d38bfc68e006ad5655ac7fbf41d1e259d7a90b823c1bc6a9a540b71bec041"
+    },
+    {
+      "file": "src/mypy-evidence.ts",
+      "sha256": "2ef893fabf325855afc162374765f2261326cbd3300c95df3de62ebc08245e55"
+    },
+    {
+      "file": "src/mypy.ts",
+      "sha256": "d5da7d79c595eb53e80b0e3e715b0b369bf55cad3543a6d1c73ee8b5a19537f2"
+    },
+    {
+      "file": "src/node-reporter.ts",
+      "sha256": "2b0f0e9c81fb801fa9d98be976ae4535a40f73c5e54c422b80798c351a462cdf"
+    },
+    {
+      "file": "src/nuxt-evidence.ts",
+      "sha256": "0cb9e7604a8dd6765a2c00b40581b43fa92e9c318fd4919f68deecc1b368686d"
+    },
+    {
+      "file": "src/nuxt-protocol.ts",
+      "sha256": "5872472a9cdce384721a85a79743d1b8013e66853265b37c02a7d8aee14295c3"
+    },
+    {
+      "file": "src/nuxt-runner.ts",
+      "sha256": "f5bcfb1a70202e154ca7ec55c80b8c1ec02fb4e46e2e109174e0424cdeda149c"
+    },
+    {
+      "file": "src/nuxt.ts",
+      "sha256": "071d6fc40a5a211e4b4535cdc5fba01491c962d187fe5cc7f802d84cc52d0fbc"
+    },
+    {
+      "file": "src/onboarding.ts",
+      "sha256": "c7409bf3b079643983f6ff060d33a3aea86652947d824bfeba1db13e29bdc7ac"
+    },
+    {
+      "file": "src/output.ts",
+      "sha256": "d7ef24f6098aac58fc6baba392a061c31493ab22a619f77aba2e03ed16c02ed8"
+    },
+    {
+      "file": "src/php-cs-fixer-evidence.ts",
+      "sha256": "5c762084df8a7ebd3582f897fcd23d616fc3db665f1784869345cb4171e2754c"
+    },
+    {
+      "file": "src/php-cs-fixer-runner.ts",
+      "sha256": "e66feb01debdc7aa3e8a0ac841767b96e1b7abfed6dca4da007a8f7f5db0a0ed"
+    },
+    {
+      "file": "src/php-cs-fixer.ts",
+      "sha256": "a87b04eb812e7d94b232f51f48cedbb98a728810fb240bded72946c1ccf5e319"
+    },
+    {
+      "file": "src/phpstan-evidence.ts",
+      "sha256": "b0516a48a7a8ec513b995ba72c7283d4dc85d32e12ecaf94cdc71b8eb73a9cc9"
+    },
+    {
+      "file": "src/phpstan.ts",
+      "sha256": "61bec9f67298e1d4a8a7bdab749f39e9903eb4e5dd8ff8def0fe5c8deda37eb0"
+    },
+    {
+      "file": "src/phpunit-evidence.ts",
+      "sha256": "9b70f1cade16f2a7449c58bd0394696be214fd95938b097c542fec114f1d1e8b"
+    },
+    {
+      "file": "src/phpunit.ts",
+      "sha256": "0da4e30ff2501d7254c773183c413a9cb6130575db333a6e6348603c2dfa3e98"
+    },
+    {
+      "file": "src/pinned-download.ts",
+      "sha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad"
+    },
+    {
+      "file": "src/pint-evidence.ts",
+      "sha256": "3e160de06a12e4e06601c90e4912a485eafd1e447f1a9d053452a5296160b698"
+    },
+    {
+      "file": "src/pint-runner.ts",
+      "sha256": "caa4759ea1ca1c2e1a05be472c0fa1ed3ae264733c0d2a3482c698a28bd77ab5"
+    },
+    {
+      "file": "src/pint.ts",
+      "sha256": "ff32fadce2a3a86f7be64bb84d96384f740b9bba48d0637432d69d522df6e7a6"
+    },
+    {
+      "file": "src/playwright-evidence.ts",
+      "sha256": "7f69ab4b8351bb16031c116fe1f9f063d4b0072a2ee74e9c0612c7e3d56d6297"
+    },
+    {
+      "file": "src/playwright-reporter.ts",
+      "sha256": "2c9a4dd7729246845a9022ec30a220e3cdcad4ba697d1c656f6e3d65bd3e0a1d"
+    },
+    {
+      "file": "src/playwright-runner.ts",
+      "sha256": "43aeef1ea6abe342336b3b65a76f7039ca6386c320eab4ae1a982a223034884f"
+    },
+    {
+      "file": "src/playwright.ts",
+      "sha256": "fc311df7a2a6bbdba61ea8958afd8bd38e1628fce99fcd68224a0f6073138b46"
+    },
+    {
+      "file": "src/policy-pack.ts",
+      "sha256": "6e3f922407158173e7d0edbf57db5ec3b09bc04f7ada1c6deec8a62f169a9433"
+    },
+    {
+      "file": "src/pyright-evidence.ts",
+      "sha256": "2db8e8477a1a1339224092e098e3d3b09fee5966c67fc1703d39d81e643a4fea"
+    },
+    {
+      "file": "src/pyright-runner.ts",
+      "sha256": "22392ac05d141975545f38efff31d2b832c858aac08a5755ca8eea76fdfb01d4"
+    },
+    {
+      "file": "src/pyright.ts",
+      "sha256": "707a0be07abda351c45da768501c46a6820e04096f301db99adb5b1cbe3de349"
+    },
+    {
+      "file": "src/pytest-evidence.ts",
+      "sha256": "41b1f7f78b46bd1104125a9523cbe760ef49a7ea2c350ff4161034e28337abec"
+    },
+    {
+      "file": "src/pytest-runner.ts",
+      "sha256": "458c4256b5013b4dd8f066705fdb3532be39d71ca725be2abbcdb7d9e0922ba9"
+    },
+    {
+      "file": "src/pytest.ts",
+      "sha256": "ee3d66e118370dde2881ac0dc296d8c41ddb961f979b12c62872df89a195f282"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/review-adjudication.ts",
+      "sha256": "57b2ee686cbe40a28254a7712ffc9bf89636ca6693291b5a583377ff141a6541"
+    },
+    {
+      "file": "src/review-behavior-schema.ts",
+      "sha256": "3dfca04c639c273cf7732302cda050c8affe7483c696018a58430ac4e604487c"
+    },
+    {
+      "file": "src/review-behavior-validation.ts",
+      "sha256": "1304a36eb099007658996b0af4c46718678daf6b2c260ba52f2cf857d8a2f1d8"
+    },
+    {
+      "file": "src/review-behavior.ts",
+      "sha256": "acdf1b37e9d887f852dc9a121d017cbf923b6ca60cbe9c7e69075d5ee2083f48"
+    },
+    {
+      "file": "src/review-benchmark-schema.ts",
+      "sha256": "88ac2cb2dda9cf7f6b209f4a6f61b59eca0c6ef9791af4f7a8862ca20ec9b399"
+    },
+    {
+      "file": "src/review-benchmark.ts",
+      "sha256": "c5175b59d4dcb64985aa18d8bab371a1c0dee51037cd4834d261a53aed352238"
+    },
+    {
+      "file": "src/review-diff.ts",
+      "sha256": "5642804aeff8b4d55c53fa22432f43c15d88889d59a0afc6477a4f668f1a02bc"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/review-hypotheses.ts",
+      "sha256": "98510567871a2b028b44cf341bb7d4d7aea1ffc6bc5411491731f321ad8a4c89"
+    },
+    {
+      "file": "src/review-probe-schema.ts",
+      "sha256": "2ff82c91d5c85221fdefa8565e82226c8a8d149c17d327c919fcea9bad022cfc"
+    },
+    {
+      "file": "src/review-probe-worker.ts",
+      "sha256": "86ff795b0319ea2949b4294b35e6fb5c87d20a6ada06f077c00f8710dc05c1fb"
+    },
+    {
+      "file": "src/review-probe.ts",
+      "sha256": "19c08ec0046aaf8f2dcfeec2a97852176bf18b9dcc41b560749a27a5b5d14ff0"
+    },
+    {
+      "file": "src/review-provider-aggregate.ts",
+      "sha256": "d57cc84539bf742a99842aee1f7e06f530ec8f9c7fb1107779f08c257545c5ad"
+    },
+    {
+      "file": "src/review-provider-budget.ts",
+      "sha256": "ae91e7cc9c6491bf7da3d803f8ee96a8509dd856927361f3dee458c5a3fb3bf0"
+    },
+    {
+      "file": "src/review-provider-schema.ts",
+      "sha256": "db2a87f896d6614a0bc887daf1e204cd705a220410e08da1ccb973c07a291bee"
+    },
+    {
+      "file": "src/review-provider.ts",
+      "sha256": "ec2a15f187b8d9ab09b8e48461d2e8257f5ce2adf95374b7ada9fefc20073922"
+    },
+    {
+      "file": "src/review-refutation.ts",
+      "sha256": "64e55bea09daca5ffab1cbbb95e8d60a5e175f6ebfd2111355cc3db3863caec8"
+    },
+    {
+      "file": "src/review-scoring.ts",
+      "sha256": "fa854f468e7b5cd2ee19a34242b34bbf6ce8d1ed54bffb542b861f1d6b89413b"
+    },
+    {
+      "file": "src/review-verification.ts",
+      "sha256": "13c44adb7a6459710b676c6c43f1ec7d0b4a3dfde5523eb8593eefe062592010"
+    },
+    {
+      "file": "src/review-workflow-audit-schema.ts",
+      "sha256": "ef964ff99c92d12a7f807737bff19c5924d06ebaf6032ef1f30b578c4e187903"
+    },
+    {
+      "file": "src/review-workflow-audit.ts",
+      "sha256": "9130c0a31f698e7fa46da30f9949f5cba4a0b644646b7a42d99a569abd9f933d"
+    },
+    {
+      "file": "src/review-workflow-cli.ts",
+      "sha256": "d32f0112c9fb300cf94d5114b2271347fac09fd7eada4683e38cd1640239ce07"
+    },
+    {
+      "file": "src/review-workflow-schema.ts",
+      "sha256": "259fca626a9d9ac80f37769d03fd03c51f6a463dd9c28ab7c5727f61f25a2a8c"
+    },
+    {
+      "file": "src/review-workflow-session.ts",
+      "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+    },
+    {
+      "file": "src/review-workflow.ts",
+      "sha256": "7cacc4d6068af95035bebe95be74bdf8e93cab72703f6e9662a914dbbd7b54ed"
+    },
+    {
+      "file": "src/review.ts",
+      "sha256": "5c88d7f361be827059ae9ce4da82946c4a6c417f91112a4e336e0e4050743add"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "sha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "sha256": "baeb7e6fc30558f04da87c50574162373046cfeaf5cdf93d982e1063d2e06527"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "sha256": "2313d0d5e5432f8ce65b1cf998c2057e7c2342d0046a992a604e0ddcdbdfb211"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "sha256": "8f161a00ce4e23adf5680b04b90c8f16a71fc1535acba7f01bb856d86b6323f4"
+    },
+    {
+      "file": "src/ruby.ts",
+      "sha256": "b38512ae9e9ede83455851b9b62958958fb5401cc6282d7d230db8c7909669d6"
+    },
+    {
+      "file": "src/ruff-evidence.ts",
+      "sha256": "faf5260f24a8a22b5ea10f0c2def4a56964b37de5d6ff404d9e2d5364e37ad23"
+    },
+    {
+      "file": "src/ruff.ts",
+      "sha256": "c66a74af64bf8e20051d6e11c0e004255872f7d4d045a7a0833d73e5bd688f51"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "99ef6ec0eff653ecb41a98d077885b8658d5704977c9dbf3a626ccd4d0a1617a"
+    },
+    {
+      "file": "src/runtime-inventory.ts",
+      "sha256": "6a097beefcfc9679d03e09cf0da09ce3beaf7a55ff97a80c040e4ba33aeddb21"
+    },
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "08cebfe9b8929c8c86aea72c2efd80477e5f147d3b825f8a22f5b281a7304e86"
+    },
+    {
+      "file": "src/rust-test-events.ts",
+      "sha256": "a01e0afb51f80fc581321e4d84f0d9c589e8d52ac6438ee7a7092e7c6890228b"
+    },
+    {
+      "file": "src/rust-test-evidence.ts",
+      "sha256": "a0ac9b02b0312b721cab0b972c5366ab001a5f2d8f6d365f90b3953ef16717e4"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d6402553b9fc21800e0d19c1cc19f18dbc0479cb53bb73138e52c94ccf02dba6"
+    },
+    {
+      "file": "src/rust-workspace-evidence.ts",
+      "sha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "2f71a9beaed46a797f696ec902aa2a5a2e9422121e7df05005eb645636e92462"
+    },
+    {
+      "file": "src/rust-workspace-schema.ts",
+      "sha256": "1c914a0d4ca51cc04e2609197659c124f8c543d7c45982c04d9ac06e2c6ae332"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "9e788b429007941a142b4772c3328d7ab028048248a1ff0a32c8426a38a93e14"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "9913f3246eb611421eb962d13e0002e07d5f21499f2745ab925311445a0cc458"
+    },
+    {
+      "file": "src/sarif.ts",
+      "sha256": "69daa3bff63f5c3bad98d2e4c2fdac063386b55a9c9734f01504fa89c48d39ee"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "93fd8a18bb34422058dd1d8f5104e581586a0ef713f24b5cf2e56d7b513dcf6e"
+    },
+    {
+      "file": "src/staticcheck-evidence.ts",
+      "sha256": "c649ac23f41a703972e3f8ee9f0c8d982814059a7ee68775925f1addadc77fe4"
+    },
+    {
+      "file": "src/swift.ts",
+      "sha256": "4190fb27b2bae7d347f1373355de35747a9fceab0637187c35fc0f5fc4bc0c0d"
+    },
+    {
+      "file": "src/task-store.ts",
+      "sha256": "a0590debac5d5c23c467947d1fdb87260861163a4f04d26711c977d42b66d03d"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "0adc0783ea58df26db1b5e42cbaab7507a800163cd4fbb8b77ac7837274a37f9"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "3f44ef32a999edbc5e9b6306cb1d62a6500be24be0eb9212e2ec1762e48548b7"
+    },
+    {
+      "file": "src/typescript-arguments.ts",
+      "sha256": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852"
+    },
+    {
+      "file": "src/typescript-build-evidence.ts",
+      "sha256": "8bbe54349960e39060d4cc8fce261459945fea1c11be3f1c82c4a6657cdef20f"
+    },
+    {
+      "file": "src/typescript-build-runner.ts",
+      "sha256": "55d6b1e1d56d4578296d3f059b220e387dff3017ebe1d5935aab627dc73cf97f"
+    },
+    {
+      "file": "src/typescript-build.ts",
+      "sha256": "efd44d28a5540990725b89d5e4aa6cf8fa617948e9bd45b609adc190381b82d9"
+    },
+    {
+      "file": "src/typescript-runner.ts",
+      "sha256": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9"
+    },
+    {
+      "file": "src/typescript.ts",
+      "sha256": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0"
+    },
+    {
+      "file": "src/validation-task-worker.ts",
+      "sha256": "9927367c66c5d3292ca2ce63138b7c49f7ac9301ac3ae82a74ac07060e3edb49"
+    },
+    {
+      "file": "src/validation-tasks-protocol.ts",
+      "sha256": "cc6134c2d9ef09bb8be34b6f4921632897ddd1ff3ce688f10e41a0949e2e3546"
+    },
+    {
+      "file": "src/validation-tasks.ts",
+      "sha256": "aa1c0bdd83cd039ae59fb1217dba1ef99b005f4b4d94be12d652fa1601d3a896"
+    },
+    {
+      "file": "src/vitest-evidence.ts",
+      "sha256": "4a68cf73ba0c6f7f4c3f86097cfe19f3dff6a15fdc9a4c39ba1af971c9aa9923"
+    },
+    {
+      "file": "src/vitest-runner.ts",
+      "sha256": "08d658c0083474b2b2c6ee9c542174149d426d2b461d46ad9fabef0170712a12"
+    },
+    {
+      "file": "src/vitest-version.ts",
+      "sha256": "56716da2a928b18504f3e88f28552d936f2886638d568fd6614e45c49735fc0e"
+    },
+    {
+      "file": "src/vitest.ts",
+      "sha256": "76a4adae1685d14d96f29f06730f0f1f595fa2a67949d172e3176662df7de191"
+    },
+    {
+      "file": "src/vue-router-capture.ts",
+      "sha256": "26510d71f073d3bf1c7bd9b58f17758a614c85795f598d243a4ebb83cc974d54"
+    },
+    {
+      "file": "src/vue-router-evidence.ts",
+      "sha256": "83993906ebb99f232b45b0b86d3c17f39a15cf9ff08caa68b7d8d281567967b0"
+    },
+    {
+      "file": "src/vue-router-protocol.ts",
+      "sha256": "5faa1d4318dde49681fa978ebc416ba2183a40059a07759bf084d6a587f7521d"
+    },
+    {
+      "file": "src/vue-router-runner.ts",
+      "sha256": "e1f48295e1550446e8563b879360cd301ad5b50e0909dfe9239ba098c49098f5"
+    },
+    {
+      "file": "src/vue-router.ts",
+      "sha256": "570459e3396029022e2d24d107354d04ebc8b0a729e476da2b25418db7d3df01"
+    },
+    {
+      "file": "src/vue-tsc-runner.ts",
+      "sha256": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+    },
+    {
+      "file": "src/workspace.ts",
+      "sha256": "77d5054bfccdc0cb390109c5c35c349422838f2e1116be93d2283f14f237b735"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/ruby-tools-config.test.ts",
+      "sha256": "abe920c0270e01bc0f2a235a7965eadea1d6e82434106d4e7554e14cfd2986d5"
+    },
+    {
+      "file": "test/ruby-tools-fixture.ts",
+      "sha256": "5994344ff95f6430b2544b08480c48c3da9be209774c51b28656bcc322cbdf1f"
+    },
+    {
+      "file": "test/ruby-tools-guards.test.ts",
+      "sha256": "98d2e758f7924799cfd25d35b20c647a3b0d4442d43f463c8670408d07ec8b9e"
+    },
+    {
+      "file": "test/ruby-tools-lifecycle.test.ts",
+      "sha256": "a6ae544b6419c440ae46575091ebdf5224e8a626a51a6d0a390834b071527117"
+    },
+    {
+      "file": "test/ruby-tools-surfaces.test.ts",
+      "sha256": "f2e6dd33a5bf605e518227a0633d3dc9455b92e9c9352d62f3ba58fbeb27f74e"
+    },
+    {
+      "file": "test/ruby-tools.test.ts",
+      "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+    }
+  ],
+  "compiledRuntimeSha256": "64e565d4b9e99cb375bf1e97c55b2a0b1c257575b79ff632110110dc014502ba",
+  "compiledRuntimeDigestScope": "Every dist/src file in the frozen source and installed acceptance runs; source pins separately bind the declared implementation and harness. Full SDK/publisher/license closure remains open.",
+  "preparation": {
+    "runtime": {
+      "schemaVersion": 1,
+      "image": "sha256:06b34634241fd2ec9b322916f51a784f73d0b72cd0647e054f0bf0f6ddd382e5",
+      "tag": "checktrail-checktrail-ruby-tools-1006:public",
+      "task": "checktrail-ruby-tools-1006",
+      "ruby": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "node": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "rubyVersion": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+      "architecture": "aarch64",
+      "alpine": "3.24.2",
+      "nodeVersion": "v22.23.2",
+      "gccVersion": "15.2.0",
+      "makeVersion": "GNU Make 4.4.1",
+      "files": [
+        {
+          "path": "binutils-2.45.1-r1.apk",
+          "bytes": 3321769,
+          "sha256": "bac4a00e73296dfebf5f587c2b304b7d110e7de658cd2b05491f87c2b228420c"
+        },
+        {
+          "path": "g++-15.2.0-r5.apk",
+          "bytes": 17241310,
+          "sha256": "dc16babd6fdd7154ece263ca625ff832b03528d58f5060f9e92ca3b0bc0c079a"
+        },
+        {
+          "path": "gcc-15.2.0-r5.apk",
+          "bytes": 52501295,
+          "sha256": "ff3fecfc32c9a1bed4a47a32ccfee6f6f575708258f912c218dce8ed0d892221"
+        },
+        {
+          "path": "gmp-6.3.0-r4.apk",
+          "bytes": 221014,
+          "sha256": "4dab6e86b850fe1b5bc0cf2fac17efa4d7f648bea44f3d9019694cc1e1cb12b7"
+        },
+        {
+          "path": "isl26-0.26-r2.apk",
+          "bytes": 870482,
+          "sha256": "c195ea26929ada2bb9e66b7bc6d64b340123591b8f4c8ed158693e4dac0923d8"
+        },
+        {
+          "path": "jansson-2.15.0-r0.apk",
+          "bytes": 49825,
+          "sha256": "a13822f5ca1772cced4bb7d3d178ec5dee770d8accba5b4816b2ddc413e6f055"
+        },
+        {
+          "path": "libatomic-15.2.0-r5.apk",
+          "bytes": 10362,
+          "sha256": "31a45fec053c43a006370f83238f16f959838a9a703fbf26bfd1a36da4f538b2"
+        },
+        {
+          "path": "libgcc-15.2.0-r5.apk",
+          "bytes": 66323,
+          "sha256": "369aaa6e9d099a737bad6dd3e6c2fe7bb1547ca26d22b94ee0411228f709b403"
+        },
+        {
+          "path": "libgcc-static-15.2.0-r5.apk",
+          "bytes": 2187958,
+          "sha256": "2ec3dc4be953d842cc51193248367d86829ed699a1ed094fb5149b1b3fc62919"
+        },
+        {
+          "path": "libgomp-15.2.0-r5.apk",
+          "bytes": 146527,
+          "sha256": "90576a8899c560d3983b8ac8442b5b75957a917bc1c4e950e005945080f8682f"
+        },
+        {
+          "path": "libstdc++-15.2.0-r5.apk",
+          "bytes": 908984,
+          "sha256": "2302e766d4e4926038ec166ecb85837ee884576115236ddb565e3a5fca4a11d7"
+        },
+        {
+          "path": "libstdc++-dev-15.2.0-r5.apk",
+          "bytes": 4132711,
+          "sha256": "8385c811d93b64ee1877005a5473cde8ebabe82d346301f2b153ff8cb6a71510"
+        },
+        {
+          "path": "make-4.4.1-r4.apk",
+          "bytes": 117543,
+          "sha256": "0a2c6c3fa0d90b652bbaeac362d1bfe54b75aae57631a6b448826f8b51c85170"
+        },
+        {
+          "path": "mpc1-1.3.1-r1.apk",
+          "bytes": 53688,
+          "sha256": "c4e03923cf1b958ba0d3665196f521a00fb091132e79c39493298019fb59ae60"
+        },
+        {
+          "path": "mpfr4-4.2.2-r0.apk",
+          "bytes": 294772,
+          "sha256": "81cb276c1e050138fed90c8f1ef584cf5bfce26739733753fce138fc0a092b35"
+        },
+        {
+          "path": "musl-1.2.6-r2.apk",
+          "bytes": 417710,
+          "sha256": "5e9674b7f41152fe2119093b5cb4c13eaaadb19c2d5422b2d7267913e663ee6e"
+        },
+        {
+          "path": "musl-dev-1.2.6-r2.apk",
+          "bytes": 2539434,
+          "sha256": "ca72b84f4eb3c36bbbec04d919eb10159d414c7a43413cc2253841d301fa9486"
+        },
+        {
+          "path": "zlib-1.3.2-r0.apk",
+          "bytes": 54312,
+          "sha256": "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+        },
+        {
+          "path": "zstd-libs-1.5.7-r2.apk",
+          "bytes": 365383,
+          "sha256": "2bb5136c89f5b0bbe1554c8915a3b520d5aa63ae2a51d4d821eb81698db5a818"
+        }
+      ],
+      "apkSignatureChecksDisabled": false,
+      "buildNetwork": "none",
+      "publisherAndLicenseClosureVerified": false
+    },
+    "gemfileSha256": "975cee1146439aeb0697c82c54ad26bd231edd4adaccb135ea4474782ca3cebc",
+    "lockSha256": "67af6541b24845fa57721e91ab01a319d45d62dd3f89682c3e16869361149f0d",
+    "repositoryManifestSha256": "453cfc1379ab7ea2972827d3466fd2673958744a97ad75b624ac5d3d40e87cc8",
+    "archives": 19,
+    "archiveBytes": 3428352,
+    "allArchiveDigestsMatchLock": true,
+    "explicitOperatorNetworkPreparation": true,
+    "engineFetchesDependencies": false,
+    "gemPreparationInstalledDependencies": false,
+    "publisherAndLicenseClosureVerified": false
+  },
+  "acceptance": {
+    "source": {
+      "phase": "source",
+      "exitCode": 0,
+      "durationMs": 729419,
+      "runtimeSha256": "64e565d4b9e99cb375bf1e97c55b2a0b1c257575b79ff632110110dc014502ba",
+      "receipt": {
+        "profile": "ruby-tools",
+        "timeoutMs": 300000,
+        "passed": 8,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      }
+    },
+    "installed": {
+      "phase": "installed",
+      "exitCode": 0,
+      "durationMs": 734760,
+      "runtimeSha256": "64e565d4b9e99cb375bf1e97c55b2a0b1c257575b79ff632110110dc014502ba",
+      "receipt": {
+        "tarballSha256": "7b86fe8670b10f413853665c486b8ec27a431d475008707c4ddcb2b8eacf54b5",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "ruby-tools",
+          "timeoutMs": 300000,
+          "passed": 8,
+          "required": 8,
+          "problems": [],
+          "complete": true
+        },
+        "environment": {
+          "image": "sha256:06b34634241fd2ec9b322916f51a784f73d0b72cd0647e054f0bf0f6ddd382e5",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      }
+    },
+    "image": "sha256:06b34634241fd2ec9b322916f51a784f73d0b72cd0647e054f0bf0f6ddd382e5",
+    "network": "none",
+    "cpus": 2,
+    "memory": "3g",
+    "init": true,
+    "repositoryAndCacheMounts": "readonly",
+    "rootFilesystemReadonly": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "compilingMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Owned observer bytes",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "d621b70ee9fd946f56d549012012a7cab556dc0edd227548814f4612470abf2b",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 103,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "dba2493e710ce7551b67cc567a00f0f0445bfeadf6f95d2e3de0f41ab9ff14b7",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 24695
+      },
+      {
+        "guard": "Effective native settings",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "9c20ca46dbfd8195d85010180df4a61fae402adbcf3624f0c89d389717ab8de2",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 106,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "37d471b168eb17e564d468448676980db94e7eb0dc2cbe03246ba6e739f0e9c1",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 24416
+      },
+      {
+        "guard": "Native artifact byte digest",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "6103ac9fe0bb3f7d47d5fd17d34e183da85e538e757c62d2d7b03310a7a6efab",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 85,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "1d6bda3999ed69f70c6c6bce74287c0b33b5628ee321115077957d9fc540738d",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 44547
+      },
+      {
+        "guard": "Native tool version",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "c070f8051da50989141f6ca5c4955072b83a8bbd8cc23b650b1b2cbdb918ab6d",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 127,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "58e7738706e39dbac47a78eab7a4e0ac114f73f09727e244bccf84c50b53252e",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 24096
+      },
+      {
+        "guard": "Loaded native entry bytes",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "cbcd587737307c80b15c129e328058dd8ccc079b7c9da11d8c5fdab447a14e23",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 130,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "fc57cad579a2740b5d69c3910abeddc6d254bd0a35a0dd3ded3e5220c37e6451",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 24004
+      },
+      {
+        "guard": "Actual compiled project source",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "2dcf34f9c1f8f832dc0fda6e010986ba67e9ee3ee8e6209cc9ffaf19a351b8b9",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 133,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "04236836712bbfd00c6f1e799a98304f6907315a78794bc6e4d1e7f65803c257",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 24078
+      },
+      {
+        "guard": "Every registered native case started",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "fc4710eb1af986e1592ed9eb56da7226e2a06d9f3a906a5d40763b4b91f59eeb",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 146,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "39f42419ec540843236b9a6d9330ac7e5e6dd0ac2fd6a10544f9585f6e7e2119",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 44712
+      },
+      {
+        "guard": "Native summary total",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "93ff876e0ac8cb2536f62b8173adb2cde64b2a5438a92c56cb81ade4b77ecab3",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 160,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "c1d4812d0fd000958e4d6c0abf03dbeb7faa94d24c1a1e8d8f3018bbf4dbb155",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 44710
+      },
+      {
+        "guard": "Native errors outside cases",
+        "file": "src/ruby-tools-evidence.ts",
+        "sourceSha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e",
+        "mutationSourceSha256": "42a4eb8ea32ecc939ca14c65b29b9e562dd2b2c37eb11257a8da8e9c1fe54340",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+          "originalCompiledCallLine": 163,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "75598cf0112aaf3afd351c480501ef879ef881789f4771d563e46e3ceaadc9e5",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/ruby-tools.test.ts",
+            "sha256": "011d3ab673d356da11f9c38129b43c44e3350ea742aa0a53f31d4396859d9af2"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "0d747d5abbe3934f1b83f974093142513b93d876e2bf9c67420782ea95ca64a0",
+        "durationMs": 44674
+      }
+    ]
+  },
+  "preservedNativeProfile": {
+    "profile": "ruby",
+    "timeoutMs": 120000,
+    "passed": 2,
+    "required": 1,
+    "problems": [],
+    "complete": true,
+    "durationMs": 576
+  },
+  "developmentAttempts": [
+    {
+      "exitCode": 1,
+      "nativePasses": 1,
+      "nativeFailures": 4,
+      "nativeSkips": 0,
+      "durationMs": 417086,
+      "knownFailure": "Minitest discovery ran before assigning its required seed",
+      "compiledRuntimeAndHarnessRetained": true,
+      "attempt": 1,
+      "receiptSha256": "f16635f4c70379174b8038643f2e3c78b4e8b4187970b537cb19e77af04db968",
+      "retainedArtifactPinsSha256": "3a8595133b9e6f89418d6b40fa32a63775db1794440f1ba35d4bf991962b06e6",
+      "nativeLogSha256": "d897fc60582560a33c735e3d479375a17619abdd8a9a37722610fd27975ee7fa"
+    },
+    {
+      "exitCode": 1,
+      "required": 7,
+      "passed": 5,
+      "complete": false,
+      "knownFailure": "A combined native test file exhausted the 300-second file timeout; two required callbacks were not completed",
+      "compiledRuntimeAndHarnessRetained": true,
+      "attempt": 2,
+      "receiptSha256": "05fc8ffc0cbaef8aa0fb8160d8930993de3107b9d7c623c6b96281efc79377c6",
+      "retainedArtifactPinsSha256": "919b1d8a6d0c6639943947387d03edbc08c63472cf1bd8ab23194e28d63accc3",
+      "nativeLogSha256": "7fa2c3e21bf8a3b7f45bb8d0eba341d238ff5261f0274d96b57135af859aa4b9"
+    },
+    {
+      "exitCode": 0,
+      "required": 8,
+      "passed": 8,
+      "complete": true,
+      "durationMs": 669908,
+      "finalAddedControlsNotYetCompiled": true,
+      "compiledRuntimeAndHarnessRetained": true,
+      "attempt": 3,
+      "receiptSha256": "273ca13221b6cfa8e045749fcb25781a9d48b972f34d3ada21b229a9ee95b6d9",
+      "retainedArtifactPinsSha256": "f8c55f65075795cff7484ba1533418f1649747cf2b5082aebceebf7c002db144",
+      "nativeLogSha256": "c94a4681f7c95c03ba9fdf72322a0ce21909dff47101ddbf1e2afe58e476fcf7"
+    }
+  ],
+  "mutationHarnessAttempts": {
+    "initialAttemptReceiptSha256": "5d6ea9399bc37949a50520b1a64ca841b60cec4fdab9ac81695cc7de4bf15cd7",
+    "initialCompletedProofs": 2,
+    "initialStopReason": "A non-unique test marker stopped the harness before native invocation of the third compiled mutant. Source restoration and rebuild passed. Completed proof pins were verified before resuming.",
+    "nativeCompletedProofsDiscarded": false
+  },
+  "repositoryValidation": [
+    {
+      "name": "check",
+      "exitCode": 0,
+      "durationMs": 45292
+    },
+    {
+      "name": "format",
+      "exitCode": 0,
+      "durationMs": 3490
+    },
+    {
+      "name": "changed-lint",
+      "exitCode": 0,
+      "durationMs": 583
+    },
+    {
+      "name": "diff",
+      "exitCode": 0,
+      "durationMs": 24
+    },
+    {
+      "name": "schema-parity",
+      "exitCode": 0
+    }
+  ],
+  "optionalHostTestSkipsAreNativeAcceptance": false,
+  "evaluatedPackageScope": "The tarball records evaluated runtime/CLI bytes before this measurement and later documentation edits. It does not certify a later receipt-containing tarball.",
+  "boundaries": {
+    "gateA": "open",
+    "gateBEvaluationPermitted": false,
+    "gateCReviewQualityAssessed": false,
+    "nativeTestSourceLocationsEstablishProductionMechanismOrSeverity": false,
+    "trustedExecutionIsOSSandboxed": false,
+    "hostedCIForThisRevision": "unverified",
+    "otherSDKOSArchitectureVersions": "unverified",
+    "broaderGemfileDSLAndBinaryPlatforms": "unverified",
+    "representativeProjectPerformance": "unmeasured",
+    "fullNativeAllAttemptAuditCompleted": false,
+    "privateSourceImported": false
+  }
+}
