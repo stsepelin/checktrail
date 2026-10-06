@@ -2746,5 +2746,35 @@
       "file": "dist/test/spotbugs.test.js",
       "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list"
     }
+  ],
+  "review-multi-scoring": [
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality"
+    }
   ]
 }

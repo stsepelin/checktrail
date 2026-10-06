@@ -451,3 +451,10 @@ export {
 export { windowsExecutionSchema } from "./windows-execution.js";
 
 export { capturedProcessOutputSchema } from "./process-output.js";
+
+export {
+  reviewMultiProtocolSchema,
+  reviewMultiInputSchema,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "./review-multi-scoring.js";
