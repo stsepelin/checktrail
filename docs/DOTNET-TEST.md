@@ -4,7 +4,7 @@
 declared C#, F# and Visual Basic projects targeting `net10.0`, SDK 10.0.401,
 runtime/reference pack 10.0.12, NUnit 4.6.1, NUnit adapter 5.0.0 and Test SDK
 18.10.1 in the original prepared fixture. It is not in the published alpha.5
-package. E12 and Gate A remain open. Broader formatting, Roslyn source generators,
+package. E12 and Gate A remain open. Broader formatting, wider Roslyn generator shapes,
 custom-name method provenance, other frameworks/targets and wider native profiles
 are unfinished.
 

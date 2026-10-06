@@ -1990,5 +1990,39 @@
       "file": "dist/test/dotnet-format-surfaces.test.js",
       "name": "native .NET whitespace cancellation reaches the workspace BuildHost and reaps loader descendants and temporary outputs"
     }
+  ],
+  "dotnet-generated": [
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "Roslyn source-generator declarations reject foreign unknown and unbounded origins"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn planning retains invalid producers duplicate scope and unverified formatting without execution"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn C# and VB outputs participate in compilation symbols and repaired consumer boundary tests"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn packets reject omitted forged stale disabled and source-unbound generator evidence"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn missing extra and throwing outputs cannot pass and preserve caller-owned generated files"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn producer source errors retain the actual diagnostic and valid interface spelling near misses compile"
+    },
+    {
+      "file": "dist/test/dotnet-generated-surfaces.test.js",
+      "name": "native Roslyn CLI and negotiated MCP preserve generated regressions privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-generated-surfaces.test.js",
+      "name": "native Roslyn cancellation reaches the original generator and reaps compiler descendants and temporary outputs"
+    }
   ]
 }

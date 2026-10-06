@@ -5,8 +5,9 @@ projects targeting `net10.0`, using SDK 10.0.401, runtime/reference pack 10.0.12
 and its selected native compiler tasks. Default .NET validation remains the
 explicit `dotnet.csharp` compilation profile. This implementation is not part of
 the published alpha.5 package. The separate [test profile](DOTNET-TEST.md) uses these
-fresh outputs. E12 and Gate A remain open: formatting, Roslyn generator
-participation and wider profiles remain unfinished.
+fresh outputs. [Declared native Roslyn outputs](DOTNET-GENERATED.md) have a separate
+bounded build/test participation profile. E12 and Gate A remain open: broader
+formatting, generator shapes and wider profiles remain unfinished.
 
 ## Prepare and select
 
@@ -48,7 +49,9 @@ and test classes with source files. The
 illustrate these roles; consumers prepare their own closure and package locks.
 Every inventoried project and non-output `.cs`, `.fs` and `.vb` source must be
 assigned exactly once. Each project needs an inventoried `packages.lock.json`.
-Generated sources belong inside that project's fresh `obj` tree. Test roles
+MSBuild-generated compiler inputs belong inside that project's fresh `obj` tree.
+Roslyn-produced sources use the separate `roslynGeneratedSources` origin declaration
+described in DOTNET-GENERATED.md. Test roles
 require declared classes; library roles cannot declare test classes.
 
 ## Execute and account
@@ -109,8 +112,9 @@ no reviewer model or real-project field evaluation.
 
 Only conventional SDK projects, portable symbols, default selected SDK analyzer
 configuration, declared compiler inputs and the measured Linux profile are
-covered. Source-generator-produced syntax not represented by the declared native
-compiler inputs remains incomplete. Scripts, Razor/XAML, linked/outside sources,
+covered. Declared native Roslyn outputs require the separate generator contract and
+consumer-symbol participation described in DOTNET-GENERATED.md. Unsupported
+generator shapes or unrepresented output syntax remain incomplete. Scripts, Razor/XAML, linked/outside sources,
 multitargeting, remapped outputs, other adapters/frameworks and broader compiler
 or plugin shapes need separate verified profiles. A passing build is not a test
 execution result or proof that every possible analyzer rule was enabled.

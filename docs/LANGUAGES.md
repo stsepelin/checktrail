@@ -260,3 +260,9 @@ JUnit/Surefire evidence. Original native and installed CLI/MCP controls retain
 skips, empty tests, bootstrap/compile errors and partial reactor failures. Wrappers,
 wider Maven/Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt remain required;
 this bounded Linux profile does not close E11 or Gate A.
+
+[Declared Roslyn generator participation](DOTNET-GENERATED.md) adds a separate
+bounded C#/VB fresh build/test profile, with native producer/analyzer selection,
+emission settings, generated-source hashes and consumer portable-symbol evidence.
+Unsupported generator shapes and all generated-source formatting remain incomplete;
+this does not close E12 or Gate A.

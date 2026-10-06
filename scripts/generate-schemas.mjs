@@ -209,6 +209,14 @@ for (const [name, schema] of Object.entries({
 })) {
   await writeFile(
     new URL(`../schemas/${name}.schema.json`, import.meta.url),
-    await format(JSON.stringify(z.toJSONSchema(schema)), { parser: "json" }),
+    await format(
+      JSON.stringify(
+        z.toJSONSchema(
+          schema,
+          name === "dotnet-build-config" ? { io: "input" } : {},
+        ),
+      ),
+      { parser: "json" },
+    ),
   );
 }

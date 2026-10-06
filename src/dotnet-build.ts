@@ -44,6 +44,19 @@ export const dotnetBuildConfigSchema = z.strictObject({
         kind: z.enum(["library", "test"]),
         sources: z.array(externalPathSchema).min(1).max(2048),
         generatedSources: z.array(externalPathSchema).max(256),
+        roslynGeneratedSources: z
+          .array(
+            z.strictObject({
+              file: externalPathSchema,
+              generatorProject: externalPathSchema,
+              generatorClass: z
+                .string()
+                .regex(/^[A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*$/)
+                .max(256),
+            }),
+          )
+          .max(256)
+          .default([]),
         testClasses: z
           .array(
             z.strictObject({
@@ -220,6 +233,38 @@ export async function dotnetBuildCheck(
           "Declare generated sources inside their fresh project obj tree",
         );
       if (
+        new Set(item.roslynGeneratedSources.map((g) => g.file)).size !==
+        item.roslynGeneratedSources.length
+      )
+        throw new DotnetBuildPrerequisiteError(
+          "Declare each Roslyn generated output once",
+        );
+      for (const generated of item.roslynGeneratedSources) {
+        const producer = config.projects.find(
+          (p) => p.file === generated.generatorProject,
+        );
+        const prefix =
+          path.posix.join(
+            directory,
+            "obj/Debug/net10.0/generated",
+            producer?.assemblyName ?? "",
+            generated.generatorClass,
+          ) + "/";
+        if (
+          item.language === "fsharp" ||
+          !producer ||
+          producer === item ||
+          producer.language !== "csharp" ||
+          producer.kind !== "library" ||
+          !generated.file.startsWith(prefix) ||
+          !generated.file.endsWith("." + extension) ||
+          path.posix.dirname(generated.file) !== prefix.slice(0, -1)
+        )
+          throw new DotnetBuildPrerequisiteError(
+            "Declare a C# library generator and exact fresh C#/VB generated output",
+          );
+      }
+      if (
         (item.kind === "library" && item.testClasses.length) ||
         (item.kind === "test" && !item.testClasses.length) ||
         new Set(item.testClasses.map((value) => value.className)).size !==
@@ -297,6 +342,12 @@ export async function dotnetFormatCheck(
       check.commands = [];
       check.unavailableReason =
         "The SDK whitespace formatter supports C# and Visual Basic; F# requires a separately verified formatter profile";
+    } else if (
+      invocation.config.projects.some((p) => p.roslynGeneratedSources.length)
+    ) {
+      check.commands = [];
+      check.unavailableReason =
+        "Roslyn generator outputs require separately verified native formatting participation";
     } else check.commands[0]!.args.push("--format-whitespace");
   }
   return check;

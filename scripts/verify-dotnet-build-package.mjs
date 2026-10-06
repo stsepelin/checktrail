@@ -18,7 +18,9 @@ import { fileURLToPath, URL } from "node:url";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const profile = process.env.CHECKTRAIL_DOTNET_PROFILE ?? "dotnet-build";
 assert.ok(
-  ["dotnet-build", "dotnet-test", "dotnet-format"].includes(profile),
+  ["dotnet-build", "dotnet-test", "dotnet-format", "dotnet-generated"].includes(
+    profile,
+  ),
   "Select a supported .NET package profile",
 );
 const temporary = await mkdtemp(
@@ -88,6 +90,14 @@ try {
           "dotnet-format-fixture.js",
           "dotnet-format.test.js",
           "dotnet-format-surfaces.test.js",
+        ]
+      : []),
+    ...(profile === "dotnet-generated"
+      ? [
+          "dotnet-format-fixture.js",
+          "dotnet-generated-fixture.js",
+          "dotnet-generated.test.js",
+          "dotnet-generated-surfaces.test.js",
         ]
       : []),
     ...(profile === "dotnet-test"

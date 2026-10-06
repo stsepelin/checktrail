@@ -41,6 +41,7 @@ const metadataSchema = z.strictObject({
     .array(
       z.strictObject({
         className: file,
+        interfaces: z.array(file).max(256).default([]),
         methods: z
           .array(z.strictObject({ name: file, files: z.array(file).max(4096) }))
           .max(20000),
@@ -112,6 +113,26 @@ export const dotnetBuildPacketSchema = z.strictObject({
     .min(1)
     .max(4096),
   observerSha256: digest,
+  generatedSources: z
+    .array(
+      z.strictObject({
+        project: file,
+        file,
+        generatorProject: file,
+        generatorClass: file,
+        producerAssembly: file,
+        producerAssemblySha256: digest,
+        bytes: z
+          .number()
+          .int()
+          .nonnegative()
+          .max(4 * 1024 * 1024),
+        sha256: digest,
+        sha1: z.string().regex(/^[a-f0-9]{40}$/),
+      }),
+    )
+    .max(4096)
+    .default([]),
   compiledSources: z
     .array(
       z.strictObject({
@@ -189,6 +210,29 @@ export function dotnetBuildEvidence(
   const findings: Finding[] = [];
   try {
     const raw = JSON.parse(process.stdout);
+    if (raw.generatedScopeFailure === "native-output-declaration") {
+      const scope = z
+        .strictObject({
+          version: z.literal(1),
+          generatedScopeFailure: z.literal("native-output-declaration"),
+          buildExitCode: z.literal(0),
+          nativeReceipts: z
+            .array(dotnetBuildPacketSchema.shape.nativeReceipts.element)
+            .min(5)
+            .max(80),
+        })
+        .parse(raw);
+      requireEvidence(
+        scope.nativeReceipts.filter((r) => r.phase === "build").length === 1 &&
+          scope.nativeReceipts.find((r) => r.phase === "build")!.exitCode === 0,
+        "Native build completed before generated-output scope reconciliation",
+      );
+      return {
+        ...incomplete,
+        reason:
+          "Native Roslyn emitted sources do not match every declared output",
+      };
+    }
     if (raw.prerequisiteFailure === "locked-offline-restore") {
       z.strictObject({
         version: z.literal(1),
@@ -433,6 +477,29 @@ export function dotnetBuildEvidence(
       ),
       "No foreign native project",
     );
+    requireEvidence(
+      same(
+        data.generatedSources.map((g) =>
+          JSON.stringify([
+            g.project,
+            g.file,
+            g.generatorProject,
+            g.generatorClass,
+          ]),
+        ),
+        declared.flatMap((p) =>
+          p.roslynGeneratedSources.map((g) =>
+            JSON.stringify([
+              p.file,
+              path.join(data.workspace, g.file),
+              g.generatorProject,
+              g.generatorClass,
+            ]),
+          ),
+        ),
+      ),
+      "Exact declared native source-generator output scope",
+    );
     const allSources: string[] = [];
     for (const item of declared) {
       const moduleStarts = starts.filter(
@@ -547,6 +614,106 @@ export function dotnetBuildEvidence(
           ),
         "Every selected compiler source",
       );
+      const generatorSources = data.generatedSources.filter(
+        (g) => g.project === item.file,
+      );
+      if (item.roslynGeneratedSources.length) {
+        requireEvidence(
+          item.language !== "fsharp" &&
+            properties.EmitCompilerGeneratedFiles === "true" &&
+            properties.CompilerGeneratedFilesOutputPath ===
+              "obj/Debug/net10.0/generated" &&
+            parameter("GeneratedFilesOutputPath").length === 1 &&
+            parameter("GeneratedFilesOutputPath")[0] ===
+              "obj/Debug/net10.0/generated",
+          "Native generated-file emission and exact fresh output directory",
+        );
+      }
+      for (const generated of generatorSources) {
+        const spec = item.roslynGeneratedSources.find(
+            (g) => path.join(data.workspace, g.file) === generated.file,
+          )!,
+          producer = declared.find(
+            (p) => p.file === generated.generatorProject,
+          ),
+          module = data.modules.find(
+            (p) => p.file === generated.generatorProject,
+          );
+        requireEvidence(
+          producer &&
+            producer.language === "csharp" &&
+            producer.kind === "library" &&
+            producer !== item &&
+            spec.generatorClass === generated.generatorClass &&
+            spec.generatorProject === generated.generatorProject,
+          "Declared source generator producer and class",
+        );
+        const expectedAssembly = path.join(
+            data.workspace,
+            path.dirname(producer.file),
+            "bin/Debug/net10.0",
+            producer.assemblyName + ".dll",
+          ),
+          expectedDirectory = path.join(
+            base,
+            "obj/Debug/net10.0/generated",
+            producer.assemblyName,
+            generated.generatorClass,
+          );
+        requireEvidence(
+          generated.producerAssembly === expectedAssembly &&
+            path.dirname(generated.file) === expectedDirectory &&
+            generated.file.endsWith("." + extension) &&
+            !sources.includes(generated.file),
+          "Native generated source path and distinct origin",
+        );
+        requireEvidence(
+          parameter("Analyzers")
+            .map((f) => address(base, f))
+            .includes(expectedAssembly) &&
+            data.observedArtifacts.some(
+              (p) =>
+                p.file === expectedAssembly &&
+                p.sha256 === generated.producerAssemblySha256 &&
+                p.bytes > 0,
+            ),
+          "Selected freshly built generator is a native compiler analyzer input",
+        );
+        const type = module?.metadata?.types.find(
+          (t) => t.className === generated.generatorClass,
+        );
+        requireEvidence(
+          module?.assembly === expectedAssembly &&
+            type &&
+            type.interfaces.some((i) =>
+              [
+                "Microsoft.CodeAnalysis.IIncrementalGenerator",
+                "Microsoft.CodeAnalysis.ISourceGenerator",
+              ].includes(i),
+            ) &&
+            type.methods.some(
+              (m) =>
+                m.name === "Initialize" &&
+                m.files.some((f) =>
+                  producer.sources.some(
+                    (source) => path.join(data.workspace, source) === f,
+                  ),
+                ),
+            ),
+          "Source-bound native direct generator contract and initializer",
+        );
+        const pin = data.compiledSources.find((p) => p.file === generated.file);
+        requireEvidence(
+          pin &&
+            pin.bytes === generated.bytes &&
+            pin.sha256 === generated.sha256 &&
+            pin.sha1 === generated.sha1 &&
+            data.modules
+              .find((m) => m.file === item.file)
+              ?.metadata?.documents.some((d) => d.file === generated.file),
+          "Generated source bytes and consumer portable-symbol participation",
+        );
+      }
       const sdkGenerated = [
         `.NETCoreApp,Version=v10.0.AssemblyAttributes.${extension}`,
         `${stem}.AssemblyInfo.${extension}`,
@@ -590,7 +757,7 @@ export function dotnetBuildEvidence(
             "Pinned package program source",
           );
       }
-      allSources.push(...sources);
+      allSources.push(...sources, ...generatorSources.map((g) => g.file));
       requireEvidence(
         parameter("OutputAssembly")[0] !== undefined &&
           address(base, parameter("OutputAssembly")[0]!) ===
@@ -638,6 +805,17 @@ export function dotnetBuildEvidence(
                         /(?:\.editorconfig|\.globalconfig)$/.test(input.path) &&
                         input.sha256 === observed.sha256,
                     ))) ||
+                (name === "References" &&
+                  file ===
+                    path.join(
+                      data.sdk,
+                      "Roslyn/bincore/Microsoft.CodeAnalysis.dll",
+                    ) &&
+                  declared.some((consumer) =>
+                    consumer.roslynGeneratedSources.some(
+                      (g) => g.generatorProject === item.file,
+                    ),
+                  )) ||
                 (name === "References" &&
                   file.startsWith(
                     path.join(
@@ -743,7 +921,7 @@ export function dotnetBuildEvidence(
       findings,
       findingsComplete: true,
       reason:
-        "Every declared C#/F#/VB project compiled fresh source and reconciled native compiler inputs, dependencies and output symbols",
+        "Every declared C#/F#/VB project compiled fresh source and reconciled native compiler inputs, generator outputs, dependencies and output symbols",
     };
   } catch {
     return sourceFailure

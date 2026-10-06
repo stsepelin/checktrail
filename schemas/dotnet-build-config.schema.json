@@ -41,6 +41,29 @@
             "type": "array",
             "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
           },
+          "roslynGeneratedSources": {
+            "default": [],
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+                "generatorProject": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "generatorClass": {
+                  "type": "string",
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z_][\\w]*(?:\\.[A-Za-z_][\\w]*)*$"
+                }
+              },
+              "required": ["file", "generatorProject", "generatorClass"],
+              "additionalProperties": false
+            }
+          },
           "testClasses": {
             "maxItems": 256,
             "type": "array",

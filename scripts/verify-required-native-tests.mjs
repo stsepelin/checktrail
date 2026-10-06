@@ -15,7 +15,9 @@ assert.ok(
   Object.hasOwn(profiles, profile),
   "Unknown required native test profile",
 );
-const timeoutMs = ["dotnet-test", "dotnet-format"].includes(profile)
+const timeoutMs = ["dotnet-test", "dotnet-format", "dotnet-generated"].includes(
+  profile,
+)
   ? 300000
   : 120000;
 const report = await runRequiredTests(profiles[profile], { timeoutMs });

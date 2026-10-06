@@ -18,7 +18,10 @@ The selected solution must contain only declared C# and Visual Basic projects.
 F# inputs keep the whole formatting check unavailable with their scope visible.
 This follows an observed native SDK boundary: formatting a mixed-language original
 solution can return zero and an empty report while reporting that it cannot format
-its F# projects. That result is not complete formatting evidence.
+its F# projects. That result is not complete formatting evidence. Declared Roslyn
+generator outputs also keep the whole check unavailable until formatting
+participation has its own verified native profile; build/test acceptance alone
+does not establish formatting coverage.
 
 Execution requires CLI `--trust-project` or MCP startup `--allow-execution`.
 A shared runner restores locked dependencies and builds the complete declared

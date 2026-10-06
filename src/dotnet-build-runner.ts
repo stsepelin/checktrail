@@ -22,6 +22,10 @@ import {
 import { dotnetBuildNativeSource } from "./dotnet-build-native.js";
 import { collectDotnetTests } from "./dotnet-test-collect.js";
 import { collectDotnetFormatting } from "./dotnet-format-collect.js";
+import {
+  collectDotnetGeneratedSources,
+  DotnetGeneratedScopeError,
+} from "./dotnet-generated-collect.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
 
 const receipts: {
@@ -301,6 +305,14 @@ async function main() {
       "-p:RestoreFallbackFolders=",
       "-p:RestoreLockedMode=true",
       "-p:NuGetAudit=false",
+      ...(invocation.config.projects.some(
+        (p) => p.roslynGeneratedSources.length,
+      )
+        ? [
+            "-p:EmitCompilerGeneratedFiles=true",
+            "-p:CompilerGeneratedFilesOutputPath=obj/Debug/net10.0/generated",
+          ]
+        : []),
     ];
     const restoreFile = path.join(temporary, "restore.jsonl"),
       restore = invoke(
@@ -418,6 +430,32 @@ async function main() {
               throw Error("Compiler source count bound");
           }
       }
+    let generatedSources: Awaited<
+      ReturnType<typeof collectDotnetGeneratedSources>
+    >;
+    try {
+      generatedSources =
+        build.status === 0
+          ? await collectDotnetGeneratedSources({
+              workspace,
+              invocation,
+              compiledSources,
+              observe,
+              regular,
+            })
+          : [];
+    } catch (error) {
+      if (!(error instanceof DotnetGeneratedScopeError)) throw error;
+      process.stdout.write(
+        JSON.stringify({
+          version: 1,
+          generatedScopeFailure: "native-output-declaration",
+          buildExitCode: 0,
+          nativeReceipts: receipts,
+        }),
+      );
+      return;
+    }
     const buildReceipts = [...receipts];
     const testData =
       process.argv.slice(4).includes("--test") && build.status === 0
@@ -488,6 +526,7 @@ async function main() {
       nativeReceipts: buildReceipts,
       observedArtifacts: [...tools].map(([file, pin]) => ({ file, ...pin })),
       observerSha256: ownedPins.get(helper),
+      generatedSources,
       compiledSources: [...compiledSources].map(([file, pin]) => ({
         file,
         ...pin,

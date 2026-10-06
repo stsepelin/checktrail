@@ -185,7 +185,13 @@ test("published schemas match runtime definitions and compile in a strict standa
         "utf8",
       ),
     );
-    assert.deepEqual(disk, z.toJSONSchema(schema));
+    assert.deepEqual(
+      disk,
+      z.toJSONSchema(
+        schema,
+        name === "dotnet-build-config" ? { io: "input" } : {},
+      ),
+    );
     ajv.compile(disk);
   }
   const metadata = JSON.parse(
@@ -303,4 +309,70 @@ test("route schema prefixes and request boundaries agree in runtime and standard
       );
     }
   }
+});
+
+test(".NET build public input schema preserves optional native generator declarations", async () => {
+  const disk = JSON.parse(
+      await readFile(
+        new URL(
+          "../../schemas/dotnet-build-config.schema.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ),
+    validate = new Ajv2020({ strict: true }).compile(disk);
+  const project = {
+      file: "Original.csproj",
+      language: "csharp",
+      assemblyName: "Original",
+      targetFramework: "net10.0",
+      kind: "library",
+      sources: ["Original.cs"],
+      generatedSources: [],
+      testClasses: [],
+    },
+    config = {
+      schemaVersion: 1,
+      solution: "Original.slnx",
+      repository: "dependencies",
+      repositoryManifest: "repository.json",
+      repositorySha256: "a".repeat(64),
+      projects: [project],
+    };
+  assert.equal(validate(config), true, JSON.stringify(validate.errors));
+  assert.deepEqual(
+    dotnetBuildConfigSchema.parse(config).projects[0]!.roslynGeneratedSources,
+    [],
+  );
+  const declared = {
+    ...config,
+    projects: [
+      {
+        ...project,
+        roslynGeneratedSources: [
+          {
+            file: "obj/generated.cs",
+            generatorProject: "Generator.csproj",
+            generatorClass: "Example.Generator",
+          },
+        ],
+      },
+    ],
+  };
+  assert.equal(validate(declared), true, JSON.stringify(validate.errors));
+  assert.equal(
+    validate({
+      ...declared,
+      projects: [
+        {
+          ...declared.projects[0],
+          roslynGeneratedSources: [
+            { ...declared.projects[0]!.roslynGeneratedSources[0], extra: true },
+          ],
+        },
+      ],
+    }),
+    false,
+  );
 });
