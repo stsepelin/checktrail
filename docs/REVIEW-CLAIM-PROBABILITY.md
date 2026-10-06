@@ -87,3 +87,10 @@ judgments, general multi-claim scoring/deduplication, consequence-based severity
 observed host isolation, broader native probes, frozen evaluation provenance and
 held-out calibration/quality acceptance remain required. Gate A remains open.
 No field review or model inference is authorized by this contract.
+
+The [dated implementation acceptance](measurements/review-claim-probability-2026-10-06.json)
+records exact source/runtime and fresh-install profiles, unchanged original
+callback mutation controls, selected file identities, full-check accounting and
+actual client discovery/direct tools without inference. These profiles certify
+the recorded code revision; hosted acceptance and reviewer quality remain
+unverified.
