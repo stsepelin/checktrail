@@ -24,7 +24,7 @@ class ChecktrailFormatObserver {
   var request=JsonDocument.Parse(File.ReadAllText(args[2])).RootElement;
   MSBuildLocator.RegisterMSBuildPath(args[0]);
   using var workspace=MSBuildWorkspace.Create(new Dictionary<string,string>{{"Configuration","Debug"},{"TargetFramework","net10.0"},{"RestorePackagesPath",args[1]},{"BuildInParallel","false"},{"UseSharedCompilation","false"}});
-  
+
   var requested=request.GetProperty("projects").EnumerateArray().Select(p=>p.GetString()).ToArray();
   foreach(var file in requested)if(!workspace.CurrentSolution.Projects.Any(p=>p.FilePath==file))await workspace.OpenProjectAsync(file);
   var selected=new HashSet<string>(request.GetProperty("sources").EnumerateArray().Select(p=>p.GetString()));
