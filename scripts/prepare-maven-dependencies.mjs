@@ -23,6 +23,11 @@ const cache = path.join(repository, ".checktrail"),
   destination = path.join(cache, "maven-dependencies");
 await assert.rejects(lstat(destination), { code: "ENOENT" });
 assert.equal(await (await import("node:fs/promises")).realpath(cache), cache);
+assert.ok(
+  typeof process.getuid === "function" && typeof process.getgid === "function",
+  "Dependency preparation requires a POSIX host user identity",
+);
+const containerUser = `${process.getuid()}:${process.getgid()}`;
 const temporary = await mkdtemp(path.join(cache, ".maven-dependencies-"));
 try {
   const workspace = path.join(temporary, "workspace"),
@@ -39,6 +44,8 @@ try {
       "run",
       "--rm",
       "--init",
+      "--user",
+      containerUser,
       "--cpus",
       "2",
       "--memory",
@@ -49,6 +56,13 @@ try {
       `type=bind,src=${artifacts},target=/artifacts`,
       "--workdir",
       "/workspace",
+      "--env",
+      "HOME=/workspace/.preparation-home",
+      "--env",
+      "MAVEN_OPTS=-Duser.home=/workspace/.preparation-home",
+      ...(process.env.CHECKTRAIL_TEST_TASK
+        ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
+        : []),
       image,
       "mvn",
       "--batch-mode",
