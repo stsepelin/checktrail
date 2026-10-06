@@ -1,6 +1,7 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -47,23 +48,10 @@ try {
     ),
   );
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      path.join(temporary, packed.filename),
-    ],
-    { cwd: consumer, stdio: "pipe" },
+  await installAcceptancePackage(
+    repository,
+    path.join(temporary, packed.filename),
+    consumer,
   );
   const project = path.join(consumer, "example");
   await cp(path.join(repository, "examples/vue-router"), project, {
