@@ -29,6 +29,7 @@ import {
   reviewProbeRunSchema,
   reviewProbeSummarySchema,
   reviewProbeWireSchema,
+  reviewJsonProbeWireSchema,
   type ReviewProbeRun,
 } from "./review-probe-schema.js";
 const hash = (value: string): string =>
@@ -54,6 +55,8 @@ export function parseReviewProbe(input: PinnedReviewProbe) {
   )
     throw new Error("Operator probe recipe integrity mismatch");
   const recipe = reviewProbeRecipeSchema.parse(JSON.parse(input.contents));
+  if (recipe.profile === "node-export-json-v1")
+    for (const item of recipe.cases) validateJsonProbeValue(item.expected);
   const roles = new Set(recipe.cases.map((item) => item.role));
   if (
     new Set(recipe.cases.map((item) => item.id)).size !== recipe.cases.length ||
@@ -184,22 +187,23 @@ export async function runReviewProbe(
     throw new Error(
       "Native probe citations must match assigned source exactly",
     );
-  const trials: Extract<ReviewProbeRun, { schemaVersion: 3 }>["trials"] =
-    recipe.cases.map((item) => ({
-      id: item.id,
-      role: item.role,
-      status: "not-run",
-      reason: "not-started",
-      inputScale: reviewProbeInputScale(item.args),
-      functionExecuted: false,
-      guardCoverage: recipe.guard ? "unknown" : "not-requested",
-      expected: item.expected,
-      actual: null,
-      matchesExpectation: null,
-      durationMs: 0,
-      ranges: [],
-      execution: null,
-    }));
+  const trials: Array<
+    Extract<ReviewProbeRun, { schemaVersion: 3 | 4 }>["trials"][number]
+  > = recipe.cases.map((item) => ({
+    id: item.id,
+    role: item.role,
+    status: "not-run",
+    reason: "not-started",
+    inputScale: reviewProbeInputScale(item.args),
+    functionExecuted: false,
+    guardCoverage: recipe.guard ? "unknown" : "not-requested",
+    expected: item.expected,
+    actual: null,
+    matchesExpectation: null,
+    durationMs: 0,
+    ranges: [],
+    execution: null,
+  }));
   const supported =
     process.platform !== "win32" &&
     context.files.every((file) => /\.(?:js|mjs)$/.test(file.path)) &&
@@ -221,7 +225,14 @@ export async function runReviewProbe(
   let temporary: string | undefined;
   let temporaryArtifacts: ReviewProbeRun["temporaryArtifacts"] = "not-created";
   const workerBytes = await readFile(
-    fileURLToPath(new URL("./review-probe-worker.js", import.meta.url)),
+    fileURLToPath(
+      new URL(
+        recipe.profile === "node-export-json-v1"
+          ? "./review-json-probe-worker.js"
+          : "./review-probe-worker.js",
+        import.meta.url,
+      ),
+    ),
   );
   const workerDigest = createHash("sha256").update(workerBytes).digest("hex");
   try {
@@ -362,8 +373,9 @@ export async function runReviewProbe(
           continue;
         }
         try {
-          const evidence = reviewProbeWireSchema.parse(
+          const evidence = parseProbeWire(
             JSON.parse(result.stdout),
+            recipe.profile,
           );
           const nativeRange = evidence.functionRange;
           if (
@@ -390,7 +402,10 @@ export async function runReviewProbe(
             );
           trial.functionExecuted = true;
           trial.actual = evidence.actual;
-          trial.matchesExpectation = evidence.actual === trial.expected;
+          trial.matchesExpectation = isDeepStrictEqual(
+            evidence.actual,
+            trial.expected,
+          );
           trial.ranges = evidence.ranges;
           // V8 compresses equal-count child blocks into their enclosing range.
           // An exact block boundary must appear in another trial below; this
@@ -425,7 +440,10 @@ export async function runReviewProbe(
               : "unknown"
             : "not-requested";
           trial.status = "observed";
-          trial.reason = "boolean-observed";
+          trial.reason =
+            recipe.profile === "node-export-json-v1"
+              ? "json-observed"
+              : "boolean-observed";
           if (
             trial.role === "trigger" &&
             trial.inputScale < recipe.minimumTriggerScale
@@ -512,7 +530,7 @@ export async function runReviewProbe(
     ).length,
   };
   return parseReviewProbeRun({
-    schemaVersion: 3,
+    schemaVersion: recipe.profile === "node-export-json-v1" ? 4 : 3,
     nativeBudget,
     format: "review-probe-run",
     engineVersion: VERSION,
@@ -549,7 +567,7 @@ export async function runReviewProbe(
   });
 }
 function reconcileNativeBudget(
-  run: Extract<ReviewProbeRun, { schemaVersion: 2 | 3 }>,
+  run: Extract<ReviewProbeRun, { schemaVersion: 2 | 3 | 4 }>,
 ): void {
   const budget = run.nativeBudget;
   let calls = 0,
@@ -629,7 +647,7 @@ function reconcileNativeBudget(
     throw new Error("Native run budget does not reconcile");
 }
 function reconcileNativeOutput(
-  run: Extract<ReviewProbeRun, { schemaVersion: 3 }>,
+  run: Extract<ReviewProbeRun, { schemaVersion: 3 | 4 }>,
 ): void {
   for (const trial of run.trials) {
     const execution = trial.execution;
@@ -678,15 +696,20 @@ function reconcileNativeOutput(
         throw new Error(
           "Native function observation lacks usable complete physical output",
         );
-      const wire = reviewProbeWireSchema.parse(
+      const wire = parseProbeWire(
         JSON.parse(
-          Buffer.from(output.stdout.base64, "base64").toString("utf8"),
+          new TextDecoder("utf-8", { fatal: true }).decode(
+            Buffer.from(output.stdout.base64, "base64"),
+          ),
         ),
+        run.profile,
       );
       if (
         wire.requestDigest !== artifact.requestDigest ||
         wire.sourceDigest !== run.sourceDigest ||
-        wire.actual !== trial.actual ||
+        (run.schemaVersion === 4
+          ? !isDeepStrictEqual(wire.actual, trial.actual)
+          : wire.actual !== trial.actual) ||
         !isDeepStrictEqual(wire.ranges, trial.ranges) ||
         wire.functionRange.start < run.functionRange.start ||
         wire.functionRange.end > run.functionRange.end
@@ -700,7 +723,14 @@ function reconcileNativeOutput(
 export function parseReviewProbeRun(input: unknown): ReviewProbeRun {
   const run = reviewProbeRunSchema.parse(input);
   if (run.schemaVersion !== 1) reconcileNativeBudget(run);
-  if (run.schemaVersion === 3) reconcileNativeOutput(run);
+  if (run.schemaVersion === 3 || run.schemaVersion === 4)
+    reconcileNativeOutput(run);
+  if (run.schemaVersion === 4) {
+    for (const trial of run.trials) {
+      validateJsonProbeValue(trial.expected);
+      if (trial.functionExecuted) validateJsonProbeValue(trial.actual);
+    }
+  }
   const counts = run.counts;
   if (
     counts.selected !== run.trials.length ||
@@ -792,9 +822,11 @@ export function parseReviewProbeRun(input: unknown): ReviewProbeRun {
     observed.some(
       (trial) =>
         !trial.functionExecuted ||
-        trial.actual === null ||
-        trial.matchesExpectation !== (trial.actual === trial.expected) ||
-        trial.reason !== "boolean-observed",
+        (run.schemaVersion !== 4 && trial.actual === null) ||
+        trial.matchesExpectation !==
+          isDeepStrictEqual(trial.actual, trial.expected) ||
+        trial.reason !==
+          (run.schemaVersion === 4 ? "json-observed" : "boolean-observed"),
     )
   )
     throw new Error("Native probe observations do not reconcile");
@@ -853,4 +885,32 @@ export async function loadPinnedReviewProbe(
   } finally {
     await handle.close();
   }
+}
+
+function validateJsonProbeValue(input: unknown): void {
+  const queue = [{ value: input, depth: 0 }];
+  let nodes = 0;
+  while (queue.length) {
+    const { value, depth } = queue.pop()!;
+    if (++nodes > 1024 || depth > 16)
+      throw new Error("Probe JSON value exceeds structural limits");
+    if (
+      typeof value === "number" &&
+      (!Number.isFinite(value) || Object.is(value, -0))
+    )
+      throw new Error("Probe JSON number is not lossless");
+    if (value !== null && typeof value === "object")
+      for (const child of Object.values(value))
+        queue.push({ value: child, depth: depth + 1 });
+  }
+  if (Buffer.byteLength(JSON.stringify(input)) > 16384)
+    throw new Error("Probe JSON value exceeds physical value byte limit");
+}
+function parseProbeWire(input: unknown, profile: ReviewProbeRun["profile"]) {
+  if (profile === "node-export-json-v1") {
+    const wire = reviewJsonProbeWireSchema.parse(input);
+    validateJsonProbeValue(wire.actual);
+    return wire;
+  }
+  return reviewProbeWireSchema.parse(input);
 }

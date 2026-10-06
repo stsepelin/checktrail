@@ -2686,5 +2686,35 @@
       "file": "dist/test/ruby-tools-cancellation.test.js",
       "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
     }
+  ],
+  "native-json-evidence": [
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native probes retain arrays objects null and exact comparative results with physical replay"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native worker rejects lossy values getters and toJSON while retaining every reached failed attempt"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native values enforce exact physical byte depth and node boundaries before admission and during execution"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native retained output rejects rehashed value swaps wrong worker profile missing bytes and invented observed null states"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native CLI and MCP share actual JSON evidence while summaries and tool arguments cannot grant disclosure or execution"
+    },
+    {
+      "file": "dist/test/review-json-probe.test.js",
+      "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts"
+    }
   ]
 }

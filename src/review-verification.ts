@@ -463,6 +463,7 @@ export function parseReviewVerification(input: unknown): ReviewVerificationRun {
       probe.contextDigest !== context.contextDigest ||
       probe.candidateDigest !== hash(target) ||
       probe.recipeDigest !== run.recipe.sha256 ||
+      probe.profile !== recipe.profile ||
       probe.sourceDigest !== file.sha256 ||
       probe.functionRange.start !== definition.start ||
       probe.functionRange.end !== definition.end ||
@@ -474,7 +475,7 @@ export function parseReviewVerification(input: unknown): ReviewVerificationRun {
         return (
           trial.id !== item.id ||
           trial.role !== item.role ||
-          trial.expected !== item.expected ||
+          !isDeepStrictEqual(trial.expected, item.expected) ||
           trial.inputScale !== reviewProbeInputScale(item.args)
         );
       })

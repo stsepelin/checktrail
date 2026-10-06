@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import { createHash, randomUUID } from "node:crypto";
 import {
   constants,
@@ -609,6 +610,7 @@ function checkNativeReceipt(
     recipe.family !== receipt.candidate.family ||
     run.schemaVersion === 1 ||
     run.recipeDigest !== receipt.recipe.sha256 ||
+    run.profile !== recipe.profile ||
     run.contextDigest !== state.contextDigest ||
     run.candidateDigest !== sha(JSON.stringify(receipt.candidate)) ||
     run.minimumTriggerScale !== recipe.minimumTriggerScale ||
@@ -634,7 +636,7 @@ function checkNativeReceipt(
       return (
         trial.id !== expected.id ||
         trial.role !== expected.role ||
-        trial.expected !== expected.expected ||
+        !isDeepStrictEqual(trial.expected, expected.expected) ||
         trial.inputScale !== reviewProbeInputScale(expected.args)
       );
     })

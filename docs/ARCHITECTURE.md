@@ -212,7 +212,7 @@ Attempts send one stateless inline assignment with no tools or prior messages;
 all native outcomes remain separate. See [REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md)
 for partial capability and acceptance limits.
 
-The experimental `review-probe` engine executes operator-pinned Boolean cases
+The experimental `review-probe` engine executes operator-pinned Boolean and bounded JSON cases
 in fresh current-source trees. Native V8 coverage and compiled-source digests
 bind observed functions/guards; missing scale or stale/incomplete evidence remains
 unresolved. `review_probe` selects a startup-registered recipe only and shares the

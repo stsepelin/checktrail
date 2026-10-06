@@ -4427,58 +4427,41 @@
                 "additionalProperties": false
               },
               "observations": {
-                "type": "object",
-                "properties": {
-                  "profile": {
-                    "type": "string",
-                    "const": "node-export-boolean-v1"
-                  },
-                  "file": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 1024
-                  },
-                  "exportName": {
-                    "type": "string",
-                    "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
-                  },
-                  "sourceDigest": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "workerDigest": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "runtime": {
+                "oneOf": [
+                  {
                     "type": "object",
                     "properties": {
-                      "name": { "type": "string", "const": "node" },
-                      "version": { "type": "string" }
-                    },
-                    "required": ["name", "version"],
-                    "additionalProperties": false
-                  },
-                  "functionRange": {
-                    "type": "object",
-                    "properties": {
-                      "start": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 1000000000
+                      "profile": {
+                        "type": "string",
+                        "const": "node-export-boolean-v1"
                       },
-                      "end": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 1000000000
-                      }
-                    },
-                    "required": ["start", "end"],
-                    "additionalProperties": false
-                  },
-                  "guard": {
-                    "anyOf": [
-                      {
+                      "file": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "exportName": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+                      },
+                      "sourceDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "workerDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtime": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string", "const": "node" },
+                          "version": { "type": "string" }
+                        },
+                        "required": ["name", "version"],
+                        "additionalProperties": false
+                      },
+                      "functionRange": {
                         "type": "object",
                         "properties": {
                           "start": {
@@ -4495,56 +4478,9 @@
                         "required": ["start", "end"],
                         "additionalProperties": false
                       },
-                      { "type": "null" }
-                    ]
-                  },
-                  "minimumTriggerScale": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 1024
-                  },
-                  "expectationProvenance": {
-                    "type": "string",
-                    "const": "operator-pinned-expectations"
-                  },
-                  "executionSandboxed": { "type": "boolean", "const": false },
-                  "cases": {
-                    "minItems": 3,
-                    "maxItems": 16,
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "role": {
-                          "type": "string",
-                          "enum": ["baseline", "trigger", "near-miss"]
-                        },
-                        "args": {
-                          "maxItems": 8,
-                          "type": "array",
-                          "items": { "$ref": "#/$defs/__schema0" }
-                        },
-                        "expected": { "type": "boolean" },
-                        "actual": { "type": ["boolean", "null"] },
-                        "inputScale": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "maximum": 1000000000
-                        },
-                        "functionExecuted": { "type": "boolean" },
-                        "guardCoverage": {
-                          "type": "string",
-                          "enum": [
-                            "not-requested",
-                            "executed",
-                            "not-executed",
-                            "unknown"
-                          ]
-                        },
-                        "ranges": {
-                          "maxItems": 128,
-                          "type": "array",
-                          "items": {
+                      "guard": {
+                        "anyOf": [
+                          {
                             "type": "object",
                             "properties": {
                               "start": {
@@ -4556,47 +4492,298 @@
                                 "type": "integer",
                                 "minimum": 0,
                                 "maximum": 1000000000
+                              }
+                            },
+                            "required": ["start", "end"],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
+                      },
+                      "minimumTriggerScale": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1024
+                      },
+                      "expectationProvenance": {
+                        "type": "string",
+                        "const": "operator-pinned-expectations"
+                      },
+                      "executionSandboxed": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "cases": {
+                        "minItems": 3,
+                        "maxItems": 16,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["baseline", "trigger", "near-miss"]
+                            },
+                            "args": {
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": { "$ref": "#/$defs/__schema0" }
+                            },
+                            "expected": { "type": "boolean" },
+                            "actual": { "type": ["boolean", "null"] },
+                            "inputScale": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "functionExecuted": { "type": "boolean" },
+                            "guardCoverage": {
+                              "type": "string",
+                              "enum": [
+                                "not-requested",
+                                "executed",
+                                "not-executed",
+                                "unknown"
+                              ]
+                            },
+                            "ranges": {
+                              "maxItems": 128,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "start": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  },
+                                  "end": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  },
+                                  "count": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  }
+                                },
+                                "required": ["start", "end", "count"],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "role",
+                            "args",
+                            "expected",
+                            "actual",
+                            "inputScale",
+                            "functionExecuted",
+                            "guardCoverage",
+                            "ranges"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "profile",
+                      "file",
+                      "exportName",
+                      "sourceDigest",
+                      "workerDigest",
+                      "runtime",
+                      "functionRange",
+                      "guard",
+                      "minimumTriggerScale",
+                      "expectationProvenance",
+                      "executionSandboxed",
+                      "cases"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "profile": {
+                        "type": "string",
+                        "const": "node-export-json-v1"
+                      },
+                      "file": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "exportName": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+                      },
+                      "sourceDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "workerDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "runtime": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string", "const": "node" },
+                          "version": { "type": "string" }
+                        },
+                        "required": ["name", "version"],
+                        "additionalProperties": false
+                      },
+                      "functionRange": {
+                        "type": "object",
+                        "properties": {
+                          "start": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000000000
+                          },
+                          "end": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000000000
+                          }
+                        },
+                        "required": ["start", "end"],
+                        "additionalProperties": false
+                      },
+                      "guard": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "start": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1000000000
                               },
-                              "count": {
+                              "end": {
                                 "type": "integer",
                                 "minimum": 0,
                                 "maximum": 1000000000
                               }
                             },
-                            "required": ["start", "end", "count"],
+                            "required": ["start", "end"],
                             "additionalProperties": false
-                          }
-                        }
+                          },
+                          { "type": "null" }
+                        ]
                       },
-                      "required": [
-                        "role",
-                        "args",
-                        "expected",
-                        "actual",
-                        "inputScale",
-                        "functionExecuted",
-                        "guardCoverage",
-                        "ranges"
-                      ],
-                      "additionalProperties": false
-                    }
+                      "minimumTriggerScale": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1024
+                      },
+                      "expectationProvenance": {
+                        "type": "string",
+                        "const": "operator-pinned-expectations"
+                      },
+                      "executionSandboxed": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "cases": {
+                        "minItems": 3,
+                        "maxItems": 16,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["baseline", "trigger", "near-miss"]
+                            },
+                            "args": {
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": { "$ref": "#/$defs/__schema0" }
+                            },
+                            "expected": { "$ref": "#/$defs/__schema1" },
+                            "actual": {
+                              "anyOf": [
+                                { "$ref": "#/$defs/__schema2" },
+                                { "type": "null" }
+                              ]
+                            },
+                            "inputScale": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "functionExecuted": { "type": "boolean" },
+                            "guardCoverage": {
+                              "type": "string",
+                              "enum": [
+                                "not-requested",
+                                "executed",
+                                "not-executed",
+                                "unknown"
+                              ]
+                            },
+                            "ranges": {
+                              "maxItems": 128,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "start": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  },
+                                  "end": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  },
+                                  "count": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000000000
+                                  }
+                                },
+                                "required": ["start", "end", "count"],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "role",
+                            "args",
+                            "expected",
+                            "actual",
+                            "inputScale",
+                            "functionExecuted",
+                            "guardCoverage",
+                            "ranges"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "profile",
+                      "file",
+                      "exportName",
+                      "sourceDigest",
+                      "workerDigest",
+                      "runtime",
+                      "functionRange",
+                      "guard",
+                      "minimumTriggerScale",
+                      "expectationProvenance",
+                      "executionSandboxed",
+                      "cases"
+                    ],
+                    "additionalProperties": false
                   }
-                },
-                "required": [
-                  "profile",
-                  "file",
-                  "exportName",
-                  "sourceDigest",
-                  "workerDigest",
-                  "runtime",
-                  "functionRange",
-                  "guard",
-                  "minimumTriggerScale",
-                  "expectationProvenance",
-                  "executionSandboxed",
-                  "cases"
-                ],
-                "additionalProperties": false
+                ]
               }
             },
             "required": ["candidate", "observations"],
@@ -4741,6 +4928,34 @@
           "type": "object",
           "propertyNames": { "type": "string" },
           "additionalProperties": { "$ref": "#/$defs/__schema0" }
+        }
+      ]
+    },
+    "__schema1": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array", "items": { "$ref": "#/$defs/__schema1" } },
+        {
+          "type": "object",
+          "propertyNames": { "type": "string" },
+          "additionalProperties": { "$ref": "#/$defs/__schema1" }
+        }
+      ]
+    },
+    "__schema2": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array", "items": { "$ref": "#/$defs/__schema2" } },
+        {
+          "type": "object",
+          "propertyNames": { "type": "string" },
+          "additionalProperties": { "$ref": "#/$defs/__schema2" }
         }
       ]
     }

@@ -315,3 +315,9 @@ full fallback for unresolved or incomplete capture. Project compiler resolution,
 other languages, historical consumers and runtime reachability remain unsupported
 by this profile. Its exact runtime acceptance is recorded separately from adapter
 execution acceptance.
+
+The bounded [structured Node probe](NATIVE-JSON-PROBES.md) additionally observes
+JSON values from selected plain ESM function exports, with physical replay and
+original declared-contract controls for all nine hypothesis families. Its scope
+shares the Boolean profile's source/module, trust and platform limits. It does not
+add language collectors, automatic policy inference or framework assembly support.

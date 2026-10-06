@@ -126,10 +126,19 @@ source/runtime bindings. Wider R7 profiles and Gate A remain open.
 
 ## Physical evidence receipts
 
-New executions produce version 3 receipts, retaining the exact bounded physical
+New Boolean executions produce version 3 receipts, retaining the exact bounded physical
 stdout/stderr of every reached worker attempt with canonical bytes, hashes and
 process status. The parser reconciles the artifact with admission accounting and
 replays valid worker observations. Unstarted cases contain no invented attempt.
 Versions 1 and 2 remain readable as historical contracts. Raw artifacts stay out
 of summaries and independent model packets. See
 [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md) for privacy, limits and acceptance.
+
+## Structured results
+
+The separate [structured Node profile](NATIVE-JSON-PROBES.md) uses version 2
+recipes and version 4 physical receipts for arrays, objects, scalar values and
+null. It shares the same source/coverage bindings, budgets, startup trust, CLI/MCP
+and independent workflow. Existing Boolean recipes and historical receipts retain
+their own contracts. Structured results widen the observed values, without
+verifying a free-text claim or production policy.

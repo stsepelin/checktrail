@@ -5,7 +5,7 @@ const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const count = z.number().int().nonnegative().max(1_000_000_000);
 const identifier = z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,63}$/);
 const span = z.strictObject({ start: count, end: count });
-export const reviewProbeRecipeSchema = z.strictObject({
+const booleanRecipeSchema = z.strictObject({
   schemaVersion: z.literal(1),
   profile: z.literal("node-export-boolean-v1"),
   id: identifier,
@@ -26,12 +26,34 @@ export const reviewProbeRecipeSchema = z.strictObject({
     .min(3)
     .max(16),
 });
+export const reviewProbeRecipeSchema = z.discriminatedUnion("schemaVersion", [
+  booleanRecipeSchema,
+  booleanRecipeSchema.extend({
+    schemaVersion: z.literal(2),
+    profile: z.literal("node-export-json-v1"),
+    cases: z
+      .array(
+        z.strictObject({
+          id: identifier,
+          role: z.enum(["baseline", "trigger", "near-miss"]),
+          args: z.array(z.json()).max(8),
+          expected: z.json(),
+        }),
+      )
+      .min(3)
+      .max(16),
+  }),
+]);
 export const reviewProbeWireSchema = z.strictObject({
   requestDigest: digest,
   sourceDigest: digest,
   actual: z.boolean(),
   functionRange: span,
   ranges: z.array(span.extend({ count })).min(1).max(128),
+});
+export const reviewJsonProbeWireSchema = reviewProbeWireSchema.extend({
+  profile: z.literal("node-export-json-v1"),
+  actual: z.json(),
 });
 export const reviewNativeBudgetLimitsSchema = z.strictObject({
   maxCalls: z.number().int().min(0).max(16),
@@ -101,6 +123,28 @@ const trial = z.strictObject({
   durationMs: count,
   ranges: z.array(span.extend({ count })).max(128),
 });
+const jsonTrial = trial.extend({
+  reason: z.enum([
+    "json-observed",
+    "scale-not-met",
+    "guard-not-covered",
+    "runtime-error",
+    "malformed-evidence",
+    "timeout",
+    "cancelled",
+    "output-limit",
+    "budget-exhausted",
+    "not-started",
+    "call-limit",
+    "output-budget",
+    "cleanup-failed",
+  ]),
+  expected: z.json(),
+  actual: z.json().nullable(),
+  execution: execution
+    .extend({ artifact: nativeProbeAttemptSchema })
+    .nullable(),
+});
 const metadata = {
   format: z.literal("review-probe-run"),
   engineVersion: z.string(),
@@ -169,6 +213,13 @@ export const reviewProbeRunSchema = z.discriminatedUnion("schemaVersion", [
       )
       .max(16),
   }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(4),
+    profile: z.literal("node-export-json-v1"),
+    nativeBudget,
+    trials: z.array(jsonTrial).max(16),
+  }),
 ]);
 export const reviewProbeSummarySchema = z.discriminatedUnion("schemaVersion", [
   z.strictObject({
@@ -185,6 +236,13 @@ export const reviewProbeSummarySchema = z.discriminatedUnion("schemaVersion", [
   z.strictObject({
     ...metadata,
     schemaVersion: z.literal(3),
+    nativeBudget,
+    sourceIncluded: z.literal(false),
+  }),
+  z.strictObject({
+    ...metadata,
+    schemaVersion: z.literal(4),
+    profile: z.literal("node-export-json-v1"),
     nativeBudget,
     sourceIncluded: z.literal(false),
   }),

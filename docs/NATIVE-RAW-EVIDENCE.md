@@ -54,3 +54,7 @@ Windows and broader tool/model profiles remain pending.
 This is the bounded Node receipt profile. Other native tool/model attempt
 retention, general claim resolution, external session evidence and quality gates
 remain required. No model inference or real-project field evaluation is enabled.
+
+The [structured Node profile](NATIVE-JSON-PROBES.md) extends the physical attempt
+contract in version 4 receipts. Boolean executions retain version 3. Wider
+tool/model retention and Windows acceptance remain open.
