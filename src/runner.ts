@@ -88,6 +88,7 @@ export async function runProcess(
       const stderr: Buffer[] = [];
       let bytes = 0;
       let stopping = false;
+      let termination: Promise<void> | undefined;
       const maximum = options.maxOutputBytes ?? 1024 * 1024;
       let termination: Promise<void> | undefined;
       const terminate = (): void => {
