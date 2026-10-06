@@ -69,13 +69,12 @@ public static class ChecktrailWindowsJobV1 {
     IntPtr into, out IntPtr target, uint access, bool inherit, uint options);
   [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)] static extern IntPtr CreateFileW(
     string name, uint access, uint sharing, ref Security security, uint creation, uint flags, IntPtr template);
-  [DllImport("kernel32.dll", SetLastError=true)] static extern bool PeekNamedPipe(IntPtr pipe,
-    IntPtr buffer, uint size, IntPtr read, IntPtr available, IntPtr remaining);
-  static bool ParentClosed(NamedPipeClientStream control) {
-    if (PeekNamedPipe(control.SafePipeHandle.DangerousGetHandle(), IntPtr.Zero, 0, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero)) return false;
-    int error = Marshal.GetLastWin32Error();
-    if (error == 109 || error == 233) return true;
-    throw new Win32Exception(error);
+  static bool StopRequested(System.Threading.Tasks.Task<int> read, byte[] message, ref bool parentClosed) {
+    if (!read.IsCompleted) return false;
+    int count = read.GetAwaiter().GetResult();
+    parentClosed = count == 0;
+    if (!parentClosed && (count != 1 || message[0] != 1)) throw new Win32Exception(87);
+    return true;
   }
   static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }
   static uint Active(IntPtr job) {
@@ -111,10 +110,12 @@ public static class ChecktrailWindowsJobV1 {
     ProcessInfo process = new ProcessInfo(); bool assigned = false, resumed = false, completed = false;
     uint? child = null, code = null, before = null, after = null;
     NamedPipeClientStream control = null; bool parentClosed = false;
+    System.Threading.Tasks.Task<int> controlRead = null; byte[] controlMessage = new byte[1];
     try {
       if (controlPipe != "checktrail-" + request) throw new Win32Exception(87);
-      control = new NamedPipeClientStream(".", controlPipe, PipeDirection.In); control.Connect(2000);
-      if (parentClosed = ParentClosed(control)) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
+      control = new NamedPipeClientStream(".", controlPipe, PipeDirection.In, PipeOptions.Asynchronous); control.Connect(2000);
+      controlRead = control.ReadAsync(controlMessage, 0, 1);
+      if (StopRequested(controlRead, controlMessage, ref parentClosed)) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
       job = CreateJobObjectW(IntPtr.Zero, null); if (job == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error());
       ExtendedLimit limits = new ExtendedLimit(); limits.Basic.Flags = 0x2000 | 0x8; limits.Basic.Processes = 256;
       Check(SetInformationJobObject(job, 9, ref limits, (uint)Marshal.SizeOf(typeof(ExtendedLimit))));
@@ -141,11 +142,11 @@ public static class ChecktrailWindowsJobV1 {
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
       // Prove both creation and replacement of the receipt before source resumes.
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
-      if (!(parentClosed = ParentClosed(control))) {
+      if (!(StopRequested(controlRead, controlMessage, ref parentClosed))) {
         if (ResumeThread(process.Thread) == 0xffffffff) throw new Win32Exception(Marshal.GetLastWin32Error());
         resumed = true;
         Receipt(receipt, request, "running", child, assigned, resumed, null, null, null, "unavailable", null);
-        while (!(parentClosed = ParentClosed(control))) {
+        while (!(StopRequested(controlRead, controlMessage, ref parentClosed))) {
           uint status = WaitForSingleObject(process.Process, 25);
           if (status == 0) { uint exit; Check(GetExitCodeProcess(process.Process, out exit)); code = exit; break; }
           if (status != 258) throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -179,11 +180,23 @@ public static class ChecktrailWindowsJobV1 {
       if (input != IntPtr.Zero && input != new IntPtr(-1)) CloseHandle(input);
       if (control != null) control.Dispose();
       if (parentClosed) {
-        try {
-          if (File.ReadAllText(Path.Combine(owned, "owner-id")) == request) {
+        // Only EOF transfers directory cleanup to the guardian. A graceful stop
+        // leaves the receipt available until the living parent has collected it.
+        var cleanupDeadline = DateTime.UtcNow.AddSeconds(2);
+        while (Directory.Exists(owned)) {
+          try {
+            if (File.ReadAllText(Path.Combine(owned, "owner-id")) != request) break;
             Environment.CurrentDirectory = Path.GetPathRoot(owned); Directory.Delete(owned, true);
+            break;
+          } catch (IOException failure) {
+            if (DateTime.UtcNow < cleanupDeadline) { Thread.Sleep(25); continue; }
+            try { File.WriteAllText(Path.Combine(owned, "cleanup-error"), failure.HResult.ToString()); } catch { }
+            break;
+          } catch (UnauthorizedAccessException failure) {
+            try { File.WriteAllText(Path.Combine(owned, "cleanup-error"), failure.HResult.ToString()); } catch { }
+            break;
           }
-        } catch { /* An absent parent cannot receive a cleanup failure; native acceptance checks the directory. */ }
+        }
       }
     }
   }
@@ -192,6 +205,7 @@ public static class ChecktrailWindowsJobV1 {
 // Compress only fixed engine source; project arguments remain JSON data.
 export const windowsCompressedNative = gzipSync(
   Buffer.from(windowsNativeCode, "utf8"),
+  { level: 9 },
 ).toString("base64");
 export const windowsSupervisorScript = `
 $ErrorActionPreference = 'Stop'
@@ -231,11 +245,9 @@ $json = [Web.Script.Serialization.JavaScriptSerializer]::new()
 $json.MaxJsonLength = 1048576
 $json.RecursionLimit = 16
 $request = $json.DeserializeObject($line)
-$buffer = [Convert]::FromBase64String('${windowsCompressedNative}')
-$stream = [IO.MemoryStream]::new($buffer)
-$gzip = [IO.Compression.GZipStream]::new($stream, [IO.Compression.CompressionMode]::Decompress)
-$reader = [IO.StreamReader]::new($gzip, [Text.Encoding]::UTF8)
-try { $source = $reader.ReadToEnd() } finally { $reader.Dispose(); $gzip.Dispose(); $stream.Dispose() }
+$source = @'
+${windowsNativeCode}
+'@
 $compiler = [Microsoft.CSharp.CSharpCodeProvider]::new()
 $parameters = [CodeDom.Compiler.CompilerParameters]::new()
 $parameters.GenerateInMemory = $true
@@ -256,6 +268,7 @@ $result = $nativeApi::Run([string]$request.executable, [string]$request.commandL
 // Compress only fixed engine source. Project data remains in the owned JSON file.
 export const windowsCompressedSupervisor = gzipSync(
   Buffer.from(windowsSupervisorScript, "utf8"),
+  { level: 9 },
 ).toString("base64");
 export const windowsLauncherScript = `
 $ctBytes = [Convert]::FromBase64String('${windowsCompressedSupervisor}')

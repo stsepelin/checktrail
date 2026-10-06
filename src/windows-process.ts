@@ -204,6 +204,7 @@ export async function runWindowsProcess(
   let controlServer: ReturnType<typeof createServer> | undefined;
   let controlSocket: Socket | undefined;
   let controlClosed = false;
+  let stopRequested = false;
   try {
     if (!localDrive(cwd)) throw invalid("WINDOWS_LOCAL_DRIVE_REQUIRED");
     const env = windowsEnvironment(
@@ -259,10 +260,14 @@ export async function runWindowsProcess(
       flag: "wx",
     });
     // PowerShell's redirected-input reader must never compete for this channel.
-    // The private pipe carries only lifetime; closing it cancels source execution.
+    // One fixed byte requests graceful stop; EOF means the parent is absent.
     controlServer = createServer((socket) => {
       if (controlClosed || controlSocket) socket.destroy();
-      else controlSocket = socket;
+      else {
+        controlSocket = socket;
+        socket.on("error", () => {});
+        if (stopRequested) socket.write(Buffer.from([1]));
+      }
     });
     await new Promise<void>((resolve, reject) => {
       controlServer!.once("error", reject);
@@ -301,10 +306,10 @@ export async function runWindowsProcess(
       const stop = () => {
         if (stopping) return;
         stopping = true;
-        // The OS also closes this exact pipe handle after abrupt parent exit.
-        controlClosed = true;
-        controlSocket?.destroy();
-        controlServer?.close();
+        // Keep the connection and directory until the completion receipt is read.
+        // A late bootstrap connection must receive the same stop request.
+        stopRequested = true;
+        controlSocket?.write(Buffer.from([1]));
         force = setTimeout(() => {
           result.errorCode = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
           child.kill("SIGKILL");
