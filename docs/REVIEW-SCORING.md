@@ -86,7 +86,7 @@ inference, calibrated confidence or a passed quality gate. `review-scoring.test.
 uses authored synthetic labels to check independent status/label totals, hand-computed
 losses, risk and reliability, missing/unknown cases, infinite losses, exact interval
 controls, cluster limitations, altered retained metrics, summary privacy and
-library/CLI/MCP agreement. These are development controls only. Calibration fitting, evidence tiers, verified benchmark/scorer linkage and held-out
+library/CLI/MCP agreement. These are development controls only. Authoritative labels, evidence tiers, candidate confidence binding and held-out
 quality demonstration remain required work.
 
 Required scoring profiles pass on macOS arm64 Node 26.9.0 and Linux arm64
@@ -163,3 +163,9 @@ labels and reconciled review/judgment artifacts. This closes a bounded structura
 connection; it does not verify case labels, claims, independent sessions or cohort
 eligibility. Candidate contracts currently supply no numerical probability.
 General multi-claim scoring and held-out calibration remain required.
+
+[Declared per-family calibration](REVIEW-CALIBRATION.md) now implements a bounded
+development fit and reserved-protocol application using separate family curves,
+tie-weighted isotonic regression, exact declared split/model binding and unknown
+predictions outside observed training support. Fitting does not verify label
+truth, host separation, candidate confidence or held-out calibration.

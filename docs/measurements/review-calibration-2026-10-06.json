@@ -1,0 +1,1031 @@
+{
+  "schemaVersion": 1,
+  "measuredAtUTC": "2026-10-06T17:00:32.292093+00:00",
+  "profile": "declared-family-isotonic-v1",
+  "codeRevision": "08d20de3868035f39228c14cba936eac914cac10",
+  "purpose": "original synthetic numerical implementation acceptance, not reviewer calibration or quality acceptance",
+  "sourceRuntime": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "linuxRuntime": {
+    "node": "v22.23.2",
+    "platform": "linux",
+    "arch": "arm64",
+    "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+    "network": "none",
+    "identityObserved": true
+  },
+  "fileDigests": {
+    "src/review-calibration.ts": "322bb5250f0fcd3fe2f721647a103ac636bd56930e7a5edd3ce5b3f34ce41c4f",
+    "src/cli.ts": "efcc27634097822723a4c13c447633f10f13a8df8e0a470ea26fa85cbba4e23b",
+    "src/mcp.ts": "d538713650d7d8a7ee0e1f134ba3d5d2430ec364e0a30126ef4da42848dec0e3",
+    "src/index.ts": "3562c2e840f01fd66dcbf8743f54bd7713c145a01d2b9d957cc2e56a8e31ad0b",
+    "src/schemas.ts": "725d51b66b2db90c368660fca8cdd7be146a8f20817b42cd12f0053a10af96c5",
+    "test/review-calibration.test.ts": "565afe539ef7d9acef73ed29bd661bb17c7d0fcf30c691d012030dd919115dc1",
+    "test/mcp.test.ts": "8f10f1d8318c89ab2e8528a876688244eb7389340cf81efd03573ad361514ac9",
+    "scripts/generate-schemas.mjs": "13e570f7162d0ba90e08269ffa9fea7536d52d56bf3bfd2c1bbf5374649f65f4",
+    "scripts/required-native-tests.json": "538e58ec75cb815fe03195097f157a4943822746c5b3ff5136c2fef10f9dbbd3",
+    "scripts/verify-review-calibration-package.mjs": "3aa7c9e92a06dbe8265fcda53917b2938eb442fd34633688e042ac3af2d04be6",
+    "scripts/verify-mcp-clients.mjs": "8f996aee97d3854efaf91cb88612b6d204469268c67a70c992d8de44e76c222f",
+    ".github/workflows/ci.yml": "abf5bc0ada5402a8a933c33414dee3a8b266378292b28eb85074352bc5f0a0ca",
+    "schemas/review-calibration-application-input.schema.json": "95c279993c7823ec30db28e3316039f79638826f4fe57802696d8137891a2a70",
+    "schemas/review-calibration-application-report.schema.json": "163d9ece5075fc305d9b1ea86ee1bfe88cb7fea6e6528b2e296359fb9dcbf8c9",
+    "schemas/review-calibration-application-summary.schema.json": "6fad826753c41dd3783567be19c2f52bf0c2776cf361d239e7ac8ade363d9693",
+    "schemas/review-calibration-input.schema.json": "44d8658f3dbbac0fbe2535592a3634ee6842b90599f854f1ec9f1b8c14b1600e",
+    "schemas/review-calibration-report.schema.json": "f8eaca327f1e9f8c536c5717b0c743d94d7a2ba69da242fbd44680755854dd56",
+    "schemas/review-calibration-summary.schema.json": "0f4f2511eb0d0d25fb265760ef704fd4a0503c1e7f3ddc7f3ab775077a2dcbf3"
+  },
+  "scope": "Declared file identities and selected terminal test events; not a complete dependency, runtime, host or hermetic environment identity",
+  "acceptance": [
+    {
+      "runtimeProfile": "final-node26",
+      "acceptance": {
+        "profile": "review-calibration",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.048083,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3.8105,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.0695,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7.725125,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.336666,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.423791,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1486.560583,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtimeProfile": "node22",
+      "acceptance": {
+        "profile": "review-calibration",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17.680755,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7.777039,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.105854,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14.439323,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 20.508228,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 27.619431,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1605.875397,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtimeProfile": "installed-node26",
+      "acceptance": {
+        "tarballSha256": "b46c0a19781bcf31cf6d9b5720bf7b1da1bf8c18afeb59e14877da0e4b91db27",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-calibration",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 7.781292,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4.222792,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.016,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 7.5635,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 11.583375,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 11.740167,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1417.942709,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v26.9.0",
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    {
+      "runtimeProfile": "final-installed-node22",
+      "acceptance": {
+        "tarballSha256": "b46c0a19781bcf31cf6d9b5720bf7b1da1bf8c18afeb59e14877da0e4b91db27",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-calibration",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "3764dc9dfaca3c39e09a8326b929c281e9507e266b66b5f0c24cf57965c69d61"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 14.796324,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 7.223203,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4.33223,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 14.168322,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 19.458598,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 21.34465,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1634.874668,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    }
+  ],
+  "guardProof": {
+    "mutations": [
+      {
+        "guard": "weighted-pava",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "565afe539ef7d9acef73ed29bd661bb17c7d0fcf30c691d012030dd919115dc1",
+        "test": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "cluster-disjoint",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "565afe539ef7d9acef73ed29bd661bb17c7d0fcf30c691d012030dd919115dc1",
+        "test": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs",
+        "mutantExitCode": 1,
+        "killed": true
+      },
+      {
+        "guard": "support-boundaries",
+        "compiles": true,
+        "originalCallbackUnchanged": true,
+        "originalTestSourceSha256": "565afe539ef7d9acef73ed29bd661bb17c7d0fcf30c691d012030dd919115dc1",
+        "test": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer",
+        "mutantExitCode": 1,
+        "killed": true
+      }
+    ],
+    "restored": true,
+    "restoredCallbacksPassed": 3,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "applicationClients": [
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T16:58:44.960Z",
+      "profile": "codex-app-server-direct-tools",
+      "clientVersion": "codex-cli 0.160.0",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "b46c0a19781bcf31cf6d9b5720bf7b1da1bf8c18afeb59e14877da0e4b91db27",
+        "runtimeArtifactsSha256": "4c29878d9bc0716aea3bbb826929ff2e2b5b4483c479fda4354ea2a4053e77c6"
+      },
+      "harnessSha256": "8f996aee97d3854efaf91cb88612b6d204469268c67a70c992d8de44e76c222f",
+      "observations": [
+        {
+          "check": "project_context",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "validation_plan",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "guidance-https-result",
+          "outcome": "passed",
+          "references": ["https://nodejs.org/api/test.html"]
+        },
+        {
+          "check": "default-execution-denied",
+          "outcome": "passed"
+        },
+        {
+          "check": "tool-cannot-grant-trust",
+          "outcome": "passed"
+        },
+        {
+          "check": "native-passed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "passed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "passed",
+              "tests": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "native-failed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "failed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "failed",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "all-skipped-is-incomplete",
+          "outcome": "passed",
+          "validationOutcome": "incomplete",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "inconclusive",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 0,
+                "skipped": 1
+              }
+            }
+          ]
+        }
+      ],
+      "providerRequests": [
+        {
+          "method": "GET",
+          "path": "/models?client_version=0.160.0"
+        }
+      ],
+      "inferenceRequests": 0,
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        },
+        {
+          "label": "trusted",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T16:58:46.306Z",
+      "profile": "claude-code-health-discovery",
+      "clientVersion": "2.1.290 (Claude Code)",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "b46c0a19781bcf31cf6d9b5720bf7b1da1bf8c18afeb59e14877da0e4b91db27",
+        "runtimeArtifactsSha256": "4c29878d9bc0716aea3bbb826929ff2e2b5b4483c479fda4354ea2a4053e77c6"
+      },
+      "harnessSha256": "8f996aee97d3854efaf91cb88612b6d204469268c67a70c992d8de44e76c222f",
+      "observations": [
+        {
+          "check": "health-and-discovery",
+          "outcome": "passed",
+          "warnings": []
+        }
+      ],
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 1,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": 130,
+              "signal": null
+            }
+          ],
+          "requestedProtocol": "2025-11-25",
+          "negotiatedProtocol": "2025-11-25",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_calibration_apply",
+            "review_calibration_fit",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_paired_score",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "npmRunCheck": {
+      "exitCode": 0,
+      "tests": 837,
+      "pass": 612,
+      "fail": 0,
+      "skipped": 225,
+      "cancelled": 0
+    },
+    "fullFormat": true,
+    "directChangedCodeLint": true,
+    "generatedSchemaParity": true,
+    "gitDiffCheck": true,
+    "actionlintVersion": "1.7.12",
+    "actionlintExitCode": 0
+  },
+  "limits": {
+    "perProtocolTrials": 512,
+    "modelIdentity": "host/operator declaration, unverified",
+    "splitIsolation": "exact declared ID/group disjointness only, actual isolation unverified",
+    "curves": "per family, tied scores retain row weights, insufficient/one-class/constant curves unavailable",
+    "application": "exact reserved protocol/model binding, no extrapolation, unseen family unknown",
+    "metrics": "raw and mapped proper-score subsets may differ; findings and missing/unknown slots retained",
+    "confidence": "in-sample fit and numerical mapping are not demonstrated held-out calibration; current candidate contracts still have no numerical probability",
+    "fieldEvaluation": "closed until finish-first gates; no inference or held-out reviews performed"
+  },
+  "claimsVerified": false,
+  "labelsVerified": false,
+  "hostIsolationVerified": false,
+  "calibratedConfidence": false,
+  "qualityGate": "not-assessed",
+  "requiredInventoryFrozen": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "hostedCI": "pending/unverified at this revision"
+}
