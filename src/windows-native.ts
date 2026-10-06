@@ -69,11 +69,26 @@ public static class ChecktrailWindowsJobV1 {
     IntPtr into, out IntPtr target, uint access, bool inherit, uint options);
   [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)] static extern IntPtr CreateFileW(
     string name, uint access, uint sharing, ref Security security, uint creation, uint flags, IntPtr template);
-  static bool StopRequested(System.Threading.Tasks.Task<int> read, byte[] message, ref bool parentClosed) {
-    if (!read.IsCompleted) return false;
-    int count = read.GetAwaiter().GetResult();
-    parentClosed = count == 0;
-    if (!parentClosed && (count != 1 || message[0] != 1)) throw new Win32Exception(87);
+  sealed class Lifetime {
+    public volatile int State; public int Error;
+    public void Read(object value) {
+      try {
+        int message = ((NamedPipeClientStream)value).ReadByte();
+        if (message == -1) State = 2;
+        else if (message == 1) State = 1;
+        else { Error = 87; State = 3; }
+      } catch (IOException failure) {
+        int code = failure.HResult & 65535;
+        if (code == 109 || code == 233) State = 2;
+        else { Error = code; State = 3; }
+      } catch { Error = 1; State = 3; }
+    }
+  }
+  static bool StopRequested(Lifetime lifetime, ref bool parentClosed) {
+    int state = lifetime.State;
+    if (state == 0) return false;
+    if (state == 3) throw new Win32Exception(lifetime.Error);
+    parentClosed = state == 2;
     return true;
   }
   static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }
@@ -110,12 +125,13 @@ public static class ChecktrailWindowsJobV1 {
     ProcessInfo process = new ProcessInfo(); bool assigned = false, resumed = false, completed = false;
     uint? child = null, code = null, before = null, after = null;
     NamedPipeClientStream control = null; bool parentClosed = false;
-    System.Threading.Tasks.Task<int> controlRead = null; byte[] controlMessage = new byte[1];
+    Lifetime lifetime = new Lifetime();
     try {
       if (controlPipe != "checktrail-" + request) throw new Win32Exception(87);
-      control = new NamedPipeClientStream(".", controlPipe, PipeDirection.In, PipeOptions.Asynchronous); control.Connect(2000);
-      controlRead = control.ReadAsync(controlMessage, 0, 1);
-      if (StopRequested(controlRead, controlMessage, ref parentClosed)) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
+      control = new NamedPipeClientStream(".", controlPipe, PipeDirection.In); control.Connect(2000);
+      // A dedicated background reader cannot depend on the invoking host's task scheduler.
+      var monitor = new Thread(lifetime.Read); monitor.IsBackground = true; monitor.Start(control);
+      if (StopRequested(lifetime, ref parentClosed)) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
       job = CreateJobObjectW(IntPtr.Zero, null); if (job == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error());
       ExtendedLimit limits = new ExtendedLimit(); limits.Basic.Flags = 0x2000 | 0x8; limits.Basic.Processes = 256;
       Check(SetInformationJobObject(job, 9, ref limits, (uint)Marshal.SizeOf(typeof(ExtendedLimit))));
@@ -142,11 +158,11 @@ public static class ChecktrailWindowsJobV1 {
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
       // Prove both creation and replacement of the receipt before source resumes.
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
-      if (!(StopRequested(controlRead, controlMessage, ref parentClosed))) {
+      if (!(StopRequested(lifetime, ref parentClosed))) {
         if (ResumeThread(process.Thread) == 0xffffffff) throw new Win32Exception(Marshal.GetLastWin32Error());
         resumed = true;
         Receipt(receipt, request, "running", child, assigned, resumed, null, null, null, "unavailable", null);
-        while (!(StopRequested(controlRead, controlMessage, ref parentClosed))) {
+        while (!(StopRequested(lifetime, ref parentClosed))) {
           uint status = WaitForSingleObject(process.Process, 25);
           if (status == 0) { uint exit; Check(GetExitCodeProcess(process.Process, out exit)); code = exit; break; }
           if (status != 258) throw new Win32Exception(Marshal.GetLastWin32Error());
