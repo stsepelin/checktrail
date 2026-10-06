@@ -6,7 +6,8 @@ MCP tool use the same wrapper. The default remains ephemeral; the direct engine
 has no journal. No model provider or credentials are required.
 
 This is a bounded command transcript foundation for R7/R8, not the complete
-blinded benchmark harness. Original synthetic controls cover native intent
+blinded benchmark harness. The [sealed synthetic intake](REVIEW-BENCHMARK.md)
+now connects these journals to frozen trial slots and anonymous judging preparation. Original synthetic controls cover native intent
 ordering, malformed submissions, interrupted prefixes, private startup storage,
 quota reservations, ledger consistency, cleanup and MCP negotiation. The receipt
 extension adds early termination, partial/zero budgets, output overrun, timeout,
@@ -60,7 +61,13 @@ its eventual result would have been smaller than the reserved maximum.
 
 ## What persists
 
-A header records the engine/runtime identities, a digest of the project root,
+The optional startup `audit.binding` / `--workflow-audit-binding PRIVATE_JSON`
+adds `{runId, trialId, protocolDigest}` to the header for a frozen benchmark trial.
+It is checked against the pinned benchmark protocol at intake; it grants neither
+source disclosure nor execution. Existing unbound journals remain readable.
+
+A header records the engine/runtime identities and an observed runtime JS/package
+byte digest (older headers may omit it), a digest of the project root,
 operator limits and registered probe digests. Each admitted command has a durable
 `begin` record before dispatch, followed by a durable `finish` record before the
 result is released to the caller. Each record includes source-free workflow

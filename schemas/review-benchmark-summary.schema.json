@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "workflow-journal-paired-synthetic-v1"
+    },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "hostIsolationVerified": { "type": "boolean", "const": false },
+    "externalAttemptsComplete": { "type": "boolean", "const": false },
+    "qualityAssessed": { "type": "boolean", "const": false },
+    "format": { "type": "string", "const": "review-benchmark-summary" },
+    "runId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "state": {
+      "type": "string",
+      "enum": ["frozen", "collected", "judging-prepared", "judgments-sealed"]
+    },
+    "judgments": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "planned": { "type": "integer", "minimum": 2, "maximum": 16 },
+            "accounted": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "accepted": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "resolved": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "archiveDigest": {
+              "anyOf": [
+                { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": [
+            "planned",
+            "accounted",
+            "accepted",
+            "resolved",
+            "archiveDigest"
+          ],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    },
+    "planned": { "type": "integer", "minimum": 2, "maximum": 16 },
+    "accounted": { "type": "integer", "minimum": 0, "maximum": 16 },
+    "completed": { "type": "integer", "minimum": 0, "maximum": 16 },
+    "collectionDigest": {
+      "anyOf": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "null" }
+      ]
+    },
+    "sourceIncluded": { "type": "boolean", "const": false },
+    "trials": {
+      "minItems": 2,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trialId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "uncollected",
+              "missing",
+              "unavailable",
+              "invalid",
+              "foreign",
+              "interrupted",
+              "sealed-incomplete",
+              "sealed-completed"
+            ]
+          },
+          "journalDigest": {
+            "anyOf": [
+              { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              { "type": "null" }
+            ]
+          },
+          "commands": {
+            "anyOf": [
+              { "type": "integer", "minimum": 0, "maximum": 2048 },
+              { "type": "null" }
+            ]
+          },
+          "pendingCommands": {
+            "anyOf": [
+              { "type": "integer", "minimum": 0, "maximum": 16 },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": [
+          "trialId",
+          "status",
+          "journalDigest",
+          "commands",
+          "pendingCommands"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "claimsVerified",
+    "hostIsolationVerified",
+    "externalAttemptsComplete",
+    "qualityAssessed",
+    "format",
+    "runId",
+    "protocolDigest",
+    "state",
+    "planned",
+    "accounted",
+    "completed",
+    "collectionDigest",
+    "sourceIncluded",
+    "trials"
+  ],
+  "additionalProperties": false
+}

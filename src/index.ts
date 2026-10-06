@@ -172,3 +172,17 @@ export type {
   ReviewWorkflowAuditOptions,
   ReviewWorkflowAuditSummary,
 } from "./review-workflow-audit-schema.js";
+
+export {
+  ReviewBenchmark,
+  freezeReviewBenchmark,
+  parseReviewBenchmarkReference,
+} from "./review-benchmark.js";
+export type {
+  ReviewBenchmarkReference,
+  ReviewBenchmarkPlan,
+  ReviewBenchmarkSummary,
+  ReviewBenchmarkPacket,
+  ReviewBenchmarkJudgePacket,
+  ReviewBenchmarkJudgmentResponse,
+} from "./review-benchmark-schema.js";

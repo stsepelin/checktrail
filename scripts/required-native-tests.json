@@ -1290,5 +1290,101 @@
       "file": "dist/test/review-workflow-audit.test.js",
       "name": "workflow native receipt observers receive detached evidence and failure closes the workflow without erasing reached accounting"
     }
+  ],
+  "review-benchmark": [
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark freezes complete paired synthetic protocols before writes and rejects invalid inventories without artifacts"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark anonymous packets withhold labels sibling state and private paths and require startup source disclosure"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark original broken fixed and near-miss native trials retain receipts and rejected replays without unblinding judging"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark collection accounts for every missing invalid refused cancelled malformed and interrupted trial before judging"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark frozen trial bindings reject swapped journals and source contexts while retaining all foreign artifacts"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark intake reconciles frozen runtime settings host and source identities rather than trusting sealed audit status"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark cross-trial and curator session reuse invalidates both arms including declarations in malformed submissions"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark detects changed manifests late attempts and forged collections and never overwrites an earlier seal"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark private storage rejects public and linked artifacts and records unreadable journals as unavailable"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark per-trial byte bounds retain oversized journals as unavailable alongside a valid completed control"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark runtime byte identity rejects a structurally valid journal from a different build under the same version"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark runtime observer hashes actual JS and package bytes and rejects linked oversized and empty runtime inventories"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark CLI freezes operator plans enforces packet grants binds fresh journals and reports incomplete denominators"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark MCP exposes only startup pinned anonymous packets and metadata and cannot grant source or operator mutations"
+    }
+  ],
+  "review-benchmark-judging": [
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging requires frozen profiles and complete intake before any source packet or response path"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging seals independent anonymous source-bound responses and distinguishes unresolved declarations"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging accounts missing unsafe oversized malformed and interrupted responses without invented output"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judge CLI and MCP share one read-only startup-selected slot with grant and sealed-incomplete exit controls"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark judging leaves unusable trial evidence incomplete and rejects supported claims on known valid labels"
+    }
   ]
 }

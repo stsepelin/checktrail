@@ -120,6 +120,8 @@ for (const profile of [
   "review-budget",
   "review-workflow",
   "review-workflow-audit",
+  "review-benchmark",
+  "review-benchmark-judging",
   "review-native-budget",
 ]) {
   process.stdout.write(

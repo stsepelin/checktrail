@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "workflow-journal-paired-synthetic-v1"
+    },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "hostIsolationVerified": { "type": "boolean", "const": false },
+    "externalAttemptsComplete": { "type": "boolean", "const": false },
+    "qualityAssessed": { "type": "boolean", "const": false },
+    "format": { "type": "string", "const": "review-benchmark-worker-summary" },
+    "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "state": {
+      "type": "string",
+      "enum": ["frozen", "collected", "judging-prepared", "judgments-sealed"]
+    },
+    "trial": {
+      "type": "object",
+      "properties": {
+        "trialId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "uncollected",
+            "missing",
+            "unavailable",
+            "invalid",
+            "foreign",
+            "interrupted",
+            "sealed-incomplete",
+            "sealed-completed"
+          ]
+        },
+        "journalDigest": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "commands": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 2048 },
+            { "type": "null" }
+          ]
+        },
+        "pendingCommands": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 16 },
+            { "type": "null" }
+          ]
+        }
+      },
+      "required": [
+        "trialId",
+        "status",
+        "journalDigest",
+        "commands",
+        "pendingCommands"
+      ],
+      "additionalProperties": false
+    },
+    "sourceIncluded": { "type": "boolean", "const": false }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "claimsVerified",
+    "hostIsolationVerified",
+    "externalAttemptsComplete",
+    "qualityAssessed",
+    "format",
+    "protocolDigest",
+    "state",
+    "trial",
+    "sourceIncluded"
+  ],
+  "additionalProperties": false
+}

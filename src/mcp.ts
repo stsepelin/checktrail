@@ -1,3 +1,12 @@
+import { ReviewBenchmark } from "./review-benchmark.js";
+import {
+  reviewBenchmarkWorkerCommandSchema,
+  reviewBenchmarkWorkerSummarySchema,
+  reviewBenchmarkJudgePacketSchema,
+  reviewBenchmarkJudgeWorkerSummarySchema,
+  reviewBenchmarkPacketSchema,
+  type ReviewBenchmarkReference,
+} from "./review-benchmark-schema.js";
 import { ReviewWorkflowSession } from "./review-workflow-session.js";
 import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.js";
 import {
@@ -136,6 +145,9 @@ export interface ServerOptions {
   allowReviewSource?: boolean;
   reviewWorkflowLimits?: ReviewWorkflowLimits;
   reviewWorkflowAudit?: ReviewWorkflowAuditOptions;
+  reviewBenchmark?: ReviewBenchmarkReference;
+  reviewBenchmarkTrialId?: string;
+  reviewBenchmarkJudgeId?: string;
   detailed: boolean;
   environment?: Record<string, string>;
   base?: string;
@@ -208,6 +220,34 @@ function createConnectionServer(
   const externalAdapters = externalReferencesSchema.parse(
     options.externalAdapters ?? [],
   );
+  if (
+    Boolean(options.reviewBenchmark) !==
+      Boolean(
+        options.reviewBenchmarkTrialId || options.reviewBenchmarkJudgeId,
+      ) ||
+    Boolean(options.reviewBenchmarkTrialId && options.reviewBenchmarkJudgeId)
+  )
+    throw new Error(
+      "A benchmark worker requires one startup-pinned review trial or judge slot",
+    );
+  const benchmark = options.reviewBenchmark
+    ? new ReviewBenchmark(options.root, options.reviewBenchmark)
+    : undefined;
+  const benchmarkCommand = (input: unknown, allowSource: boolean) => {
+    if (!benchmark) throw new Error("No benchmark registered");
+    return options.reviewBenchmarkJudgeId
+      ? benchmark.judgeWorkerCommand(
+          input,
+          allowSource,
+          options.reviewBenchmarkJudgeId,
+        )
+      : benchmark.workerCommand(
+          input,
+          allowSource,
+          options.reviewBenchmarkTrialId!,
+        );
+  };
+  if (benchmark) benchmarkCommand({ operation: "status" }, false);
   const workflowEngine =
     sharedWorkflow ?? createWorkflowSession(options, prepared);
   const workflowRequests = new Map<string | number, AbortController>();
@@ -352,6 +392,40 @@ function createConnectionServer(
         );
       } finally {
         running = undefined;
+      }
+    },
+  );
+  server.registerTool(
+    "review_benchmark",
+    {
+      description:
+        "Read progress or an anonymous packet for the single operator-selected review trial or judge slot from an operator-frozen original synthetic readiness run. A startup digest pins the protocol; packet source disclosure requires startup authorization. No answer labels, sibling handles or outputs, journal paths, collection or sealing operations are exposed. This tool invokes no AI or project code and does not verify host isolation, findings or quality.",
+      inputSchema: reviewBenchmarkWorkerCommandSchema,
+      outputSchema: options.reviewBenchmarkJudgeId
+        ? options.allowReviewSource
+          ? z.union([
+              reviewBenchmarkJudgeWorkerSummarySchema,
+              reviewBenchmarkJudgePacketSchema,
+            ])
+          : reviewBenchmarkJudgeWorkerSummarySchema
+        : options.allowReviewSource
+          ? z.union([
+              reviewBenchmarkWorkerSummarySchema,
+              reviewBenchmarkPacketSchema,
+            ])
+          : reviewBenchmarkWorkerSummarySchema,
+      annotations: readOnly,
+    },
+    async (input) => {
+      try {
+        if (!benchmark) throw new Error("No benchmark registered");
+        return reply(
+          benchmarkCommand(input, Boolean(options.allowReviewSource)),
+        );
+      } catch {
+        return error(
+          "Benchmark unavailable. Inspect the pinned operator configuration and trial locally with the CLI.",
+        );
       }
     },
   );

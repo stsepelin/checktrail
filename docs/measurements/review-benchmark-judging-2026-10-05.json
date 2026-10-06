@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-bound-judgment-intake-v1",
+  "recordedAt": "2026-10-05T09:43:44.748223+00:00",
+  "scope": "Original synthetic implementation readiness and declared dummy host responses. No actual model inference, independent model evaluation or field trial.",
+  "sourceBinding": {
+    "baseCommit": "d97a0168f8547888ae4bc7e82a6f1bfbc6ac222a",
+    "kind": "runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "971dbf2f0985dd0b2b378fcef3667d6cfb1c0ca024fdbdc99b303abb8a249e70"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "sha256": "ae49f10cd3d8e913755885f45a5a6dfc52d556c219a4a4302983cb30c4c5f6df"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-profile.schema.json",
+        "sha256": "474818cc702536bfb77590d5910f1be750a566c9fe6713b1711cd56a4a48daec"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-worker-summary.schema.json",
+        "sha256": "a3acb67472f73eb42fe92f951ae90bfc2e1feadecceb8c07615367d3098de79a"
+      },
+      {
+        "file": "schemas/review-benchmark-judgment-archive.schema.json",
+        "sha256": "a52992b22a8002a6ec375a930ea6734029250933f3b7951f3c313940a0457eb1"
+      },
+      {
+        "file": "schemas/review-benchmark-judgment-output.schema.json",
+        "sha256": "239687612c10bfdbd05a9472188eeef1342e63eb88f4dc1972dc5107795c75e8"
+      },
+      {
+        "file": "schemas/review-benchmark-judgment-response.schema.json",
+        "sha256": "2da29b5de26c0b23e37b4ecc13cee10b92b8bb28df5285443a1f0813a64b816d"
+      },
+      {
+        "file": "schemas/review-benchmark-judgment-summary.schema.json",
+        "sha256": "e584073c7db142bddfe07f30aee754f714e58103a10035c9d0569940be013ce2"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "sha256": "bc7bb17f1127412a287a8e3e8f349be6ee1e68a0ca491cf8b175bcf79c4cae7c"
+      },
+      {
+        "file": "schemas/review-benchmark-summary.schema.json",
+        "sha256": "c562f571eb1568e6e6dd08dcb59b179b71af185cf0786cf986670dd6b3326f61"
+      },
+      {
+        "file": "schemas/review-benchmark-worker-summary.schema.json",
+        "sha256": "a8436b863637733acb4fbf9121cea0e9ad9adbdbdd7f221784fa87cd00bbd6fd"
+      },
+      {
+        "file": "scripts/generate-schemas.mjs",
+        "sha256": "57480a013fbf876dfab499c0c6ea57cbcc55c645a5f8e9ea4d045d41a3d62a4a"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "64e863beec92c7943ee617247679c2242e3f60e64d7cb9ca29780b9e5884b04a"
+      },
+      {
+        "file": "scripts/verify-review-benchmark-package.mjs",
+        "sha256": "efcd25564518a0d90efcb61b512ff206e32f2105a7a5e64b1d59b8a294b54e78"
+      },
+      {
+        "file": "scripts/verify-review-container.mjs",
+        "sha256": "5c5ea5192b902ef0319ee7e1354b4608886ba6698511d9f7f07dfb15104e6604"
+      },
+      {
+        "file": "src/cli.ts",
+        "sha256": "c4f078057257b3b550801ec5db47e8793ca7db6fa2b40ae58a6460df13898779"
+      },
+      {
+        "file": "src/index.ts",
+        "sha256": "f4b6973417e865d35936c66b00037dab9bdb895a08f3335cc8c67be7b4b1c27d"
+      },
+      {
+        "file": "src/mcp.ts",
+        "sha256": "4d4e6b348dc01c8561f86ea9c66b06933acbaf8f8cf8dd30b30ffa3366a94f5a"
+      },
+      {
+        "file": "src/review-benchmark-schema.ts",
+        "sha256": "88ac2cb2dda9cf7f6b209f4a6f61b59eca0c6ef9791af4f7a8862ca20ec9b399"
+      },
+      {
+        "file": "src/review-benchmark.ts",
+        "sha256": "c5175b59d4dcb64985aa18d8bab371a1c0dee51037cd4834d261a53aed352238"
+      },
+      {
+        "file": "src/schemas.ts",
+        "sha256": "02c34fd208f43c8c0966220f425c790a4b1a2597799594b7ad63d56e9198ee9b"
+      },
+      {
+        "file": "test/review-benchmark.test.ts",
+        "sha256": "17fb143bab3d922d3a8f72e42fda490896f83d831eacef5998e09d0332a7f50f"
+      }
+    ],
+    "observedRuntimeDigest": "c8b19449d76e36b719d03e30aa7ce30219fb7c4f76f6c640d9b7a78079e6f009",
+    "runtimeDigestScope": "Top-level runtime JS files and package declaration; dependency contents and cached loaded modules remain unverified."
+  },
+  "fullDevelopmentCheck": {
+    "command": "npm run check",
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "total": 569,
+    "passed": 507,
+    "failed": 0,
+    "cancelled": 0,
+    "unavailableSkipped": 62,
+    "skipsCountedAsPassing": false
+  },
+  "requiredProfiles": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "node": "v26.9.0",
+      "evidence": {
+        "profile": "review-benchmark-judging",
+        "passed": 23,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      }
+    },
+    {
+      "platform": "linux",
+      "arch": "arm64",
+      "node": "v22.23.2",
+      "git": "git version 2.47.3",
+      "network": "none",
+      "workspaceMount": "read-only",
+      "containerRootReadOnly": false,
+      "image": "sha256:b4e178261cdd3cd2cae5d3d9d76ae8825b6342c749209d07739cea1b8814580f",
+      "evidence": {
+        "profile": "review-benchmark-judging",
+        "passed": 23,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      }
+    }
+  ],
+  "linuxReviewerProfiles": [
+    {
+      "profile": "review",
+      "passed": 30,
+      "required": 23,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-git",
+      "passed": 29,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-provider",
+      "passed": 21,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-probe",
+      "passed": 16,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-refutation",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-scoring",
+      "passed": 6,
+      "required": 6,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-verification",
+      "passed": 17,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-budget",
+      "passed": 34,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow-audit",
+      "passed": 19,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-benchmark",
+      "passed": 23,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-benchmark-judging",
+      "passed": 23,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-native-budget",
+      "passed": 39,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "linuxInstalledReviewExchange": {
+    "image": "sha256:b4e178261cdd3cd2cae5d3d9d76ae8825b6342c749209d07739cea1b8814580f",
+    "node": "22.23.2",
+    "git": "git version 2.47.3",
+    "contextVersion": 5,
+    "receiptVersion": 2,
+    "network": "none",
+    "native": "passed",
+    "installation": "offline",
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "stale": "detected",
+    "claimsVerified": false
+  },
+  "installedJudgmentPackage": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "tarballSha256": "b31dbb26d4088bb2a71caf9fbb934a96a69fbab7aca5faba1cea099f033e9691",
+    "installation": "offline-production",
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "planned": 4,
+    "accounted": 4,
+    "completed": 3,
+    "missing": 1,
+    "judgments": {
+      "planned": 4,
+      "accounted": 4,
+      "accepted": 1,
+      "resolved": 1,
+      "archiveDigest": "614fbc978ce27658d85b0ec1a406b6370a49199bf47221246b23c861980f02fb"
+    },
+    "inferenceInvoked": false,
+    "hostIsolationVerified": false,
+    "qualityAssessed": false,
+    "artifactSnapshot": "Packed before this measurement was finalized. Runtime/acceptance byte pins identify the evaluated implementation; embedded documentation may differ from the final record."
+  },
+  "guardMutations": {
+    "mutations": [
+      {
+        "mutation": "assignment-binding",
+        "compiled": true,
+        "intendedTest": "benchmark judging reconciles source revisions line ranges digests labels host identity and assignment binding",
+        "testExit": 1,
+        "caught": true
+      },
+      {
+        "mutation": "claim-citations",
+        "compiled": true,
+        "intendedTest": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+        "testExit": 1,
+        "caught": true
+      },
+      {
+        "mutation": "missing-claim",
+        "compiled": true,
+        "intendedTest": "benchmark judging rejects missing duplicate foreign and misaddressed claim decisions while retaining a valid control",
+        "testExit": 1,
+        "caught": true
+      },
+      {
+        "mutation": "session-reuse",
+        "compiled": true,
+        "intendedTest": "benchmark judging rejects curator reviewer and sibling session reuse including malformed identity declarations",
+        "testExit": 1,
+        "caught": true
+      },
+      {
+        "mutation": "sealed-response-recheck",
+        "compiled": true,
+        "intendedTest": "benchmark judging rejects late responses altered permissions and forged sealed verdicts on every reopen",
+        "testExit": 1,
+        "caught": true
+      }
+    ],
+    "sourceAndBuildRestored": true,
+    "fixtureCorrection": "The claim citation fixture now clones its citation independently from the case-label citation, so the claim-specific guard removal fails its intended test."
+  },
+  "controls": [
+    "Frozen optional judging profile cannot be added after review",
+    "No response path or packet before complete intake",
+    "One anonymous judge packet, startup-only disclosure and no sibling selection or writes through MCP",
+    "Exact assignment/host and current-source citation reconciliation",
+    "Every issued claim exactly once, unresolved declarations and supported-versus-valid contradiction",
+    "Every planned response retained as missing/unavailable/invalid/foreign/incomplete/accepted",
+    "Raw malformed JSON and interrupted response bytes retained within private bounds",
+    "Curator/reviewer/sibling declared session reuse, including malformed declarations",
+    "Unusable review evidence cannot become an accepted judgment",
+    "Late responses, changed observed bytes/permissions and forged sealed verdicts rejected",
+    "Fresh offline production library/CLI/MCP judgment workflow preserves incomplete accounting"
+  ],
+  "limits": {
+    "gateA": "open",
+    "gateB": "pending",
+    "gateC": "not-assessed",
+    "claimsVerified": false,
+    "hostIsolationVerified": false,
+    "externalAttemptsComplete": false,
+    "qualityAssessed": false,
+    "rawNativeOutputIncluded": false,
+    "independentJudgingExecuted": false,
+    "judgmentTruthVerified": false,
+    "priorWorkflowComparisonValidated": false,
+    "pairedClusterUncertaintyImplemented": false,
+    "fieldEvaluationExecuted": false,
+    "windowsSupported": false,
+    "preSealResponseOverwritesObserved": false,
+    "unavailableContentAuthenticated": false,
+    "judgePacketByteLimitBoundaryExercised": false
+  }
+}

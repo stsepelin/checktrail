@@ -1,7 +1,13 @@
 import { z } from "zod";
 import { reviewWorkflowSummarySchema } from "./review-workflow-schema.js";
+export const reviewWorkflowAuditBindingSchema = z.strictObject({
+  runId: z.string().uuid(),
+  trialId: z.string().uuid(),
+  protocolDigest: z.string().regex(/^[a-f0-9]{64}$/),
+});
 export const reviewWorkflowAuditOptionsSchema = z.strictObject({
   file: z.string().min(1).max(4096),
+  binding: reviewWorkflowAuditBindingSchema.optional(),
   maxBytes: z.number().int().min(0).max(134217728).default(67108864),
   maxEvents: z.number().int().min(0).max(4096).default(1024),
 });

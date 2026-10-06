@@ -93,7 +93,7 @@ sandbox. Tests may modify files or access networks and must be trusted according
 Expose `project_context`, `validation_plan`, `validation_run`, `validation_report`,
 `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
+`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
 restart clears them. The optional library-only [task store](TASK-STORAGE.md)
@@ -160,9 +160,9 @@ Protected startup quotas, packet/response/retention admission, source checks and
 consumed attempt metadata are observed engine controls; host sessions, models and
 usage remain unverified declarations. The workflow processes one selected target
 and retains unresolved claims and unassigned severity even when all stages finish.
-Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Version 2 journals retain returned structured native run receipts and pinned recipes before result release, including early termination and native cleanup, without requiring adjudication. Raw native output and host-model attempts remain incomplete. Blinded evaluation and complete model/native all-attempt artifacts remain planned; a native AI
+Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Version 2 journals retain returned structured native run receipts and pinned recipes before result release, including early termination and native cleanup, without requiring adjudication. Raw native output and host-model attempts remain incomplete. The shared `ReviewBenchmark` freezes original synthetic paired contexts/labels/settings, binds predeclared workflow journals and prepares anonymous judging packets after all-slot intake. Its MCP view is startup-bound to one trial; collection and judging preparation are operator-only. Full independent evaluation, observed host isolation and complete model/native all-attempt artifacts remain planned; a native AI
 client launcher is optional. The server cannot clear the host's conversation or enforce
-its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md.
+its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md and REVIEW-BENCHMARK.md.
 
 Version 3 lazily loads a pinned parser for bounded JavaScript/TypeScript syntax
 context. Its memory-only compiler host receives captured strings and resolves

@@ -60,6 +60,7 @@ test("MCP 2026-07-28 advertises tools, validates input, and cannot elevate execu
     "finding_comparison",
     "mutation_experiment",
     "project_context",
+    "review_benchmark",
     "review_context",
     "review_guidance",
     "review_hypotheses",
