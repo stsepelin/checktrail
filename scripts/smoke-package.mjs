@@ -1,3 +1,4 @@
+import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import { supportedClangVersion } from "../dist/src/clang-protocol.js";
 import { architectureFixture } from "../dist/test/architecture-helpers.js";
 import assert from "node:assert/strict";
@@ -46,23 +47,10 @@ try {
       /^(?:dist\/src\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
     );
   const consumer = path.join(temporary, "consumer");
-  await mkdir(consumer);
-  await writeFile(
-    path.join(consumer, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
-  execFileSync(
-    "npm",
-    [
-      "install",
-      "--offline",
-      "--ignore-scripts",
-      "--omit=dev",
-      "--no-audit",
-      "--no-fund",
-      path.join(temporary, packed.filename),
-    ],
-    { cwd: consumer, stdio: "pipe" },
+  await installAcceptancePackage(
+    repository,
+    path.join(temporary, packed.filename),
+    consumer,
   );
   const scoringSmoke = JSON.parse(
     execFileSync(
