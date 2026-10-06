@@ -18,6 +18,7 @@ assert.ok(
 const timeoutMs = [
   "dotnet-build",
   "gradle",
+  "maven",
   "dotnet-test",
   "dotnet-format",
   "dotnet-generated",
