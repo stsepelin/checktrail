@@ -1,3 +1,7 @@
+import { Buffer } from "node:buffer";
+import console from "node:console";
+import { performance } from "node:perf_hooks";
+import { setTimeout, clearTimeout } from "node:timers";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -73,7 +77,10 @@ try {
     "[Console]::WriteLine('original plain native PowerShell startup')",
     "plain-powershell-startup",
   );
-  await server.listen("\\\\.\\pipe\\" + controlPipe);
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen("\\\\.\\pipe\\" + controlPipe, resolve);
+  });
   const requestId = controlPipe.slice("checktrail-".length);
   await writeFile(path.join(root, "owner-id"), requestId, { flag: "wx" });
   await writeFile(
