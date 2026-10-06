@@ -1,12 +1,12 @@
 import { gzipSync } from "node:zlib";
 
-/** Engine-owned Windows supervisor. Project inputs arrive as JSON data on stdin. */
+/** Engine-owned Windows supervisor. Project inputs arrive in an owned JSON data file; control uses a private pipe. */
 export const windowsNativeCode = String.raw`
 using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 public static class ChecktrailWindowsJobV1 {
@@ -69,6 +69,14 @@ public static class ChecktrailWindowsJobV1 {
     IntPtr into, out IntPtr target, uint access, bool inherit, uint options);
   [DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Unicode)] static extern IntPtr CreateFileW(
     string name, uint access, uint sharing, ref Security security, uint creation, uint flags, IntPtr template);
+  [DllImport("kernel32.dll", SetLastError=true)] static extern bool PeekNamedPipe(IntPtr pipe,
+    IntPtr buffer, uint size, IntPtr read, IntPtr available, IntPtr remaining);
+  static bool ParentClosed(NamedPipeClientStream control) {
+    if (PeekNamedPipe(control.SafePipeHandle.DangerousGetHandle(), IntPtr.Zero, 0, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero)) return false;
+    int error = Marshal.GetLastWin32Error();
+    if (error == 109 || error == 233) return true;
+    throw new Win32Exception(error);
+  }
   static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }
   static uint Active(IntPtr job) {
     Accounting info; Check(QueryInformationJobObject(job, 1, out info, (uint)Marshal.SizeOf(typeof(Accounting)), IntPtr.Zero));
@@ -92,7 +100,7 @@ public static class ChecktrailWindowsJobV1 {
     File.WriteAllText(temporary, contents, new UTF8Encoding(false));
     if (File.Exists(file)) File.Replace(temporary, file, null); else File.Move(temporary, file);
   }
-  public static int Run(string executable, string command, string[] environment, string cwd, string receipt, string request) {
+  public static int Run(string executable, string command, string[] environment, string cwd, string receipt, string request, string controlPipe) {
     Guid id; if (!Guid.TryParse(request, out id)) return 253;
     string owned = Path.GetDirectoryName(receipt);
     if (!String.Equals(owned, Environment.CurrentDirectory, StringComparison.OrdinalIgnoreCase) ||
@@ -102,9 +110,11 @@ public static class ChecktrailWindowsJobV1 {
     IntPtr attributes = IntPtr.Zero, jobs = IntPtr.Zero, handles = IntPtr.Zero; bool initialized = false;
     ProcessInfo process = new ProcessInfo(); bool assigned = false, resumed = false, completed = false;
     uint? child = null, code = null, before = null, after = null;
-    Task<string> cancellation = Task.Factory.StartNew<string>(() => Console.In.ReadLine(), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+    NamedPipeClientStream control = null; bool parentClosed = false;
     try {
-      if (cancellation.IsCompleted) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
+      if (controlPipe != "checktrail-" + request) throw new Win32Exception(87);
+      control = new NamedPipeClientStream(".", controlPipe, PipeDirection.In); control.Connect(2000);
+      if (parentClosed = ParentClosed(control)) { Receipt(receipt, request, "completed", null, false, false, null, null, 0, "not-started", null); return 0; }
       job = CreateJobObjectW(IntPtr.Zero, null); if (job == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error());
       ExtendedLimit limits = new ExtendedLimit(); limits.Basic.Flags = 0x2000 | 0x8; limits.Basic.Processes = 256;
       Check(SetInformationJobObject(job, 9, ref limits, (uint)Marshal.SizeOf(typeof(ExtendedLimit))));
@@ -131,11 +141,11 @@ public static class ChecktrailWindowsJobV1 {
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
       // Prove both creation and replacement of the receipt before source resumes.
       Receipt(receipt, request, "assigned", child, assigned, false, null, null, null, "unavailable", null);
-      if (!cancellation.IsCompleted) {
+      if (!(parentClosed = ParentClosed(control))) {
         if (ResumeThread(process.Thread) == 0xffffffff) throw new Win32Exception(Marshal.GetLastWin32Error());
         resumed = true;
         Receipt(receipt, request, "running", child, assigned, resumed, null, null, null, "unavailable", null);
-        while (!cancellation.IsCompleted) {
+        while (!(parentClosed = ParentClosed(control))) {
           uint status = WaitForSingleObject(process.Process, 25);
           if (status == 0) { uint exit; Check(GetExitCodeProcess(process.Process, out exit)); code = exit; break; }
           if (status != 258) throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -167,7 +177,8 @@ public static class ChecktrailWindowsJobV1 {
       if (jobs != IntPtr.Zero) Marshal.FreeHGlobal(jobs); if (handles != IntPtr.Zero) Marshal.FreeHGlobal(handles);
       if (output != IntPtr.Zero) CloseHandle(output); if (error != IntPtr.Zero) CloseHandle(error);
       if (input != IntPtr.Zero && input != new IntPtr(-1)) CloseHandle(input);
-      if (cancellation.IsCompleted && (cancellation.IsFaulted || cancellation.IsCanceled || cancellation.Result == null)) {
+      if (control != null) control.Dispose();
+      if (parentClosed) {
         try {
           if (File.ReadAllText(Path.Combine(owned, "owner-id")) == request) {
             Environment.CurrentDirectory = Path.GetPathRoot(owned); Directory.Delete(owned, true);
@@ -211,9 +222,8 @@ try {
   if (-not $api::AssignProcessToJobObject($outerJob,$api::GetCurrentProcess())) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }
 } finally { [Runtime.InteropServices.Marshal]::FreeHGlobal($limits) }
 # Keep this non-inherited handle until process exit, including early/failed preparation.
-[Console]::InputEncoding = New-Object System.Text.UTF8Encoding($false)
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
-$line = [Console]::In.ReadLine()
+$line = [IO.File]::ReadAllText([IO.Path]::Combine([Environment]::CurrentDirectory, 'request.json'), [Text.Encoding]::UTF8)
 if ($null -eq $line -or $line.Length -gt 1048576) { exit 253 }
 $request = ConvertFrom-Json -InputObject $line
 $buffer = [Convert]::FromBase64String('${windowsCompressedNative}')
@@ -223,6 +233,6 @@ $reader = [IO.StreamReader]::new($gzip, [Text.Encoding]::UTF8)
 try { $source = $reader.ReadToEnd() } finally { $reader.Dispose(); $gzip.Dispose(); $stream.Dispose() }
 Add-Type -TypeDefinition $source
 $result = [ChecktrailWindowsJobV1]::Run([string]$request.executable, [string]$request.commandLine,
-  [string[]]@($request.environment), [string]$request.cwd, [string]$request.receipt, [string]$request.requestId)
+  [string[]]@($request.environment), [string]$request.cwd, [string]$request.receipt, [string]$request.requestId, [string]$request.controlPipe)
 [Environment]::Exit($result)
 `.replace(/^#.*\n/gm, "");

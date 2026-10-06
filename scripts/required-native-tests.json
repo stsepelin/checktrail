@@ -2586,7 +2586,7 @@
     },
     {
       "file": "dist/test/windows-process.test.js",
-      "name": "native Windows parent loss triggers private stdin EOF job termination and owned temporary directory cleanup"
+      "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup"
     },
     {
       "file": "dist/test/windows-process.test.js",

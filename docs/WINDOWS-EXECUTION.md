@@ -25,7 +25,9 @@ job through fixed Reflection.Emit P/Invoke signatures. This owns compiler childr
 before Windows PowerShell can launch them during `Add-Type`. It then decodes
 compressed engine-owned C# source.
 Project commands, arguments, working directory and environment arrive as JSON
-data on a private stdin pipe. The bootstrap uses the host SystemRoot's Windows
+data in an exclusively created, bounded engine request file. A separate private
+Windows named pipe carries only the parent lifetime signal; PowerShell stdin is
+ignored so its pipeline reader cannot consume engine control data. The bootstrap uses the host SystemRoot's Windows
 PowerShell executable, never PATH or a project shell command. It does not change
 execution policy. Command data is quoted according to the documented Windows CRT
 argument rules and bounded before startup. Runtime-specific argument parsers
@@ -42,7 +44,7 @@ CI profile is targeted for acceptance here. See the Microsoft documentation for
 [Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects)
 and [argument parsing](https://learn.microsoft.com/en-us/cpp/c-language/parsing-c-command-line-arguments?view=msvc-170).
 
-A private cancellation line, stdin EOF after parent loss, timeout or output
+Closing the private pipe on cancellation, parent loss, timeout or output
 exhaustion terminates the owned job. Normal root exit also removes remaining
 background descendants. Guardian death invokes kernel kill-on-close; it cannot
 produce a completed receipt and is reported incomplete. Native controls include
