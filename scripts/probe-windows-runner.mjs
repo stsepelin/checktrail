@@ -122,6 +122,19 @@ try {
     ["[Environment]::Exit($result)", "native-returned"],
   ])
     source = source.replace(needle, mark(label) + needle);
+  // Split the two native calls at the last observed boundary. This changes only
+  // the diagnostic copy; the product bootstrap and acceptance callbacks stay intact.
+  source = source.replace(
+    "if (-not $api::AssignProcessToJobObject($outerJob,$api::GetCurrentProcess())) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+    mark("current-process-call") +
+      "$bootstrapProcess = $api::GetCurrentProcess()\n" +
+      "[IO.File]::WriteAllText('startup-process-handle', [string]$bootstrapProcess)\n" +
+      mark("current-process-returned") +
+      "$bootstrapAssigned = $api::AssignProcessToJobObject($outerJob,$bootstrapProcess)\n" +
+      "[IO.File]::WriteAllText('startup-assigned', [string]$bootstrapAssigned)\n" +
+      mark("assignment-returned") +
+      "if (-not $bootstrapAssigned) { throw 'WINDOWS_BOOTSTRAP_OWNERSHIP_UNAVAILABLE' }",
+  );
   source = source.replace(
     "[Environment]::Exit($result)",
     "[IO.File]::WriteAllText('startup-result', [string]$result); [Environment]::Exit($result)",
@@ -138,6 +151,14 @@ try {
         () => "missing",
       ),
       controlConnected: !!socket,
+      processHandle: await readFile(
+        path.join(root, "startup-process-handle"),
+        "utf8",
+      ).catch(() => null),
+      assigned: await readFile(
+        path.join(root, "startup-assigned"),
+        "utf8",
+      ).catch(() => null),
       result: await readFile(path.join(root, "startup-result"), "utf8").catch(
         () => null,
       ),
