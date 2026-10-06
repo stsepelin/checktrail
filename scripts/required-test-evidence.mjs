@@ -1,21 +1,82 @@
 import assert from "node:assert/strict";
+import { Buffer } from "node:buffer";
+import { createHash } from "node:crypto";
 import path from "node:path";
-import { realpath } from "node:fs/promises";
+import { open, realpath } from "node:fs/promises";
+import { constants } from "node:fs";
 import { run } from "node:test";
+
+const MAX_REQUIREMENTS = 256;
+const MAX_EVENTS = 1024;
+const MAX_NAME_CHARACTERS = 512;
+const key = ({ file, name }) => JSON.stringify([file, name]);
+const fingerprint = async (file) => {
+  let handle;
+  try {
+    handle = await open(
+      file,
+      constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+    );
+    if (!(await handle.stat()).isFile())
+      return { state: "unavailable", code: "not-regular" };
+    const digest = createHash("sha256"),
+      buffer = Buffer.alloc(65536),
+      limit = 4 * 1024 * 1024;
+    let total = 0;
+    while (true) {
+      const { bytesRead } = await handle.read(
+        buffer,
+        0,
+        Math.min(buffer.length, limit + 1 - total),
+        null,
+      );
+      if (!bytesRead) break;
+      total += bytesRead;
+      if (total > limit)
+        return { state: "unavailable", code: "file-byte-limit" };
+      digest.update(buffer.subarray(0, bytesRead));
+    }
+    return { state: "present", sha256: digest.digest("hex") };
+  } catch (error) {
+    return {
+      state: "unavailable",
+      code: typeof error.code === "string" ? error.code : "unknown",
+    };
+  } finally {
+    await handle?.close();
+  }
+};
+const sameFingerprint = (left, right) =>
+  JSON.stringify(left) === JSON.stringify(right);
 
 export async function runRequiredTests(
   requirements,
-  { timeoutMs = 120000 } = {},
+  { timeoutMs = 120000, maxTerminalEvents = MAX_EVENTS } = {},
 ) {
   assert.ok(
     Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 300000,
     "Required test harness timeout must be bounded",
   );
-  assert.ok(Array.isArray(requirements) && requirements.length > 0);
+  assert.ok(
+    Number.isSafeInteger(maxTerminalEvents) &&
+      maxTerminalEvents > 0 &&
+      maxTerminalEvents <= MAX_EVENTS,
+    "Required terminal ledger must be bounded",
+  );
+  assert.ok(
+    Array.isArray(requirements) &&
+      requirements.length > 0 &&
+      requirements.length <= MAX_REQUIREMENTS,
+  );
   const expected = await Promise.all(
     requirements.map(async ({ file, name }) => {
       assert.ok(
-        typeof file === "string" && typeof name === "string" && name.length > 0,
+        typeof file === "string" &&
+          file.length > 0 &&
+          file.length <= 4096 &&
+          typeof name === "string" &&
+          name.length > 0 &&
+          name.length <= MAX_NAME_CHARACTERS,
       );
       const resolved = await realpath(file).catch((error) => {
         if (error.code === "ENOENT") return path.resolve(file);
@@ -24,60 +85,150 @@ export async function runRequiredTests(
       return { file: resolved, name };
     }),
   );
-  const key = ({ file, name }) => JSON.stringify([file, name]);
-  assert.equal(new Set(expected.map(key)).size, expected.length);
-  const observed = new Map();
+  const expectedKeys = new Set(expected.map(key));
+  assert.equal(expectedKeys.size, expected.length);
+  const files = [...new Set(expected.map((item) => item.file))];
+  const fileIds = new Map(
+    files.map((file, index) => [file, "file-" + (index + 1)]),
+  );
+  const before = await Promise.all(files.map(fingerprint));
+  const observed = new Map(expected.map((item) => [key(item), []]));
+  const terminalEvents = [];
   const problems = [];
   let passed = 0;
-  for await (const { type, data } of run({
-    files: [...new Set(expected.map((item) => item.file))],
-    concurrency: 1,
-    timeout: timeoutMs,
-    execArgv: [],
-  })) {
-    if (type !== "test:pass" && type !== "test:fail") continue;
-    if (type === "test:fail") {
-      const error = data.details?.error;
+  let terminalEventCount = 0;
+  if (before.every((item) => item.state === "present"))
+    for await (const { type, data } of run({
+      files,
+      concurrency: 1,
+      timeout: timeoutMs,
+      execArgv: [],
+    })) {
+      if (type !== "test:pass" && type !== "test:fail") continue;
+      terminalEventCount++;
+      const suite = data.details?.type === "suite";
+      const skipped = data.skip !== undefined && data.skip !== false;
+      const todo = data.todo !== undefined && data.todo !== false;
+      const outcome = skipped
+        ? "skipped"
+        : todo
+          ? "todo"
+          : type === "test:fail"
+            ? "failed"
+            : "passed";
+      const file = data.file ? path.resolve(data.file) : "";
+      const id = key({ file, name: data.name });
+      const duration = data.details?.duration_ms;
+      const retained = terminalEvents.length < maxTerminalEvents;
+      if (retained) {
+        const event = {
+          sequence: terminalEventCount,
+          fileId: fileIds.get(file) ?? null,
+          name: data.name.slice(0, MAX_NAME_CHARACTERS),
+          nameTruncated: data.name.length > MAX_NAME_CHARACTERS,
+          kind: suite ? "suite" : "test",
+          outcome,
+          durationMs:
+            typeof duration === "number" &&
+            Number.isFinite(duration) &&
+            duration >= 0
+              ? duration
+              : null,
+          required: !suite && expectedKeys.has(id),
+        };
+        terminalEvents.push(event);
+        if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+        if (event.nameTruncated)
+          problems.push({
+            name: event.name,
+            reason: "terminal-name-truncated",
+          });
+      }
+      if (type === "test:fail" && retained) {
+        const error = data.details?.error;
+        problems.push({
+          name: data.name.slice(0, MAX_NAME_CHARACTERS),
+          reason: "failed",
+          ...(typeof error?.failureType === "string"
+            ? { failureType: error.failureType.slice(0, 128) }
+            : {}),
+          ...(typeof error?.code === "string"
+            ? { code: error.code.slice(0, 128) }
+            : {}),
+          ...(typeof error?.message === "string"
+            ? { message: error.message.slice(0, 1000) }
+            : {}),
+        });
+      }
+      if (skipped || todo) {
+        if (retained)
+          problems.push({
+            name: data.name.slice(0, MAX_NAME_CHARACTERS),
+            reason: "skipped-or-todo",
+          });
+        continue;
+      }
+      if (type === "test:pass" && !suite) passed++;
+    }
+  const truncated = terminalEventCount > terminalEvents.length;
+  if (truncated)
+    problems.push({ name: "terminal-ledger", reason: "terminal-ledger-limit" });
+  const after = await Promise.all(files.map(fingerprint));
+  const fileEvidence = files.map((file, index) => {
+    const stable =
+      before[index].state === "present" &&
+      sameFingerprint(before[index], after[index]);
+    if (!stable)
       problems.push({
-        name: data.name,
-        reason: "failed",
-        ...(typeof error?.failureType === "string"
-          ? { failureType: error.failureType }
-          : {}),
-        ...(typeof error?.code === "string" ? { code: error.code } : {}),
-        ...(typeof error?.message === "string"
-          ? { message: error.message.slice(0, 1000) }
-          : {}),
+        name: fileIds.get(file),
+        reason: "required-file-unavailable-or-changed",
       });
-    }
-    if (
-      (data.skip !== undefined && data.skip !== false) ||
-      (data.todo !== undefined && data.todo !== false)
-    ) {
-      problems.push({ name: data.name, reason: "skipped-or-todo" });
-      continue;
-    }
-    if (type !== "test:pass" || data.details?.type === "suite") continue;
-    passed++;
-    const id = key({
-      file: data.file ? path.resolve(data.file) : "",
-      name: data.name,
-    });
-    observed.set(id, (observed.get(id) ?? 0) + 1);
-  }
-  for (const item of expected) {
-    const count = observed.get(key(item)) ?? 0;
-    if (count !== 1)
+    return {
+      id: fileIds.get(file),
+      before: before[index],
+      after: after[index],
+      stable,
+    };
+  });
+  const cases = expected.map((item) => {
+    const sequences = observed.get(key(item));
+    const events = sequences.map((sequence) => terminalEvents[sequence - 1]);
+    const passes = events.filter((event) => event.outcome === "passed").length;
+    if (passes !== 1 || events.length !== 1)
       problems.push({
         name: item.name,
         reason:
-          count === 0 ? "required-test-not-passed" : "duplicate-required-test",
+          passes > 1 || events.length > 1
+            ? "duplicate-required-test"
+            : "required-test-not-passed",
       });
-  }
+    return {
+      fileId: fileIds.get(item.file),
+      name: item.name,
+      outcome:
+        events.length === 0
+          ? "not-observed"
+          : events.length > 1
+            ? "duplicate"
+            : events[0].outcome,
+      terminalSequences: sequences,
+    };
+  });
   return {
     passed,
     required: expected.length,
     problems,
     complete: problems.length === 0,
+    ledger: {
+      schemaVersion: 1,
+      scope:
+        "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      maxTerminalEvents,
+      terminalEventCount,
+      truncated,
+      files: fileEvidence,
+      events: terminalEvents,
+      cases,
+    },
   };
 }

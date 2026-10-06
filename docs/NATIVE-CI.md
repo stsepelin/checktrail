@@ -98,6 +98,46 @@ runs. The unchanged Ruby/Swift paths have their separate local evidence in
 that all profiles ran in a single environment, or that overlapping counts are
 independent tests.
 
+## Bounded terminal ledger
+
+The required-profile report now includes a version 1 terminal ledger. It records
+an ordered prefix of up to 1,024 terminal test/suite events, with bounded names,
+observed outcomes and durations. Every preregistered case separately records
+passed, failed, skipped, TODO, duplicate or not-observed state, even when no test
+runs. Only one passing test event from the exact selected file/name can satisfy
+a requirement. Suite events cannot satisfy it. Existing aggregate fields remain
+available; their `passed` count includes non-required tests in the selected files.
+
+Each distinct selected test file receives an opaque ID in manifest order and a
+SHA-256 fingerprint before and after the run. The harness preflights every file
+before starting any test. Missing/non-regular files and files exceeding 4 MiB
+prevent execution; changed, removed or unreadable bytes afterward make acceptance
+incomplete. Exact-limit files remain valid. This observes ordinary before/after
+changes, not an atomic or adversarial source snapshot. The ledger does not capture
+imports, product source, dependencies, raw output or whole-process identity.
+Tool/container and installed-package identities need their separate records.
+
+Truncated terminal events or names cannot yield complete acceptance, including
+when the required test passed before truncation. The ledger bounds retained
+terminal evidence, not every internal allocation made by Node's test runner.
+Test names and failure messages are test-authored data; opaque file IDs do not
+make those fields confidential. Retained failure metadata remains bounded.
+
+The `native-acceptance-ledger` profile is mandatory in the existing Node/OS
+matrix. Its original controls cover exact file/name identity, suite-only matches,
+non-required outcomes, duplicates, missing targets, skips/TODOs, failure, timeout,
+truncation, source changes/removal and byte/name boundaries. A multi-target
+preflight control verifies that an otherwise runnable target has no side effect
+when another required file is missing.
+
+The `timeoutMs` option configures Node's test timeout. It is not a universal hard
+process deadline or a claim of descendant cleanup: the tested Node 26 timer can
+remain alive after a failure is reported. CI job limits and the product execution
+runner's cancellation controls are separate. A harness exception exits without a
+complete receipt and is not credited as acceptance. This ledger improves native
+acceptance accounting; it does not close the wider R7/E6 all-attempt, raw-output,
+provenance or host-isolation requirements.
+
 ## Fresh-runner package preparation
 
 `npm ci` installs from the repository lockfile but does not necessarily cache
