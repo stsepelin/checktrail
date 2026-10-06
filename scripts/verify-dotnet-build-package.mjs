@@ -101,6 +101,14 @@ try {
           "dotnet-test-fixture.js",
           "dotnet-test.test.js",
           "dotnet-test-surfaces.test.js",
+          "dotnet-test-evidence.test.js",
+          "dotnet-test-lifecycle.test.js",
+          "dotnet-test-names.test.js",
+          "dotnet-test-scope.test.js",
+          "dotnet-test-failures.test.js",
+          "dotnet-test-outputs.test.js",
+          "dotnet-test-cancellation.test.js",
+          "dotnet-test-controls.js",
         ]
       : []),
   ])
