@@ -2092,5 +2092,15 @@
       "file": "dist/test/ruby-tools-cancellation.test.js",
       "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }

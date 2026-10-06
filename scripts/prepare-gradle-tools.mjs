@@ -12,7 +12,7 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { URL } from "node:url";
+import { requestGradleDistribution } from "./request-gradle-distribution.mjs";
 import { gradleDistributionFiles } from "../dist/src/gradle-distribution.js";
 import { verifyMavenTree } from "../dist/src/maven.js";
 const cache = path.resolve(".checktrail/gradle-review-tools"),
@@ -42,38 +42,7 @@ if (exists) {
 } else {
   const temporary = await mkdtemp(path.join(cache, ".prepare-"));
   try {
-    let url = new URL(
-        "https://services.gradle.org/distributions/gradle-9.8.0-bin.zip",
-      ),
-      response;
-    const signal = globalThis.AbortSignal.timeout(120000);
-    for (let hop = 0; hop < 5; hop++) {
-      assert.equal(url.protocol, "https:");
-      assert.equal(url.username + url.password + url.hash, "");
-      assert.equal(url.port, "");
-      assert.ok(
-        [
-          "services.gradle.org",
-          "downloads.gradle.org",
-          "github.com",
-          "release-assets.githubusercontent.com",
-        ].includes(url.hostname),
-      );
-      if (url.hostname === "github.com")
-        assert.equal(
-          url.pathname,
-          "/gradle/gradle-distributions/releases/download/v9.8.0/gradle-9.8.0-bin.zip",
-        );
-      response = await globalThis.fetch(url, { redirect: "manual", signal });
-      if (response.status === 200) break;
-      assert.ok([301, 302, 303, 307, 308].includes(response.status));
-      const location = response.headers.get("location");
-      assert.ok(location);
-      await response.body?.cancel();
-      url = new URL(location, url);
-    }
-    assert.equal(response?.status, 200);
-    assert.ok(response.body);
+    const { response, attempts, redirects } = await requestGradleDistribution();
     const archive = path.join(temporary, "gradle.zip"),
       file = await open(archive, "wx", 0o600),
       digest = createHash("sha256");
@@ -101,6 +70,8 @@ if (exists) {
         sha256,
         bytes: total,
         cacheHit: false,
+        attempts,
+        redirects,
         publisherSignatureVerified: false,
       }) + "\n",
     );
