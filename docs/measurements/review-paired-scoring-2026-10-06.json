@@ -1,0 +1,762 @@
+{
+  "schemaVersion": 1,
+  "profile": "declared-paired-cluster-v1",
+  "measurementKind": "original-synthetic-development-acceptance",
+  "codeRevision": "d570100db764b28347aae6cbfdbd782e8147d1d2",
+  "identities": {
+    "src/review-paired-scoring.ts": "2e92953498d425012cf6e96fe1b5f6a6b4c41bccc3b78be9e1a3759468cb8e73",
+    "test/review-paired-scoring.test.ts": "408bc4884e05408bd65dab4b3ef1628ff33f39709642113647977067eaab458f",
+    "scripts/verify-review-paired-package.mjs": "677bf6a991baef852eda4ef213cb4eb66abca24363b984a2605fcd1bd54c16e1",
+    "dist/src/review-paired-scoring.js": "0ca5439a55df3df1e9b9b9c369b9dfb670e94ece55564acaad1d71d8365ad242",
+    "dist/test/review-paired-scoring.test.js": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267",
+    "scripts/required-native-tests.json": "3cc24fc5862a5e7fbe726eca43c6c5fd035a88cc39bce333742179d11fc4e122"
+  },
+  "source": [
+    {
+      "runtime": {
+        "node": "26.9.0",
+        "os": "macOS",
+        "arch": "arm64"
+      },
+      "acceptance": {
+        "profile": "review-paired-scoring",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.977,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.5885,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.628584,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13.446,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.447708,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 707.244334,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "runtime": {
+        "node": "22.23.2",
+        "os": "Linux",
+        "arch": "arm64",
+        "image": "checktrail-dotnet-test:10.0.401",
+        "network": "none",
+        "readOnlyRootFilesystem": true
+      },
+      "acceptance": {
+        "profile": "review-paired-scoring",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24.457811,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.429818,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5.541783,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24.914939,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.207762,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 926.374393,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "installed": [
+    {
+      "tarballSha256": "dccd74cdcd33693474d49b78b3e1c751394fb4dab5fca1e8683f21bd7f17a2a9",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "review-paired-scoring",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.3705,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.468458,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.587708,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12.6485,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.199125,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 704.135458,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    {
+      "tarballSha256": "af2fcdc0a554f7dba92442a47fb48d8d7c101fd93fbf8fdf2970bf5a948ad2bb",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "review-paired-scoring",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2abc7b99106f276d5231dc890542154aebc4e5af22c0c1e2c0306a1d32632267"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 22.849301,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.240983,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.3903,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 25.846362,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15.093798,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 919.114433,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring preserves selected labels missing slots and directional denominators",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "checktrail-dotnet-test:10.0.401",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    }
+  ],
+  "guardMutations": {
+    "schemaVersion": 1,
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "callbackSha256": [
+      {
+        "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+        "sha256": "867924d48fb75f16e71f492ce0312586b3975dee19970a46fae2ba926b3efe52"
+      },
+      {
+        "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+        "sha256": "3eb24ab877a1f050b693746c4dbf58bc7ac7c790b80f46a7c95e7bb88f1a713b"
+      }
+    ],
+    "attempts": [
+      {
+        "variant": "baseline",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 0,
+        "complete": true,
+        "passed": 2,
+        "required": 2,
+        "failedName": null,
+        "problems": []
+      },
+      {
+        "variant": "resample-rows-instead-of-clusters",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 1,
+        "complete": false,
+        "passed": 0,
+        "required": 2,
+        "failedName": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+        "problems": [
+          {
+            "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   lower: -0.5,\n-   lower: -1,\n    upper: 1\n  }\n"
+          },
+          {
+            "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'available'\n- 'insufficient-clusters'\n"
+          },
+          {
+            "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+            "reason": "required-test-not-passed"
+          },
+          {
+            "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+            "reason": "required-test-not-passed"
+          }
+        ]
+      },
+      {
+        "variant": "resample-arms-independently",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 1,
+        "complete": false,
+        "passed": 1,
+        "required": 2,
+        "failedName": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+        "problems": [
+          {
+            "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'available'\n- 'degenerate'\n"
+          },
+          {
+            "name": "paired review scoring resamples whole unequal clusters and preserves both arms together",
+            "reason": "required-test-not-passed"
+          }
+        ]
+      },
+      {
+        "variant": "drop-undefined-resample-rejection",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 1,
+        "complete": false,
+        "passed": 1,
+        "required": 2,
+        "failedName": "paired review scoring refuses undefined partial or degenerate interval evidence",
+        "problems": [
+          {
+            "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'degenerate'\n- 'undefined-resamples'\n"
+          },
+          {
+            "name": "paired review scoring refuses undefined partial or degenerate interval evidence",
+            "reason": "required-test-not-passed"
+          }
+        ]
+      },
+      {
+        "variant": "restored",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 0,
+        "complete": true,
+        "passed": 2,
+        "required": 2,
+        "failedName": null,
+        "problems": []
+      }
+    ]
+  },
+  "fullCheck": {
+    "tests": 819,
+    "pass": 594,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 225,
+    "todo": 0
+  },
+  "fullFormatting": "passed",
+  "directChangedCodeLint": "passed",
+  "nativeWorkflowSyntax": {
+    "tool": "actionlint",
+    "version": "1.7.12",
+    "outcome": "passed"
+  },
+  "allFixturesOriginal": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "gateAComplete": false,
+  "limits": [
+    "Numerical labels, probabilities, trial/cluster identities, protocol freeze and paired provenance are operator declarations, not verified observations.",
+    "The profile computes descriptive percentile intervals, not verified coverage, calibrated confidence or a passed quality gate.",
+    "Incomplete and missing reviews retain selected denominators; unknown labels and judgements remain separately counted.",
+    "Whole-cluster resampling preserves both arms and all selected members of unequal-sized clusters.",
+    "Undefined resamples are counted; one undefined resample, an undefined point, fewer than two clusters or a degenerate distribution prevents an available interval.",
+    "Trial/cluster identifiers and raw numerical inputs are omitted from summary projection.",
+    "No loss difference is computed for different submitted claims.",
+    "Verified benchmark linkage, calibration fitting, evidence tiers, observed host isolation and wider Gate A requirements remain open.",
+    "Repeated source/installed/runtime counts use the same assertions and do not represent independent detection coverage."
+  ]
+}

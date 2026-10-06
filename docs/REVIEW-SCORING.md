@@ -152,3 +152,7 @@ unknown slots, undefined/degenerate intervals, boundary inputs, forged summaries
 and library/CLI/MCP agreement. `verify-review-paired-package.mjs` repeats those
 same assertions with the harness outside a fresh offline production installation.
 These are implementation checks, not a reviewer quality result.
+
+The [dated paired-scoring acceptance](measurements/review-paired-scoring-2026-10-06.json)
+records exact source/runtime and fresh-install evidence, original unchanged-callback
+guard mutations and scope limits. Hosted CI for the new profile remains unverified.
