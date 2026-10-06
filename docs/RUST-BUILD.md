@@ -58,6 +58,9 @@ configuration overrides are not a complete hermetic build identity.
 implicit Cargo target configuration. A named target needs its installed standard
 library; validation never installs it. Native artifact output paths must agree
 with the selected target, except host build-script and proc-macro artifacts.
+Canonical target names include underscored architectures such as
+`x86_64-unknown-linux-gnu`; the same contract validates the native compiler host.
+Malformed names, paths and options remain rejected before execution.
 Foreign targets are compilation/Clippy profiles. Foreign tests remain unavailable
 without a separately supported executor. Cross-compilation is not runtime test
 coverage.
@@ -105,6 +108,10 @@ and examples, generated source, proc macros, broken/fixed/near-miss inputs,
 missing prerequisites, native CLI/MCP and fresh offline production installation.
 The source-bound measurement is
 [rust-workspace-2026-10-05.json](measurements/rust-workspace-2026-10-05.json).
+The later [CI repair measurement](measurements/rust-ci-repair-2026-10-06.json)
+records original macOS arm64 native/source/installed controls and the Linux
+workspace regression after correcting underscored target/host names and shared
+library discovery. Compiling mutations cover those three repaired guards.
 Other platforms, versions, resolvers and configuration shapes need separate
 acceptance. Hosted CI, real-project field evaluation, model-session isolation and
 review-quality scoring are not established by these controls.

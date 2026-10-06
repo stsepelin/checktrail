@@ -36,8 +36,20 @@ export async function runRequiredTests(
     execArgv: [],
   })) {
     if (type !== "test:pass" && type !== "test:fail") continue;
-    if (type === "test:fail")
-      problems.push({ name: data.name, reason: "failed" });
+    if (type === "test:fail") {
+      const error = data.details?.error;
+      problems.push({
+        name: data.name,
+        reason: "failed",
+        ...(typeof error?.failureType === "string"
+          ? { failureType: error.failureType }
+          : {}),
+        ...(typeof error?.code === "string" ? { code: error.code } : {}),
+        ...(typeof error?.message === "string"
+          ? { message: error.message.slice(0, 1000) }
+          : {}),
+      });
+    }
     if (
       (data.skip !== undefined && data.skip !== false) ||
       (data.todo !== undefined && data.todo !== false)
