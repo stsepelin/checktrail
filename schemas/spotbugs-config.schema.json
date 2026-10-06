@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "sha256": {
+      "type": "string",
+      "const": "72bc0d4edd686e462c0f71f42a049b27bf4da6708797ff7b2b56dd202714b4e5"
+    },
+    "profile": { "type": "string", "const": "core-default-max-v1" }
+  },
+  "required": ["schemaVersion", "archive", "sha256", "profile"],
+  "additionalProperties": false
+}

@@ -35,6 +35,7 @@ export {
   dotnetBuildRepositorySchema,
 } from "./dotnet-build.js";
 export { javaConfigSchema } from "./java.js";
+export { spotbugsConfigSchema } from "./spotbugs.js";
 export { checkstyleConfigSchema } from "./checkstyle.js";
 export { mavenConfigSchema, mavenRepositorySchema } from "./maven.js";
 export { gradleConfigSchema } from "./gradle.js";
