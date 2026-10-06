@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-05T10:12:10.074016+00:00",
+  "profile": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "scope": "Exact published official SDK routing and existing synthetic implementation compatibility; not Tasks conformance or model/field evaluation.",
+  "registryLatestServerVersion": "2.3.0",
+  "probeSha256": "a1b6890563575593ea9f5473d1a2af671a42cacaa8ca8ed82447bf1af3b96b7a",
+  "dependencies": [
+    {
+      "name": "@modelcontextprotocol/server",
+      "version": "2.3.0",
+      "integrity": "sha512-+6b0LdsQLmHsvS7J6sQJ4weTpzUn61fU1JKS+321/+IyDYoHW5CR2Tgqcs6GgAAQvlesCo6yX3xttgmx+XGtJw=="
+    },
+    {
+      "name": "@modelcontextprotocol/client",
+      "version": "2.3.0",
+      "integrity": "sha512-pbHtGj6EeFCHngFE8gtNPaKrsj8Mb1IMw45BLcaPML/m2WTxI7pyYmeNQvaux88Lw8BSO5r7nyRbUyIkICmGrg=="
+    },
+    {
+      "name": "@modelcontextprotocol/core",
+      "version": "2.3.0",
+      "integrity": "sha512-09BHFaNVBe5pB2AhzCfLj0cqmsKLERvZQ4FblzP90UMGLaXVqdZPByFjURwsUYCmxonUW2yAwgTTvle+8O2/8w=="
+    }
+  ],
+  "protocol": "2026-07-28",
+  "exitCode": 0,
+  "results": [
+    {
+      "method": "tasks/get",
+      "handlerReached": true,
+      "errorCode": null
+    },
+    {
+      "method": "tasks/cancel",
+      "handlerReached": true,
+      "errorCode": null
+    },
+    {
+      "method": "tasks/update",
+      "handlerReached": true,
+      "errorCode": null
+    }
+  ],
+  "isolatedAndProjectProbesAgree": true,
+  "projectDependencyChanged": true,
+  "sourceBinding": {
+    "baseCommit": "d63bf6d15b4b0f55419fdd3a082e62d49bc99a91",
+    "files": [
+      {
+        "file": "package.json",
+        "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+      },
+      {
+        "file": "package-lock.json",
+        "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+      },
+      {
+        "file": "scripts/probe-mcp-tasks.mjs",
+        "sha256": "a1b6890563575593ea9f5473d1a2af671a42cacaa8ca8ed82447bf1af3b96b7a"
+      },
+      {
+        "file": "test/mcp-tasks-routing.test.ts",
+        "sha256": "f1238d12994e254da5d9e5009ece4b4e001ca2832f8d7e738c364de45c23c617"
+      },
+      {
+        "file": "src/mcp.ts",
+        "sha256": "cf15ec0c0b4a016c5842eed4e27ea60c24756fd486eef7aab86806b593c0ebb4"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "cbbe185d27aa6134b8d6f62a64c06bc695d08ae32524638c6e8629bfd4cc76a3"
+      },
+      {
+        "file": "scripts/verify-review-container.mjs",
+        "sha256": "4191f978fcf867639622d450c99e75dd91d00c8e76e59d37522721e5b983c2f1"
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "3ea7b6be4c964438e06b19146bf0567d528623fe665f3a6fcf63d4aa5b79c563"
+      }
+    ]
+  },
+  "lockfileChanges": [
+    "node_modules/@modelcontextprotocol/client",
+    "node_modules/@modelcontextprotocol/core",
+    "node_modules/@modelcontextprotocol/server"
+  ],
+  "unrelatedDependencyVersionsChanged": false,
+  "fullDevelopmentCheck": {
+    "total": 570,
+    "passed": 508,
+    "failed": 0,
+    "cancelled": 0,
+    "unavailableSkipped": 62,
+    "skipsCountedAsPassing": false
+  },
+  "requiredMacProfile": {
+    "profile": "mcp-tasks-routing",
+    "passed": 1,
+    "required": 1,
+    "problems": [],
+    "complete": true
+  },
+  "linuxProfiles": [
+    {
+      "profile": "review",
+      "passed": 30,
+      "required": 23,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-git",
+      "passed": 29,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-provider",
+      "passed": 21,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-probe",
+      "passed": 16,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-refutation",
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-scoring",
+      "passed": 6,
+      "required": 6,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-verification",
+      "passed": 17,
+      "required": 10,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "mcp-tasks-routing",
+      "passed": 1,
+      "required": 1,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-budget",
+      "passed": 34,
+      "required": 8,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow",
+      "passed": 11,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-workflow-audit",
+      "passed": 19,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-benchmark",
+      "passed": 23,
+      "required": 14,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-benchmark-judging",
+      "passed": 23,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "review-native-budget",
+      "passed": 39,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "linuxRuntime": {
+    "image": "sha256:33f433f2330139ef0e9b3b031d38b6c6d6c58137929ad39142cde48a56e5a77e",
+    "node": "22.23.2",
+    "git": "git version 2.47.3",
+    "contextVersion": 5,
+    "receiptVersion": 2,
+    "network": "none",
+    "native": "passed",
+    "installation": "offline",
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "stale": "detected",
+    "claimsVerified": false,
+    "platform": "linux",
+    "arch": "arm64",
+    "workspaceMount": "read-only",
+    "containerRootReadOnly": false
+  },
+  "installedBenchmarkPackage": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "tarballSha256": "30e52548a339aaed9c8e55f0a0f9563e268586fd7a79450fdfc8053f77635782",
+    "installation": "offline-production",
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "planned": 4,
+    "accounted": 4,
+    "completed": 3,
+    "missing": 1,
+    "judgments": {
+      "planned": 4,
+      "accounted": 4,
+      "accepted": 1,
+      "resolved": 1,
+      "archiveDigest": "c9effa3de834bebcbe5d9ca316f7c72f8f2453458f07f1a1412ae4f44922d529"
+    },
+    "inferenceInvoked": false,
+    "hostIsolationVerified": false,
+    "qualityAssessed": false,
+    "artifactSnapshot": "Packed before this routing record was finalized; evaluated runtime/dependency pins are retained separately."
+  },
+  "dependencyAudit": {
+    "provenance": "installed-metadata-and-lockfile-audit",
+    "scope": "production-npm-dependencies",
+    "complete": true,
+    "lockfileSHA256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1",
+    "packageCount": 20,
+    "gaps": [],
+    "limitations": [
+      "Declared integrity is recorded, not recomputed over installed package contents",
+      "License declarations and notice presence do not establish legal compliance",
+      "Development dependencies, native toolchains and container images are outside this audit"
+    ]
+  },
+  "mutation": {
+    "guard": "get-handler-registration",
+    "test": "published official SDK routes standard Tasks get cancel and update without transport interception",
+    "caught": true,
+    "testExit": 1
+  },
+  "limits": {
+    "tasksWireImplemented": false,
+    "tasksAdvertised": false,
+    "tasksConformanceEstablished": false,
+    "gateA": "open",
+    "fieldEvaluationExecuted": false,
+    "inferenceInvoked": false,
+    "windowsVerified": false,
+    "otherAdvertisedRuntimeProfilesVerifiedAtThisRevision": false
+  }
+}

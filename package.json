@@ -43,7 +43,7 @@
     "probe:mcp-tasks": "node scripts/probe-mcp-tasks.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
+    "@modelcontextprotocol/server": "2.3.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "fast-xml-parser": "5.11.1",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@modelcontextprotocol/client": "2.1.0",
+    "@modelcontextprotocol/client": "2.3.0",
     "@playwright/test": "1.63.0",
     "@types/node": "22.20.3",
     "eslint": "10.11.0",

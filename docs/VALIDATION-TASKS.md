@@ -1,10 +1,58 @@
 # Durable local validation worker
 
 `openValidationTasks` connects the shared validation engine to the bounded local
-[task store](TASK-STORAGE.md). This is a library API, not a daemon or an MCP
-extension. The CLI and MCP server still use their existing execution paths.
-Standard MCP Tasks remains unadvertised until its wire contracts and SDK routing
-work; see [MCP compatibility](MCP-COMPATIBILITY.md).
+[task store](TASK-STORAGE.md). It remains a library API with no daemon. The
+foreground MCP server can use the same worker through the optional standard
+Tasks polling profile described below.
+
+## MCP polling profile
+
+```sh
+checktrail serve --root PROJECT --allow-execution --task-store PRIVATE_DIRECTORY --timeout-ms 30000
+```
+
+`--task-store` enables `io.modelcontextprotocol/tasks` at startup. The directory
+must satisfy the storage requirements and remain outside inventoried source, or
+inside an excluded directory. Discovery and planning do not open the store or
+execute project code. Without this flag, ordinary MCP behavior remains available.
+Without `--allow-execution`, the configured profile can retrieve historical results
+but cannot create native work. Storage, trust, detail, environment, selection and
+adapter settings are operator settings; tool arguments cannot grant them.
+
+A `validation_run` request declaring this exact extension in its per-request
+capabilities returns `resultType: "task"` only after durable creation. The task ID
+supports `tasks/get`, `tasks/cancel` and `tasks/update`. Get returns a working or
+terminal task; completed results inline the original tool result. A native failure,
+empty run or explicit interruption remains completed with its failed/incomplete
+report or tool error. These states never become passing checks. Updates acknowledge
+unknown input keys because this profile issues no input requests. Control methods
+require the extension on every request. The official SDK lifts `inputResponses`
+into request context and discards entries it does not recognize; this profile does
+not attest strict validation of the original update field's shape.
+
+Task validation uses the startup timeout, default 30000 milliseconds. A tool call
+can omit its timeout or repeat that exact value; a different value is rejected.
+Ordinary calls continue to accept their existing timeout argument. Clients without
+Tasks on that request receive the ordinary completed result, including older
+negotiation profiles. Task results are retrieved through `tasks/get`; their run IDs
+are not inserted into the ordinary connection's in-memory report map.
+
+Background work reserves the same native slot as ordinary validation, mutation,
+workflow probes, review probes and verification. Inspection stays responsive.
+Cancelling the completed creation request does not cancel background work. Use
+`tasks/cancel`; its acknowledgment follows native cleanup. Foreground EOF, SIGINT
+and SIGTERM await worker cleanup and release the store. Restart retrieves retained
+terminal results, or an explicit interruption for unfinished persisted work; it
+never resumes execution. Missing and expired IDs yield a generic protocol error.
+
+The [wire measurement](measurements/mcp-tasks-wire-2026-10-05.json) records synthetic
+macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2 lifecycle, ordinary-client and
+fresh offline production-package evidence with pinned SDK 2.3.0. Required profiles
+are `mcp-tasks` and `mcp-task-dispatch`. This is a polling-only native validation
+profile: no input-required flow, subscriptions, HTTP service or AI execution is
+implemented. Windows, other runtime/client versions, full Tasks conformance and
+model-host Tasks interoperability remain unverified. These controls are not a
+real-project field review or a finding-quality measurement.
 
 ## Use
 

@@ -18,7 +18,10 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Ruby and Swift have dedicated required-native jobs. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
-checks. The separate PHP syntax helper checks its exact successful TAP test name;
+checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
+contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
+Tasks configured. `verify-mcp-tasks-package.mjs` evaluates the shipped CLI/runtime
+from a fresh offline production installation, with a separate acceptance harness. The separate PHP syntax helper checks its exact successful TAP test name;
 the external-adapter helper already checks exact required native names for each
 of its different runtime containers.
 

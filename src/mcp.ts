@@ -1,3 +1,12 @@
+import { createToolCatalog } from "./mcp-tool-catalog.js";
+import { McpValidationTasks, taskMetadata } from "./mcp-validation-tasks.js";
+import { validationTasksOptionsSchema } from "./validation-tasks-protocol.js";
+import {
+  ProtocolError,
+  ProtocolErrorCode,
+  type CallToolResult,
+  type ServerContext,
+} from "@modelcontextprotocol/server";
 import { ReviewBenchmark } from "./review-benchmark.js";
 import {
   reviewBenchmarkWorkerCommandSchema,
@@ -132,6 +141,7 @@ import { VERSION } from "./types.js";
 import type { Report } from "./types.js";
 
 export interface ServerOptions {
+  validationTasks?: { directory: string; timeoutMs?: number };
   reviewProbes?: PinnedReviewProbe[];
   probeLimits?: {
     wallMs: number;
@@ -207,12 +217,34 @@ function createWorkflowSession(
     auditActivation,
   );
 }
+function createTasksOwner(
+  options: ServerOptions,
+): McpValidationTasks | undefined {
+  if (!options.validationTasks) return undefined;
+  return new McpValidationTasks(
+    validationTasksOptionsSchema.parse({
+      ...options.validationTasks,
+      root: options.root,
+      allowExecution: options.allowExecution,
+      detailed: options.detailed,
+      ...(options.environment ? { environment: options.environment } : {}),
+      ...(options.externalAdapters
+        ? { externalAdapters: options.externalAdapters }
+        : {}),
+      ...(options.base !== undefined ? { base: options.base } : {}),
+      ...(options.policyOverlay !== undefined
+        ? { policyOverlay: options.policyOverlay }
+        : {}),
+    }),
+  );
+}
 export function createServer(options: ServerOptions): McpServer {
   return createConnectionServer(options);
 }
 function createConnectionServer(
   options: ServerOptions,
   sharedWorkflow?: ReviewWorkflowSession,
+  sharedTasks?: McpValidationTasks,
 ): McpServer {
   const prepared = prepareWorkflowOptions(options),
     { probes, probeLimits, provider } = prepared;
@@ -251,12 +283,31 @@ function createConnectionServer(
   const workflowEngine =
     sharedWorkflow ?? createWorkflowSession(options, prepared);
   const workflowRequests = new Map<string | number, AbortController>();
-  const server = new McpServer({ name: "checktrail", version: VERSION });
+  const tasks = sharedTasks ?? createTasksOwner(options);
+  const server = new (class extends McpServer {
+    override async close(): Promise<void> {
+      try {
+        if (!sharedTasks) await tasks?.close();
+      } finally {
+        await super.close();
+      }
+    }
+  })(
+    { name: "checktrail", version: VERSION },
+    tasks
+      ? {
+          capabilities: { extensions: { "io.modelcontextprotocol/tasks": {} } },
+        }
+      : {},
+  );
+  const catalog = createToolCatalog(server);
+  const registerTool = catalog.register;
   const priorClose = server.server.onclose;
   server.server.onclose = () => {
     for (const controller of workflowRequests.values()) controller.abort();
     try {
       if (!sharedWorkflow) workflowEngine.dispose();
+      if (!sharedTasks) void tasks?.close().catch(() => {});
     } finally {
       priorClose?.();
     }
@@ -267,7 +318,7 @@ function createConnectionServer(
     { id: string | number; controller: AbortController } | undefined;
   let contractRunning:
     { id: string | number; controller: AbortController } | undefined;
-  // SDK 2.0.0's cancellation handler drops the valid numeric request ID 0.
+  // Preserve exact request-ID cancellation, including numeric 0. Older SDKs dropped it.
   server.server.setNotificationHandler(
     "notifications/cancelled",
     (notification) => {
@@ -300,7 +351,7 @@ function createConnectionServer(
     content: [{ type: "text" as const, text: message }],
   });
   for (const name of ["project_context", "validation_plan"]) {
-    server.registerTool(
+    registerTool(
       name,
       {
         description:
@@ -336,7 +387,7 @@ function createConnectionServer(
       },
     );
   }
-  server.registerTool(
+  registerTool(
     "mutation_experiment",
     {
       description:
@@ -360,7 +411,7 @@ function createConnectionServer(
         return error(
           "Execution is disabled. The operator must restart the server with --allow-execution.",
         );
-      if (running)
+      if (running || tasks?.busy)
         return error(
           "A validation or mutation experiment is already running for this server.",
         );
@@ -395,7 +446,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_benchmark",
     {
       description:
@@ -429,7 +480,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_workflow",
     {
       description:
@@ -448,7 +499,7 @@ function createConnectionServer(
     async (command, request) => {
       if (
         workflowRequests.size >= 16 ||
-        (command.operation === "probe" && running)
+        (command.operation === "probe" && (running || tasks?.busy))
       )
         return error("Workflow operation capacity is unavailable.");
       const controller = new AbortController();
@@ -473,7 +524,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_context",
     {
       description:
@@ -499,7 +550,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_receipt",
     {
       description:
@@ -532,7 +583,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_hypotheses",
     {
       description:
@@ -564,7 +615,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_probe",
     {
       description:
@@ -593,7 +644,7 @@ function createConnectionServer(
       const recipe = probes.get(probeId);
       if (!recipe)
         return error("Native probe is not registered by the operator.");
-      if (running)
+      if (running || tasks?.busy)
         return error(
           "A native validation mutation or probe is already running for this server.",
         );
@@ -630,7 +681,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_verify",
     {
       description:
@@ -663,7 +714,7 @@ function createConnectionServer(
       const recipe = probes.get(probeId);
       if (!recipe)
         return error("Native probe is not registered by the operator.");
-      if (running || reviewRunning)
+      if (running || reviewRunning || tasks?.busy)
         return error(
           "A native or provider operation is already running for this server.",
         );
@@ -704,7 +755,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_score",
     {
       description:
@@ -732,7 +783,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_refute",
     {
       description:
@@ -787,7 +838,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_run",
     {
       description:
@@ -838,7 +889,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "review_guidance",
     {
       description:
@@ -878,7 +929,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "validation_run",
     {
       description:
@@ -899,7 +950,7 @@ function createConnectionServer(
         return error(
           "Execution is disabled. The operator must restart the server with --allow-execution.",
         );
-      if (running)
+      if (running || tasks?.busy)
         return error("A validation is already running for this server.");
       const controller = new AbortController();
       running = { id: context.mcpReq.id, controller };
@@ -927,7 +978,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "validation_report",
     {
       description:
@@ -943,7 +994,7 @@ function createConnectionServer(
         : error("Report is unavailable or has expired.");
     },
   );
-  server.registerTool(
+  registerTool(
     "finding_comparison",
     {
       description:
@@ -986,7 +1037,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "architecture_validation",
     {
       description:
@@ -1014,7 +1065,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "runtime_comparison",
     {
       description:
@@ -1042,7 +1093,7 @@ function createConnectionServer(
       }
     },
   );
-  server.registerTool(
+  registerTool(
     "contract_validation",
     {
       description:
@@ -1081,6 +1132,154 @@ function createConnectionServer(
       }
     },
   );
+  if (tasks) {
+    const extension = "io.modelcontextprotocol/tasks";
+    const supportsTasks = (context: ServerContext) => {
+      const envelope = z
+        .object({
+          "io.modelcontextprotocol/clientCapabilities": z
+            .object({
+              extensions: z.record(z.string(), z.unknown()).optional(),
+            })
+            .optional(),
+        })
+        .parse(context.mcpReq.envelope ?? {});
+      return Object.hasOwn(
+        envelope["io.modelcontextprotocol/clientCapabilities"]?.extensions ??
+          {},
+        extension,
+      );
+    };
+    const requireTasks = (context: ServerContext) => {
+      if (!supportsTasks(context))
+        throw new ProtocolError(-32021, "Missing required client capability", {
+          requiredCapabilities: { extensions: { [extension]: {} } },
+        });
+    };
+    const unavailable = () =>
+      new ProtocolError(
+        ProtocolErrorCode.InvalidParams,
+        "Task unavailable or expired",
+      );
+    // The public low-level dispatcher is needed because high-level callbacks
+    // validate only completed tool results. No transport or SDK patch is used.
+    server.server.setRequestHandler(
+      "tools/call",
+      {
+        params: z.object({
+          name: z.string(),
+          arguments: z.record(z.string(), z.unknown()).optional(),
+        }),
+      },
+      async (request, context) => {
+        if (request.name !== "validation_run" || !supportsTasks(context))
+          return catalog.call(request.name, request.arguments, context);
+        try {
+          const input = (await catalog.parse(
+            "validation_run",
+            request.arguments,
+          )) as { timeoutMs?: number };
+          if (running) throw new Error("Native execution already active");
+          const task = await tasks.start(
+            context.mcpReq.signal,
+            input.timeoutMs,
+          );
+          return { resultType: "task", ...taskMetadata(task) };
+        } catch {
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: "Validation task could not start. Inspect startup grants, pinned timeout, store and active operations locally.",
+              },
+            ],
+          };
+        }
+      },
+    );
+    const taskInput = z.object({ taskId: z.string().uuid() });
+    const metadata = z.object({
+      taskId: z.string().uuid(),
+      status: z.enum(["working", "completed", "cancelled"]),
+      createdAt: z.iso.datetime(),
+      lastUpdatedAt: z.iso.datetime(),
+      ttlMs: z.number().int().positive(),
+      pollIntervalMs: z.number().int().positive(),
+    });
+    server.server.setRequestHandler(
+      "tasks/get",
+      {
+        params: taskInput,
+        result: metadata.extend({
+          resultType: z.literal("complete"),
+          result: z.record(z.string(), z.unknown()).optional(),
+        }),
+      },
+      async (request, context) => {
+        requireTasks(context);
+        try {
+          const task = await tasks.get(request.taskId);
+          return {
+            resultType: "complete" as const,
+            ...taskMetadata(task),
+            ...(task.status === "completed"
+              ? {
+                  result: {
+                    ...catalog.project(
+                      "validation_run",
+                      task.result as CallToolResult,
+                    ),
+                    resultType: "complete",
+                  },
+                }
+              : {}),
+          };
+        } catch {
+          throw unavailable();
+        }
+      },
+    );
+    server.server.setRequestHandler(
+      "tasks/cancel",
+      {
+        params: taskInput,
+        result: z.object({ resultType: z.literal("complete") }),
+      },
+      async (request, context) => {
+        requireTasks(context);
+        try {
+          await tasks.cancel(request.taskId);
+          return { resultType: "complete" as const };
+        } catch {
+          throw unavailable();
+        }
+      },
+    );
+    server.server.setRequestHandler(
+      "tasks/update",
+      {
+        params: taskInput,
+        result: z.object({ resultType: z.literal("complete") }),
+      },
+      async (request, context) => {
+        requireTasks(context);
+        // The public SDK lifts this wire field into request context.
+        if (context.mcpReq.inputResponses === undefined)
+          throw new ProtocolError(
+            ProtocolErrorCode.InvalidParams,
+            "Task update requires inputResponses",
+          );
+        try {
+          // Native validation asks for no input. Unknown/already answered keys are ignored.
+          await tasks.get(request.taskId);
+          return { resultType: "complete" as const };
+        } catch {
+          throw unavailable();
+        }
+      },
+    );
+  }
   return server;
 }
 
@@ -1093,15 +1292,19 @@ export function serve(options: ServerOptions): void {
   operatorEnvironment(options.environment);
   externalReferencesSchema.parse(options.externalAdapters ?? []);
   const workflow = createWorkflowSession(options, prepared, "first-command");
+  const tasks = createTasksOwner(options);
   const transport = new StdioServerTransport(process.stdin, process.stdout, {
     maxBufferSize: 1024 * 1024,
   });
-  const handle = serveStdio(() => createConnectionServer(options, workflow), {
-    transport,
-    onerror: () => {
-      process.stderr.write("MCP transport error\n");
+  const handle = serveStdio(
+    () => createConnectionServer(options, workflow, tasks),
+    {
+      transport,
+      onerror: () => {
+        process.stderr.write("MCP transport error\n");
+      },
     },
-  });
+  );
   let closing = false;
   const shutdown = (): void => {
     if (closing) return;
@@ -1115,7 +1318,13 @@ export function serve(options: ServerOptions): void {
       process.stderr.write("MCP audit finalization failed\n");
       process.exitCode = 2;
     }
-    void handle.close().catch(() => {
+    void (async () => {
+      try {
+        await tasks?.close();
+      } finally {
+        await handle.close();
+      }
+    })().catch(() => {
       process.stderr.write("MCP shutdown failed\n");
       process.exitCode = 2;
     });

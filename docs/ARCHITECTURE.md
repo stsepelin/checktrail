@@ -96,11 +96,14 @@ Expose `project_context`, `validation_plan`, `validation_run`, `validation_repor
 `review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`.
 Tool schemas are validated. Execution is disabled unless enabled when starting
 the server. Keep a bounded in-memory report store; report IDs are opaque and a
-restart clears them. The optional library-only [task store](TASK-STORAGE.md)
-retains projected reports in bounded, exclusively owned SQLite databases. It is
-not connected to these tools. The separate [library worker](VALIDATION-TASKS.md)
-owns the store while executing through the shared engine and cancels on parent
-disconnection. MCP Tasks integration remains pending.
+restart clears them. The optional [task store](TASK-STORAGE.md) retains projected reports in bounded,
+exclusively owned SQLite databases. Its [worker](VALIDATION-TASKS.md) executes
+through the shared engine and cancels on parent disconnection. A startup-pinned
+`--task-store` enables standard MCP Tasks polling for `validation_run`; capability
+negotiation is per request, and ordinary clients retain completed-call behavior.
+The foreground server owns one lazy worker across SDK discovery instances,
+shares native admission, and awaits cleanup on shutdown. Retained results are
+historical evidence; retrieval does not revalidate source or resume work.
 Request cancellation is matched by exact ID, including numeric zero. Connection
 closure and process signals terminate active validation workers. The
 [compatibility record](MCP-COMPATIBILITY.md) describes the SDK constraints and

@@ -168,7 +168,10 @@ add native analysis coverage or promote an ecosystem capability.
 
 Optional [task storage](TASK-STORAGE.md) retains projected engine reports from any
 adapter without adding language coverage. Its native storage profile is verified
-on macOS/Node 26.8.1 and Linux/Node 22.23.2; it is not MCP Tasks support.
+on macOS/Node 26.8.1 and Linux/Node 22.23.2. The later optional MCP Tasks polling
+profile has synthetic macOS arm64 Node 26.9.0 and Linux arm64 Node 22.23.2
+wire and fresh-package acceptance with SDK 2.3.0; see `VALIDATION-TASKS.md`.
+Other runtime/client profiles and full Tasks conformance remain unverified.
 
 The [durable library worker](VALIDATION-TASKS.md) invokes the same adapter registry.
 Worker-specific lifecycle evidence currently uses native Node fixtures on those
