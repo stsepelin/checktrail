@@ -22,6 +22,9 @@ const arguments_ = [
   "2",
   "--memory",
   "2g",
+  ...(process.env.CHECKTRAIL_TEST_TASK
+    ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
+    : []),
   "--mount",
   `type=bind,src=${repository},target=/workspace,readonly`,
   "--env",

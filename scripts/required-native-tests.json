@@ -2180,5 +2180,15 @@
       "file": "dist/test/cpp-tools-cancel.test.js",
       "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs"
     }
+  ],
+  "gradle-preparation": [
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation retries bounded request failures from the pinned origin without weakening redirect boundaries"
+    },
+    {
+      "file": "dist/test/gradle-preparation.test.js",
+      "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
   ]
 }

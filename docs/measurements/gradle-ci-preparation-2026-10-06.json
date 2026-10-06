@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "measurementKind": "original-synthetic-ci-repair-acceptance",
+  "codeRevision": "05d148001830997f1669aae1cbd82cb818009ef2",
+  "observedHostedFailure": {
+    "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/37481593264/job/112330840161",
+    "phase": "distribution HTTP request before archive verification and native tests",
+    "httpStatusRetained": false,
+    "rootCauseEstablished": false
+  },
+  "repair": "At most three pinned-origin attempts under one 120-second signal, bounded redirect hops, exact boundary checks, rejected-body cancellation and numeric final HTTP diagnostics. Archive integrity and extracted-member verification remain required.",
+  "identities": {
+    "scripts/request-gradle-distribution.mjs": "3818e49debed8b38fc44a49a9beb76c6d3d9e15dfb3d9af16235ef22ba599527",
+    "scripts/prepare-gradle-tools.mjs": "2f4d346a69d88d13ccfa7a0f2865490d1dc6cd5d0eba8d82f2690148cf91b3e8",
+    "scripts/verify-gradle-container.mjs": "2c7b945affb864246fe2ea5bc9f6a062cb33ea02af68795ea65e94fb12c8ca7d",
+    "scripts/verify-gradle-package.mjs": "063c9caabd949877534a42a2267bfa64f91937e76f8d2812a422cfe9ca8b5f88",
+    "test/gradle-preparation.test.ts": "9e3b8697d45e6f3cdebb20d2ccfbe66446a3f0fa1dbbfe562bdf0774aec8a2de",
+    "scripts/required-native-tests.json": "1594a16200d9e7de3481bd25f867e886387f7673b9aab65e49810ff149a286a2"
+  },
+  "freshPinnedDownload": {
+    "version": "9.8.0",
+    "sha256": "bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c",
+    "bytes": 151611662,
+    "cacheHit": false,
+    "attempts": 1,
+    "redirects": 2,
+    "publisherSignatureVerified": false
+  },
+  "requestControls": {
+    "profile": "gradle-preparation",
+    "timeoutMs": 120000,
+    "passed": 2,
+    "required": 2,
+    "problems": [],
+    "complete": true
+  },
+  "native": {
+    "image": "sha256:9c3ce1df2230c3289b40a8ffe7810ab4ccea19a41089c88e495494f93adbf788",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "gradle": "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 7.0.14-orbstack-00380-ga7e0a2dc9535 aarch64"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "gradle",
+      "timeoutMs": 300000,
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true
+    },
+    "preservedJava": {
+      "profile": "java",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "2dc5b5eef4002c4e2dd562b0afcf33c1bbe2a54c00e85afec521923572fd3ebe",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "gradle",
+        "timeoutMs": 300000,
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:9c3ce1df2230c3289b40a8ffe7810ab4ccea19a41089c88e495494f93adbf788",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 320246,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "tests": 668,
+    "pass": 554,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 114,
+    "todo": 0
+  },
+  "formatting": "passed",
+  "directEditedCodeLint": "passed",
+  "hostedNewHead": "not-yet-run",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "limits": [
+    "The original hosted log did not identify the unexpected HTTP status; bounded request retries do not establish its cause or guarantee recovery.",
+    "Prepared artifacts and source/installed runs share fixtures; counts are not independent detection coverage.",
+    "Optional full-suite skips remain unavailable coverage.",
+    "Publisher signature, full provenance and broader Gate A acceptance remain unverified."
+  ]
+}
