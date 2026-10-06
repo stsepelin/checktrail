@@ -2346,5 +2346,51 @@
       "file": "dist/test/native-process-observer.test.js",
       "name": "native process observer retains exact native command arguments and propagates unexplained IO failures"
     }
+  ],
+  "ruby-tools-rubocop": [
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean"
+    }
+  ],
+  "ruby-tools-assertions": [
+    {
+      "file": "dist/test/ruby-tools-tests.test.js",
+      "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair"
+    }
+  ],
+  "ruby-tools-evidence": [
+    {
+      "file": "dist/test/ruby-tools-evidence.test.js",
+      "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass"
+    }
+  ],
+  "ruby-tools-lifecycle": [
+    {
+      "file": "dist/test/ruby-tools-lifecycle.test.js",
+      "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-minitest-lifecycle.test.js",
+      "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting"
+    }
+  ],
+  "ruby-tools-defaults": [
+    {
+      "file": "dist/test/ruby-tools-guards.test.js",
+      "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives"
+    }
+  ],
+  "ruby-tools-surfaces": [
+    {
+      "file": "dist/test/ruby-tools-surfaces.test.js",
+      "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    }
+  ],
+  "ruby-tools-cancellation": [
+    {
+      "file": "dist/test/ruby-tools-cancellation.test.js",
+      "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
+    }
   ]
 }
