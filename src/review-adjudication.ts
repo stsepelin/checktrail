@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import {
@@ -24,8 +25,8 @@ export interface AdjudicationEvidence {
 const hypothesis = projectReviewCandidateForIndependentStage;
 const probeFields = reviewProbeRunSchema.options[0].shape;
 const probeCase = probeFields.trials.element.shape;
-const recipeFields = reviewProbeRecipeSchema.shape;
-export const reviewNativeObservationSchema = z.strictObject({
+const recipeFields = reviewProbeRecipeSchema.options[0].shape;
+const booleanNativeObservationSchema = z.strictObject({
   profile: recipeFields.profile,
   file: recipeFields.file,
   exportName: recipeFields.exportName,
@@ -53,16 +54,36 @@ export const reviewNativeObservationSchema = z.strictObject({
     .min(3)
     .max(16),
 });
+export const reviewNativeObservationSchema = z.discriminatedUnion("profile", [
+  booleanNativeObservationSchema,
+  booleanNativeObservationSchema.extend({
+    profile: z.literal("node-export-json-v1"),
+    cases: z
+      .array(
+        booleanNativeObservationSchema.shape.cases.element.extend({
+          expected: z.json(),
+          actual: z.json().nullable(),
+        }),
+      )
+      .min(3)
+      .max(16),
+  }),
+]);
 /** Raw case observations only; prior labels, aggregate verdicts and model metadata stay private. */
 export function projectReviewNativeObservations(
   recipe: ReviewProbeRecipe,
   probe: ReviewProbeRun,
 ) {
   if (
+    recipe.profile !== probe.profile ||
     recipe.cases.length !== probe.trials.length ||
     recipe.cases.some((c, i) => {
       const t = probe.trials[i]!;
-      return c.id !== t.id || c.role !== t.role || c.expected !== t.expected;
+      return (
+        c.id !== t.id ||
+        c.role !== t.role ||
+        !isDeepStrictEqual(c.expected, t.expected)
+      );
     })
   )
     throw new Error("Independent native case identities disagree");
