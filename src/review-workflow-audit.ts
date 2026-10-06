@@ -18,7 +18,15 @@ import {
   reviewWorkflowAssignmentSchema,
   reviewWorkflowSummarySchema,
   reviewWorkflowCommandSchema,
+  reviewWorkflowResponseSchema,
+  reviewWorkflowNativeReceiptSchema,
+  type ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
+import {
+  parseReviewProbe,
+  parseReviewProbeRun,
+  reviewProbeInputScale,
+} from "./review-probe.js";
 import type { ReviewWorkflowOptions } from "./review-workflow.js";
 import {
   reviewWorkflowAuditOptionsSchema,
@@ -62,7 +70,7 @@ const settings = z.strictObject({
     .array(z.strictObject({ id: z.string().min(1).max(64), sha256: digest }))
     .max(8),
 });
-const bodySchema = z.discriminatedUnion("kind", [
+const legacyBodySchema = z.discriminatedUnion("kind", [
   z.strictObject({
     kind: z.literal("header"),
     engineVersion: z.string().min(1).max(128),
@@ -99,15 +107,34 @@ const bodySchema = z.discriminatedUnion("kind", [
     states,
   }),
 ]);
-const eventSchema = z.strictObject({
-  schemaVersion: z.literal(1),
+const [headerBody, beginBody, finishBody, endBody] = legacyBodySchema.options;
+const bodySchema = z.discriminatedUnion("kind", [
+  headerBody,
+  beginBody,
+  finishBody.extend({
+    nativeReceipt: reviewWorkflowNativeReceiptSchema.nullable(),
+  }),
+  endBody,
+]);
+const eventFields = {
   epochId: z.string().uuid(),
   sequence: count,
   createdAt: z.string().datetime(),
   previous: digest.nullable(),
-  body: bodySchema,
   digest,
-});
+};
+const eventSchema = z.discriminatedUnion("schemaVersion", [
+  z.strictObject({
+    ...eventFields,
+    schemaVersion: z.literal(1),
+    body: legacyBodySchema,
+  }),
+  z.strictObject({
+    ...eventFields,
+    schemaVersion: z.literal(2),
+    body: bodySchema,
+  }),
+]);
 type Body = z.infer<typeof bodySchema>;
 const sha = (text: string | Buffer): string =>
   createHash("sha256").update(text).digest("hex");
@@ -225,7 +252,7 @@ function prepareAudit(
       maxNativeOutputBytes: engine.maxNativeOutputBytes ?? 65536,
       nativeBudget: engine.nativeBudget ?? {
         maxCalls: 16,
-        maxOutputBytes: 65536,
+        maxOutputBytes: engine.maxNativeOutputBytes ?? 65536,
       },
       probes: (engine.probes ?? []).map((p) => ({
         id: JSON.parse(p.contents).id,
@@ -317,7 +344,7 @@ export class ReviewWorkflowAudit {
   #line(body: Body): { buffer: Buffer; digest: string } {
     bodySchema.parse(body);
     const base = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       epochId: this.#epochId,
       sequence: this.#sequence,
       createdAt: new Date().toISOString(),
@@ -411,6 +438,7 @@ export class ReviewWorkflowAudit {
       | z.infer<typeof reviewWorkflowSummarySchema>
       | null,
     snapshots: z.infer<typeof states>,
+    nativeReceipt: ReviewWorkflowNativeReceipt | null = null,
   ): void {
     if (!this.#pending.has(commandId))
       throw new Error("Audit command is not pending");
@@ -418,6 +446,7 @@ export class ReviewWorkflowAudit {
       kind: "finish",
       commandId,
       outcome: result === null ? "error" : "result",
+      nativeReceipt,
       result,
       states: snapshots,
     });
@@ -558,6 +587,56 @@ function checkSnapshots(
     }
   }
 }
+function checkNativeReceipt(
+  receipt: ReviewWorkflowNativeReceipt,
+  state: z.infer<typeof reviewWorkflowSummarySchema>,
+  startup: z.infer<typeof settings>,
+): void {
+  const recipe = parseReviewProbe(receipt.recipe);
+  const run = parseReviewProbeRun(receipt.run);
+  const registered = startup.probes.find((p) => p.id === receipt.probeId);
+  if (
+    !startup.trusted ||
+    !registered ||
+    registered.sha256 !== receipt.recipe.sha256 ||
+    recipe.id !== receipt.probeId ||
+    recipe.family !== receipt.candidate.family ||
+    run.schemaVersion !== 2 ||
+    run.recipeDigest !== receipt.recipe.sha256 ||
+    run.contextDigest !== state.contextDigest ||
+    run.candidateDigest !== sha(JSON.stringify(receipt.candidate)) ||
+    run.minimumTriggerScale !== recipe.minimumTriggerScale ||
+    JSON.stringify(run.guard) !== JSON.stringify(recipe.guard) ||
+    !receipt.candidate.citations.some(
+      (c) =>
+        c.file === recipe.file &&
+        c.revision === "current" &&
+        c.sourceDigest === run.sourceDigest,
+    ) ||
+    run.nativeBudget.calls !== state.native.calls ||
+    run.nativeBudget.outputBytes !== state.native.outputBytes ||
+    !state.native.accountingComplete ||
+    run.trials.length !== recipe.cases.length ||
+    run.nativeBudget.limits.maxCalls !== startup.nativeBudget.maxCalls ||
+    run.nativeBudget.limits.maxOutputBytes !==
+      startup.nativeBudget.maxOutputBytes ||
+    run.nativeBudget.limits.maxCallOutputBytes !==
+      startup.maxNativeOutputBytes ||
+    run.nativeBudget.limits.wallMs > startup.nativeWallMs ||
+    run.trials.some((trial, i) => {
+      const expected = recipe.cases[i]!;
+      return (
+        trial.id !== expected.id ||
+        trial.role !== expected.role ||
+        trial.expected !== expected.expected ||
+        trial.inputScale !== reviewProbeInputScale(expected.args)
+      );
+    })
+  )
+    throw new Error(
+      "Audit native receipt evidence or startup binding disagrees",
+    );
+}
 /** Inspect a frozen private journal; no resume, source output, execution or host inference. */
 export function inspectReviewWorkflowAudit(
   filename: string,
@@ -602,10 +681,13 @@ export function inspectReviewWorkflowAudit(
     throw new Error("Invalid audit event inventory");
   let previous: string | null = null,
     epochId: string | undefined,
+    journalVersion: 1 | 2 | undefined,
     header: Extract<Body, { kind: "header" }> | undefined,
     end: Extract<Body, { kind: "end" }> | undefined;
-  const pending = new Map<string, z.infer<typeof operation>>(),
-    seen = new Set<string>();
+  const pending = new Map<string, Extract<Body, { kind: "begin" }>>(),
+    seen = new Set<string>(),
+    nativeReceipts = new Map<string, ReviewWorkflowNativeReceipt>(),
+    candidates = new Map<string, Map<string, string>>();
   let snapshots: z.infer<typeof states> = [],
     finished = 0,
     rejected = 0,
@@ -613,17 +695,21 @@ export function inspectReviewWorkflowAudit(
   for (const [index, line] of lines.entries()) {
     if (Buffer.byteLength(line) + 1 > RECORD_BYTES)
       throw new Error("Audit record exceeds bounds");
-    const event = eventSchema.parse(JSON.parse(line));
-    const { digest: hash, ...base } = event;
+    const raw: unknown = JSON.parse(line);
+    const event = eventSchema.parse(raw);
+    // Hash the recorded key order, before schema parsing normalizes it.
+    const { digest: hash, ...base } = raw as Record<string, unknown>;
     if (
       hash !== sha(JSON.stringify(base)) ||
       event.sequence !== index ||
       event.previous !== previous ||
       (epochId && event.epochId !== epochId) ||
+      (journalVersion && event.schemaVersion !== journalVersion) ||
       end
     )
       throw new Error("Audit chain or ordering disagrees");
     epochId = event.epochId;
+    journalVersion = event.schemaVersion;
     previous = hash;
     if (index === 0) {
       if (event.body.kind !== "header") throw new Error("Missing audit header");
@@ -641,6 +727,16 @@ export function inspectReviewWorkflowAudit(
     const body = event.body;
     checkSnapshots(body.states, snapshots);
     snapshots = body.states;
+    for (const [id, receipt] of nativeReceipts) {
+      const native = snapshots.find((s) => s.workflowId === id)!.native;
+      if (
+        receipt.run.schemaVersion !== 2 ||
+        native.calls !== receipt.run.nativeBudget.calls ||
+        native.outputBytes !== receipt.run.nativeBudget.outputBytes ||
+        !native.accountingComplete
+      )
+        throw new Error("Audit retained native accounting changed");
+    }
     if (body.kind === "begin") {
       checkedCapture(body.capture);
       const parsed = reviewWorkflowCommandSchema.safeParse(body.capture.value);
@@ -652,7 +748,7 @@ export function inspectReviewWorkflowAudit(
       )
         throw new Error("Audit command identity disagrees");
       seen.add(body.commandId);
-      pending.set(body.commandId, body.operation);
+      pending.set(body.commandId, body);
       allBodies &&= body.capture.kind === "complete";
     } else if (body.kind === "finish") {
       if (
@@ -660,6 +756,84 @@ export function inspectReviewWorkflowAudit(
         (body.outcome === "result") !== (body.result !== null)
       )
         throw new Error("Unmatched audit result");
+      const began = pending.get(body.commandId)!;
+      const command = reviewWorkflowCommandSchema.safeParse(
+        began.capture.value,
+      );
+      if (command.success && command.data.operation === "submit") {
+        const response = reviewWorkflowResponseSchema.safeParse(
+          command.data.response,
+        );
+        const workflowId = command.data.workflowId;
+        const state = snapshots.find((s) => s.workflowId === workflowId);
+        const attempt = state?.assignments.at(-1);
+        if (
+          body.outcome === "result" &&
+          response.success &&
+          response.data.output &&
+          attempt?.stage === "reviewer" &&
+          attempt.status === "accepted" &&
+          attempt.assignmentId === response.data.assignmentId &&
+          attempt.assignmentDigest === response.data.assignmentDigest &&
+          attempt.responseDigest ===
+            sha(JSON.stringify(command.data.response)) &&
+          began.states
+            .find((s) => s.workflowId === workflowId)
+            ?.assignments.at(-1)?.status === "awaiting-host"
+        ) {
+          if (
+            state!.candidateHandles.length !==
+            response.data.output.candidates.length
+          )
+            throw new Error("Audit candidate handles disagree");
+          candidates.set(
+            state!.workflowId,
+            new Map(
+              state!.candidateHandles.map((handle, i) => [
+                handle,
+                sha(JSON.stringify(response.data.output!.candidates[i])),
+              ]),
+            ),
+          );
+        }
+      }
+      if ("nativeReceipt" in body) {
+        const receipt = body.nativeReceipt;
+        const workflowId =
+          command.success && command.data.operation === "probe"
+            ? command.data.workflowId
+            : undefined;
+        const state = snapshots.find((s) => s.workflowId === workflowId);
+        if (receipt) {
+          if (
+            !command.success ||
+            command.data.operation !== "probe" ||
+            !state ||
+            receipt.workflowId !== command.data.workflowId ||
+            receipt.probeId !== command.data.probeId ||
+            receipt.targetHandle !== state.selectedTarget ||
+            nativeReceipts.has(receipt.workflowId) ||
+            candidates.get(receipt.workflowId)?.get(receipt.targetHandle) !==
+              sha(JSON.stringify(receipt.candidate))
+          )
+            throw new Error(
+              "Audit native command or candidate binding disagrees",
+            );
+          if (
+            receipt.run.engineVersion !== header!.engineVersion ||
+            receipt.run.runtime.version !==
+              header!.runtime.node.replace(/^v/, "")
+          )
+            throw new Error("Audit native runtime identity disagrees");
+          checkNativeReceipt(receipt, state, header!.settings);
+          nativeReceipts.set(receipt.workflowId, receipt);
+        } else if (
+          state?.native.accountingComplete &&
+          state.native.status !== "not-started" &&
+          !nativeReceipts.has(state.workflowId)
+        )
+          throw new Error("Audit reached native receipt is missing");
+      }
       pending.delete(body.commandId);
       finished++;
       if (body.outcome === "error") rejected++;
@@ -693,7 +867,8 @@ export function inspectReviewWorkflowAudit(
   const trailing = content.length - prefix.length;
   if (end && trailing) throw new Error("Bytes follow audit finalization");
   return reviewWorkflowAuditSummarySchema.parse({
-    schemaVersion: 1,
+    schemaVersion: 2,
+    journalVersion: journalVersion!,
     format: "review-workflow-audit-summary",
     epochId: epochId!,
     engineVersion: header!.engineVersion,
@@ -708,6 +883,17 @@ export function inspectReviewWorkflowAudit(
     trailingBytes: trailing,
     digest: previous!,
     allCommandBodiesRetained: allBodies,
+    nativeReceipts: {
+      retained: nativeReceipts.size,
+      complete:
+        !pending.size &&
+        snapshots.every(
+          (s) =>
+            s.native.status === "not-started" ||
+            (s.native.accountingComplete && nativeReceipts.has(s.workflowId)),
+        ),
+      rawOutputIncluded: false,
+    },
     nativeAccountingComplete:
       !pending.size && snapshots.every((s) => s.native.accountingComplete),
     commands: { started: seen.size, finished, rejected, pending: pending.size },

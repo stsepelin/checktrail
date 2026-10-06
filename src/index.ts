@@ -162,6 +162,7 @@ export type {
   ReviewWorkflowAssignment,
   ReviewWorkflowSummary,
   ReviewWorkflowResponse,
+  ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
 
 export { ReviewWorkflowSession } from "./review-workflow-session.js";

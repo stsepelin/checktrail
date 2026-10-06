@@ -1,4 +1,4 @@
-# Durable workflow command audit
+# Durable workflow command and native receipt audit
 
 `ReviewWorkflowSession` wraps the shared `ReviewWorkflowEngine` with an optional
 private command journal. The foreground `review-session` CLI and `review_workflow`
@@ -8,8 +8,11 @@ has no journal. No model provider or credentials are required.
 This is a bounded command transcript foundation for R7/R8, not the complete
 blinded benchmark harness. Original synthetic controls cover native intent
 ordering, malformed submissions, interrupted prefixes, private startup storage,
-quota reservations, ledger consistency, cleanup and MCP negotiation. See the
-[dated measurement](measurements/review-workflow-audit-2026-10-03.json).
+quota reservations, ledger consistency, cleanup and MCP negotiation. The receipt
+extension adds early termination, partial/zero budgets, output overrun, timeout,
+stale source, storage loss, concurrent command binding and altered-evidence controls. See the
+[command-audit measurement](measurements/review-workflow-audit-2026-10-03.json) and
+[native-receipt measurement](measurements/review-workflow-native-audit-2026-10-05.json).
 
 ## Operator startup
 
@@ -62,7 +65,16 @@ operator limits and registered probe digests. Each admitted command has a durabl
 `begin` record before dispatch, followed by a durable `finish` record before the
 result is released to the caller. Each record includes source-free workflow
 accounting snapshots. Exact JSON command values and issued assignments are
-retained, including malformed host responses. Errors retain the command and an
+retained, including malformed host responses. Version 2 completion records also
+retain the complete structured native run receipt, pinned recipe contents and
+selected candidate, bound to their command, workflow and target handle. The runner returns its receipt after native cleanup; capture preserves that
+returned evidence before subsequent workflow guards or retention handling can
+discard it, including when concurrent termination has already cleared workflow
+memory.
+Completed runs need no subsequent adjudicator assignment to persist; partial,
+zero-call, failed, cancelled, timed-out and stale runs preserve reached trials,
+unrun cases, cleanup status and native ledgers when the runner returns a receipt.
+A preparation exception with no returned receipt leaves accounting unknown. Errors retain the command and an
 error outcome; arbitrary exception messages are not copied into the journal.
 
 Input capture is canonical JSON, not original transport bytes. Inputs over one MiB
@@ -98,12 +110,29 @@ The inspector reads a bounded private file without following its final symlink,
 checks observed file stability, validates the complete newline-terminated prefix,
 and returns metadata only. It checks sequence, epoch identity, hash chaining,
 command matching, assignment digests, ledger totals and retained workflow/assignment
-history. A torn final line is counted as trailing bytes and remains interrupted.
+history. Native receipts reconcile the accepted reviewer candidate, registered
+recipe digest and contents, ordered cases and inputs, source/context binding,
+engine/runtime identities, startup limits and observed accounting. Inspection
+returns receipt counts and completeness without source, recipes or observations.
+A torn final line is counted as trailing bytes and remains interrupted.
 Complete corrupt events, duplicate/unmatched commands or bytes after finalization
 are rejected. Nothing executes, discloses raw source or resumes work.
 
 Exit status is `2` for an interrupted journal, unknown native accounting, partial
 command capture, no admitted commands, unfinished workflow or inspection error.
+New journals use event schema version 2. The inspector still reads version 1
+journals and rejects mixed versions within an epoch. Its summary is now version 2,
+with `journalVersion` and `nativeReceipts` metadata. A version 1 journal containing
+native work reports incomplete native receipt retention even if its accounting
+is complete; CLI inspection exits `2`. A journal without native work can have
+complete receipt accounting with zero receipts. Neither case proves a native
+check ran. Existing journals are read-only and are never rewritten or resumed.
+
+`nativeReceipts.complete` describes structured receipt retention, independently
+of whether the native run succeeded, the workflow completed, or raw output exists.
+A pending command, unknown native accounting, or missing native receipt prevents
+complete retention. `rawOutputIncluded` remains `false`.
+
 A sealed journal records normal audit closure; it does not mean the review finished
 or approved the repository. Completed advisory stages still keep
 `claimsVerified: false` and `hostIsolationVerified: false`.
@@ -119,8 +148,10 @@ not simulate physical power loss or prove storage hardware guarantees.
 The transcript records admitted workflow commands and engine results. It does not
 prove transport delivery, actual model execution, subscription authentication,
 model identity, fresh host memory, host call/token/billing limits, or complete raw
-native output. Native ledger snapshots retain reached counts; complete raw native
-receipts may remain absent when no adjudicator assignment was issued. Audit I/O
+native output. Version 2 retains returned structured native receipts even without adjudication;
+it does not capture arbitrary stdout/stderr or reconstruct evidence that a killed
+process never returned. Version 1 native journals do not establish complete
+structured receipt retention. Audit I/O
 and caller transport delivery are outside a hard wall-time guarantee.
 
 Sealed benchmark cohorts, frozen execution protocols, complete model and native

@@ -86,7 +86,13 @@ synthetic controls cover private storage, crash prefixes, ordering, budgets,
 cleanup and protocol negotiation; offline production installation replays all
 three interfaces. This adds no language semantics, host isolation, actual model
 inference or complete benchmark attempt archive. See
-measurements/review-workflow-audit-2026-10-03.json.
+measurements/review-workflow-audit-2026-10-03.json. Version 2 journals additionally
+retain returned structured native receipts through early closure, partial budgets,
+cancellation, timeout, stale source and memory-retention rejection. Metadata-only
+inspection reconciles candidate, recipe, case, runtime and ledger bindings; version
+1 native journals remain explicitly incomplete for receipt retention. Raw native
+stdout/stderr and complete host-model attempt archives remain unsupported. See
+measurements/review-workflow-native-audit-2026-10-05.json.
 The bounded [native Boolean probe](REVIEW-PROBES.md) supports selected plain ESM
 on POSIX with operator-pinned cases and measured V8 function/guard coverage. Wider
 language probes, automatic callers and independent claim verification remain pending.

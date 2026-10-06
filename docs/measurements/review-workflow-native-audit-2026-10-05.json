@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-workflow-native-receipt-audit-v2",
+  "recordedAt": "2026-10-05T07:36:30.615201Z",
+  "scope": "Synthetic implementation readiness; no field evaluation or actual model inference.",
+  "sourceBinding": {
+    "baseCommit": "ac03f3b1df980073b30cb59135ddf8dc609664af",
+    "kind": "runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": "schemas/review-workflow-audit-summary.schema.json",
+        "sha256": "e8347656fa47e240b47f33aa1c8cffcaea328bb6b71b8d76dad03ac6d76eec3c"
+      },
+      {
+        "file": "schemas/review-workflow-native-receipt.schema.json",
+        "sha256": "d553c1e4f35e1e4958ed6ddce3aedfa9e10ad9f8a77c910696e3b4652c085bfa"
+      },
+      {
+        "file": "scripts/generate-schemas.mjs",
+        "sha256": "c51226e7d13862b22acd3b1f4bc0d8433f515420e264fd61cee1e5200f8abfbc"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "91ba2d033b3a69777f7eec09fe7bd79878259fa8269570cc888d5294ad72bd81"
+      },
+      {
+        "file": "scripts/verify-review-workflow-audit-package.mjs",
+        "sha256": "b829a999be0b24e58a4c6b05ec1aaf4d862c26e3037a9cffe91e6b657ae5bd28"
+      },
+      {
+        "file": "src/cli.ts",
+        "sha256": "eabc69172d06ab4c6e57843dcbdd2db828c6dd5604486c64623ef64be6a48038"
+      },
+      {
+        "file": "src/index.ts",
+        "sha256": "beef3e970ed8c217f89dc892dc6c9771dd8d90bb5b3bd82fadd43013f580f54b"
+      },
+      {
+        "file": "src/review-workflow-audit-schema.ts",
+        "sha256": "ce78dcfa2d2baed7634167fe3824ea23f2743e3e3ac2c4f558a6fa750b087610"
+      },
+      {
+        "file": "src/review-workflow-audit.ts",
+        "sha256": "101fab4b4e3f65cd3a1489dd98768fd2ad0ff60fedba1c3ae558e5ca2e1cbfd3"
+      },
+      {
+        "file": "src/review-workflow-schema.ts",
+        "sha256": "259fca626a9d9ac80f37769d03fd03c51f6a463dd9c28ab7c5727f61f25a2a8c"
+      },
+      {
+        "file": "src/review-workflow-session.ts",
+        "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "sha256": "7cacc4d6068af95035bebe95be74bdf8e93cab72703f6e9662a914dbbd7b54ed"
+      },
+      {
+        "file": "src/schemas.ts",
+        "sha256": "e6bf92cdae18f7b3ca5c2b4c99c4bb04da29868130fdd9d9399cb1100e59cfe8"
+      },
+      {
+        "file": "test/review-workflow-audit.test.ts",
+        "sha256": "25ef6ff756abc77075fe88b9e25d77081566ea9df9af35000e34a4f2dbb73d97"
+      }
+    ]
+  },
+  "implementation": {
+    "journalVersion": 2,
+    "inspectionSummaryVersion": 2,
+    "legacyJournalVersionReadable": 1,
+    "structuredReturnedNativeReceiptsRetained": true,
+    "rawNativeOutputRetained": false,
+    "completeHostModelAttemptsRetained": false,
+    "claimsVerified": false,
+    "hostIsolationVerified": false,
+    "externallyAnchored": false
+  },
+  "macOS": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "26.9.0",
+    "requiredAudit": {
+      "profile": "review-workflow-audit",
+      "passed": 19,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "result": "passed",
+      "tests": 546,
+      "pass": 484,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 62,
+      "todo": 0,
+      "skipAccounting": "Skipped tests are not passing evidence; required audit controls are separately enforced."
+    },
+    "formatCheck": "passed"
+  },
+  "linux": {
+    "platform": "linux",
+    "arch": "arm64",
+    "node": "22.23.2",
+    "git": "git version 2.47.3",
+    "imageDigest": "sha256:d7d4181e2e7b921965ac9a1a92c4c55361971c1addd71a3d882ac8ef09a6e5f9",
+    "network": "none",
+    "sourceMount": "read-only",
+    "requiredAudit": {
+      "profile": "review-workflow-audit",
+      "passed": 19,
+      "required": 19,
+      "problems": [],
+      "complete": true
+    },
+    "allRequiredReviewerProfiles": [
+      {
+        "profile": "review",
+        "passed": 30,
+        "required": 23,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-git",
+        "passed": 29,
+        "required": 14,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-provider",
+        "passed": 21,
+        "required": 19,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-probe",
+        "passed": 16,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-refutation",
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-scoring",
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-verification",
+        "passed": 17,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-budget",
+        "passed": 34,
+        "required": 8,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-workflow",
+        "passed": 11,
+        "required": 11,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-workflow-audit",
+        "passed": 19,
+        "required": 19,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "profile": "review-native-budget",
+        "passed": 39,
+        "required": 11,
+        "problems": [],
+        "complete": true
+      }
+    ],
+    "installedPackageSmoke": {
+      "image": "sha256:d7d4181e2e7b921965ac9a1a92c4c55361971c1addd71a3d882ac8ef09a6e5f9",
+      "node": "22.23.2",
+      "git": "git version 2.47.3",
+      "contextVersion": 5,
+      "receiptVersion": 2,
+      "network": "none",
+      "native": "passed",
+      "installation": "offline",
+      "library": "passed",
+      "cli": "passed",
+      "mcp": "passed",
+      "stale": "detected",
+      "claimsVerified": false
+    }
+  },
+  "mutations": {
+    "mutations": [
+      {
+        "mutation": "native-receipt-capture",
+        "file": "src/review-workflow.ts",
+        "buildPassed": true,
+        "testPattern": "workflow audit native receipts survive early closure",
+        "testExitCode": 1
+      },
+      {
+        "mutation": "accepted-candidate-binding",
+        "file": "src/review-workflow-audit.ts",
+        "buildPassed": true,
+        "testPattern": "workflow audit native receipts reconcile candidate",
+        "testExitCode": 1
+      },
+      {
+        "mutation": "native-receipt-detachment",
+        "file": "src/review-workflow.ts",
+        "buildPassed": true,
+        "testPattern": "workflow native receipt observers",
+        "testExitCode": 1
+      }
+    ],
+    "sourceRestored": true,
+    "restoredBuildPassed": true
+  },
+  "productionPackage": {
+    "schemaVersion": 1,
+    "profile": "original-synthetic-workflow-audit-production-package",
+    "productionInstall": "offline-omit-dev-ignore-scripts",
+    "library": {
+      "stages": 3,
+      "nativeCalls": 3,
+      "claimsVerified": false,
+      "hostIsolationVerified": false,
+      "rawWorkflowArtifactsDiscarded": true
+    },
+    "cli": {
+      "stages": 3,
+      "nativeCalls": 3,
+      "claimsVerified": false,
+      "hostIsolationVerified": false,
+      "rawWorkflowArtifactsDiscarded": true
+    },
+    "mcp": {
+      "stages": 3,
+      "nativeCalls": 3,
+      "claimsVerified": false,
+      "hostIsolationVerified": false,
+      "rawWorkflowArtifactsDiscarded": true
+    },
+    "audits": {
+      "library": {
+        "events": 20,
+        "commands": 9,
+        "sealed": true,
+        "rawCommandBodiesRetained": true,
+        "nativeAccountingComplete": true,
+        "nativeReceipts": {
+          "retained": 1,
+          "complete": true,
+          "rawOutputIncluded": false
+        },
+        "claimsVerified": false,
+        "hostIsolationVerified": false
+      },
+      "cli": {
+        "events": 20,
+        "commands": 9,
+        "sealed": true,
+        "rawCommandBodiesRetained": true,
+        "nativeAccountingComplete": true,
+        "nativeReceipts": {
+          "retained": 1,
+          "complete": true,
+          "rawOutputIncluded": false
+        },
+        "claimsVerified": false,
+        "hostIsolationVerified": false
+      },
+      "mcp": {
+        "events": 20,
+        "commands": 9,
+        "sealed": true,
+        "rawCommandBodiesRetained": true,
+        "nativeAccountingComplete": true,
+        "nativeReceipts": {
+          "retained": 1,
+          "complete": true,
+          "rawOutputIncluded": false
+        },
+        "claimsVerified": false,
+        "hostIsolationVerified": false
+      }
+    },
+    "providerConfigured": false,
+    "actualInference": false,
+    "complete": true,
+    "ownedArtifactsRemoved": true
+  },
+  "packageBinding": "Installed runtime behavior is bound to the source byte pins above. The final tarball digest remains in the private run record; this measurement is authored after execution.",
+  "commands": [
+    "node scripts/verify-required-native-tests.mjs review-workflow-audit",
+    "node scripts/verify-review-container.mjs",
+    "node scripts/verify-review-workflow-audit-package.mjs",
+    "npm run check",
+    "npm run format:check"
+  ],
+  "requiredCases": [
+    "workflow audit retains issued packets invalid responses live native stages and terminal metadata without passing history to workers",
+    "workflow audit rejects public linked existing inside-project and undisclosed storage before changing artifacts",
+    "workflow audit reserves event and byte completion before native execution and simultaneous admissions",
+    "workflow audit durability loss prevents new assignment disclosure and retains interrupted history",
+    "workflow audit rejects changed reordered replayed and forged records and treats a torn tail as incomplete",
+    "workflow audit crash leaves a durable pending native intent with unknown accounting and cannot resume it",
+    "workflow audit bounds oversized and unserializable input honestly without treating truncated bodies as complete",
+    "workflow audit disposal waits for native cleanup accounting before finalization",
+    "workflow audit CLI requires startup grants keeps model-selected paths inert and reports incomplete journals explicitly",
+    "workflow audit MCP discovery siblings and in-place legacy fallback never spend or reopen the command journal",
+    "workflow audit reconciles serialized assignment ledgers and prevents disappearing history even with recomputed chains",
+    "workflow audit native receipts survive early closure incomplete budgets runtime failure output limits and retention rejection without adjudication",
+    "workflow audit native receipts reconcile candidate recipe case source and accounting bindings after recomputed chains",
+    "workflow audit native receipt storage loss withholds results and leaves pending intent without a false complete archive",
+    "workflow audit reads legacy journals without inventing complete native receipts and rejects mixed epoch versions",
+    "workflow audit native receipts retain timeout and post-execution stale evidence with cleanup",
+    "workflow audit concurrent native receipts remain bound to their own commands and candidate handles",
+    "workflow audit rejected response and probe replays preserve the first accepted candidate and receipt",
+    "workflow native receipt observers receive detached evidence and failure closes the workflow without erasing reached accounting"
+  ],
+  "limits": [
+    "Only returned structured receipts are retained; no receipt is invented for preparation failures or killed processes.",
+    "Storage failure withholds the result and leaves interrupted intent with unknown retention.",
+    "Version 1 native journals do not establish complete structured receipt retention.",
+    "An internally consistent journal does not authenticate external execution or fresh host memory.",
+    "Gate A stays open; sealed benchmark orchestration, raw outputs, full host attempts, wider profiles and quality validation remain required."
+  ]
+}

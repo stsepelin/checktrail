@@ -11,6 +11,7 @@ import type { ReviewWorkflowAuditOptions } from "./review-workflow-audit-schema.
 import type {
   ReviewWorkflowAssignment,
   ReviewWorkflowSummary,
+  ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
 export interface ReviewWorkflowSessionOptions extends ReviewWorkflowOptions {
   audit?: ReviewWorkflowAuditOptions;
@@ -100,12 +101,16 @@ export class ReviewWorkflowSession {
     }
     this.#active++;
     let result: ReviewWorkflowAssignment | ReviewWorkflowSummary | null = null;
+    let nativeReceipt: ReviewWorkflowNativeReceipt | null = null;
     let operationError: unknown;
     let operationFailed = false;
     try {
       if (captured.capture.kind !== "complete")
         throw new Error("Workflow command exceeds JSON transport profile");
-      result = await this.#engine.command(captured.value, signal);
+      result = await this.#engine.command(captured.value, signal, (receipt) => {
+        if (nativeReceipt) throw new Error("Duplicate native receipt");
+        nativeReceipt = receipt;
+      });
     } catch (error) {
       operationFailed = true;
       operationError = error;
@@ -113,7 +118,12 @@ export class ReviewWorkflowSession {
     let auditError: unknown;
     let auditFailed = false;
     try {
-      this.#audit.finish(commandId, result, this.#engine.snapshots());
+      this.#audit.finish(
+        commandId,
+        result,
+        this.#engine.snapshots(),
+        nativeReceipt,
+      );
     } catch (error) {
       auditFailed = true;
       auditError = error;

@@ -34,6 +34,7 @@ import {
   type ReviewWorkflowAssignment,
   type ReviewWorkflowLimits,
   type ReviewWorkflowSummary,
+  type ReviewWorkflowNativeReceipt,
 } from "./review-workflow-schema.js";
 const hash = (text: string): string =>
   createHash("sha256").update(text).digest("hex");
@@ -620,6 +621,7 @@ export class ReviewWorkflowEngine {
     id: string,
     probeId: string,
     signal?: AbortSignal,
+    retainNative?: (receipt: ReviewWorkflowNativeReceipt) => void,
   ): Promise<ReviewWorkflowSummary> {
     const workflow = this.#workflow(id);
     if (
@@ -634,7 +636,8 @@ export class ReviewWorkflowEngine {
     workflow.busy = true;
     try {
       if (!(await this.#guard(workflow, signal))) return this.status(id);
-      const target = workflow.targets.get(workflow.report.selectedTarget!)!;
+      const targetHandle = workflow.report.selectedTarget!;
+      const target = workflow.targets.get(targetHandle)!;
       workflow.report.status = "running-native";
       workflow.report.native.status = "running";
       workflow.report.native.calls = null;
@@ -675,6 +678,22 @@ export class ReviewWorkflowEngine {
         run.schemaVersion === 2 ? run.nativeBudget.outputBytes : null;
       workflow.report.native.status =
         run.status === "unsupported" ? "incomplete" : run.status;
+      // Capture reached evidence before freshness, cancellation or retention cleanup.
+      try {
+        retainNative?.(
+          structuredClone({
+            workflowId: id,
+            targetHandle,
+            probeId,
+            candidate: target,
+            recipe: pinned,
+            run,
+          }),
+        );
+      } catch (error) {
+        this.#end(workflow, "incomplete", "native-error");
+        throw error;
+      }
       if (!(await this.#guard(workflow, signal))) return this.status(id);
       if (run.schemaVersion !== 2 || run.status !== "completed") {
         this.#end(
@@ -713,6 +732,7 @@ export class ReviewWorkflowEngine {
   async command(
     input: unknown,
     signal?: AbortSignal,
+    retainNative?: (receipt: ReviewWorkflowNativeReceipt) => void,
   ): Promise<ReviewWorkflowSummary | ReviewWorkflowAssignment> {
     const command = reviewWorkflowCommandSchema.parse(input);
     switch (command.operation) {
@@ -726,7 +746,12 @@ export class ReviewWorkflowEngine {
       case "submit":
         return this.submit(command.workflowId, command.response, signal);
       case "probe":
-        return this.probe(command.workflowId, command.probeId, signal);
+        return this.probe(
+          command.workflowId,
+          command.probeId,
+          signal,
+          retainNative,
+        );
       case "status":
         return this.status(command.workflowId);
       case "close":

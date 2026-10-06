@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { reviewModelOutputSchema } from "./review-provider-schema.js";
+import {
+  reviewModelOutputSchema,
+  reviewCandidateSchema,
+} from "./review-provider-schema.js";
+import { reviewProbeRunSchema } from "./review-probe-schema.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const count = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const identity = z
@@ -202,4 +206,17 @@ export type ReviewWorkflowAssignment = z.infer<
 export type ReviewWorkflowSummary = z.infer<typeof reviewWorkflowSummarySchema>;
 export type ReviewWorkflowResponse = z.infer<
   typeof reviewWorkflowResponseSchema
+>;
+
+/** Operator-bound structured evidence, never returned by the workflow tool. */
+export const reviewWorkflowNativeReceiptSchema = z.strictObject({
+  workflowId: z.string().uuid(),
+  targetHandle: z.string().uuid(),
+  probeId: z.string().min(1).max(64),
+  candidate: reviewCandidateSchema,
+  recipe: z.strictObject({ contents: z.string().max(65536), sha256: digest }),
+  run: reviewProbeRunSchema,
+});
+export type ReviewWorkflowNativeReceipt = z.infer<
+  typeof reviewWorkflowNativeReceiptSchema
 >;

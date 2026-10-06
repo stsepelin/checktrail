@@ -360,6 +360,7 @@ export {
 } from "./review-verification.js";
 
 export {
+  reviewWorkflowNativeReceiptSchema,
   reviewWorkflowLimitsSchema,
   reviewWorkflowResponseSchema,
   reviewWorkflowCommandSchema,

@@ -160,7 +160,7 @@ Protected startup quotas, packet/response/retention admission, source checks and
 consumed attempt metadata are observed engine controls; host sessions, models and
 usage remain unverified declarations. The workflow processes one selected target
 and retains unresolved claims and unassigned severity even when all stages finish.
-Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Blinded evaluation and complete model/native all-attempt artifacts remain planned; a native AI
+Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Version 2 journals retain returned structured native run receipts and pinned recipes before result release, including early termination and native cleanup, without requiring adjudication. Raw native output and host-model attempts remain incomplete. Blinded evaluation and complete model/native all-attempt artifacts remain planned; a native AI
 client launcher is optional. The server cannot clear the host's conversation or enforce
 its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md.
 
