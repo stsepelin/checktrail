@@ -2,7 +2,17 @@ name: Verify
 
 on:
   push:
+    branches-ignore:
+      - "pr/**"
+    tags:
+      - "**"
   pull_request:
+
+# Each PR retains its latest merge-candidate run. Other pushes have unique groups.
+# This groups workflow runs, not the independent jobs within each run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
