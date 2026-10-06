@@ -3,7 +3,7 @@ import { gzipSync } from "node:zlib";
 import console from "node:console";
 import { performance } from "node:perf_hooks";
 import { setTimeout, clearTimeout } from "node:timers";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { createServer } from "node:net";
@@ -13,8 +13,8 @@ import process from "node:process";
 import { runProcess } from "../dist/src/runner.js";
 import { windowsSupervisorScript } from "../dist/src/windows-native.js";
 import { windowsCommandLine } from "../dist/src/windows-process.js";
-const root = await mkdtemp(
-  path.join(tmpdir(), "checktrail-windows-diagnostic-"),
+const root = await realpath(
+  await mkdtemp(path.join(tmpdir(), "checktrail-windows-diagnostic-")),
 );
 const supervisor = path.join(
   process.env.SystemRoot ?? process.env.SYSTEMROOT,
