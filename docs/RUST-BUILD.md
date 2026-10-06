@@ -112,6 +112,10 @@ The later [CI repair measurement](measurements/rust-ci-repair-2026-10-06.json)
 records original macOS arm64 native/source/installed controls and the Linux
 workspace regression after correcting underscored target/host names and shared
 library discovery. Compiling mutations cover those three repaired guards.
+The [GNU loader repair measurement](measurements/rust-gnu-loader-2026-10-06.json)
+records Linux arm64 GNU workspace/single-member controls, a fresh offline installed
+workspace run, a macOS workspace regression and a compiling loader mutation.
+It does not establish Linux x86_64 hosted CI acceptance.
 Other platforms, versions, resolvers and configuration shapes need separate
 acceptance. Hosted CI, real-project field evaluation, model-session isolation and
 review-quality scoring are not established by these controls.
