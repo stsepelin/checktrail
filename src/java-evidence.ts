@@ -3,7 +3,7 @@ import { z } from "zod";
 import { javaInvocationSchema } from "./java.js";
 import type { Check, CheckResult, Finding, ProcessResult } from "./types.js";
 
-const schema = z.strictObject({
+export const javaCompilerEvidenceSchema = z.strictObject({
   version: z.literal(1),
   runtime: z.literal("25.0.4+7-LTS"),
   vendor: z.literal("Eclipse Adoptium"),
@@ -71,7 +71,7 @@ export function javaEvidence(
       findingsComplete: false,
     };
   try {
-    const data = schema.parse(JSON.parse(process.stdout));
+    const data = javaCompilerEvidenceSchema.parse(JSON.parse(process.stdout));
     const planned = javaInvocationSchema.parse(
       JSON.parse(check.commands[0]!.args[2]!),
     );

@@ -17,7 +17,7 @@ has been verified separately in an isolated official Linux container. Tool versi
 | Go                            | go.mod                                                                               | Discovery; gofmt, production builds, vet/tests, race/Staticcheck/golangci-lint, repeated tag/target profiles; native scope accounting                                                                 | broader golangci-lint settings                                             | Module/workspace boundaries, build tags, cgo, platform constraints and test caching                                     |
 | PHP                           | composer.json                                                                        | Discovery; syntax, PHPStan with project-enabled Larastan, PHPUnit, Pest, Pint, PHP-CS-Fixer and opt-in Laravel assembly capture                                                                       | Wider framework/type profiles                                              | Syntax is not type/test validation; runtime extensions, generated proxies and framework bootstrapping matter            |
 | Rust                          | Cargo.toml                                                                           | Offline locked Cargo check, opt-in Clippy/libtest/doctests and Cargo/Rustfmt; explicit workspace feature/target profiles                                                                              | Other toolchain/platform/profile acceptance                                | Build scripts/proc macros execute code; exact source exclusions, installed targets and operator trust                   |
-| Java / Kotlin / Scala         | pom.xml, build.gradle, build.gradle.kts                                              | Explicit Java classpath compilation, configured Checkstyle audits and opt-in pinned Java Maven reactor and Gradle module tests; Kotlin/Scala discovery only                                           | Wider Maven/Gradle profiles, SpotBugs, detekt                              | Multi-module builds, wrappers, JVM versions, generated sources and plugins                                              |
+| Java / Kotlin / Scala         | pom.xml, build.gradle, build.gradle.kts                                              | Explicit Java classpath compilation, configured Checkstyle audits, opt-in SpotBugs bytecode analysis and pinned Java Maven reactor and Gradle module tests; Kotlin/Scala discovery only               | Wider Maven/Gradle/analyzer profiles, detekt                               | Multi-module builds, wrappers, JVM versions, generated sources and plugins                                              |
 | C# / F# / Visual Basic / .NET | *.csproj, *.fsproj, *.vbproj, *.sln, *.slnx                                          | Explicit C# compilation, opt-in pinned C#/F#/VB builds/NUnit tests, and C#/VB native whitespace formatting with fresh source and reconciled native evidence                                           | Code-style/analyzer formatting, wider test/build and generator profiles    | Restore policy, analyzers, target frameworks, generated code and TRX parsing                                            |
 | Ruby                          | Gemfile, *.gemspec                                                                   | MRI syntax checking; bounded source-bound RuboCop/RSpec/Minitest in RUBY-TOOLS.md                                                                                                                     | Wider Gemfile DSL, binary platform and framework profiles                  | Frozen raw gem checksums, literal manifest grammar, native lifecycle/source evidence and operator trust                 |
 | Swift                         | Package.swift                                                                        | Native grammar checks; bounded SwiftPM build, XCTest/Swift Testing and SwiftLint in SWIFT-TOOLS.md                                                                                                    | Wider manifest, platform/SDK and framework/lint profiles                   | Manifest/code execution needs operator trust; native compiler/scope/case/lifecycle reconciliation                       |
@@ -266,14 +266,14 @@ other platform/runtime combinations and hosted CI remain separately unverified.
 The [Checkstyle profile](CHECKSTYLE.md) adds pinned configured Java source audits,
 with every-file completion, native rule/diagnostic reconciliation, source and
 artifact identity controls, original near misses and offline installed CLI/MCP
-acceptance. This bounded Linux profile leaves wider Maven/Gradle tests, SpotBugs,
+acceptance. This bounded Linux profile leaves wider Maven/Gradle/analyzer profiles,
 detekt, Kotlin/Scala and broader E11/platform requirements open.
 
 The [Maven profile](MAVEN.md) reconciles a declared Java reactor, configured native
 plugins, compiler inputs and source declarations, pinned test classpaths and fresh
 JUnit/Surefire evidence. Original native and installed CLI/MCP controls retain
 skips, empty tests, bootstrap/compile errors and partial reactor failures. Wrappers,
-wider Maven/Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt remain required;
+wider Maven/Gradle profiles, generated/JPMS scope, Kotlin/Scala, wider analyzer profiles and detekt remain required;
 this bounded Linux profile does not close E11 or Gate A.
 
 [Declared Roslyn generator participation](DOTNET-GENERATED.md) adds a separate
@@ -321,3 +321,8 @@ JSON values from selected plain ESM function exports, with physical replay and
 original declared-contract controls for all nine hypothesis families. Its scope
 shares the Boolean profile's source/module, trust and platform limits. It does not
 add language collectors, automatic policy inference or framework assembly support.
+
+The [SpotBugs profile](SPOTBUGS.md) adds pinned built-in analysis of freshly compiled
+Java classes, exact detector and completed-pass accounting, current-source diagnostic
+binding and native/installed CLI/MCP controls. Wider JVM languages, analyzers, wrappers
+and platform profiles remain E11/E4–E6 requirements.
