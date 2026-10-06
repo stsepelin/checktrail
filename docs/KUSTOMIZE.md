@@ -73,3 +73,23 @@ Helm, wider Kustomize transforms, additional schemas/platforms, complete publish
 and SDK/license closure, hosted CI for this revision, representative-project cost
 and the wider Gate A inventory remain unverified. These controls invoke no reviewer
 inference, field evaluation, cluster access or infrastructure apply.
+
+The Linux acceptance observer now reads a PID's command first, then verifies the
+exact pinned executable link before crediting it. Disappeared or inaccessible
+per-PID entries remain unobserved and cannot satisfy native-body acceptance;
+unexplained IO errors still fail. A directory-wide `/proc` failure is not hidden.
+The same helper is used by kubeconform and Terraform controls. Every required
+body still needs its own phase/owned-workspace/argument match and PID/start-time
+identity before cancellation or mutation. Missing that observation still fails
+the bounded wait; all original process and owned-output cleanup assertions remain.
+
+This repairs the observed hosted readlink permission failure without skipping a
+required test or treating an inaccessible process as a successful observation.
+The `native-process-observer` required profile covers rejected identities,
+permissions, disappearance and unexplained errors; all three native source and
+fresh-installed sibling profiles are rechecked.
+
+The [dated observer repair](measurements/native-process-ci-observation-2026-10-06.json)
+records all three native source/fresh-installed sibling profiles, exact helper
+identity, original guard mutations and scope limits. Hosted repaired-head
+acceptance remains pending.

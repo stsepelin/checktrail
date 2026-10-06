@@ -1,3 +1,4 @@
+import { readNativeProcCommand } from "./native-process-observer.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -24,17 +25,13 @@ async function reached(owner: string, phase: "build" | "validate") {
     for (const pid of await readdir("/proc")) {
       if (!/^\d+$/.test(pid)) continue;
       try {
-        const exe = await readlink(`/proc/${pid}/exe`);
-        if (
-          exe !==
-          (phase === "build"
+        const args = await readNativeProcCommand(
+          pid,
+          phase === "build"
             ? "/usr/local/bin/kustomize"
-            : "/usr/local/bin/kubeconform")
-        )
-          continue;
-        const args = (await readFile(`/proc/${pid}/cmdline`, "utf8")).split(
-          "\0",
+            : "/usr/local/bin/kubeconform",
         );
+        if (!args) continue;
         let workspace: string;
         if (phase === "build") {
           if (
@@ -66,7 +63,8 @@ async function reached(owner: string, phase: "build" | "validate") {
       } catch (error) {
         if (
           (error as NodeJS.ErrnoException).code !== "ENOENT" &&
-          (error as NodeJS.ErrnoException).code !== "ESRCH"
+          (error as NodeJS.ErrnoException).code !== "ESRCH" &&
+          (error as NodeJS.ErrnoException).code !== "EACCES"
         )
           throw error;
       }
