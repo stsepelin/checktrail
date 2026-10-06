@@ -17,7 +17,20 @@ import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
-const profile = "ruby-tools";
+const profile = process.env.CHECKTRAIL_RUBY_TOOLS_PROFILE ?? "ruby-tools";
+assert.ok(
+  [
+    "ruby-tools",
+    "ruby-tools-rubocop",
+    "ruby-tools-assertions",
+    "ruby-tools-evidence",
+    "ruby-tools-lifecycle",
+    "ruby-tools-defaults",
+    "ruby-tools-surfaces",
+    "ruby-tools-cancellation",
+  ].includes(profile),
+  "Unknown Ruby acceptance profile",
+);
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-ruby-tools-package-"),
 );
