@@ -5,7 +5,7 @@ import { test } from "node:test";
 import { createPlan, validate } from "../src/engine.js";
 import { evaluate } from "../src/evidence.js";
 import { validatedReport } from "../src/report-validation.js";
-import { rustBuildPolicySchema } from "../src/rust-build.js";
+import { rustBuildPolicySchema, rustCompilerHost } from "../src/rust-build.js";
 import { fixture } from "./helpers.js";
 import {
   rustWorkspaceAvailable as available,
@@ -74,6 +74,78 @@ test("Rust workspace planning retains complete profiles without executing projec
     },
   ])
     assert.equal(rustBuildPolicySchema.safeParse(value).success, false);
+});
+test("Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components", async (t) => {
+  const root = await fixture(t, files());
+  for (const target of [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-unknown-linux-musl",
+    "x86_64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+    "wasm32-unknown-unknown",
+  ]) {
+    assert.doesNotThrow(
+      () =>
+        rustCompilerHost(`rustc 1.98.1\nhost: ${target}\nrelease: 1.98.1\n`),
+      target,
+    );
+    assert.equal(
+      rustCompilerHost(`rustc 1.98.1\nhost: ${target}\nrelease: 1.98.1\n`),
+      target,
+    );
+    const policy = profiles();
+    for (const profile of policy.profiles) profile.target = target;
+    assert.equal(rustBuildPolicySchema.safeParse(policy).success, true, target);
+    await replace(
+      path.join(root, "checktrail.rust-build.json"),
+      JSON.stringify(policy),
+    );
+    const checks = (await createPlan(root)).plan.checks;
+    assert.equal(checks.length, 4, target);
+    assert.ok(
+      checks.every(
+        (c) => c.rustBuild?.target === target && !c.unavailableReason,
+      ),
+      target,
+    );
+  }
+  for (const target of [
+    "../x86_64-unknown-linux-gnu",
+    "--target",
+    "x86_64--linux-gnu",
+    "x86_64-unknown-linux-gnu/other",
+    "_x86-unknown-linux-gnu",
+    "x86_-unknown-linux-gnu",
+    "x86__64-unknown-linux-gnu",
+  ]) {
+    const policy = profiles();
+    policy.profiles[0]!.target = target;
+    assert.throws(() => rustCompilerHost(`host: ${target}\n`), Error, target);
+    assert.equal(
+      rustBuildPolicySchema.safeParse(policy).success,
+      false,
+      target,
+    );
+  }
+  const newlineTarget = profiles();
+  newlineTarget.profiles[0]!.target = "x86_64-unknown-linux-gnu\n";
+  assert.equal(rustBuildPolicySchema.safeParse(newlineTarget).success, false);
+  // Native output has line terminators; the target value in JSON must not.
+  assert.equal(
+    rustCompilerHost("host: x86_64-unknown-linux-gnu\n\n"),
+    "x86_64-unknown-linux-gnu",
+  );
+  assert.throws(
+    () => rustCompilerHost("release: 1.98.1\n"),
+    /Unknown Rust host target/,
+  );
+  assert.throws(
+    () =>
+      rustCompilerHost(
+        "host: x86_64-unknown-linux-gnu\nhost: aarch64-apple-darwin\n",
+      ),
+    /Unknown Rust host target/,
+  );
 });
 test(
   "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
