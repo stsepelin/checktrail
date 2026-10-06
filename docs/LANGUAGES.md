@@ -246,4 +246,7 @@ verify other native versions or platforms.
 
 Rust workspace feature/target selections and exact source exclusions are recorded
 in [RUST-BUILD.md](RUST-BUILD.md). Native tests stay host-only; a successful foreign
-compiler/Clippy profile provides no runtime test evidence.
+compiler/Clippy profile provides no runtime test evidence. The bounded macOS
+arm64 Rust test/workspace repair and offline installed workspace profile are
+recorded in [the CI repair measurement](measurements/rust-ci-repair-2026-10-06.json);
+other platform/runtime combinations and hosted CI remain separately unverified.

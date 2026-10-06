@@ -1,4 +1,4 @@
-import { realpath } from "node:fs/promises";
+import { realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { rustTestList, rustTestProcessSchema } from "./rust-test-events.js";
@@ -38,6 +38,7 @@ export type RustTestNative = z.infer<typeof rustTestNativeSchema>;
 type Invoke = (
   executable: string,
   args: string[],
+  env?: NodeJS.ProcessEnv,
 ) => { status: number | null; stdout: string; stderr: string };
 export async function rustTestsNative(
   invoke: Invoke,
@@ -51,8 +52,35 @@ export async function rustTestsNative(
     documentation: boolean;
   },
 ): Promise<RustTestNative> {
+  let libraryDirectory: string | undefined;
+  if (process.platform === "darwin") {
+    const library = invoke("rustc", ["--print", "target-libdir"]);
+    const directory = library.stdout.trim();
+    if (
+      library.status !== 0 ||
+      library.stderr ||
+      !path.isAbsolute(directory) ||
+      directory.includes(path.delimiter) ||
+      directory.includes("\n") ||
+      (await realpath(directory)) !== directory ||
+      !(await stat(directory)).isDirectory()
+    )
+      throw new Error("Native Rust runtime library directory is unavailable");
+    libraryDirectory = directory;
+  }
   const native = (executable: string, args: string[]) => {
-    const result = invoke(executable, args);
+    const env =
+      libraryDirectory && path.isAbsolute(executable)
+        ? {
+            ...process.env,
+            DYLD_FALLBACK_LIBRARY_PATH: [
+              path.dirname(executable),
+              path.dirname(path.dirname(executable)),
+              libraryDirectory,
+            ].join(path.delimiter),
+          }
+        : undefined;
+    const result = invoke(executable, args, env);
     if (result.status === null)
       throw new Error("Native test process did not exit");
     return {

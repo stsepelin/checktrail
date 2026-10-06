@@ -16,6 +16,15 @@ const excluded = z.strictObject({
   path: relative,
   reason: z.string().trim().min(1).max(500),
 });
+export const rustTargetSchema = z
+  .string()
+  .max(128)
+  .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*(?:-[a-z0-9]+(?:_[a-z0-9]+)*)+$/);
+export function rustCompilerHost(stdout: string): string {
+  const hosts = [...stdout.matchAll(/^host: ([^\r\n]+)$/gm)];
+  if (hosts.length !== 1) throw Error("Unknown Rust host target");
+  return rustTargetSchema.parse(hosts[0]![1]!);
+}
 const selection = {
   features: z
     .array(
@@ -26,11 +35,7 @@ const selection = {
     )
     .max(64),
   defaultFeatures: z.boolean(),
-  target: z
-    .string()
-    .max(128)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)+$/)
-    .nullable(),
+  target: rustTargetSchema.nullable(),
   excludedSources: z.array(excluded).max(1000),
 };
 export const rustBuildSelectionSchema = z.strictObject({
