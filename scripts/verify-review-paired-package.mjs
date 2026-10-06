@@ -105,7 +105,15 @@ try {
       "review-paired-scoring": profiles["review-paired-scoring"],
     }),
   );
-  const image = process.env.CHECKTRAIL_PAIRED_IMAGE;
+  const selectedImage = process.env.CHECKTRAIL_PAIRED_IMAGE;
+  const image = selectedImage
+    ? execFileSync(
+        "docker",
+        ["image", "inspect", selectedImage, "--format", "{{.Id}}"],
+        { encoding: "utf8" },
+      ).trim()
+    : undefined;
+  if (image) assert.match(image, /^sha256:[a-f0-9]{64}$/);
   const output = image
     ? execFileSync(
         "docker",
