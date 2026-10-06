@@ -118,6 +118,12 @@ Java and fresh offline installed-package profiles. A configured CI job is not
 hosted CI evidence. Current local receipt and mutation evidence are recorded in
 `measurements/gradle-native-2026-10-05.json` after acceptance completes.
 
+The required-test harness allows at most 300 seconds per test file because each
+file performs several fresh Gradle validations. Failure records retain a bounded
+native failure type, code and message so a failed file can be distinguished from
+missing required callbacks. Skipped, failed or unfinished controls remain
+incomplete. This acceptance deadline does not change engine command limits.
+
 The implementation bounds source inputs, manifests, captured records, reports,
 console buffers and command wall/output admission. These are not a complete
 aggregate raw-output/archive budget or a hermetic identity. Wider platforms,
