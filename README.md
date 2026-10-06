@@ -261,7 +261,7 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 

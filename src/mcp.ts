@@ -1,3 +1,9 @@
+import {
+  scorePairedReviewTrials,
+  projectPairedReviewScoring,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";
 import { createToolCatalog } from "./mcp-tool-catalog.js";
 import { McpValidationTasks, taskMetadata } from "./mcp-validation-tasks.js";
 import { validationTasksOptionsSchema } from "./validation-tasks-protocol.js";
@@ -752,6 +758,34 @@ function createConnectionServer(
       } finally {
         running = undefined;
         reviewRunning = undefined;
+      }
+    },
+  );
+  registerTool(
+    "review_paired_score",
+    {
+      description:
+        "Compute descriptive paired differences from preregistered trials and unverified labels with whole-cluster resampling. Retains missing and incomplete slots. No inference or execution; does not verify independent sessions, calibration or a quality gate.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewPairedReportSchema
+        : reviewPairedSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectPairedReviewScoring(
+            scorePairedReviewTrials(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Paired review scoring failed. Check frozen identities, paired labels, observations and bootstrap limits locally with the CLI.",
+        );
       }
     },
   );

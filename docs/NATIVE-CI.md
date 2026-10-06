@@ -143,6 +143,12 @@ records exact runtime, helper/test identities, original guard mutations and nati
 source/fresh-installed adapter results. Its acceptance is scoped to the recorded
 revision and profiles.
 
+The `review-paired-scoring` profile requires original descriptive comparison
+controls in the existing Node/OS matrix. Its offline package helper repeats the
+same named assertions against shipped library/CLI/MCP bytes, with the acceptance
+harness and official client outside the installed package. It invokes no model
+and establishes no measured quality or observed independent-session claim.
+
 ## Fresh-runner package preparation
 
 `npm ci` installs from the repository lockfile but does not necessarily cache
