@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "measuredAtUTC": "2026-10-06T16:54:55.954079+00:00",
+  "profile": "exact-client-tool-inventory-reconciliation-v1",
+  "codeRevision": "38ad17ac4f463e45c0229ae1b5a335a219bc89c5",
+  "harnessSha256": "6b9588dcc86db3bac454f6affce50e61cf331716a8f85f609aa008599d4ede85",
+  "problem": "Actual Codex and Claude discovery included review_benchmark and review_workflow while the exact acceptance inventory omitted them.",
+  "repair": "Add the two existing tools to the exact sorted inventory; no filtering or weakening of discovery, trust, warning, native outcome or cleanup assertions.",
+  "validation": {
+    "npmRunCheck": {
+      "exitCode": 0,
+      "tests": 588,
+      "pass": 523,
+      "fail": 0,
+      "skipped": 65,
+      "cancelled": 0
+    },
+    "changedFileLint": true,
+    "changedFileFormat": true,
+    "gitDiffCheck": true
+  },
+  "clients": [
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T16:53:48.229Z",
+      "profile": "codex-app-server-direct-tools",
+      "clientVersion": "codex-cli 0.160.0",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "d9a588aec8d93ba1236ecae256c4232e4f13dc1be3c8dc32fca4fbd10f0a0f27",
+        "runtimeArtifactsSha256": "78f267a7400c168ea45f19026532398440a62605fd6f61d84c926ff9546263ac"
+      },
+      "harnessSha256": "6b9588dcc86db3bac454f6affce50e61cf331716a8f85f609aa008599d4ede85",
+      "observations": [
+        {
+          "check": "project_context",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "validation_plan",
+          "outcome": "passed",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "kind": "test",
+              "ready": true
+            }
+          ]
+        },
+        {
+          "check": "guidance-https-result",
+          "outcome": "passed",
+          "references": ["https://nodejs.org/api/test.html"]
+        },
+        {
+          "check": "default-execution-denied",
+          "outcome": "passed"
+        },
+        {
+          "check": "tool-cannot-grant-trust",
+          "outcome": "passed"
+        },
+        {
+          "check": "native-passed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "passed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "passed",
+              "tests": {
+                "total": 1,
+                "passed": 1,
+                "failed": 0,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "native-failed-and-report",
+          "outcome": "passed",
+          "validationOutcome": "failed",
+          "sourceChanged": false,
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "failed",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 1,
+                "skipped": 0
+              }
+            }
+          ],
+          "retainedReportEqual": true
+        },
+        {
+          "check": "all-skipped-is-incomplete",
+          "outcome": "passed",
+          "validationOutcome": "incomplete",
+          "checks": [
+            {
+              "id": "javascript.node-test",
+              "status": "inconclusive",
+              "tests": {
+                "total": 1,
+                "passed": 0,
+                "failed": 0,
+                "skipped": 1
+              }
+            }
+          ]
+        }
+      ],
+      "providerRequests": [
+        {
+          "method": "GET",
+          "path": "/models?client_version=0.160.0"
+        }
+      ],
+      "inferenceRequests": 0,
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        },
+        {
+          "label": "trusted",
+          "starts": 2,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": null,
+              "signal": "SIGTERM"
+            }
+          ],
+          "requestedProtocol": "2025-06-18",
+          "negotiatedProtocol": "2025-06-18",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "recordedAt": "2026-10-06T16:53:48.230Z",
+      "profile": "claude-code-health-discovery",
+      "clientVersion": "2.1.290 (Claude Code)",
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "package": {
+        "name": "@stsepelin/checktrail",
+        "version": "0.1.0-alpha.5",
+        "tarballSha256": "d9a588aec8d93ba1236ecae256c4232e4f13dc1be3c8dc32fca4fbd10f0a0f27",
+        "runtimeArtifactsSha256": "78f267a7400c168ea45f19026532398440a62605fd6f61d84c926ff9546263ac"
+      },
+      "harnessSha256": "6b9588dcc86db3bac454f6affce50e61cf331716a8f85f609aa008599d4ede85",
+      "observations": [
+        {
+          "check": "health-and-discovery",
+          "outcome": "passed",
+          "warnings": []
+        }
+      ],
+      "connections": [
+        {
+          "label": "readonly",
+          "starts": 1,
+          "observedExits": 1,
+          "processesStopped": true,
+          "exits": [
+            {
+              "code": 130,
+              "signal": null
+            }
+          ],
+          "requestedProtocol": "2025-11-25",
+          "negotiatedProtocol": "2025-11-25",
+          "tools": [
+            "architecture_validation",
+            "contract_validation",
+            "finding_comparison",
+            "mutation_experiment",
+            "project_context",
+            "review_benchmark",
+            "review_context",
+            "review_guidance",
+            "review_hypotheses",
+            "review_probe",
+            "review_receipt",
+            "review_refute",
+            "review_run",
+            "review_score",
+            "review_verify",
+            "review_workflow",
+            "runtime_comparison",
+            "validation_plan",
+            "validation_report",
+            "validation_run"
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Named installed application-client discovery/direct tools and original synthetic native outcome checks, not model inference, host AI session isolation or reviewer quality.",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityGate": "not-assessed",
+  "hostedCI": "not-verified-at-repaired-revision"
+}
