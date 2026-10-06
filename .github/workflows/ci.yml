@@ -634,6 +634,8 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
+      - name: Diagnose original native Windows startup
+        run: node scripts/probe-windows-runner.mjs
       - name: Require native Windows argument environment process tree and shared engine controls
         run: node scripts/verify-required-native-tests.mjs windows-process
       - name: Require native compiling mutation guards with unchanged callbacks
