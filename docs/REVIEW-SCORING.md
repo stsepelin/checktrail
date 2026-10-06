@@ -64,8 +64,9 @@ One-sided 95% limits invert the exact binomial tail, following the
 The implementation uses bounded floating-point bisection rather than a normal
 approximation. Each limit explicitly assumes independent Bernoulli trials; that
 assumption remains unverified. Repeated cluster IDs make these limits ineligible
-and null. Project/incident clustered paired uncertainty still requires the planned
-benchmark harness; supplying different cluster strings is not proof of independence.
+and null. A separate descriptive paired-cluster profile is implemented below; it still needs
+the benchmark harness to establish authoritative pairing, labels and provenance.
+Supplying different cluster strings is not proof of independence.
 
 Analytic controls check the one-trial and two-trial endpoints and sample-size
 boundaries: even a perfect small sample does not reach the specified lower precision
@@ -85,12 +86,69 @@ inference, calibrated confidence or a passed quality gate. `review-scoring.test.
 uses authored synthetic labels to check independent status/label totals, hand-computed
 losses, risk and reliability, missing/unknown cases, infinite losses, exact interval
 controls, cluster limitations, altered retained metrics, summary privacy and
-library/CLI/MCP agreement. These are development controls only. Calibration fitting,
-evidence tiers, paired cluster bootstrap and held-out quality demonstration remain
-required work.
+library/CLI/MCP agreement. These are development controls only. Calibration fitting, evidence tiers, verified benchmark/scorer linkage and held-out
+quality demonstration remain required work.
 
 Required scoring profiles pass on macOS arm64 Node 26.9.0 and Linux arm64
 Node 22.23.2, including fresh offline production installation. Removing missing-trial
 accounting, cluster eligibility or unknown-judgement exclusion fails the intended
 regression; the restored required profile passes. Installed Codex 0.159.0 and Claude
 Code 2.1.284 clients discover the updated tool inventory without inference.
+
+## Descriptive paired-cluster comparison
+
+`scorePairedReviewTrials`, `review-paired-score` and `review_paired_score` use the
+same `declared-paired-cluster-v1` engine. Its strict numerical input separately
+contains a declared protocol, common labels and anonymous arm A/B observations.
+The protocol fixes trial/cluster/family identities, a hexadecimal seed, 128–4,096
+resamples and a confidence level between 0.80 and 0.99. The scorer validates
+identities and hashes canonical ordered inputs; it does not prove that the
+protocol was frozen before answers arrived or that the arms used independent
+sessions. Missing observations remain unreviewed on their selected cases, with
+known labels preserved in recall denominators. Missing labels remain unresolved.
+Contradictory supported claims and labels are rejected.
+
+Five differences are reported as B minus A: conservative precision, known-label
+material-defect recall, completed coverage, false-alarm rate and near-miss
+false-alarm rate. Higher is better for the first three; lower is better for the
+last two. The existing single-arm summaries retain proper probability losses,
+unknown findings and all terminal statuses. Loss differences are not computed:
+two reviewers can submit different claims, and their claim probabilities need
+not predict the same event.
+
+The estimator uses ratios of pooled trial counts. It resamples whole clusters
+with replacement, draws as many clusters as selected, and uses the same drawn
+clusters for both arms. Every member of an unequal-sized cluster travels together;
+this is not an equally weighted average of cluster metrics. Family slices apply
+the same procedure to their selected family members. This follows the cluster
+resampling unit described by [Stata's panel-bootstrap documentation](https://www.stata.com/support/faqs/statistics/bootstrap-with-panel-data/)
+and the shared paired indices described by [SciPy's bootstrap documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html).
+The implementation is original and does not invoke either tool.
+
+A versioned SHA-256 counter stream with bounded rejection generates reproducible
+sampling indices without modulo bias. An available interval uses the two empirical
+percentiles, interpolated between adjacent sorted differences. Fewer than two
+clusters, an undefined point, any undefined resample, or a degenerate distribution
+returns a null interval and a named state. Undefined draws are counted, not dropped
+to manufacture an interval. These are descriptive percentile calculations under
+unverified sampling assumptions; nominal confidence is not demonstrated coverage,
+and small cluster counts remain weak evidence. No simultaneous family-wise or
+multiple-metric quality claim is made.
+
+Summary output omits trial/cluster identifiers, labels and raw observations.
+Detailed output includes the numerical input. Projection recomputes every retained
+metric and rejects altered derived values. Both outputs keep `qualityGate` at
+`not-assessed`, and keep claims, pairing, independence and calibration unverified,
+even if the input says `held-out`. This tool performs no project execution or
+inference and cannot open a field trial.
+
+```sh
+node dist/src/cli.js review-paired-score --root PROJECT --input .checktrail/paired.json
+```
+
+The mandatory `review-paired-scoring` controls use original synthetic cases with
+hand-computed denominators, unequal clusters, identical-arm pairing, missing and
+unknown slots, undefined/degenerate intervals, boundary inputs, forged summaries
+and library/CLI/MCP agreement. `verify-review-paired-package.mjs` repeats those
+same assertions with the harness outside a fresh offline production installation.
+These are implementation checks, not a reviewer quality result.

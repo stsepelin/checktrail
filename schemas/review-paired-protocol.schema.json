@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": { "type": "string", "const": "declared-paired-cluster-v1" },
+    "purpose": { "type": "string", "enum": ["development", "held-out"] },
+    "seed": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "resamples": { "type": "integer", "minimum": 128, "maximum": 4096 },
+    "confidenceLevel": { "type": "number", "minimum": 0.8, "maximum": 0.99 },
+    "trials": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+          },
+          "clusterId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+          },
+          "family": {
+            "type": "string",
+            "enum": [
+              "authorization-tenancy",
+              "identifiers-allowlists",
+              "types-numeric-semantics",
+              "lifecycle-ordering",
+              "assembly-wiring",
+              "concurrency-resources",
+              "atomic-artifacts",
+              "dependencies-builds",
+              "test-adequacy"
+            ]
+          }
+        },
+        "required": ["id", "clusterId", "family"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "purpose",
+    "seed",
+    "resamples",
+    "confidenceLevel",
+    "trials"
+  ],
+  "additionalProperties": false
+}
