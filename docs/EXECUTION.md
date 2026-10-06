@@ -162,8 +162,11 @@ an unavailable runtime or external service does not count as verification.
   profiles and Gate A remain open.
 - Implemented: prepared C/C++ Clang compilation-database checks with closed flag
   handling, native SARIF diagnostics, fresh dependency/source accounting and native
-  macOS/Linux broken/fixed cases. Linking, CTest, clang-tidy and cross-target
-  build matrices remain separate.
+  macOS/Linux broken/fixed cases. The separate CPP-TOOLS.md profile adds bounded
+  C17/C++20 CMake builds, generated headers, static library/executable linking,
+  registered CTest callbacks, clang-format and explicit clang-tidy rules, with
+  native source/object/archive/symbol evidence and required source/installed
+  CLI/MCP acceptance. Broader E15 and Gate A remain open.
 - Implemented: explicit Java release/classpath compilation with checksummed JARs,
   disabled annotation processing, native source/type accounting, Linux regression
   evidence and fresh packaged library/CLI/MCP verification. JVM build systems,

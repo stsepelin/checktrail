@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20
+CMake targets, generates integer-valued headers, links static libraries and
+executables, runs CTest callbacks, and checks clang-format and explicit clang-tidy
+rules. Native compilation metadata, objects, archive members and DWARF checksums
+bind the declared source/header scope. The
+[local record](measurements/cpp-tools-native-2026-10-06.json) retains required source
+and offline installed CLI/MCP acceptance and compiling guard controls. CTest
+locations identify registrations; they do not identify the failing assertion.
+E15 remains partial for broader CMake/target/SDK/rule profiles. Hosted CI, full SDK
+provenance and Gate A remain open.
+
 [Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. [Measured .NET test readiness](measurements/dotnet-test-native-2026-10-06.json) binds source/installed acceptance and compiling-mutation evidence. The separate [.NET test profile](DOTNET-TEST.md) reconciles native VSTest discovery, every result, declared source roles and TRX. [Measured whitespace-formatting readiness](measurements/dotnet-format-native-2026-10-06.json) binds exact native/installed, compiling-mutation and repository evidence. The opt-in [C#/VB whitespace formatter](DOTNET-FORMAT.md) reconciles native documents, proposed edits and SDK reports without rewriting source. [Declared Roslyn generator outputs](DOTNET-GENERATED.md) add bounded fresh C#/VB build/test participation with native producer/analyzer and consumer-symbol reconciliation. E12 remains partial while code-style/analyzer formatting, broader generator shapes and wider profile work continues. [Native NUnit method provenance](DOTNET-METHOD.md) now reconciles bounded C#/F#/VB custom names through complete native discovery/result XML and fresh source symbols; ambiguous methods remain incomplete.
 
 Maven native packet version 2 now binds its exact temporary repository JAR set
@@ -607,7 +618,8 @@ arrays without a build system, reconciles native SARIF and dependency evidence,
 and requires inventoried translation units and headers to be observed. Native
 cases exercise relative `__FILE__` preservation, configuration variants, headers
 with spaces, generated/symlinked inputs, compiler errors and missing tools.
-See `CLANG.md`; linking, code generation and test execution are not covered.
+See `CLANG.md`; that prepared frontend profile does not link or run tests.
+The separate bounded build/test/format/analyzer profile is in `CPP-TOOLS.md`.
 A fresh offline package install also passes this profile through library, CLI and
 MCP on the verified macOS compiler. Removing the source-coverage reconciliation
 made the omitted-source native regression fail; the original build was restored.

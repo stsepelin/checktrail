@@ -1,0 +1,4 @@
+#ifndef ORIGINAL_STEP_H
+#define ORIGINAL_STEP_H
+#define ORIGINAL_STEP @CT_STEP@
+#endif

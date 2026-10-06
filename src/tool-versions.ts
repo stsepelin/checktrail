@@ -1,3 +1,4 @@
+import { cppToolNames, cppSupportedVersion } from "./cpp-native.js";
 import { externalInvocationSchema } from "./external-adapter.js";
 import { clangVersion } from "./clang-protocol.js";
 import path from "node:path";
@@ -172,6 +173,19 @@ export async function toolsFor(
         : []),
     ];
   if (check.adapter === "cpp") {
+    if (check.parser === "cpp-tools-json")
+      return [
+        { name: "node", source: "engine-runtime" },
+        ...cppToolNames.map((name) =>
+          command(
+            name,
+            name,
+            name === "clang" || name === "clang++"
+              ? ["--no-default-config", "--version"]
+              : ["--version"],
+          ),
+        ),
+      ];
     const tools: ToolSpec[] = [{ name: "node", source: "engine-runtime" }];
     if (check.commands[0]?.args[2]) {
       const invocation = JSON.parse(check.commands[0].args[2]) as {
@@ -369,6 +383,32 @@ export async function identifyTool(
   )
     return result;
   const output = execution.stdout.trim();
+  if (
+    [
+      "clang-format",
+      "clang-tidy",
+      "llvm-dwarfdump",
+      "llvm-ar",
+      "llvm-ranlib",
+      "cmake",
+      "ctest",
+      "make",
+    ].includes(tool.name)
+  ) {
+    const verified =
+      !execution.stderr.trim() && cppSupportedVersion(tool.name, output);
+    return {
+      ...result,
+      status: verified ? "identified" : "inconclusive",
+      version: verified
+        ? ["cmake", "ctest"].includes(tool.name)
+          ? "4.2.3"
+          : tool.name === "make"
+            ? "4.4.1"
+            : "22.1.3"
+        : null,
+    };
+  }
   const version =
     tool.name === "java"
       ? /^openjdk (\d+\.\d+\.\d+) \d{4}-\d{2}-\d{2} LTS\nOpenJDK Runtime Environment [^\n]+\nOpenJDK 64-Bit Server VM [^\n]+$/.exec(

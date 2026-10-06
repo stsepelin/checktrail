@@ -1,3 +1,4 @@
+import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
 import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
 import {
   rubyToolsConfigSchema,
@@ -123,6 +124,7 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "cpp-tools-config": cppToolsConfigSchema,
   "swift-tools-config": swiftToolsConfigSchema,
   "ruby-tools-config": rubyToolsConfigSchema,
   "ruby-tools-repository": rubyToolsRepositorySchema,

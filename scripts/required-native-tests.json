@@ -2126,5 +2126,55 @@
       "file": "dist/test/swift-tools-cancel.test.js",
       "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs"
     }
+  ],
+  "cpp-tools": [
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair"
+    },
+    {
+      "file": "dist/test/cpp-controls.test.js",
+      "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters"
+    },
+    {
+      "file": "dist/test/cpp-controls.test.js",
+      "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source"
+    },
+    {
+      "file": "dist/test/cpp-tools-surfaces.test.js",
+      "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/cpp-tools-cancel.test.js",
+      "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs"
+    }
   ]
 }

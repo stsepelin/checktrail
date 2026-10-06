@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "project": "OriginalRanges",
+  "clangVersion": "22.1.3",
+  "cmakeVersion": "4.2.3",
+  "makeVersion": "4.4.1",
+  "platform": "aarch64-alpine-linux-musl",
+  "includeDirectories": ["include"],
+  "headers": ["include/range.h", "include/range.hpp"],
+  "generatedHeaders": [
+    {
+      "template": "include/original_step.h.in",
+      "output": "generated/original_step.h",
+      "values": {
+        "CT_STEP": 1
+      }
+    }
+  ],
+  "targets": [
+    {
+      "name": "original_ranges",
+      "type": "static",
+      "sources": ["src/range.c", "src/range.cpp"],
+      "dependencies": []
+    },
+    {
+      "name": "original_c_boundary",
+      "type": "executable",
+      "sources": ["tests/c_boundary.c"],
+      "dependencies": ["original_ranges"]
+    },
+    {
+      "name": "original_cpp_boundary",
+      "type": "executable",
+      "sources": ["tests/cpp_boundary.cpp"],
+      "dependencies": ["original_ranges"]
+    }
+  ],
+  "tests": [
+    {
+      "name": "OriginalCBoundaries",
+      "target": "original_c_boundary"
+    },
+    {
+      "name": "OriginalCppBoundaries",
+      "target": "original_cpp_boundary"
+    }
+  ],
+  "tidyRules": ["bugprone-use-after-move", "clang-analyzer-core.DivideZero"]
+}
