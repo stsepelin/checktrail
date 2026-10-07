@@ -2591,6 +2591,10 @@
     {
       "file": "dist/test/windows-process.test.js",
       "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher"
     }
   ],
   "physical-process-output": [
