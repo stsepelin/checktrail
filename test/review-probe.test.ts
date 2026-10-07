@@ -1268,7 +1268,7 @@ test("native probe retains malformed binary stdout stderr and output overruns wi
 test("native probe cancellation retains the reached attempt and never creates evidence for later cases", async (t) => {
   const { root, context, candidate } = await assignment(
     t,
-    "export function decision(target){process.getBuiltinModule('node:fs').writeFileSync(target,'original entered');Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0);return true;}\n",
+    "export async function decision(target){const io=process.getBuiltinModule('node:fs');io.writeFileSync(target,'');await new Promise(resolve=>setTimeout(resolve,50));io.writeFileSync(target,'original entered');Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0);return true;}\n",
   );
   const marker = path.join(root, ".checktrail/entered"),
     selected = structuredClone(recipe);
