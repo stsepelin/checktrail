@@ -77,7 +77,7 @@ with unchanged callbacks and offline installed-package acceptance are defined in
 `test/kotlin*.test.ts`, `scripts/required-native-tests.json` and
 `scripts/verify-kotlin-{container,guards,package}.mjs`. The independent CI job does
 not depend on the other tool jobs. Optional local native skips are separate from
-required-profile evidence. The recorded native environment is Linux ARM64 with
+required-profile evidence. The [measured record](measurements/kotlin-native-2026-10-07.json) binds exact source, guard and installed-package evidence. The recorded native environment is Linux ARM64 with
 Node 22.23.2; additional hosted/platform profiles remain separately required.
 
 This profile does not establish whole-project Kotlin correctness, mixed/generated
