@@ -325,3 +325,13 @@ numerical confidence/calibration and broader benchmark cohorts remain required.
 retains exact code/file/runtime identities, the original required cases, restored
 compiling guard proofs and the bounded scope. Hosted acceptance is recorded
 separately; these development checks make no quality claim.
+
+## Separate sealed multi-claim profile
+
+[Sealed synthetic multi-claim scoring](REVIEW-BENCHMARK-MULTI.md) freezes common
+expected defects and a separate matching host before review. It retains every claim,
+accounts for duplicate common defects and preserves missing material denominators.
+Anonymous review and judgment stages hide expected answers; matching curation runs
+only after judgments are sealed and receives no prior verdicts. The original
+single-claim profile is unchanged. Authoritative labels, host isolation and quality
+remain unverified in both profiles.

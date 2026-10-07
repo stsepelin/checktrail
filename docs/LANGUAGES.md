@@ -331,7 +331,7 @@ and platform profiles remain E11/E4–E6 requirements.
 retained claims and common expected defect mappings per case, distinct duplicate
 precision and material recall, incomplete slots, proper claim losses and whole
 incident clusters through one library/CLI/MCP engine. These operator declarations
-remain unverified; sealed multi-claim binding and independent judgments are still
+remain unverified; authoritative independent judgments are still
 required. No model or field evaluation is invoked by numerical scoring.
 
 ## POSIX process lifetime
@@ -340,3 +340,11 @@ The bounded observed-descendant cancellation profile is described in
 [POSIX-CLEANUP.md](POSIX-CLEANUP.md). It confirms selected process identities
 disappeared and reports unavailable cleanup evidence. Windows lifecycle acceptance
 remains separate; process observation is not hostile-code containment.
+
+[Sealed multi-claim synthetic scoring](REVIEW-BENCHMARK-MULTI.md) connects frozen
+common defects, all retained reviewer claims, independent judgment intake and a
+separate fresh matching declaration. macOS/Linux private storage and read-only
+CLI/MCP matching workers are the bounded profile. Summary output withholds row
+identities; missing, interrupted, malformed and unresolved slots remain visible.
+This does not promote Windows private benchmark storage, authoritative truth,
+observed host independence, calibration or quality acceptance.

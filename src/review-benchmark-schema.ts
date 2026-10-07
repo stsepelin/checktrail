@@ -14,6 +14,10 @@ import {
 import { reviewWorkflowNativeReceiptSchema } from "./review-workflow-schema.js";
 import { reviewContextSchema } from "./review.js";
 import { reviewWorkflowAuditSettingsSchema } from "./review-workflow-audit.js";
+import {
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "./review-multi-scoring.js";
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const identity = z
   .string()
@@ -55,6 +59,30 @@ export const reviewBenchmarkScoringProfileSchema = z.strictObject({
   confidenceLevel: reviewPairedProtocolSchema.shape.confidenceLevel,
   cases: z
     .array(z.strictObject({ id: identity, family: reviewFamilySchema }))
+    .min(1)
+    .max(4),
+});
+export const reviewBenchmarkMultiProfileSchema = z.strictObject({
+  profile: z.literal("sealed-multi-claim-paired-synthetic-v1"),
+  seed: reviewPairedProtocolSchema.shape.seed,
+  resamples: reviewPairedProtocolSchema.shape.resamples,
+  confidenceLevel: reviewPairedProtocolSchema.shape.confidenceLevel,
+  matching: reviewBenchmarkJudgeProfileSchema,
+  cases: z
+    .array(
+      z.strictObject({
+        id: identity,
+        defects: z
+          .array(
+            z.strictObject({
+              id: identity,
+              family: reviewFamilySchema,
+              material: z.boolean(),
+            }),
+          )
+          .max(32),
+      }),
+    )
     .min(1)
     .max(4),
 });
@@ -118,6 +146,7 @@ export const reviewBenchmarkPlanSchema = z.strictObject({
   curatorSessionId: identity,
   judging: reviewBenchmarkJudgeProfileSchema.optional(),
   scoring: reviewBenchmarkScoringProfileSchema.optional(),
+  multiScoring: reviewBenchmarkMultiProfileSchema.optional(),
   repetitions: z.number().int().min(1).max(2),
   runtime: z.strictObject({
     node: identity,
@@ -185,8 +214,11 @@ export const reviewBenchmarkSummarySchema = z.strictObject({
     "collected",
     "judging-prepared",
     "judgments-sealed",
+    "matching-prepared",
+    "mappings-sealed",
   ]),
   judgments: reviewBenchmarkJudgmentSummarySchema.nullable().optional(),
+  mappings: reviewBenchmarkJudgmentSummarySchema.nullable().optional(),
   planned: z.number().int().min(2).max(16),
   accounted: z.number().int().min(0).max(16),
   completed: z.number().int().min(0).max(16),
@@ -407,3 +439,135 @@ export type ReviewBenchmarkJudgePacket = z.infer<
 export type ReviewBenchmarkJudgmentResponse = z.infer<
   typeof reviewBenchmarkJudgmentResponseSchema
 >;
+
+// Matching sees the frozen common inventory after independent judgments are sealed.
+// It is curation, never another blinded review or proof of an authoritative label.
+export const reviewBenchmarkMatchingPacketSchema = z.strictObject({
+  ...flags,
+  format: z.literal("review-benchmark-matching-packet"),
+  matchingId: z.string().uuid(),
+  assignmentDigest: digest,
+  instructions: z.string().min(1).max(8192),
+  context: reviewContextSchema,
+  claims: reviewBenchmarkJudgePacketSchema.shape.claims,
+  defects: z
+    .array(
+      z.strictObject({
+        id: digest,
+        family: reviewFamilySchema,
+        claim: z.string().min(1).max(8192),
+      }),
+    )
+    .max(32),
+  sessionRequirement: z.literal("fresh-host-session"),
+  sourceTrust: z.literal("untrusted-source-and-review-text"),
+  sourceIncluded: z.literal(true),
+  expectedInventoryIncluded: z.literal(true),
+  priorVerdictsIncluded: z.literal(false),
+});
+export const reviewBenchmarkMatchingResponseSchema =
+  reviewBenchmarkJudgmentResponseSchema
+    .omit({ blindId: true, output: true })
+    .extend({
+      matchingId: z.string().uuid(),
+      output: z
+        .array(
+          z.strictObject({
+            claimId: digest,
+            match: z.enum(["defect", "none", "unresolved"]),
+            defectId: digest.nullable(),
+            rationale: z.string().min(1).max(4096),
+            citations: reviewBenchmarkJudgmentOutputSchema.shape.citations,
+          }),
+        )
+        .max(192)
+        .nullable(),
+    });
+export const reviewBenchmarkMatchingBookSchema = z.strictObject({
+  schemaVersion: z.literal(1),
+  protocolDigest: digest,
+  collectionDigest: digest,
+  judgingDigest: digest,
+  judgmentsDigest: digest,
+  slots: z
+    .array(
+      z.strictObject({
+        matchingId: z.string().uuid(),
+        assignmentDigest: digest,
+      }),
+    )
+    .min(2)
+    .max(16),
+});
+export const reviewBenchmarkMappingArchiveSchema =
+  reviewBenchmarkMatchingBookSchema.omit({ slots: true }).extend({
+    matchingDigest: digest,
+    createdAt: z.string().datetime(),
+    mappings: z
+      .array(
+        z.strictObject({
+          matchingId: z.string().uuid(),
+          status: judgmentStatus,
+          responseDigest: digest.nullable(),
+          responseBase64: z.string().max(349528).nullable(),
+        }),
+      )
+      .min(2)
+      .max(16),
+  });
+export const reviewBenchmarkMatchingWorkerSummarySchema = z.strictObject({
+  ...flags,
+  format: z.literal("review-benchmark-matching-worker-summary"),
+  matchingId: z.string().uuid(),
+  state: z.enum(["matching-prepared", "mappings-sealed"]),
+  status: judgmentStatus.nullable(),
+  responseDigest: digest.nullable(),
+  sourceIncluded: z.literal(false),
+});
+const multiScoreFields = {
+  ...flags,
+  profile: reviewBenchmarkMultiProfileSchema.shape.profile,
+  protocolDigest: digest,
+  collectionDigest: digest,
+  judgingDigest: digest,
+  judgmentsDigest: digest,
+  matchingDigest: digest,
+  mappingsDigest: digest,
+  scoringParametersDigest: digest,
+  armDigests: z.tuple([digest, digest]),
+  accounting: z.strictObject({
+    plannedTrials: scoreCount,
+    selectedPairs: scoreCount,
+    completedTrials: scoreCount,
+    retainedClaims: z.number().int().min(0).max(4096),
+    unscoredClaims: z.number().int().min(0).max(4096),
+    missingJudgments: scoreCount,
+    rejectedJudgments: scoreCount,
+    missingMappings: scoreCount,
+    rejectedMappings: scoreCount,
+    unresolvedClaims: z.number().int().min(0).max(4096),
+    labelDisagreements: scoreCount,
+  }),
+  scoringReady: z.boolean(),
+  artifactBindingsChecked: z.literal(true),
+  pairingBoundToManifest: z.literal(true),
+  labelSource: z.literal("frozen-declared-synthetic-defect-inventory"),
+  probabilitySource: z.literal(
+    "sealed-host-declared-uncalibrated-claim-probability",
+  ),
+  sourceIncluded: z.literal(false),
+  labelsVerified: z.literal(false),
+  calibratedConfidence: z.literal(false),
+  inferenceInvoked: z.literal(false),
+  fieldEvaluationExecuted: z.literal(false),
+};
+export const reviewBenchmarkMultiScoreReportSchema = z.strictObject({
+  ...multiScoreFields,
+  format: z.literal("review-benchmark-multi-scoring-report"),
+  multi: reviewMultiReportSchema,
+});
+export const reviewBenchmarkMultiScoreSummarySchema = z.strictObject({
+  ...multiScoreFields,
+  format: z.literal("review-benchmark-multi-scoring-summary"),
+  multi: reviewMultiSummarySchema,
+});
