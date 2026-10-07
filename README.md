@@ -261,7 +261,8 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
+`review_calibration_apply`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -430,3 +431,9 @@ claim mechanism or severity; full independent findings remain unfinished.
 [Reviewer scoring](docs/REVIEW-SCORING.md) reports proper probability losses,
 reliability, risk/coverage and explicit incomplete/unknown accounting from declared
 labels. It does not establish calibrated confidence or a quality gate.
+
+[Declared per-family calibration](docs/REVIEW-CALIBRATION.md) fits numerical
+development observations and applies them only to a disjoint reserved protocol
+with the same declared model. Unavailable families and predictions outside the
+training range stay unknown. Fitting does not establish calibrated confidence,
+verified labels, independent host isolation or held-out quality.

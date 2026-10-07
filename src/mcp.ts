@@ -1,4 +1,14 @@
 import {
+  fitReviewCalibration,
+  projectReviewCalibration,
+  applyReviewCalibration,
+  projectReviewCalibrationApplication,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
+} from "./review-calibration.js";
+import {
   scorePairedReviewTrials,
   projectPairedReviewScoring,
   reviewPairedReportSchema,
@@ -758,6 +768,62 @@ function createConnectionServer(
       } finally {
         running = undefined;
         reviewRunning = undefined;
+      }
+    },
+  );
+  registerTool(
+    "review_calibration_fit",
+    {
+      description:
+        "Descriptive family-specific isotonic calibration fit from numerical declarations. Retains missing evidence and unknown probabilities. No inference or project execution; labels, host/model identity, actual split isolation and calibrated quality remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewCalibrationReportSchema
+        : reviewCalibrationSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectReviewCalibration(
+            fitReviewCalibration(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Calibration fit failed. Check declared split identities, model binding, numerical observations and fit integrity locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_calibration_apply",
+    {
+      description:
+        "Descriptive family-specific isotonic calibration apply from numerical declarations. Retains missing evidence and unknown probabilities. No inference or project execution; labels, host/model identity, actual split isolation and calibrated quality remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewCalibrationApplicationReportSchema
+        : reviewCalibrationApplicationSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectReviewCalibrationApplication(
+            applyReviewCalibration(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Calibration apply failed. Check declared split identities, model binding, numerical observations and fit integrity locally with the CLI.",
+        );
       }
     },
   );

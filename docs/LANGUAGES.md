@@ -283,3 +283,10 @@ scorer. It supports at most one completed claim per trial; broader multi-claim
 scoring stays unsupported. Its structural artifact/pairing checks do not establish
 claim truth, independent host isolation, calibrated confidence or held-out quality.
 See [REVIEW-BENCHMARK.md](REVIEW-BENCHMARK.md#scoring-sealed-synthetic-artifacts).
+
+The [declared per-family calibration profile](REVIEW-CALIBRATION.md) supports
+bounded numerical development fitting and reserved-protocol application through
+the shared library/CLI/MCP engine. Exact declared trial/cluster/model binding and
+unavailable/outside-support states do not authenticate labels, independent host
+isolation, candidate probabilities or held-out calibration. This adds no native
+language acceptance or field evaluation permission.

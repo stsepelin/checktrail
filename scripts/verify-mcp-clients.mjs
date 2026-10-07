@@ -39,6 +39,8 @@ const expectedTools = [
   "mutation_experiment",
   "project_context",
   "review_benchmark",
+  "review_calibration_apply",
+  "review_calibration_fit",
   "review_context",
   "review_guidance",
   "review_hypotheses",
