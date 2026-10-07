@@ -22,6 +22,7 @@ const timeoutMs =
     : [
           "dotnet-build",
           "gradle",
+          "detekt",
           "maven",
           "dotnet-test",
           "dotnet-format",

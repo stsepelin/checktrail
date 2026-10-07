@@ -2851,6 +2851,44 @@
       "name": "benchmark sealed multi-claim empty reviews and mappings remain completed controls without erasing missed common defects or inventing probabilities"
     }
   ],
+  "detekt": [
+    {
+      "file": "dist/test/detekt.test.js",
+      "name": "detekt planning is inert explicit and unavailable without pinned prerequisites"
+    },
+    {
+      "file": "dist/test/detekt.test.js",
+      "name": "detekt policy rejects alternate plugins baselines rules versions and unsafe artifact paths"
+    },
+    {
+      "file": "dist/test/detekt.test.js",
+      "name": "native detekt catches broken repairs and near misses across every selected source without executing Kotlin"
+    },
+    {
+      "file": "dist/test/detekt.test.js",
+      "name": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence"
+    },
+    {
+      "file": "dist/test/detekt-boundaries.test.js",
+      "name": "native detekt accounts exact file function and family suppressions without treating identifier prefixes as suppression"
+    },
+    {
+      "file": "dist/test/detekt-boundaries.test.js",
+      "name": "native detekt analyzes files beneath default test exclusions and binds same-named Kotlin files to their correct source"
+    },
+    {
+      "file": "dist/test/detekt-boundaries.test.js",
+      "name": "native detekt rejects malformed syntax invalid source bytes and empty selected scope while retaining native failure output"
+    },
+    {
+      "file": "dist/test/detekt-boundaries.test.js",
+      "name": "native detekt rejects foreign rule severity suppression address and raw console findings"
+    },
+    {
+      "file": "dist/test/detekt-surfaces.test.js",
+      "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    }
+  ],
   "init-publication": [
     {
       "file": "dist/test/onboarding.test.js",

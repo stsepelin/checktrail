@@ -74,29 +74,30 @@ are incomplete. A source change during validation prevents an aggregate pass.
 
 ## Initial adapters
 
-| Ecosystem                           | Execution in this foundation                                                                                      |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| JavaScript                          | Native Node tests; explicit ESLint checking with per-file coverage evidence                                       |
-| Python                              | Explicit unittest/pytest tests and Ruff/mypy checks                                                               |
-| Go                                  | gofmt check, go vet, uncached go test with JSON events                                                            |
-| PHP                                 | Syntax checks and explicit PHPStan analysis; native verification in status                                        |
-| TypeScript                          | Explicit `javascript.typescript`: local tsc, no emit, file inclusion evidence                                     |
-| Jest                                | Explicit `javascript.jest`: native result accounting; pending tests are incomplete                                |
-| Vue                                 | Explicit `javascript.vue-tsc`: SFC and TS checking; opt-in `javascript.vue-router` route contracts                |
-| Vitest                              | Explicit `javascript.vitest`: native JSON counts and exact test-file accounting                                   |
-| Playwright                          | Explicit `javascript.playwright`: native test/project evidence and prepared browsers                              |
-| Other framework test runners        | Manifest discovery; execution integrations planned                                                                |
-| Rust                                | Locked offline Cargo builds, explicit workspace/target profiles, Clippy/libtest/doctests and Cargo/Rustfmt        |
-| Ruby                                | MRI grammar checks; bounded opt-in RuboCop/RSpec/Minitest with source and lifecycle evidence                      |
-| Swift                               | Grammar checks; bounded Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit SwiftLint rules             |
-| C / C++                             | Prepared Clang checks; bounded C17/C++20 CMake builds, CTest, clang-format and clang-tidy                         |
-| Java                                | Explicit classpath compilation and bounded pinned Checkstyle, Maven reactor and Gradle module tests               |
-| C# / .NET                           | Explicit C# compilation; bounded opt-in C#/F#/VB build/NUnit and C#/VB whitespace checks                          |
-| GitHub Actions                      | Static workflow checking with native per-file accounting                                                          |
-| Kubernetes                          | Bounded offline kubeconform document/schema validation with physical source addresses                             |
-| Kustomize                           | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
-| Terraform                           | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
-| Kotlin, Scala, other infrastructure | Discovery only; execution reports unavailable                                                                     |
+| Ecosystem                    | Execution in this foundation                                                                                      |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| JavaScript                   | Native Node tests; explicit ESLint checking with per-file coverage evidence                                       |
+| Python                       | Explicit unittest/pytest tests and Ruff/mypy checks                                                               |
+| Go                           | gofmt check, go vet, uncached go test with JSON events                                                            |
+| PHP                          | Syntax checks and explicit PHPStan analysis; native verification in status                                        |
+| TypeScript                   | Explicit `javascript.typescript`: local tsc, no emit, file inclusion evidence                                     |
+| Jest                         | Explicit `javascript.jest`: native result accounting; pending tests are incomplete                                |
+| Vue                          | Explicit `javascript.vue-tsc`: SFC and TS checking; opt-in `javascript.vue-router` route contracts                |
+| Vitest                       | Explicit `javascript.vitest`: native JSON counts and exact test-file accounting                                   |
+| Playwright                   | Explicit `javascript.playwright`: native test/project evidence and prepared browsers                              |
+| Other framework test runners | Manifest discovery; execution integrations planned                                                                |
+| Rust                         | Locked offline Cargo builds, explicit workspace/target profiles, Clippy/libtest/doctests and Cargo/Rustfmt        |
+| Ruby                         | MRI grammar checks; bounded opt-in RuboCop/RSpec/Minitest with source and lifecycle evidence                      |
+| Swift                        | Grammar checks; bounded Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit SwiftLint rules             |
+| C / C++                      | Prepared Clang checks; bounded C17/C++20 CMake builds, CTest, clang-format and clang-tidy                         |
+| Java                         | Explicit classpath compilation and bounded pinned Checkstyle, Maven reactor and Gradle module tests               |
+| C# / .NET                    | Explicit C# compilation; bounded opt-in C#/F#/VB build/NUnit and C#/VB whitespace checks                          |
+| GitHub Actions               | Static workflow checking with native per-file accounting                                                          |
+| Kubernetes                   | Bounded offline kubeconform document/schema validation with physical source addresses                             |
+| Kustomize                    | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
+| Terraform                    | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
+| Kotlin                       | Opt-in pinned detekt light analysis with every-selected-file rule, source, suppression and completion accounting  |
+| Scala, other infrastructure  | Discovery only; execution reports unavailable                                                                     |
 
 Tools must already be installed. No dependency installation, automatic fixes,
 service startup, migrations, commits or deployments are performed by the engine.
@@ -383,8 +384,10 @@ application tests are not executed.
 The opt-in [Checkstyle profile](docs/CHECKSTYLE.md) verifies configured Java source
 audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md)
 and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
-native test evidence. Wrappers, wider JVM source profiles, SpotBugs and detekt
-remain planned.
+native test evidence. The opt-in [SpotBugs profile](docs/SPOTBUGS.md) analyzes freshly
+compiled Java bytecode. The [Kotlin detekt profile](docs/DETEKT.md) analyzes selected
+Kotlin sources with pinned light rules. Wrappers, Kotlin compilation/type analysis,
+Scala, generated/JPMS scope and wider analyzer/platform profiles remain required.
 
 Reproduce synthetic planning and execution costs with the
 [performance harness](docs/PERFORMANCE.md). Reports retain raw measurements and
