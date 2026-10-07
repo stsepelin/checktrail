@@ -232,3 +232,10 @@ The separate `kustomize` job uses the prepared pinned infrastructure image and
 requires the bounded local assembly/render/schema profile through source and a
 fresh offline installed package. Native acceptance runs with no network. This
 configured hosted job has not been run for this revision; see KUSTOMIZE.md.
+
+The mandatory `review-benchmark-scoring` profile exercises the sealed synthetic
+artifact-to-scorer connection, including missing/unusable slots, contradictory
+labels, multiple claims and worker access boundaries. The matrix additionally
+runs `verify-review-benchmark-score-package.mjs` against a fresh offline production
+installation; its harness stays outside the installed product. These original
+synthetic checks do not run model inference or real-project evaluation.

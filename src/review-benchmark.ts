@@ -17,6 +17,11 @@ import {
 } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
+import {
+  scorePairedReviewTrials,
+  projectPairedReviewScoring,
+  reviewPairedInputSchema,
+} from "./review-paired-scoring.js";
 import { reviewNativeBudgetLimitsSchema } from "./review-probe-schema.js";
 import { observeReviewEngineDigest } from "./review-engine-identity.js";
 import { VERSION } from "./types.js";
@@ -33,6 +38,8 @@ import {
 } from "./review-workflow-schema.js";
 import {
   reviewBenchmarkPlanSchema,
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
   reviewBenchmarkReferenceSchema,
   reviewBenchmarkCommandSchema,
   reviewBenchmarkSummarySchema,
@@ -220,6 +227,23 @@ function checkedManifest(value: unknown): Manifest {
     new Set(plan.cases.map((c) => c.id)).size !== plan.cases.length
   )
     throw new Error("Benchmark engine or plan identity disagrees");
+  if (plan.scoring) {
+    const declared = new Set(plan.scoring.cases.map((c) => c.id));
+    if (
+      !plan.judging ||
+      declared.size !== plan.scoring.cases.length ||
+      declared.size !== plan.cases.length ||
+      plan.cases.some((c) => !declared.has(c.id)) ||
+      plan.cases.some(
+        (c) =>
+          c.labels.variant === "broken" &&
+          c.labels.expectedDefects.length !== 1,
+      )
+    )
+      throw new Error(
+        "Benchmark scoring requires frozen judging, exact case families and one expected defect per broken case",
+      );
+  }
   for (const arm of plan.arms) {
     const limits = reviewWorkflowLimitsSchema.parse(
       arm.settings.workflowLimits,
@@ -953,6 +977,180 @@ export class ReviewBenchmark {
       JUDGMENT_ARCHIVE_BYTES,
     );
     return this.status();
+  }
+  /** Operator-only descriptive scoring from every sealed synthetic slot. */
+  score(detailed = false) {
+    const load = () => {
+      const { root, manifest } = this.#load();
+      if (!manifest.plan.scoring)
+        throw new Error("Benchmark scoring must be declared before freezing");
+      const judgments = this.#judgmentArchive(root, manifest);
+      if (!judgments)
+        throw new Error("Benchmark judgments must be sealed before scoring");
+      const { book, collected, judgingDigest } = this.#judgeBook(
+        root,
+        manifest,
+      );
+      return { manifest, judgments, book, collected, judgingDigest };
+    };
+    const first = load();
+    const { manifest, judgments, book, collected, judgingDigest } = first;
+    const settings = manifest.plan.scoring!;
+    const pairs = manifest.plan.cases.flatMap((c, caseIndex) =>
+      Array.from({ length: manifest.plan.repetitions }, (_, repetition) => ({
+        id: sha(
+          JSON.stringify({ runId: manifest.runId, caseIndex, repetition }),
+        ),
+        clusterId: sha(
+          JSON.stringify({ runId: manifest.runId, group: c.group }),
+        ),
+        family: settings.cases.find((s) => s.id === c.id)!.family,
+        label:
+          c.labels.variant === "broken"
+            ? ("defect" as const)
+            : c.labels.variant === "fixed"
+              ? ("valid" as const)
+              : ("near-miss" as const),
+        caseIndex,
+        repetition,
+      })),
+    );
+    const observations: z.infer<
+      typeof reviewPairedInputSchema
+    >["observations"] = { a: [], b: [] };
+    const accounting = {
+      plannedTrials: manifest.trials.length,
+      selectedPairs: pairs.length,
+      completedTrials: 0,
+      retainedClaims: 0,
+      unscoredClaims: 0,
+      missingJudgments: 0,
+      rejectedJudgments: 0,
+      unresolvedClaimJudgments: 0,
+      labelDisagreements: 0,
+      unknownJudgeLabels: 0,
+      unexpectedFamilyClaims: 0,
+    };
+    for (const trial of manifest.trials) {
+      const pair = pairs.find(
+        (p) =>
+          p.caseIndex === trial.caseIndex && p.repetition === trial.repetition,
+      )!;
+      const evidence = book.packets.find((p) => p.blindId === trial.blindId)!;
+      const claims = this.#judgePacket(manifest, book, trial.blindId).claims;
+      const intake = judgments.archive.judgments.find(
+        (j) => j.blindId === trial.blindId,
+      )!;
+      accounting.retainedClaims += claims.length;
+      if (intake.status === "missing") accounting.missingJudgments++;
+      else if (intake.status !== "accepted") accounting.rejectedJudgments++;
+      if (evidence.status !== "sealed-completed") {
+        accounting.unscoredClaims += claims.length;
+        // Missing slots remain genuinely absent; the paired scorer preserves their known labels.
+        if (evidence.status !== "missing")
+          observations[trial.armIndex === 0 ? "a" : "b"].push({
+            id: pair.id,
+            status: "incomplete",
+            decision: "abstain",
+            probability: null,
+            judgement: "none",
+          });
+        continue;
+      }
+      accounting.completedTrials++;
+      if (evidence.outputs.length !== 1 || claims.length > 1)
+        throw new Error(
+          "Benchmark scoring profile requires one completed reviewer output with at most one claim; no partial score is returned",
+        );
+      const claim = claims[0];
+      const response =
+        intake.status === "accepted"
+          ? reviewBenchmarkJudgmentResponseSchema.parse(
+              decode(Buffer.from(intake.responseBase64!, "base64")),
+            ).output!
+          : null;
+      if (response?.label === "unresolved") accounting.unknownJudgeLabels++;
+      else if (response && response.label !== pair.label)
+        accounting.labelDisagreements++;
+      if (claim && claim.candidate.family !== pair.family)
+        accounting.unexpectedFamilyClaims++;
+      const judgement = !claim
+        ? ("none" as const)
+        : response &&
+            response.label === pair.label &&
+            claim.candidate.family === pair.family
+          ? response.claims.find((c) => c.claimId === claim.claimId)!.judgement
+          : ("unresolved" as const);
+      if (judgement === "unresolved") accounting.unresolvedClaimJudgments++;
+      observations[trial.armIndex === 0 ? "a" : "b"].push({
+        id: pair.id,
+        status: "completed",
+        decision: claim ? "finding" : "abstain",
+        // Candidate contracts contain no numerical probability; never invent one from severity.
+        probability: null,
+        judgement,
+      });
+    }
+    const paired = scorePairedReviewTrials({
+      protocol: {
+        schemaVersion: 1,
+        profile: "declared-paired-cluster-v1",
+        purpose: "development",
+        seed: settings.seed,
+        resamples: settings.resamples,
+        confidenceLevel: settings.confidenceLevel,
+        trials: pairs.map(({ id, clusterId, family }) => ({
+          id,
+          clusterId,
+          family,
+        })),
+      },
+      labels: pairs.map(({ id, label }) => ({ id, label })),
+      observations,
+    });
+    const report = reviewBenchmarkScoreReportSchema.parse({
+      schemaVersion: 1,
+      format: "review-benchmark-scoring-report",
+      profile: settings.profile,
+      protocolDigest: this.#reference.sha256,
+      collectionDigest: collected.sha256,
+      judgingDigest,
+      judgmentsDigest: judgments.sha256,
+      scoringParametersDigest: sha(JSON.stringify(settings)),
+      armDigests: manifest.plan.arms.map((arm) => sha(JSON.stringify(arm))),
+      accounting,
+      scoringReady:
+        accounting.completedTrials === accounting.plannedTrials &&
+        accounting.missingJudgments === 0 &&
+        accounting.rejectedJudgments === 0 &&
+        accounting.unresolvedClaimJudgments === 0 &&
+        accounting.labelDisagreements === 0 &&
+        accounting.unknownJudgeLabels === 0 &&
+        accounting.unexpectedFamilyClaims === 0,
+      artifactBindingsChecked: true,
+      pairingBoundToManifest: true,
+      labelSource: "frozen-declared-synthetic-case-variants",
+      probabilitiesAvailable: false,
+      sourceIncluded: false,
+      claimsVerified: false,
+      labelsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      calibratedConfidence: false,
+      qualityAssessed: false,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+      paired,
+    });
+    if (!equal(first, load()))
+      throw new Error("Benchmark scoring artifacts changed during computation");
+    return detailed
+      ? report
+      : reviewBenchmarkScoreSummarySchema.parse({
+          ...report,
+          format: "review-benchmark-scoring-summary",
+          paired: projectPairedReviewScoring(report.paired, false),
+        });
   }
   status() {
     const { root, manifest } = this.#load(),

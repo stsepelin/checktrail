@@ -276,3 +276,10 @@ this does not close E12 or Gate A.
 names to complete native discovery/result identities and fresh compiled source
 symbols. Duplicate full names and overloaded methods remain incomplete; this
 profile does not close wider E12 or platform requirements.
+
+The operator-only sealed synthetic scoring profile binds frozen case families,
+common labels and retained benchmark/judgment artifacts to the shared paired
+scorer. It supports at most one completed claim per trial; broader multi-claim
+scoring stays unsupported. Its structural artifact/pairing checks do not establish
+claim truth, independent host isolation, calibrated confidence or held-out quality.
+See [REVIEW-BENCHMARK.md](REVIEW-BENCHMARK.md#scoring-sealed-synthetic-artifacts).

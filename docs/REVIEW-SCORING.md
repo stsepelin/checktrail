@@ -156,3 +156,10 @@ These are implementation checks, not a reviewer quality result.
 The [dated paired-scoring acceptance](measurements/review-paired-scoring-2026-10-06.json)
 records exact source/runtime and fresh-install evidence, original unchanged-callback
 guard mutations and scope limits. Hosted CI for the new profile remains unverified.
+
+The [sealed synthetic benchmark profile](REVIEW-BENCHMARK.md#scoring-sealed-synthetic-artifacts)
+now derives paired numerical inputs from frozen case families, common declared
+labels and reconciled review/judgment artifacts. This closes a bounded structural
+connection; it does not verify case labels, claims, independent sessions or cohort
+eligibility. Candidate contracts currently supply no numerical probability.
+General multi-claim scoring and held-out calibration remain required.
