@@ -12,8 +12,10 @@ tag pushes retain verification. A newly opened PR triggers its checks even when
 its initial branch push did not. Each PR has its own workflow concurrency group;
 a newer merge-candidate run supersedes older runs for that PR, including runs
 caused by predecessor updates. This does not serialize jobs within a run or other
-PRs. Non-PR runs use unique run IDs, so main, tags and independent pushes do not
-cancel each other. Native profiles, matrix entries and assertions are unchanged.
+PRs. Branch pushes also share a group per branch, so a newer push cancels an older
+run for that branch, including main during consecutive merges. Different
+branches and tag refs have separate groups; running tag verification is not
+cancelled by a newer push. Native profiles, matrix entries and assertions are unchanged.
 
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
@@ -32,6 +34,35 @@ passing suite from a passing test. A similarly named test, a test in another
 file, or a passing unit test cannot stand in for a missing native regression.
 Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
+
+Several profiles may be passed to one invocation. The runner validates all
+selected manifests before starting tests, then executes the union of their files
+once, with file execution still sequential. Identical file/name obligations
+shared by profiles are checked once; duplicates within a profile remain errors.
+The batch lists each selected profile and its requirement count, while `required`
+is the number of unique obligations. A failed batch establishes none of its
+selected profiles as complete. The single-profile JSON format remains available
+for fresh installed-package harnesses.
+
+The main matrix uses `--full-suite` with its prepared profiles after type checking,
+linting and building. This executes every compiled `dist/test/*.test.js` file
+with the ordinary Node test runner's file parallelism, and checks the selected
+profiles in the same fresh invocation, replacing the
+separate ordinary suite and repeated source-profile passes. Explicit optional
+skips from files outside the selected profiles are counted as `optionalSkipped`;
+no such skip counts as a pass. A failure anywhere, or a skip/TODO anywhere in a
+required file, fails the run. Missing and duplicate required cases still fail.
+The separate Tasks-enabled MCP run, mutation checks and fresh package checks
+remain separate executions. No saved test-result cache supplies acceptance.
+
+GitHub also supports [parallel steps and background steps](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsparallel)
+within one runner. The pinned actionlint 1.7.12 does not support those keys;
+[upstream support is proposed](https://github.com/rhysd/actionlint/pull/694).
+Do not bypass workflow linting to enable them. After checker support is pinned
+and verified, independent setup in disjoint directories is a candidate for
+parallel steps. Tests that mutate compiled files must finish before source or
+package checks read those files. Step parallelism does not increase runner
+capacity, and CPU-heavy steps still compete for the same runner's resources.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,

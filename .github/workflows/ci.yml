@@ -9,11 +9,11 @@ on:
       - "**"
   pull_request:
 
-# Each PR retains its latest merge-candidate run. Other pushes have unique groups.
+# Keep the latest candidate per PR or branch; preserve tag verification.
 # This groups workflow runs, not the independent jobs within each run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.ref_type == 'branch' }}
 
 permissions:
   contents: read
@@ -106,36 +106,16 @@ jobs:
           npm ci --prefix .checktrail/nuxt-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
-      - run: npm run check
-      - name: Verify concurrent init publication and fresh installed CLI
-        run: |
-          node scripts/verify-required-native-tests.mjs init-publication
-          node scripts/verify-init-publication-package.mjs
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
       - name: Require prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs core
-          node scripts/verify-required-native-tests.mjs mcp-tasks-routing
-          node scripts/verify-required-native-tests.mjs mcp-tasks
-          node scripts/verify-required-native-tests.mjs mcp-task-dispatch
+          node scripts/verify-required-native-tests.mjs --full-suite init-publication core mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-native-budget
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
-          node scripts/verify-required-native-tests.mjs javascript
-          node scripts/verify-required-native-tests.mjs python
-          node scripts/verify-required-native-tests.mjs frameworks
-          node scripts/verify-required-native-tests.mjs go
-          node scripts/verify-required-native-tests.mjs php-tools
-          node scripts/verify-required-native-tests.mjs php-review
-          node scripts/verify-required-native-tests.mjs laravel
-          node scripts/verify-required-native-tests.mjs rust
-          node scripts/verify-required-native-tests.mjs rust-format
-          node scripts/verify-required-native-tests.mjs clippy
-          node scripts/verify-required-native-tests.mjs rust-tests
-          node scripts/verify-required-native-tests.mjs rust-workspace
-          node scripts/verify-required-native-tests.mjs review-budget
-          node scripts/verify-required-native-tests.mjs review-workflow
-          node scripts/verify-required-native-tests.mjs review-workflow-audit
-          node scripts/verify-required-native-tests.mjs review-benchmark
-          node scripts/verify-required-native-tests.mjs review-benchmark-judging
-          node scripts/verify-required-native-tests.mjs review-native-budget
+      - name: Verify concurrent init publication and fresh installed CLI
+        run: |
+          node scripts/verify-init-publication-package.mjs
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - name: Prepare package-install cache with network access

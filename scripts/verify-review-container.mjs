@@ -39,85 +39,14 @@ const gitVersion = execFileSync("docker", [...native, "git", "--version"], {
   encoding: "utf8",
 }).trim();
 assert.equal(gitVersion, "git version 2.47.3");
-const tests = execFileSync(
-  "docker",
-  [...native, "node", "scripts/verify-required-native-tests.mjs", "review"],
-  { encoding: "utf8", maxBuffer: 1024 * 1024 },
-);
-process.stdout.write(tests);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-git",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-provider",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-probe",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-refutation",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-scoring",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      "review-verification",
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
-);
-for (const profile of [
+const profiles = [
+  "review",
+  "review-git",
+  "review-provider",
+  "review-probe",
+  "review-refutation",
+  "review-scoring",
+  "review-verification",
   "mcp-tasks-routing",
   "mcp-tasks",
   "mcp-task-dispatch",
@@ -127,15 +56,19 @@ for (const profile of [
   "review-benchmark",
   "review-benchmark-judging",
   "review-native-budget",
-]) {
-  process.stdout.write(
-    execFileSync(
-      "docker",
-      [...native, "node", "scripts/verify-required-native-tests.mjs", profile],
-      { encoding: "utf8", maxBuffer: 1024 * 1024 },
-    ),
-  );
-}
+];
+process.stdout.write(
+  execFileSync(
+    "docker",
+    [
+      ...native,
+      "node",
+      "scripts/verify-required-native-tests.mjs",
+      ...profiles,
+    ],
+    { encoding: "utf8", maxBuffer: 1024 * 1024 },
+  ),
+);
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-review-package-"),
 );
