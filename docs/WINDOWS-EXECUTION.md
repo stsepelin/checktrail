@@ -92,3 +92,13 @@ also records the launcher PID and fixed-source digest. Failed bootstrap or
 cleanup remains bounded by the three-second stop deadline, allowing the native two-second drain and supervisor exit. Native
 acceptance of this repair remains pending; local compilation is not Windows
 runtime evidence.
+
+The primary native job guard uses an original direct guardian invocation while
+the Node launcher and an unrelated sibling remain alive. This distinguishes
+native kill-on-close from the launcher's later libuv cleanup. The former guard
+removed native flags but still passed with the launcher present; it did not
+distinguish redundant cleanup and is not accepted as guard evidence. The new
+source and installed callback, and its compiling mutation, require native CI.
+
+The selected Node launcher owns a process-wide libuv job; see the pinned
+[Node 22.23.2 Windows process implementation](https://github.com/nodejs/node/blob/v22.23.2/deps/uv/src/win/process.c#L62).
