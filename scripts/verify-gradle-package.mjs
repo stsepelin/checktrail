@@ -59,6 +59,9 @@ try {
   );
   for (const file of [
     "gradle.test.js",
+    "gradle-filtering.test.js",
+    "gradle-evidence.test.js",
+    "gradle-failures.test.js",
     "gradle-builds.test.js",
     "gradle-fixture.js",
     "gradle-surfaces.test.js",
