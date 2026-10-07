@@ -17,7 +17,7 @@ const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const literal =
   "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup";
 const crash =
-  "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt";
+  "native Windows guardian job cleanup does not depend on exit of the still-living launcher";
 const guards = [
   {
     id: "launcher-directory-release",
@@ -92,6 +92,10 @@ for (const guard of guards) {
   }
   try {
     await writeFile(source, mutant);
+    const compiled = spawnSync(process.execPath, ["--check", source], {
+      encoding: "utf8",
+    });
+    assert.equal(compiled.status, 0, compiled.stderr);
     const result = run(guard.name);
     assert.equal(
       result.status,
