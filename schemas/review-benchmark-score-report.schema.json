@@ -58,6 +58,16 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 512
+        },
+        "declaredClaimProbabilities": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
+        },
+        "unknownClaimProbabilities": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
         }
       },
       "required": [
@@ -71,7 +81,9 @@
         "unresolvedClaimJudgments",
         "labelDisagreements",
         "unknownJudgeLabels",
-        "unexpectedFamilyClaims"
+        "unexpectedFamilyClaims",
+        "declaredClaimProbabilities",
+        "unknownClaimProbabilities"
       ],
       "additionalProperties": false
     },
@@ -82,7 +94,11 @@
       "type": "string",
       "const": "frozen-declared-synthetic-case-variants"
     },
-    "probabilitiesAvailable": { "type": "boolean", "const": false },
+    "probabilitiesAvailable": { "type": "boolean" },
+    "probabilitySource": {
+      "type": "string",
+      "const": "sealed-host-declared-uncalibrated-claim-probability"
+    },
     "sourceIncluded": { "type": "boolean", "const": false },
     "claimsVerified": { "type": "boolean", "const": false },
     "labelsVerified": { "type": "boolean", "const": false },
@@ -2913,6 +2929,7 @@
     "pairingBoundToManifest",
     "labelSource",
     "probabilitiesAvailable",
+    "probabilitySource",
     "sourceIncluded",
     "claimsVerified",
     "labelsVerified",

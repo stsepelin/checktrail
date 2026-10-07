@@ -437,3 +437,10 @@ development observations and applies them only to a disjoint reserved protocol
 with the same declared model. Unavailable families and predictions outside the
 training range stay unknown. Fitting does not establish calibrated confidence,
 verified labels, independent host isolation or held-out quality.
+
+[Declared claim probabilities](docs/REVIEW-CLAIM-PROBABILITY.md) keep numerical
+predictions separate from severity and bind sealed scoring to the original
+candidate. Independent refuters and judges receive hypothesis/source/native case
+evidence with prior candidate metadata and aggregate verdicts withheld. These
+structural checks do not establish claim truth, fresh host isolation or calibrated
+confidence.

@@ -86,7 +86,7 @@ inference, calibrated confidence or a passed quality gate. `review-scoring.test.
 uses authored synthetic labels to check independent status/label totals, hand-computed
 losses, risk and reliability, missing/unknown cases, infinite losses, exact interval
 controls, cluster limitations, altered retained metrics, summary privacy and
-library/CLI/MCP agreement. These are development controls only. Authoritative labels, evidence tiers, candidate confidence binding and held-out
+library/CLI/MCP agreement. These are development controls only. Authoritative labels, evidence tiers, verified confidence provenance and held-out
 quality demonstration remain required work.
 
 Required scoring profiles pass on macOS arm64 Node 26.9.0 and Linux arm64
@@ -161,8 +161,10 @@ The [sealed synthetic benchmark profile](REVIEW-BENCHMARK.md#scoring-sealed-synt
 now derives paired numerical inputs from frozen case families, common declared
 labels and reconciled review/judgment artifacts. This closes a bounded structural
 connection; it does not verify case labels, claims, independent sessions or cohort
-eligibility. Candidate contracts currently supply no numerical probability.
-General multi-claim scoring and held-out calibration remain required.
+eligibility. [Candidate probability declarations](REVIEW-CLAIM-PROBABILITY.md) now
+connect original uncalibrated predictions to sealed single-claim scoring. Missing
+declarations stay unknown. General multi-claim scoring, authoritative judgments
+and held-out calibration remain required.
 
 [Declared per-family calibration](REVIEW-CALIBRATION.md) now implements a bounded
 development fit and reserved-protocol application using separate family curves,

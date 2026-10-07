@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { reviewNativeObservationSchema } from "./review-adjudication.js";
 import { reviewFamilySchema } from "./review-hypotheses.js";
 import {
   reviewPairedProtocolSchema,
@@ -7,6 +8,7 @@ import {
 } from "./review-paired-scoring.js";
 import {
   reviewCandidateSchema,
+  reviewBlindCandidateSchema,
   reviewModelOutputSchema,
 } from "./review-provider-schema.js";
 import { reviewWorkflowNativeReceiptSchema } from "./review-workflow-schema.js";
@@ -78,12 +80,17 @@ const scoreFields = {
     labelDisagreements: scoreCount,
     unknownJudgeLabels: scoreCount,
     unexpectedFamilyClaims: scoreCount,
+    declaredClaimProbabilities: scoreCount,
+    unknownClaimProbabilities: scoreCount,
   }),
   scoringReady: z.boolean(),
   artifactBindingsChecked: z.literal(true),
   pairingBoundToManifest: z.literal(true),
   labelSource: z.literal("frozen-declared-synthetic-case-variants"),
-  probabilitiesAvailable: z.literal(false),
+  probabilitiesAvailable: z.boolean(),
+  probabilitySource: z.literal(
+    "sealed-host-declared-uncalibrated-claim-probability",
+  ),
   sourceIncluded: z.literal(false),
   claimsVerified: z.literal(false),
   labelsVerified: z.literal(false),
@@ -270,6 +277,21 @@ export const reviewBenchmarkWorkerSummarySchema = z.strictObject({
   sourceIncluded: z.literal(false),
 });
 
+const judgingEvidence = reviewBenchmarkJudgingSchema.shape.packets.element;
+const blindOutput = reviewModelOutputSchema.extend({
+  candidates: z.array(reviewBlindCandidateSchema).max(32),
+});
+const blindEvidence = judgingEvidence.extend({
+  outputs: z.array(blindOutput).max(6),
+  native: z
+    .array(
+      z.strictObject({
+        candidate: reviewBlindCandidateSchema,
+        observations: reviewNativeObservationSchema,
+      }),
+    )
+    .max(1),
+});
 export const reviewBenchmarkJudgePacketSchema = z.strictObject({
   ...flags,
   format: z.literal("review-benchmark-judge-packet"),
@@ -279,10 +301,13 @@ export const reviewBenchmarkJudgePacketSchema = z.strictObject({
   sessionRequirement: z.literal("fresh-host-session"),
   sourceTrust: z.literal("untrusted-source-and-review-text"),
   sourceIncluded: z.literal(true),
-  evidence: reviewBenchmarkJudgingSchema.shape.packets.element,
+  evidence: blindEvidence,
   claims: z
     .array(
-      z.strictObject({ claimId: digest, candidate: reviewCandidateSchema }),
+      z.strictObject({
+        claimId: digest,
+        candidate: reviewBlindCandidateSchema,
+      }),
     )
     .max(192),
 });

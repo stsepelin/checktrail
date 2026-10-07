@@ -91,9 +91,9 @@ production-install harness stays outside the installed product. Compiling privat
 mutations test weighted merging, cluster disjointness and support boundaries
 against unchanged original test callbacks, then restore source and build.
 
-This slice accepts separately supplied numerical observations. Actual reviewer
-candidate contracts still provide no numerical probability. Authoritative
-judgments, candidate-to-probability evidence binding, general multi-claim scoring,
+This slice accepts separately supplied numerical observations. [Candidate probability declarations](REVIEW-CLAIM-PROBABILITY.md) now bind
+uncalibrated numerical predictions to sealed single-claim artifacts. Authoritative
+judgments, verified confidence provenance, general multi-claim scoring,
 observed host isolation, frozen cohort eligibility and held-out quality acceptance
 remain required. No field evaluation or model inference is opened by a fit or by
 a passing development test. Gate A remains open.

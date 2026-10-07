@@ -247,3 +247,11 @@ artifact recomputation and read-only library/CLI/MCP agreement. The matrix runs
 with its harness outside the product. This is configured development acceptance;
 hosted results must be checked at the exact revision before claiming a pass. It
 performs no model inference or field evaluation.
+
+The mandatory `review-claim-probability` profile requires endpoint/legacy controls,
+strict nullable injected-transport schemas, independent-stage projections, native
+case identity siblings, sealed original probability accounting, hand-computed
+losses, certainty errors, override/tamper/incomplete-slot controls and CLI/MCP
+agreement. `verify-review-claim-probability-package.mjs` repeats the same callbacks
+from a fresh offline production installation. No external model calls or field
+reviews are part of this development profile.
