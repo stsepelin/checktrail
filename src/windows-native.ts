@@ -305,6 +305,8 @@ let finished=false,force;
 const child=spawn(supervisor,['-NoLogo','-NoProfile','-NonInteractive','-EncodedCommand',encoded],{
  cwd:process.cwd(),env:process.env,detached:false,windowsHide:true,shell:false,stdio:['ignore','inherit','inherit']
 });
+// Release the launcher's own Windows current-directory handle before guardian cleanup.
+try { process.chdir(require('node:path').parse(process.cwd()).root); } catch { child.kill('SIGKILL');process.exit(253); }
 if(child.pid)process.send({requestId:request,supervisorPid:child.pid},error=>{if(error&&!finished)parentLost();});
 function parentLost(){
  if(finished||force)return;
