@@ -1,3 +1,4 @@
+import { captureProcessOutput } from "./process-output.js";
 import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import {
@@ -402,8 +403,18 @@ export async function runWindowsProcess(
         if (force) clearTimeout(force);
         if (drain) clearTimeout(drain);
         options.signal?.removeEventListener("abort", cancel);
-        result.stdout = Buffer.concat(stdout).toString("utf8");
-        result.stderr = Buffer.concat(stderr).toString("utf8");
+        const out = Buffer.concat(stdout),
+          err = Buffer.concat(stderr);
+        result.stdout = out.toString("utf8");
+        result.stderr = err.toString("utf8");
+        if (options.captureRawOutput)
+          result.capturedOutput = captureProcessOutput(
+            out,
+            err,
+            result.outputBytes,
+            !result.truncated &&
+              result.errorCode !== "WINDOWS_OUTPUT_INCOMPLETE",
+          );
         try {
           const entry = await lstat(receiptFile);
           if (!entry.isFile() || entry.isSymbolicLink() || entry.size > 4096)

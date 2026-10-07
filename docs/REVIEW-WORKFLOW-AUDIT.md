@@ -165,3 +165,9 @@ Sealed benchmark cohorts, frozen execution protocols, complete model and native
 attempt artifacts, independently observed host isolation, independent judgments,
 calibration and paired clustered quality scoring remain required. Gate A remains
 open; this slice starts no real-project field evaluation or quality comparison.
+
+Version 3 Node probe receipts additionally retain bounded physical process output
+and status for reached attempts inside the existing private native receipt. The
+journal's existing byte limits still apply: an artifact that cannot fit cannot
+be reported as completely retained. Summaries and independent worker packets
+omit these raw artifacts. See [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md).

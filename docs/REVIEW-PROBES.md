@@ -61,7 +61,7 @@ provider and native stages. Cleanup completes before execution slots are release
 Cleanup and filesystem work can outlast a deadline; this is not a hard elapsed
 time guarantee.
 
-Version 2 probe receipts retain limits, calls, total bytes, stop reason and each
+Version 2 and 3 probe receipts retain limits, calls, total bytes, stop reason and each
 case's invocation/byte accounting. Imports reconstruct every admission and total;
 version 1 receipts remain readable with no claim that they contain a run budget.
 A raw output chunk may arrive beyond the allowance before process-group termination.
@@ -123,3 +123,13 @@ advance; no imported tool-argument report is used as native proof.
 The [native budget measurement](measurements/review-native-budget-2026-10-02.json)
 records the version 2 call/output/wall/cancellation/cleanup controls and their exact
 source/runtime bindings. Wider R7 profiles and Gate A remain open.
+
+## Physical evidence receipts
+
+New executions produce version 3 receipts, retaining the exact bounded physical
+stdout/stderr of every reached worker attempt with canonical bytes, hashes and
+process status. The parser reconciles the artifact with admission accounting and
+replays valid worker observations. Unstarted cases contain no invented attempt.
+Versions 1 and 2 remain readable as historical contracts. Raw artifacts stay out
+of summaries and independent model packets. See
+[NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md) for privacy, limits and acceptance.

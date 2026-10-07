@@ -1,3 +1,4 @@
+import { parseCapturedProcessOutput } from "./process-output.js";
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { constants } from "node:fs";
@@ -183,7 +184,7 @@ export async function runReviewProbe(
     throw new Error(
       "Native probe citations must match assigned source exactly",
     );
-  const trials: Extract<ReviewProbeRun, { schemaVersion: 2 }>["trials"] =
+  const trials: Extract<ReviewProbeRun, { schemaVersion: 3 }>["trials"] =
     recipe.cases.map((item) => ({
       id: item.id,
       role: item.role,
@@ -297,6 +298,7 @@ export async function runReviewProbe(
           {
             timeoutMs: Math.min(120_000, remaining),
             maxOutputBytes: outputLimitBytes,
+            captureRawOutput: true,
             ...(options.signal ? { signal: options.signal } : {}),
           },
         );
@@ -308,6 +310,17 @@ export async function runReviewProbe(
           outputLimitBytes,
           outputBytes,
           truncated: result.truncated,
+          artifact: {
+            profile: "native-probe-process-attempt-v1",
+            requestDigest: hash(request),
+            exitCode: result.exitCode,
+            signal: result.signal,
+            timedOut: result.timedOut,
+            cancelled: result.cancelled,
+            truncated: result.truncated,
+            errorCode: result.errorCode ?? null,
+            output: result.capturedOutput ?? null,
+          },
         };
         if (result.truncated) nativeBudget.stopReason = "output-limit";
         trial.durationMs = Math.round(result.durationMs);
@@ -326,7 +339,9 @@ export async function runReviewProbe(
           result.errorCode ||
           result.exitCode !== 0 ||
           result.signal ||
-          result.stderr
+          result.stderr ||
+          !result.capturedOutput ||
+          !result.capturedOutput.completeForObservedStreams
         ) {
           trial.status = "unresolved";
           trial.reason = result.cancelled
@@ -497,7 +512,7 @@ export async function runReviewProbe(
     ).length,
   };
   return parseReviewProbeRun({
-    schemaVersion: 2,
+    schemaVersion: 3,
     nativeBudget,
     format: "review-probe-run",
     engineVersion: VERSION,
@@ -534,7 +549,7 @@ export async function runReviewProbe(
   });
 }
 function reconcileNativeBudget(
-  run: Extract<ReviewProbeRun, { schemaVersion: 2 }>,
+  run: Extract<ReviewProbeRun, { schemaVersion: 2 | 3 }>,
 ): void {
   const budget = run.nativeBudget;
   let calls = 0,
@@ -613,9 +628,79 @@ function reconcileNativeBudget(
   )
     throw new Error("Native run budget does not reconcile");
 }
+function reconcileNativeOutput(
+  run: Extract<ReviewProbeRun, { schemaVersion: 3 }>,
+): void {
+  for (const trial of run.trials) {
+    const execution = trial.execution;
+    if (!execution) continue;
+    const artifact = execution.artifact;
+    if (artifact.truncated !== execution.truncated)
+      throw new Error("Native attempt truncation flags disagree");
+    const output = artifact.output
+      ? parseCapturedProcessOutput(artifact.output)
+      : null;
+    if (
+      output &&
+      (output.observedBytes !== execution.outputBytes ||
+        output.stdout.bytes + output.stderr.bytes >
+          execution.outputLimitBytes ||
+        (execution.truncated && output.completeForObservedStreams))
+    )
+      throw new Error("Native attempt physical byte accounting disagrees");
+    if (
+      trial.status === "observed" &&
+      (!output ||
+        !output.completeForObservedStreams ||
+        artifact.exitCode !== 0 ||
+        artifact.signal ||
+        artifact.errorCode ||
+        artifact.timedOut ||
+        artifact.cancelled ||
+        artifact.truncated ||
+        output.stderr.bytes !== 0)
+    )
+      throw new Error(
+        "Unusable native attempt cannot supply an observed claim",
+      );
+    if (trial.functionExecuted) {
+      if (
+        !output ||
+        !output.completeForObservedStreams ||
+        artifact.exitCode !== 0 ||
+        artifact.signal ||
+        artifact.errorCode ||
+        artifact.timedOut ||
+        artifact.cancelled ||
+        artifact.truncated ||
+        output.stderr.bytes !== 0
+      )
+        throw new Error(
+          "Native function observation lacks usable complete physical output",
+        );
+      const wire = reviewProbeWireSchema.parse(
+        JSON.parse(
+          Buffer.from(output.stdout.base64, "base64").toString("utf8"),
+        ),
+      );
+      if (
+        wire.requestDigest !== artifact.requestDigest ||
+        wire.sourceDigest !== run.sourceDigest ||
+        wire.actual !== trial.actual ||
+        !isDeepStrictEqual(wire.ranges, trial.ranges) ||
+        wire.functionRange.start < run.functionRange.start ||
+        wire.functionRange.end > run.functionRange.end
+      )
+        throw new Error(
+          "Native parsed observation disagrees with retained process output",
+        );
+    }
+  }
+}
 export function parseReviewProbeRun(input: unknown): ReviewProbeRun {
   const run = reviewProbeRunSchema.parse(input);
-  if (run.schemaVersion === 2) reconcileNativeBudget(run);
+  if (run.schemaVersion !== 1) reconcileNativeBudget(run);
+  if (run.schemaVersion === 3) reconcileNativeOutput(run);
   const counts = run.counts;
   if (
     counts.selected !== run.trials.length ||
