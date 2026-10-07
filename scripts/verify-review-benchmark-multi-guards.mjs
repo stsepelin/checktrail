@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import process from "node:process";
+import { performance } from "node:perf_hooks";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
 assert.ok(
@@ -96,6 +97,20 @@ const guards = [
 ];
 const environment = { ...process.env };
 delete environment.NODE_TEST_CONTEXT;
+// A selected callback can exercise many paired trials and invalid mappings.
+// Bound the complete callback without changing its nested execution budgets.
+const callbackTimeoutMs = 120000;
+const started = performance.now();
+function phaseProgress(guard, phase, status) {
+  process.stderr.write(
+    JSON.stringify({
+      guard,
+      phase,
+      status,
+      elapsedMs: Math.round(performance.now() - started),
+    }) + "\n",
+  );
+}
 function run(name) {
   const pattern = "^" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$";
   const result = spawnSync(
@@ -105,7 +120,7 @@ function run(name) {
       cwd: repository,
       env: environment,
       encoding: "utf8",
-      timeout: 45000,
+      timeout: callbackTimeoutMs,
       maxBuffer: 1024 * 1024,
     },
   );
@@ -113,12 +128,26 @@ function run(name) {
   assert.equal(result.signal, null, result.stdout + result.stderr);
   return result;
 }
+function requireTerminal(result, name, failed) {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  assert.match(
+    result.stdout,
+    new RegExp(
+      "^" + (failed ? "not ok" : "ok") + " [0-9]+ - " + escaped + "$",
+      "m",
+    ),
+    "The exact original callback must run without a skip",
+  );
+}
 const evidence = [];
 for (const guard of guards) {
   const source = path.join(repository, "dist/src", guard.source),
     original = await readFile(source, "utf8");
+  phaseProgress(guard.id, "original", "started");
   const baseline = run(guard.name);
   assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
+  requireTerminal(baseline, guard.name, false);
+  phaseProgress(guard.id, "original", "completed");
   let mutant = original;
   for (const [before, after] of guard.replacements) {
     assert.equal(
@@ -134,6 +163,7 @@ for (const guard of guards) {
       encoding: "utf8",
     });
     assert.equal(compiled.status, 0, compiled.stderr);
+    phaseProgress(guard.id, "mutant", "started");
     const result = run(guard.name);
     assert.equal(
       result.status,
@@ -145,6 +175,7 @@ for (const guard of guards) {
         result.stderr,
     );
     assert.match(result.stdout, /ERR_ASSERTION/);
+    requireTerminal(result, guard.name, true);
     assert.doesNotMatch(
       result.stdout + result.stderr,
       /SyntaxError|ERR_MODULE_NOT_FOUND|Cannot find (?:module|package)/i,
@@ -154,6 +185,7 @@ for (const guard of guards) {
       originalCallback,
       "Guard callback changed",
     );
+    phaseProgress(guard.id, "mutant", "completed");
     evidence.push({
       id: guard.id,
       callback: guard.name,
@@ -168,8 +200,11 @@ for (const guard of guards) {
   } finally {
     await writeFile(source, original);
   }
+  phaseProgress(guard.id, "restored", "started");
   const restored = run(guard.name);
   assert.equal(restored.status, 0, restored.stdout + restored.stderr);
+  requireTerminal(restored, guard.name, false);
+  phaseProgress(guard.id, "restored", "completed");
 }
 process.stdout.write(
   JSON.stringify({
