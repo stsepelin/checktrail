@@ -576,7 +576,11 @@ declared projections, including wildcard listeners and container factory targets
 and initializes Artisan before collecting `withSchedule()` registrations. Native
 cases compare changed/fixed assemblies and reject unsupported, empty or failed
 capture. The tests read the public synthetic Laravel example files directly.
-See `LARAVEL.md`; this does not establish application authorization correctness or
+Its shared runner also owns Laravel cache parents and cleans them after reached
+PHP termination, cancellation, timeout and output exhaustion. Original native
+library, CLI/MCP and fresh production-package controls preserve stale project
+caches, dotenv exclusion and external symlink targets. Node-owner loss remains
+unverified. See `LARAVEL.md`; this does not establish application authorization correctness or
 complete container/object-state equivalence.
 
 Public FastAPI and Django examples are also exercised through their native Linux

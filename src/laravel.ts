@@ -62,6 +62,7 @@ export async function laravelCheck(
         source.fingerprint,
       ],
       cwd: project.path,
+      temporaryDirectory: true,
       env: { APP_ENV: "testing", APP_DEBUG: "false" },
     },
   ];

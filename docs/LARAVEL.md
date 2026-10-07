@@ -40,9 +40,10 @@ and points Laravel's dotenv loader at that empty directory. Existing project
 dotenv files and compiled caches are not consumed by the collector's bootstrap.
 Operator-permitted environment variables still reach project code. Bootstrap that
 has already run, a different application base path, altered cache paths, or a
-non-testing resolved environment produces an error. Temporary cache files are
-removed on normal PHP shutdown; forced process termination can leave temporary
-files for the host's temporary-directory cleanup.
+non-testing resolved environment produces an error. The shared process runner owns the temporary parent and removes it after PHP and
+its observed descendants stop, including forced PHP termination, cancellation,
+timeout and output exhaustion. PHP shutdown also attempts immediate cache-file
+cleanup. This does not establish cleanup after loss of the Node owner process.
 
 | Collection | Recorded projection                                                                                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

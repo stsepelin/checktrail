@@ -114,6 +114,11 @@ jobs:
         run: |
           node scripts/verify-required-native-tests.mjs init-publication
           node scripts/verify-init-publication-package.mjs
+      - name: Require native Laravel owned-cache cleanup and fresh package
+        run: |
+          node scripts/verify-required-native-tests.mjs laravel-cache
+          node scripts/verify-laravel-cache-guards.mjs
+          node scripts/verify-laravel-cache-package.mjs
       - run: node scripts/verify-required-native-tests.mjs posix-cleanup
       - run: node scripts/verify-posix-cleanup-guards.mjs
       - name: Require prepared native regression profiles
