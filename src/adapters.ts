@@ -15,6 +15,7 @@ import {
   dotnetFormatCheck,
 } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
+import { swiftToolsCheck } from "./swift-tools.js";
 import { rubyCheck } from "./ruby.js";
 import { rubyToolsCheck } from "./ruby-tools.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
@@ -141,7 +142,11 @@ export const adapters = [
     markers: ["Gemfile"],
     checks: ["ruby.syntax", "ruby.rubocop", "ruby.rspec", "ruby.minitest"],
   },
-  { id: "swift", markers: ["Package.swift"], checks: ["swift.syntax"] },
+  {
+    id: "swift",
+    markers: ["Package.swift"],
+    checks: ["swift.syntax", "swift.build", "swift.test", "swift.swiftlint"],
+  },
   {
     id: "cpp",
     markers: ["CMakeLists.txt", "meson.build", "compile_commands.json"],
@@ -533,7 +538,20 @@ export async function checksFor(
         ? [await dotnetTestCheck(source, project)]
         : []),
     ];
-  if (project.adapter === "swift") return [swiftCheck(project)];
+  if (project.adapter === "swift")
+    return [
+      swiftCheck(project),
+      ...(project.files.includes("checktrail.swift-tools.json") ||
+      requested?.some((id) => /^swift\.(?:build|test|swiftlint)$/.test(id))
+        ? await Promise.all(
+            (["build", "test", "swiftlint"] as const)
+              .filter(
+                (mode) => !requested || requested.includes(`swift.${mode}`),
+              )
+              .map((mode) => swiftToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
   if (project.adapter === "ruby")
     return [
       rubyCheck(project),

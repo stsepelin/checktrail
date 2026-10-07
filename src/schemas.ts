@@ -17,6 +17,7 @@ export {
   externalResultSchema,
 } from "./external-adapter.js";
 export { actionlintConfigSchema } from "./actionlint.js";
+export { swiftToolsConfigSchema } from "./swift-tools.js";
 export {
   rubyToolsConfigSchema,
   rubyToolsRepositorySchema,

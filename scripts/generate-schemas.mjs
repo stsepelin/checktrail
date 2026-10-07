@@ -1,3 +1,4 @@
+import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
 import {
   rubyToolsConfigSchema,
   rubyToolsRepositorySchema,
@@ -122,6 +123,7 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "swift-tools-config": swiftToolsConfigSchema,
   "ruby-tools-config": rubyToolsConfigSchema,
   "ruby-tools-repository": rubyToolsRepositorySchema,
   "dotnet-build-config": dotnetBuildConfigSchema,

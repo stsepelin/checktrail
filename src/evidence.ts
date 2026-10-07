@@ -1,4 +1,5 @@
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
+import { swiftToolsEvidence } from "./swift-tools-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -350,6 +351,8 @@ export function evaluate(
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "swift-tools-json")
+    return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")
     return { ...result, ...rubyToolsEvidence(check, processes) };
   if (check.parser === "dotnet-format-json")

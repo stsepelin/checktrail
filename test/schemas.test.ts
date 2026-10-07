@@ -87,6 +87,7 @@ import {
   reportSchema,
   reportSummarySchema,
 } from "../src/schemas.js";
+import { swiftToolsConfigSchema } from "../src/swift-tools.js";
 import { importJUnit } from "../src/junit.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectPlan, projectReport } from "../src/output.js";
@@ -107,6 +108,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "actionlint-config": actionlintConfigSchema,
     "go-scope-policy": goScopePolicySchema,
     "go-build-policy": goBuildPolicySchema,
+    "swift-tools-config": swiftToolsConfigSchema,
     "dotnet-config": dotnetConfigSchema,
     "dotnet-build-config": dotnetBuildConfigSchema,
     "dotnet-build-repository": dotnetBuildRepositorySchema,

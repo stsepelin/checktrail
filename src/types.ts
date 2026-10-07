@@ -44,6 +44,7 @@ export const PARSERS = [
   "external-json",
   "ruby-syntax",
   "ruby-tools-json",
+  "swift-tools-json",
   "silent-syntax",
   "ruff-json",
   "mypy-json",

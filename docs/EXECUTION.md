@@ -155,7 +155,11 @@ an unavailable runtime or external service does not count as verification.
   semantics remain separate capabilities.
 - Implemented: Swift source/manifest grammar checking without SwiftPM evaluation,
   native macOS compiler identity, generated .build exclusion and explicit regression
-  evidence distinguishing syntax from type checking. Swift build/test remain work.
+  evidence distinguishing syntax from type checking. The separate SWIFT-TOOLS.md
+  profile adds pinned Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit
+  SwiftLint rules, native compiler/AST/scope/case/lifecycle evidence, source and
+  offline installed CLI/MCP acceptance and compiling guard controls. Broader E14
+  profiles and Gate A remain open.
 - Implemented: prepared C/C++ Clang compilation-database checks with closed flag
   handling, native SARIF diagnostics, fresh dependency/source accounting and native
   macOS/Linux broken/fixed cases. Linking, CTest, clang-tidy and cross-target
