@@ -1,83 +1,191 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "profile": { "type": "string", "const": "node-export-boolean-v1" },
-    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$" },
-    "family": {
-      "type": "string",
-      "enum": [
-        "authorization-tenancy",
-        "identifiers-allowlists",
-        "types-numeric-semantics",
-        "lifecycle-ordering",
-        "assembly-wiring",
-        "concurrency-resources",
-        "atomic-artifacts",
-        "dependencies-builds",
-        "test-adequacy"
-      ]
-    },
-    "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
-    "exportName": {
-      "type": "string",
-      "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
-    },
-    "minimumTriggerScale": { "type": "integer", "minimum": 1, "maximum": 1024 },
-    "guard": {
-      "anyOf": [
-        {
-          "type": "object",
-          "properties": {
-            "start": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
-            "end": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
-          },
-          "required": ["start", "end"],
-          "additionalProperties": false
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": { "type": "string", "const": "node-export-boolean-v1" },
+        "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$" },
+        "family": {
+          "type": "string",
+          "enum": [
+            "authorization-tenancy",
+            "identifiers-allowlists",
+            "types-numeric-semantics",
+            "lifecycle-ordering",
+            "assembly-wiring",
+            "concurrency-resources",
+            "atomic-artifacts",
+            "dependencies-builds",
+            "test-adequacy"
+          ]
         },
-        { "type": "null" }
-      ]
-    },
-    "cases": {
-      "minItems": 3,
-      "maxItems": 16,
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["baseline", "trigger", "near-miss"]
-          },
-          "args": {
-            "maxItems": 8,
-            "type": "array",
-            "items": { "$ref": "#/$defs/__schema0" }
-          },
-          "expected": { "type": "boolean" }
+        "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "exportName": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
         },
-        "required": ["id", "role", "args", "expected"],
-        "additionalProperties": false
-      }
+        "minimumTriggerScale": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "guard": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                }
+              },
+              "required": ["start", "end"],
+              "additionalProperties": false
+            },
+            { "type": "null" }
+          ]
+        },
+        "cases": {
+          "minItems": 3,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["baseline", "trigger", "near-miss"]
+              },
+              "args": {
+                "maxItems": 8,
+                "type": "array",
+                "items": { "$ref": "#/$defs/__schema0" }
+              },
+              "expected": { "type": "boolean" }
+            },
+            "required": ["id", "role", "args", "expected"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "id",
+        "family",
+        "file",
+        "exportName",
+        "minimumTriggerScale",
+        "guard",
+        "cases"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "profile": { "type": "string", "const": "node-export-json-v1" },
+        "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$" },
+        "family": {
+          "type": "string",
+          "enum": [
+            "authorization-tenancy",
+            "identifiers-allowlists",
+            "types-numeric-semantics",
+            "lifecycle-ordering",
+            "assembly-wiring",
+            "concurrency-resources",
+            "atomic-artifacts",
+            "dependencies-builds",
+            "test-adequacy"
+          ]
+        },
+        "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "exportName": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+        },
+        "minimumTriggerScale": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "guard": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                }
+              },
+              "required": ["start", "end"],
+              "additionalProperties": false
+            },
+            { "type": "null" }
+          ]
+        },
+        "cases": {
+          "minItems": 3,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["baseline", "trigger", "near-miss"]
+              },
+              "args": {
+                "maxItems": 8,
+                "type": "array",
+                "items": { "$ref": "#/$defs/__schema1" }
+              },
+              "expected": { "$ref": "#/$defs/__schema2" }
+            },
+            "required": ["id", "role", "args", "expected"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "id",
+        "family",
+        "file",
+        "exportName",
+        "minimumTriggerScale",
+        "guard",
+        "cases"
+      ],
+      "additionalProperties": false
     }
-  },
-  "required": [
-    "schemaVersion",
-    "profile",
-    "id",
-    "family",
-    "file",
-    "exportName",
-    "minimumTriggerScale",
-    "guard",
-    "cases"
   ],
-  "additionalProperties": false,
   "$defs": {
     "__schema0": {
       "anyOf": [
@@ -90,6 +198,34 @@
           "type": "object",
           "propertyNames": { "type": "string" },
           "additionalProperties": { "$ref": "#/$defs/__schema0" }
+        }
+      ]
+    },
+    "__schema1": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array", "items": { "$ref": "#/$defs/__schema1" } },
+        {
+          "type": "object",
+          "propertyNames": { "type": "string" },
+          "additionalProperties": { "$ref": "#/$defs/__schema1" }
+        }
+      ]
+    },
+    "__schema2": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array", "items": { "$ref": "#/$defs/__schema2" } },
+        {
+          "type": "object",
+          "propertyNames": { "type": "string" },
+          "additionalProperties": { "$ref": "#/$defs/__schema2" }
         }
       ]
     }

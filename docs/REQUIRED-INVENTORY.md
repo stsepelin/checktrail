@@ -115,3 +115,10 @@ in [native-raw-evidence-2026-10-06.json](measurements/native-raw-evidence-2026-1
 The selected-test acceptance ledger remains distinct from product capture. Wider
 tool/model archives, Windows acceptance and the remaining R7/R8 inventory stay
 open; see [NATIVE-RAW-EVIDENCE.md](NATIVE-RAW-EVIDENCE.md).
+
+The `node-export-json-v1` profile adds bounded structured native observations and
+original declared-contract broken/fixed/near-miss controls for all nine catalogue
+families. Exact source/fresh-package and preserved-profile evidence is in
+[native-json-probes-2026-10-06.json](measurements/native-json-probes-2026-10-06.json).
+This R4 profile does not replace wider language/tool/framework obligations or
+establish intended production policy, caller reachability or claim truth.
