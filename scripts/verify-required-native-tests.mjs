@@ -32,7 +32,8 @@ for (const profile of selection) {
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs = selection.includes("dotnet-method")
   ? 600000
-  : selection.some((profile) =>
+  : fullSuite ||
+      selection.some((profile) =>
         [
           "dotnet-build",
           "gradle",

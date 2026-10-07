@@ -629,15 +629,18 @@ test("required profile batches execute shared files once and preserve all obliga
   const single = cli("first");
   assert.equal(single.status, 0, single.stderr);
   assert.equal(JSON.parse(single.stdout).profile, "first");
+  assert.equal(JSON.parse(single.stdout).timeoutMs, 120000);
   assert.equal(Object.hasOwn(JSON.parse(single.stdout), "profiles"), false);
   const batch = cli("first", "second");
   assert.equal(batch.status, 0, batch.stderr);
   assert.equal(JSON.parse(batch.stdout).required, 2);
+  assert.equal(JSON.parse(batch.stdout).timeoutMs, 120000);
   assert.equal(cli("first", "absent").status, 1);
   const suite = cli("--full-suite", "first", "second");
   assert.equal(suite.status, 0, suite.stderr);
   assert.equal(JSON.parse(suite.stdout).optionalSkipped, 1);
   assert.equal(JSON.parse(suite.stdout).required, 2);
+  assert.equal(JSON.parse(suite.stdout).timeoutMs, 300000);
   for (const selection of [
     [],
     ["--full-suite"],
