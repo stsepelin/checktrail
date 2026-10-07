@@ -2387,6 +2387,32 @@
       "name": "native acceptance ledger preflights every selected file within exact byte limits"
     }
   ],
+  "review-paired-scoring": [
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring preserves selected labels missing slots and directional denominators"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring resamples whole unequal clusters and preserves both arms together"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring refuses undefined partial or degenerate interval evidence"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",

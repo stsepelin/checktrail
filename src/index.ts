@@ -188,3 +188,15 @@ export type {
   ReviewBenchmarkJudgePacket,
   ReviewBenchmarkJudgmentResponse,
 } from "./review-benchmark-schema.js";
+
+export {
+  scorePairedReviewTrials,
+  projectPairedReviewScoring,
+} from "./review-paired-scoring.js";
+export type { ReviewPairedReport } from "./review-paired-scoring.js";
+export {
+  reviewPairedProtocolSchema,
+  reviewPairedInputSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";

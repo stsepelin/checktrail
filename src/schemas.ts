@@ -413,3 +413,10 @@ export {
   reviewBenchmarkWorkerSummarySchema,
 } from "./review-benchmark-schema.js";
 export { reviewWorkflowAuditBindingSchema } from "./review-workflow-audit-schema.js";
+
+export {
+  reviewPairedProtocolSchema,
+  reviewPairedInputSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";

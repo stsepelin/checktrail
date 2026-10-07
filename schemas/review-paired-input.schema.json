@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": { "type": "string", "const": "declared-paired-cluster-v1" },
+        "purpose": { "type": "string", "enum": ["development", "held-out"] },
+        "seed": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "resamples": { "type": "integer", "minimum": 128, "maximum": 4096 },
+        "confidenceLevel": {
+          "type": "number",
+          "minimum": 0.8,
+          "maximum": 0.99
+        },
+        "trials": {
+          "minItems": 1,
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "clusterId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "family": {
+                "type": "string",
+                "enum": [
+                  "authorization-tenancy",
+                  "identifiers-allowlists",
+                  "types-numeric-semantics",
+                  "lifecycle-ordering",
+                  "assembly-wiring",
+                  "concurrency-resources",
+                  "atomic-artifacts",
+                  "dependencies-builds",
+                  "test-adequacy"
+                ]
+              }
+            },
+            "required": ["id", "clusterId", "family"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "purpose",
+        "seed",
+        "resamples",
+        "confidenceLevel",
+        "trials"
+      ],
+      "additionalProperties": false
+    },
+    "labels": {
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+          },
+          "label": {
+            "type": "string",
+            "enum": ["defect", "valid", "near-miss", "unresolved"]
+          }
+        },
+        "required": ["id", "label"],
+        "additionalProperties": false
+      }
+    },
+    "observations": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "unsupported",
+                  "incomplete",
+                  "budget-exhausted",
+                  "unreviewed",
+                  "stale",
+                  "cancelled"
+                ]
+              },
+              "decision": { "type": "string", "enum": ["finding", "abstain"] },
+              "probability": {
+                "anyOf": [
+                  { "type": "number", "minimum": 0, "maximum": 1 },
+                  { "type": "null" }
+                ]
+              },
+              "judgement": {
+                "type": "string",
+                "enum": [
+                  "supported",
+                  "wrong-mechanism",
+                  "wrong-address",
+                  "unreachable-fix",
+                  "out-of-scope",
+                  "refuted",
+                  "unresolved",
+                  "none"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "decision",
+              "probability",
+              "judgement"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "b": {
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "unsupported",
+                  "incomplete",
+                  "budget-exhausted",
+                  "unreviewed",
+                  "stale",
+                  "cancelled"
+                ]
+              },
+              "decision": { "type": "string", "enum": ["finding", "abstain"] },
+              "probability": {
+                "anyOf": [
+                  { "type": "number", "minimum": 0, "maximum": 1 },
+                  { "type": "null" }
+                ]
+              },
+              "judgement": {
+                "type": "string",
+                "enum": [
+                  "supported",
+                  "wrong-mechanism",
+                  "wrong-address",
+                  "unreachable-fix",
+                  "out-of-scope",
+                  "refuted",
+                  "unresolved",
+                  "none"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "decision",
+              "probability",
+              "judgement"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["a", "b"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["protocol", "labels", "observations"],
+  "additionalProperties": false
+}
