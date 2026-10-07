@@ -42,7 +42,11 @@ shared by profiles are checked once; duplicates within a profile remain errors.
 The batch lists each selected profile and its requirement count, while `required`
 is the number of unique obligations. A failed batch establishes none of its
 selected profiles as complete. The single-profile JSON format remains available
-for fresh installed-package harnesses.
+for fresh installed-package harnesses. Each profile retains its 256-obligation
+limit; a batch may contain at most 1,024 unique obligations, subject to the
+1,024-event terminal ledger. Every selected file, including additional full-suite
+files, is fingerprinted before and after execution. Unavailable or changed bytes,
+truncated names and truncated ledgers fail acceptance even when observed tests pass.
 
 The main matrix uses `--full-suite` with its prepared profiles after type checking,
 linting and building. This executes every compiled `dist/test/*.test.js` file
@@ -69,7 +73,19 @@ The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `rust`, `rust-format`, `clippy` and `rust-tests`. Dedicated container jobs
 require `clang`, `java`, `dotnet`, `actionlint`, `vue-router` and `nuxt`.
 Dedicated JVM jobs require `checkstyle`, `maven` and `gradle`, including offline
-installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The packaged review and
+installed CLI/MCP profiles. The .NET job also prepares original public dependency artifacts and requires `dotnet-build`, `dotnet-test`, `dotnet-format`, `dotnet-generated` and `dotnet-method` against source and an offline production install; its newly configured hosted run remains unverified. Ruby and Swift have dedicated required-native jobs. The new `swift-tools`
+job uses `ubuntu-24.04-arm`, prepares pinned runtime/release artifacts and requires
+the native profile against both source and a fresh offline production install.
+Its local acceptance is recorded in SWIFT-TOOLS.md; hosted execution of the new
+job remains unverified. The new `cpp-tools` ARM64 job prepares checksum-pinned
+Alpine runtime packages and requires the native profile against source and a fresh
+offline production installation. CPP-TOOLS.md records local acceptance; hosted
+execution of this job remains unverified. The new `kubeconform` ARM64 job uses the
+pinned infrastructure runtime and requires source and offline installed-package
+controls. KUBECONFORM.md records local acceptance; this hosted job remains
+unverified. The new `terraform` ARM64 job uses that runtime for source and fresh
+offline installed-module controls recorded in TERRAFORM.md; its hosted execution
+is unverified. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
@@ -116,6 +132,57 @@ runs. The unchanged Ruby/Swift paths have their separate local evidence in
 `RUBY.md` and `SWIFT.md`. These records do not claim that the hosted matrix ran,
 that all profiles ran in a single environment, or that overlapping counts are
 independent tests.
+
+## Bounded terminal ledger
+
+The required-profile report now includes a version 1 terminal ledger. It records
+an ordered prefix of up to 1,024 terminal test/suite events, with bounded names,
+observed outcomes and durations. Every preregistered case separately records
+passed, failed, skipped, TODO, duplicate or not-observed state, even when no test
+runs. Only one passing test event from the exact selected file/name can satisfy
+a requirement. Suite events cannot satisfy it. Existing aggregate fields remain
+available; their `passed` count includes non-required tests in the selected files.
+
+Each distinct selected test file receives an opaque ID in manifest order and a
+SHA-256 fingerprint before and after the run. The harness preflights every file
+before starting any test. Missing/non-regular files and files exceeding 4 MiB
+prevent execution; changed, removed or unreadable bytes afterward make acceptance
+incomplete. Exact-limit files remain valid. This observes ordinary before/after
+changes, not an atomic or adversarial source snapshot. The ledger does not capture
+imports, product source, dependencies, raw output or whole-process identity.
+Tool/container and installed-package identities need their separate records.
+
+Truncated terminal events or names cannot yield complete acceptance, including
+when the required test passed before truncation. The ledger bounds retained
+terminal evidence, not every internal allocation made by Node's test runner.
+Test names and failure messages are test-authored data; opaque file IDs do not
+make those fields confidential. Retained failure metadata remains bounded.
+
+The `native-acceptance-ledger` profile is mandatory in the existing Node/OS
+matrix. Its original controls cover exact file/name identity, suite-only matches,
+non-required outcomes, duplicates, missing targets, skips/TODOs, failure, timeout,
+truncation, source changes/removal and byte/name boundaries. A multi-target
+preflight control verifies that an otherwise runnable target has no side effect
+when another required file is missing.
+
+The `timeoutMs` option configures Node's test timeout. It is not a universal hard
+process deadline or a claim of descendant cleanup: the tested Node 26 timer can
+remain alive after a failure is reported. CI job limits and the product execution
+runner's cancellation controls are separate. A harness exception exits without a
+complete receipt and is not credited as acceptance. This ledger improves native
+acceptance accounting; it does not close the wider R7/E6 all-attempt, raw-output,
+provenance or host-isolation requirements.
+
+The [dated ledger acceptance](measurements/native-acceptance-ledger-2026-10-06.json)
+records exact runtime, helper/test identities, original guard mutations and native
+source/fresh-installed adapter results. Its acceptance is scoped to the recorded
+revision and profiles.
+
+The `review-paired-scoring` profile requires original descriptive comparison
+controls in the existing Node/OS matrix. Its offline package helper repeats the
+same named assertions against shipped library/CLI/MCP bytes, with the acceptance
+harness and official client outside the installed package. It invokes no model
+and establishes no measured quality or observed independent-session claim.
 
 ## Fresh-runner package preparation
 
@@ -195,3 +262,31 @@ the original public fixture to acquire a dependency cache. Required native and
 installed acceptance then run with networking disabled and read-only source/cache
 mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
 is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.
+
+The separate `kustomize` job uses the prepared pinned infrastructure image and
+requires the bounded local assembly/render/schema profile through source and a
+fresh offline installed package. Native acceptance runs with no network. This
+configured hosted job has not been run for this revision; see KUSTOMIZE.md.
+
+The mandatory `review-benchmark-scoring` profile exercises the sealed synthetic
+artifact-to-scorer connection, including missing/unusable slots, contradictory
+labels, multiple claims and worker access boundaries. The matrix additionally
+runs `verify-review-benchmark-score-package.mjs` against a fresh offline production
+installation; its harness stays outside the installed product. These original
+synthetic checks do not run model inference or real-project evaluation.
+
+The mandatory `review-calibration` profile checks the original weighted analytic
+controls, split/model boundaries, missing/unknown accounting, unavailable families,
+artifact recomputation and read-only library/CLI/MCP agreement. The matrix runs
+`verify-review-calibration-package.mjs` against a fresh offline production install
+with its harness outside the product. This is configured development acceptance;
+hosted results must be checked at the exact revision before claiming a pass. It
+performs no model inference or field evaluation.
+
+The mandatory `review-claim-probability` profile requires endpoint/legacy controls,
+strict nullable injected-transport schemas, independent-stage projections, native
+case identity siblings, sealed original probability accounting, hand-computed
+losses, certainty errors, override/tamper/incomplete-slot controls and CLI/MCP
+agreement. `verify-review-claim-probability-package.mjs` repeats the same callbacks
+from a fresh offline production installation. No external model calls or field
+reviews are part of this development profile.

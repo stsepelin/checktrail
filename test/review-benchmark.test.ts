@@ -26,6 +26,8 @@ import {
   freezeReviewBenchmark,
 } from "../src/review-benchmark.js";
 import {
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
   reviewBenchmarkPacketSchema,
   reviewBenchmarkJudgingSchema,
   reviewBenchmarkJudgePacketSchema,
@@ -60,6 +62,10 @@ async function prepare(
   repetitions = 1,
   native = false,
   judging = false,
+  scoring = false,
+  scoringFamily: NonNullable<
+    ReviewBenchmarkPlan["scoring"]
+  >["cases"][number]["family"] = "identifiers-allowlists",
 ) {
   const cases = [];
   for (let i = 0; i < count; i++) {
@@ -143,6 +149,17 @@ async function prepare(
       },
     })),
   };
+  if (scoring)
+    plan.scoring = {
+      profile: "sealed-single-claim-paired-synthetic-v1",
+      seed: "b".repeat(64),
+      resamples: 128,
+      confidenceLevel: 0.95,
+      cases: plan.cases.map((c) => ({
+        id: c.id,
+        family: scoringFamily,
+      })),
+    };
   const frozen = freezeReviewBenchmark(
     cases[0]!.root,
     plan,
@@ -173,12 +190,15 @@ async function runTrial(
   sessionId?: string,
   sourceCaseIndex?: number,
   model?: string,
+  candidateCount = 1,
+  confidence?: import("../src/review-provider-schema.js").ReviewCandidate["confidence"],
 ) {
   const trial = fixture.manifest.trials[index]!,
     c = fixture.cases[sourceCaseIndex ?? trial.caseIndex]!;
   // Every trial gets fresh source storage; identical contexts must not depend on its absolute location.
   const fresh = await setup(t, c.context.files[0]!.content);
   assert.equal(fresh.context.contextDigest, c.context.contextDigest);
+  if (confidence !== undefined) fresh.target.confidence = confidence;
   const startup = fixture.benchmark.trialSetup(trial.trialId);
   const session = new ReviewWorkflowSession(fresh.root, {
     allowReviewSource: true,
@@ -207,7 +227,13 @@ async function runTrial(
     );
     const submission = response(
       assignment,
-      mode === "native" ? [fresh.target] : [],
+      mode === "native"
+        ? Array.from({ length: candidateCount }, (_, i) =>
+            i === 0
+              ? fresh.target
+              : { ...fresh.target, id: fresh.target.id + "-" + i },
+          )
+        : [],
     );
     if (sessionId) submission.host.sessionId = sessionId;
     if (model) submission.host.model = model;
@@ -1146,8 +1172,10 @@ async function prepareJudgments(
   count = 1,
   repetitions = 1,
   native = false,
+  scoring = false,
+  confidenceValues?: (number | null | undefined)[],
 ) {
-  const f = await prepare(t, count, repetitions, native, true);
+  const f = await prepare(t, count, repetitions, native, true, scoring);
   for (let i = 0; i < f.manifest.trials.length; i++)
     await runTrial(
       t,
@@ -1155,6 +1183,23 @@ async function prepareJudgments(
       i,
       native ? "native" : "empty",
       `original-review-session-${i}`,
+      undefined,
+      undefined,
+      1,
+      confidenceValues?.[
+        f.manifest.trials[i]!.caseIndex * 2 + f.manifest.trials[i]!.armIndex
+      ] === undefined
+        ? undefined
+        : {
+            profile: "declared-claim-support-probability-v1",
+            event: "supported-in-scope-actionable",
+            probability:
+              confidenceValues[
+                f.manifest.trials[i]!.caseIndex * 2 +
+                  f.manifest.trials[i]!.armIndex
+              ]!,
+            calibratedConfidence: false,
+          },
     );
   f.benchmark.collect();
   f.benchmark.prepareJudging();
@@ -1260,7 +1305,12 @@ test("benchmark judging seals independent anonymous source-bound responses and d
   );
   assert.equal(packet.claims.length, 1);
   assert.equal(packet.evidence.native.length, 1);
-  assert.equal(packet.evidence.native[0]!.run.counts.triggerMismatches, 1);
+  assert.equal(
+    packet.evidence.native[0]!.observations.cases.filter(
+      (c) => c.role === "trigger" && c.actual !== c.expected,
+    ).length,
+    1,
+  );
   noPrivate(JSON.stringify(packet), f);
   for (const value of [
     second,
@@ -1608,4 +1658,690 @@ test("benchmark judging leaves unusable trial evidence incomplete and rejects su
     (await judgmentArchive(native)).judgments.map((j) => j.status),
     ["invalid", "accepted"],
   );
+});
+
+test("benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake", async (t) => {
+  const legacy = await prepare(t);
+  assert.throws(() => legacy.benchmark.score(), /declared before freezing/);
+  const f = await prepare(t, 2, 1, false, true, true);
+  assert.throws(() => f.benchmark.score(), /must be sealed/);
+  const scoring = f.plan.scoring!;
+  for (const change of [
+    { scoring: { ...scoring, cases: scoring.cases.slice(1) } },
+    { scoring: { ...scoring, cases: [scoring.cases[0], scoring.cases[0]] } },
+    {
+      scoring: {
+        ...scoring,
+        cases: [
+          ...scoring.cases.slice(1),
+          { ...scoring.cases[0], id: "ForeignCase" },
+        ],
+      },
+    },
+    { scoring: { ...scoring, seed: "missing" } },
+    { scoring: { ...scoring, resamples: 127 } },
+    { scoring: { ...scoring, confidenceLevel: 1 } },
+    { scoring: { ...scoring, qualityGate: "passed" } },
+    { judging: undefined },
+    {
+      cases: f.plan.cases.map((c, i) =>
+        i ? c : { ...c, labels: { ...c.labels, expectedDefects: [] } },
+      ),
+    },
+  ]) {
+    const target = path.join(f.operator, randomUUID());
+    assert.throws(() =>
+      freezeReviewBenchmark(f.cases[0]!.root, { ...f.plan, ...change }, target),
+    );
+    await assert.rejects(stat(target), { code: "ENOENT" });
+  }
+});
+test("benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities", async (t) => {
+  const f = await prepareJudgments(t, 3, 2, false, true);
+  for (const packet of f.book.packets) {
+    const trial = f.manifest.trials.find((r) => r.blindId === packet.blindId)!;
+    const value = judgmentResponse(f, packet.blindId);
+    value.output!.label =
+      trial.caseIndex === 0
+        ? "defect"
+        : trial.caseIndex === 1
+          ? "valid"
+          : "near-miss";
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const report = reviewBenchmarkScoreReportSchema.parse(
+    f.benchmark.score(true),
+  );
+  assert.equal(report.scoringReady, true);
+  assert.equal(report.protocolDigest, f.reference.sha256);
+  assert.equal(report.collectionDigest, f.benchmark.status().collectionDigest);
+  assert.equal(
+    report.judgmentsDigest,
+    f.benchmark.status().judgments!.archiveDigest,
+  );
+  assert.deepEqual(report.accounting, {
+    plannedTrials: 12,
+    selectedPairs: 6,
+    completedTrials: 12,
+    retainedClaims: 0,
+    unscoredClaims: 0,
+    missingJudgments: 0,
+    rejectedJudgments: 0,
+    unresolvedClaimJudgments: 0,
+    labelDisagreements: 0,
+    unknownJudgeLabels: 0,
+    unexpectedFamilyClaims: 0,
+    declaredClaimProbabilities: 0,
+    unknownClaimProbabilities: 0,
+  });
+  assert.equal(report.paired.aggregate.selected, 6);
+  assert.equal(report.paired.aggregate.clusters, 1);
+  assert.equal(report.paired.aggregate.repeatedClusters, 1);
+  for (const arm of [
+    report.paired.aggregate.arms.a,
+    report.paired.aggregate.arms.b,
+  ]) {
+    assert.equal(arm.precision.value, null);
+    assert.deepEqual(arm.materialDefectRecall, {
+      numerator: 0,
+      denominator: 2,
+      value: 0,
+    });
+    assert.deepEqual(arm.falseAlarmRate, {
+      numerator: 0,
+      denominator: 2,
+      value: 0,
+    });
+    assert.deepEqual(arm.nearMissFalseAlarmRate, {
+      numerator: 0,
+      denominator: 2,
+      value: 0,
+    });
+  }
+  assert.deepEqual(f.benchmark.score(true), report);
+  const summary = reviewBenchmarkScoreSummarySchema.parse(f.benchmark.score());
+  noPrivate(JSON.stringify(summary), f);
+  assert.equal(
+    JSON.stringify(summary).includes(
+      report.paired.input.protocol.trials[0]!.id,
+    ),
+    false,
+  );
+  assert.equal(summary.artifactBindingsChecked, true);
+  assert.equal(summary.pairingBoundToManifest, true);
+  assert.equal(summary.claimsVerified, false);
+  assert.equal(summary.labelsVerified, false);
+  assert.equal(summary.hostIsolationVerified, false);
+  assert.equal(summary.qualityAssessed, false);
+  assert.equal(summary.paired.qualityGate, "not-assessed");
+});
+test("benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels", async (t) => {
+  const f = await prepareJudgments(t, 3, 1, true, true);
+  for (const packet of f.book.packets) {
+    const trial = f.manifest.trials.find((r) => r.blindId === packet.blindId)!;
+    const value = judgmentResponse(f, packet.blindId);
+    value.output!.label =
+      trial.caseIndex === 0
+        ? "defect"
+        : trial.caseIndex === 1
+          ? "valid"
+          : "near-miss";
+    value.output!.claims[0]!.judgement = trial.caseIndex
+      ? "refuted"
+      : trial.armIndex === 0
+        ? "supported"
+        : "wrong-mechanism";
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const score = reviewBenchmarkScoreReportSchema.parse(f.benchmark.score(true));
+  assert.equal(score.scoringReady, true);
+  assert.equal(score.accounting.retainedClaims, 6);
+  assert.equal(score.paired.aggregate.arms.a.precision.value, 1 / 3);
+  assert.equal(score.paired.aggregate.arms.b.precision.value, 0);
+  assert.equal(score.paired.aggregate.arms.a.materialDefectRecall.value, 1);
+  assert.equal(score.paired.aggregate.arms.b.materialDefectRecall.value, 0);
+  for (const arm of [
+    score.paired.aggregate.arms.a,
+    score.paired.aggregate.arms.b,
+  ]) {
+    assert.equal(arm.findings, 3);
+    assert.equal(arm.falseAlarmRate.value, 1);
+    assert.equal(arm.nearMissFalseAlarmRate.value, 1);
+    assert.equal(arm.unknownProbabilities, 3);
+    assert.equal(arm.properScores.brier, null);
+  }
+  assert.equal(
+    score.paired.aggregate.differences.find((r) => r.metric === "precision")!
+      .differenceBMinusA,
+    -1 / 3,
+  );
+});
+test("benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators", async (t) => {
+  const missing = await prepare(t, 1, 1, false, true, true);
+  await runTrial(t, missing, 0);
+  missing.benchmark.collect();
+  missing.benchmark.prepareJudging();
+  missing.benchmark.sealJudgments();
+  const partial = reviewBenchmarkScoreReportSchema.parse(
+    missing.benchmark.score(true),
+  );
+  assert.equal(partial.scoringReady, false);
+  assert.equal(partial.accounting.plannedTrials, 2);
+  assert.equal(partial.accounting.completedTrials, 1);
+  assert.equal(partial.accounting.missingJudgments, 2);
+  assert.equal(partial.paired.aggregate.incompletePairs, 1);
+  assert.equal(
+    partial.paired.aggregate.missingObservations.a +
+      partial.paired.aggregate.missingObservations.b,
+    1,
+  );
+  for (const arm of [
+    partial.paired.aggregate.arms.a,
+    partial.paired.aggregate.arms.b,
+  ])
+    assert.equal(arm.materialDefectRecall.denominator, 1);
+  const interrupted = await prepare(t, 1, 1, true, true, true);
+  const torn = await runTrial(t, interrupted, 0, "native");
+  await runTrial(t, interrupted, 1, "native");
+  const bytes = await readFile(torn, "utf8");
+  await writeFile(
+    torn,
+    bytes.slice(0, bytes.lastIndexOf("\n", bytes.length - 2) + 1) + '{"torn":',
+  );
+  interrupted.benchmark.collect();
+  interrupted.benchmark.prepareJudging();
+  interrupted.benchmark.sealJudgments();
+  const prefix = interrupted.benchmark.score();
+  assert.equal(prefix.scoringReady, false);
+  assert.equal(prefix.accounting.retainedClaims, 2);
+  assert.equal(prefix.accounting.unscoredClaims, 1);
+  assert.equal(prefix.accounting.completedTrials, 1);
+  assert.equal(
+    prefix.paired.aggregate.arms.a.findings +
+      prefix.paired.aggregate.arms.b.findings,
+    1,
+  );
+  assert.equal(
+    prefix.paired.aggregate.missingObservations.a +
+      prefix.paired.aggregate.missingObservations.b,
+    0,
+  );
+  for (const mode of [
+    "missing",
+    "malformed",
+    "unresolved",
+    "conflicting-label",
+    "foreign",
+  ] as const) {
+    const f = await prepareJudgments(t, 1, 1, true, true);
+    for (let i = 0; i < f.book.packets.length; i++) {
+      const id = f.book.packets[i]!.blindId;
+      if (i === 0 && mode === "missing") continue;
+      const value = judgmentResponse(f, id);
+      if (i === 0 && mode === "unresolved") {
+        value.output!.label = "unresolved";
+        value.output!.claims[0]!.judgement = "unresolved";
+      }
+      if (i === 0 && mode === "conflicting-label") {
+        value.output!.label = "valid";
+        value.output!.claims[0]!.judgement = "refuted";
+      }
+      if (i === 0 && mode === "foreign")
+        value.assignmentDigest = "0".repeat(64);
+      await putJudgment(
+        f,
+        id,
+        i === 0 && mode === "malformed" ? { malformed: true } : value,
+      );
+    }
+    f.benchmark.sealJudgments();
+    const score = reviewBenchmarkScoreReportSchema.parse(
+      f.benchmark.score(true),
+    );
+    assert.equal(score.scoringReady, false, mode);
+    assert.equal(score.accounting.retainedClaims, 2, mode);
+    assert.equal(score.accounting.unresolvedClaimJudgments, 1, mode);
+    assert.equal(
+      score.paired.aggregate.arms.a.findings +
+        score.paired.aggregate.arms.b.findings,
+      2,
+      mode,
+    );
+    assert.equal(
+      score.paired.aggregate.arms.a.supported +
+        score.paired.aggregate.arms.b.supported,
+      1,
+      mode,
+    );
+    assert.equal(
+      score.accounting.labelDisagreements,
+      mode === "conflicting-label" ? 1 : 0,
+    );
+  }
+});
+test("benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts", async (t) => {
+  for (const mode of [
+    "manifest",
+    "journal",
+    "collection",
+    "judging",
+    "response",
+    "archive",
+    "permission",
+  ] as const) {
+    const f = await prepareJudgments(t, 1, 1, false, true);
+    for (const p of f.book.packets)
+      await putJudgment(f, p.blindId, judgmentResponse(f, p.blindId));
+    const responsePath = f.benchmark.judgeSetup(
+      f.book.packets[0]!.blindId,
+    ).file;
+    f.benchmark.sealJudgments();
+    assert.equal(f.benchmark.score().scoringReady, true);
+    const relative =
+      mode === "manifest"
+        ? "manifest.json"
+        : mode === "journal"
+          ? `journals/${f.manifest.trials[0]!.trialId}.jsonl`
+          : mode === "collection"
+            ? "collection.json"
+            : mode === "judging"
+              ? "judging.json"
+              : mode === "archive"
+                ? "judgments-sealed.json"
+                : null;
+    const file = relative
+      ? path.join(f.reference.directory, relative)
+      : responsePath;
+    if (mode === "permission") await chmod(file, 0o644);
+    else if (mode === "archive") {
+      const archive = await judgmentArchive(f);
+      archive.judgments[0]!.status = "foreign";
+      await privateJson(file, archive);
+    } else await writeFile(file, (await readFile(file)) + " ");
+    assert.throws(() => f.benchmark.score(), Error, mode);
+  }
+});
+test("benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status", async (t) => {
+  const f = await prepare(t, 1, 1, false, true, true);
+  for (let i = 0; i < f.manifest.trials.length; i++) await runTrial(t, f, i);
+  f.benchmark.collect();
+  f.benchmark.prepareJudging();
+  f.benchmark.sealJudgments();
+  const args = [
+    "review-benchmark-score",
+    "--root",
+    f.cases[0]!.root,
+    "--benchmark",
+    `${f.reference.directory}#sha256=${f.reference.sha256}`,
+  ];
+  const result = spawnSync(process.execPath, [cli, ...args], {
+    encoding: "utf8",
+    maxBuffer: 1048576,
+  });
+  assert.equal(result.status, 2, result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout), f.benchmark.score());
+  const detailed = spawnSync(process.execPath, [cli, ...args, "--detailed"], {
+    encoding: "utf8",
+    maxBuffer: 1048576,
+  });
+  assert.equal(detailed.status, 2, detailed.stderr);
+  assert.deepEqual(JSON.parse(detailed.stdout), f.benchmark.score(true));
+  for (const input of [
+    { operation: "score" },
+    { operation: "status", scoring: true },
+  ]) {
+    assert.throws(() =>
+      f.benchmark.workerCommand(input, false, f.manifest.trials[0]!.trialId),
+    );
+    assert.throws(() =>
+      f.benchmark.judgeWorkerCommand(
+        input,
+        false,
+        f.manifest.trials[0]!.blindId,
+      ),
+    );
+  }
+  const client = new Client({ name: "original-scoring-worker", version: "1" });
+  try {
+    await client.connect(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          cli,
+          "serve",
+          "--root",
+          f.cases[0]!.root,
+          "--benchmark",
+          `${f.reference.directory}#sha256=${f.reference.sha256}`,
+          "--trial",
+          f.manifest.trials[0]!.trialId,
+        ],
+        stderr: "pipe",
+      }),
+    );
+    const response = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "score" },
+    });
+    assert.equal(response.isError, true);
+  } finally {
+    await client.close();
+  }
+});
+
+test("benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim", async (t) => {
+  const multiple = await prepare(t, 1, 1, true, true, true);
+  for (let i = 0; i < multiple.manifest.trials.length; i++)
+    await runTrial(
+      t,
+      multiple,
+      i,
+      "native",
+      undefined,
+      undefined,
+      undefined,
+      i ? 1 : 2,
+    );
+  multiple.benchmark.collect();
+  multiple.benchmark.prepareJudging();
+  const book = reviewBenchmarkJudgingSchema.parse(
+    JSON.parse(
+      await readFile(
+        path.join(multiple.reference.directory, "judging.json"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const p of book.packets)
+    await putJudgment(
+      multiple,
+      p.blindId,
+      judgmentResponse(multiple, p.blindId),
+    );
+  multiple.benchmark.sealJudgments();
+  assert.equal(
+    book.packets.flatMap((p) => p.outputs.flatMap((o) => o.candidates)).length,
+    3,
+  );
+  assert.throws(() => multiple.benchmark.score(), /at most one claim/);
+  const wrongFamily = await prepare(
+    t,
+    1,
+    1,
+    true,
+    true,
+    true,
+    "authorization-tenancy",
+  );
+  for (let i = 0; i < wrongFamily.manifest.trials.length; i++)
+    await runTrial(t, wrongFamily, i, "native");
+  wrongFamily.benchmark.collect();
+  wrongFamily.benchmark.prepareJudging();
+  for (const trial of wrongFamily.manifest.trials)
+    await putJudgment(
+      wrongFamily,
+      trial.blindId,
+      judgmentResponse(wrongFamily, trial.blindId),
+    );
+  wrongFamily.benchmark.sealJudgments();
+  const score = wrongFamily.benchmark.score();
+  assert.equal(score.scoringReady, false);
+  assert.equal(score.accounting.unexpectedFamilyClaims, 2);
+  assert.equal(score.accounting.unresolvedClaimJudgments, 2);
+  assert.equal(score.accounting.retainedClaims, 2);
+  assert.equal(score.paired.aggregate.arms.a.precision.value, 0);
+  assert.equal(score.paired.aggregate.arms.b.precision.value, 0);
+});
+
+test("sealed benchmark claim probabilities come from original reviewer candidates preserve exact zero one and unknown losses and never promote quality", async (t) => {
+  const f = await prepareJudgments(t, 3, 1, true, true, [
+    0,
+    1,
+    0.8,
+    0.2,
+    1,
+    null,
+  ]);
+  for (const packet of f.book.packets) {
+    const trial = f.manifest.trials.find((r) => r.blindId === packet.blindId)!;
+    const value = judgmentResponse(f, packet.blindId);
+    value.output!.label =
+      trial.caseIndex === 0
+        ? "defect"
+        : trial.caseIndex === 1
+          ? "valid"
+          : "near-miss";
+    value.output!.claims[0]!.judgement =
+      trial.caseIndex === 0 ? "supported" : "refuted";
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const score = reviewBenchmarkScoreReportSchema.parse(f.benchmark.score(true));
+  assert.equal(score.scoringReady, true);
+  assert.equal(score.accounting.declaredClaimProbabilities, 5);
+  assert.equal(score.accounting.unknownClaimProbabilities, 1);
+  assert.equal(score.accounting.retainedClaims, 6);
+  assert.equal(score.probabilitiesAvailable, true);
+  assert.equal(
+    score.probabilitySource,
+    "sealed-host-declared-uncalibrated-claim-probability",
+  );
+  const a = score.paired.aggregate.arms.a,
+    b = score.paired.aggregate.arms.b;
+  assert.equal(a.findings, 3);
+  assert.equal(b.findings, 3);
+  assert.equal(a.properScores.scored, 3);
+  assert.equal(b.properScores.scored, 2);
+  assert.ok(Math.abs(a.properScores.brier! - 0.88) < 1e-14);
+  assert.ok(Math.abs(b.properScores.brier! - 0.02) < 1e-14);
+  assert.equal(a.properScores.infiniteLogLoss, 2);
+  assert.equal(a.properScores.negativeLogLikelihood, null);
+  assert.equal(b.properScores.infiniteLogLoss, 0);
+  assert.ok(
+    Math.abs(b.properScores.negativeLogLikelihood! - -Math.log(0.8) / 2) <
+      1e-14,
+  );
+  assert.equal(a.unknownProbabilities, 0);
+  assert.equal(b.unknownProbabilities, 1);
+  assert.equal(a.falseAlarmRate.value, 1);
+  assert.equal(b.falseAlarmRate.value, 1);
+  assert.equal(a.nearMissFalseAlarmRate.value, 1);
+  assert.equal(b.nearMissFalseAlarmRate.value, 1);
+  assert.equal(score.calibratedConfidence, false);
+  assert.equal(score.claimsVerified, false);
+  assert.equal(score.hostIsolationVerified, false);
+  assert.equal(score.paired.qualityGate, "not-assessed");
+  const command = spawnSync(
+    process.execPath,
+    [
+      cli,
+      "review-benchmark-score",
+      "--root",
+      f.cases[0]!.root,
+      "--benchmark",
+      f.reference.directory + "#sha256=" + f.reference.sha256,
+      "--detailed",
+    ],
+    { encoding: "utf8", timeout: 10000, maxBuffer: 1048576 },
+  );
+  assert.equal(command.status, 0, command.stderr);
+  assert.deepEqual(JSON.parse(command.stdout), score);
+});
+test("anonymous benchmark judge packets withhold all prior candidate metadata across outputs claims and native receipts while preserving source and opaque slot binding", async (t) => {
+  const f = await prepareJudgments(t, 1, 1, true, true, [0.731234, 0.731234]);
+  const packets = f.manifest.trials.map((r) =>
+    reviewBenchmarkJudgePacketSchema.parse(
+      f.benchmark.judgeWorkerCommand({ operation: "packet" }, true, r.blindId),
+    ),
+  );
+  assert.deepEqual(
+    f.book.packets[0]!.outputs[0]!.candidates,
+    f.book.packets[1]!.outputs[0]!.candidates,
+  );
+  assert.notEqual(
+    packets[0]!.claims[0]!.claimId,
+    packets[1]!.claims[0]!.claimId,
+  );
+  for (const packet of packets) {
+    const candidates = [
+      ...packet.claims.map((c) => c.candidate),
+      ...packet.evidence.outputs.flatMap((o) => o.candidates),
+      ...packet.evidence.native.map((n) => n.candidate),
+    ];
+    assert.equal(candidates.length, 3);
+    for (const candidate of candidates) {
+      assert.deepEqual(Object.keys(candidate), [
+        "family",
+        "claim",
+        "trigger",
+        "consequence",
+        "evidenceGaps",
+        "citations",
+      ]);
+      for (const name of [
+        "id",
+        "severity",
+        "confidence",
+        "attribution",
+        "fixScope",
+      ])
+        assert.equal(Object.hasOwn(candidate, name), false, name);
+      assert.equal(candidate.citations[0]!.quote, source.trimEnd());
+    }
+    assert.equal(Object.hasOwn(packet.evidence.native[0]!, "run"), false);
+    assert.equal(Object.hasOwn(packet.evidence.native[0]!, "recipe"), false);
+    assert.equal(
+      Object.hasOwn(packet.evidence.native[0]!.observations, "behavior"),
+      false,
+    );
+    assert.equal(
+      Object.hasOwn(packet.evidence.native[0]!.observations, "counts"),
+      false,
+    );
+    assert.equal(packet.evidence.native[0]!.observations.cases.length, 3);
+    assert.equal(JSON.stringify(packet).includes("0.731234"), false);
+    assert.equal(
+      JSON.stringify(packet).includes("OriginalReviewerTargetIdentity"),
+      false,
+    );
+    assert.equal(
+      packet.evidence.native[0]!.observations.cases.filter(
+        (c) => c.role === "trigger" && c.actual !== c.expected,
+      ).length,
+      1,
+    );
+  }
+  const first = f.manifest.trials[0]!,
+    client = new Client({
+      name: "original-confidence-blind-judge",
+      version: "1",
+    });
+  try {
+    await client.connect(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          cli,
+          "serve",
+          "--root",
+          f.cases[0]!.root,
+          "--benchmark",
+          f.reference.directory + "#sha256=" + f.reference.sha256,
+          "--judge",
+          first.blindId,
+          "--detailed",
+          "--allow-review-source",
+        ],
+        stderr: "pipe",
+      }),
+    );
+    const result = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "packet" },
+    });
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(result.structuredContent, packets[0]);
+    const denied = await client.callTool({
+      name: "review_benchmark",
+      arguments: { operation: "score", confidence: 0.99 },
+    });
+    assert.equal(denied.isError, true);
+  } finally {
+    await client.close();
+  }
+});
+test("sealed probability bindings reject changed retained candidates and foreign judgment predictions without accepting numerical overrides or losing incomplete slots", async (t) => {
+  const f = await prepareJudgments(t, 1, 1, true, true, [0.6, 0.6]);
+  for (const packet of f.book.packets) {
+    const value = judgmentResponse(f, packet.blindId);
+    (
+      value.output!.claims[0] as unknown as Record<string, unknown>
+    ).probability = 0.99;
+    await putJudgment(f, packet.blindId, value);
+  }
+  f.benchmark.sealJudgments();
+  const score = f.benchmark.score(true);
+  assert.equal(score.scoringReady, false);
+  assert.equal(score.accounting.rejectedJudgments, 2);
+  assert.equal(score.accounting.declaredClaimProbabilities, 2);
+  for (const arm of [
+    score.paired.aggregate.arms.a,
+    score.paired.aggregate.arms.b,
+  ]) {
+    assert.equal(arm.findings, 1);
+    assert.equal(arm.precision.value, 0);
+    assert.equal(arm.properScores.scored, 0);
+    assert.equal(arm.properScores.unscoredFindings, 1);
+  }
+  const file = path.join(f.reference.directory, "judging.json"),
+    original = await readFile(file);
+  try {
+    const changed = JSON.parse(original.toString());
+    changed.packets[0].outputs[0].candidates[0].confidence.probability = 0.1;
+    await writeFile(file, JSON.stringify(changed));
+    assert.throws(() => f.benchmark.score(true), /judging artifact disagrees/);
+  } finally {
+    await writeFile(file, original);
+  }
+  assert.deepEqual(f.benchmark.score(true), score);
+  const partial = await prepare(t, 1, 1, true, true, true);
+  const confidence = {
+    profile: "declared-claim-support-probability-v1" as const,
+    event: "supported-in-scope-actionable" as const,
+    probability: 0.6,
+    calibratedConfidence: false as const,
+  };
+  const torn = await runTrial(
+    t,
+    partial,
+    0,
+    "native",
+    undefined,
+    undefined,
+    undefined,
+    1,
+    confidence,
+  );
+  const bytes = await readFile(torn, "utf8");
+  await writeFile(
+    torn,
+    bytes.slice(0, bytes.lastIndexOf("\n", bytes.length - 2) + 1) + '{"torn":',
+  );
+  partial.benchmark.collect();
+  partial.benchmark.prepareJudging();
+  partial.benchmark.sealJudgments();
+  const incomplete = partial.benchmark.score(true);
+  assert.equal(incomplete.accounting.retainedClaims, 1);
+  assert.equal(incomplete.accounting.unscoredClaims, 1);
+  assert.equal(incomplete.accounting.declaredClaimProbabilities, 0);
+  assert.equal(incomplete.accounting.unknownClaimProbabilities, 0);
+  assert.equal(incomplete.paired.aggregate.selected, 1);
+  assert.equal(
+    incomplete.paired.aggregate.arms.a.findings +
+      incomplete.paired.aggregate.arms.b.findings,
+    0,
+  );
+  assert.equal(incomplete.probabilitiesAvailable, false);
 });

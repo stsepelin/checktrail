@@ -15,6 +15,50 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+The bounded [Helm profile](HELM.md) validates a declared root application chart
+with pinned strict lint and client-only rendering. Frozen source/tool bytes, typed
+values and complete template participation bind native evidence to original
+source. Physical Go-template diagnostics are resolved; rendered YAML offsets
+remain inconclusive. The [local record](measurements/helm-native-2026-10-06.json)
+retains source and fresh offline installed CLI/MCP controls and two compiling
+guard proofs. Wider charts, Kubernetes API acceptance, E16 and Gate A remain open.
+
+The bounded [Kustomize profile](KUSTOMIZE.md) reconciles complete local assemblies
+with pinned native output and offline Kubernetes validation. Original controls
+cover source-bound defects/repair, supported overlay near misses, CLI/MCP trust and
+privacy, forged evidence, concurrent cleanup and observed native build/validator
+cancellation and source changes. Its [local record](measurements/kustomize-native-2026-10-06.json)
+binds source and fresh offline installed-package acceptance. Wider transforms and
+Gate A remain open.
+
+The bounded [Terraform profile](TERRAFORM.md) validates complete provider-free
+JSON modules with pinned native Terraform. It binds source ranges/snippets,
+module/config/tool bytes, native counters and exact commands, with original
+defect/repair, CLI/MCP and reached lifecycle controls in the
+[local record](measurements/terraform-native-2026-10-06.json). Wider Terraform
+providers/modules, wider Helm charts and Kustomize transforms and Gate A remain open.
+
+The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
+Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
+schemas. Raw document identity, native resource metadata/counters and physical
+JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
+collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
+binds native source/offline installed CLI/MCP controls and compiling guard proofs.
+The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
+Wider Helm charts, Kustomize transforms and Terraform profiles remain pending.
+E16 and Gate A remain open.
+
+The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20
+CMake targets, generates integer-valued headers, links static libraries and
+executables, runs CTest callbacks, and checks clang-format and explicit clang-tidy
+rules. Native compilation metadata, objects, archive members and DWARF checksums
+bind the declared source/header scope. The
+[local record](measurements/cpp-tools-native-2026-10-06.json) retains required source
+and offline installed CLI/MCP acceptance and compiling guard controls. CTest
+locations identify registrations; they do not identify the failing assertion.
+E15 remains partial for broader CMake/target/SDK/rule profiles. Hosted CI, full SDK
+provenance and Gate A remain open.
+
 [Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. [Measured .NET test readiness](measurements/dotnet-test-native-2026-10-06.json) binds source/installed acceptance and compiling-mutation evidence. The separate [.NET test profile](DOTNET-TEST.md) reconciles native VSTest discovery, every result, declared source roles and TRX. [Measured whitespace-formatting readiness](measurements/dotnet-format-native-2026-10-06.json) binds exact native/installed, compiling-mutation and repository evidence. The opt-in [C#/VB whitespace formatter](DOTNET-FORMAT.md) reconciles native documents, proposed edits and SDK reports without rewriting source. [Declared Roslyn generator outputs](DOTNET-GENERATED.md) add bounded fresh C#/VB build/test participation with native producer/analyzer and consumer-symbol reconciliation. E12 remains partial while code-style/analyzer formatting, broader generator shapes and wider profile work continues. [Native NUnit method provenance](DOTNET-METHOD.md) now reconciles bounded C#/F#/VB custom names through complete native discovery/result XML and fresh source symbols; ambiguous methods remain incomplete.
 
 Maven native packet version 2 now binds its exact temporary repository JAR set
@@ -568,7 +612,17 @@ Swift grammar checking is verified with Apple Swift 6.4 on arm64 macOS. It parse
 inventoried source and Package.swift without evaluating the manifest, records the
 native compiler and driver evidence, and excludes generated .build contents. The
 native fixture explicitly distinguishes valid syntax from incorrect types. See
-`SWIFT.md`; SwiftPM builds, type checks, tests and Linux support remain unverified.
+`SWIFT.md` for that independent grammar profile.
+
+The separate bounded SwiftPM/XCTest/Swift Testing/SwiftLint profile passes required
+native source and offline installed CLI/MCP controls with pinned Swift 6.2.3,
+SwiftLint 0.65.1 and Node 22.23.3 on ARM64 Linux. Compiling guard controls defend
+raw identities, ordered commands, native manifest/compiler participation, physical
+source points, case lifecycles and counters. Actual compiled XCTest cancellation
+exposed and now checks a shared POSIX runner fix for descendants in separate process
+groups; a detached-child control also passes on macOS. See SWIFT-TOOLS.md and its
+measurement receipt. Wider Swift profiles, hosted CI for this revision, Windows,
+full SDK/publisher/license closure and Gate A remain open.
 
 Advisory guidance is now available through CLI/library/MCP using exact public
 check/topic triggers. It returns review questions and references, never automated
@@ -597,7 +651,8 @@ arrays without a build system, reconciles native SARIF and dependency evidence,
 and requires inventoried translation units and headers to be observed. Native
 cases exercise relative `__FILE__` preservation, configuration variants, headers
 with spaces, generated/symlinked inputs, compiler errors and missing tools.
-See `CLANG.md`; linking, code generation and test execution are not covered.
+See `CLANG.md`; that prepared frontend profile does not link or run tests.
+The separate bounded build/test/format/analyzer profile is in `CPP-TOOLS.md`.
 A fresh offline package install also passes this profile through library, CLI and
 MCP on the verified macOS compiler. Removing the source-coverage reconciliation
 made the omitted-source native regression fail; the original build was restored.

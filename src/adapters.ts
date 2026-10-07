@@ -3,6 +3,11 @@ import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
+import { cppToolsCheck } from "./cpp-tools.js";
+import { terraformCheck } from "./terraform.js";
+import { kubeconformCheck } from "./kubeconform.js";
+import { kustomizeCheck } from "./kustomize.js";
+import { helmCheck } from "./helm.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
@@ -15,7 +20,9 @@ import {
   dotnetFormatCheck,
 } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
+import { swiftToolsCheck } from "./swift-tools.js";
 import { rubyCheck } from "./ruby.js";
+import { rubyToolsCheck } from "./ruby-tools.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
 import { rustfmtCheck } from "./rustfmt.js";
 import { golangciCheck } from "./golangci.js";
@@ -135,17 +142,44 @@ export const adapters = [
       "dotnet.format-whitespace",
     ],
   },
-  { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
-  { id: "swift", markers: ["Package.swift"], checks: ["swift.syntax"] },
+  {
+    id: "ruby",
+    markers: ["Gemfile"],
+    checks: ["ruby.syntax", "ruby.rubocop", "ruby.rspec", "ruby.minitest"],
+  },
+  {
+    id: "swift",
+    markers: ["Package.swift"],
+    checks: ["swift.syntax", "swift.build", "swift.test", "swift.swiftlint"],
+  },
   {
     id: "cpp",
     markers: ["CMakeLists.txt", "meson.build", "compile_commands.json"],
-    checks: ["cpp.clang-check"],
+    checks: [
+      "cpp.clang-check",
+      "cpp.build",
+      "cpp.ctest",
+      "cpp.clang-format",
+      "cpp.clang-tidy",
+    ],
   },
   {
     id: "infrastructure",
-    markers: ["Chart.yaml", "kustomization.yaml"],
-    checks: ["infrastructure.actionlint"],
+    markers: [
+      "Chart.yaml",
+      "kustomization.yaml",
+      "checktrail.kubeconform.json",
+      "checktrail.kustomize.json",
+      "checktrail.terraform.json",
+      "checktrail.helm.json",
+    ],
+    checks: [
+      "infrastructure.actionlint",
+      "infrastructure.kubeconform",
+      "infrastructure.kustomize",
+      "infrastructure.terraform-validate",
+      "infrastructure.helm",
+    ],
   },
 ] as const;
 
@@ -158,7 +192,8 @@ function matches(
     (adapter.id === "dotnet" &&
       /\.(csproj|fsproj|vbproj|sln|slnx)$/.test(name)) ||
     (adapter.id === "ruby" && name.endsWith(".gemspec")) ||
-    (adapter.id === "infrastructure" && name.endsWith(".tf"))
+    (adapter.id === "infrastructure" &&
+      (name.endsWith(".tf") || name.endsWith(".tf.json")))
   );
 }
 
@@ -477,9 +512,38 @@ export async function checksFor(
       (file) => workflowRoot(file) === project.path,
     );
     const other = project.markers.filter(
-      (file) => workflowRoot(file) !== project.path,
+      (file) =>
+        workflowRoot(file) !== project.path &&
+        path.posix.basename(file) !== "checktrail.kubeconform.json" &&
+        path.posix.basename(file) !== "checktrail.kustomize.json" &&
+        path.posix.basename(file) !== "checktrail.terraform.json" &&
+        path.posix.basename(file) !== "checktrail.helm.json" &&
+        !(
+          project.files.includes("checktrail.helm.json") &&
+          path.posix.basename(file) === "Chart.yaml"
+        ) &&
+        !(
+          project.files.includes("checktrail.terraform.json") &&
+          file.endsWith(".tf.json")
+        ),
     );
     return [
+      ...(project.files.includes("checktrail.helm.json") ||
+      requested?.includes("infrastructure.helm")
+        ? [await helmCheck(source, project)]
+        : []),
+      ...(project.files.includes("checktrail.kustomize.json") ||
+      requested?.includes("infrastructure.kustomize")
+        ? [await kustomizeCheck(source, project)]
+        : []),
+      ...(project.files.includes("checktrail.terraform.json") ||
+      requested?.includes("infrastructure.terraform-validate")
+        ? [await terraformCheck(source, project)]
+        : []),
+      ...(project.files.includes("checktrail.kubeconform.json") ||
+      requested?.includes("infrastructure.kubeconform")
+        ? [await kubeconformCheck(source, project)]
+        : []),
       ...(workflow || requested?.includes("infrastructure.actionlint")
         ? [await actionlintCheck(source, project)]
         : []),
@@ -501,7 +565,20 @@ export async function checksFor(
         : []),
     ];
   }
-  if (project.adapter === "cpp") return [await clangCheck(source, project)];
+  if (project.adapter === "cpp")
+    return [
+      await clangCheck(source, project),
+      ...(project.files.includes("checktrail.cpp-tools.json") ||
+      requested?.some((id) =>
+        /^cpp\.(?:build|ctest|clang-format|clang-tidy)$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "ctest", "clang-format", "clang-tidy"] as const)
+              .filter((mode) => !requested || requested.includes(`cpp.${mode}`))
+              .map((mode) => cppToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
   if (project.adapter === "jvm")
     return [
       await javaCheck(source, project),
@@ -528,8 +605,34 @@ export async function checksFor(
         ? [await dotnetTestCheck(source, project)]
         : []),
     ];
-  if (project.adapter === "swift") return [swiftCheck(project)];
-  if (project.adapter === "ruby") return [rubyCheck(project)];
+  if (project.adapter === "swift")
+    return [
+      swiftCheck(project),
+      ...(project.files.includes("checktrail.swift-tools.json") ||
+      requested?.some((id) => /^swift\.(?:build|test|swiftlint)$/.test(id))
+        ? await Promise.all(
+            (["build", "test", "swiftlint"] as const)
+              .filter(
+                (mode) => !requested || requested.includes(`swift.${mode}`),
+              )
+              .map((mode) => swiftToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
+  if (project.adapter === "ruby")
+    return [
+      rubyCheck(project),
+      ...(project.files.includes("checktrail.ruby-tools.json") ||
+      requested?.some((id) => /^ruby\.(?:rubocop|rspec|minitest)$/.test(id))
+        ? await Promise.all(
+            (["rubocop", "rspec", "minitest"] as const)
+              .filter(
+                (mode) => !requested || requested.includes(`ruby.${mode}`),
+              )
+              .map((mode) => rubyToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
   if (project.adapter === "rust") {
     const checks = [
       rustCheck(source, project),

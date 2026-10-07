@@ -2059,6 +2059,360 @@
       "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
     }
   ],
+  "ruby-tools": [
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean"
+    },
+    {
+      "file": "dist/test/ruby-tools-tests.test.js",
+      "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair"
+    },
+    {
+      "file": "dist/test/ruby-tools-evidence.test.js",
+      "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass"
+    },
+    {
+      "file": "dist/test/ruby-tools-lifecycle.test.js",
+      "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-minitest-lifecycle.test.js",
+      "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-guards.test.js",
+      "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives"
+    },
+    {
+      "file": "dist/test/ruby-tools-surfaces.test.js",
+      "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/ruby-tools-cancellation.test.js",
+      "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
+    }
+  ],
+  "swift-tools": [
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native Swift build and XCTest bind complete compiler scope and two callbacks across support files with regression and repair"
+    },
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native SwiftLint explicit rules reconcile every source and expose forced unwrap diagnostics with literal near miss and repair"
+    },
+    {
+      "file": "dist/test/swift-tools.test.js",
+      "name": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities"
+    },
+    {
+      "file": "dist/test/swift-tools-lifecycle.test.js",
+      "name": "native Swift XCTest empty skipped setup and teardown cases preserve complete lifecycle accounting"
+    },
+    {
+      "file": "dist/test/swift-tools-lifecycle.test.js",
+      "name": "native Swift protects startup filters and refuses stale copied source omitted manifest scope and unaudited inline suppression"
+    },
+    {
+      "file": "dist/test/swift-testing.test.js",
+      "name": "native Swift Testing binds macro source methods and parameter cases with regression repair disabled and empty-case accounting"
+    },
+    {
+      "file": "dist/test/swift-testing.test.js",
+      "name": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence"
+    },
+    {
+      "file": "dist/test/swift-tools-surfaces.test.js",
+      "name": "native Swift CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/swift-tools-cancel.test.js",
+      "name": "native Swift cancellation reaches an XCTest body and reaps compiled helpers descendants and owned outputs"
+    }
+  ],
+  "cpp-tools": [
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair"
+    },
+    {
+      "file": "dist/test/cpp-tools.test.js",
+      "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair"
+    },
+    {
+      "file": "dist/test/cpp-controls.test.js",
+      "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters"
+    },
+    {
+      "file": "dist/test/cpp-controls.test.js",
+      "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution"
+    },
+    {
+      "file": "dist/test/cpp-tools-lifecycle.test.js",
+      "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source"
+    },
+    {
+      "file": "dist/test/cpp-tools-surfaces.test.js",
+      "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/cpp-tools-cancel.test.js",
+      "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs"
+    }
+  ],
+  "kubeconform": [
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses"
+    },
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters"
+    },
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command"
+    },
+    {
+      "file": "dist/test/kubeconform-surfaces.test.js",
+      "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes source changed after the real validator starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source"
+    }
+  ],
+  "terraform": [
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform source changed after the real validator starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/terraform-surfaces.test.js",
+      "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair"
+    }
+  ],
+  "kustomize": [
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero"
+    },
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize source changed after the actual build starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-surfaces.test.js",
+      "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    }
+  ],
+  "helm": [
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes"
+    },
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm frozen collection rejects source and configuration changed after planning"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm startup environment cannot override native chart cluster plugin and credential settings"
+    },
+    {
+      "file": "dist/test/helm-surfaces.test.js",
+      "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm omitted and duplicate resources never become complete coverage"
+    }
+  ],
+  "native-acceptance-ledger": [
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger binds every reached outcome and missing required case"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger retains timeout failures and unknown required outcomes"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger preflights every selected file within exact byte limits"
+    }
+  ],
+  "review-paired-scoring": [
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring preserves selected labels missing slots and directional denominators"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring resamples whole unequal clusters and preserves both arms together"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring refuses undefined partial or degenerate interval evidence"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring rejects foreign duplicate contradictory and unbounded declared inputs"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring binds canonical retained evidence and refuses forged derived metrics"
+    },
+    {
+      "file": "dist/test/review-paired-scoring.test.js",
+      "name": "paired review scoring CLI and MCP use the shared numerical engine without executing project code"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",
@@ -2067,6 +2421,170 @@
     {
       "file": "dist/test/gradle-preparation.test.js",
       "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
+  ],
+  "native-process-observer": [
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body"
+    },
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer retains exact native command arguments and propagates unexplained IO failures"
+    }
+  ],
+  "review-benchmark-scoring": [
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring freezes exact cases families seed and judging before writes and preserves legacy intake"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring binds every paired repetition and keeps common frozen labels and unknown probabilities"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring derives claim errors and false alarms from sealed source-bound dispositions without choosing favorable labels"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring retains missing interrupted rejected unknown and conflicting sealed slots in conservative denominators"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring rejects changed seals and every reached artifact rather than trusting stored verdicts"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring is operator-only through CLI while anonymous MCP worker commands reject scoring and retain incomplete exit status"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "benchmark scoring rejects multiple completed claims and keeps unexpected families unresolved instead of selecting a favorable claim"
+    }
+  ],
+  "review-calibration": [
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration pools exact ties with row weights and merges every adjacent violation against hand-computed controls"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration keeps one-class sparse and constant predictors unavailable separately for every declared family"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration accounting partitions every selected missing incomplete abstained unknown and eligible claim without training on unresolved outcomes"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration application preserves findings missing slots certainty errors and exact support boundaries without extrapolation or cross-family transfer"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration refuses overlapping trial and cluster splits held-out training changed model protocols duplicates and unbounded inputs"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration canonical identities and recomputed projections reject forged knots accounting application metrics and retained mappings"
+    },
+    {
+      "file": "dist/test/review-calibration.test.js",
+      "name": "calibration CLI and MCP share bounded read-only fitting and application without source execution trust or model inference"
+    }
+  ],
+  "review-claim-probability": [
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "claim probability accepts exact endpoints unknown and legacy declarations without turning severity into calibrated confidence"
+    },
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "independent refuter and adjudicator packets whitelist hypotheses and withhold every prior candidate identity severity confidence attribution and scope"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "sealed benchmark claim probabilities come from original reviewer candidates preserve exact zero one and unknown losses and never promote quality"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "anonymous benchmark judge packets withhold all prior candidate metadata across outputs claims and native receipts while preserving source and opaque slot binding"
+    },
+    {
+      "file": "dist/test/review-benchmark.test.js",
+      "name": "sealed probability bindings reject changed retained candidates and foreign judgment predictions without accepting numerical overrides or losing incomplete slots"
+    },
+    {
+      "file": "dist/test/review-claim-probability.test.js",
+      "name": "claim probability transport schemas require nullable confidence on strict provider wires while original legacy null and numerical responses remain valid without remote inference"
+    }
+  ],
+  "import-context": [
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence"
+    },
+    {
+      "file": "dist/test/import-context.test.js",
+      "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans"
+    }
+  ],
+  "ruby-tools-rubocop": [
+    {
+      "file": "dist/test/ruby-tools.test.js",
+      "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean"
+    }
+  ],
+  "ruby-tools-assertions": [
+    {
+      "file": "dist/test/ruby-tools-tests.test.js",
+      "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair"
+    }
+  ],
+  "ruby-tools-evidence": [
+    {
+      "file": "dist/test/ruby-tools-evidence.test.js",
+      "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass"
+    }
+  ],
+  "ruby-tools-lifecycle": [
+    {
+      "file": "dist/test/ruby-tools-lifecycle.test.js",
+      "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting"
+    },
+    {
+      "file": "dist/test/ruby-tools-minitest-lifecycle.test.js",
+      "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting"
+    }
+  ],
+  "ruby-tools-defaults": [
+    {
+      "file": "dist/test/ruby-tools-guards.test.js",
+      "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives"
+    }
+  ],
+  "ruby-tools-surfaces": [
+    {
+      "file": "dist/test/ruby-tools-surfaces.test.js",
+      "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust"
+    }
+  ],
+  "ruby-tools-cancellation": [
+    {
+      "file": "dist/test/ruby-tools-cancellation.test.js",
+      "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs"
     }
   ],
   "maven-preparation": [

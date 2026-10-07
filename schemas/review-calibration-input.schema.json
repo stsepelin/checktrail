@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": { "type": "string", "const": "declared-family-isotonic-v1" },
+    "model": {
+      "type": "object",
+      "properties": {
+        "client": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "clientVersion": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "provider": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "model": { "type": "string", "minLength": 1, "maxLength": 256 }
+      },
+      "required": ["client", "clientVersion", "provider", "model"],
+      "additionalProperties": false
+    },
+    "training": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 1 },
+            "profile": {
+              "type": "string",
+              "const": "declared-claim-probability-v1"
+            },
+            "purpose": {
+              "type": "string",
+              "enum": ["development", "held-out"]
+            },
+            "confidenceThresholds": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "trials": {
+              "minItems": 1,
+              "maxItems": 512,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                  },
+                  "clusterId": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                  },
+                  "family": {
+                    "type": "string",
+                    "enum": [
+                      "authorization-tenancy",
+                      "identifiers-allowlists",
+                      "types-numeric-semantics",
+                      "lifecycle-ordering",
+                      "assembly-wiring",
+                      "concurrency-resources",
+                      "atomic-artifacts",
+                      "dependencies-builds",
+                      "test-adequacy"
+                    ]
+                  }
+                },
+                "required": ["id", "clusterId", "family"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "profile",
+            "purpose",
+            "confidenceThresholds",
+            "trials"
+          ],
+          "additionalProperties": false
+        },
+        "observations": {
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "unsupported",
+                  "incomplete",
+                  "budget-exhausted",
+                  "unreviewed",
+                  "stale",
+                  "cancelled"
+                ]
+              },
+              "decision": { "type": "string", "enum": ["finding", "abstain"] },
+              "probability": {
+                "anyOf": [
+                  { "type": "number", "minimum": 0, "maximum": 1 },
+                  { "type": "null" }
+                ]
+              },
+              "label": {
+                "type": "string",
+                "enum": ["defect", "valid", "near-miss", "unresolved"]
+              },
+              "judgement": {
+                "type": "string",
+                "enum": [
+                  "supported",
+                  "wrong-mechanism",
+                  "wrong-address",
+                  "unreachable-fix",
+                  "out-of-scope",
+                  "refuted",
+                  "unresolved",
+                  "none"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "decision",
+              "probability",
+              "label",
+              "judgement"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["protocol", "observations"],
+      "additionalProperties": false
+    },
+    "reservedEvaluation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": {
+          "type": "string",
+          "const": "declared-claim-probability-v1"
+        },
+        "purpose": { "type": "string", "enum": ["development", "held-out"] },
+        "confidenceThresholds": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "trials": {
+          "minItems": 1,
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "clusterId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "family": {
+                "type": "string",
+                "enum": [
+                  "authorization-tenancy",
+                  "identifiers-allowlists",
+                  "types-numeric-semantics",
+                  "lifecycle-ordering",
+                  "assembly-wiring",
+                  "concurrency-resources",
+                  "atomic-artifacts",
+                  "dependencies-builds",
+                  "test-adequacy"
+                ]
+              }
+            },
+            "required": ["id", "clusterId", "family"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "purpose",
+        "confidenceThresholds",
+        "trials"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "model",
+    "training",
+    "reservedEvaluation"
+  ],
+  "additionalProperties": false
+}

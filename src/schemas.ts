@@ -17,6 +17,16 @@ export {
   externalResultSchema,
 } from "./external-adapter.js";
 export { actionlintConfigSchema } from "./actionlint.js";
+export { cppToolsConfigSchema } from "./cpp-tools.js";
+export { terraformConfigSchema } from "./terraform.js";
+export { kubeconformConfigSchema } from "./kubeconform.js";
+export { kustomizeConfigSchema } from "./kustomize.js";
+export { helmConfigSchema } from "./helm.js";
+export { swiftToolsConfigSchema } from "./swift-tools.js";
+export {
+  rubyToolsConfigSchema,
+  rubyToolsRepositorySchema,
+} from "./ruby-tools.js";
 export { dotnetConfigSchema } from "./dotnet.js";
 export {
   dotnetBuildConfigSchema,
@@ -342,6 +352,7 @@ export {
 export {
   reviewProviderConfigSchema,
   reviewCandidateSchema,
+  reviewClaimProbabilitySchema,
   reviewModelOutputSchema,
   reviewProviderRunSchema,
   reviewProviderSummarySchema,
@@ -403,3 +414,31 @@ export {
   reviewBenchmarkWorkerSummarySchema,
 } from "./review-benchmark-schema.js";
 export { reviewWorkflowAuditBindingSchema } from "./review-workflow-audit-schema.js";
+
+export {
+  reviewPairedProtocolSchema,
+  reviewPairedInputSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";
+
+export {
+  reviewBenchmarkScoringProfileSchema,
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
+} from "./review-benchmark-schema.js";
+
+export {
+  reviewCalibrationInputSchema,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationInputSchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
+} from "./review-calibration.js";
+
+export {
+  importContextInputSchema,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "./import-context.js";

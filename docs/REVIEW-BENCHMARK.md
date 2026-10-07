@@ -158,8 +158,9 @@ status and judging preparation exit `2` after collection when any planned trial 
 not completed. Worker packets close after collection.
 
 `judging.json` cannot be prepared before all slots have been collected. It contains
-one anonymous packet per planned trial, sorted by independent judging ID, with the
-frozen context, accepted reviewer output and reached structured native receipts.
+one private operator evidence row per planned trial, sorted by independent judging
+ID, with the frozen context, accepted reviewer output and complete reached
+structured native receipts. Worker packets use the independent projection below.
 Rejected/replayed submissions remain in the private raw archive and do not become
 extra accepted outputs. Foreign/invalid evidence has no attributed reviewer output.
 Curator labels, arm names, host identity/usage and trial-to-judge mapping remain in
@@ -195,8 +196,12 @@ returns only that judge's packet or source-free metadata. Packet disclosure stil
 requires `--detailed --allow-review-source`. Tool arguments cannot select a sibling,
 write a response, seal results or grant disclosure. Discovery writes no artifacts.
 
-A packet contains the assigned source context, reached native receipts, accepted
-reviewer outputs and occurrence-bound claim IDs. Its assignment digest binds the
+A worker packet contains the assigned source context, raw per-case native
+observations, accepted hypothesis projections and occurrence/slot-bound claim IDs.
+Prior candidate IDs, severity, confidence, attribution and fix scope are withheld
+from every output, claim and native target. Native aggregate verdicts/counts and
+recipe/run identifiers are withheld; complete receipts stay in the private operator
+artifact. See [the shared independent views](REVIEW-CLAIM-PROBABILITY.md). Its assignment digest binds the
 frozen protocol, collected bytes, instructions and exact anonymous evidence. Curator
 answers, arm names, trial mapping, host profile, sibling packets and earlier judgment
 responses are absent. Source, instruction, model and recipe prose can still reveal
@@ -254,3 +259,69 @@ Implementation evidence is recorded in
 [the intake readiness measurement](measurements/review-benchmark-2026-10-05.json).
 Judgment acceptance is tracked separately in
 [the judgment readiness measurement](measurements/review-benchmark-judging-2026-10-05.json).
+
+## Scoring sealed synthetic artifacts
+
+An optional `scoring` profile must be present before freezing: profile
+`sealed-single-claim-paired-synthetic-v1`, a 64-character hexadecimal seed,
+128–4,096 resamples, confidence between 0.80 and 0.99, and exactly one family
+assignment for every case ID. It requires the frozen judging profile and exactly
+one expected defect for each broken case. Legacy plans may still be frozen without scoring at the current engine identity.
+Already frozen artifacts retain their exact engine/runtime-byte identity requirement
+and cannot acquire scoring after freezing.
+
+`ReviewBenchmark.score()` and the operator command share this read-only engine:
+
+```sh
+node dist/src/cli.js review-benchmark-score --root SYNTHETIC_ROOT \
+  --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST
+```
+
+Add `--detailed` for numerical rows. Anonymous reviewer/judge MCP workers cannot
+score or access this operator view. The existing numerical MCP scoring tool remains
+separate; workers cannot substitute its input for these sealed artifacts.
+
+Scoring first reconciles the pinned manifest, every reached journal, collection,
+judging packet, sealed judgment and current response. It derives both arm slots
+from the manifest, keeping case repetitions in their declared incident group.
+Pair/cluster identifiers in numerical rows are opaque digests. Common labels come
+from the frozen synthetic variants, rather than choosing a favorable arm's judge
+label. Missing review slots stay missing with known labels preserved. Interrupted
+and unusable reviews stay incomplete; retained claims from those prefixes are
+counted separately as unscored. The paired engine's metrics describe claims from
+completed reviews, not every attempted or partial claim.
+
+A completed review must contain exactly one accepted reviewer output and at most
+one claim. Multiple completed claims abort scoring without a partial result;
+there is no first/best-claim selection. The profile does not resolve general
+multi-claim deduplication. An absent, rejected, unresolved or label-disagreeing
+judgment leaves a completed claim unresolved in the conservative precision
+denominator. A claim outside the declared family does the same. Disagreements,
+unknown judge labels and missing/rejected responses have separate counts.
+The scorer reads an optional uncalibrated probability from the original sealed
+reviewer candidate, preserving exact zero/one and unknown values. It never derives
+a probability from severity or lets a judgment override it. Known and unknown
+completed claim probabilities are counted separately; incomplete retained prefixes
+remain unscored. See [declared claim probabilities](REVIEW-CLAIM-PROBABILITY.md).
+
+The report binds observed artifact digests, arm declarations and frozen scoring
+parameters. `artifactBindingsChecked` and `pairingBoundToManifest` describe these
+structural checks. They do not authenticate labels, claim truth, independent host
+sessions, all external attempts or statistical sampling. These remain explicitly
+unverified, and quality is unassessed. `scoringReady` requires completed reviews
+and resolved, consistent accepted judgments; it can be true when every claim was
+refuted. CLI exits `2` when readiness is incomplete. The calculation writes no
+artifacts, executes no project code/model and cannot open a field trial.
+
+Original `review-benchmark-scoring` controls cover exact preflight, legacy intake,
+common-label denominators, repetitions, hand-computed claim errors/false alarms,
+missing and interrupted evidence, label/family disagreements, multiple claims,
+artifact changes, privacy and real CLI/MCP worker boundaries. The installed-package
+helper repeats these original assertions with the harness outside shipped code.
+Independent authoritative judgments, host isolation, complete external attempts,
+numerical confidence/calibration and broader benchmark cohorts remain required.
+
+[The dated scoring acceptance](measurements/review-benchmark-scoring-2026-10-06.json)
+retains exact code/file/runtime identities, the original required cases, restored
+compiling guard proofs and the bounded scope. Hosted acceptance is recorded
+separately; these development checks make no quality claim.

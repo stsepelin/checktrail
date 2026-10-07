@@ -1,0 +1,454 @@
+{
+  "schemaVersion": 1,
+  "measurementKind": "original-synthetic-ci-repair-acceptance",
+  "codeRevision": "146ab9b4761c05b39a0aaf6132a73dd987469b06",
+  "observedHostedFailure": {
+    "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/37481593133/job/112330890096",
+    "profile": "kustomize",
+    "surface": "fresh installed package",
+    "failure": "Per-PID executable-link read failed with EACCES before required body observation.",
+    "pidOwnershipEstablished": false
+  },
+  "repair": "Read exact command identity before executable identity; inaccessible or vanished per-PID entries remain unobserved, with required actual-body, owned-workspace, phase, PID/start-time and cleanup assertions retained across all three sibling families.",
+  "identities": {
+    "test/native-process-observer.ts": "5700f98e8cdfd6ddf6bb571a6d80ad89685eed71407c65d184b5aee3291290c4",
+    "test/native-process-observer.test.ts": "c41d8b0918ee1ce0a0f74f75c14445cf209d298c22efcfe70d3e27d584d6b624",
+    "test/kustomize-reached.test.ts": "dd066f9b9d214fe4da7aa56814eef13b50926cf957c0a47991bcc37072c52241",
+    "test/kubeconform-reached.test.ts": "5b5fae392206d5b15857eb14d166af61c02dc9569a0f4bf10da4793b1cae7194",
+    "test/terraform-reached.test.ts": "b84ce9df99b167177328a637c7fb5620031b0a843f897e20b2f78801612daa32",
+    "scripts/required-native-tests.json": "78e14fcb6e9cce614afc843888bb5b8a8ed2507b4341b5e2b6a252eb2067210d"
+  },
+  "preparedRuntime": {
+    "task": "checktrail-infra-ci-1006",
+    "tag": "checktrail-checktrail-infra-ci-1006:public",
+    "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+    "base": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "artifacts": [
+      {
+        "path": "archives/helm-v4.3.0-linux-arm64.tar.gz",
+        "bytes": 17889190,
+        "sha256": "31c5794dd55c66a51e6b7d2e2ac7a114ae8b1de41ff1d9ba51748ac973b06a08",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/terraform_1.16.5_linux_arm64.zip",
+        "bytes": 32576164,
+        "sha256": "61a50b00485ee4810cf20581ef080fc54d34d666e175c58d9a10501c65c1ccde",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kubeconform-linux-arm64.tar.gz",
+        "bytes": 6901136,
+        "sha256": "1f53fc8e81258197a35e8603054162a5af1de8c5af13746c71ab680d9534ed87",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kustomize_v5.8.2_linux_arm64.tar.gz",
+        "bytes": 4618462,
+        "sha256": "0991957191951cb7dddd142403b5bb98a1fcd6378ba0079dddc1e2c309080a7f",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/deployment-apps-v1.json",
+        "bytes": 691967,
+        "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/configmap-v1.json",
+        "bytes": 17083,
+        "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/service-v1.json",
+        "bytes": 43682,
+        "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b",
+        "asset": "operator-prepared-artifact"
+      }
+    ],
+    "members": [
+      {
+        "tool": "helm",
+        "path": "linux-arm64/helm",
+        "bytes": 61145248,
+        "sha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+        "output": "bin/helm"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/README.md",
+        "bytes": 4410,
+        "sha256": "76795af9c4b1a2eb0f3f105319d4e624196dc255bdcb44f55f4cfc6b12e443e8",
+        "output": "notices/helm-README.md"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/LICENSE",
+        "bytes": 11373,
+        "sha256": "881467e52efeb1807406134b0ec04b1c6f52dc9dc49382713ef9ac4e0cae42f8",
+        "output": "notices/helm-LICENSE"
+      },
+      {
+        "tool": "terraform",
+        "path": "LICENSE.txt",
+        "bytes": 4950,
+        "sha256": "dc4cb9f6140970b69110d82e8f25545135965ae50f6761ddfd6cd7cf9452bfa9",
+        "output": "notices/terraform-LICENSE.txt"
+      },
+      {
+        "tool": "terraform",
+        "path": "terraform",
+        "bytes": 110821538,
+        "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c",
+        "output": "bin/terraform"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "LICENSE",
+        "bytes": 11346,
+        "sha256": "1294f9be73faeda3987cb554c1597f599641eebdcd4d4fa88f97bdb6241be275",
+        "output": "notices/kubeconform-LICENSE"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "kubeconform",
+        "bytes": 12953083,
+        "sha256": "7e77b104b3ae696389f91971c60fd58c72f1f3dc218f139df67a1b070959c012",
+        "output": "bin/kubeconform"
+      },
+      {
+        "tool": "kustomize",
+        "path": "kustomize",
+        "bytes": 11927714,
+        "sha256": "f16ee4ad0f3991e5236e33070427f630f3e911a4b81be53aeeb70946182e61a8",
+        "output": "bin/kustomize"
+      }
+    ],
+    "schemaRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+    "nativeVersions": [
+      {
+        "name": "node",
+        "output": "v22.23.2\n"
+      },
+      {
+        "name": "helm",
+        "output": "v4.3.0+gbec5b06\n"
+      },
+      {
+        "name": "terraform",
+        "output": "{\n  \"terraform_version\": \"1.16.5\",\n  \"platform\": \"linux_arm64\",\n  \"provider_selections\": {},\n  \"terraform_outdated\": false\n}\n"
+      },
+      {
+        "name": "kubeconform",
+        "output": "v0.8.0\n"
+      },
+      {
+        "name": "kustomize",
+        "output": "v5.8.2\n"
+      }
+    ],
+    "buildNetwork": "none",
+    "releaseSignaturesVerified": false,
+    "publisherAndLicenseClosureVerified": false
+  },
+  "sourceAndInstalled": {
+    "kustomize": {
+      "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+      "source": {
+        "profile": "kustomize",
+        "timeoutMs": 120000,
+        "passed": 17,
+        "required": 14,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "5de0b043d3b8256a5e65b2095ab359afc6f551fb82fbeb81b8d6ce3dd0747a26",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "kustomize",
+          "timeoutMs": 120000,
+          "passed": 17,
+          "required": 14,
+          "problems": [],
+          "complete": true
+        },
+        "environment": {
+          "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "kubeconform": {
+      "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+      "source": {
+        "profile": "kubeconform",
+        "timeoutMs": 120000,
+        "passed": 12,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "5de0b043d3b8256a5e65b2095ab359afc6f551fb82fbeb81b8d6ce3dd0747a26",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "kubeconform",
+          "timeoutMs": 120000,
+          "passed": 12,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        "environment": {
+          "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "terraform": {
+      "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+      "source": {
+        "profile": "terraform",
+        "timeoutMs": 120000,
+        "passed": 12,
+        "required": 11,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "5de0b043d3b8256a5e65b2095ab359afc6f551fb82fbeb81b8d6ce3dd0747a26",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "terraform",
+          "timeoutMs": 120000,
+          "passed": 12,
+          "required": 11,
+          "problems": [],
+          "complete": true
+        },
+        "environment": {
+          "image": "sha256:1534c648e056583fc4f65365d98b16321089ffb19b310918202a18b88bacc61d",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    }
+  },
+  "observerControls": [
+    {
+      "profile": "native-process-observer",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true
+    },
+    {
+      "profile": "native-process-observer",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true
+    }
+  ],
+  "guardMutations": {
+    "schemaVersion": 1,
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "originalTestFileSha256": "b35e991b759dcbaf11479f0e917721291206472eb7ce3553cc9c1f78da56a728",
+    "callbacksUnchanged": true,
+    "attempts": [
+      {
+        "variant": "baseline",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 0,
+        "profile": "guard",
+        "timeoutMs": 120000,
+        "passed": 2,
+        "required": 2,
+        "problems": [],
+        "complete": true
+      },
+      {
+        "variant": "restore-fatal-access-denial",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 1,
+        "profile": "guard",
+        "timeoutMs": 120000,
+        "passed": 1,
+        "required": 2,
+        "problems": [
+          {
+            "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "original synthetic proc failure"
+          },
+          {
+            "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      {
+        "variant": "remove-native-executable-binding",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 1,
+        "profile": "guard",
+        "timeoutMs": 120000,
+        "passed": 0,
+        "required": 2,
+        "problems": [
+          {
+            "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "ENOENT\n+ actual - expected\n\n+ [\n+   'kubeconform',\n+   '-strict',\n+   ''\n+ ]\n- null\n"
+          },
+          {
+            "name": "native process observer retains exact native command arguments and propagates unexplained IO failures",
+            "reason": "failed",
+            "failureType": "testCodeFailure",
+            "code": "ERR_TEST_FAILURE",
+            "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    '/proc/23/cmdline',\n-   '/proc/23/exe',\n    '/proc/23/cmdline',\n-   '/proc/23/exe'\n  ]\n"
+          },
+          {
+            "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body",
+            "reason": "required-test-not-passed"
+          },
+          {
+            "name": "native process observer retains exact native command arguments and propagates unexplained IO failures",
+            "reason": "required-test-not-passed"
+          }
+        ],
+        "complete": false
+      },
+      {
+        "variant": "restored",
+        "compiles": true,
+        "callbacksUnchanged": true,
+        "exitCode": 0,
+        "profile": "guard",
+        "timeoutMs": 120000,
+        "passed": 2,
+        "required": 2,
+        "problems": [],
+        "complete": true
+      }
+    ]
+  },
+  "fullCheck": {
+    "tests": 802,
+    "pass": 584,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 218,
+    "todo": 0
+  },
+  "formatting": "passed",
+  "directEditedCodeLint": "passed",
+  "nativeWorkflowSyntax": {
+    "tool": "actionlint",
+    "version": "1.7.12",
+    "outcome": "passed"
+  },
+  "hostedNewHead": "not-yet-run",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "limits": [
+    "An unreadable PID is never credited as an observed body; missing targets still fail the bounded native wait.",
+    "The original failed PID ownership was not established by its log.",
+    "Directory-wide proc failures and unexplained IO errors are not suppressed.",
+    "Original post-execution process/start-time and owned-output cleanup assertions remain strict.",
+    "Source/installed runs reuse assertions; their counts are not independent detection coverage.",
+    "Optional full-suite skips remain unavailable coverage; wider provenance/platform and Gate A requirements stay open."
+  ]
+}

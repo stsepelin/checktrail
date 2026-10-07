@@ -1,3 +1,18 @@
+import {
+  importContextInputSchema,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "../dist/src/import-context.js";
+import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
+import { terraformConfigSchema } from "../dist/src/terraform.js";
+import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
+import { kustomizeConfigSchema } from "../dist/src/kustomize.js";
+import { helmConfigSchema } from "../dist/src/helm.js";
+import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
+import {
+  rubyToolsConfigSchema,
+  rubyToolsRepositorySchema,
+} from "../dist/src/ruby-tools.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import { URL } from "node:url";
 import { z } from "zod";
@@ -50,6 +65,19 @@ import {
   reviewWorkflowCommandSchema,
   reviewWorkflowAssignmentSchema,
   reviewWorkflowSummarySchema,
+  reviewBenchmarkScoringProfileSchema,
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
+  reviewCalibrationInputSchema,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationInputSchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
+  reviewPairedProtocolSchema,
+  reviewPairedInputSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
   reviewScoringProtocolSchema,
   reviewScoringObservationSchema,
   reviewScoringInputSchema,
@@ -64,6 +92,7 @@ import {
   reviewProbeSummarySchema,
   reviewProviderConfigSchema,
   reviewCandidateSchema,
+  reviewClaimProbabilitySchema,
   reviewModelOutputSchema,
   reviewProviderRunSchema,
   reviewProviderSummarySchema,
@@ -118,6 +147,14 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "cpp-tools-config": cppToolsConfigSchema,
+  "kubeconform-config": kubeconformConfigSchema,
+  "kustomize-config": kustomizeConfigSchema,
+  "helm-config": helmConfigSchema,
+  "terraform-config": terraformConfigSchema,
+  "swift-tools-config": swiftToolsConfigSchema,
+  "ruby-tools-config": rubyToolsConfigSchema,
+  "ruby-tools-repository": rubyToolsRepositorySchema,
   "dotnet-build-config": dotnetBuildConfigSchema,
   "dotnet-build-repository": dotnetBuildRepositorySchema,
   "java-config": javaConfigSchema,
@@ -129,6 +166,19 @@ for (const [name, schema] of Object.entries({
   "mutation-recipe": mutationRecipeSchema,
   "mutation-report": mutationReportSchema,
   "mutation-summary": mutationSummarySchema,
+  "review-calibration-input": reviewCalibrationInputSchema,
+  "review-calibration-report": reviewCalibrationReportSchema,
+  "review-calibration-summary": reviewCalibrationSummarySchema,
+  "review-calibration-application-input":
+    reviewCalibrationApplicationInputSchema,
+  "review-calibration-application-report":
+    reviewCalibrationApplicationReportSchema,
+  "review-calibration-application-summary":
+    reviewCalibrationApplicationSummarySchema,
+  "review-paired-protocol": reviewPairedProtocolSchema,
+  "review-paired-input": reviewPairedInputSchema,
+  "review-paired-report": reviewPairedReportSchema,
+  "review-paired-summary": reviewPairedSummarySchema,
   "review-scoring-protocol": reviewScoringProtocolSchema,
   "review-scoring-observation": reviewScoringObservationSchema,
   "review-scoring-input": reviewScoringInputSchema,
@@ -147,6 +197,9 @@ for (const [name, schema] of Object.entries({
   "review-benchmark-judgment-archive": reviewBenchmarkJudgmentArchiveSchema,
   "review-benchmark-reference": reviewBenchmarkReferenceSchema,
   "review-benchmark-plan": reviewBenchmarkPlanSchema,
+  "review-benchmark-scoring-profile": reviewBenchmarkScoringProfileSchema,
+  "review-benchmark-score-report": reviewBenchmarkScoreReportSchema,
+  "review-benchmark-score-summary": reviewBenchmarkScoreSummarySchema,
   "review-benchmark-command": reviewBenchmarkCommandSchema,
   "review-benchmark-summary": reviewBenchmarkSummarySchema,
   "review-benchmark-packet": reviewBenchmarkPacketSchema,
@@ -168,6 +221,7 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-claim-probability": reviewClaimProbabilitySchema,
   "review-model-output": reviewModelOutputSchema,
   "review-provider-run": reviewProviderRunSchema,
   "review-provider-summary": reviewProviderSummarySchema,
@@ -184,6 +238,9 @@ for (const [name, schema] of Object.entries({
   "guidance-report": guidanceReportSchema,
   "guidance-summary": guidanceSummarySchema,
   "dependency-graph": dependencyGraphSchema,
+  "import-context-input": importContextInputSchema,
+  "import-context-report": importContextReportSchema,
+  "import-context-summary": importContextSummarySchema,
   "architecture-policy": architecturePolicySchema,
   "architecture-report": architectureReportSchema,
   "architecture-summary": architectureSummarySchema,

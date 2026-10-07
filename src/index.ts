@@ -188,3 +188,49 @@ export type {
   ReviewBenchmarkJudgePacket,
   ReviewBenchmarkJudgmentResponse,
 } from "./review-benchmark-schema.js";
+
+export {
+  scorePairedReviewTrials,
+  projectPairedReviewScoring,
+} from "./review-paired-scoring.js";
+export type { ReviewPairedReport } from "./review-paired-scoring.js";
+export {
+  reviewPairedProtocolSchema,
+  reviewPairedInputSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";
+
+export {
+  reviewBenchmarkScoringProfileSchema,
+  reviewBenchmarkScoreReportSchema,
+  reviewBenchmarkScoreSummarySchema,
+} from "./review-benchmark-schema.js";
+
+export {
+  fitReviewCalibration,
+  projectReviewCalibration,
+  applyReviewCalibration,
+  projectReviewCalibrationApplication,
+  reviewCalibrationInputSchema,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationInputSchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
+} from "./review-calibration.js";
+export type {
+  ReviewCalibrationReport,
+  ReviewCalibrationApplicationReport,
+} from "./review-calibration.js";
+
+export { reviewClaimProbabilitySchema } from "./review-provider-schema.js";
+export {
+  collectImportContext,
+  assertImportContextCurrent,
+  projectImportContext,
+} from "./import-context.js";
+export type {
+  ImportContextInput,
+  ImportContextReport,
+} from "./import-context.js";

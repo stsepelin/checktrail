@@ -4251,6 +4251,41 @@
               ]
             },
             "severity": { "type": "string", "enum": ["suggestion", "concern"] },
+            "confidence": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "declared-claim-support-probability-v1"
+                    },
+                    "event": {
+                      "type": "string",
+                      "const": "supported-in-scope-actionable"
+                    },
+                    "probability": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "calibratedConfidence": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "event",
+                    "probability",
+                    "calibratedConfidence"
+                  ],
+                  "additionalProperties": false
+                },
+                { "type": "null" }
+              ]
+            },
             "claim": { "type": "string", "minLength": 1, "maxLength": 4096 },
             "trigger": { "type": "string", "minLength": 1, "maxLength": 2048 },
             "consequence": {
@@ -4436,6 +4471,41 @@
                 "severity": {
                   "type": "string",
                   "enum": ["suggestion", "concern"]
+                },
+                "confidence": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "type": "string",
+                          "const": "declared-claim-support-probability-v1"
+                        },
+                        "event": {
+                          "type": "string",
+                          "const": "supported-in-scope-actionable"
+                        },
+                        "probability": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "calibratedConfidence": {
+                          "type": "boolean",
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "profile",
+                        "event",
+                        "probability",
+                        "calibratedConfidence"
+                      ],
+                      "additionalProperties": false
+                    },
+                    { "type": "null" }
+                  ]
                 },
                 "claim": {
                   "type": "string",
@@ -5322,6 +5392,45 @@
                       "severity": {
                         "type": "string",
                         "enum": ["suggestion", "concern"]
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "profile": {
+                                "type": "string",
+                                "const": "declared-claim-support-probability-v1"
+                              },
+                              "event": {
+                                "type": "string",
+                                "const": "supported-in-scope-actionable"
+                              },
+                              "probability": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "calibratedConfidence": {
+                                "type": "boolean",
+                                "const": false
+                              }
+                            },
+                            "required": [
+                              "profile",
+                              "event",
+                              "probability",
+                              "calibratedConfidence"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
                       },
                       "claim": {
                         "type": "string",
@@ -7932,6 +8041,45 @@
                       "severity": {
                         "type": "string",
                         "enum": ["suggestion", "concern"]
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "profile": {
+                                "type": "string",
+                                "const": "declared-claim-support-probability-v1"
+                              },
+                              "event": {
+                                "type": "string",
+                                "const": "supported-in-scope-actionable"
+                              },
+                              "probability": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "calibratedConfidence": {
+                                "type": "boolean",
+                                "const": false
+                              }
+                            },
+                            "required": [
+                              "profile",
+                              "event",
+                              "probability",
+                              "calibratedConfidence"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
                       },
                       "claim": {
                         "type": "string",
@@ -13315,6 +13463,41 @@
               ]
             },
             "severity": { "type": "string", "enum": ["suggestion", "concern"] },
+            "confidence": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "type": "string",
+                      "const": "declared-claim-support-probability-v1"
+                    },
+                    "event": {
+                      "type": "string",
+                      "const": "supported-in-scope-actionable"
+                    },
+                    "probability": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1 },
+                        { "type": "null" }
+                      ]
+                    },
+                    "calibratedConfidence": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "event",
+                    "probability",
+                    "calibratedConfidence"
+                  ],
+                  "additionalProperties": false
+                },
+                { "type": "null" }
+              ]
+            },
             "claim": { "type": "string", "minLength": 1, "maxLength": 4096 },
             "trigger": { "type": "string", "minLength": 1, "maxLength": 2048 },
             "consequence": {
@@ -13500,6 +13683,41 @@
                 "severity": {
                   "type": "string",
                   "enum": ["suggestion", "concern"]
+                },
+                "confidence": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "type": "string",
+                          "const": "declared-claim-support-probability-v1"
+                        },
+                        "event": {
+                          "type": "string",
+                          "const": "supported-in-scope-actionable"
+                        },
+                        "probability": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "calibratedConfidence": {
+                          "type": "boolean",
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "profile",
+                        "event",
+                        "probability",
+                        "calibratedConfidence"
+                      ],
+                      "additionalProperties": false
+                    },
+                    { "type": "null" }
+                  ]
                 },
                 "claim": {
                   "type": "string",
@@ -14386,6 +14604,45 @@
                       "severity": {
                         "type": "string",
                         "enum": ["suggestion", "concern"]
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "profile": {
+                                "type": "string",
+                                "const": "declared-claim-support-probability-v1"
+                              },
+                              "event": {
+                                "type": "string",
+                                "const": "supported-in-scope-actionable"
+                              },
+                              "probability": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "calibratedConfidence": {
+                                "type": "boolean",
+                                "const": false
+                              }
+                            },
+                            "required": [
+                              "profile",
+                              "event",
+                              "probability",
+                              "calibratedConfidence"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
                       },
                       "claim": {
                         "type": "string",
@@ -16996,6 +17253,45 @@
                       "severity": {
                         "type": "string",
                         "enum": ["suggestion", "concern"]
+                      },
+                      "confidence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "profile": {
+                                "type": "string",
+                                "const": "declared-claim-support-probability-v1"
+                              },
+                              "event": {
+                                "type": "string",
+                                "const": "supported-in-scope-actionable"
+                              },
+                              "probability": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  { "type": "null" }
+                                ]
+                              },
+                              "calibratedConfidence": {
+                                "type": "boolean",
+                                "const": false
+                              }
+                            },
+                            "required": [
+                              "profile",
+                              "event",
+                              "probability",
+                              "calibratedConfidence"
+                            ],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
                       },
                       "claim": {
                         "type": "string",

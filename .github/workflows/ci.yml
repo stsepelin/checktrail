@@ -109,13 +109,12 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
-      - name: Require prepared native regression profiles
+      - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite init-publication core mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-native-budget
+          node scripts/verify-required-native-tests.mjs --full-suite init-publication core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-paired-scoring review-calibration import-context review-claim-probability review-native-budget
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
-      - name: Verify concurrent init publication and fresh installed CLI
-        run: |
-          node scripts/verify-init-publication-package.mjs
+      - name: Verify concurrent init publication in a fresh installed CLI
+        run: node scripts/verify-init-publication-package.mjs
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - name: Prepare package-install cache with network access
@@ -127,6 +126,16 @@ jobs:
         run: node scripts/verify-review-workflow-package.mjs
       - name: Verify durable workflow audits in the production package
         run: node scripts/verify-review-workflow-audit-package.mjs
+      - name: Verify import context in the production package
+        run: node scripts/verify-import-context-package.mjs
+      - name: Verify sealed claim probabilities in the production package
+        run: node scripts/verify-review-claim-probability-package.mjs
+      - name: Verify calibration fitting and application in the production package
+        run: node scripts/verify-review-calibration-package.mjs
+      - name: Verify paired scoring in the production package
+        run: node scripts/verify-review-paired-package.mjs
+      - name: Verify sealed benchmark scoring in the production package
+        run: node scripts/verify-review-benchmark-score-package.mjs
       - name: Verify sealed synthetic benchmark intake in the production package
         run: node scripts/verify-review-benchmark-package.mjs
       - name: Verify installed MCP Tasks lifecycle offline on the host
@@ -432,6 +441,40 @@ jobs:
           docker pull node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/verify-ruby-container.mjs
 
+  ruby-tools:
+    name: ruby-tools (${{ matrix.profile }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - ruby-tools-rubocop
+          - ruby-tools-assertions
+          - ruby-tools-evidence
+          - ruby-tools-lifecycle
+          - ruby-tools-defaults
+          - ruby-tools-surfaces
+          - ruby-tools-cancellation
+    env:
+      CHECKTRAIL_TEST_TASK: ci-${{ matrix.profile }}
+      CHECKTRAIL_RUBY_TOOLS_PROFILE: ${{ matrix.profile }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-ruby-tools-runtime.mjs
+      - run: node scripts/prepare-ruby-tools-container-dependencies.mjs
+      - run: node scripts/verify-ruby-tools-container.mjs
+      - if: always()
+        run: node scripts/cleanup-ruby-tools-runtime.mjs
+
   swift:
     runs-on: macos-latest
     timeout-minutes: 15
@@ -447,3 +490,129 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/verify-required-native-tests.mjs swift
+
+  swift-tools:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-swift-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-swift-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-swift-tools-container.mjs
+      - if: always()
+        run: node scripts/cleanup-swift-tools-runtime.mjs
+
+  cpp-tools:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-cpp-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-cpp-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-cpp-tools-container.mjs
+      - if: always()
+        run: node scripts/cleanup-cpp-tools-runtime.mjs
+
+  kubeconform:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-infra-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-kubeconform-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  terraform:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-terraform-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-terraform-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  kustomize:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kustomize-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-kustomize-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  helm:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-helm-tools
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-helm-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs

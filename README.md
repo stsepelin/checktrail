@@ -74,26 +74,29 @@ are incomplete. A source change during validation prevents an aggregate pass.
 
 ## Initial adapters
 
-| Ecosystem                                             | Execution in this foundation                                                                                        |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| JavaScript                                            | Native Node tests; explicit ESLint checking with per-file coverage evidence                                         |
-| Python                                                | Explicit unittest/pytest tests and Ruff/mypy checks                                                                 |
-| Go                                                    | gofmt check, go vet, uncached go test with JSON events                                                              |
-| PHP                                                   | Syntax checks and explicit PHPStan analysis; native verification in status                                          |
-| TypeScript                                            | Explicit `javascript.typescript`: local tsc, no emit, file inclusion evidence                                       |
-| Jest                                                  | Explicit `javascript.jest`: native result accounting; pending tests are incomplete                                  |
-| Vue                                                   | Explicit `javascript.vue-tsc`: SFC and TS checking; opt-in `javascript.vue-router` route contracts                  |
-| Vitest                                                | Explicit `javascript.vitest`: native JSON counts and exact test-file accounting                                     |
-| Playwright                                            | Explicit `javascript.playwright`: native test/project evidence and prepared browsers                                |
-| Other framework test runners                          | Manifest discovery; execution integrations planned                                                                  |
-| Rust                                                  | Locked offline Cargo check with native target and source accounting; no test execution                              |
-| Ruby                                                  | MRI syntax checking of Ruby source and DSL manifests; no gem loading or test execution                              |
-| Swift                                                 | Native grammar checking of Swift source and Package.swift; no type checking or tests                                |
-| C / C++                                               | Prepared Clang compilation databases, native diagnostics and source/header accounting; no linking or tests          |
-| Java                                                  | Explicit classpath compilation and opt-in pinned Checkstyle source audits with native accounting; no JVM tests      |
-| C# / .NET                                             | Explicit Roslyn compilation, pinned DLL references and native syntax/semantic accounting; no build targets or tests |
-| GitHub Actions                                        | Static workflow checking with local input and per-file native evidence; no job execution                            |
-| Kotlin, Scala, F#, Visual Basic, other infrastructure | Discovery only; execution reports unavailable                                                                       |
+| Ecosystem                           | Execution in this foundation                                                                                      |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| JavaScript                          | Native Node tests; explicit ESLint checking with per-file coverage evidence                                       |
+| Python                              | Explicit unittest/pytest tests and Ruff/mypy checks                                                               |
+| Go                                  | gofmt check, go vet, uncached go test with JSON events                                                            |
+| PHP                                 | Syntax checks and explicit PHPStan analysis; native verification in status                                        |
+| TypeScript                          | Explicit `javascript.typescript`: local tsc, no emit, file inclusion evidence                                     |
+| Jest                                | Explicit `javascript.jest`: native result accounting; pending tests are incomplete                                |
+| Vue                                 | Explicit `javascript.vue-tsc`: SFC and TS checking; opt-in `javascript.vue-router` route contracts                |
+| Vitest                              | Explicit `javascript.vitest`: native JSON counts and exact test-file accounting                                   |
+| Playwright                          | Explicit `javascript.playwright`: native test/project evidence and prepared browsers                              |
+| Other framework test runners        | Manifest discovery; execution integrations planned                                                                |
+| Rust                                | Locked offline Cargo builds, explicit workspace/target profiles, Clippy/libtest/doctests and Cargo/Rustfmt        |
+| Ruby                                | MRI grammar checks; bounded opt-in RuboCop/RSpec/Minitest with source and lifecycle evidence                      |
+| Swift                               | Grammar checks; bounded Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit SwiftLint rules             |
+| C / C++                             | Prepared Clang checks; bounded C17/C++20 CMake builds, CTest, clang-format and clang-tidy                         |
+| Java                                | Explicit classpath compilation and bounded pinned Checkstyle, Maven reactor and Gradle module tests               |
+| C# / .NET                           | Explicit C# compilation; bounded opt-in C#/F#/VB build/NUnit and C#/VB whitespace checks                          |
+| GitHub Actions                      | Static workflow checking with native per-file accounting                                                          |
+| Kubernetes                          | Bounded offline kubeconform document/schema validation with physical source addresses                             |
+| Kustomize                           | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
+| Terraform                           | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
+| Kotlin, Scala, other infrastructure | Discovery only; execution reports unavailable                                                                     |
 
 Tools must already be installed. No dependency installation, automatic fixes,
 service startup, migrations, commits or deployments are performed by the engine.
@@ -258,7 +261,8 @@ For a client that accepts a command/arguments server definition:
 The available tools are `project_context`, `validation_plan`, `validation_run`,
 `validation_report`, `finding_comparison`, `runtime_comparison`, `contract_validation`,
 `architecture_validation`, `review_guidance`, `review_context`, `review_receipt`,
-`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, and `mutation_experiment`. The first two currently return the same project/check
+`review_hypotheses`, `review_benchmark`, `review_workflow`, `review_run`, `review_refute`, `review_probe`, `review_verify`, `review_score`, `review_paired_score`, `review_calibration_fit`,
+`review_calibration_apply`, `import_context`, and `mutation_experiment`. The first two currently return the same project/check
 inventory; advisory guidance and source review use their separate tools. Reports are kept
 in memory (the latest ten) and disappear when the process exits.
 
@@ -267,6 +271,9 @@ The model cannot grant that permission through a tool argument. Add `--detailed`
 only if the client may receive paths, commands and raw diagnostics. The default
 summary omits those fields. Data returned through an MCP client may be sent to
 that client's model provider.
+
+The operator-only `review-benchmark-score` command derives descriptive paired metrics
+from frozen, sealed synthetic benchmark artifacts; see [benchmark scoring](docs/REVIEW-BENCHMARK.md#scoring-sealed-synthetic-artifacts). Claims, labels, host isolation and quality remain unverified.
 
 The `review_benchmark` worker view reads one startup-selected anonymous trial from
 a pinned original synthetic readiness protocol. Operator commands freeze paired
@@ -285,10 +292,11 @@ The implementation uses the official MCP v2 SDK. Automated tests exercise the
 2026-07-28 protocol and the SDK's legacy negotiation over stdio. This does not
 establish compatibility with every editor or agent application.
 
-Validation runs asynchronously and supports cancellation, but returns its report
-on the original tool call. The optional durable Tasks extension is not implemented.
-See [MCP compatibility](docs/MCP-COMPATIBILITY.md) for lifecycle tests, the reproduced
-SDK routing limitation and the remaining Tasks work.
+Ordinary validation calls run asynchronously and return their report on the original
+call. Startup `--task-store` enables the bounded standard Tasks polling profile for
+capable requests, preserving ordinary-call fallback. See
+[MCP compatibility](docs/MCP-COMPATIBILITY.md) for the tested SDK 2.3.0 routing,
+lifecycle evidence and remaining client/runtime profiles.
 
 Exact finding baselines and exceptions are available through the CLI, library and
 MCP. [Finding policy](docs/FINDING-POLICY.md) describes creation, expiration,
@@ -364,7 +372,10 @@ inconclusive execution are separate advisory results; see [mutation experiments]
 
 The [C/C++ profile](docs/CLANG.md) validates prepared Clang argument arrays and
 requires native dependency coverage for inventoried translation units and headers.
-It does not run build systems, generate missing headers, link or execute tests.
+The separate opt-in [native tools profile](docs/CPP-TOOLS.md) builds a finite C17/C++20
+CMake declaration, generates integer-valued headers, links static libraries and
+executables, runs registered CTest callbacks, and checks formatting and explicit
+analyzer rules. Both profiles require operator trust for execution.
 
 The [Java profile](docs/JAVA.md) compiles inventoried sources with an explicit
 release and pinned local dependencies. Maven/Gradle, annotation processors and
@@ -421,3 +432,21 @@ claim mechanism or severity; full independent findings remain unfinished.
 [Reviewer scoring](docs/REVIEW-SCORING.md) reports proper probability losses,
 reliability, risk/coverage and explicit incomplete/unknown accounting from declared
 labels. It does not establish calibrated confidence or a quality gate.
+
+[Declared per-family calibration](docs/REVIEW-CALIBRATION.md) fits numerical
+development observations and applies them only to a disjoint reserved protocol
+with the same declared model. Unavailable families and predictions outside the
+training range stay unknown. Fitting does not establish calibrated confidence,
+verified labels, independent host isolation or held-out quality.
+
+[Declared claim probabilities](docs/REVIEW-CLAIM-PROBABILITY.md) keep numerical
+predictions separate from severity and bind sealed scoring to the original
+candidate. Independent refuters and judges receive hypothesis/source/native case
+evidence with prior candidate metadata and aggregate verdicts withheld. These
+structural checks do not establish claim truth, fresh host isolation or calibrated
+confidence.
+
+The bounded [import context](docs/IMPORT-CONTEXT.md) collects JS/TS source and
+static consumer edges without executing project code. Unknown or incomplete
+capture retains every declared project in advisory full fallback. It does not
+narrow validation plans or establish runtime reachability.

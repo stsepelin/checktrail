@@ -1,3 +1,8 @@
+import {
+  importContextInputSchema,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "../src/import-context.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -24,6 +29,10 @@ import {
   gradleConfigSchema,
   mavenRepositorySchema,
   clangDatabaseSchema,
+  cppToolsConfigSchema,
+  kubeconformConfigSchema,
+  kustomizeConfigSchema,
+  terraformConfigSchema,
   mutationRecipeSchema,
   mutationReportSchema,
   mutationSummarySchema,
@@ -87,6 +96,7 @@ import {
   reportSchema,
   reportSummarySchema,
 } from "../src/schemas.js";
+import { swiftToolsConfigSchema } from "../src/swift-tools.js";
 import { importJUnit } from "../src/junit.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectPlan, projectReport } from "../src/output.js";
@@ -107,6 +117,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "actionlint-config": actionlintConfigSchema,
     "go-scope-policy": goScopePolicySchema,
     "go-build-policy": goBuildPolicySchema,
+    "swift-tools-config": swiftToolsConfigSchema,
     "dotnet-config": dotnetConfigSchema,
     "dotnet-build-config": dotnetBuildConfigSchema,
     "dotnet-build-repository": dotnetBuildRepositorySchema,
@@ -116,6 +127,10 @@ test("published schemas match runtime definitions and compile in a strict standa
     "gradle-config": gradleConfigSchema,
     "maven-repository": mavenRepositorySchema,
     "clang-database": clangDatabaseSchema,
+    "cpp-tools-config": cppToolsConfigSchema,
+    "kubeconform-config": kubeconformConfigSchema,
+    "kustomize-config": kustomizeConfigSchema,
+    "terraform-config": terraformConfigSchema,
     "mutation-recipe": mutationRecipeSchema,
     "mutation-report": mutationReportSchema,
     "mutation-summary": mutationSummarySchema,
@@ -156,6 +171,9 @@ test("published schemas match runtime definitions and compile in a strict standa
     "guidance-report": guidanceReportSchema,
     "guidance-summary": guidanceSummarySchema,
     "dependency-graph": dependencyGraphSchema,
+    "import-context-input": importContextInputSchema,
+    "import-context-report": importContextReportSchema,
+    "import-context-summary": importContextSummarySchema,
     "architecture-policy": architecturePolicySchema,
     "architecture-report": architectureReportSchema,
     "architecture-summary": architectureSummarySchema,

@@ -1,0 +1,2045 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-06T06:26:31.645464+00:00",
+  "basedOn": "0e39b21b1646b68d9a6edc2b7bddfb2801efe4f0",
+  "scope": "Original synthetic SwiftPM build, XCTest, top-level Swift Testing and explicit SwiftLint checks under a pinned offline ARM64 Linux profile. Broader E14 and Gate A remain open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "1aac1b99654ab94163277e796eb73474fb7d6f220649385d491380dbd5fb058e"
+    },
+    {
+      "file": "README.md",
+      "sha256": "2a02895342204bb000726d1eb96a014ac2adaeb7c866cf639fd919ad187d022e"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "c7808374851b4d1ee02460c68c0eaa7367e88dcfc6c52a6a7fa37176e6ef600e"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "0febbe5e4368ed31b019aa568065dce30226b894aaf1330be9b350f2d45f0174"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "dc3382e681bdb9834a440c7d6885291d845c61a9d0882947f0dcd221dbc1c66b"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "9490121f0315dcf5541aa2e8656c59430bc90fd910017029a5909205d0e48065"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "8bc7b2e962e537779c98501dc47e70365ac976f652514ff12bff9e8f0139ae58"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "b843dcfef59fbaa2ef7568c8fac593dacb1b042d4b22444cf84b84c5b7297bb0"
+    },
+    {
+      "file": "docs/SWIFT-TOOLS.md",
+      "sha256": "1b2d7ccfcdf0ae3f1629a92e3ed968c0c4dc01d6e9414fbf68deca5fe0c9babc"
+    },
+    {
+      "file": "examples/swift-tools/Package.swift",
+      "sha256": "f59bd32c1ed8b6a3fb762690f2ce7bc09b912d82a82a6c4913b6b97d45c8ca7d"
+    },
+    {
+      "file": "examples/swift-tools/Sources/OriginalQuantity/Quantity.swift",
+      "sha256": "0cbe4d98daa674bca90dda12ce998d5ac640bc458730b1a04f0b6b3e232b7684"
+    },
+    {
+      "file": "examples/swift-tools/Tests/OriginalQuantityTests/QuantityTests.swift",
+      "sha256": "1c95a05f039ea3c37909d747bf760b3efce828bb9434ce45f1f4fe658c37f28c"
+    },
+    {
+      "file": "examples/swift-tools/Tests/OriginalQuantityTests/TestSupport.swift",
+      "sha256": "77343cfba25abb92650ac2b387bc9c94be7987703644fb5168a025ea87280c01"
+    },
+    {
+      "file": "examples/swift-tools/checktrail.json",
+      "sha256": "94434c71071a3b6d51f123c8aa43f47e4c01a9914c0c2c0d276c5d33b6b48bb9"
+    },
+    {
+      "file": "examples/swift-tools/checktrail.swift-tools.json",
+      "sha256": "9dd155596a385bd2173458cb0c49ea18daab2e929d973374f4548ca982568788"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "82ad71961845087abf34746a3826db9fb0f80d19f719c4d69249e00a0f20ae18"
+    },
+    {
+      "file": "schemas/swift-tools-config.schema.json",
+      "sha256": "d105afe87c9b071c62d3fd9e70d4bf78589a30fbeefc8fcfbd2ceae5273fd9ab"
+    },
+    {
+      "file": "scripts/cleanup-swift-tools-runtime.mjs",
+      "sha256": "101235d98a7093bb6917ecc09c35a6c7c2375d8fdca34a569c63f5c82ef458f1"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "5c83f5da3bdb7a3a2087f286ca276bc5416916e98003b03aad5b545706343b25"
+    },
+    {
+      "file": "scripts/prepare-swift-tools-runtime.mjs",
+      "sha256": "c9d80518090aaa6b68d5a269c166b0936f363b45195f0f8fa7d0b7ce72c274b4"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "5e1921d17ec8c65770a590974a73fe3c4f9ef9d8fe75eff8814efd4f40818caa"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "c51e394bc0e935df9a3a7410a236fcb8adad918f65fccdabb8b4ce81c40e03a9"
+    },
+    {
+      "file": "scripts/swift-tools.Dockerfile",
+      "sha256": "c3ac5e0448644cead2b7a09012f96ed315270c7733dc3ad136feb7b191c6d0bf"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "d0899d6a9bff9be463eae40210740f376089e945faf01141cae4b7376731cc58"
+    },
+    {
+      "file": "scripts/verify-swift-tools-container.mjs",
+      "sha256": "0a09ef78d084eed5dcac9003a64faeb61142ce9309709d0b89313e70b997e6b7"
+    },
+    {
+      "file": "scripts/verify-swift-tools-package.mjs",
+      "sha256": "b7b1eda1ccd907130db7922aa7ea1280e983a38b8ec7c56dda350807838494ff"
+    },
+    {
+      "file": "src/actionlint-evidence.ts",
+      "sha256": "97e08e82caeefa67a738415125b3ad5aaa585a7786e6eda7f4d60967b428fc1b"
+    },
+    {
+      "file": "src/actionlint-inputs.ts",
+      "sha256": "3065829880ec825eef4a540530b8aacb755aff1ed2915d570d96662de2698952"
+    },
+    {
+      "file": "src/actionlint-runner.ts",
+      "sha256": "18132cbc4ca06e70c7b757608fdb27e728a9d65213612d249b83154037137802"
+    },
+    {
+      "file": "src/actionlint.ts",
+      "sha256": "195252c69ff9242ffae45db6bf875d264a0b3b6abdc169f1338d80839ed8a45a"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "0a747a12a0c0d68f56b0f7b7e8620c4287c1e56b06196351e32d293a4cbcad53"
+    },
+    {
+      "file": "src/architecture.ts",
+      "sha256": "de3fadd649acf5d4dbb9b8356849d9ccef47068850c1bd25b2a4f74527e61444"
+    },
+    {
+      "file": "src/checkstyle-evidence.ts",
+      "sha256": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+    },
+    {
+      "file": "src/checkstyle-native.ts",
+      "sha256": "02eea009604ab049bb334efadd5eebf45eb208ea761db6147432e53d4051b320"
+    },
+    {
+      "file": "src/checkstyle-runner.ts",
+      "sha256": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698"
+    },
+    {
+      "file": "src/checkstyle.ts",
+      "sha256": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001"
+    },
+    {
+      "file": "src/clang-evidence.ts",
+      "sha256": "f2ce6e888dd5537bac6654f5a52861d3af770c978c57019c7bb4a95c86be1715"
+    },
+    {
+      "file": "src/clang-protocol.ts",
+      "sha256": "f25a5451f90872792b8f56251520513ea0eb3091b7c7cf36fac6a6f9e557094d"
+    },
+    {
+      "file": "src/clang-runner.ts",
+      "sha256": "ddd46a932f92a41dda9e4703510a83b20b06a356fd6abe585592c54a0034fe00"
+    },
+    {
+      "file": "src/clang.ts",
+      "sha256": "1f432ea34687d35115ca43f93b4ada4d3f9b81f634d82fe137908b6dc1ed377d"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/config.ts",
+      "sha256": "1ec576984c49f69dce4b52aabbc76040931ebc9b8fb3c84ca15fcf197977a517"
+    },
+    {
+      "file": "src/contract-schema.ts",
+      "sha256": "a05c8cf27548b70999281fa61ce79af24c307a94fe75c1c8b8bf602d9f36b012"
+    },
+    {
+      "file": "src/contract-worker.ts",
+      "sha256": "9ee35ca9b81cea63557fd49c8606b2592927d7dfd8a10adffd7b0ae6515019ed"
+    },
+    {
+      "file": "src/contracts.ts",
+      "sha256": "42e56f344d01763cfb80b38c8c9e755519f2ed755f1e850ff5fafb0083d1e035"
+    },
+    {
+      "file": "src/django-evidence.ts",
+      "sha256": "f54f78efe68120e96edbe720748d0cfb8888248ada0479783a80182493e27879"
+    },
+    {
+      "file": "src/django-runner.ts",
+      "sha256": "515ad80c22ac789f25757a0a1532c53c974e09926b6038e667179fd89bacbf35"
+    },
+    {
+      "file": "src/django.ts",
+      "sha256": "61c1abbceffd9901f0351a882c2b08ce6a193836ccfa25b33e1ea3691f46666c"
+    },
+    {
+      "file": "src/dotnet-build-evidence.ts",
+      "sha256": "4f02bcb362af49bfdd667925a1dc413c5bdde513888feec7f253d35fc2061271"
+    },
+    {
+      "file": "src/dotnet-build-native.ts",
+      "sha256": "5ef7a29fe2acbccfdd42ff3d63de13f418cafa7434d261542bdeebfb34dd52c3"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "sha256": "06442930fb4e2937c085ff34ca94a2b639314b155249b3fcb1ee90ed6c0b18c3"
+    },
+    {
+      "file": "src/dotnet-build.ts",
+      "sha256": "53a4f360602a6276985b4c242c467a2cc954604ed0df90d2947525bdc24fc930"
+    },
+    {
+      "file": "src/dotnet-compiler.ts",
+      "sha256": "95926905826b21dc95010fe9ce009048706958a780dc1cc5bcb18d932b2119b0"
+    },
+    {
+      "file": "src/dotnet-evidence.ts",
+      "sha256": "b94b9687f59183261866b291f8032a22bb23b977bf0af0604871e2e733cdf6e1"
+    },
+    {
+      "file": "src/dotnet-format-collect.ts",
+      "sha256": "f8ec77658f0b959f76144d3308905db468df0dbcc2473f3e7ab150bc1a657160"
+    },
+    {
+      "file": "src/dotnet-format-evidence.ts",
+      "sha256": "f2a78bb3885d2ae6925cc102c360ded87061abb218104a06a215da2c6f6e7a63"
+    },
+    {
+      "file": "src/dotnet-format-native.ts",
+      "sha256": "ce7564d4b2fecea0c0fe9a96a25a3f7980c4e7c294fdd6b5fe94efc8b4a5db50"
+    },
+    {
+      "file": "src/dotnet-generated-collect.ts",
+      "sha256": "de97a564c3e5672ac4905f1a5641ba30718c1ea388d2772213fdd6f566647e2d"
+    },
+    {
+      "file": "src/dotnet-nunit.ts",
+      "sha256": "fc3279fa1b4a204e59d7ce4d810987aba074387529512c782a2eb087948ad1cd"
+    },
+    {
+      "file": "src/dotnet-runner.ts",
+      "sha256": "9ad886ed3cd89f924a724ea623b854aef53eca5bc0cf6721150eafa8dd22d61e"
+    },
+    {
+      "file": "src/dotnet-test-collect.ts",
+      "sha256": "1afe643385a91b948fcbc195b7ce44282dafc2465ff7683c08b99a78a3d700e6"
+    },
+    {
+      "file": "src/dotnet-test-evidence.ts",
+      "sha256": "ca87cf3254a82fd2c5fc37e18b66913951309de975f438cbd1de27aab8ffb4f9"
+    },
+    {
+      "file": "src/dotnet-test-native.ts",
+      "sha256": "b16366b5361e1abdbddaf76b879fc23ad924594e2f3ad481c803e972939bcef4"
+    },
+    {
+      "file": "src/dotnet.ts",
+      "sha256": "4d16b454054ff9c00097fd483f71ad1604fa643da99d94dce39582ffd6b53fa5"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/eslint-evidence.ts",
+      "sha256": "e719f9ec14d71166a8df9d2161b8ee31e6768e4125e915a06462e5d6e835db2a"
+    },
+    {
+      "file": "src/eslint-runner.ts",
+      "sha256": "96b3bbdf68d2b78ad8e1f65f11173c87151a22f152c98f729be1c08759715d5a"
+    },
+    {
+      "file": "src/eslint.ts",
+      "sha256": "a6c6829df8812b6ad612606f63db8d62e14f4555eb95dafd45e8cab705bd1913"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "0d4ea8061d0fc497a4c609e59f26c0ba286badce810a3148b14f4666d63cdffb"
+    },
+    {
+      "file": "src/executable-bundle.ts",
+      "sha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c"
+    },
+    {
+      "file": "src/external-adapter.ts",
+      "sha256": "d6ed57b9a932ba9752afce6f43935c11a0b5dca87984e5b407819c5e683c09dd"
+    },
+    {
+      "file": "src/external-evidence.ts",
+      "sha256": "1124c0bda894fa4baa9f5196dda30b2ed4a25ff4d05cb2d7e637122e44df36fa"
+    },
+    {
+      "file": "src/external-runner.ts",
+      "sha256": "077d9a1dbf1010ea3eb7796e3661be2393bfcd48633a5379a1c1d695268ef818"
+    },
+    {
+      "file": "src/external-schema.ts",
+      "sha256": "7e34cf9e1a0add8b9b82fd1e7c32d353ca0bcf0ed223e48d3266a44f6b05df6e"
+    },
+    {
+      "file": "src/fastapi-evidence.ts",
+      "sha256": "1732be84f30b257a4db34a4436c75ff7ad66874df4fc6bd4a5f33cdbb0942838"
+    },
+    {
+      "file": "src/fastapi-runner.ts",
+      "sha256": "6909bd115f534cf0981bf84cd1b1f85bd94f8a8be03534f6ffddc3469a2fafa1"
+    },
+    {
+      "file": "src/fastapi.ts",
+      "sha256": "22495597c5c346e1143ef72572e934e06ac3a3cfba287638db127921ecc671d0"
+    },
+    {
+      "file": "src/fetch-adapter.ts",
+      "sha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111"
+    },
+    {
+      "file": "src/fetch-pack.ts",
+      "sha256": "6d8d22466fb110ef0cc8c869c4833bfe925b804a587b5a0921f6e0401d5dbfef"
+    },
+    {
+      "file": "src/finding-policy-schema.ts",
+      "sha256": "95f50f34fb816d648cdcf6ef38567ab0f20a444f0a6bc4acd95b6a9abaadc766"
+    },
+    {
+      "file": "src/finding-policy.ts",
+      "sha256": "c6b941308cd5e178021c186a6904e322ec761b979c7d6065dbdb676de432c537"
+    },
+    {
+      "file": "src/git-selection.ts",
+      "sha256": "b3dd2f7896741e6e303857392c5fe4009f309032d788c435c15622beacbe59ab"
+    },
+    {
+      "file": "src/go-build-evidence.ts",
+      "sha256": "2d4c8deb681be05055e1ceb0daee343d792ba24e82655951b23584c490eb26f2"
+    },
+    {
+      "file": "src/go-build-runner.ts",
+      "sha256": "adf6ddcb1516bfe2982af751ebc65fd5626f6803048e98726222eab32086bb00"
+    },
+    {
+      "file": "src/go-build.ts",
+      "sha256": "a9d29de1ea0eeab5d4e6b8fa5f520179cb6846553e7d2fc6dd9bd09d25864fe6"
+    },
+    {
+      "file": "src/go-compile-evidence.ts",
+      "sha256": "3fb540653f4a823ff8b78670c4d4487c43544bf38f71f4780e2dff84060a958a"
+    },
+    {
+      "file": "src/go-directives.ts",
+      "sha256": "02e4a0db32b87f0b25f41bcce5e9cb4dcab6b1ef54b17054930b361e48cd0e50"
+    },
+    {
+      "file": "src/go-scope-policy.ts",
+      "sha256": "79b6a5ce5862a2ab45928f8b3f5921bc4490fc985f810221209aa2708168bc69"
+    },
+    {
+      "file": "src/go-scope.ts",
+      "sha256": "1457221c7191af0a8d312c54a8793b40f365f15ac935c5737e2fcb51caf1947a"
+    },
+    {
+      "file": "src/go-target.ts",
+      "sha256": "a6264e52f329ef8381c39a3f985880f99da069907da3e2bf1567fc72a9ed458d"
+    },
+    {
+      "file": "src/golangci-evidence.ts",
+      "sha256": "a30a7eb6e73f9b8952a079019a47bc5f58c62942d0c48a21aba78b4771ebc041"
+    },
+    {
+      "file": "src/golangci-runner.ts",
+      "sha256": "097e2959ec30bd2ace63bbb9593c9b22a3f811e4deeb937dd582630d944db1cc"
+    },
+    {
+      "file": "src/golangci.ts",
+      "sha256": "79a6cef76add6ee3566766a32619a0b4355e28632989febff9fe37c6bd24dd10"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/guidance.ts",
+      "sha256": "b0b499f55dd5652cbc662628342fa798978514938f9bea1964fbb781ae7625f3"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "1d5b09d830352cd987e6266477e4f4f3d375c42fbecc037f9da1b233e8c07121"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-compiler.ts",
+      "sha256": "871f147f11a185e57d21cfe2dfbe43d0ceeeb11c844dcc49cb6b965adc29159a"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/jest-evidence.ts",
+      "sha256": "de7509e6218097154cdd7ea75671b13528dd9685adee896051540fc6ca77abaf"
+    },
+    {
+      "file": "src/jest-runner.ts",
+      "sha256": "ec20aca6cde95f08637d159fbfd81e119b91d28860fd2b9a82d2326a89518986"
+    },
+    {
+      "file": "src/jest.ts",
+      "sha256": "94626f08c579f1fdbaf049ebe6209c8cc0a0434bffd414993ef017eaa03a0a83"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/laravel-evidence.ts",
+      "sha256": "7feb0adcb08c3a5f7eb3344a32db30e63c3a9a3c59f1ca0cbf54f027cceda335"
+    },
+    {
+      "file": "src/laravel-runner.ts",
+      "sha256": "fe58168cc8343a7c556d0909bd9478b99012e6f733c24cc1e1643ab52876013a"
+    },
+    {
+      "file": "src/laravel.ts",
+      "sha256": "fe5935b59b43bb3a4713120f110bd5845608dcf4379dab86c387eae14eb5ba32"
+    },
+    {
+      "file": "src/local-tool.ts",
+      "sha256": "c3e9ef806e2569c7526be775f271c46f33e824c911ab8eab94724fe29317f13a"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "9b618c20012384c5bc7ba74cf6d098ec4c6492cdb21295e20d690cbf2cba6879"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ea441a06244c0ed43f3c6bde63aad6c72e53ec5f94699a825b8442d969e7512e"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/mcp-validation-tasks.ts",
+      "sha256": "3ea8b487c803387950c1986a38055a8223d99ade6955b3033c10c6fd2e596ccf"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mutation.ts",
+      "sha256": "dc5d38bfc68e006ad5655ac7fbf41d1e259d7a90b823c1bc6a9a540b71bec041"
+    },
+    {
+      "file": "src/mypy-evidence.ts",
+      "sha256": "2ef893fabf325855afc162374765f2261326cbd3300c95df3de62ebc08245e55"
+    },
+    {
+      "file": "src/mypy.ts",
+      "sha256": "d5da7d79c595eb53e80b0e3e715b0b369bf55cad3543a6d1c73ee8b5a19537f2"
+    },
+    {
+      "file": "src/node-reporter.ts",
+      "sha256": "2b0f0e9c81fb801fa9d98be976ae4535a40f73c5e54c422b80798c351a462cdf"
+    },
+    {
+      "file": "src/nuxt-evidence.ts",
+      "sha256": "0cb9e7604a8dd6765a2c00b40581b43fa92e9c318fd4919f68deecc1b368686d"
+    },
+    {
+      "file": "src/nuxt-protocol.ts",
+      "sha256": "5872472a9cdce384721a85a79743d1b8013e66853265b37c02a7d8aee14295c3"
+    },
+    {
+      "file": "src/nuxt-runner.ts",
+      "sha256": "f5bcfb1a70202e154ca7ec55c80b8c1ec02fb4e46e2e109174e0424cdeda149c"
+    },
+    {
+      "file": "src/nuxt.ts",
+      "sha256": "071d6fc40a5a211e4b4535cdc5fba01491c962d187fe5cc7f802d84cc52d0fbc"
+    },
+    {
+      "file": "src/onboarding.ts",
+      "sha256": "c7409bf3b079643983f6ff060d33a3aea86652947d824bfeba1db13e29bdc7ac"
+    },
+    {
+      "file": "src/output.ts",
+      "sha256": "d7ef24f6098aac58fc6baba392a061c31493ab22a619f77aba2e03ed16c02ed8"
+    },
+    {
+      "file": "src/php-cs-fixer-evidence.ts",
+      "sha256": "5c762084df8a7ebd3582f897fcd23d616fc3db665f1784869345cb4171e2754c"
+    },
+    {
+      "file": "src/php-cs-fixer-runner.ts",
+      "sha256": "e66feb01debdc7aa3e8a0ac841767b96e1b7abfed6dca4da007a8f7f5db0a0ed"
+    },
+    {
+      "file": "src/php-cs-fixer.ts",
+      "sha256": "a87b04eb812e7d94b232f51f48cedbb98a728810fb240bded72946c1ccf5e319"
+    },
+    {
+      "file": "src/phpstan-evidence.ts",
+      "sha256": "b0516a48a7a8ec513b995ba72c7283d4dc85d32e12ecaf94cdc71b8eb73a9cc9"
+    },
+    {
+      "file": "src/phpstan.ts",
+      "sha256": "61bec9f67298e1d4a8a7bdab749f39e9903eb4e5dd8ff8def0fe5c8deda37eb0"
+    },
+    {
+      "file": "src/phpunit-evidence.ts",
+      "sha256": "9b70f1cade16f2a7449c58bd0394696be214fd95938b097c542fec114f1d1e8b"
+    },
+    {
+      "file": "src/phpunit.ts",
+      "sha256": "0da4e30ff2501d7254c773183c413a9cb6130575db333a6e6348603c2dfa3e98"
+    },
+    {
+      "file": "src/pinned-download.ts",
+      "sha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad"
+    },
+    {
+      "file": "src/pint-evidence.ts",
+      "sha256": "3e160de06a12e4e06601c90e4912a485eafd1e447f1a9d053452a5296160b698"
+    },
+    {
+      "file": "src/pint-runner.ts",
+      "sha256": "caa4759ea1ca1c2e1a05be472c0fa1ed3ae264733c0d2a3482c698a28bd77ab5"
+    },
+    {
+      "file": "src/pint.ts",
+      "sha256": "ff32fadce2a3a86f7be64bb84d96384f740b9bba48d0637432d69d522df6e7a6"
+    },
+    {
+      "file": "src/playwright-evidence.ts",
+      "sha256": "7f69ab4b8351bb16031c116fe1f9f063d4b0072a2ee74e9c0612c7e3d56d6297"
+    },
+    {
+      "file": "src/playwright-reporter.ts",
+      "sha256": "2c9a4dd7729246845a9022ec30a220e3cdcad4ba697d1c656f6e3d65bd3e0a1d"
+    },
+    {
+      "file": "src/playwright-runner.ts",
+      "sha256": "43aeef1ea6abe342336b3b65a76f7039ca6386c320eab4ae1a982a223034884f"
+    },
+    {
+      "file": "src/playwright.ts",
+      "sha256": "fc311df7a2a6bbdba61ea8958afd8bd38e1628fce99fcd68224a0f6073138b46"
+    },
+    {
+      "file": "src/policy-pack.ts",
+      "sha256": "6e3f922407158173e7d0edbf57db5ec3b09bc04f7ada1c6deec8a62f169a9433"
+    },
+    {
+      "file": "src/process-tree.ts",
+      "sha256": "e263551d3511167d254bb234ad79d2fc86922118791a482793d301b598007775"
+    },
+    {
+      "file": "src/pyright-evidence.ts",
+      "sha256": "2db8e8477a1a1339224092e098e3d3b09fee5966c67fc1703d39d81e643a4fea"
+    },
+    {
+      "file": "src/pyright-runner.ts",
+      "sha256": "22392ac05d141975545f38efff31d2b832c858aac08a5755ca8eea76fdfb01d4"
+    },
+    {
+      "file": "src/pyright.ts",
+      "sha256": "707a0be07abda351c45da768501c46a6820e04096f301db99adb5b1cbe3de349"
+    },
+    {
+      "file": "src/pytest-evidence.ts",
+      "sha256": "41b1f7f78b46bd1104125a9523cbe760ef49a7ea2c350ff4161034e28337abec"
+    },
+    {
+      "file": "src/pytest-runner.ts",
+      "sha256": "458c4256b5013b4dd8f066705fdb3532be39d71ca725be2abbcdb7d9e0922ba9"
+    },
+    {
+      "file": "src/pytest.ts",
+      "sha256": "ee3d66e118370dde2881ac0dc296d8c41ddb961f979b12c62872df89a195f282"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/review-adjudication.ts",
+      "sha256": "57b2ee686cbe40a28254a7712ffc9bf89636ca6693291b5a583377ff141a6541"
+    },
+    {
+      "file": "src/review-behavior-schema.ts",
+      "sha256": "3dfca04c639c273cf7732302cda050c8affe7483c696018a58430ac4e604487c"
+    },
+    {
+      "file": "src/review-behavior-validation.ts",
+      "sha256": "1304a36eb099007658996b0af4c46718678daf6b2c260ba52f2cf857d8a2f1d8"
+    },
+    {
+      "file": "src/review-behavior.ts",
+      "sha256": "acdf1b37e9d887f852dc9a121d017cbf923b6ca60cbe9c7e69075d5ee2083f48"
+    },
+    {
+      "file": "src/review-benchmark-schema.ts",
+      "sha256": "88ac2cb2dda9cf7f6b209f4a6f61b59eca0c6ef9791af4f7a8862ca20ec9b399"
+    },
+    {
+      "file": "src/review-benchmark.ts",
+      "sha256": "c5175b59d4dcb64985aa18d8bab371a1c0dee51037cd4834d261a53aed352238"
+    },
+    {
+      "file": "src/review-diff.ts",
+      "sha256": "5642804aeff8b4d55c53fa22432f43c15d88889d59a0afc6477a4f668f1a02bc"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/review-hypotheses.ts",
+      "sha256": "98510567871a2b028b44cf341bb7d4d7aea1ffc6bc5411491731f321ad8a4c89"
+    },
+    {
+      "file": "src/review-probe-schema.ts",
+      "sha256": "2ff82c91d5c85221fdefa8565e82226c8a8d149c17d327c919fcea9bad022cfc"
+    },
+    {
+      "file": "src/review-probe-worker.ts",
+      "sha256": "86ff795b0319ea2949b4294b35e6fb5c87d20a6ada06f077c00f8710dc05c1fb"
+    },
+    {
+      "file": "src/review-probe.ts",
+      "sha256": "19c08ec0046aaf8f2dcfeec2a97852176bf18b9dcc41b560749a27a5b5d14ff0"
+    },
+    {
+      "file": "src/review-provider-aggregate.ts",
+      "sha256": "d57cc84539bf742a99842aee1f7e06f530ec8f9c7fb1107779f08c257545c5ad"
+    },
+    {
+      "file": "src/review-provider-budget.ts",
+      "sha256": "ae91e7cc9c6491bf7da3d803f8ee96a8509dd856927361f3dee458c5a3fb3bf0"
+    },
+    {
+      "file": "src/review-provider-schema.ts",
+      "sha256": "db2a87f896d6614a0bc887daf1e204cd705a220410e08da1ccb973c07a291bee"
+    },
+    {
+      "file": "src/review-provider.ts",
+      "sha256": "ec2a15f187b8d9ab09b8e48461d2e8257f5ce2adf95374b7ada9fefc20073922"
+    },
+    {
+      "file": "src/review-refutation.ts",
+      "sha256": "64e55bea09daca5ffab1cbbb95e8d60a5e175f6ebfd2111355cc3db3863caec8"
+    },
+    {
+      "file": "src/review-scoring.ts",
+      "sha256": "fa854f468e7b5cd2ee19a34242b34bbf6ce8d1ed54bffb542b861f1d6b89413b"
+    },
+    {
+      "file": "src/review-verification.ts",
+      "sha256": "13c44adb7a6459710b676c6c43f1ec7d0b4a3dfde5523eb8593eefe062592010"
+    },
+    {
+      "file": "src/review-workflow-audit-schema.ts",
+      "sha256": "ef964ff99c92d12a7f807737bff19c5924d06ebaf6032ef1f30b578c4e187903"
+    },
+    {
+      "file": "src/review-workflow-audit.ts",
+      "sha256": "9130c0a31f698e7fa46da30f9949f5cba4a0b644646b7a42d99a569abd9f933d"
+    },
+    {
+      "file": "src/review-workflow-cli.ts",
+      "sha256": "d32f0112c9fb300cf94d5114b2271347fac09fd7eada4683e38cd1640239ce07"
+    },
+    {
+      "file": "src/review-workflow-schema.ts",
+      "sha256": "259fca626a9d9ac80f37769d03fd03c51f6a463dd9c28ab7c5727f61f25a2a8c"
+    },
+    {
+      "file": "src/review-workflow-session.ts",
+      "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+    },
+    {
+      "file": "src/review-workflow.ts",
+      "sha256": "7cacc4d6068af95035bebe95be74bdf8e93cab72703f6e9662a914dbbd7b54ed"
+    },
+    {
+      "file": "src/review.ts",
+      "sha256": "5c88d7f361be827059ae9ce4da82946c4a6c417f91112a4e336e0e4050743add"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "sha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "sha256": "baeb7e6fc30558f04da87c50574162373046cfeaf5cdf93d982e1063d2e06527"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "sha256": "2313d0d5e5432f8ce65b1cf998c2057e7c2342d0046a992a604e0ddcdbdfb211"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "sha256": "8f161a00ce4e23adf5680b04b90c8f16a71fc1535acba7f01bb856d86b6323f4"
+    },
+    {
+      "file": "src/ruby.ts",
+      "sha256": "b38512ae9e9ede83455851b9b62958958fb5401cc6282d7d230db8c7909669d6"
+    },
+    {
+      "file": "src/ruff-evidence.ts",
+      "sha256": "faf5260f24a8a22b5ea10f0c2def4a56964b37de5d6ff404d9e2d5364e37ad23"
+    },
+    {
+      "file": "src/ruff.ts",
+      "sha256": "c66a74af64bf8e20051d6e11c0e004255872f7d4d045a7a0833d73e5bd688f51"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "c3004d47f5db0bb91bfb1982e492e5dfe32e1f5cbfbbf0d9ad5b01a971c30727"
+    },
+    {
+      "file": "src/runtime-inventory.ts",
+      "sha256": "6a097beefcfc9679d03e09cf0da09ce3beaf7a55ff97a80c040e4ba33aeddb21"
+    },
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "08cebfe9b8929c8c86aea72c2efd80477e5f147d3b825f8a22f5b281a7304e86"
+    },
+    {
+      "file": "src/rust-test-events.ts",
+      "sha256": "a01e0afb51f80fc581321e4d84f0d9c589e8d52ac6438ee7a7092e7c6890228b"
+    },
+    {
+      "file": "src/rust-test-evidence.ts",
+      "sha256": "a0ac9b02b0312b721cab0b972c5366ab001a5f2d8f6d365f90b3953ef16717e4"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d6402553b9fc21800e0d19c1cc19f18dbc0479cb53bb73138e52c94ccf02dba6"
+    },
+    {
+      "file": "src/rust-workspace-evidence.ts",
+      "sha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "2f71a9beaed46a797f696ec902aa2a5a2e9422121e7df05005eb645636e92462"
+    },
+    {
+      "file": "src/rust-workspace-schema.ts",
+      "sha256": "1c914a0d4ca51cc04e2609197659c124f8c543d7c45982c04d9ac06e2c6ae332"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "9e788b429007941a142b4772c3328d7ab028048248a1ff0a32c8426a38a93e14"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "9913f3246eb611421eb962d13e0002e07d5f21499f2745ab925311445a0cc458"
+    },
+    {
+      "file": "src/sarif.ts",
+      "sha256": "69daa3bff63f5c3bad98d2e4c2fdac063386b55a9c9734f01504fa89c48d39ee"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "7a494e05cdbfe57955f642be78595146ea2f552f80d501bcac194ba66a3fd17c"
+    },
+    {
+      "file": "src/staticcheck-evidence.ts",
+      "sha256": "c649ac23f41a703972e3f8ee9f0c8d982814059a7ee68775925f1addadc77fe4"
+    },
+    {
+      "file": "src/swift-ast.ts",
+      "sha256": "eb3ac9ce3abb049b827e17aea93c22152663756bda47790b7ade6c457b02e4ed"
+    },
+    {
+      "file": "src/swift-native.ts",
+      "sha256": "29ce04733ba082815179288fd44a849b312a5b1815908890934bdb62cabd74ff"
+    },
+    {
+      "file": "src/swift-testing.ts",
+      "sha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60"
+    },
+    {
+      "file": "src/swift-tools-evidence.ts",
+      "sha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a"
+    },
+    {
+      "file": "src/swift-tools-runner.ts",
+      "sha256": "bb35dc203bc5d7bfc3c293f44577bfbf1d22e5e9ad0a5701d91837b8e5ac62e8"
+    },
+    {
+      "file": "src/swift-tools.ts",
+      "sha256": "8d415eb914ebc601bb82d10245e35f6b9a79828bf0f5e85c08cd51177973688b"
+    },
+    {
+      "file": "src/swift.ts",
+      "sha256": "4190fb27b2bae7d347f1373355de35747a9fceab0637187c35fc0f5fc4bc0c0d"
+    },
+    {
+      "file": "src/task-store.ts",
+      "sha256": "a0590debac5d5c23c467947d1fdb87260861163a4f04d26711c977d42b66d03d"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "194cb8e98cb7c7bb614dc41dd48d6d8be2b17749199e46cdf12045f722e8c6b6"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "0a2dfb9899240398d080a52b656d0c467efcd732378f61d655c477e2fd0f28c1"
+    },
+    {
+      "file": "src/typescript-arguments.ts",
+      "sha256": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852"
+    },
+    {
+      "file": "src/typescript-build-evidence.ts",
+      "sha256": "8bbe54349960e39060d4cc8fce261459945fea1c11be3f1c82c4a6657cdef20f"
+    },
+    {
+      "file": "src/typescript-build-runner.ts",
+      "sha256": "55d6b1e1d56d4578296d3f059b220e387dff3017ebe1d5935aab627dc73cf97f"
+    },
+    {
+      "file": "src/typescript-build.ts",
+      "sha256": "efd44d28a5540990725b89d5e4aa6cf8fa617948e9bd45b609adc190381b82d9"
+    },
+    {
+      "file": "src/typescript-runner.ts",
+      "sha256": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9"
+    },
+    {
+      "file": "src/typescript.ts",
+      "sha256": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0"
+    },
+    {
+      "file": "src/validation-task-worker.ts",
+      "sha256": "9927367c66c5d3292ca2ce63138b7c49f7ac9301ac3ae82a74ac07060e3edb49"
+    },
+    {
+      "file": "src/validation-tasks-protocol.ts",
+      "sha256": "cc6134c2d9ef09bb8be34b6f4921632897ddd1ff3ce688f10e41a0949e2e3546"
+    },
+    {
+      "file": "src/validation-tasks.ts",
+      "sha256": "aa1c0bdd83cd039ae59fb1217dba1ef99b005f4b4d94be12d652fa1601d3a896"
+    },
+    {
+      "file": "src/vitest-evidence.ts",
+      "sha256": "4a68cf73ba0c6f7f4c3f86097cfe19f3dff6a15fdc9a4c39ba1af971c9aa9923"
+    },
+    {
+      "file": "src/vitest-runner.ts",
+      "sha256": "08d658c0083474b2b2c6ee9c542174149d426d2b461d46ad9fabef0170712a12"
+    },
+    {
+      "file": "src/vitest-version.ts",
+      "sha256": "56716da2a928b18504f3e88f28552d936f2886638d568fd6614e45c49735fc0e"
+    },
+    {
+      "file": "src/vitest.ts",
+      "sha256": "76a4adae1685d14d96f29f06730f0f1f595fa2a67949d172e3176662df7de191"
+    },
+    {
+      "file": "src/vue-router-capture.ts",
+      "sha256": "26510d71f073d3bf1c7bd9b58f17758a614c85795f598d243a4ebb83cc974d54"
+    },
+    {
+      "file": "src/vue-router-evidence.ts",
+      "sha256": "83993906ebb99f232b45b0b86d3c17f39a15cf9ff08caa68b7d8d281567967b0"
+    },
+    {
+      "file": "src/vue-router-protocol.ts",
+      "sha256": "5faa1d4318dde49681fa978ebc416ba2183a40059a07759bf084d6a587f7521d"
+    },
+    {
+      "file": "src/vue-router-runner.ts",
+      "sha256": "e1f48295e1550446e8563b879360cd301ad5b50e0909dfe9239ba098c49098f5"
+    },
+    {
+      "file": "src/vue-router.ts",
+      "sha256": "570459e3396029022e2d24d107354d04ebc8b0a729e476da2b25418db7d3df01"
+    },
+    {
+      "file": "src/vue-tsc-runner.ts",
+      "sha256": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+    },
+    {
+      "file": "src/workspace.ts",
+      "sha256": "77d5054bfccdc0cb390109c5c35c349422838f2e1116be93d2283f14f237b735"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/process-tree.test.ts",
+      "sha256": "cdb8864b131c4507beffaedbccd7f143b857991dc49f754af6e195d01db96cca"
+    },
+    {
+      "file": "test/runner.test.ts",
+      "sha256": "061d8888cff3a54d405ea3ddf34b72743a4e4adc933f634b0586e0f1421793c0"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "fa447c0ff6737522eb69f53b57aaded30eb1cc496923cfabf28bcd2e3ded824a"
+    },
+    {
+      "file": "test/swift-ast.test.ts",
+      "sha256": "3e416b953c5bc05e992e18af9a5e6442745ac42af2f6ef5c93f278dfa3e7d747"
+    },
+    {
+      "file": "test/swift-native.test.ts",
+      "sha256": "ec50f7841a55003f4c935cdedce28b0447160d5706dd9e6ba0efbde6ab7b290a"
+    },
+    {
+      "file": "test/swift-testing.test.ts",
+      "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+    },
+    {
+      "file": "test/swift-tools-cancel.test.ts",
+      "sha256": "fc5b2bdb433207692b1d72cd892a30417e13cd32b4a7d7cdcec3d8d44fce64d5"
+    },
+    {
+      "file": "test/swift-tools-fixture.ts",
+      "sha256": "670ff5d76a83006f85986dc4e7fa718a88bf6c266b7c7b398d4c309f1e5669e7"
+    },
+    {
+      "file": "test/swift-tools-lifecycle.test.ts",
+      "sha256": "596aca470d510a2921c1e53ce6f7abc1a74a1e408cf5d2ff8b00983f2fddef78"
+    },
+    {
+      "file": "test/swift-tools-scope.test.ts",
+      "sha256": "936edc652de26733de4e9a839c0e7ee409f9d31ef9af56b96fa2be8a4d80134d"
+    },
+    {
+      "file": "test/swift-tools-surfaces.test.ts",
+      "sha256": "76f78dfcff1e7507a340e0bacb953ad4b07f63c298d7677d803cf2274a81adad"
+    },
+    {
+      "file": "test/swift-tools.test.ts",
+      "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+    },
+    {
+      "file": "test/swift.test.ts",
+      "sha256": "22b60b7d8832bd3d33d8a8e2ee5c6df4c8eeceda5c8f2f33cf482b078522a8cb"
+    }
+  ],
+  "compiledRuntimeSha256": "96ae2343ff015d30969c32d55e264f329882eb0f2bd799994d9e523b626538b3",
+  "compiledRuntimeDigestScope": "Every dist/src file in the frozen source and installed acceptance. Source pins separately bind implementation and harness; full SDK/publisher/license closure remains open.",
+  "preparation": {
+    "task": "checktrail-swift-tools-1006",
+    "tag": "checktrail-checktrail-swift-tools-1006:public",
+    "image": "sha256:27dc90a4fde74fcabc720d331b5a3c1cd4da16fa142362d68681dd7d79c07064",
+    "swift": "swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+    "node": "node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+    "asset": "https://github.com/realm/SwiftLint/releases/download/0.65.1/swiftlint_linux_arm64.zip",
+    "archiveSha256": "9ffa52f478e6d8eb485d37d14715ffac90abc81c58f3370d598bf75be05605f8",
+    "artifacts": [
+      {
+        "path": "LICENSE",
+        "bytes": 1094,
+        "sha256": "6a4395f3b744b8cd94b6c810bc705440a75f1929689b65d2f557ee3e9895632f"
+      },
+      {
+        "path": "LICENSE.mimalloc",
+        "bytes": 1096,
+        "sha256": "82ade5d7d9b029044b5fbbc326207fc47c2d44ee4dd71e8a559c36d728217de9"
+      },
+      {
+        "path": "swiftlint",
+        "bytes": 91877032,
+        "sha256": "4c02101342ad8e82ac57e702cbc50ff626268bd08f66735e0ce5cec0c0a29a57"
+      },
+      {
+        "path": "swiftlint-static",
+        "bytes": 86387792,
+        "sha256": "ecd5fceee78248088c596242c1f585944ba9ca9de2b92d246fd6e43a54b1fea4"
+      }
+    ],
+    "nativeVersions": "v22.23.3\nSwift version 6.2.3 (swift-6.2.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu\nSwift Package Manager - Swift 6.2.3\n0.65.1\n0.65.1\n",
+    "buildNetwork": "none",
+    "publisherAndLicenseClosureVerified": false
+  },
+  "acceptance": {
+    "image": "sha256:27dc90a4fde74fcabc720d331b5a3c1cd4da16fa142362d68681dd7d79c07064",
+    "source": {
+      "profile": "swift-tools",
+      "timeoutMs": 300000,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "a2dbacf7b3eeb6647125291333ea9ca55e2c8fa726de31a94e052ad83fd92c87",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "swift-tools",
+        "timeoutMs": 300000,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:27dc90a4fde74fcabc720d331b5a3c1cd4da16fa142362d68681dd7d79c07064",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "acceptanceDurationMs": 268442,
+  "compilingSwiftMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Input SHA",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "43202b4b12bea61acd36ba79966ca3b70e26cda302a52bb369eab4a7533cf880",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 113,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "6951eb3727504e36dc1693a74b9e70b319f0a9af769e00f7055b98d4235c8716",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8486
+      },
+      {
+        "guard": "Owned option SHA",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "c931ec3c1ed430842b994210a981cb37e9afed08c82ecbecbc0dc92751d04cd7",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 116,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "6cfcb356f20a71f5c1793c0ced6f107f3ef00db0a2057f16064371b82bf050b4",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8230
+      },
+      {
+        "guard": "Native tool SHA",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "72684c52b77614ac2987e6b7c380467d9b632a100ee5beb537018f8307a42754",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 119,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "0610367417a42a29140ab91a02f6648241b7b8f6940bc21b4006bca4809dd350",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8291
+      },
+      {
+        "guard": "Native output SHA",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "8dd412bf401367f26d14e8b243ea25320606e7ba4a99378ac94d5f6ee0815c05",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 122,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "3234a0bb18c024c33d3e66f66f4fd2e1e3355df7392216a8e891c71ac6dcc5f8",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8203
+      },
+      {
+        "guard": "Exact command scope",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "2ccf85d76dec0a0c8b94f13b78a6e5259fd2a2d0711351b62bbf8c81a9a0396e",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 125,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "fd6f6d0ca214f7b2277b58471735c123c192e47ad64a64db0024de52313a9fb7",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8556
+      },
+      {
+        "guard": "Native runtime version",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "83cfdbb79574b654de12ef300c7646df5e1bf7aebc531ef38c5b5aa376089e8e",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 131,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "7858518b47448bccea6622da5229782be8ebd6ef1cc3397f700903b5d3a3d443",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8459
+      },
+      {
+        "guard": "Native manifest scope",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "8e4aa321c16e6d3663cb21f588a7538d67026ae1cebfb8ca445c7dac1fa46b6f",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 132,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "5641386e2e5f332a6b10912be9e4c5dacb6ce951e474ddd2c2824cc4810ec9f9",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8618
+      },
+      {
+        "guard": "Native compiler participation",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "123306ceaf5db6a4bc147b454f54bc386e3cd82459fdc3ead5841b95cbe69fcc",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 142,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "74fa1c0ecfe665a95ac3a02bea140e091f1483c7a4d88b7e5958482d242ee2a7",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8441
+      },
+      {
+        "guard": "Every nested suite count",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "41d397f86a67e05a974df4bbf432f8f655caf1bdddf461a294d480fba97a4aa0",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift evidence rejects forged runtime source scope commands compiler callbacks counters and artifact identities",
+          "originalCompiledCallLine": 151,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "80ddb477fe1746e75ea5a5a31e707fcd681a504b3e9bcff4ca829f6c66fa9317",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "fbb0fd34d5473fea8e75cd1a5f3c078c510c71912a261a896951e9de1bd8e4de",
+        "durationMs": 8216
+      },
+      {
+        "guard": "Artifact byte SHA",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "368211c5ce86903ef41449582dc5a1ac736c58ce67c783cf6e9f2eaf8e00cb1b",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+          "originalCompiledCallLine": 79,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "3b04783a36b9d25f28d1818916623c5f03e913713bb8397d43b3b3648e48cb0a",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-testing.test.ts",
+            "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "eb64da2e88b1b6a1a711e11c2d6b5cc29215c8d2b8f809a2d7c00cc8d6d82883",
+        "durationMs": 7747
+      },
+      {
+        "guard": "Native physical column",
+        "file": "src/swift-testing.ts",
+        "sourceSha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60",
+        "mutationSourceSha256": "2b6a547dd87a0d09820ebd3decd764641fb8a5ba17a50084563434fb498d4509",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+          "originalCompiledCallLine": 82,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "17723c3e89c2e2ee48a429ed2a4ce4509efb45d2cdef905178d235f63ecaf62e",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-testing.test.ts",
+            "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "eb64da2e88b1b6a1a711e11c2d6b5cc29215c8d2b8f809a2d7c00cc8d6d82883",
+        "durationMs": 7661
+      },
+      {
+        "guard": "Every parameter case started",
+        "file": "src/swift-testing.ts",
+        "sourceSha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60",
+        "mutationSourceSha256": "1be37122c99fc8c07f2388ea95e61b6a2ba3959016ea7851ae2bbf52072a0359",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+          "originalCompiledCallLine": 94,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "e633fd91b9ef5746b051a471174ca12573ae724e6cf7497c79e7521a01d3ff0a",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-testing.test.ts",
+            "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "eb64da2e88b1b6a1a711e11c2d6b5cc29215c8d2b8f809a2d7c00cc8d6d82883",
+        "durationMs": 7896
+      },
+      {
+        "guard": "Every parameter case ended",
+        "file": "src/swift-testing.ts",
+        "sourceSha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60",
+        "mutationSourceSha256": "b643f9ab5eccb8ce1b077a880dce2092254f30a6e1e1aa2aa17a34b115ae5196",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+          "originalCompiledCallLine": 90,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "ba355f0bbbc6e3fb99c77f9f5ff1476e5275c43bc9994649b7de4e7c607299cc",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-testing.test.ts",
+            "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "eb64da2e88b1b6a1a711e11c2d6b5cc29215c8d2b8f809a2d7c00cc8d6d82883",
+        "durationMs": 7837
+      },
+      {
+        "guard": "Unique native lint counter",
+        "file": "src/swift-tools-evidence.ts",
+        "sourceSha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a",
+        "mutationSourceSha256": "72829d0c5d24dc8f9ec1d7eceb1eabb7714e29f3e8f768d7ed8f1686477cef5d",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native SwiftLint explicit rules reconcile every source and expose forced unwrap diagnostics with literal near miss and repair",
+          "originalCompiledCallLine": 70,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "c9c98d16ebea145abddc0eb356f34f46ba5430e048f14b36e859992f079ee521",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-tools.test.ts",
+            "sha256": "b7826828b1a8523e346959a09ef308a69045fd4520c05c9f0a0c3681cb09078a"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "5409d264ac583af89321c00bdce66f98e7a1e15530133175ba433bd982a21f79",
+        "durationMs": 4171
+      },
+      {
+        "guard": "XML method total",
+        "file": "src/swift-testing.ts",
+        "sourceSha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60",
+        "mutationSourceSha256": "d3239f0ba3b94193c171e0bc5f6a8116d0de2ec2163a321844399deaeef2d947",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Swift Testing event source IDs case lifecycles XML methods and issues cannot be forged into passing evidence",
+          "originalCompiledCallLine": 101,
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "38ccc2ffe8a4e90fc912a0768cc06d65193a736f36933896f6fb10a077213181",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/swift-testing.test.ts",
+            "sha256": "a1504b900cfdc46a439235b918466e9fcddd61b00a4d7b1ec56b83d7ba5294b7"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "eb64da2e88b1b6a1a711e11c2d6b5cc29215c8d2b8f809a2d7c00cc8d6d82883",
+        "durationMs": 7891
+      }
+    ]
+  },
+  "compilingSharedProcessMutation": {
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutation": {
+      "guard": "Observed ancestry across separate process groups",
+      "file": "src/process-tree.ts",
+      "sourceSha256": "e263551d3511167d254bb234ad79d2fc86922118791a482793d301b598007775",
+      "mutationSourceSha256": "734bf5a64a5edd0e3aa2b2d893da4a5ea91b6411c221ab57d1c3cdc93b6907ec",
+      "compiled": true,
+      "intendedAssertion": {
+        "originalCallback": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+        "originalCompiledCallLine": 82,
+        "status": "detached owned child still alive after cancellation"
+      },
+      "exitCode": 1,
+      "tests": 1,
+      "skipped": 0,
+      "logSha256": "49b5c682d95163373d3ecda9f4c07ad15083605754e2be8d415c1c9883ff6b05",
+      "killedAtIntendedAssertion": true,
+      "testPins": [
+        {
+          "file": "test/process-tree.test.ts",
+          "sha256": "cdb8864b131c4507beffaedbccd7f143b857991dc49f754af6e195d01db96cca"
+        }
+      ],
+      "selectedOriginalCallbackSha256": "93122107d2df826e6ac3fcab145aff50dbacb68d4a8898060bcb0dae3a57a035",
+      "durationMs": 4529,
+      "platform": "darwin",
+      "arch": "arm64"
+    }
+  },
+  "compilingSharedOrderingMutation": {
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutation": {
+      "guard": "Ancestry ordering within the original process group",
+      "file": "src/process-tree.ts",
+      "sourceSha256": "e263551d3511167d254bb234ad79d2fc86922118791a482793d301b598007775",
+      "mutationSourceSha256": "71f3ff6be15e101b2a2ad49f3c12b2cff50982fbee08dada3db3ae0ba2c58503",
+      "compiled": true,
+      "intendedAssertion": {
+        "originalCallback": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+        "originalCompiledCallLine": 31,
+        "status": "in-group waiting parent precedes its child with erased depth"
+      },
+      "exitCode": 1,
+      "tests": 1,
+      "skipped": 0,
+      "logSha256": "e4b965c0db01a469d011aa7e48d4478c86e134524ccb3ea3c99ffbb38ca0ab16",
+      "killedAtIntendedAssertion": true,
+      "testPins": [
+        {
+          "file": "test/process-tree.test.ts",
+          "sha256": "cdb8864b131c4507beffaedbccd7f143b857991dc49f754af6e195d01db96cca"
+        }
+      ],
+      "selectedOriginalCallbackSha256": "d1769a8edf5c36aef2d337b39d54759fb89a86a3ecfe23a2ea4c6fd22813db2c",
+      "durationMs": 3238,
+      "platform": "darwin",
+      "arch": "arm64"
+    }
+  },
+  "preservedNativeGrammarProfile": {
+    "profile": "swift",
+    "timeoutMs": 120000,
+    "passed": 2,
+    "required": 1,
+    "problems": [],
+    "complete": true
+  },
+  "repositoryValidation": [
+    {
+      "check": "check",
+      "command": ["npm", "run", "check"],
+      "exitCode": 0,
+      "durationMs": 44896,
+      "counts": [
+        "\u2139 tests 738",
+        "\u2139 pass 567",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 171",
+        "\u2139 todo 0"
+      ]
+    },
+    {
+      "check": "format",
+      "command": ["./node_modules/.bin/prettier", "--check", "."],
+      "exitCode": 0,
+      "durationMs": 3546,
+      "counts": []
+    },
+    {
+      "check": "changed-lint",
+      "command": [
+        "./node_modules/.bin/eslint",
+        "scripts/cleanup-swift-tools-runtime.mjs",
+        "scripts/generate-schemas.mjs",
+        "scripts/prepare-swift-tools-runtime.mjs",
+        "scripts/verify-required-native-tests.mjs",
+        "scripts/verify-swift-tools-container.mjs",
+        "scripts/verify-swift-tools-package.mjs",
+        "src/adapters.ts",
+        "src/evidence.ts",
+        "src/process-tree.ts",
+        "src/runner.ts",
+        "src/schemas.ts",
+        "src/swift-ast.ts",
+        "src/swift-native.ts",
+        "src/swift-testing.ts",
+        "src/swift-tools-evidence.ts",
+        "src/swift-tools-runner.ts",
+        "src/swift-tools.ts",
+        "src/tool-versions.ts",
+        "src/types.ts",
+        "test/process-tree.test.ts",
+        "test/schemas.test.ts",
+        "test/swift-ast.test.ts",
+        "test/swift-native.test.ts",
+        "test/swift-testing.test.ts",
+        "test/swift-tools-cancel.test.ts",
+        "test/swift-tools-fixture.ts",
+        "test/swift-tools-lifecycle.test.ts",
+        "test/swift-tools-scope.test.ts",
+        "test/swift-tools-surfaces.test.ts",
+        "test/swift-tools.test.ts"
+      ],
+      "exitCode": 0,
+      "durationMs": 618,
+      "counts": []
+    },
+    {
+      "check": "diff",
+      "command": ["git", "diff", "--check"],
+      "exitCode": 0,
+      "durationMs": 16,
+      "counts": []
+    },
+    {
+      "check": "schemas",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "dist/test/schemas.test.js"
+      ],
+      "exitCode": 0,
+      "durationMs": 1219,
+      "counts": [
+        "# tests 6",
+        "# pass 6",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    },
+    {
+      "check": "legacy-swift",
+      "command": ["node", "scripts/verify-required-native-tests.mjs", "swift"],
+      "exitCode": 0,
+      "durationMs": 925,
+      "counts": []
+    },
+    {
+      "check": "posix-runner",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "dist/test/runner.test.js",
+        "dist/test/process-tree.test.js"
+      ],
+      "exitCode": 0,
+      "durationMs": 1054,
+      "counts": [
+        "# tests 8",
+        "# pass 8",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    }
+  ],
+  "retainedNativeDevelopmentAttempts": [
+    {
+      "attempt": "attempt-1",
+      "outcome": "failed",
+      "logSha256": "e7e73132456bbf3b6484cd29339a57ea49f48af98be852c8aa86f7a74b521cb2"
+    },
+    {
+      "attempt": "attempt-2",
+      "outcome": "passed",
+      "logSha256": "0fcd56b057c63765fbb4ed6eb36db5e485cbacac88f629088b337348ebf56891"
+    },
+    {
+      "attempt": "attempt-3",
+      "outcome": "failed",
+      "logSha256": "7628c0e0d93bb97d9231faf62204b14d0d17deab37a044c9c59aa70afd77a76b"
+    },
+    {
+      "attempt": "attempt-4-debug",
+      "outcome": "failed",
+      "logSha256": "0a22ac9934674e0f5fce16fd2b17f2eba6b1e90926fbfa45fbfa3e445e5dcf8a"
+    },
+    {
+      "attempt": "attempt-5",
+      "outcome": "failed",
+      "logSha256": "0bb9e0f27397103d57d830d45d91684da444a77e098d8b0af251f4521e1e6c2b"
+    },
+    {
+      "attempt": "attempt-7-accepted",
+      "outcome": "passed",
+      "logSha256": "d9fa8953258a17044bc7026175501415b1dcf6ab58d11fc6a549fde6b1e0034b"
+    }
+  ],
+  "diagnosticReplays": [
+    {
+      "group": "Original diagnostic callback",
+      "attempts": 10,
+      "failed": 1,
+      "receipts": [
+        {
+          "attempt": "checktrail-swift-lint-debug-1.log",
+          "logSha256": "451654846ccc89203a0ba5e6fa86e7938e8bab735bf9de70ac6c2b32f50367c2",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-10.log",
+          "logSha256": "ef92995c5ab8539890ec295e9099444549473da55ef85a2000a1fb4f59ca78e5",
+          "failed": true
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-2.log",
+          "logSha256": "507109649820988ff6a422b8e091488b46e41f834f61df4c8248f46769bfb0b9",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-3.log",
+          "logSha256": "a793c4b7888ad7bdc82efc77e3c6ec068f3ff5d8201f6f22c73b2a5aaf49a9ab",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-4.log",
+          "logSha256": "3bae15a08c3fd15c651e8b7983bef0c68fbe2748ee8a2dec8d002214adeb5de2",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-5.log",
+          "logSha256": "377234dd54d0d5b64c80b1a5c656b6f6fecc763b620a67c5e48a37657450c15f",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-6.log",
+          "logSha256": "ce11c98679ecc3a3e7d0e9c4663c1dc6cb6df3818b14d55a3032e8bc29183e3c",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-7.log",
+          "logSha256": "c996edce0f1a43b900b1d265b27b1a11768872d7056ee7457007472a1f0429bd",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-8.log",
+          "logSha256": "c8ee53ad46269e74e0a096ad58369a84ab0d05f97f05eb3112e56e6d1c1159fa",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-debug-9.log",
+          "logSha256": "4de43b3776e77cbd1e5c89c778b2ee808315d1fc0ddc15cc96dc29937635ce24",
+          "failed": false
+        }
+      ],
+      "evaluation": false
+    },
+    {
+      "group": "Instrumented raw-receipt diagnosis",
+      "attempts": 22,
+      "failed": 1,
+      "receipts": [
+        {
+          "attempt": "checktrail-swift-lint-instrumented-1.log",
+          "logSha256": "4f6c12b60fb20df55ce9b1ffa43ec2aabf7432a5197b89d6890be3f86d5ddca4",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-10.log",
+          "logSha256": "4e3e2af999e4a1714193d2b0f1a8ab8cfbf4c35d5f912233650aeadaf59fa712",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-11.log",
+          "logSha256": "da993d649af8a282a8b4893747534680c20f8ff481361baeeef0bb6362c3baf7",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-12.log",
+          "logSha256": "5ebeab460dad3c78afd623a1dc2a71815124d03088ca7a42fb22956f078f794b",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-13.log",
+          "logSha256": "7ff4943df4115bfb9a07f9b3075d1c4c22b2329ae79394949071614ac65516b6",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-14.log",
+          "logSha256": "b52eee9fe933812a636e87e88716b19dbac7bd7fa79ee5c5ed5fd447d121e8f0",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-15.log",
+          "logSha256": "c45e78dcd11b384a7de05a52ea750251e5065a468e03e1abfed5495cf533dcae",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-16.log",
+          "logSha256": "c1dc00445d1e84e8d9ac154bb28e7c1366c18749e43880f00900e36e43969620",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-17.log",
+          "logSha256": "443def6e19fc59269add587e2d6b5fbd7d0558eeab098c3f14a3e78ad549f353",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-18.log",
+          "logSha256": "ffbde9511cd2644371605a2065226bb89bc4f411e408fc796089a855a04c5628",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-19.log",
+          "logSha256": "fb3a4bba98c01a4dcbe4fab45202c06dad6d98915b75ad315cd0f928f10d2b5f",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-2.log",
+          "logSha256": "9ecda69b9c4e0ef0a522688575fb18a59e860b07bf3878da3f1acda5b8185960",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-20.log",
+          "logSha256": "a826fbdb201034a9663b65f42460cc05b9f4c66f444b28cf88c7175967e913b8",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-21.log",
+          "logSha256": "e0958f38176c60f80326eca7dc65d2a73ddbabf65017ce636a885fb3bf3c538d",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-22.log",
+          "logSha256": "0f919f47c92b907ceb38406b427c0bd7fc2c3812a9399d19c9509b6662b18d34",
+          "failed": true
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-3.log",
+          "logSha256": "8f9e3123d852f59223b1e7fc9824a6404a08e74e5c1f4efcf3276780e83232ca",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-4.log",
+          "logSha256": "6d08f7a471efc98b96a16ff28e949b2f18560124cdc228731b8e11e6b512c02d",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-5.log",
+          "logSha256": "b3bb8656c0a7094bd029fdabed35c523397f7548d861cd552683b51e67c0462f",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-6.log",
+          "logSha256": "24d9eba8d309120062efdba75dab4f429a3f1c11c78955d739d60eae416954ec",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-7.log",
+          "logSha256": "29e24a78e4e6280e0dfa92a965ed9f7f732b3d152f965bd77e60c2c82a79f9bc",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-8.log",
+          "logSha256": "84349142a7e8412e94d6c28ec909bf98682704d906f46a3e6fa4f91dc7b15fa8",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-instrumented-9.log",
+          "logSha256": "8cdd47b300ff441ae50681fc4c9334041e3a06b8586bd0e4a9826c07c9216a7c",
+          "failed": false
+        }
+      ],
+      "evaluation": false
+    },
+    {
+      "group": "Repaired original callback",
+      "attempts": 20,
+      "failed": 0,
+      "receipts": [
+        {
+          "attempt": "checktrail-swift-lint-repair-1.log",
+          "logSha256": "927d285c199a5234422dde7462db0471c6aa6fba90042173766f67b0f74046e6",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-10.log",
+          "logSha256": "c1e70b8429d43361d4e28939c36b14809802fd0e8dbdf2fe59174b60734a6fe1",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-11.log",
+          "logSha256": "93516e0ae5b2678ae953f4081fe0a5b2d6b2aced1c7d1d58f443fc8010b46755",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-12.log",
+          "logSha256": "cbe886d2348e9688b6a8c88cef1c529160603ba7cb92332ef270117ad749b04d",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-13.log",
+          "logSha256": "aabc11501a396e5c694f417088568d27cb1308d41d949d34bcd31b62d4f463f5",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-14.log",
+          "logSha256": "7b615eedcf5e17a74d09091141dd3b4adbf8bfdfc3b9c668e346c63004045bd5",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-15.log",
+          "logSha256": "cf791d7c7b259b0e892f7ca7c792f37fb8d493e3501794515c092e607c273191",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-16.log",
+          "logSha256": "89c544710b67b6d4f78cb2c433159887e092e5d5bbaf2147dedd58ce6663918b",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-17.log",
+          "logSha256": "62516e903cd59d42fb0937c536f4ea57503a4c51ac8cf90df1105955ee4f8d78",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-18.log",
+          "logSha256": "a24134e95b4ce5c4e9907a6cb1779257aadc2821186fc15863b76f0fd6ee2cbd",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-19.log",
+          "logSha256": "503d350d665eba343a3d310fdd159b511275982443503441d4e511fa54a757fd",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-2.log",
+          "logSha256": "84eb8568e7d4794fa4e5e66b6cceaf0e507d3d36577db30cf51262f2b0f2a2f1",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-20.log",
+          "logSha256": "81073619a8ba79844242d0fabd49f7590dde9450303d5a3e0c0c86c13288f1ca",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-3.log",
+          "logSha256": "b628b59a4ba293b7e2ffc11a7782cda1af609b51ab8cc9c747f841d0d64c2fc5",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-4.log",
+          "logSha256": "4607f4481d06c90b47d2f2eaecdee54606493d12b6e35f545cb2f49ea427cd64",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-5.log",
+          "logSha256": "7271af6cf0b123071da38a11b69def029abaea7e91bcdec163c4b981ebe8270b",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-6.log",
+          "logSha256": "ee29fe476858540f2cd3b63f3b5f4c1c5ae16e0c66d808e9b69609bc2eb6de9d",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-7.log",
+          "logSha256": "7fd78ed9a8929c09ef96bc55ea0cc7365a5dd6fa558e7d239771a50afc07172b",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-8.log",
+          "logSha256": "46eac5221b86dc7117664d239748a409d15652883ac6fdcfd9821536864dc26f",
+          "failed": false
+        },
+        {
+          "attempt": "checktrail-swift-lint-repair-9.log",
+          "logSha256": "e98c5d4892d9ef421b889e8ff2b805662e3556691e38e24c08fb85fc244593d2",
+          "failed": false
+        }
+      ],
+      "evaluation": false
+    }
+  ],
+  "retainedLaterSourceFailure": {
+    "passed": 8,
+    "required": 9,
+    "installedStarted": false,
+    "reason": "Complete SwiftLint progress printed in native order 1,3,2 was rejected by a sequential-counter assumption.",
+    "logSha256": "ba4b970ed1eea7ad4c6097c01d05de8ce4a6cbf39137f1a3f2c0a98d433631d7",
+    "rawReorderedReceiptSha256": "d25977ea6e9197593e1f8dbf6b5817b25b9e76b21301614cd0b686b28f15d8d6"
+  },
+  "developmentObservations": [
+    "Initial native compiler output repeated primary diagnostics in source excerpts; singular SwiftLint violations and nested XCTest totals required stricter measured handling.",
+    "Native compiler dump includes mixed metadata/children and closure captures; measured grammar and malformed/near-miss controls were added.",
+    "Sequential XCTest lifecycle exposes native skips that parallel XML omitted; every nested suite and callback is reconciled.",
+    "Swift Testing XML counts methods/issue records, while V0 events identify parameter cases. Numeric XML references required one-pass decoding without changing escaped reference-looking text.",
+    "Reached compiled XCTest helper entered a separate process group and survived group-only cancellation. The shared runner now checks observed descendant ancestry and fresh identities before descendant-first termination.",
+    "Original-group membership erased ancestry depth in the first cleanup implementation. A red in-group parent/child control now checks ancestry-derived termination ordering.",
+    "Native SwiftLint progress counters can be printed in order 1,3,2. A reproduced receipt and the pinned concurrent visitor support order-independent unique bounded counter reconciliation, with duplicate/gap/out-of-range/wrong-total controls.",
+    "The available Apple Swift 6.4 command-line SDK could not resolve XCTest/Testing; full macOS native build/test is not promoted."
+  ],
+  "optionalHostSkipsAreNativeAcceptance": false,
+  "evaluatedPackageScope": "The tarball records evaluated runtime/CLI, schema and documentation bytes before this measurement. It does not certify a later receipt-containing tarball.",
+  "boundaries": {
+    "gateA": "open",
+    "gateBEvaluationPermitted": false,
+    "gateCReviewQualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "privateSourceImported": false,
+    "nativeFailureLocationsEstablishProductionMechanismOrSeverity": false,
+    "trustedExecutionIsOSSandboxed": false,
+    "windowsExecutionVerified": false,
+    "otherNativeSDKOSArchitectureProfiles": "unverified",
+    "hostedCIForThisRevision": "unverified",
+    "fullSDKPublisherLicenseClosureVerified": false,
+    "fullNativeAllAttemptAuditCompleted": false,
+    "representativeProjectPerformance": "unmeasured",
+    "observedDescendantCleanupContainsMaliciousDoubleForks": false
+  }
+}

@@ -1,3 +1,25 @@
+import {
+  collectImportContext,
+  projectImportContext,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "./import-context.js";
+import {
+  fitReviewCalibration,
+  projectReviewCalibration,
+  applyReviewCalibration,
+  projectReviewCalibrationApplication,
+  reviewCalibrationReportSchema,
+  reviewCalibrationSummarySchema,
+  reviewCalibrationApplicationReportSchema,
+  reviewCalibrationApplicationSummarySchema,
+} from "./review-calibration.js";
+import {
+  scorePairedReviewTrials,
+  projectPairedReviewScoring,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";
 import { createToolCatalog } from "./mcp-tool-catalog.js";
 import { McpValidationTasks, taskMetadata } from "./mcp-validation-tasks.js";
 import { validationTasksOptionsSchema } from "./validation-tasks-protocol.js";
@@ -756,6 +778,90 @@ function createConnectionServer(
     },
   );
   registerTool(
+    "review_calibration_fit",
+    {
+      description:
+        "Descriptive family-specific isotonic calibration fit from numerical declarations. Retains missing evidence and unknown probabilities. No inference or project execution; labels, host/model identity, actual split isolation and calibrated quality remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewCalibrationReportSchema
+        : reviewCalibrationSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectReviewCalibration(
+            fitReviewCalibration(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Calibration fit failed. Check declared split identities, model binding, numerical observations and fit integrity locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_calibration_apply",
+    {
+      description:
+        "Descriptive family-specific isotonic calibration apply from numerical declarations. Retains missing evidence and unknown probabilities. No inference or project execution; labels, host/model identity, actual split isolation and calibrated quality remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewCalibrationApplicationReportSchema
+        : reviewCalibrationApplicationSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectReviewCalibrationApplication(
+            applyReviewCalibration(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Calibration apply failed. Check declared split identities, model binding, numerical observations and fit integrity locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_paired_score",
+    {
+      description:
+        "Compute descriptive paired differences from preregistered trials and unverified labels with whole-cluster resampling. Retains missing and incomplete slots. No inference or execution; does not verify independent sessions, calibration or a quality gate.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewPairedReportSchema
+        : reviewPairedSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectPairedReviewScoring(
+            scorePairedReviewTrials(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Paired review scoring failed. Check frozen identities, paired labels, observations and bootstrap limits locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
     "review_score",
     {
       description:
@@ -1033,6 +1139,38 @@ function createConnectionServer(
       } catch {
         return error(
           "Finding comparison failed. Inspect baseline paths, limits and evidence locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "import_context",
+    {
+      description:
+        "Collect bounded JS/TS imports, whole source declarations and affected declared consumers without executing project code. Unresolved scope retains full fallback; this does not narrow validation plans or prove runtime reachability.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? importContextReportSchema
+          : importContextSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        const result = await collectImportContext(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, input)),
+        );
+        return reply(
+          projectImportContext(
+            result,
+            options.detailed,
+            options.allowReviewSource === true,
+          ),
+        );
+      } catch {
+        return error(
+          "Import collection failed. Inspect scope, source freshness and limits locally with the CLI.",
         );
       }
     },

@@ -1,6 +1,14 @@
 import { z } from "zod";
+import { reviewNativeObservationSchema } from "./review-adjudication.js";
+import { reviewFamilySchema } from "./review-hypotheses.js";
+import {
+  reviewPairedProtocolSchema,
+  reviewPairedReportSchema,
+  reviewPairedSummarySchema,
+} from "./review-paired-scoring.js";
 import {
   reviewCandidateSchema,
+  reviewBlindCandidateSchema,
   reviewModelOutputSchema,
 } from "./review-provider-schema.js";
 import { reviewWorkflowNativeReceiptSchema } from "./review-workflow-schema.js";
@@ -40,12 +48,76 @@ export const reviewBenchmarkJudgmentSummarySchema = z.strictObject({
   resolved: z.number().int().min(0).max(16),
   archiveDigest: digest.nullable(),
 });
+export const reviewBenchmarkScoringProfileSchema = z.strictObject({
+  profile: z.literal("sealed-single-claim-paired-synthetic-v1"),
+  seed: reviewPairedProtocolSchema.shape.seed,
+  resamples: reviewPairedProtocolSchema.shape.resamples,
+  confidenceLevel: reviewPairedProtocolSchema.shape.confidenceLevel,
+  cases: z
+    .array(z.strictObject({ id: identity, family: reviewFamilySchema }))
+    .min(1)
+    .max(4),
+});
+const scoreCount = z.number().int().min(0).max(512);
+const scoreFields = {
+  schemaVersion: z.literal(1),
+  profile: reviewBenchmarkScoringProfileSchema.shape.profile,
+  protocolDigest: digest,
+  collectionDigest: digest,
+  judgingDigest: digest,
+  judgmentsDigest: digest,
+  scoringParametersDigest: digest,
+  armDigests: z.tuple([digest, digest]),
+  accounting: z.strictObject({
+    plannedTrials: scoreCount,
+    selectedPairs: scoreCount,
+    completedTrials: scoreCount,
+    retainedClaims: scoreCount,
+    unscoredClaims: scoreCount,
+    missingJudgments: scoreCount,
+    rejectedJudgments: scoreCount,
+    unresolvedClaimJudgments: scoreCount,
+    labelDisagreements: scoreCount,
+    unknownJudgeLabels: scoreCount,
+    unexpectedFamilyClaims: scoreCount,
+    declaredClaimProbabilities: scoreCount,
+    unknownClaimProbabilities: scoreCount,
+  }),
+  scoringReady: z.boolean(),
+  artifactBindingsChecked: z.literal(true),
+  pairingBoundToManifest: z.literal(true),
+  labelSource: z.literal("frozen-declared-synthetic-case-variants"),
+  probabilitiesAvailable: z.boolean(),
+  probabilitySource: z.literal(
+    "sealed-host-declared-uncalibrated-claim-probability",
+  ),
+  sourceIncluded: z.literal(false),
+  claimsVerified: z.literal(false),
+  labelsVerified: z.literal(false),
+  hostIsolationVerified: z.literal(false),
+  externalAttemptsComplete: z.literal(false),
+  calibratedConfidence: z.literal(false),
+  qualityAssessed: z.literal(false),
+  inferenceInvoked: z.literal(false),
+  fieldEvaluationExecuted: z.literal(false),
+};
+export const reviewBenchmarkScoreReportSchema = z.strictObject({
+  ...scoreFields,
+  format: z.literal("review-benchmark-scoring-report"),
+  paired: reviewPairedReportSchema,
+});
+export const reviewBenchmarkScoreSummarySchema = z.strictObject({
+  ...scoreFields,
+  format: z.literal("review-benchmark-scoring-summary"),
+  paired: reviewPairedSummarySchema,
+});
 export const reviewBenchmarkPlanSchema = z.strictObject({
   schemaVersion: z.literal(1),
   profile: z.literal("workflow-journal-paired-synthetic-v1"),
   provenance: z.literal("operator-declared-original-synthetic"),
   curatorSessionId: identity,
   judging: reviewBenchmarkJudgeProfileSchema.optional(),
+  scoring: reviewBenchmarkScoringProfileSchema.optional(),
   repetitions: z.number().int().min(1).max(2),
   runtime: z.strictObject({
     node: identity,
@@ -205,6 +277,21 @@ export const reviewBenchmarkWorkerSummarySchema = z.strictObject({
   sourceIncluded: z.literal(false),
 });
 
+const judgingEvidence = reviewBenchmarkJudgingSchema.shape.packets.element;
+const blindOutput = reviewModelOutputSchema.extend({
+  candidates: z.array(reviewBlindCandidateSchema).max(32),
+});
+const blindEvidence = judgingEvidence.extend({
+  outputs: z.array(blindOutput).max(6),
+  native: z
+    .array(
+      z.strictObject({
+        candidate: reviewBlindCandidateSchema,
+        observations: reviewNativeObservationSchema,
+      }),
+    )
+    .max(1),
+});
 export const reviewBenchmarkJudgePacketSchema = z.strictObject({
   ...flags,
   format: z.literal("review-benchmark-judge-packet"),
@@ -214,10 +301,13 @@ export const reviewBenchmarkJudgePacketSchema = z.strictObject({
   sessionRequirement: z.literal("fresh-host-session"),
   sourceTrust: z.literal("untrusted-source-and-review-text"),
   sourceIncluded: z.literal(true),
-  evidence: reviewBenchmarkJudgingSchema.shape.packets.element,
+  evidence: blindEvidence,
   claims: z
     .array(
-      z.strictObject({ claimId: digest, candidate: reviewCandidateSchema }),
+      z.strictObject({
+        claimId: digest,
+        candidate: reviewBlindCandidateSchema,
+      }),
     )
     .max(192),
 });

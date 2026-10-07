@@ -1,3 +1,10 @@
+import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
+import { cppToolsEvidence } from "./cpp-tools-evidence.js";
+import { terraformEvidence } from "./terraform-evidence.js";
+import { kubeconformEvidence } from "./kubeconform-evidence.js";
+import { kustomizeEvidence } from "./kustomize-evidence.js";
+import { helmEvidence } from "./helm-evidence.js";
+import { swiftToolsEvidence } from "./swift-tools-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -337,6 +344,16 @@ export function evaluate(
     return { ...result, ...vueRouterEvidence(check, processes) };
   if (check.parser === "fastapi-json")
     return { ...result, ...fastapiEvidence(check, processes) };
+  if (check.parser === "terraform-json")
+    return { ...result, ...terraformEvidence(check, processes) };
+  if (check.parser === "helm-json")
+    return { ...result, ...helmEvidence(check, processes) };
+  if (check.parser === "kustomize-json")
+    return { ...result, ...kustomizeEvidence(check, processes) };
+  if (check.parser === "kubeconform-json")
+    return { ...result, ...kubeconformEvidence(check, processes) };
+  if (check.parser === "cpp-tools-json")
+    return { ...result, ...cppToolsEvidence(check, processes) };
   if (check.parser === "clang-json")
     return { ...result, ...clangEvidence(check, processes, root) };
   if (check.parser === "gradle-json")
@@ -349,6 +366,10 @@ export function evaluate(
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "swift-tools-json")
+    return { ...result, ...swiftToolsEvidence(check, processes) };
+  if (check.parser === "ruby-tools-json")
+    return { ...result, ...rubyToolsEvidence(check, processes) };
   if (check.parser === "dotnet-format-json")
     return { ...result, ...dotnetFormatEvidence(check, processes) };
   if (check.parser === "dotnet-test-json")

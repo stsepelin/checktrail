@@ -1,0 +1,5 @@
+{
+  "terraform": { "required_version": "=1.16.5" },
+  "variable": { "original_count": { "type": "number", "default": 2 } },
+  "output": { "original_next": { "value": "${local.original_next}" } }
+}

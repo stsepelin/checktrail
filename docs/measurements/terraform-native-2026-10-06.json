@@ -1,0 +1,1990 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-06T09:07:56.926068+00:00",
+  "basedOn": "fdaa235fad9e4c3d19dc5ab13c3f4d0b248e2dce",
+  "scope": "Original synthetic complete provider-free Terraform 1.16.5 JSON module validation, source-bound native Unicode diagnostics, CLI/MCP trust/privacy and observed native version/validation lifecycle under a pinned offline Linux ARM64 profile. Wider Terraform providers/modules, Helm/Kustomize, E16 and Gate A remain open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "bef3c34d8228eb664f08408066147ce48ee2c9d6dbdd2224678ae13168d13fac"
+    },
+    {
+      "file": ".gitignore",
+      "sha256": "c18e3aec1ffbcf943f4b001b2033ceb045993e814f645c22089ac58514267d28"
+    },
+    {
+      "file": "README.md",
+      "sha256": "f1f871e67859b0ff8aa64e2a8c45c71ee45f4596bc7874e35086366f7e8c5ffd"
+    },
+    {
+      "file": "docs/ACTIONLINT.md",
+      "sha256": "780175c6053dc5b09554038544480e4242d5b3bde5171adb87465ddd314c1d32"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "70c22cff8b89e16688ddf04f7f6fabf8c180a2ea16bc0b0a5bfba27c1fe1b6c6"
+    },
+    {
+      "file": "docs/KUBECONFORM.md",
+      "sha256": "03df541e941e0deb53a057af60354d433779cc649fb4511c12725308e6285229"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "6b473b9b64c050556caee88034cc2c0f9ef2c3fff77c5ae24a7e2c89df84f56b"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "b5be4acb9a19d91103f2479c54d03fa362750d5e3b7fd1ec656735416c0d9f70"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "b4754e3d2b0da60f93c46a4c2c38abaa59dfc5f01b462345517f799be6b9d624"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "73b4d8bf4c1f7d9751b616cd4bfd8b15765df607c00119afc8e9237935195703"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "bbbc861fffd33bbcae26c32766d90ecb83e77ec100beab30ac390ea4c5969f82"
+    },
+    {
+      "file": "docs/TERRAFORM.md",
+      "sha256": "b9b69fe001ef22410273bdb7aa36c2322adc855c91678199bc3a75081dade160"
+    },
+    {
+      "file": "examples/kubeconform/README.md",
+      "sha256": "4c51c5388d008707a6439e6219b9c06425211cafb0825bc9bde6647b6af49607"
+    },
+    {
+      "file": "examples/kubeconform/checktrail.json",
+      "sha256": "8f1a7a93a9a6ede5c68d1acb75c0faa48021066a338cdb371db7773db7bbf538"
+    },
+    {
+      "file": "examples/kubeconform/checktrail.kubeconform.json",
+      "sha256": "3e460ff436ae7175537bd1c7bcde0071d7f1e1e6c9d2c6e7a917e2ae5298c25c"
+    },
+    {
+      "file": "examples/kubeconform/manifests/original.yaml",
+      "sha256": "4f05a0b7e84702a297ef1e9e8167392e9ededd822c55f758986bf78bc50ee36e"
+    },
+    {
+      "file": "examples/terraform/README.md",
+      "sha256": "cdd6e3a3389e7883ecfb79887b0ba90a3c6ca05a6b4baaa8897a36d56e19ac31"
+    },
+    {
+      "file": "examples/terraform/checktrail.json",
+      "sha256": "7b2fecf873751b3dad72ccc586ab39967c3e44c531961bb29650bdf33498d081"
+    },
+    {
+      "file": "examples/terraform/checktrail.terraform.json",
+      "sha256": "dd75b1497b902cde040c74c8f5d0f0b53c43d3d1b9b303a8544defba62356d61"
+    },
+    {
+      "file": "examples/terraform/main.tf.json",
+      "sha256": "279a9e170a5a0ef8f664994f5a33d9aae125a5511fd2f2cde4affeec896d1de9"
+    },
+    {
+      "file": "examples/terraform/support.tf.json",
+      "sha256": "bb0210ad5330aa3d05e2e0ebff4f8ab0d7088649ab39ad043ad8c631a026e511"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "d7348a216527ddcbea50fc7931d78e8da5357a4aeef80ec47b784645127707f7"
+    },
+    {
+      "file": "schemas/terraform-config.schema.json",
+      "sha256": "3d712c3977ee8b098365ad886d7199f01ba4fbfa84fbc688954a6f487c90ba8d"
+    },
+    {
+      "file": "scripts/cleanup-infra-tools-runtime.mjs",
+      "sha256": "9f5af724353cce0f8f2f4cd61d7df1ee20c36b74fe3b7da150fd6837b980f6ed"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "8c3f85e0c9a8c64619a559faf42a71f5f6ae9c02aa83d0eebc93a02cdb4475f9"
+    },
+    {
+      "file": "scripts/infra-tools-artifacts.json",
+      "sha256": "0b1c401a805449d0c4735d7ad9cae7d24e0b0b7f0e634e4e657d64c09bb3c208"
+    },
+    {
+      "file": "scripts/infra-tools.Dockerfile",
+      "sha256": "cbf30bdec5e8e79dc02b768a02334b9bcb42f58dac719726f6f08b725627468c"
+    },
+    {
+      "file": "scripts/prepare-infra-tools-runtime.mjs",
+      "sha256": "4201b7093e3c40e690733fda7153c735e44e5f6fcafb2c441e59357b97993370"
+    },
+    {
+      "file": "scripts/prepare-package-cache.mjs",
+      "sha256": "e9ba63f722f246af1c6807ce217f21dbe6b75ac70b668b222da5c72b80ec0e6e"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "5179ae73569a7dcfdf766626f31b0b3425b8017533c1ce963b0222ee0fbc6e33"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "c51e394bc0e935df9a3a7410a236fcb8adad918f65fccdabb8b4ce81c40e03a9"
+    },
+    {
+      "file": "scripts/verify-kubeconform-container.mjs",
+      "sha256": "a0926f28aeaffa874c9188ef7e61bb65f3b117af2eccf3801b99fe5f6459d2fe"
+    },
+    {
+      "file": "scripts/verify-kubeconform-package.mjs",
+      "sha256": "6d518ac22543806bbd4aa8357606f9bfda1541df651b2cdce90876b4ae713864"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "d0899d6a9bff9be463eae40210740f376089e945faf01141cae4b7376731cc58"
+    },
+    {
+      "file": "scripts/verify-terraform-container.mjs",
+      "sha256": "42bed4c5e81cbb65a3f36ae684254167ddd8901f5c8ad465d72e6b5e2a1bf458"
+    },
+    {
+      "file": "scripts/verify-terraform-package.mjs",
+      "sha256": "493553942b3b8bf56179d97afeab8377ca95e75a0f4070f36f8ff96a7c0f87d3"
+    },
+    {
+      "file": "src/actionlint-evidence.ts",
+      "sha256": "97e08e82caeefa67a738415125b3ad5aaa585a7786e6eda7f4d60967b428fc1b"
+    },
+    {
+      "file": "src/actionlint-inputs.ts",
+      "sha256": "3065829880ec825eef4a540530b8aacb755aff1ed2915d570d96662de2698952"
+    },
+    {
+      "file": "src/actionlint-runner.ts",
+      "sha256": "18132cbc4ca06e70c7b757608fdb27e728a9d65213612d249b83154037137802"
+    },
+    {
+      "file": "src/actionlint.ts",
+      "sha256": "195252c69ff9242ffae45db6bf875d264a0b3b6abdc169f1338d80839ed8a45a"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "6c23e6b9346b1b9cb71baae84f4c794180be8a048419ddc1e7f43a39c196915d"
+    },
+    {
+      "file": "src/architecture.ts",
+      "sha256": "de3fadd649acf5d4dbb9b8356849d9ccef47068850c1bd25b2a4f74527e61444"
+    },
+    {
+      "file": "src/checkstyle-evidence.ts",
+      "sha256": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+    },
+    {
+      "file": "src/checkstyle-native.ts",
+      "sha256": "02eea009604ab049bb334efadd5eebf45eb208ea761db6147432e53d4051b320"
+    },
+    {
+      "file": "src/checkstyle-runner.ts",
+      "sha256": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698"
+    },
+    {
+      "file": "src/checkstyle.ts",
+      "sha256": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001"
+    },
+    {
+      "file": "src/clang-evidence.ts",
+      "sha256": "f2ce6e888dd5537bac6654f5a52861d3af770c978c57019c7bb4a95c86be1715"
+    },
+    {
+      "file": "src/clang-protocol.ts",
+      "sha256": "f25a5451f90872792b8f56251520513ea0eb3091b7c7cf36fac6a6f9e557094d"
+    },
+    {
+      "file": "src/clang-runner.ts",
+      "sha256": "ddd46a932f92a41dda9e4703510a83b20b06a356fd6abe585592c54a0034fe00"
+    },
+    {
+      "file": "src/clang.ts",
+      "sha256": "1f432ea34687d35115ca43f93b4ada4d3f9b81f634d82fe137908b6dc1ed377d"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/config.ts",
+      "sha256": "1ec576984c49f69dce4b52aabbc76040931ebc9b8fb3c84ca15fcf197977a517"
+    },
+    {
+      "file": "src/contract-schema.ts",
+      "sha256": "a05c8cf27548b70999281fa61ce79af24c307a94fe75c1c8b8bf602d9f36b012"
+    },
+    {
+      "file": "src/contract-worker.ts",
+      "sha256": "9ee35ca9b81cea63557fd49c8606b2592927d7dfd8a10adffd7b0ae6515019ed"
+    },
+    {
+      "file": "src/contracts.ts",
+      "sha256": "42e56f344d01763cfb80b38c8c9e755519f2ed755f1e850ff5fafb0083d1e035"
+    },
+    {
+      "file": "src/cpp-cmake.ts",
+      "sha256": "f3c4cb499d422c08fc5b1d0881b9c17fea322386cafc59f35891216429ff6cbb"
+    },
+    {
+      "file": "src/cpp-native.ts",
+      "sha256": "27d1935b0e86ce58e8288bd08a912cfd5557ee3a438e7db913f08738af53f20d"
+    },
+    {
+      "file": "src/cpp-tools-evidence.ts",
+      "sha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574"
+    },
+    {
+      "file": "src/cpp-tools-runner.ts",
+      "sha256": "229f6dc51e369cc07a69f2029e0a059730c17d438290bd75f6546e20306ee35b"
+    },
+    {
+      "file": "src/cpp-tools.ts",
+      "sha256": "d181e27a654e0d644d88a5f90b8f4c301ec46993e3bf6845088649a21513095f"
+    },
+    {
+      "file": "src/django-evidence.ts",
+      "sha256": "f54f78efe68120e96edbe720748d0cfb8888248ada0479783a80182493e27879"
+    },
+    {
+      "file": "src/django-runner.ts",
+      "sha256": "515ad80c22ac789f25757a0a1532c53c974e09926b6038e667179fd89bacbf35"
+    },
+    {
+      "file": "src/django.ts",
+      "sha256": "61c1abbceffd9901f0351a882c2b08ce6a193836ccfa25b33e1ea3691f46666c"
+    },
+    {
+      "file": "src/dotnet-build-evidence.ts",
+      "sha256": "4f02bcb362af49bfdd667925a1dc413c5bdde513888feec7f253d35fc2061271"
+    },
+    {
+      "file": "src/dotnet-build-native.ts",
+      "sha256": "5ef7a29fe2acbccfdd42ff3d63de13f418cafa7434d261542bdeebfb34dd52c3"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "sha256": "06442930fb4e2937c085ff34ca94a2b639314b155249b3fcb1ee90ed6c0b18c3"
+    },
+    {
+      "file": "src/dotnet-build.ts",
+      "sha256": "53a4f360602a6276985b4c242c467a2cc954604ed0df90d2947525bdc24fc930"
+    },
+    {
+      "file": "src/dotnet-compiler.ts",
+      "sha256": "95926905826b21dc95010fe9ce009048706958a780dc1cc5bcb18d932b2119b0"
+    },
+    {
+      "file": "src/dotnet-evidence.ts",
+      "sha256": "b94b9687f59183261866b291f8032a22bb23b977bf0af0604871e2e733cdf6e1"
+    },
+    {
+      "file": "src/dotnet-format-collect.ts",
+      "sha256": "f8ec77658f0b959f76144d3308905db468df0dbcc2473f3e7ab150bc1a657160"
+    },
+    {
+      "file": "src/dotnet-format-evidence.ts",
+      "sha256": "f2a78bb3885d2ae6925cc102c360ded87061abb218104a06a215da2c6f6e7a63"
+    },
+    {
+      "file": "src/dotnet-format-native.ts",
+      "sha256": "ce7564d4b2fecea0c0fe9a96a25a3f7980c4e7c294fdd6b5fe94efc8b4a5db50"
+    },
+    {
+      "file": "src/dotnet-generated-collect.ts",
+      "sha256": "de97a564c3e5672ac4905f1a5641ba30718c1ea388d2772213fdd6f566647e2d"
+    },
+    {
+      "file": "src/dotnet-nunit.ts",
+      "sha256": "fc3279fa1b4a204e59d7ce4d810987aba074387529512c782a2eb087948ad1cd"
+    },
+    {
+      "file": "src/dotnet-runner.ts",
+      "sha256": "9ad886ed3cd89f924a724ea623b854aef53eca5bc0cf6721150eafa8dd22d61e"
+    },
+    {
+      "file": "src/dotnet-test-collect.ts",
+      "sha256": "1afe643385a91b948fcbc195b7ce44282dafc2465ff7683c08b99a78a3d700e6"
+    },
+    {
+      "file": "src/dotnet-test-evidence.ts",
+      "sha256": "ca87cf3254a82fd2c5fc37e18b66913951309de975f438cbd1de27aab8ffb4f9"
+    },
+    {
+      "file": "src/dotnet-test-native.ts",
+      "sha256": "b16366b5361e1abdbddaf76b879fc23ad924594e2f3ad481c803e972939bcef4"
+    },
+    {
+      "file": "src/dotnet.ts",
+      "sha256": "4d16b454054ff9c00097fd483f71ad1604fa643da99d94dce39582ffd6b53fa5"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/eslint-evidence.ts",
+      "sha256": "e719f9ec14d71166a8df9d2161b8ee31e6768e4125e915a06462e5d6e835db2a"
+    },
+    {
+      "file": "src/eslint-runner.ts",
+      "sha256": "96b3bbdf68d2b78ad8e1f65f11173c87151a22f152c98f729be1c08759715d5a"
+    },
+    {
+      "file": "src/eslint.ts",
+      "sha256": "a6c6829df8812b6ad612606f63db8d62e14f4555eb95dafd45e8cab705bd1913"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "de670093dc5d390080caf201018af00f39a2c0d8c06440d9d9ec14c28c3ea264"
+    },
+    {
+      "file": "src/executable-bundle.ts",
+      "sha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c"
+    },
+    {
+      "file": "src/external-adapter.ts",
+      "sha256": "d6ed57b9a932ba9752afce6f43935c11a0b5dca87984e5b407819c5e683c09dd"
+    },
+    {
+      "file": "src/external-evidence.ts",
+      "sha256": "1124c0bda894fa4baa9f5196dda30b2ed4a25ff4d05cb2d7e637122e44df36fa"
+    },
+    {
+      "file": "src/external-runner.ts",
+      "sha256": "077d9a1dbf1010ea3eb7796e3661be2393bfcd48633a5379a1c1d695268ef818"
+    },
+    {
+      "file": "src/external-schema.ts",
+      "sha256": "7e34cf9e1a0add8b9b82fd1e7c32d353ca0bcf0ed223e48d3266a44f6b05df6e"
+    },
+    {
+      "file": "src/fastapi-evidence.ts",
+      "sha256": "1732be84f30b257a4db34a4436c75ff7ad66874df4fc6bd4a5f33cdbb0942838"
+    },
+    {
+      "file": "src/fastapi-runner.ts",
+      "sha256": "6909bd115f534cf0981bf84cd1b1f85bd94f8a8be03534f6ffddc3469a2fafa1"
+    },
+    {
+      "file": "src/fastapi.ts",
+      "sha256": "22495597c5c346e1143ef72572e934e06ac3a3cfba287638db127921ecc671d0"
+    },
+    {
+      "file": "src/fetch-adapter.ts",
+      "sha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111"
+    },
+    {
+      "file": "src/fetch-pack.ts",
+      "sha256": "6d8d22466fb110ef0cc8c869c4833bfe925b804a587b5a0921f6e0401d5dbfef"
+    },
+    {
+      "file": "src/finding-policy-schema.ts",
+      "sha256": "95f50f34fb816d648cdcf6ef38567ab0f20a444f0a6bc4acd95b6a9abaadc766"
+    },
+    {
+      "file": "src/finding-policy.ts",
+      "sha256": "c6b941308cd5e178021c186a6904e322ec761b979c7d6065dbdb676de432c537"
+    },
+    {
+      "file": "src/git-selection.ts",
+      "sha256": "b3dd2f7896741e6e303857392c5fe4009f309032d788c435c15622beacbe59ab"
+    },
+    {
+      "file": "src/go-build-evidence.ts",
+      "sha256": "2d4c8deb681be05055e1ceb0daee343d792ba24e82655951b23584c490eb26f2"
+    },
+    {
+      "file": "src/go-build-runner.ts",
+      "sha256": "adf6ddcb1516bfe2982af751ebc65fd5626f6803048e98726222eab32086bb00"
+    },
+    {
+      "file": "src/go-build.ts",
+      "sha256": "a9d29de1ea0eeab5d4e6b8fa5f520179cb6846553e7d2fc6dd9bd09d25864fe6"
+    },
+    {
+      "file": "src/go-compile-evidence.ts",
+      "sha256": "3fb540653f4a823ff8b78670c4d4487c43544bf38f71f4780e2dff84060a958a"
+    },
+    {
+      "file": "src/go-directives.ts",
+      "sha256": "02e4a0db32b87f0b25f41bcce5e9cb4dcab6b1ef54b17054930b361e48cd0e50"
+    },
+    {
+      "file": "src/go-scope-policy.ts",
+      "sha256": "79b6a5ce5862a2ab45928f8b3f5921bc4490fc985f810221209aa2708168bc69"
+    },
+    {
+      "file": "src/go-scope.ts",
+      "sha256": "1457221c7191af0a8d312c54a8793b40f365f15ac935c5737e2fcb51caf1947a"
+    },
+    {
+      "file": "src/go-target.ts",
+      "sha256": "a6264e52f329ef8381c39a3f985880f99da069907da3e2bf1567fc72a9ed458d"
+    },
+    {
+      "file": "src/golangci-evidence.ts",
+      "sha256": "a30a7eb6e73f9b8952a079019a47bc5f58c62942d0c48a21aba78b4771ebc041"
+    },
+    {
+      "file": "src/golangci-runner.ts",
+      "sha256": "097e2959ec30bd2ace63bbb9593c9b22a3f811e4deeb937dd582630d944db1cc"
+    },
+    {
+      "file": "src/golangci.ts",
+      "sha256": "79a6cef76add6ee3566766a32619a0b4355e28632989febff9fe37c6bd24dd10"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/guidance.ts",
+      "sha256": "b0b499f55dd5652cbc662628342fa798978514938f9bea1964fbb781ae7625f3"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "1d5b09d830352cd987e6266477e4f4f3d375c42fbecc037f9da1b233e8c07121"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-compiler.ts",
+      "sha256": "871f147f11a185e57d21cfe2dfbe43d0ceeeb11c844dcc49cb6b965adc29159a"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/jest-evidence.ts",
+      "sha256": "de7509e6218097154cdd7ea75671b13528dd9685adee896051540fc6ca77abaf"
+    },
+    {
+      "file": "src/jest-runner.ts",
+      "sha256": "ec20aca6cde95f08637d159fbfd81e119b91d28860fd2b9a82d2326a89518986"
+    },
+    {
+      "file": "src/jest.ts",
+      "sha256": "94626f08c579f1fdbaf049ebe6209c8cc0a0434bffd414993ef017eaa03a0a83"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/kubeconform-evidence.ts",
+      "sha256": "43b49a08912eb4779193430ed90bc68fd548b2d11e4ae3ab38d35cae905e9f13"
+    },
+    {
+      "file": "src/kubeconform-runner.ts",
+      "sha256": "03d3f7ec7324913e864c6ffd7cb80a186e28c7e555d2acc63c7e5db80d96ec5f"
+    },
+    {
+      "file": "src/kubeconform.ts",
+      "sha256": "f618c956aa6f9aaa29a22289754e8846d6ca024c1b626917d730608d9cd72bb3"
+    },
+    {
+      "file": "src/laravel-evidence.ts",
+      "sha256": "7feb0adcb08c3a5f7eb3344a32db30e63c3a9a3c59f1ca0cbf54f027cceda335"
+    },
+    {
+      "file": "src/laravel-runner.ts",
+      "sha256": "fe58168cc8343a7c556d0909bd9478b99012e6f733c24cc1e1643ab52876013a"
+    },
+    {
+      "file": "src/laravel.ts",
+      "sha256": "fe5935b59b43bb3a4713120f110bd5845608dcf4379dab86c387eae14eb5ba32"
+    },
+    {
+      "file": "src/local-tool.ts",
+      "sha256": "c3e9ef806e2569c7526be775f271c46f33e824c911ab8eab94724fe29317f13a"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "9b618c20012384c5bc7ba74cf6d098ec4c6492cdb21295e20d690cbf2cba6879"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ea441a06244c0ed43f3c6bde63aad6c72e53ec5f94699a825b8442d969e7512e"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/mcp-validation-tasks.ts",
+      "sha256": "3ea8b487c803387950c1986a38055a8223d99ade6955b3033c10c6fd2e596ccf"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mutation.ts",
+      "sha256": "dc5d38bfc68e006ad5655ac7fbf41d1e259d7a90b823c1bc6a9a540b71bec041"
+    },
+    {
+      "file": "src/mypy-evidence.ts",
+      "sha256": "2ef893fabf325855afc162374765f2261326cbd3300c95df3de62ebc08245e55"
+    },
+    {
+      "file": "src/mypy.ts",
+      "sha256": "d5da7d79c595eb53e80b0e3e715b0b369bf55cad3543a6d1c73ee8b5a19537f2"
+    },
+    {
+      "file": "src/node-reporter.ts",
+      "sha256": "2b0f0e9c81fb801fa9d98be976ae4535a40f73c5e54c422b80798c351a462cdf"
+    },
+    {
+      "file": "src/nuxt-evidence.ts",
+      "sha256": "0cb9e7604a8dd6765a2c00b40581b43fa92e9c318fd4919f68deecc1b368686d"
+    },
+    {
+      "file": "src/nuxt-protocol.ts",
+      "sha256": "5872472a9cdce384721a85a79743d1b8013e66853265b37c02a7d8aee14295c3"
+    },
+    {
+      "file": "src/nuxt-runner.ts",
+      "sha256": "f5bcfb1a70202e154ca7ec55c80b8c1ec02fb4e46e2e109174e0424cdeda149c"
+    },
+    {
+      "file": "src/nuxt.ts",
+      "sha256": "071d6fc40a5a211e4b4535cdc5fba01491c962d187fe5cc7f802d84cc52d0fbc"
+    },
+    {
+      "file": "src/onboarding.ts",
+      "sha256": "c7409bf3b079643983f6ff060d33a3aea86652947d824bfeba1db13e29bdc7ac"
+    },
+    {
+      "file": "src/output.ts",
+      "sha256": "d7ef24f6098aac58fc6baba392a061c31493ab22a619f77aba2e03ed16c02ed8"
+    },
+    {
+      "file": "src/php-cs-fixer-evidence.ts",
+      "sha256": "5c762084df8a7ebd3582f897fcd23d616fc3db665f1784869345cb4171e2754c"
+    },
+    {
+      "file": "src/php-cs-fixer-runner.ts",
+      "sha256": "e66feb01debdc7aa3e8a0ac841767b96e1b7abfed6dca4da007a8f7f5db0a0ed"
+    },
+    {
+      "file": "src/php-cs-fixer.ts",
+      "sha256": "a87b04eb812e7d94b232f51f48cedbb98a728810fb240bded72946c1ccf5e319"
+    },
+    {
+      "file": "src/phpstan-evidence.ts",
+      "sha256": "b0516a48a7a8ec513b995ba72c7283d4dc85d32e12ecaf94cdc71b8eb73a9cc9"
+    },
+    {
+      "file": "src/phpstan.ts",
+      "sha256": "61bec9f67298e1d4a8a7bdab749f39e9903eb4e5dd8ff8def0fe5c8deda37eb0"
+    },
+    {
+      "file": "src/phpunit-evidence.ts",
+      "sha256": "9b70f1cade16f2a7449c58bd0394696be214fd95938b097c542fec114f1d1e8b"
+    },
+    {
+      "file": "src/phpunit.ts",
+      "sha256": "0da4e30ff2501d7254c773183c413a9cb6130575db333a6e6348603c2dfa3e98"
+    },
+    {
+      "file": "src/pinned-download.ts",
+      "sha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad"
+    },
+    {
+      "file": "src/pint-evidence.ts",
+      "sha256": "3e160de06a12e4e06601c90e4912a485eafd1e447f1a9d053452a5296160b698"
+    },
+    {
+      "file": "src/pint-runner.ts",
+      "sha256": "caa4759ea1ca1c2e1a05be472c0fa1ed3ae264733c0d2a3482c698a28bd77ab5"
+    },
+    {
+      "file": "src/pint.ts",
+      "sha256": "ff32fadce2a3a86f7be64bb84d96384f740b9bba48d0637432d69d522df6e7a6"
+    },
+    {
+      "file": "src/playwright-evidence.ts",
+      "sha256": "7f69ab4b8351bb16031c116fe1f9f063d4b0072a2ee74e9c0612c7e3d56d6297"
+    },
+    {
+      "file": "src/playwright-reporter.ts",
+      "sha256": "2c9a4dd7729246845a9022ec30a220e3cdcad4ba697d1c656f6e3d65bd3e0a1d"
+    },
+    {
+      "file": "src/playwright-runner.ts",
+      "sha256": "43aeef1ea6abe342336b3b65a76f7039ca6386c320eab4ae1a982a223034884f"
+    },
+    {
+      "file": "src/playwright.ts",
+      "sha256": "fc311df7a2a6bbdba61ea8958afd8bd38e1628fce99fcd68224a0f6073138b46"
+    },
+    {
+      "file": "src/policy-pack.ts",
+      "sha256": "6e3f922407158173e7d0edbf57db5ec3b09bc04f7ada1c6deec8a62f169a9433"
+    },
+    {
+      "file": "src/process-tree.ts",
+      "sha256": "e263551d3511167d254bb234ad79d2fc86922118791a482793d301b598007775"
+    },
+    {
+      "file": "src/pyright-evidence.ts",
+      "sha256": "2db8e8477a1a1339224092e098e3d3b09fee5966c67fc1703d39d81e643a4fea"
+    },
+    {
+      "file": "src/pyright-runner.ts",
+      "sha256": "22392ac05d141975545f38efff31d2b832c858aac08a5755ca8eea76fdfb01d4"
+    },
+    {
+      "file": "src/pyright.ts",
+      "sha256": "707a0be07abda351c45da768501c46a6820e04096f301db99adb5b1cbe3de349"
+    },
+    {
+      "file": "src/pytest-evidence.ts",
+      "sha256": "41b1f7f78b46bd1104125a9523cbe760ef49a7ea2c350ff4161034e28337abec"
+    },
+    {
+      "file": "src/pytest-runner.ts",
+      "sha256": "458c4256b5013b4dd8f066705fdb3532be39d71ca725be2abbcdb7d9e0922ba9"
+    },
+    {
+      "file": "src/pytest.ts",
+      "sha256": "ee3d66e118370dde2881ac0dc296d8c41ddb961f979b12c62872df89a195f282"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/review-adjudication.ts",
+      "sha256": "57b2ee686cbe40a28254a7712ffc9bf89636ca6693291b5a583377ff141a6541"
+    },
+    {
+      "file": "src/review-behavior-schema.ts",
+      "sha256": "3dfca04c639c273cf7732302cda050c8affe7483c696018a58430ac4e604487c"
+    },
+    {
+      "file": "src/review-behavior-validation.ts",
+      "sha256": "1304a36eb099007658996b0af4c46718678daf6b2c260ba52f2cf857d8a2f1d8"
+    },
+    {
+      "file": "src/review-behavior.ts",
+      "sha256": "acdf1b37e9d887f852dc9a121d017cbf923b6ca60cbe9c7e69075d5ee2083f48"
+    },
+    {
+      "file": "src/review-benchmark-schema.ts",
+      "sha256": "88ac2cb2dda9cf7f6b209f4a6f61b59eca0c6ef9791af4f7a8862ca20ec9b399"
+    },
+    {
+      "file": "src/review-benchmark.ts",
+      "sha256": "c5175b59d4dcb64985aa18d8bab371a1c0dee51037cd4834d261a53aed352238"
+    },
+    {
+      "file": "src/review-diff.ts",
+      "sha256": "5642804aeff8b4d55c53fa22432f43c15d88889d59a0afc6477a4f668f1a02bc"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/review-hypotheses.ts",
+      "sha256": "98510567871a2b028b44cf341bb7d4d7aea1ffc6bc5411491731f321ad8a4c89"
+    },
+    {
+      "file": "src/review-probe-schema.ts",
+      "sha256": "2ff82c91d5c85221fdefa8565e82226c8a8d149c17d327c919fcea9bad022cfc"
+    },
+    {
+      "file": "src/review-probe-worker.ts",
+      "sha256": "86ff795b0319ea2949b4294b35e6fb5c87d20a6ada06f077c00f8710dc05c1fb"
+    },
+    {
+      "file": "src/review-probe.ts",
+      "sha256": "19c08ec0046aaf8f2dcfeec2a97852176bf18b9dcc41b560749a27a5b5d14ff0"
+    },
+    {
+      "file": "src/review-provider-aggregate.ts",
+      "sha256": "d57cc84539bf742a99842aee1f7e06f530ec8f9c7fb1107779f08c257545c5ad"
+    },
+    {
+      "file": "src/review-provider-budget.ts",
+      "sha256": "ae91e7cc9c6491bf7da3d803f8ee96a8509dd856927361f3dee458c5a3fb3bf0"
+    },
+    {
+      "file": "src/review-provider-schema.ts",
+      "sha256": "db2a87f896d6614a0bc887daf1e204cd705a220410e08da1ccb973c07a291bee"
+    },
+    {
+      "file": "src/review-provider.ts",
+      "sha256": "ec2a15f187b8d9ab09b8e48461d2e8257f5ce2adf95374b7ada9fefc20073922"
+    },
+    {
+      "file": "src/review-refutation.ts",
+      "sha256": "64e55bea09daca5ffab1cbbb95e8d60a5e175f6ebfd2111355cc3db3863caec8"
+    },
+    {
+      "file": "src/review-scoring.ts",
+      "sha256": "fa854f468e7b5cd2ee19a34242b34bbf6ce8d1ed54bffb542b861f1d6b89413b"
+    },
+    {
+      "file": "src/review-verification.ts",
+      "sha256": "13c44adb7a6459710b676c6c43f1ec7d0b4a3dfde5523eb8593eefe062592010"
+    },
+    {
+      "file": "src/review-workflow-audit-schema.ts",
+      "sha256": "ef964ff99c92d12a7f807737bff19c5924d06ebaf6032ef1f30b578c4e187903"
+    },
+    {
+      "file": "src/review-workflow-audit.ts",
+      "sha256": "9130c0a31f698e7fa46da30f9949f5cba4a0b644646b7a42d99a569abd9f933d"
+    },
+    {
+      "file": "src/review-workflow-cli.ts",
+      "sha256": "d32f0112c9fb300cf94d5114b2271347fac09fd7eada4683e38cd1640239ce07"
+    },
+    {
+      "file": "src/review-workflow-schema.ts",
+      "sha256": "259fca626a9d9ac80f37769d03fd03c51f6a463dd9c28ab7c5727f61f25a2a8c"
+    },
+    {
+      "file": "src/review-workflow-session.ts",
+      "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+    },
+    {
+      "file": "src/review-workflow.ts",
+      "sha256": "7cacc4d6068af95035bebe95be74bdf8e93cab72703f6e9662a914dbbd7b54ed"
+    },
+    {
+      "file": "src/review.ts",
+      "sha256": "5c88d7f361be827059ae9ce4da82946c4a6c417f91112a4e336e0e4050743add"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "sha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "sha256": "baeb7e6fc30558f04da87c50574162373046cfeaf5cdf93d982e1063d2e06527"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "sha256": "2313d0d5e5432f8ce65b1cf998c2057e7c2342d0046a992a604e0ddcdbdfb211"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "sha256": "8f161a00ce4e23adf5680b04b90c8f16a71fc1535acba7f01bb856d86b6323f4"
+    },
+    {
+      "file": "src/ruby.ts",
+      "sha256": "b38512ae9e9ede83455851b9b62958958fb5401cc6282d7d230db8c7909669d6"
+    },
+    {
+      "file": "src/ruff-evidence.ts",
+      "sha256": "faf5260f24a8a22b5ea10f0c2def4a56964b37de5d6ff404d9e2d5364e37ad23"
+    },
+    {
+      "file": "src/ruff.ts",
+      "sha256": "c66a74af64bf8e20051d6e11c0e004255872f7d4d045a7a0833d73e5bd688f51"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "c3004d47f5db0bb91bfb1982e492e5dfe32e1f5cbfbbf0d9ad5b01a971c30727"
+    },
+    {
+      "file": "src/runtime-inventory.ts",
+      "sha256": "6a097beefcfc9679d03e09cf0da09ce3beaf7a55ff97a80c040e4ba33aeddb21"
+    },
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "08cebfe9b8929c8c86aea72c2efd80477e5f147d3b825f8a22f5b281a7304e86"
+    },
+    {
+      "file": "src/rust-test-events.ts",
+      "sha256": "a01e0afb51f80fc581321e4d84f0d9c589e8d52ac6438ee7a7092e7c6890228b"
+    },
+    {
+      "file": "src/rust-test-evidence.ts",
+      "sha256": "a0ac9b02b0312b721cab0b972c5366ab001a5f2d8f6d365f90b3953ef16717e4"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d6402553b9fc21800e0d19c1cc19f18dbc0479cb53bb73138e52c94ccf02dba6"
+    },
+    {
+      "file": "src/rust-workspace-evidence.ts",
+      "sha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "2f71a9beaed46a797f696ec902aa2a5a2e9422121e7df05005eb645636e92462"
+    },
+    {
+      "file": "src/rust-workspace-schema.ts",
+      "sha256": "1c914a0d4ca51cc04e2609197659c124f8c543d7c45982c04d9ac06e2c6ae332"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "9e788b429007941a142b4772c3328d7ab028048248a1ff0a32c8426a38a93e14"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "9913f3246eb611421eb962d13e0002e07d5f21499f2745ab925311445a0cc458"
+    },
+    {
+      "file": "src/sarif.ts",
+      "sha256": "69daa3bff63f5c3bad98d2e4c2fdac063386b55a9c9734f01504fa89c48d39ee"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "73bbdeec0202d16bc7185d1b756a91ba63965f2e1df2db06e0b36c5b5f91dbc7"
+    },
+    {
+      "file": "src/staticcheck-evidence.ts",
+      "sha256": "c649ac23f41a703972e3f8ee9f0c8d982814059a7ee68775925f1addadc77fe4"
+    },
+    {
+      "file": "src/swift-ast.ts",
+      "sha256": "eb3ac9ce3abb049b827e17aea93c22152663756bda47790b7ade6c457b02e4ed"
+    },
+    {
+      "file": "src/swift-native.ts",
+      "sha256": "29ce04733ba082815179288fd44a849b312a5b1815908890934bdb62cabd74ff"
+    },
+    {
+      "file": "src/swift-testing.ts",
+      "sha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60"
+    },
+    {
+      "file": "src/swift-tools-evidence.ts",
+      "sha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a"
+    },
+    {
+      "file": "src/swift-tools-runner.ts",
+      "sha256": "bb35dc203bc5d7bfc3c293f44577bfbf1d22e5e9ad0a5701d91837b8e5ac62e8"
+    },
+    {
+      "file": "src/swift-tools.ts",
+      "sha256": "8d415eb914ebc601bb82d10245e35f6b9a79828bf0f5e85c08cd51177973688b"
+    },
+    {
+      "file": "src/swift.ts",
+      "sha256": "4190fb27b2bae7d347f1373355de35747a9fceab0637187c35fc0f5fc4bc0c0d"
+    },
+    {
+      "file": "src/task-store.ts",
+      "sha256": "a0590debac5d5c23c467947d1fdb87260861163a4f04d26711c977d42b66d03d"
+    },
+    {
+      "file": "src/terraform-evidence.ts",
+      "sha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8"
+    },
+    {
+      "file": "src/terraform-runner.ts",
+      "sha256": "e67449ad2ec6ee8a575b89fc405a19aeba39df3fd37ae0d4318110fe3c28cf5f"
+    },
+    {
+      "file": "src/terraform.ts",
+      "sha256": "9d05dc6d90394314fff995922cde1e6570f71c8858593c3e881e4598bf3e2060"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "8740277758bb9ee60791b10791021cfbc269d2f036bf807c8057b5d88ff50294"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "cf7d6d29964ccad56cc9792327f9003466fcc023dc73b99a78c1bae92cd4afb2"
+    },
+    {
+      "file": "src/typescript-arguments.ts",
+      "sha256": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852"
+    },
+    {
+      "file": "src/typescript-build-evidence.ts",
+      "sha256": "8bbe54349960e39060d4cc8fce261459945fea1c11be3f1c82c4a6657cdef20f"
+    },
+    {
+      "file": "src/typescript-build-runner.ts",
+      "sha256": "55d6b1e1d56d4578296d3f059b220e387dff3017ebe1d5935aab627dc73cf97f"
+    },
+    {
+      "file": "src/typescript-build.ts",
+      "sha256": "efd44d28a5540990725b89d5e4aa6cf8fa617948e9bd45b609adc190381b82d9"
+    },
+    {
+      "file": "src/typescript-runner.ts",
+      "sha256": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9"
+    },
+    {
+      "file": "src/typescript.ts",
+      "sha256": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0"
+    },
+    {
+      "file": "src/validation-task-worker.ts",
+      "sha256": "9927367c66c5d3292ca2ce63138b7c49f7ac9301ac3ae82a74ac07060e3edb49"
+    },
+    {
+      "file": "src/validation-tasks-protocol.ts",
+      "sha256": "cc6134c2d9ef09bb8be34b6f4921632897ddd1ff3ce688f10e41a0949e2e3546"
+    },
+    {
+      "file": "src/validation-tasks.ts",
+      "sha256": "aa1c0bdd83cd039ae59fb1217dba1ef99b005f4b4d94be12d652fa1601d3a896"
+    },
+    {
+      "file": "src/vitest-evidence.ts",
+      "sha256": "4a68cf73ba0c6f7f4c3f86097cfe19f3dff6a15fdc9a4c39ba1af971c9aa9923"
+    },
+    {
+      "file": "src/vitest-runner.ts",
+      "sha256": "08d658c0083474b2b2c6ee9c542174149d426d2b461d46ad9fabef0170712a12"
+    },
+    {
+      "file": "src/vitest-version.ts",
+      "sha256": "56716da2a928b18504f3e88f28552d936f2886638d568fd6614e45c49735fc0e"
+    },
+    {
+      "file": "src/vitest.ts",
+      "sha256": "76a4adae1685d14d96f29f06730f0f1f595fa2a67949d172e3176662df7de191"
+    },
+    {
+      "file": "src/vue-router-capture.ts",
+      "sha256": "26510d71f073d3bf1c7bd9b58f17758a614c85795f598d243a4ebb83cc974d54"
+    },
+    {
+      "file": "src/vue-router-evidence.ts",
+      "sha256": "83993906ebb99f232b45b0b86d3c17f39a15cf9ff08caa68b7d8d281567967b0"
+    },
+    {
+      "file": "src/vue-router-protocol.ts",
+      "sha256": "5faa1d4318dde49681fa978ebc416ba2183a40059a07759bf084d6a587f7521d"
+    },
+    {
+      "file": "src/vue-router-runner.ts",
+      "sha256": "e1f48295e1550446e8563b879360cd301ad5b50e0909dfe9239ba098c49098f5"
+    },
+    {
+      "file": "src/vue-router.ts",
+      "sha256": "570459e3396029022e2d24d107354d04ebc8b0a729e476da2b25418db7d3df01"
+    },
+    {
+      "file": "src/vue-tsc-runner.ts",
+      "sha256": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+    },
+    {
+      "file": "src/workspace.ts",
+      "sha256": "77d5054bfccdc0cb390109c5c35c349422838f2e1116be93d2283f14f237b735"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/kubeconform-fixture.ts",
+      "sha256": "a4001340db507d76f6db301721a919af06fc7424db82aaaa2bbe58a85a983b6c"
+    },
+    {
+      "file": "test/kubeconform-lifecycle.test.ts",
+      "sha256": "f3173900a2cd51af743ba36aac448ae6b4974e35a13cc851ad69d00bbb03df79"
+    },
+    {
+      "file": "test/kubeconform-reached.test.ts",
+      "sha256": "8fa3b6b36634939de08600f3aa925e4848fd2bd0c16c4fd127d0e99c6078de30"
+    },
+    {
+      "file": "test/kubeconform-surfaces.test.ts",
+      "sha256": "07d6f1236b7e7644a12d215abf245b86c2412c5baf5ec10ae24406d6d65ba116"
+    },
+    {
+      "file": "test/kubeconform.test.ts",
+      "sha256": "61736dd132c5d4beffd6ce5b583118017587ecea6088e1aa91627bf60f8d8a8a"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "f5bf1faad4b9fc147564401ad5ec863a24eadf79cbc0a835e911243062c1925f"
+    },
+    {
+      "file": "test/terraform-fixture.ts",
+      "sha256": "a433108017fa2a5e7c0661bd7febf1d44ece42cd0fcbd1a842946b77262a1277"
+    },
+    {
+      "file": "test/terraform-lifecycle.test.ts",
+      "sha256": "a7f6e78d7c42e588ce98e2ef4490519980211d51642ed4e37e945bf7e6de6113"
+    },
+    {
+      "file": "test/terraform-reached.test.ts",
+      "sha256": "c38097f042b6cda81b836d9f7d3e3056b4d0037c51cde69317f33a4070191ffb"
+    },
+    {
+      "file": "test/terraform-surfaces.test.ts",
+      "sha256": "dc265455ad8742087ec24b9ced5b4cf3e881ffdc5a6281b35be90448229c5b16"
+    },
+    {
+      "file": "test/terraform.test.ts",
+      "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+    },
+    {
+      "file": "test/tool-versions.test.ts",
+      "sha256": "cdb48b4abaa4d845b5c4e6dc2a6b5d1cad2688733b54accd3402d75e3c13601f"
+    }
+  ],
+  "compiledRuntimeSha256": "ed92fd702347c229bb388e84ad74e4e39913da708708843eac0f5e02d085d470",
+  "compiledRuntimeDigestScope": "SHA-256 of the compact JSON ordered list of relative dist/src file names and SHA-256 digests frozen before source and installed acceptance; source pins independently bind implementation and harness.",
+  "preparation": {
+    "task": "checktrail-infra-tools-1006",
+    "tag": "checktrail-checktrail-infra-tools-1006:public",
+    "image": "sha256:1160580196343006c2717ae64d66f15f338086a3cc4ad98e5521f05ad3e32bec",
+    "base": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "artifacts": [
+      {
+        "path": "archives/helm-v4.3.0-linux-arm64.tar.gz",
+        "bytes": 17889190,
+        "sha256": "31c5794dd55c66a51e6b7d2e2ac7a114ae8b1de41ff1d9ba51748ac973b06a08",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/terraform_1.16.5_linux_arm64.zip",
+        "bytes": 32576164,
+        "sha256": "61a50b00485ee4810cf20581ef080fc54d34d666e175c58d9a10501c65c1ccde",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kubeconform-linux-arm64.tar.gz",
+        "bytes": 6901136,
+        "sha256": "1f53fc8e81258197a35e8603054162a5af1de8c5af13746c71ab680d9534ed87",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kustomize_v5.8.2_linux_arm64.tar.gz",
+        "bytes": 4618462,
+        "sha256": "0991957191951cb7dddd142403b5bb98a1fcd6378ba0079dddc1e2c309080a7f",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/deployment-apps-v1.json",
+        "bytes": 691967,
+        "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/configmap-v1.json",
+        "bytes": 17083,
+        "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/service-v1.json",
+        "bytes": 43682,
+        "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b",
+        "asset": "operator-prepared-artifact"
+      }
+    ],
+    "members": [
+      {
+        "tool": "helm",
+        "path": "linux-arm64/helm",
+        "bytes": 61145248,
+        "sha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+        "output": "bin/helm"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/README.md",
+        "bytes": 4410,
+        "sha256": "76795af9c4b1a2eb0f3f105319d4e624196dc255bdcb44f55f4cfc6b12e443e8",
+        "output": "notices/helm-README.md"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/LICENSE",
+        "bytes": 11373,
+        "sha256": "881467e52efeb1807406134b0ec04b1c6f52dc9dc49382713ef9ac4e0cae42f8",
+        "output": "notices/helm-LICENSE"
+      },
+      {
+        "tool": "terraform",
+        "path": "LICENSE.txt",
+        "bytes": 4950,
+        "sha256": "dc4cb9f6140970b69110d82e8f25545135965ae50f6761ddfd6cd7cf9452bfa9",
+        "output": "notices/terraform-LICENSE.txt"
+      },
+      {
+        "tool": "terraform",
+        "path": "terraform",
+        "bytes": 110821538,
+        "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c",
+        "output": "bin/terraform"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "LICENSE",
+        "bytes": 11346,
+        "sha256": "1294f9be73faeda3987cb554c1597f599641eebdcd4d4fa88f97bdb6241be275",
+        "output": "notices/kubeconform-LICENSE"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "kubeconform",
+        "bytes": 12953083,
+        "sha256": "7e77b104b3ae696389f91971c60fd58c72f1f3dc218f139df67a1b070959c012",
+        "output": "bin/kubeconform"
+      },
+      {
+        "tool": "kustomize",
+        "path": "kustomize",
+        "bytes": 11927714,
+        "sha256": "f16ee4ad0f3991e5236e33070427f630f3e911a4b81be53aeeb70946182e61a8",
+        "output": "bin/kustomize"
+      }
+    ],
+    "schemaRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+    "nativeVersions": [
+      {
+        "name": "node",
+        "output": "v22.23.2\n"
+      },
+      {
+        "name": "helm",
+        "output": "v4.3.0+gbec5b06\n"
+      },
+      {
+        "name": "terraform",
+        "output": "{\n  \"terraform_version\": \"1.16.5\",\n  \"platform\": \"linux_arm64\",\n  \"provider_selections\": {},\n  \"terraform_outdated\": false\n}\n"
+      },
+      {
+        "name": "kubeconform",
+        "output": "v0.8.0\n"
+      },
+      {
+        "name": "kustomize",
+        "output": "v5.8.2\n"
+      }
+    ],
+    "buildNetwork": "none",
+    "releaseSignaturesVerified": false,
+    "publisherAndLicenseClosureVerified": false
+  },
+  "preparationProfile": {
+    "preparedArtifactsPathExercised": true,
+    "defaultNetworkFetchPathExercised": false,
+    "artifactCount": 7,
+    "artifactBytes": 62737684,
+    "packageSignaturesDisabled": false
+  },
+  "acceptance": {
+    "image": "sha256:1160580196343006c2717ae64d66f15f338086a3cc4ad98e5521f05ad3e32bec",
+    "source": {
+      "profile": "terraform",
+      "timeoutMs": 120000,
+      "passed": 12,
+      "required": 11,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "86b998915b670a879279ee463564ff18d5dc77e8991509012894c3c03a1ebbe9",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "terraform",
+        "timeoutMs": 120000,
+        "passed": 12,
+        "required": 11,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:1160580196343006c2717ae64d66f15f338086a3cc4ad98e5521f05ad3e32bec",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "acceptanceDurationMs": null,
+  "acceptanceLogSha256": "b3eebb47ddd810f452a31e5eefd6a47967bde4a27d75509c193e5cb102c4dead",
+  "requiredNativeSkipCount": 0,
+  "extraPassingCallbacks": [
+    "Terraform planning reads all JSON module files without executing native tools and rejects empty provider module function duplicate and omitted scope"
+  ],
+  "compilingGuardMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Input SHA",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "b1f79cf57162ed67e8b0a5eb6373a54cc3d4486f64722a7c388b6625491bdb02",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "input identity",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "1af5d3d53ea1366e410598f9ae50558f214462a495367952256ddc2b389214d4",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4337
+      },
+      {
+        "guard": "Tool byte freshness",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "01f0f96c4e7492253728664763bdf8a8416a0a1854c44b712a224bd554bf469c",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "tool freshness",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "93550b601ea09739ef819cfaacf6db00fcd09dda5e20eb124337fb217347a991",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4022
+      },
+      {
+        "guard": "Copied module byte freshness",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "a255aba7a793709aabd16127a80b97a7eb808674eee724fcb6669941049edcf9",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "module freshness",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "6bc04b95aa567f92729304f5cf4235b9181f1c2328bdca0e8d2f2cd74e5ad015",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 3958
+      },
+      {
+        "guard": "Fresh CLI configuration",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "fae9d210b718b62c918300fe7c4b678ea501ab99b5500fe6b121889de5ce45ca",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "CLI config freshness",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "bdad18c74ea411220485b15eda90dcf227d94ee140db68cb075a1604b36bf4e8",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 3941
+      },
+      {
+        "guard": "Exact native argv",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "9a9f10fc7399158f30fece571df2678af68129c574cb63632e496701b3844771",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "native command",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "68b5daae9ad391521c20e2561862850092f8bb4a4ab7d72e8e27a49739beb2e6",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 3952
+      },
+      {
+        "guard": "Provider-free native identity",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "f4608e448373a0e44d148ecb7c1b4e49f185be84042505064a76a9ca8112bd79",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "provider profile",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "3935832709e40d1e39ae0c7de76e213a25d800754c546c6dcabe680a1ff93a60",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4187
+      },
+      {
+        "guard": "Native error counters",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "8c0727060e3164b126a7821db2e910b1c3ebc8c48e7265b3fc7eb6168bc68d79",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "native counters",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "0e63c806d6a5fb1f18fa88bf38c1c48bf864278521f261521446d7de182722ca",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 3974
+      },
+      {
+        "guard": "Native warning counters",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "d0b94915955b175b9f1cb3582e444b6b205d763edf06ee0dec099d8fd46f2929",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "native warning counters",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "b36f0b3a7abb7c66f3c808190f105b2afb2d3324849501c35d9e038d7a825827",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 3999
+      },
+      {
+        "guard": "Native validity",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "3f82a01da4731d0347a2c7c1caf98da8e431b335f206e1f8bd89f6b101ea1c16",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "native validity",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "9b93800134298a2129b73f06edae497e63d64e971594c4ad470cd9da41902caa",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4067
+      },
+      {
+        "guard": "Native exit",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "eedc5adc7749d1154165c568816065a56c76b82e82d6cd54a876421d195a2ff5",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 88,
+          "negativeControl": "native exit",
+          "actual": "passed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "bd2d834078d63f6e4e678f9f4da237394e17aef338042032465c925bc8faaa7a",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4108
+      },
+      {
+        "guard": "Physical diagnostic line",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "7b6f9e384b38883d2b05e49059f62eb378c9cb0a63acc9816c7a8660992d40a2",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 121,
+          "negativeControl": "physical line",
+          "actual": "failed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "9914f01e60afa132818897446f6788170c8748f38e61a15261e14e58806fcdfb",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4379
+      },
+      {
+        "guard": "Native highlight and range agreement",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "370949d76909d1a7816d271c4c5773a1228197421a32e0c0f356bfbc718cfd12",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets",
+          "originalCompiledCallLine": 121,
+          "negativeControl": "source highlight",
+          "actual": "failed",
+          "expected": "inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "6d5d10f3d3b8620761cd3bc467b72ea67f683617336cfc5522b6d0c6a0ea05f4",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "7d125ff7ed11da7660f7406e6f972c87d09d5a233c34f3f4daec24114edfc645",
+        "durationMs": 4384
+      },
+      {
+        "guard": "Native grapheme column",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "9fe0b897c59f6294bea6edf9977e835d8454f26d69282d3cb15e8d1a44cf03b2",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+          "originalCompiledCallLine": 143,
+          "negativeControl": "unicode grapheme",
+          "actual": "incomplete",
+          "expected": "failed"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "2ee4d3c2d14565273d809f9d7e636a9dac2a5542a1f59e67253d5dcd7660fea3",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "e1d75f713940ce889559a17ef9c32b076ef330dc7f46993219e69f824724b512",
+        "durationMs": 4830
+      },
+      {
+        "guard": "Native UTF-8 byte highlight",
+        "file": "src/terraform-evidence.ts",
+        "sourceSha256": "2ba5eb561f8c7ac1630972e578a39373ce8538bb7e8e024435c38ab21a16feb8",
+        "mutationSourceSha256": "1649d953745a9839f452323a51d21a361c8d0a5e32fec3a592b6bfb3373b21f8",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair",
+          "originalCompiledCallLine": 143,
+          "negativeControl": "unicode byte highlight",
+          "actual": "incomplete",
+          "expected": "failed"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "46f3046a2b1ca8919cc2e6661e98ac88e3f6f83affb2b42e8d295a2f0e8ae119",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/terraform.test.ts",
+            "sha256": "a0a14e08c6878d4687a291158bf6aa962f8cad3fcd0f7a766d0d98c1b7b9de49"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "e1d75f713940ce889559a17ef9c32b076ef330dc7f46993219e69f824724b512",
+        "durationMs": 3966
+      }
+    ]
+  },
+  "repositoryValidation": [
+    {
+      "check": "check",
+      "command": ["npm", "run", "check"],
+      "exitCode": 0,
+      "durationMs": 50258,
+      "logSha256": "8219c5aac3735d94665dfd956e342e9d6f46adf67ad3cb7f5911b80b5a2bab95",
+      "counts": [
+        "\u2139 tests 780",
+        "\u2139 pass 576",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 204",
+        "\u2139 todo 0"
+      ]
+    },
+    {
+      "check": "format",
+      "command": ["./node_modules/.bin/prettier", "--check", "."],
+      "exitCode": 0,
+      "durationMs": 3889,
+      "logSha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "counts": []
+    },
+    {
+      "check": "changed-lint",
+      "command": [
+        "./node_modules/.bin/eslint",
+        "scripts/generate-schemas.mjs",
+        "scripts/verify-terraform-container.mjs",
+        "scripts/verify-terraform-package.mjs",
+        "src/adapters.ts",
+        "src/evidence.ts",
+        "src/schemas.ts",
+        "src/terraform-evidence.ts",
+        "src/terraform-runner.ts",
+        "src/terraform.ts",
+        "src/tool-versions.ts",
+        "src/types.ts",
+        "test/schemas.test.ts",
+        "test/terraform-fixture.ts",
+        "test/terraform-lifecycle.test.ts",
+        "test/terraform-reached.test.ts",
+        "test/terraform-surfaces.test.ts",
+        "test/terraform.test.ts",
+        "test/tool-versions.test.ts"
+      ],
+      "exitCode": 0,
+      "durationMs": 580,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "counts": []
+    },
+    {
+      "check": "diff",
+      "command": ["git", "diff", "--check"],
+      "exitCode": 0,
+      "durationMs": 18,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "counts": []
+    },
+    {
+      "check": "schemas",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "dist/test/schemas.test.js"
+      ],
+      "exitCode": 0,
+      "durationMs": 1274,
+      "logSha256": "c74ae54ed59c24fa92b43e399b4a3843df9645a16224fd4a746e0e940d618ce1",
+      "counts": [
+        "# tests 6",
+        "# pass 6",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    }
+  ],
+  "retainedNativeDevelopmentAttempts": [
+    {
+      "attempt": 1,
+      "logSha256": "ba4c3adaa744089076f2c856d65f58d110173db0f4daefe82f66142ab3c0e641",
+      "reportedTestCounts": [
+        "# tests 4",
+        "# pass 1",
+        "# fail 3",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 2,
+      "logSha256": "5985102a94d8da5ae908a442c5963f2f5e2fdfd1109ead8d6617ea12b49b6a63",
+      "reportedTestCounts": [
+        "# tests 4",
+        "# pass 4",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 3,
+      "logSha256": "c33272df04b543e77c9bffbed42f0c54060e9b2047e2e01c33a72be93d5caf98",
+      "reportedTestCounts": [
+        "# tests 10",
+        "# pass 9",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 4,
+      "logSha256": "e76169c09e781f1a6d101b11ba4f669fc483d70b3a6ddadf44ab031ac430076a",
+      "reportedTestCounts": [
+        "# tests 10",
+        "# pass 10",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 5,
+      "logSha256": "906093873bae98c92bb6aef852b5b8d54e77cd58d62e8a2090148fc13574f092",
+      "reportedTestCounts": [
+        "# tests 7",
+        "# pass 7",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 6,
+      "logSha256": "fe72d198cc943d5b4aa7390df3d0b017a73ee4044df90b473af3d3cbbc76b024",
+      "reportedTestCounts": [
+        "# tests 8",
+        "# pass 8",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    }
+  ],
+  "developmentObservations": [
+    "Native Terraform validate returns valid for an empty directory; original controls require nonempty complete JSON module declarations before execution.",
+    "Provider-free native validation checks an undeclared reference in an unused local in another source file without initialization or provider fetches.",
+    "A real empty CLI configuration produces no stderr; an earlier prototype using a nonexistent configuration path emitted a warning and is not warning-free acceptance.",
+    "The first engine attempt exposed JSON comparison field ordering between parsed module receipts and their expected reconstruction; the normalization was corrected without weakening assertions.",
+    "A native missing-tool control preserved its specification and exposed the need to distinguish an exact completed unavailable wrapper receipt from an inconclusive version error. The shared identity classifier and owned version temporary-directory selection were corrected.",
+    "Native snippet highlight offsets use UTF-8 bytes. Physical columns count grapheme clusters, as separately measured with accented characters, combining marks and joined emoji. Original broken/repair controls and compiling Unicode regressions bind this behavior.",
+    "Actual native version/validation executable identities, arguments and owned cwd are observed before cancellation or source/copied-module changes."
+  ],
+  "optionalHostSkipsAreNativeAcceptance": false,
+  "evaluatedPackageScope": "The measured tarball contains the evaluated runtime/CLI, schemas and documentation before this receipt. It does not certify a later receipt-containing tarball.",
+  "boundaries": {
+    "gateA": "open",
+    "gateBEvaluationPermitted": false,
+    "gateCReviewQualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "privateSourceImported": false,
+    "nativeFailureLocationsEstablishAssertionOrProductionMechanismSeverityRemedy": false,
+    "trustedExecutionIsOSSandboxed": false,
+    "windowsExecutionVerified": false,
+    "otherNativeSDKOSArchitectureProfiles": "unverified",
+    "hostedCIForThisRevision": "unverified",
+    "fullSDKPublisherLicenseClosureVerified": false,
+    "fullNativeAllAttemptAuditCompleted": false,
+    "representativeProjectPerformance": "unmeasured",
+    "clusterAdmissionPolicyOrApplyVerified": false,
+    "helmKustomizeEngineIntegrationVerified": false,
+    "widerTerraformProvidersModulesVerified": false
+  },
+  "kubernetesRegressionAcceptance": {
+    "receipt": {
+      "image": "sha256:1160580196343006c2717ae64d66f15f338086a3cc4ad98e5521f05ad3e32bec",
+      "source": {
+        "profile": "kubeconform",
+        "timeoutMs": 120000,
+        "passed": 12,
+        "required": 10,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "c4c39cb73eb783d9c2f4a75bb924303e1be7000f8e35d47dc45838723b1e5585",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "kubeconform",
+          "timeoutMs": 120000,
+          "passed": 12,
+          "required": 10,
+          "problems": [],
+          "complete": true
+        },
+        "environment": {
+          "image": "sha256:1160580196343006c2717ae64d66f15f338086a3cc4ad98e5521f05ad3e32bec",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "runtimeSha256": "ed92fd702347c229bb388e84ad74e4e39913da708708843eac0f5e02d085d470",
+    "logSha256": "347779498eac419b1333db3d1563f72254ddcb56aefd5024de154de92d27e9a6"
+  },
+  "retainedOriginalPrototypePins": [
+    {
+      "originalPrototype": "terraform-native-prototype-2/empty.json",
+      "sha256": "a77b208f8192462863758754523c6f64d5263bad0a67cc849cb5b92dd98cb076"
+    },
+    {
+      "originalPrototype": "terraform-native-prototype-2/fresh-graph-no-init.json",
+      "sha256": "0a24e4978808a2de971ef6bfbb2f290ad1e86c16dd8ba3276c2f12be0523fbfe"
+    },
+    {
+      "originalPrototype": "terraform-native-prototype-2/fresh-validate-no-init.json",
+      "sha256": "9e541eb533cecbfaeab9c73d2a23550ca86b476f22c21f5cd3903ae2f7db831b"
+    },
+    {
+      "originalPrototype": "terraform-native-prototype-2/missing-local.json",
+      "sha256": "7f455d26163b29521b7db40412edcd53ad1d597010632ae4fb249475ac785242"
+    },
+    {
+      "originalPrototype": "terraform-native-prototype-2/typed-default.json",
+      "sha256": "ce2a70ecc3c5b272e663fc420d42f99f525b8e8b66bb9ca965039f241aab957b"
+    },
+    {
+      "originalPrototype": "terraform-native-prototype-2/unused-local-other-file.json",
+      "sha256": "ac5cf31781649a8b3afdf0319b87952c844e70e3fce0df7ae0328ef23c00a81e"
+    },
+    {
+      "originalPrototype": "terraform-native-unicode-probe/main.tf.json",
+      "sha256": "9eb6c627a0d3527819e7bb91ebc446c39a64f720c1cf043a45f937ec60c2bbfe"
+    },
+    {
+      "originalPrototype": "terraform-native-unicode-probe/receipt.json",
+      "sha256": "620ae4b74bc72f036ce0be110244342bbb0ea9a8024e1fcfe6dba86edc891fcb"
+    },
+    {
+      "originalPrototype": "terraform-native-combining-probe/main.tf.json",
+      "sha256": "f3dced07cfba1a224254b85a97f31b95fae82b929582f853bac81c5dc72bc47f"
+    },
+    {
+      "originalPrototype": "terraform-native-combining-probe/receipt.json",
+      "sha256": "f0a9f9d9ad9e089a05d35a8f0a8c27cac544737139dd0f350c225ea2c1319d5d"
+    }
+  ]
+}

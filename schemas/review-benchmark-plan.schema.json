@@ -56,6 +56,56 @@
       "required": ["instructions", "host"],
       "additionalProperties": false
     },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "const": "sealed-single-claim-paired-synthetic-v1"
+        },
+        "seed": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "resamples": { "type": "integer", "minimum": 128, "maximum": 4096 },
+        "confidenceLevel": {
+          "type": "number",
+          "minimum": 0.8,
+          "maximum": 0.99
+        },
+        "cases": {
+          "minItems": 1,
+          "maxItems": 4,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+              },
+              "family": {
+                "type": "string",
+                "enum": [
+                  "authorization-tenancy",
+                  "identifiers-allowlists",
+                  "types-numeric-semantics",
+                  "lifecycle-ordering",
+                  "assembly-wiring",
+                  "concurrency-resources",
+                  "atomic-artifacts",
+                  "dependencies-builds",
+                  "test-adequacy"
+                ]
+              }
+            },
+            "required": ["id", "family"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["profile", "seed", "resamples", "confidenceLevel", "cases"],
+      "additionalProperties": false
+    },
     "repetitions": { "type": "integer", "minimum": 1, "maximum": 2 },
     "runtime": {
       "type": "object",

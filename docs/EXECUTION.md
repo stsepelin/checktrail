@@ -147,17 +147,26 @@ an unavailable runtime or external service does not count as verification.
   offline dependencies, fresh build directories, native target and source
   accounting, structured compiler diagnostics and Linux regression evidence.
   Rust test execution, formatting, Clippy and workspace matrices remain separate.
+- Implemented: bounded opt-in RuboCop/RSpec/Minitest with literal data-only manifest planning, checksum-bound offline gems, native compiler/source and case reconciliation, owned output and explicit trust. RUBY-TOOLS.md and its pinned measurement record required native source/offline installed acceptance and compiling original-callback guard controls. Broader E13 profiles and Gate A remain open.
+
 - Implemented: MRI Ruby syntax checking for source and Ruby DSL manifests,
   per-file native success accounting, disabled gem/preload behavior, synthetic
   broken/fixed cases and Linux/macOS native verification. Ruby tests and framework
   semantics remain separate capabilities.
 - Implemented: Swift source/manifest grammar checking without SwiftPM evaluation,
   native macOS compiler identity, generated .build exclusion and explicit regression
-  evidence distinguishing syntax from type checking. Swift build/test remain work.
+  evidence distinguishing syntax from type checking. The separate SWIFT-TOOLS.md
+  profile adds pinned Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit
+  SwiftLint rules, native compiler/AST/scope/case/lifecycle evidence, source and
+  offline installed CLI/MCP acceptance and compiling guard controls. Broader E14
+  profiles and Gate A remain open.
 - Implemented: prepared C/C++ Clang compilation-database checks with closed flag
   handling, native SARIF diagnostics, fresh dependency/source accounting and native
-  macOS/Linux broken/fixed cases. Linking, CTest, clang-tidy and cross-target
-  build matrices remain separate.
+  macOS/Linux broken/fixed cases. The separate CPP-TOOLS.md profile adds bounded
+  C17/C++20 CMake builds, generated headers, static library/executable linking,
+  registered CTest callbacks, clang-format and explicit clang-tidy rules, with
+  native source/object/archive/symbol evidence and required source/installed
+  CLI/MCP acceptance. Broader E15 and Gate A remain open.
 - Implemented: explicit Java release/classpath compilation with checksummed JARs,
   disabled annotation processing, native source/type accounting, Linux regression
   evidence and fresh packaged library/CLI/MCP verification. JVM build systems,
@@ -169,7 +178,17 @@ an unavailable runtime or external service does not count as verification.
   See `DOTNET.md` for the precise profile and reproduction steps.
 - Implemented: GitHub Actions workflow validation through actionlint with explicit
   labels/variables, copied local dependencies, repository-ignore bypass and native
-  per-file completion evidence. Terraform, Helm and Kustomize remain unsupported.
+  per-file completion evidence. The separate KUBECONFORM.md profile adds pinned
+  offline Kubernetes schema validation, every-document accounting, physical source
+  diagnostics, native/installed CLI/MCP controls and compiling guard proofs.
+  TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
+  source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
+  KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
+  native render reconciliation and source-bound schema findings. Wider Terraform
+  providers/modules and wider Kustomize transforms remain pending under E16.
+  HELM.md records a bounded root-chart Helm strict lint/client-only rendering
+  profile with original native, source-bound diagnostic, CLI/MCP, frozen-closure,
+  mutation and fresh offline package controls. Broader Helm profiles remain pending.
   See `ACTIONLINT.md` for profile limits and reproduction steps.
 - Verified: fresh offline tarball install; public library, installed CLI and
   packaged MCP stdio checks against eight synthetic JavaScript toolchain projects.
