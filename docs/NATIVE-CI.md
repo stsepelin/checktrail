@@ -30,6 +30,12 @@ The `dotnet-method` profile allows ten minutes per selected file, and
 limits remain in force. All other profiles retain their existing file budgets;
 any timeout still fails acceptance and leaves unobserved required cases visible.
 
+The sealed multi-claim guard runner allows at most two minutes for each selected
+original, mutant and restored callback. Those callbacks cover several paired
+trials and invalid mapping variations. It reports each stage on stderr and still
+requires the exact unchanged callback to pass, kill its compiling mutant, and
+pass again after restoration. Nested review execution budgets remain unchanged.
+
 The Scala container job allows thirty minutes for artifact preparation, source
 acceptance, compiling guard mutations with their original and restored callbacks,
 and fresh installed-package acceptance. The verifier records phase progress on
