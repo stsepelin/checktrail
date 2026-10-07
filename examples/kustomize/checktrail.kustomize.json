@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "kustomizeVersion": "5.8.2",
+  "kubeconformVersion": "0.8.0",
+  "kubernetesVersion": "1.36.0",
+  "platform": "linux_arm64",
+  "root": "overlay",
+  "kustomizations": ["base/kustomization.yaml", "overlay/kustomization.yaml"],
+  "resources": ["base/deployment.yaml", "base/settings.yaml"],
+  "schemaDirectory": "tools/kubernetes"
+}

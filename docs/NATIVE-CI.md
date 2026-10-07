@@ -45,7 +45,12 @@ Its local acceptance is recorded in SWIFT-TOOLS.md; hosted execution of the new
 job remains unverified. The new `cpp-tools` ARM64 job prepares checksum-pinned
 Alpine runtime packages and requires the native profile against source and a fresh
 offline production installation. CPP-TOOLS.md records local acceptance; hosted
-execution of this job remains unverified. The packaged review and
+execution of this job remains unverified. The new `kubeconform` ARM64 job uses the
+pinned infrastructure runtime and requires source and offline installed-package
+controls. KUBECONFORM.md records local acceptance; this hosted job remains
+unverified. The new `terraform` ARM64 job uses that runtime for source and fresh
+offline installed-module controls recorded in TERRAFORM.md; its hosted execution
+is unverified. The packaged review and
 durable-task helpers require `review` and `tasks` before their installed-package
 checks. The Tasks wire profile separately requires `mcp-tasks`, with callback
 contract checks in `mcp-task-dispatch`; ordinary MCP cases are also run with
@@ -171,3 +176,8 @@ the original public fixture to acquire a dependency cache. Required native and
 installed acceptance then run with networking disabled and read-only source/cache
 mounts, retaining the preserved Java compiler profile. Local Linux arm64 evidence
 is in [MAVEN.md](MAVEN.md). The new hosted job has not run at this revision.
+
+The separate `kustomize` job uses the prepared pinned infrastructure image and
+requires the bounded local assembly/render/schema profile through source and a
+fresh offline installed package. Native acceptance runs with no network. This
+configured hosted job has not been run for this revision; see KUSTOMIZE.md.

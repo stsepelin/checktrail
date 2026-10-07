@@ -178,7 +178,14 @@ an unavailable runtime or external service does not count as verification.
   See `DOTNET.md` for the precise profile and reproduction steps.
 - Implemented: GitHub Actions workflow validation through actionlint with explicit
   labels/variables, copied local dependencies, repository-ignore bypass and native
-  per-file completion evidence. Terraform, Helm and Kustomize remain unsupported.
+  per-file completion evidence. The separate KUBECONFORM.md profile adds pinned
+  offline Kubernetes schema validation, every-document accounting, physical source
+  diagnostics, native/installed CLI/MCP controls and compiling guard proofs.
+  TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
+  source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
+  KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
+  native render reconciliation and source-bound schema findings. Wider Terraform
+  providers/modules, Helm and wider Kustomize transforms remain pending under E16.
   See `ACTIONLINT.md` for profile limits and reproduction steps.
 - Verified: fresh offline tarball install; public library, installed CLI and
   packaged MCP stdio checks against eight synthetic JavaScript toolchain projects.

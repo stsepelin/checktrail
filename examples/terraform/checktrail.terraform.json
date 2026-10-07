@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "terraformVersion": "1.16.5",
+  "platform": "linux_arm64",
+  "files": ["main.tf.json", "support.tf.json"]
+}

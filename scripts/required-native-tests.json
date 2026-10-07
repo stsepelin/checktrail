@@ -2181,6 +2181,152 @@
       "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs"
     }
   ],
+  "kubeconform": [
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses"
+    },
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters"
+    },
+    {
+      "file": "dist/test/kubeconform.test.js",
+      "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command"
+    },
+    {
+      "file": "dist/test/kubeconform-surfaces.test.js",
+      "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/kubeconform-lifecycle.test.js",
+      "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes source changed after the real validator starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/kubeconform-reached.test.js",
+      "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source"
+    }
+  ],
+  "terraform": [
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform concurrent validations use distinct owned source and module copies and remove them all"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/terraform-lifecycle.test.js",
+      "name": "native Terraform frozen collection rejects source and declaration bytes changed after planning"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation observes the real validator body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform source changed after the real validator starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform copied module changed after the real validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/terraform-surfaces.test.js",
+      "name": "native Terraform CLI and negotiated MCP retain source errors repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform validates complete multi-file modules with reference and typed-default defects repair conversion and unused-local controls"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform evidence rejects forged module hashes declarations tools commands provider configuration counters source ranges and snippets"
+    },
+    {
+      "file": "dist/test/terraform-reached.test.js",
+      "name": "native Terraform cancellation during version collection observes the actual native process and removes fresh outputs"
+    },
+    {
+      "file": "dist/test/terraform.test.js",
+      "name": "native Terraform binds UTF-8 byte highlights and grapheme columns in single-line diagnostics with repair"
+    }
+  ],
+  "kustomize": [
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero"
+    },
+    {
+      "file": "dist/test/kustomize-scope.test.js",
+      "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts"
+    },
+    {
+      "file": "dist/test/kustomize.test.js",
+      "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings"
+    },
+    {
+      "file": "dist/test/kustomize-lifecycle.test.js",
+      "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize source changed after the actual build starts invalidates the execution"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs"
+    },
+    {
+      "file": "dist/test/kustomize-reached.test.js",
+      "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source"
+    },
+    {
+      "file": "dist/test/kustomize-surfaces.test.js",
+      "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",
@@ -2189,6 +2335,16 @@
     {
       "file": "dist/test/gradle-preparation.test.js",
       "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
+  ],
+  "native-process-observer": [
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer excludes unrelated inaccessible and wrong executable identities without crediting a body"
+    },
+    {
+      "file": "dist/test/native-process-observer.test.js",
+      "name": "native process observer retains exact native command arguments and propagates unexplained IO failures"
     }
   ],
   "ruby-tools-rubocop": [

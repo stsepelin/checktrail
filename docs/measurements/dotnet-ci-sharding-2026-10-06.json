@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "profile": "dotnet-native-callback-sharding-v1",
+  "syntheticOnly": true,
+  "cause": "Native dotnet-test file exhausted its 300000 ms CI file deadline; original callback bodies were redistributed into bounded files.",
+  "callbackProof": {
+    "unchangedCallbacks": [
+      {
+        "name": ".NET tests are opt-in and missing declarations cannot execute during planning",
+        "file": "dist/test/dotnet-test.test.js",
+        "callbackTokensSha256": "81293e16c01fd28f3e87c17dcfc340c359d0e2aa8857212b50e0476df52f7716"
+      },
+      {
+        "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions",
+        "file": "dist/test/dotnet-test.test.js",
+        "callbackTokensSha256": "8ea9599b41d9818b0d1f529211c9503803d2435385bc8272383a4d35b85bdcdd"
+      },
+      {
+        "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence",
+        "file": "dist/test/dotnet-test-evidence.test.js",
+        "callbackTokensSha256": "592cb67c371bb7033ff079f73d346e96b06d5c39246ae69a705830a20c7ca2f1"
+      },
+      {
+        "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution",
+        "file": "dist/test/dotnet-test-lifecycle.test.js",
+        "callbackTokensSha256": "d88189262e056835fa77fd14e1c2e479dce5218a37e8cfa70933c08a8456a84a"
+      },
+      {
+        "name": "native .NET empty discovery and custom names without method provenance stay incomplete",
+        "file": "dist/test/dotnet-test-names.test.js",
+        "callbackTokensSha256": "a728d8fb0c12414a44f648b5516e5716faf280a9208ab58071aeb67cb806448e"
+      },
+      {
+        "name": "native .NET test classes require exact declared source roles including newly compiled siblings",
+        "file": "dist/test/dotnet-test-scope.test.js",
+        "callbackTokensSha256": "f0111b7852c5257b2889b47965bc3799128c9e318fa72e705c727898d1142c05"
+      },
+      {
+        "name": "native .NET tests distinguish source compilation restore and fixture setup failures",
+        "file": "dist/test/dotnet-test-failures.test.js",
+        "callbackTokensSha256": "e572c44a9b49a86e708ed306eb10e4ff4aec6f611fac454a49cc4e10f0472065"
+      },
+      {
+        "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage",
+        "file": "dist/test/dotnet-test-outputs.test.js",
+        "callbackTokensSha256": "2f1d7904e93520eb6f8901451ea54ff068428f4041e2b44208bc63e73604ce26"
+      },
+      {
+        "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust",
+        "file": "dist/test/dotnet-test-surfaces.test.js",
+        "callbackTokensSha256": "5faf12c25eeb7c263450c8bd25425e9343d337b60b9c2ff0507e704edbed8063"
+      },
+      {
+        "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs",
+        "file": "dist/test/dotnet-test-cancellation.test.js",
+        "callbackTokensSha256": "4c75e322db94974c66d797253a488d3c940593f88b8d191a02971087814733be"
+      }
+    ],
+    "assertionsChanged": false,
+    "fileDeadlineMs": 300000,
+    "coreCallbackDeadlineMs": 240000,
+    "surfaceCallbackDeadlineMs": 180000
+  },
+  "source": {
+    "profile": "dotnet-test",
+    "timeoutMs": 300000,
+    "passed": 10,
+    "required": 10,
+    "problems": [],
+    "complete": true
+  },
+  "installedProfile": {
+    "profile": "dotnet-test",
+    "timeoutMs": 300000,
+    "passed": 10,
+    "required": 10,
+    "problems": [],
+    "complete": true
+  },
+  "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+  "versions": {
+    "node": "v22.23.2",
+    "sdk": "10.0.401 [/usr/share/dotnet/sdk]",
+    "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)"
+  },
+  "durationMs": 472302,
+  "network": "none",
+  "repositoryMount": "readonly",
+  "rootFilesystemReadonly": false,
+  "offlineProductionInstall": true,
+  "lifecycleScriptsExecuted": false,
+  "installedCliEvaluated": true,
+  "installedRuntimeEvaluated": true,
+  "acceptanceClientCopiedOutsideInstalledPackage": true,
+  "sourcePins": [
+    {
+      "file": "test/dotnet-test-cancellation.test.ts",
+      "sha256": "8d4f94d7f44f1e25baa3d5545493a35b47fa46de1346d19411ddd7e6db0f7b16"
+    },
+    {
+      "file": "test/dotnet-test-evidence.test.ts",
+      "sha256": "7477cb811eeff3a79aa3c1a3f51551d7ae52c7303a5b69fc5c0c8920d90c4f47"
+    },
+    {
+      "file": "test/dotnet-test-failures.test.ts",
+      "sha256": "cc1a84130072f2ddd37ae668006b58f93b796c97764dd5c851909afdaeceee6d"
+    },
+    {
+      "file": "test/dotnet-test-lifecycle.test.ts",
+      "sha256": "6e82a3163325042c3fe14bae6f5bfba7fe83ac8eda2b892367e492590c61f293"
+    },
+    {
+      "file": "test/dotnet-test-names.test.ts",
+      "sha256": "b81a7070978c57b001d4891c672dd437d338d1e9de1404a925b5d761aed0564e"
+    },
+    {
+      "file": "test/dotnet-test-outputs.test.ts",
+      "sha256": "92fa0e7900e7930b7d37bf225ef4df0e377863da80d5f0217eb0825dbceb9cd3"
+    },
+    {
+      "file": "test/dotnet-test-scope.test.ts",
+      "sha256": "0742d98952cc7a079ed1cfcc01a4feb3d9336696aca2fd62e37ad010893470b1"
+    },
+    {
+      "file": "test/dotnet-test-surfaces.test.ts",
+      "sha256": "e143f2d5f2f722289319ddd4763b9b1f6090563ddae2b74b63898c69efec08fe"
+    },
+    {
+      "file": "test/dotnet-test.test.ts",
+      "sha256": "c84e80db706521cb70a4c4d28f70072544eef35011b8262018c73fcf9805edd9"
+    },
+    {
+      "file": "test/dotnet-test-controls.ts",
+      "sha256": "abee8a630fa9f518c178aa337f55a62af55b2912d34e276c93f19c07d8461f69"
+    },
+    {
+      "file": "scripts/verify-dotnet-build-package.mjs",
+      "sha256": "354839ce4c899a0e66dae4e27cbf634114839eb18bfcfa9a84d04c8cd2a6a880"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "2aa4115ad21accc80d7d716c5096420592fa89e8bf0796c8bcbe07f5bc219506"
+    }
+  ],
+  "runtimeEngineLimitsChanged": false,
+  "assertionsChanged": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "windowsVerified": false,
+  "fullCheckSnapshot": {
+    "tests": 800,
+    "passed": 582,
+    "failed": 0,
+    "optionalNativeSkipped": 218
+  }
+}

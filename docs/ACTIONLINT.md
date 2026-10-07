@@ -8,7 +8,9 @@ and an already prepared tool on `PATH`; the engine never downloads one.
 Each workflow directory identifies its repository root, including nested roots.
 Workflow dependencies use the full inventory below that root even when a local
 action also contains a separate package manifest. Default planning retains an
-unsupported result for Terraform, Helm and Kustomize markers beside workflows.
+unsupported result for unconfigured Terraform, Helm and Kustomize markers beside
+workflows. A separately configured [Terraform JSON profile](TERRAFORM.md) has its
+own native acceptance.
 Selecting this check explicitly covers workflows only.
 
 ## Configuration

@@ -1,0 +1,6 @@
+{
+  "locals": {
+    "original_next": "${var.original_count + 1}",
+    "original_unused": "original-independent"
+  }
+}
