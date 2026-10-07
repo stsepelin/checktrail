@@ -76,7 +76,7 @@ display names. Matching client JVM settings and protected Java-home selection
 prevent the observed ordinary single-use daemon cancellation escape. The
 [local record](measurements/gradle-native-2026-10-05.json) binds required native
 and installed CLI/MCP controls, compiling guard mutations and public preparers.
-Wrappers, analyzers, Kotlin/Scala source, generated/JPMS scope and wider profiles
+Wrappers, wider analyzer and mixed/generated/script Kotlin/Scala profiles, generated/JPMS scope and wider profiles
 remain required under E11; Gate A remains open.
 
 Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
@@ -85,7 +85,7 @@ source-declaration and JUnit events reconcile with fresh reports; skipped,
 filtered, empty, foreign and incomplete participation cannot pass. The
 [local record](measurements/maven-native-2026-10-05.json) binds original controls,
 installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
-for wrappers, wider Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
+for wrappers, wider Gradle profiles, generated/JPMS scope, mixed/generated/script Kotlin, Scala and wider analyzer profiles.
 Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
 remains open.
 
@@ -95,7 +95,7 @@ data-only planning, startup-only MCP trust and owned POSIX cancellation cleanup.
 The [local measurement](measurements/checkstyle-native-2026-10-05.json) binds
 original controls, assertion-verified compiling mutations and a fresh offline
 installed CLI/MCP package profile. E11 remains partial: wider Maven/Gradle profiles,
-SpotBugs, detekt and Kotlin/Scala coverage still need their native profiles.
+wider SpotBugs/detekt and mixed/generated/script Kotlin/Scala coverage remain required.
 Hosted CI for this revision, broader platforms and full bundled provenance are
 unverified; Gate A remains open.
 
@@ -808,3 +808,10 @@ reported evidence. It never means the entire repository has been reviewed.
 - [Descriptive confidence scoring](REVIEW-SCORING.md) separates proper probability
   losses, reliability, risk/coverage and incomplete/unreviewed accounting. Labels and
   independence remain operator declarations; no calibration or quality gate is claimed.
+
+The opt-in [Kotlin JVM compiler profile](KOTLIN.md) uses an original fixed FIR/IR
+observer, resolved suppression accounting and independent physical output bindings
+through the shared library/CLI/MCP engine. It retains partial compiler failure and
+declared warning policy. Native acceptance is scoped to the exact measured source,
+runtime and package; mixed/generated/script profiles, Scala, wider platforms and
+Gate A remain open. No inference or field evaluation is invoked.
