@@ -202,10 +202,11 @@ test("mutation cancellation removes the temporary copy and never reports unrun t
   for (let i = 0; i < 100; i++) {
     try {
       copy = await readFile(probe, "utf8");
-      break;
+      if (copy) break;
     } catch {
-      await delay(20);
+      // A created marker is not ready until the writer supplies its contents.
     }
+    await delay(20);
   }
   controller.abort();
   const report = await pending;
