@@ -26,7 +26,7 @@ const server = createServer((value) => {
   socket = value;
   value.on("error", () => {});
 });
-async function invoke(source, label) {
+async function invoke(source, label, detached = false) {
   const started = performance.now();
   // Keep diagnostic engine code under the native command-line bound as well.
   // The owning directory remains synthetic; project inputs are never script text.
@@ -53,6 +53,7 @@ try { $ctScript = $ctReader.ReadToEnd() } finally { $ctReader.Dispose() }
       TEMP: root,
       TMP: root,
     },
+    detached,
     windowsHide: true,
     shell: false,
   });
@@ -71,6 +72,7 @@ try { $ctScript = $ctReader.ReadToEnd() } finally { $ctReader.Dispose() }
   console.log(
     JSON.stringify({
       label,
+      detached,
       code,
       timedOut,
       durationMs: Math.round(performance.now() - started),
@@ -83,6 +85,11 @@ try {
   await invoke(
     "[Console]::WriteLine('original plain native PowerShell startup')",
     "plain-powershell-startup",
+  );
+  await invoke(
+    "[Console]::WriteLine('original detached native PowerShell startup')",
+    "plain-detached-powershell-startup",
+    true,
   );
   await invoke(
     "[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false); [Console]::WriteLine('legacy encoding returned')",
@@ -192,6 +199,7 @@ try {
     source +
     "\n} catch { [IO.File]::WriteAllText('startup-error', [string]$_.Exception); [Environment]::Exit(253) }";
   await invoke(source, "instrumented-fixed-bootstrap");
+  await invoke(source, "instrumented-detached-fixed-bootstrap", true);
   console.log(
     JSON.stringify({
       label: "fixed-bootstrap-stages",
