@@ -15,26 +15,29 @@ assert.ok(
   Object.hasOwn(profiles, profile),
   "Unknown required native test profile",
 );
-const timeoutMs = [
-  "dotnet-build",
-  "gradle",
-  "maven",
-  "dotnet-test",
-  "dotnet-format",
-  "dotnet-generated",
-  "dotnet-method",
-  "ruby-tools",
-  "ruby-tools-rubocop",
-  "ruby-tools-assertions",
-  "ruby-tools-evidence",
-  "ruby-tools-lifecycle",
-  "ruby-tools-defaults",
-  "ruby-tools-surfaces",
-  "ruby-tools-cancellation",
-  "swift-tools",
-].includes(profile)
-  ? 300000
-  : 120000;
+// node:test applies this timeout to the whole selected file, not each callback.
+const timeoutMs =
+  profile === "dotnet-method"
+    ? 600000
+    : [
+          "dotnet-build",
+          "gradle",
+          "maven",
+          "dotnet-test",
+          "dotnet-format",
+          "dotnet-generated",
+          "ruby-tools",
+          "ruby-tools-rubocop",
+          "ruby-tools-assertions",
+          "ruby-tools-evidence",
+          "ruby-tools-lifecycle",
+          "ruby-tools-defaults",
+          "ruby-tools-surfaces",
+          "ruby-tools-cancellation",
+          "swift-tools",
+        ].includes(profile)
+      ? 300000
+      : 120000;
 const report = await runRequiredTests(profiles[profile], { timeoutMs });
 process.stdout.write(JSON.stringify({ profile, timeoutMs, ...report }) + "\n");
 process.exitCode = report.complete ? 0 : 1;
