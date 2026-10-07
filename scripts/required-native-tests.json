@@ -1869,6 +1869,196 @@
       "name": "native Gradle protects client JVM settings against project daemon overrides"
     }
   ],
+  "dotnet-build": [
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": ".NET build is opt-in and incomplete prerequisites cannot execute"
+    },
+    {
+      "file": "dist/test/dotnet-build.test.js",
+      "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language"
+    },
+    {
+      "file": "dist/test/dotnet-build-evidence.test.js",
+      "name": "native .NET packet rejects omitted, forged, stale and disabled participation"
+    },
+    {
+      "file": "dist/test/dotnet-build-scope.test.js",
+      "name": ".NET planning rejects incomplete source, project, role and dependency identities"
+    },
+    {
+      "file": "dist/test/dotnet-build-environment.test.js",
+      "name": ".NET protected environment cannot be overridden by project requirements"
+    },
+    {
+      "file": "dist/test/dotnet-build-disabled.test.js",
+      "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass"
+    },
+    {
+      "file": "dist/test/dotnet-build-outputs.test.js",
+      "name": "native .NET preserves inventoried near misses and caller-owned output trees"
+    },
+    {
+      "file": "dist/test/dotnet-build-generated.test.js",
+      "name": "native .NET records declared generated inputs and rejects their undeclared presence"
+    },
+    {
+      "file": "dist/test/dotnet-build-analyzers.test.js",
+      "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair"
+    },
+    {
+      "file": "dist/test/dotnet-build-cache.test.js",
+      "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation"
+    },
+    {
+      "file": "dist/test/dotnet-build-surfaces.test.js",
+      "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-build-cancellation.test.js",
+      "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs"
+    }
+  ],
+  "dotnet-test": [
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": ".NET tests are opt-in and missing declarations cannot execute during planning"
+    },
+    {
+      "file": "dist/test/dotnet-test.test.js",
+      "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions"
+    },
+    {
+      "file": "dist/test/dotnet-test-evidence.test.js",
+      "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence"
+    },
+    {
+      "file": "dist/test/dotnet-test-lifecycle.test.js",
+      "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution"
+    },
+    {
+      "file": "dist/test/dotnet-test-names.test.js",
+      "name": "native .NET empty discovery and custom names without method provenance stay incomplete"
+    },
+    {
+      "file": "dist/test/dotnet-test-scope.test.js",
+      "name": "native .NET test classes require exact declared source roles including newly compiled siblings"
+    },
+    {
+      "file": "dist/test/dotnet-test-failures.test.js",
+      "name": "native .NET tests distinguish source compilation restore and fixture setup failures"
+    },
+    {
+      "file": "dist/test/dotnet-test-outputs.test.js",
+      "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage"
+    },
+    {
+      "file": "dist/test/dotnet-test-surfaces.test.js",
+      "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-test-cancellation.test.js",
+      "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
+    }
+  ],
+  "dotnet-format": [
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": ".NET whitespace formatting is opt-in and missing declarations cannot execute during planning"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace planning keeps F# unsupported instead of accepting the SDK empty report"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace reconciles C#/VB documents broken edits UTF-8 BOM and repaired valid near misses"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace rejects omitted forged stale filtered malformed and unreconciled native evidence"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace observes effective per-file policy and cannot pass a filtered compiled source"
+    },
+    {
+      "file": "dist/test/dotnet-format.test.js",
+      "name": "native .NET whitespace retains native compiler failures and preserves caller-owned outputs"
+    },
+    {
+      "file": "dist/test/dotnet-format-surfaces.test.js",
+      "name": "native .NET whitespace CLI and negotiated MCP preserve defects privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-format-surfaces.test.js",
+      "name": "native .NET whitespace cancellation reaches the workspace BuildHost and reaps loader descendants and temporary outputs"
+    }
+  ],
+  "dotnet-generated": [
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "Roslyn source-generator declarations reject foreign unknown and unbounded origins"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn planning retains invalid producers duplicate scope and unverified formatting without execution"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn C# and VB outputs participate in compilation symbols and repaired consumer boundary tests"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn packets reject omitted forged stale disabled and source-unbound generator evidence"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn missing extra and throwing outputs cannot pass and preserve caller-owned generated files"
+    },
+    {
+      "file": "dist/test/dotnet-generated.test.js",
+      "name": "native Roslyn producer source errors retain the actual diagnostic and valid interface spelling near misses compile"
+    },
+    {
+      "file": "dist/test/dotnet-generated-surfaces.test.js",
+      "name": "native Roslyn CLI and negotiated MCP preserve generated regressions privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-generated-surfaces.test.js",
+      "name": "native Roslyn cancellation reaches the original generator and reaps compiler descendants and temporary outputs"
+    }
+  ],
+  "dotnet-method": [
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "NUnit owned settings escape data and select complete native discovery without a result dump"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit method provenance reconciles C#/F#/VB custom names escaped literals broken boundaries and repair"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit method evidence rejects missing forged stale duplicate hidden and mismatched XML and settings"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit duplicate custom full names remain ambiguous without assigning a guessed method"
+    },
+    {
+      "file": "dist/test/dotnet-method.test.js",
+      "name": "native NUnit custom-name parent fixture skips and setup failures retain promoted case counts source addresses and repair"
+    },
+    {
+      "file": "dist/test/dotnet-method-surfaces.test.js",
+      "name": "native NUnit custom-name CLI and negotiated MCP preserve source-bound assertion failures privacy and operator-only trust"
+    },
+    {
+      "file": "dist/test/dotnet-method-surfaces.test.js",
+      "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",

@@ -15,6 +15,8 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+[Measured .NET build readiness](measurements/dotnet-build-native-2026-10-06.json) retains source/installed and compiling-mutation evidence. Opt-in [.NET builds](DOTNET-BUILD.md) now rebuild declared C#/F#/VB projects from fresh inputs and pinned offline dependencies. Native compiler contexts, analyzer diagnostics, generated-input scope and portable symbols reconcile participation; CLI/MCP and reached-client cancellation are required controls. [Measured .NET test readiness](measurements/dotnet-test-native-2026-10-06.json) binds source/installed acceptance and compiling-mutation evidence. The separate [.NET test profile](DOTNET-TEST.md) reconciles native VSTest discovery, every result, declared source roles and TRX. [Measured whitespace-formatting readiness](measurements/dotnet-format-native-2026-10-06.json) binds exact native/installed, compiling-mutation and repository evidence. The opt-in [C#/VB whitespace formatter](DOTNET-FORMAT.md) reconciles native documents, proposed edits and SDK reports without rewriting source. [Declared Roslyn generator outputs](DOTNET-GENERATED.md) add bounded fresh C#/VB build/test participation with native producer/analyzer and consumer-symbol reconciliation. E12 remains partial while code-style/analyzer formatting, broader generator shapes and wider profile work continues. [Native NUnit method provenance](DOTNET-METHOD.md) now reconciles bounded C#/F#/VB custom names through complete native discovery/result XML and fresh source symbols; ambiguous methods remain incomplete.
+
 Maven native packet version 2 now binds its exact temporary repository JAR set
 to the raw operator-pinned manifest and binds the native Maven client PID/home
 to the observed launcher and configured distribution. An original synthetic
@@ -639,7 +641,7 @@ fail. Removing the assembly-file guard produced a false pass using an unpinned
 installation passed the C# library, CLI and MCP checks. Reproduce native and
 packaged verification with `scripts/verify-dotnet-container.mjs`. The hosted
 amd64 job passed at `52ba415`; see `DOTNET.md` for compilation limits and
-unsupported build, language and test profiles.
+the separate bounded SDK build profile and its remaining test, formatting and wider-language limits.
 
 ## GitHub Actions workflow verification
 

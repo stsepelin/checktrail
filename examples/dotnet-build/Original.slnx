@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="CSharp/CSharp.csproj" />
+  <Project Path="CSharpTests/CSharpTests.csproj" />
+  <Project Path="FSharp/FSharp.fsproj" />
+  <Project Path="FSharpTests/FSharpTests.fsproj" />
+  <Project Path="VisualBasic/VisualBasic.vbproj" />
+  <Project Path="VisualBasicTests/VisualBasicTests.vbproj" />
+</Solution>

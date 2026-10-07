@@ -15,7 +15,17 @@ assert.ok(
   Object.hasOwn(profiles, profile),
   "Unknown required native test profile",
 );
-const timeoutMs = ["gradle", "maven"].includes(profile) ? 300000 : 120000;
+const timeoutMs = [
+  "dotnet-build",
+  "gradle",
+  "maven",
+  "dotnet-test",
+  "dotnet-format",
+  "dotnet-generated",
+  "dotnet-method",
+].includes(profile)
+  ? 300000
+  : 120000;
 const report = await runRequiredTests(profiles[profile], { timeoutMs });
 process.stdout.write(JSON.stringify({ profile, timeoutMs, ...report }) + "\n");
 process.exitCode = report.complete ? 0 : 1;
