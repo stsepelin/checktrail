@@ -48,3 +48,11 @@ for byte, checks the file allowlist and installs the tarball offline into a fres
 consumer. This demonstrates repeated packaging of one built checkout, not an
 independent cross-platform rebuild or reproducible native toolchain. The dependency
 audit and package smoke passed in the hosted matrix at `52ba415`; see `NATIVE-CI.md`.
+
+## Prepared detekt artifact
+
+The opt-in Kotlin analyzer uses the pinned upstream detekt CLI fat JAR described in
+[DETEKT.md](DETEKT.md). It is prepared explicitly and is not bundled in Checktrail's
+npm package. Its exact release size and SHA-256 are checked before preparation and
+execution. Publisher signatures and the full bundled native component/license
+closure remain unverified E6 obligations; the npm metadata audit does not cover them.

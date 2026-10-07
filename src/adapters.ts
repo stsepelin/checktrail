@@ -10,6 +10,7 @@ import { kustomizeCheck } from "./kustomize.js";
 import { helmCheck } from "./helm.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
+import { detektCheck } from "./detekt.js";
 import { spotbugsCheck } from "./spotbugs.js";
 import { checkstyleCheck } from "./checkstyle.js";
 import { mavenCheck } from "./maven.js";
@@ -125,11 +126,17 @@ export const adapters = [
   },
   {
     id: "jvm",
-    markers: ["pom.xml", "build.gradle", "build.gradle.kts"],
+    markers: [
+      "pom.xml",
+      "build.gradle",
+      "build.gradle.kts",
+      "checktrail.detekt.json",
+    ],
     checks: [
       "jvm.javac",
       "jvm.checkstyle",
       "jvm.spotbugs",
+      "jvm.detekt",
       "jvm.maven-test",
       "jvm.gradle-test",
     ],
@@ -589,6 +596,9 @@ export async function checksFor(
         : []),
       ...(requested?.includes("jvm.maven-test")
         ? [await mavenCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.detekt")
+        ? [await detektCheck(source, project)]
         : []),
       ...(requested?.includes("jvm.spotbugs")
         ? [await spotbugsCheck(source, project)]
