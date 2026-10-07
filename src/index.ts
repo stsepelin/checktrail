@@ -258,3 +258,10 @@ export {
   reviewMultiSummarySchema,
 } from "./review-multi-scoring.js";
 export type { ReviewMultiReport } from "./review-multi-scoring.js";
+
+export {
+  historicalImportInputSchema,
+  historicalImportReportSchema,
+  historicalImportSummarySchema,
+} from "./import-history.js";
+export type { HistoricalImportReport } from "./import-history.js";

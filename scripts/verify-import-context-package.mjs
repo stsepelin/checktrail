@@ -15,6 +15,9 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
+const profile =
+  process.env.CHECKTRAIL_IMPORT_CONTEXT_PROFILE ?? "import-context";
+assert.ok(["import-context", "import-history"].includes(profile));
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -42,7 +45,12 @@ try {
     path.relative(path.join(consumer, "dist"), installed),
     path.join(consumer, "dist/src"),
   );
-  for (const file of ["import-context.test.js", "helpers.js"])
+  for (const file of [
+    "import-context.test.js",
+    "import-history.test.js",
+    "git-fixture.js",
+    "helpers.js",
+  ])
     await cp(
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
@@ -102,7 +110,7 @@ try {
   await writeFile(
     path.join(consumer, "scripts/required-native-tests.json"),
     JSON.stringify({
-      "import-context": profiles["import-context"],
+      [profile]: profiles[profile],
     }),
   );
   const selectedImage = process.env.CHECKTRAIL_IMPORT_CONTEXT_IMAGE;
@@ -140,13 +148,13 @@ try {
           image,
           "node",
           "scripts/verify-required-native-tests.mjs",
-          "import-context",
+          profile,
         ],
         { encoding: "utf8", maxBuffer: 1024 * 1024 },
       )
     : execFileSync(
         process.execPath,
-        ["scripts/verify-required-native-tests.mjs", "import-context"],
+        ["scripts/verify-required-native-tests.mjs", profile],
         { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
       );
   const acceptance = JSON.parse(output);

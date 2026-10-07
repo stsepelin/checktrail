@@ -2992,5 +2992,31 @@
       "file": "dist/test/scala-boundaries.test.js",
       "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks"
     }
+  ],
+  "import-history": [
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct"
+    },
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames"
+    },
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery"
+    },
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact"
+    },
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans"
+    },
+    {
+      "file": "dist/test/import-history.test.js",
+      "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root"
+    }
   ]
 }

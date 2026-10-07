@@ -134,3 +134,9 @@ The bounded Scala 3 JVM profile has source, compiling-guard and offline installe
 acceptance recorded at its code revision in
 [scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
 declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
+base and working/index consumers, deleted/moved source and revision-specific
+edges through the shared import interface. See
+[HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
+impact obligations remain open; this does not narrow validation plans.
