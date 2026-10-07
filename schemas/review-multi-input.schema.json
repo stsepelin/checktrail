@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": {
+          "type": "string",
+          "const": "declared-multi-claim-paired-v1"
+        },
+        "purpose": { "type": "string", "enum": ["development", "held-out"] },
+        "seed": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "resamples": { "type": "integer", "minimum": 128, "maximum": 4096 },
+        "confidenceLevel": {
+          "type": "number",
+          "minimum": 0.8,
+          "maximum": 0.99
+        },
+        "trials": {
+          "minItems": 1,
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "clusterId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              }
+            },
+            "required": ["id", "clusterId"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "purpose",
+        "seed",
+        "resamples",
+        "confidenceLevel",
+        "trials"
+      ],
+      "additionalProperties": false
+    },
+    "labels": {
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+          },
+          "label": {
+            "type": "string",
+            "enum": ["defect", "valid", "near-miss", "unresolved"]
+          },
+          "defects": {
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                },
+                "family": {
+                  "type": "string",
+                  "enum": [
+                    "authorization-tenancy",
+                    "identifiers-allowlists",
+                    "types-numeric-semantics",
+                    "lifecycle-ordering",
+                    "assembly-wiring",
+                    "concurrency-resources",
+                    "atomic-artifacts",
+                    "dependencies-builds",
+                    "test-adequacy"
+                  ]
+                },
+                "material": { "type": "boolean" }
+              },
+              "required": ["id", "family", "material"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["id", "label", "defects"],
+        "additionalProperties": false
+      }
+    },
+    "observations": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "unsupported",
+                  "incomplete",
+                  "budget-exhausted",
+                  "unreviewed",
+                  "stale",
+                  "cancelled"
+                ]
+              },
+              "claims": {
+                "maxItems": 192,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                    },
+                    "family": {
+                      "type": "string",
+                      "enum": [
+                        "authorization-tenancy",
+                        "identifiers-allowlists",
+                        "types-numeric-semantics",
+                        "lifecycle-ordering",
+                        "assembly-wiring",
+                        "concurrency-resources",
+                        "atomic-artifacts",
+                        "dependencies-builds",
+                        "test-adequacy"
+                      ]
+                    },
+                    "judgement": {
+                      "type": "string",
+                      "enum": [
+                        "supported",
+                        "wrong-mechanism",
+                        "wrong-address",
+                        "unreachable-fix",
+                        "out-of-scope",
+                        "refuted",
+                        "unresolved"
+                      ]
+                    },
+                    "defectId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "probability": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1 },
+                        { "type": "null" }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "family",
+                    "judgement",
+                    "defectId",
+                    "probability"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["id", "status", "claims"],
+            "additionalProperties": false
+          }
+        },
+        "b": {
+          "maxItems": 512,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "unsupported",
+                  "incomplete",
+                  "budget-exhausted",
+                  "unreviewed",
+                  "stale",
+                  "cancelled"
+                ]
+              },
+              "claims": {
+                "maxItems": 192,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                    },
+                    "family": {
+                      "type": "string",
+                      "enum": [
+                        "authorization-tenancy",
+                        "identifiers-allowlists",
+                        "types-numeric-semantics",
+                        "lifecycle-ordering",
+                        "assembly-wiring",
+                        "concurrency-resources",
+                        "atomic-artifacts",
+                        "dependencies-builds",
+                        "test-adequacy"
+                      ]
+                    },
+                    "judgement": {
+                      "type": "string",
+                      "enum": [
+                        "supported",
+                        "wrong-mechanism",
+                        "wrong-address",
+                        "unreachable-fix",
+                        "out-of-scope",
+                        "refuted",
+                        "unresolved"
+                      ]
+                    },
+                    "defectId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                        },
+                        { "type": "null" }
+                      ]
+                    },
+                    "probability": {
+                      "anyOf": [
+                        { "type": "number", "minimum": 0, "maximum": 1 },
+                        { "type": "null" }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "family",
+                    "judgement",
+                    "defectId",
+                    "probability"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["id", "status", "claims"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["a", "b"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["protocol", "labels", "observations"],
+  "additionalProperties": false
+}

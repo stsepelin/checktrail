@@ -1,0 +1,739 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "scope": "Original declared numerical multi-claim synthetic readiness. Common mappings and labels are unverified operator inputs. Does not change the sealed single-claim profile or establish host isolation, authoritative judgments, field evaluation or quality.",
+  "codeRevision": "d355fc4613c25251641dfe8def99fea12dd93690",
+  "implementationCommit": "de33c7e",
+  "files": {
+    "src/review-multi-scoring.ts": "cdc37877fe4950e54de026586c658af750716b2b822976e2b272e9ff5b764345",
+    "src/cli.ts": "9859678bf6a652cd51d5017aeda36aded6c050706b58634cc53669bb4935c61d",
+    "src/mcp.ts": "b6658f2784d2a7438e995197b48278e1ce28e4e7516a2e8cdbebfebf25b2c835",
+    "src/index.ts": "cf08b6a529985750452688090270d1368eeaeb6bd056c61bbeff385b1ba5669d",
+    "src/schemas.ts": "37fc6c1de5d81ab3898f33d75f368ab2f5e69261efb83f33ab486605e22e5108",
+    "test/review-multi-scoring.test.ts": "c1cbf9278c9e9bfe470bc4fcc747f83d6dfda96ec80a16572b8cff4984365ac8",
+    "test/mcp.test.ts": "4cf43579556664779a2be69b3daeea65dc865bdd8c8eeee8d1fc333c7b749ab9",
+    "test/schemas.test.ts": "100cb91c14b95b2d8d022c000cf86ed5ee91141dba97e32a264f3b1930dcb80c",
+    "scripts/verify-review-multi-package.mjs": "10294ffe7a510d0769befed54b747e8cdace91d0aa2f1acac7b84e4fb6a5cd2f",
+    "scripts/verify-review-multi-guards.mjs": "b23c3d025478a2369835bb7ad3df57a7710273755c856afcaf94b103a0899b6b",
+    ".github/workflows/ci.yml": "247669c42bc0a5a46a4268f5e3279f9d4a92a55d9cdf760118335d750a82253b"
+  },
+  "fullCheck": {
+    "tests": 887,
+    "pass": 648,
+    "fail": 0,
+    "skipped": 239,
+    "cancelled": 0
+  },
+  "runtimeProfiles": [
+    {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "source": {
+        "profile": "review-multi-scoring",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5.664375,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.132166,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.1845,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.36975,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6.129667,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.98925,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 756.617416,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "2f898556077c3f4ccfbcded04231ac40d458dfe7949c89267e2e56be2313f0b0",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-multi-scoring",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5.504542,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3.986458,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.182333,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.376,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5.964709,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2.997291,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 764.922458,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v26.9.0",
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "source": {
+        "profile": "review-multi-scoring",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11.372779,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.41435,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2.569975,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.690796,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.866439,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7.283671,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1051.768706,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "2f898556077c3f4ccfbcded04231ac40d458dfe7949c89267e2e56be2313f0b0",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "review-multi-scoring",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 11.369696,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 9.296309,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2.543016,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.660671,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 15.511388,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 6.101788,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1069.94036,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    }
+  ],
+  "compilingGuardControls": {
+    "scope": "Original synthetic multi-claim numerical assertions; no inference or field evaluation",
+    "guards": [
+      {
+        "id": "unique-common-defect",
+        "callback": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities",
+        "callbackSha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859",
+        "sourceSha256": "127f75229d0fa62ca0577feb9a457c7a75778e26fb25524b895f65b663290693",
+        "mutantSha256": "a2996c640b2a7991bd6b2457b5ec1a9036e54c71fd31199a4d65f990a2b62ea8",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "missing-material-denominator",
+        "callback": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations",
+        "callbackSha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859",
+        "sourceSha256": "127f75229d0fa62ca0577feb9a457c7a75778e26fb25524b895f65b663290693",
+        "mutantSha256": "74c3183461c5c81e0135cb573026b34dc5ec6805aad8e909f48277ccec891fa8",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "whole-incident-cluster",
+        "callback": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals",
+        "callbackSha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859",
+        "sourceSha256": "127f75229d0fa62ca0577feb9a457c7a75778e26fb25524b895f65b663290693",
+        "mutantSha256": "a3842d9eb9c02bcdcc01af44fdcc07b9ea62abaf3a5a7e3c3e9e522f7bffbc5d",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "known-common-defect-family",
+        "callback": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses",
+        "callbackSha256": "98f9f6a39b5349886c39beeb5295c3097c64b9683a87a6a02bbb839c1c784859",
+        "sourceSha256": "127f75229d0fa62ca0577feb9a457c7a75778e26fb25524b895f65b663290693",
+        "mutantSha256": "730d80683a1a6ba5a84b51d76d44d19ac12ebdaf42eeff7963498e3afded01a4",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "schemaParity": "four new schemas included in strict AJV 2020 and runtime parity controls; all six schema tests passed",
+  "changedFileLint": "passed",
+  "formatting": "passed",
+  "actionlintVersion": "1.7.12",
+  "actionlint": "passed",
+  "fieldEvaluationExecuted": false,
+  "inferenceInvoked": false,
+  "gateAComplete": false,
+  "qualityGate": "not-assessed"
+}

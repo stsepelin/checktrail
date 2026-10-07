@@ -240,3 +240,13 @@ export {
   parseCapturedProcessOutput,
 } from "./process-output.js";
 export type { CapturedProcessOutput } from "./process-output.js";
+
+export {
+  scoreMultiClaimReviewTrials,
+  projectMultiClaimReviewScoring,
+  reviewMultiProtocolSchema,
+  reviewMultiInputSchema,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "./review-multi-scoring.js";
+export type { ReviewMultiReport } from "./review-multi-scoring.js";

@@ -142,6 +142,7 @@ jobs:
           node scripts/verify-required-native-tests.mjs review-benchmark-judging
           node scripts/verify-required-native-tests.mjs review-benchmark-scoring
           node scripts/verify-required-native-tests.mjs review-paired-scoring
+          node scripts/verify-required-native-tests.mjs review-multi-scoring
           node scripts/verify-required-native-tests.mjs review-calibration
           node scripts/verify-required-native-tests.mjs import-context
           node scripts/verify-required-native-tests.mjs review-claim-probability
@@ -167,6 +168,10 @@ jobs:
         run: node scripts/verify-review-claim-probability-package.mjs
       - name: Verify calibration fitting and application in the production package
         run: node scripts/verify-review-calibration-package.mjs
+      - name: Require original compiling multi-claim guard controls
+        run: node scripts/verify-review-multi-guards.mjs
+      - name: Verify multi-claim scoring in the production package
+        run: node scripts/verify-review-multi-package.mjs
       - name: Verify paired scoring in the production package
         run: node scripts/verify-review-paired-package.mjs
       - name: Verify sealed benchmark scoring in the production package
