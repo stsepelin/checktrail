@@ -18,6 +18,19 @@ cancel each other. Native profiles, matrix entries and assertions are unchanged.
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
+## Pinned infrastructure preparation
+
+Infrastructure runtime setup allows at most three download attempts per artifact,
+retrying recognized connection failures after one-second and three-second waits. All attempts and body
+reads share the original 120-second deadline. HTTP errors, byte-bound violations,
+incorrect lengths, checksum failures and an expired deadline fail preparation.
+Pinned lengths and SHA-256 digests remain mandatory before extraction or use.
+
+A failed parallel download batch waits for every in-flight download to settle
+before removing its staging directory. Failure never publishes a prepared runtime
+or counts as native acceptance; the source and fresh installed-package controls
+still run separately after preparation succeeds.
+
 ## Required regression profiles
 
 The ordinary test suite permits explicit skips for unavailable optional tools.

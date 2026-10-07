@@ -1,5 +1,7 @@
+import process from "node:process";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import {
   lstat,
@@ -10,6 +12,16 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+
+export function runAcceptanceNpm(args, options = {}) {
+  if (process.platform !== "win32") return execFileSync("npm", args, options);
+  const npmCli = path.join(
+    path.dirname(process.execPath),
+    "node_modules/npm/bin/npm-cli.js",
+  );
+  assert.ok(existsSync(npmCli), "Fixed host npm CLI is unavailable");
+  return execFileSync(process.execPath, [npmCli, ...args], options);
+}
 
 export function acceptanceConsumerLock(manifest, lock, tarball, integrity) {
   assert.equal(lock.lockfileVersion, 3);
@@ -115,8 +127,7 @@ export async function installAcceptancePackage(
       JSON.stringify(prepared.lock),
       { flag: "wx" },
     );
-    execFileSync(
-      "npm",
+    runAcceptanceNpm(
       [
         "ci",
         "--offline",

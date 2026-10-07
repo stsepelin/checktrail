@@ -450,3 +450,7 @@ The bounded [import context](docs/IMPORT-CONTEXT.md) collects JS/TS source and
 static consumer edges without executing project code. Unknown or incomplete
 capture retains every declared project in advisory full fallback. It does not
 narrow validation plans or establish runtime reachability.
+
+The experimental bounded [Windows executable profile](docs/WINDOWS-EXECUTION.md)
+has a dedicated native CI gate. Its acceptance is pending; broader Windows tools,
+Git and private persistence profiles remain unverified.

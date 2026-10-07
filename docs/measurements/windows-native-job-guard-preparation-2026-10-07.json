@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-07T05:42:59.919846+00:00",
+  "profile": "windows-native-job-guard-preparation-v1",
+  "codeCommit": "1fd5f4512dfd68829c4ea06ea4212d7c6f793f35",
+  "scope": "Observed passing original native controls, surviving redundant-cleanup mutation, and locally checked independent guard candidate",
+  "sourceFiles": {
+    "test/windows-process.test.ts": "498941d1918bd9a61980a582540598de594d715f4ae48a4c707d749bb5f520c2",
+    "scripts/verify-windows-guards.mjs": "57eb120c3b45f90a9c8426ecc00519763bfc34a84850f25b4d877734967abd7a",
+    "scripts/required-native-tests.json": "4065d5e05c6ff21d8a0d2091d02a6943a29ed6e7dae68ce783b93bc432358528",
+    "docs/WINDOWS-EXECUTION.md": "f8c5396b224e54ab4417847bbb5ebe395201d5d727de08372ce5c14b23dd3381"
+  },
+  "previousNative": {
+    "head": "a62cda3cd569f47907e059da6809a8555334ca8f",
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/37576754780/job/112647270654",
+    "profile": {
+      "profile": "windows-process",
+      "timeoutMs": 120000,
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 10,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "cb3bc346c619287b2ed42a4b332c96bd0a4b6aa6ffe75bcc787f68584fc52390"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "cb3bc346c619287b2ed42a4b332c96bd0a4b6aa6ffe75bcc787f68584fc52390"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "85e8515cdeb04d430a8f2c74ac05b91c1634f29c3e06441e28ac61b1036399dd"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "85e8515cdeb04d430a8f2c74ac05b91c1634f29c3e06441e28ac61b1036399dd"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8.6801,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.4115,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5418.2514,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3519.7046,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2747.501,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18240.0719,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32332.1718,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2770.2826,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2637.6495,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-2",
+            "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 521.8535,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          }
+        ]
+      }
+    },
+    "guard": {
+      "id": "job-kill-on-close",
+      "mutantSurvived": true,
+      "accepted": false,
+      "remainingGuardAcceptanceComplete": false
+    }
+  },
+  "newGuard": {
+    "callback": "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+    "sourceAndInstalledRequired": true,
+    "requiredProfileCases": 11,
+    "originalGuardianCrashCallbackPreserved": true,
+    "nativeAcceptance": "pending"
+  },
+  "localFullCheck": {
+    "command": "npm run check",
+    "tests": 958.0,
+    "pass": 686.0,
+    "fail": 0.0,
+    "cancelled": 0.0,
+    "skipped": 272.0,
+    "todo": 0.0,
+    "duration_ms": 88974.251666,
+    "optionalSkipsAreNotNativeAcceptance": true
+  },
+  "windowsVerified": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

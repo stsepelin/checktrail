@@ -1,0 +1,495 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "scope": "Experimental bounded Windows runner local preparation evidence. Native Windows execution and mutation gates remain pending; no native acceptance is inferred from POSIX contract controls.",
+  "sourceCommit": "b8e51d1a0eb8dddebb59f2a82a9fd8406d03aa0f",
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "9291fba7d64a538d5f583dde65c9c967cd00f4394f800fd30c0bce708f2d3424"
+    },
+    {
+      "path": "README.md",
+      "sha256": "121d98cdccd1f90cbd87bb73168a530bdc080e41b7d5f7fdd6d0da12f9021df6"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "a88f644b080b11132fb67b5746c427303d8d0f5609a019921197dc0f2f00930f"
+    },
+    {
+      "path": "docs/LANGUAGES.md",
+      "sha256": "252b7e57522a03b4754ca3bc5dc916ba710404bad16e008c5b5292e1b22d3bed"
+    },
+    {
+      "path": "docs/REVIEWER-TASKS.md",
+      "sha256": "27ff19b398ae33c75bc19a622b0000a6b771d7252db1b295a00bcf834b2028a7"
+    },
+    {
+      "path": "docs/WINDOWS-EXECUTION.md",
+      "sha256": "b762783689e99e789211fbd0625bfd42f4904430c6262c05265434d9d3227669"
+    },
+    {
+      "path": "schemas/report.schema.json",
+      "sha256": "20cb227929a53baef7ed22048b780706925627c158427cbb4a696cd1b798d2e5"
+    },
+    {
+      "path": "schemas/windows-execution.schema.json",
+      "sha256": "e01b64de66eb6594d2a138a6b26bedbffede5e41feb237c1879cd06209eda53e"
+    },
+    {
+      "path": "scripts/generate-schemas.mjs",
+      "sha256": "74db1a94bbe49b1ed40a91801aea32f91d167d5bfedb055a192834c441777d75"
+    },
+    {
+      "path": "scripts/install-acceptance-package.mjs",
+      "sha256": "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+    },
+    {
+      "path": "scripts/prepare-package-cache.mjs",
+      "sha256": "81c36403377b4189a816d034d45ac9958cd81508021d44de5e8ed7921082ee48"
+    },
+    {
+      "path": "scripts/required-native-tests.json",
+      "sha256": "207818577f898ed8b7ccab40a141bd7a420627bb9f037cfcde16227db7610735"
+    },
+    {
+      "path": "scripts/verify-windows-guards.mjs",
+      "sha256": "bbceed9c812012ea842eedda07f95fdb7b4e7c9240d8b2cae6bed7b16f7d88e7"
+    },
+    {
+      "path": "scripts/verify-windows-package.mjs",
+      "sha256": "5d3d2e3a4ad2b97f222e62c0eabef27283aebc9776f1bf2093a8f83ca0d4898c"
+    },
+    {
+      "path": "src/onboarding.ts",
+      "sha256": "ce4561cf165deb8fece8f7cb329da90ac8731720b582c7fb49205be137fb76c0"
+    },
+    {
+      "path": "src/runner.ts",
+      "sha256": "671e333aebfab506a5e6561f389173c131a649932abe359c56e0f96698ac37f4"
+    },
+    {
+      "path": "src/schemas.ts",
+      "sha256": "9cbea5fb910a9d47fa3be6e4ce6395db5bf3596e37963da30726890f439ba45d"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "5878c09179ae61eaa752f36103f889dd906b7dd10dde96d09d647791fe2312cf"
+    },
+    {
+      "path": "src/windows-execution.ts",
+      "sha256": "83b3972e9aa8057ba54691618cf80adb0f77c6102552e79758c5362cfcea85f2"
+    },
+    {
+      "path": "src/windows-native.ts",
+      "sha256": "e8317df438c1f5832c445b35246a5a572bd7404a011fc3ac4d83dca8cfe8b5bc"
+    },
+    {
+      "path": "src/windows-process.ts",
+      "sha256": "5d3bdfe578113e3b8dd665892c32420448a8be0dbad259eb4a9903b12ed8577d"
+    },
+    {
+      "path": "test/schemas.test.ts",
+      "sha256": "045829c2e04159f46885f63bc7fa5039f548c06c8642666c137404d7bef3320b"
+    },
+    {
+      "path": "test/windows-contract.test.ts",
+      "sha256": "5592a82a049aa057f6247f5737696e6d4e12a8dc38fd67e9e29801e1471a4aec"
+    },
+    {
+      "path": "test/windows-process.test.ts",
+      "sha256": "733a930966012fce1e306271abc9e51c7390a2b85a065ea672f834c5767c58dc"
+    }
+  ],
+  "localSource": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "contract": {
+      "profile": "windows-contract",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 2,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2.215709,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.468042,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          }
+        ]
+      }
+    }
+  },
+  "linuxSource": {
+    "node": "22.23.2",
+    "platform": "linux",
+    "arch": "arm64",
+    "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+    "network": "none",
+    "sourceMount": "readonly",
+    "contract": {
+      "profile": "windows-contract",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 2,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6.821139,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.764057,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          }
+        ]
+      }
+    }
+  },
+  "offlineInstalledMac": {
+    "tarballSha256": "55a070aa538ae785c2ed23134950e63eaeb0666f40de6d05328e5a8685082b74",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": false,
+    "installedNativeWindowsEvaluated": false,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "profile": "windows-contract",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 2,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2.437,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.477459,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "offlineInstalledLinux": {
+    "tarballSha256": "55a070aa538ae785c2ed23134950e63eaeb0666f40de6d05328e5a8685082b74",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": false,
+    "installedNativeWindowsEvaluated": false,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "profile": "windows-contract",
+      "timeoutMs": 120000,
+      "passed": 2,
+      "required": 2,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 2,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd593369e4cca53157f6957ab1fdafe11dddecf75f0b84daf3c7a6f730e41dca"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.875854,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.690753,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:fb4a8cb9fdc778122e4a8e3e460135b6c3f77626ae19db8677aa357a95b07570",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "linuxInstallationPreparation": "Host-created locked production installation executed in a Linux runtime; not a native Linux npm install.",
+  "preservedPosixLinux": {
+    "selected": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "originalCallbacksChanged": false
+  },
+  "helperCompilation": {
+    "sdk": "10.0.401",
+    "platform": "linux",
+    "arch": "arm64",
+    "network": "none",
+    "warnings": 0,
+    "errors": 0,
+    "nativeWindowsAbiValidated": false,
+    "initialPreparation": "Explicit offline NuGet configuration and writable task-owned CLI/cache paths corrected a read-only user-config preparation error.",
+    "workloadVerificationWarning": "SDK reported a workload-verification issue; compilation succeeded without installing or updating workloads."
+  },
+  "fullLocalCheck": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "tests": {
+      "total": 858,
+      "passed": 625,
+      "failed": 0,
+      "skipped": 233,
+      "cancelled": 0
+    },
+    "skipsAreAcceptance": false
+  },
+  "changedFileLint": {
+    "files": 15,
+    "status": "passed"
+  },
+  "formatting": "passed",
+  "workflowValidation": {
+    "actionlint": "1.7.12",
+    "status": "passed"
+  },
+  "publishedSchemaParity": "passed by original strict standard-validator control in full suite",
+  "nativeWindows": {
+    "state": "pending",
+    "profile": "windows-job-v1",
+    "target": "windows-2025 x64 Node 22.23.2 / Windows PowerShell 5.1",
+    "requiredControls": 10,
+    "nativeControls": 8,
+    "compilingMutationGuards": 3,
+    "mutationGuardsExecuted": false,
+    "offlineInstallationRequired": true
+  },
+  "executionSandboxed": false,
+  "fieldEvaluationExecuted": false,
+  "inferenceInvoked": false,
+  "gateAComplete": false,
+  "qualityGate": "not-assessed"
+}
