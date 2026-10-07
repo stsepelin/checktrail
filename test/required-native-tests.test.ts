@@ -219,13 +219,14 @@ test("native acceptance ledger binds every reached outcome and missing required 
     passed.ledger.files[0]!.after,
   );
   assert.equal(JSON.stringify(passed.ledger).includes(root), false);
-  for (const [file, outcome] of [
+  const outcomes: Array<[string, string]> = [
     ["skip.test.mjs", "skipped"],
     ["todo.test.mjs", "todo"],
     ["fail.test.mjs", "failed"],
     ["duplicate.test.mjs", "duplicate"],
-  ]) {
-    const receipt = execute([required(file!)]);
+  ];
+  for (const [file, outcome] of outcomes) {
+    const receipt = execute([required(file)]);
     assert.equal(receipt.complete, false, file);
     assert.equal(receipt.ledger.cases[0]!.outcome, outcome, file);
     assert.equal(
