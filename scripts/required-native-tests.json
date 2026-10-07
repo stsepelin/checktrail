@@ -1825,27 +1825,27 @@
       "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-filtering.test.js",
       "name": "native Gradle rejects filtered skipped modified task and omitted source evidence"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-filtering.test.js",
       "name": "native Gradle binds source declarations classpaths native task identities and every terminal"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-evidence.test.js",
       "name": "native Gradle planning reads successful project data without executing build code"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-evidence.test.js",
       "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-evidence.test.js",
       "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration"
     },
     {
-      "file": "dist/test/gradle.test.js",
+      "file": "dist/test/gradle-failures.test.js",
       "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects"
     },
     {
@@ -1877,6 +1877,38 @@
     {
       "file": "dist/test/gradle-preparation.test.js",
       "name": "Gradle preparation refuses escaping missing and exhausted redirects and aborted requests"
+    }
+  ],
+  "maven-preparation": [
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven operator acquisition retries only terminal Central artifact rate limits and resets partial repositories before rerunning"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
+    }
+  ],
+  "init-publication": [
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "competing init writers publish one complete policy and leave no temporary files"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init ownership is acquired before discovery and existing staging entries are preserved"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init staging exclusion has an exact boundary and preserves public source fingerprints"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init releases its owned staging directory after planning errors and unresolved choices"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "independent CLI init writers publish one complete policy and clean their owned staging"
     }
   ]
 }

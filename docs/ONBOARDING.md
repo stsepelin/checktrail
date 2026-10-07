@@ -18,6 +18,12 @@ checktrail doctor --root "$PWD" --detailed
 ```
 
 `init` returns JSON with a proposed `configuration`. The preview changes nothing.
+A write first acquires the exact reserved `.checktrail-init` directory, which
+inventory reports as excluded. It stages complete policy bytes there and publishes
+with an exclusive hard link. Competing writers fail with `EEXIST` before discovery;
+the owner removes its staging directory on success or failure. An existing entry
+is preserved, including after a crashed writer; inspect and remove a stale entry
+explicitly before retrying. Similarly named directories remain ordinary source.
 `--write` creates `checktrail.json` only when every discovered ecosystem has a
 selected supported check, publishing complete contents without replacing an
 existing file. A valid existing policy returns `preserved`, retaining its bytes,

@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - "pr/**"
+      - "dependabot/**"
     tags:
       - "**"
   pull_request:
@@ -106,6 +107,10 @@ jobs:
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run check
+      - name: Verify concurrent init publication and fresh installed CLI
+        run: |
+          node scripts/verify-required-native-tests.mjs init-publication
+          node scripts/verify-init-publication-package.mjs
       - name: Require prepared native regression profiles
         run: |
           node scripts/verify-required-native-tests.mjs core
@@ -270,6 +275,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - run: node scripts/verify-required-native-tests.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
       - run: docker build --file scripts/maven-tools.Dockerfile --tag checktrail-maven-test:3.10.0 .checktrail/maven-review-tools
       - run: node scripts/prepare-maven-dependencies.mjs
