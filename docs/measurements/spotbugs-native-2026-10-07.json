@@ -1,0 +1,1121 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-07",
+  "profile": "core-default-max-v1",
+  "codeCommit": "b6e05119862c953e89d77732c01a990fe0eb2cc7",
+  "scope": "Original synthetic pinned SpotBugs Java bytecode, source/compiler/class/pass/detector accounting, scale guard, cancellation, CLI and negotiated MCP at this exact revision; source and fresh offline installed package. No AI inference, project field review or held-out evaluation.",
+  "distribution": {
+    "version": "4.10.4",
+    "url": "https://github.com/spotbugs/spotbugs/releases/download/4.10.4/spotbugs-4.10.4.tgz",
+    "bytes": 15831983,
+    "sha256": "72bc0d4edd686e462c0f71f42a049b27bf4da6708797ff7b2b56dd202714b4e5",
+    "libraries": [
+      {
+        "name": "Saxon-HE-12.10.jar",
+        "bytes": 5793277,
+        "sha256": "b571af282f25d7301059f788b9a149aab8b5cdc14ef3d212dc5425d3dcbb9a97"
+      },
+      {
+        "name": "asm-9.10.1.jar",
+        "bytes": 126151,
+        "sha256": "ed825d10ab1399c8c0cb669e688cf0c8c82629b4c8399b58352b68e92ca10fcb"
+      },
+      {
+        "name": "asm-analysis-9.10.1.jar",
+        "bytes": 35140,
+        "sha256": "dede75a21306b65974ecd8f87114ff6970f09fb794157a4ca09ab25c888c2bfc"
+      },
+      {
+        "name": "asm-commons-9.10.1.jar",
+        "bytes": 74840,
+        "sha256": "6d0abefb7cbf972ea16edb37ec14835372505063a45f976ab7ea889ed9497895"
+      },
+      {
+        "name": "asm-tree-9.10.1.jar",
+        "bytes": 51958,
+        "sha256": "3dfb0d5b6a106cd40b5b250e39935fbf2f927f4477546a5369a3ac609cf0506b"
+      },
+      {
+        "name": "asm-util-9.10.1.jar",
+        "bytes": 95628,
+        "sha256": "1bb99d091fba2597dc6d51193e9bbcf0d8447e7ed96bd8f0198b18152f09655c"
+      },
+      {
+        "name": "bcel-6.12.0.jar",
+        "bytes": 740803,
+        "sha256": "012639e3d2a3079f4c9c1350f18202cea83a7112ef210e50c93b0b771ad5d3af"
+      },
+      {
+        "name": "commons-io-2.21.0.jar",
+        "bytes": 585274,
+        "sha256": "7d643a2afea8b058b762aa6fb90e5b256f6c729739f8b3784c3370ddc609e88d"
+      },
+      {
+        "name": "commons-lang3-3.20.0.jar",
+        "bytes": 713862,
+        "sha256": "69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4"
+      },
+      {
+        "name": "commons-text-1.15.0.jar",
+        "bytes": 264873,
+        "sha256": "58d2da30f058512a1e7f914e39241deca4dff5c27a085b4ed2faa9e7208067f6"
+      },
+      {
+        "name": "dom4j-2.2.0.jar",
+        "bytes": 331953,
+        "sha256": "3fae79e081096e1410645eb3557c63b79ca266d510ab479889511109becd1690"
+      },
+      {
+        "name": "error_prone_annotations-2.48.0.jar",
+        "bytes": 20255,
+        "sha256": "b49c5c958316ed67a09c699dda9aa749caf434d51d863dea599ef36a49b9c855"
+      },
+      {
+        "name": "gson-2.14.0.jar",
+        "bytes": 313604,
+        "sha256": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f"
+      },
+      {
+        "name": "jaxen-2.0.6.jar",
+        "bytes": 225431,
+        "sha256": "3e2a755b283fd492fa4be204294c7abb7cd63ac94fb366baab9c7bb9afb00b6d"
+      },
+      {
+        "name": "jcip-annotations-1.0-1.jar",
+        "bytes": 4722,
+        "sha256": "4fccff8382aafc589962c4edb262f6aa595e34f1e11e61057d1c6a96e8fc7323"
+      },
+      {
+        "name": "jsr305-3.0.2.jar",
+        "bytes": 19936,
+        "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7"
+      },
+      {
+        "name": "log4j-api-2.26.1.jar",
+        "bytes": 351428,
+        "sha256": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822"
+      },
+      {
+        "name": "log4j-core-2.26.1.jar",
+        "bytes": 2015459,
+        "sha256": "2ec8c3bf5a6d7c89be8620116a2fc973f7dda1ad0261ad393c4d4726edfd3dcb"
+      },
+      {
+        "name": "log4j-slf4j2-impl-2.26.1.jar",
+        "bytes": 30212,
+        "sha256": "cbdfb4c2bcc10f0927c61036db54924250f3924ecd13ea913cefe4f99c08fa66"
+      },
+      {
+        "name": "slf4j-api-2.0.18.jar",
+        "bytes": 69982,
+        "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55"
+      },
+      {
+        "name": "spotbugs-annotations.jar",
+        "bytes": 14854,
+        "sha256": "28fa4befaddce5d7b79b07c68e7c12fa27c5d9282c4229528717971606661ea3"
+      },
+      {
+        "name": "spotbugs.jar",
+        "bytes": 3962260,
+        "sha256": "a88cad2e0ea9bb74b908ce82ae89416c61fa8f8ea5cfcc9368b1baac2da878d2"
+      },
+      {
+        "name": "xmlresolver-5.3.3-data.jar",
+        "bytes": 1033122,
+        "sha256": "b0c487ad2f3e558be8d829c916d2458d10aca6a5bafa7a4d0524b70845e48a5c"
+      },
+      {
+        "name": "xmlresolver-5.3.3.jar",
+        "bytes": 167889,
+        "sha256": "1fe4d5b92f708dcdb82dbce12919e0171e6b5ca62c6dca6220483625098feb5f"
+      }
+    ],
+    "publisherPGPVerified": false,
+    "componentLicenseClosureVerified": false,
+    "upstreamLibrariesShippedInNpmPackage": false
+  },
+  "detectorAssembly": {
+    "upstreamDefaultPreferences": 168,
+    "excludedSuppressionCollector": "edu.umd.cs.findbugs.detect.NoteSuppressedWarnings",
+    "configuredDefaults": 167,
+    "effectivePerPassMembership": [
+      [
+        "edu.umd.cs.findbugs.detect.BuildAccessMethodsDatabase",
+        "edu.umd.cs.findbugs.detect.BuildObligationPolicyDatabase",
+        "edu.umd.cs.findbugs.detect.BuildStringPassthruGraph",
+        "edu.umd.cs.findbugs.detect.CalledMethods",
+        "edu.umd.cs.findbugs.detect.EqualsOperandShouldHaveClassCompatibleWithThis",
+        "edu.umd.cs.findbugs.detect.ExplicitSerialization",
+        "edu.umd.cs.findbugs.detect.FieldItemSummary",
+        "edu.umd.cs.findbugs.detect.FindBugsSummaryStats",
+        "edu.umd.cs.findbugs.detect.FindNoSideEffectMethods",
+        "edu.umd.cs.findbugs.detect.FunctionsThatMightBeMistakenForProcedures",
+        "edu.umd.cs.findbugs.detect.Methods",
+        "edu.umd.cs.findbugs.detect.NoteAnnotationRetention",
+        "edu.umd.cs.findbugs.detect.NoteCheckReturnValueAnnotations",
+        "edu.umd.cs.findbugs.detect.NoteDirectlyRelevantTypeQualifiers",
+        "edu.umd.cs.findbugs.detect.NoteJCIPAnnotation",
+        "edu.umd.cs.findbugs.detect.OverridingEqualsNotSymmetrical",
+        "edu.umd.cs.findbugs.detect.ReflectiveClasses"
+      ],
+      [
+        "edu.umd.cs.findbugs.detect.AppendingToAnObjectOutputStream",
+        "edu.umd.cs.findbugs.detect.AtomicityProblem",
+        "edu.umd.cs.findbugs.detect.BadResultSetAccess",
+        "edu.umd.cs.findbugs.detect.BadSyntaxForRegularExpression",
+        "edu.umd.cs.findbugs.detect.BadUseOfReturnValue",
+        "edu.umd.cs.findbugs.detect.BadlyOverriddenAdapter",
+        "edu.umd.cs.findbugs.detect.BooleanReturnNull",
+        "edu.umd.cs.findbugs.detect.CheckImmutableAnnotation",
+        "edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation",
+        "edu.umd.cs.findbugs.detect.CheckTypeQualifiers",
+        "edu.umd.cs.findbugs.detect.CloneIdiom",
+        "edu.umd.cs.findbugs.detect.ComparatorIdiom",
+        "edu.umd.cs.findbugs.detect.ConfusedInheritance",
+        "edu.umd.cs.findbugs.detect.ConfusionBetweenInheritedAndOuterMethod",
+        "edu.umd.cs.findbugs.detect.ConstructorThrow",
+        "edu.umd.cs.findbugs.detect.CrossSiteScripting",
+        "edu.umd.cs.findbugs.detect.DateFormatStringChecker",
+        "edu.umd.cs.findbugs.detect.DefaultEncodingDetector",
+        "edu.umd.cs.findbugs.detect.DoInsideDoPrivileged",
+        "edu.umd.cs.findbugs.detect.DontAssertInstanceofInTests",
+        "edu.umd.cs.findbugs.detect.DontCatchIllegalMonitorStateException",
+        "edu.umd.cs.findbugs.detect.DontCatchNullPointerException",
+        "edu.umd.cs.findbugs.detect.DontIgnoreResultOfPutIfAbsent",
+        "edu.umd.cs.findbugs.detect.DontUseEnum",
+        "edu.umd.cs.findbugs.detect.DontUseFloatsAsLoopCounters",
+        "edu.umd.cs.findbugs.detect.DroppedException",
+        "edu.umd.cs.findbugs.detect.DumbMethodInvocations",
+        "edu.umd.cs.findbugs.detect.DumbMethods",
+        "edu.umd.cs.findbugs.detect.DuplicateBranches",
+        "edu.umd.cs.findbugs.detect.FinalizerNullsFields",
+        "edu.umd.cs.findbugs.detect.FindArgumentAssertions",
+        "edu.umd.cs.findbugs.detect.FindAssertionsWithSideEffects",
+        "edu.umd.cs.findbugs.detect.FindBadCast2",
+        "edu.umd.cs.findbugs.detect.FindBadEndOfStreamCheck",
+        "edu.umd.cs.findbugs.detect.FindBadForLoop",
+        "edu.umd.cs.findbugs.detect.FindComparatorProblems",
+        "edu.umd.cs.findbugs.detect.FindDeadLocalStores",
+        "edu.umd.cs.findbugs.detect.FindDoubleCheck",
+        "edu.umd.cs.findbugs.detect.FindEmptySynchronizedBlock",
+        "edu.umd.cs.findbugs.detect.FindFieldSelfAssignment",
+        "edu.umd.cs.findbugs.detect.FindFinalizeInvocations",
+        "edu.umd.cs.findbugs.detect.FindFloatEquality",
+        "edu.umd.cs.findbugs.detect.FindHEmismatch",
+        "edu.umd.cs.findbugs.detect.FindHiddenMethod",
+        "edu.umd.cs.findbugs.detect.FindImproperSynchronization",
+        "edu.umd.cs.findbugs.detect.FindInconsistentSync2",
+        "edu.umd.cs.findbugs.detect.FindIncreasedAccessibilityOfMethods",
+        "edu.umd.cs.findbugs.detect.FindInstanceLockOnSharedStaticData",
+        "edu.umd.cs.findbugs.detect.FindJSR166LockMonitorenter",
+        "edu.umd.cs.findbugs.detect.FindLocalSelfAssignment2",
+        "edu.umd.cs.findbugs.detect.FindMaskedFields",
+        "edu.umd.cs.findbugs.detect.FindMismatchedWaitOrNotify",
+        "edu.umd.cs.findbugs.detect.FindNakedNotify",
+        "edu.umd.cs.findbugs.detect.FindNonShortCircuit",
+        "edu.umd.cs.findbugs.detect.FindNullDeref",
+        "edu.umd.cs.findbugs.detect.FindNullDerefsInvolvingNonShortCircuitEvaluation",
+        "edu.umd.cs.findbugs.detect.FindOpenStream",
+        "edu.umd.cs.findbugs.detect.FindOverridableMethodCall",
+        "edu.umd.cs.findbugs.detect.FindPotentialSecurityCheckBasedOnUntrustedSource",
+        "edu.umd.cs.findbugs.detect.FindPublicAttributes",
+        "edu.umd.cs.findbugs.detect.FindPuzzlers",
+        "edu.umd.cs.findbugs.detect.FindRefComparison",
+        "edu.umd.cs.findbugs.detect.FindReturnRef",
+        "edu.umd.cs.findbugs.detect.FindRoughConstants",
+        "edu.umd.cs.findbugs.detect.FindRunInvocations",
+        "edu.umd.cs.findbugs.detect.FindSelfComparison",
+        "edu.umd.cs.findbugs.detect.FindSelfComparison2",
+        "edu.umd.cs.findbugs.detect.FindSleepWithLockHeld",
+        "edu.umd.cs.findbugs.detect.FindSpinLoop",
+        "edu.umd.cs.findbugs.detect.FindSqlInjection",
+        "edu.umd.cs.findbugs.detect.FindTwoLockWait",
+        "edu.umd.cs.findbugs.detect.FindUncalledPrivateMethods",
+        "edu.umd.cs.findbugs.detect.FindUnconditionalWait",
+        "edu.umd.cs.findbugs.detect.FindUninitializedGet",
+        "edu.umd.cs.findbugs.detect.FindUnrelatedTypesInGenericContainer",
+        "edu.umd.cs.findbugs.detect.FindUnreleasedLock",
+        "edu.umd.cs.findbugs.detect.FindUnsatisfiedObligation",
+        "edu.umd.cs.findbugs.detect.FindUnsyncGet",
+        "edu.umd.cs.findbugs.detect.FindUseOfNonSerializableValue",
+        "edu.umd.cs.findbugs.detect.FindUselessControlFlow",
+        "edu.umd.cs.findbugs.detect.FindUselessObjects",
+        "edu.umd.cs.findbugs.detect.FindVulnerableSecurityCheckMethods",
+        "edu.umd.cs.findbugs.detect.FormatStringChecker",
+        "edu.umd.cs.findbugs.detect.HugeSharedStringConstants",
+        "edu.umd.cs.findbugs.detect.IDivResultCastToDouble",
+        "edu.umd.cs.findbugs.detect.IncompatMask",
+        "edu.umd.cs.findbugs.detect.InconsistentAnnotations",
+        "edu.umd.cs.findbugs.detect.InfiniteLoop",
+        "edu.umd.cs.findbugs.detect.InfiniteRecursiveLoop",
+        "edu.umd.cs.findbugs.detect.InheritanceUnsafeGetResource",
+        "edu.umd.cs.findbugs.detect.InitializationChain",
+        "edu.umd.cs.findbugs.detect.InitializeNonnullFieldsInConstructor",
+        "edu.umd.cs.findbugs.detect.InstantiateStaticClass",
+        "edu.umd.cs.findbugs.detect.IntCast2LongAsInstant",
+        "edu.umd.cs.findbugs.detect.InvalidJUnitTest",
+        "edu.umd.cs.findbugs.detect.IteratorIdioms",
+        "edu.umd.cs.findbugs.detect.LazyInit",
+        "edu.umd.cs.findbugs.detect.LoadOfKnownNullValue",
+        "edu.umd.cs.findbugs.detect.LostLoggerDueToWeakReference",
+        "edu.umd.cs.findbugs.detect.MethodReturnCheck",
+        "edu.umd.cs.findbugs.detect.MultipleInstantiationsOfSingletons",
+        "edu.umd.cs.findbugs.detect.MultithreadedInstanceAccess",
+        "edu.umd.cs.findbugs.detect.MutableEnum",
+        "edu.umd.cs.findbugs.detect.MutableLock",
+        "edu.umd.cs.findbugs.detect.MutableStaticFields",
+        "edu.umd.cs.findbugs.detect.Naming",
+        "edu.umd.cs.findbugs.detect.NoteNonnullReturnValues",
+        "edu.umd.cs.findbugs.detect.NoteUnconditionalParamDerefs",
+        "edu.umd.cs.findbugs.detect.NumberConstructor",
+        "edu.umd.cs.findbugs.detect.OptionalReturnNull",
+        "edu.umd.cs.findbugs.detect.OverridingMethodsMustInvokeSuperDetector",
+        "edu.umd.cs.findbugs.detect.PermissionsSuper",
+        "edu.umd.cs.findbugs.detect.PreferZeroLengthArrays",
+        "edu.umd.cs.findbugs.detect.QuestionableBooleanAssignment",
+        "edu.umd.cs.findbugs.detect.ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass",
+        "edu.umd.cs.findbugs.detect.ReadReturnShouldBeChecked",
+        "edu.umd.cs.findbugs.detect.RedundantConditions",
+        "edu.umd.cs.findbugs.detect.RedundantInterfaces",
+        "edu.umd.cs.findbugs.detect.ReflectionIncreaseAccessibility",
+        "edu.umd.cs.findbugs.detect.RepeatedConditionals",
+        "edu.umd.cs.findbugs.detect.ResourceInMultipleThreadsDetector",
+        "edu.umd.cs.findbugs.detect.RuntimeExceptionCapture",
+        "edu.umd.cs.findbugs.detect.SerializableIdiom",
+        "edu.umd.cs.findbugs.detect.SharedVariableAtomicityDetector",
+        "edu.umd.cs.findbugs.detect.StartInConstructor",
+        "edu.umd.cs.findbugs.detect.StaticCalendarDetector",
+        "edu.umd.cs.findbugs.detect.StringConcatenation",
+        "edu.umd.cs.findbugs.detect.SuperfluousInstanceOf",
+        "edu.umd.cs.findbugs.detect.SuspiciousThreadInterrupted",
+        "edu.umd.cs.findbugs.detect.SwitchFallthrough",
+        "edu.umd.cs.findbugs.detect.SynchronizationOnSharedBuiltinConstant",
+        "edu.umd.cs.findbugs.detect.SynchronizeAndNullCheckField",
+        "edu.umd.cs.findbugs.detect.SynchronizeOnClassLiteralNotGetClass",
+        "edu.umd.cs.findbugs.detect.SynchronizingOnContentsOfFieldToProtectField",
+        "edu.umd.cs.findbugs.detect.ThrowingExceptions",
+        "edu.umd.cs.findbugs.detect.URLProblems",
+        "edu.umd.cs.findbugs.detect.UncallableMethodOfAnonymousClass",
+        "edu.umd.cs.findbugs.detect.UnnecessaryEnvUsage",
+        "edu.umd.cs.findbugs.detect.UnnecessaryMath",
+        "edu.umd.cs.findbugs.detect.UnreadFields",
+        "edu.umd.cs.findbugs.detect.UnsafeDetector",
+        "edu.umd.cs.findbugs.detect.UselessSuppressionDetector",
+        "edu.umd.cs.findbugs.detect.VarArgsProblems",
+        "edu.umd.cs.findbugs.detect.VolatileUsage",
+        "edu.umd.cs.findbugs.detect.WaitInLoop",
+        "edu.umd.cs.findbugs.detect.WrongMapIterator",
+        "edu.umd.cs.findbugs.detect.XMLFactoryBypass"
+      ]
+    ],
+    "membershipOrder": "Sorted names within each native pass; detector execution order is not retained.",
+    "training": "disabled"
+  },
+  "limits": {
+    "helperHeapMiB": 256,
+    "classOutputMiB": 32,
+    "childOutputMiB": 1,
+    "invocationKiB": 100,
+    "selectedSources": 20000,
+    "asciiBinaryClassIdentifiersOnly": true
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.9.0",
+    "tests": 880,
+    "pass": 641,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 239,
+    "todo": 0,
+    "nativeSkipsCountedAsPassing": false
+  },
+  "staticChecks": {
+    "changedFileLint": true,
+    "changedFileFormatting": true,
+    "schemaParity": true,
+    "actionlintVersion": "1.7.12",
+    "workflowActionlint": true,
+    "shellcheckAndPyflakesIncluded": false
+  },
+  "nativeAndFreshInstallation": {
+    "image": "sha256:a86283b91c2d0d6f3cfbc4958a80bf8edd04472e29eca31c6944009e9a3d2fee",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "spotbugs",
+      "timeoutMs": 120000,
+      "passed": 7,
+      "required": 7,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 7,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.985376,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9720.301783,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4752.314218,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2265.151398,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1461.418037,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5498.014815,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10799.261926,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          }
+        ]
+      }
+    },
+    "preservedJava": {
+      "profile": "java",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 29.862824,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1628.259583,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 529.834668,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2600.105914,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2413.8612,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "56f7c9f5266e95f6121f206005dd3fef9e3c3a309a1915455b42cf0b2a0ac0b6",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "spotbugs",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21.289029,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9626.668939,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4758.704827,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2279.823096,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1481.054164,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5489.907401,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10910.437352,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:a86283b91c2d0d6f3cfbc4958a80bf8edd04472e29eca31c6944009e9a3d2fee",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 79682,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "compilingGuards": {
+    "guards": [
+      {
+        "id": "current-source-digest",
+        "originalNamedControl": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+        "compilingMutant": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbackSha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822",
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "a72909a9e4ac297b16c541deaa9dc8b15daa8580097a8e60f7aa8e14678f2fa1"
+      },
+      {
+        "id": "native-class-pass-accounting",
+        "originalNamedControl": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+        "compilingMutant": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbackSha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822",
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "e165a2e099e99431adbae953268a35cda0039852d4023ce13193809f8fb4d3e7"
+      },
+      {
+        "id": "effective-detector-plan",
+        "originalNamedControl": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+        "compilingMutant": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbackSha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822",
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "9725151f265d4d9c3b59cbf7e02eec3145b05cd94cd034374cb022d1ff1e6b1b"
+      },
+      {
+        "id": "native-oversized-class-accounting",
+        "originalNamedControl": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+        "compilingMutant": true,
+        "originalAssertionKilled": true,
+        "restoredPositive": true,
+        "callbackSha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822",
+        "callbacksUnchanged": true,
+        "failedOutputSha256": "cf371d0c22938c3d835d22f91fac2cd35836f9a53a28202f63d8c31454e9d86f"
+      }
+    ],
+    "compiledProductsRestored": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "sourceIdentity": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 32106,
+      "sha256": "8fb4d451c98824b62f3c42ec9d7ce508c5371ef833e43bb44700f6c10f19a104"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "bytes": 16260,
+      "sha256": "3bc80c4bbd8f38120ef34282f168ed494597319a26767ced94778cd077dfe5d8"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "bytes": 27169,
+      "sha256": "5f47ec202f4520631cdfccd42ade717f09439ecf7419c88df808d815c1166d77"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "bytes": 33121,
+      "sha256": "0b6ce6980e9e077d19542a968e4b0c57b2f5791d91ede010b13d1a210c267154"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "bytes": 33929,
+      "sha256": "27cc72510919169f750c28e3b0a0280d813c20a43a1208383539683da08d9dd9"
+    },
+    {
+      "file": "docs/SPOTBUGS.md",
+      "bytes": 6658,
+      "sha256": "bf6eb9908a61457ebc9139f73ea8c3066ca2a826ac143282402c21b7f09a2c2f"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "bytes": 13813,
+      "sha256": "a467db1e9cbe4cb06b5948a7a23b0420766901d842fb98594a897006e64c701b"
+    },
+    {
+      "file": "schemas/spotbugs-config.schema.json",
+      "bytes": 529,
+      "sha256": "dbf60a187fbea00c3d03293c22aa704311d8af9583ca6e16447181616961cefb"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "bytes": 11399,
+      "sha256": "73ed6d243cf0c4a791ffcb3ea9cd556b82e2681d1ab7bc53457aee6663e24b5a"
+    },
+    {
+      "file": "scripts/prepare-spotbugs-tools.mjs",
+      "bytes": 3613,
+      "sha256": "7e0eb8dc7e9099c833db809ab7be49050f670d2f20efa8e6ab30e7e15f9ab224"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 120321,
+      "sha256": "3f47f169a50c3b332643a78e675c461a0c43f04a93a013210c8430e949e5f244"
+    },
+    {
+      "file": "scripts/spotbugs-tools.Dockerfile",
+      "bytes": 495,
+      "sha256": "a840c63681ccc7971a6c24f36b694a1a582b41fa1529644066fc9f1bf415bba8"
+    },
+    {
+      "file": "scripts/verify-spotbugs-container.mjs",
+      "bytes": 2162,
+      "sha256": "0e2b631b13caef2c05faf861a9951da1af9c6896915a483694956b26eebd9da2"
+    },
+    {
+      "file": "scripts/verify-spotbugs-package.mjs",
+      "bytes": 6217,
+      "sha256": "fff4d5ee36e535ef1ab5f727b2b0feb04712fa64f5940b43c404ae024b71f3d4"
+    },
+    {
+      "file": "src/adapters.ts",
+      "bytes": 21705,
+      "sha256": "0ae906dd0fcd337f4d3c69a3b4384c322866403a89e41cf3dbf7e1d68896267c"
+    },
+    {
+      "file": "src/evidence.ts",
+      "bytes": 19035,
+      "sha256": "c4535ccf090bc4ee83e01c88330d42f087b1a48bd521fe79d5d19f178842c5bc"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "bytes": 4130,
+      "sha256": "ec1f005cd63eb29a630b471501bcffc2312191ee98d4625113ad8fadd8992e2e"
+    },
+    {
+      "file": "src/schemas.ts",
+      "bytes": 12805,
+      "sha256": "5768c15e403a3000b93f2d919e9fb37e2eaec9547261eb1d35875fbb96540970"
+    },
+    {
+      "file": "src/spotbugs-archive.ts",
+      "bytes": 2748,
+      "sha256": "91615ed4e88f981c66c0fe807a76b295d50d3d3949d66cd4aa8bac09e5c8e0f4"
+    },
+    {
+      "file": "src/spotbugs-artifacts.ts",
+      "bytes": 34562,
+      "sha256": "c7ac886e5812f3f609a0e2e04b81f01054f630848b1a8bd06f87ab32b599ab32"
+    },
+    {
+      "file": "src/spotbugs-compiler.ts",
+      "bytes": 8330,
+      "sha256": "901d0d5ed9e9d5e74b1ad850932290732dd3be58f3bc89dbc2963dcdcc96f4e7"
+    },
+    {
+      "file": "src/spotbugs-evidence.ts",
+      "bytes": 9122,
+      "sha256": "c4ffb7b34b4b1500f4e59566f7a19ba49cc81e9d9564efa0f669ab2744503f9a"
+    },
+    {
+      "file": "src/spotbugs-native.ts",
+      "bytes": 8295,
+      "sha256": "a7b92e744fe5c3e7a9ae98d3808de22fc2c51dbab71b941e227e02d8ca9abf10"
+    },
+    {
+      "file": "src/spotbugs-runner.ts",
+      "bytes": 6247,
+      "sha256": "a076bbaca38184164acfd59a85ea1e77019ca9d200bd331782b2e1e26342d285"
+    },
+    {
+      "file": "src/spotbugs.ts",
+      "bytes": 3592,
+      "sha256": "96fea0c524865c7a05d792494ac772c3bcc420b6e82ff1748e70bd913fb355fc"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "bytes": 21247,
+      "sha256": "fc994b43ff62afc2128422fc13a25df6dce9a1e5b6a66d8a0daa7c3db2105384"
+    },
+    {
+      "file": "src/types.ts",
+      "bytes": 5298,
+      "sha256": "87c1813ea196a4c7b649921e7d5a54909a0588649efc2567bcca35dcb4b956b0"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "bytes": 13884,
+      "sha256": "eaed7052256198cd73f846dde8338c36ffae4866299ea38b1c8d958b781c143f"
+    },
+    {
+      "file": "test/spotbugs-fixture.ts",
+      "bytes": 2181,
+      "sha256": "6a0ee43a1be4a4536a0d0ba94de730d254fea229c25216ab3bdba445e855ae1c"
+    },
+    {
+      "file": "test/spotbugs-surfaces.test.ts",
+      "bytes": 4076,
+      "sha256": "a69c116349eeef9fe40560ee599be04eceb597a2b603e93e6b713ba7583b1f2c"
+    },
+    {
+      "file": "test/spotbugs.test.ts",
+      "bytes": 18560,
+      "sha256": "efc35ad4b872b57935ac5ff19e906f60c0b0416936d743b7eebc942a1433f5c1"
+    }
+  ],
+  "compiledIdentity": [
+    {
+      "file": "dist/src/adapters.js",
+      "bytes": 24223,
+      "sha256": "c46a5e089144f84b7fda841c998a654ebefdee22c5c3ad94acdf08cd81827b6d"
+    },
+    {
+      "file": "dist/src/evidence.js",
+      "bytes": 19420,
+      "sha256": "51009d4b740e769ad95aba64944dba57a01ade16c8524e7578d58d09ff7dba43"
+    },
+    {
+      "file": "dist/src/java-evidence.js",
+      "bytes": 4201,
+      "sha256": "299be2ce2a6e5979943fd7831721457730e54c5966540c2da0547543ead3203c"
+    },
+    {
+      "file": "dist/src/schemas.js",
+      "bytes": 12824,
+      "sha256": "202e91d1fe9a111eec16e18bca23953430288767a70a7b31dbec79cb66a1d4a7"
+    },
+    {
+      "file": "dist/src/spotbugs-archive.js",
+      "bytes": 2814,
+      "sha256": "eea63917478a569279ecd25e9c27ad232d958a7005eb25322f9d3796b987afd7"
+    },
+    {
+      "file": "dist/src/spotbugs-artifacts.js",
+      "bytes": 37457,
+      "sha256": "5b989bf2f6ba96506f066ec487e47549277779e48425b34d2bc7f4291acbdaf4"
+    },
+    {
+      "file": "dist/src/spotbugs-compiler.js",
+      "bytes": 8331,
+      "sha256": "8bb11473a0661f000ecbe548b063178ff903245a1843e7fd83acf18259652c8e"
+    },
+    {
+      "file": "dist/src/spotbugs-evidence.js",
+      "bytes": 9443,
+      "sha256": "ee83ded739fa988a838f85971736d4205f7ba96a930f0357e9d0d15c81db4a58"
+    },
+    {
+      "file": "dist/src/spotbugs-native.js",
+      "bytes": 8296,
+      "sha256": "3ecb1e5085486192c7aa7022669672e87ba5f288de80b6e80573eab4bf862a09"
+    },
+    {
+      "file": "dist/src/spotbugs-runner.js",
+      "bytes": 6272,
+      "sha256": "49de07dfbaff692ae6c162415df0b408a6547b2f8090b3046ecf74798e6c52e3"
+    },
+    {
+      "file": "dist/src/spotbugs.js",
+      "bytes": 3484,
+      "sha256": "682ed0864c1a7ad69bd9f2d8fc7a4c13676bdec3ac4c837d555886c71bf98676"
+    },
+    {
+      "file": "dist/src/tool-versions.js",
+      "bytes": 22594,
+      "sha256": "ae317b9b631bb60ac22e30fd67e9b282353baad911388fbc6ae7e254a9b733e0"
+    },
+    {
+      "file": "dist/src/types.js",
+      "bytes": 1136,
+      "sha256": "420a946e676bcb6b5528e85f9f7a6571ee3df4072c255336da167d0b8352d25d"
+    },
+    {
+      "file": "dist/test/schemas.test.js",
+      "bytes": 14249,
+      "sha256": "281e3c0f381861579c62aa7ee19f6d052ff0f93ae0cd8f66191ee1cc7e668cdc"
+    },
+    {
+      "file": "dist/test/spotbugs-fixture.js",
+      "bytes": 2131,
+      "sha256": "1afa780be6b2b00cf1efad59e970bcb93f2c5984d25251505daa8caedfe8fad2"
+    },
+    {
+      "file": "dist/test/spotbugs-surfaces.test.js",
+      "bytes": 3852,
+      "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "bytes": 17842,
+      "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+    }
+  ],
+  "gateAComplete": false,
+  "windowsVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "unverified": [
+    "Broader Java/Kotlin/Scala generated/JPMS/wrapper profiles and detekt",
+    "Broader OS/runtime/tool/client compatibility",
+    "Complete publisher/component license closure",
+    "Reviewer claims, general deduplication, confidence calibration and quality",
+    "Remaining Gate A inventory and acceptance"
+  ]
+}

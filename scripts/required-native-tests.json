@@ -2721,6 +2721,66 @@
       "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts"
     }
   ],
+  "spotbugs": [
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope"
+    },
+    {
+      "file": "dist/test/spotbugs-surfaces.test.js",
+      "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes"
+    },
+    {
+      "file": "dist/test/spotbugs.test.js",
+      "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list"
+    }
+  ],
+  "review-multi-scoring": [
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring counts every disposition deduplicates common defects and preserves hand-computed precision recall and probabilities"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring retains missing incomplete cancelled and unknown label slots without scoring prefixes or favorable declarations"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring resamples whole unequal incident clusters together and refuses undefined or degenerate intervals"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim probabilities preserve exact zero one unknown and infinite loss without inventing calibration or cross-arm proper scores"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim scoring rejects foreign duplicate contradictory family and unmapped identities while accepting exact bounded near misses"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim projections bind canonical all-claim evidence reject forged metrics and withhold private identifiers"
+    },
+    {
+      "file": "dist/test/review-multi-scoring.test.js",
+      "name": "multi-claim CLI and MCP share the numerical engine preserve incomplete denominators and cannot grant source execution or quality"
+    }
+  ],
   "maven-preparation": [
     {
       "file": "dist/test/maven-preparation.test.js",

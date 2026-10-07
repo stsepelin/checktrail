@@ -171,3 +171,9 @@ development fit and reserved-protocol application using separate family curves,
 tie-weighted isotonic regression, exact declared split/model binding and unknown
 predictions outside observed training support. Fitting does not verify label
 truth, host separation, candidate confidence or held-out calibration.
+
+The separate [multi-claim profile](REVIEW-MULTI-SCORING.md) adds descriptive
+all-claim and common-defect accounting, duplicate precision, unique material
+recall and whole-cluster paired uncertainty. It does not change the legacy sealed
+single-claim profile or verify the operator's declared defect mappings. Connecting
+multiple sealed findings to independent common judgments remains required.

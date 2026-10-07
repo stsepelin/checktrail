@@ -1,3 +1,9 @@
+import {
+  reviewMultiProtocolSchema,
+  reviewMultiInputSchema,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "../src/review-multi-scoring.js";
 import { capturedProcessOutputSchema } from "../src/process-output.js";
 import { windowsExecutionSchema } from "../src/windows-execution.js";
 import {
@@ -27,6 +33,7 @@ import {
   dotnetBuildRepositorySchema,
   javaConfigSchema,
   checkstyleConfigSchema,
+  spotbugsConfigSchema,
   mavenConfigSchema,
   gradleConfigSchema,
   mavenRepositorySchema,
@@ -109,6 +116,10 @@ test("published schemas match runtime definitions and compile in a strict standa
   const ajv = new Ajv2020({ strict: true });
   (addFormatsImport.default ?? addFormatsImport)(ajv);
   for (const [name, schema] of Object.entries({
+    "review-multi-protocol": reviewMultiProtocolSchema,
+    "review-multi-input": reviewMultiInputSchema,
+    "review-multi-report": reviewMultiReportSchema,
+    "review-multi-summary": reviewMultiSummarySchema,
     "captured-process-output": capturedProcessOutputSchema,
     "windows-execution": windowsExecutionSchema,
     "vue-router-config": vueRouterConfigSchema,
@@ -127,6 +138,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "dotnet-build-repository": dotnetBuildRepositorySchema,
     "java-config": javaConfigSchema,
     "checkstyle-config": checkstyleConfigSchema,
+    "spotbugs-config": spotbugsConfigSchema,
     "maven-config": mavenConfigSchema,
     "gradle-config": gradleConfigSchema,
     "maven-repository": mavenRepositorySchema,

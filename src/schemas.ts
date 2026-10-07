@@ -35,6 +35,7 @@ export {
   dotnetBuildRepositorySchema,
 } from "./dotnet-build.js";
 export { javaConfigSchema } from "./java.js";
+export { spotbugsConfigSchema } from "./spotbugs.js";
 export { checkstyleConfigSchema } from "./checkstyle.js";
 export { mavenConfigSchema, mavenRepositorySchema } from "./maven.js";
 export { gradleConfigSchema } from "./gradle.js";
@@ -450,3 +451,10 @@ export {
 export { windowsExecutionSchema } from "./windows-execution.js";
 
 export { capturedProcessOutputSchema } from "./process-output.js";
+
+export {
+  reviewMultiProtocolSchema,
+  reviewMultiInputSchema,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "./review-multi-scoring.js";

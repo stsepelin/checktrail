@@ -111,7 +111,7 @@ jobs:
       - run: npm run build
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite init-publication native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-paired-scoring review-calibration import-context review-claim-probability review-native-budget
+          node scripts/verify-required-native-tests.mjs --full-suite init-publication native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
@@ -136,6 +136,10 @@ jobs:
         run: node scripts/verify-review-claim-probability-package.mjs
       - name: Verify calibration fitting and application in the production package
         run: node scripts/verify-review-calibration-package.mjs
+      - name: Require original compiling multi-claim guard controls
+        run: node scripts/verify-review-multi-guards.mjs
+      - name: Verify multi-claim scoring in the production package
+        run: node scripts/verify-review-multi-package.mjs
       - name: Verify paired scoring in the production package
         run: node scripts/verify-review-paired-package.mjs
       - name: Verify sealed benchmark scoring in the production package
@@ -254,6 +258,27 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-checkstyle-container.mjs
+
+  spotbugs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned SpotBugs artifact
+        run: node scripts/prepare-spotbugs-tools.mjs
+      - name: Prepare pinned SpotBugs runtime
+        run: docker build --file scripts/spotbugs-tools.Dockerfile --tag checktrail-spotbugs-test:4.10.4 .checktrail/spotbugs-tools
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-spotbugs-container.mjs
 
   maven:
     runs-on: ubuntu-latest

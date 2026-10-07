@@ -229,3 +229,15 @@ claim mechanism or severity; full independent findings remain unfinished.
 [Reviewer scoring](REVIEW-SCORING.md) reports proper probability losses,
 reliability, risk/coverage and explicit incomplete/unknown accounting from declared
 labels. It does not establish calibrated confidence or a quality gate.
+
+The opt-in [SpotBugs profile](SPOTBUGS.md) compiles fresh bounded class output with
+an engine-owned helper and runs only pinned built-in detector passes. Native source,
+class, detector, completion, error and skipped-analysis accounting must agree before
+an empty bug list can pass. The original Java compiler profile still discards output.
+
+The descriptive multi-claim scorer shares one engine across library, CLI and MCP.
+Its exact common defect mappings preserve unique recall, duplicate precision
+accounting and whole incident clusters. They remain unverified operator inputs;
+summary projections recompute all metrics and withhold retained identities. It
+cannot grant model/source/execution permissions or promote a quality gate; see
+[REVIEW-MULTI-SCORING.md](REVIEW-MULTI-SCORING.md).

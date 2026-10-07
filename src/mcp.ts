@@ -1,4 +1,10 @@
 import {
+  scoreMultiClaimReviewTrials,
+  projectMultiClaimReviewScoring,
+  reviewMultiReportSchema,
+  reviewMultiSummarySchema,
+} from "./review-multi-scoring.js";
+import {
   collectImportContext,
   projectImportContext,
   importContextReportSchema,
@@ -829,6 +835,34 @@ function createConnectionServer(
       } catch {
         return error(
           "Calibration apply failed. Check declared split identities, model binding, numerical observations and fit integrity locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_multi_score",
+    {
+      description:
+        "Compute descriptive multi-claim scores from common operator-declared defect mappings. Retains all claims, duplicates, missing reviews and unresolved labels, with whole-cluster paired resampling. No inference or execution; mappings, independent judgments and quality remain unverified.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema: options.detailed
+        ? reviewMultiReportSchema
+        : reviewMultiSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        return reply(
+          projectMultiClaimReviewScoring(
+            scoreMultiClaimReviewTrials(
+              JSON.parse(await readProjectFile(options.root, input)),
+            ),
+            options.detailed,
+          ),
+        );
+      } catch {
+        return error(
+          "Multi-claim scoring failed. Check common defect identities, dispositions, terminal states and evidence budgets locally with the CLI.",
         );
       }
     },

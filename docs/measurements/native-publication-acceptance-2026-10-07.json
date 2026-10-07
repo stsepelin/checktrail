@@ -1,0 +1,1509 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "scope": "Original synthetic revalidation of each separately identified integration branch. The selected-test ledgers do not establish whole-runtime provenance; no aggregate current-revision or Windows acceptance claim.",
+  "branches": [
+    {
+      "branch": "pr/native-raw-evidence",
+      "codeRevision": "e3ae0eb693e6c03eb533655a465b1aae63e22c3f",
+      "kind": "raw-node-attempts",
+      "fullCheck": {
+        "tests": 866,
+        "pass": 633,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 233
+      },
+      "formatting": "passed",
+      "actionlintVersion": "1.7.12",
+      "actionlint": "passed",
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "native": {
+        "profile": "native-raw-evidence",
+        "timeoutMs": 120000,
+        "passed": 23,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 23,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 144.8155,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 343.530292,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 82.661292,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.684083,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 999.01725,
+              "required": false
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 868.153291,
+              "required": false
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1155.212167,
+              "required": false
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.897958,
+              "required": false
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 584.331625,
+              "required": false
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-2",
+              "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 296.325,
+              "required": false
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-2",
+              "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6825.230208,
+              "required": false
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-2",
+              "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 422.200416,
+              "required": false
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-2",
+              "name": "native probe source changes during execution stay stale despite complete observed controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 285.451208,
+              "required": false
+            },
+            {
+              "sequence": 14,
+              "fileId": "file-2",
+              "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1168.580542,
+              "required": false
+            },
+            {
+              "sequence": 15,
+              "fileId": "file-2",
+              "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14.718583,
+              "required": false
+            },
+            {
+              "sequence": 16,
+              "fileId": "file-2",
+              "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 131.555666,
+              "required": false
+            },
+            {
+              "sequence": 17,
+              "fileId": "file-2",
+              "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 298.1205,
+              "required": false
+            },
+            {
+              "sequence": 18,
+              "fileId": "file-2",
+              "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2825.297292,
+              "required": false
+            },
+            {
+              "sequence": 19,
+              "fileId": "file-2",
+              "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 536.909167,
+              "required": false
+            },
+            {
+              "sequence": 20,
+              "fileId": "file-2",
+              "name": "native probe preparation that spends the wall allowance cannot start a project process",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1217.742125,
+              "required": false
+            },
+            {
+              "sequence": 21,
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 314.558542,
+              "required": true
+            },
+            {
+              "sequence": 22,
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 697.626042,
+              "required": true
+            },
+            {
+              "sequence": 23,
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 137.600459,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "physical output invalid admission limits reject before a project command can execute",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+              "outcome": "passed",
+              "terminalSequences": [21]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+              "outcome": "passed",
+              "terminalSequences": [22]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+              "outcome": "passed",
+              "terminalSequences": [23]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "ac227f67a2d62fe3cc8e2ea68898b0f1e5f7cf5ca80e5cd04b0ce97bb8ecb664",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "native-raw-evidence",
+          "timeoutMs": 120000,
+          "passed": 23,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 23,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "40fda89229da903f7906ad1b27e06d72c3df4aa788c93e14bf507e4d7e118205"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "4c42cfccb9b034617bb367d7a259a73af3ccc5385b40ffadea2ecfcb87ce562a"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 146.064125,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 347.09375,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 80.870709,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "physical output invalid admission limits reject before a project command can execute",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.647334,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-2",
+                "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 981.998834,
+                "required": false
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-2",
+                "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 853.404708,
+                "required": false
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-2",
+                "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1137.138542,
+                "required": false
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-2",
+                "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 8.86475,
+                "required": false
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-2",
+                "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 584.37225,
+                "required": false
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-2",
+                "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 289.090208,
+                "required": false
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-2",
+                "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 6809.413708,
+                "required": false
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-2",
+                "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 418.613916,
+                "required": false
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-2",
+                "name": "native probe source changes during execution stay stale despite complete observed controls",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 285.447958,
+                "required": false
+              },
+              {
+                "sequence": 14,
+                "fileId": "file-2",
+                "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1173.854167,
+                "required": false
+              },
+              {
+                "sequence": 15,
+                "fileId": "file-2",
+                "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 15.884542,
+                "required": false
+              },
+              {
+                "sequence": 16,
+                "fileId": "file-2",
+                "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 138.375708,
+                "required": false
+              },
+              {
+                "sequence": 17,
+                "fileId": "file-2",
+                "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 288.633666,
+                "required": false
+              },
+              {
+                "sequence": 18,
+                "fileId": "file-2",
+                "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2784.319667,
+                "required": false
+              },
+              {
+                "sequence": 19,
+                "fileId": "file-2",
+                "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 529.021959,
+                "required": false
+              },
+              {
+                "sequence": 20,
+                "fileId": "file-2",
+                "name": "native probe preparation that spends the wall allowance cannot start a project process",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1217.297125,
+                "required": false
+              },
+              {
+                "sequence": 21,
+                "fileId": "file-2",
+                "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 314.012667,
+                "required": true
+              },
+              {
+                "sequence": 22,
+                "fileId": "file-2",
+                "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 699.6975,
+                "required": true
+              },
+              {
+                "sequence": 23,
+                "fileId": "file-2",
+                "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 135.75275,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "physical output invalid admission limits reject before a project command can execute",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+                "outcome": "passed",
+                "terminalSequences": [21]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+                "outcome": "passed",
+                "terminalSequences": [22]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+                "outcome": "passed",
+                "terminalSequences": [23]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v26.9.0",
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    {
+      "branch": "pr/native-json-probes",
+      "codeRevision": "02841e28d46882effab4c8a67b7dde9eb984fd08",
+      "kind": "structured-node-attempts",
+      "fullCheck": {
+        "tests": 873,
+        "pass": 640,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 233
+      },
+      "formatting": "passed",
+      "actionlintVersion": "1.7.12",
+      "actionlint": "passed",
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "native": {
+        "profile": "native-json-evidence",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "c24b6a977957efff1078be0319b13a56b03051effb3829831fd30559a2231fba"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "c24b6a977957efff1078be0319b13a56b03051effb3829831fd30559a2231fba"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "structured native probes retain arrays objects null and exact comparative results with physical replay",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1293.315042,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "structured native worker rejects lossy values getters and toJSON while retaining every reached failed attempt",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4611.661958,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "structured native values enforce exact physical byte depth and node boundaries before admission and during execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2002.094416,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "structured native retained output rejects rehashed value swaps wrong worker profile missing bytes and invented observed null states",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 287.1935,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5215.211792,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "structured native CLI and MCP share actual JSON evidence while summaries and tool arguments cannot grant disclosure or execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3414.421208,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 406.989667,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "structured native probes retain arrays objects null and exact comparative results with physical replay",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native worker rejects lossy values getters and toJSON while retaining every reached failed attempt",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native values enforce exact physical byte depth and node boundaries before admission and during execution",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native retained output rejects rehashed value swaps wrong worker profile missing bytes and invented observed null states",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native CLI and MCP share actual JSON evidence while summaries and tool arguments cannot grant disclosure or execution",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "6eb8bf7d59f247c890c6f54851259cf5628a756f52a963e233dfb902f53a5650",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "profile": "native-json-evidence",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "c24b6a977957efff1078be0319b13a56b03051effb3829831fd30559a2231fba"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "c24b6a977957efff1078be0319b13a56b03051effb3829831fd30559a2231fba"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "structured native probes retain arrays objects null and exact comparative results with physical replay",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1292.971417,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "structured native worker rejects lossy values getters and toJSON while retaining every reached failed attempt",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4630.219875,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "structured native values enforce exact physical byte depth and node boundaries before admission and during execution",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2040.235792,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "structured native retained output rejects rehashed value swaps wrong worker profile missing bytes and invented observed null states",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 288.478333,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5203.262292,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "structured native CLI and MCP share actual JSON evidence while summaries and tool arguments cannot grant disclosure or execution",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3413.119791,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 407.567667,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "structured native probes retain arrays objects null and exact comparative results with physical replay",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native worker rejects lossy values getters and toJSON while retaining every reached failed attempt",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native values enforce exact physical byte depth and node boundaries before admission and during execution",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native retained output rejects rehashed value swaps wrong worker profile missing bytes and invented observed null states",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native probes exercise broken repaired and valid near miss consequences for every declared hypothesis family",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native CLI and MCP share actual JSON evidence while summaries and tool arguments cannot grant disclosure or execution",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "structured native neutral workflow journals retain exact JSON attempts and fresh projections without leaking previous verdicts",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v26.9.0",
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    {
+      "branch": "pr/spotbugs-native-validation",
+      "codeRevision": "258217a5986bf904c17dec5434d0f08da0c74143",
+      "kind": "spotbugs",
+      "fullCheck": {
+        "tests": 880,
+        "pass": 641,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 239
+      },
+      "formatting": "passed",
+      "actionlintVersion": "1.7.12",
+      "actionlint": "passed",
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "native": {
+        "profile": "spotbugs",
+        "timeoutMs": 120000,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24.526403,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15249.204087,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8991.275112,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4109.066826,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2917.070954,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9291.051737,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12103.890331,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "preservedJava": {
+        "profile": "java",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 32.106701,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1640.036216,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 576.437064,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2694.466436,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2487.35989,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "f711bc4fd908519c8cb5c1baa2858aa9a0f0f43c8e6788aa85d6ebb8b969466f",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "profile": "spotbugs",
+          "timeoutMs": 120000,
+          "passed": 7,
+          "required": 7,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 1024,
+            "terminalEventCount": 7,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "5fdbe16659a71a3c4a816b2585a09c80652f1be7a8bd26fd7aecf813deb35822"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "66f49d0a68d03be72c9a3965ada24252b8f7d65bbb5c06015f5e2dfb565e0fb8"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 23.089187,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 9916.87111,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4732.786643,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2201.544811,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1483.996324,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5582.336958,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-2",
+                "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 10835.407564,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "SpotBugs planning is inert explicit and unavailable without pinned prerequisites",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native SpotBugs catches null defects repairs and near misses across freshly compiled nested classes without initialization",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native SpotBugs rejects empty incomplete skipped foreign stale and forged class pass detector and source evidence",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native SpotBugs rejects tool checksum drift symbolic links unsupported profiles mixed languages and empty compiler scope",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native SpotBugs CLI and negotiated MCP share failures privacy and operator-only execution trust",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native SpotBugs cancellation kills its active analyzer JVM and removes engine-owned classes and tool bytes",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native SpotBugs scale guard observes the implicit constructor boundary and cannot hide skipped analysis in an empty bug list",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:e250e4efaaa7016c52718b5eae906cf3252784d78f85ca5a016e9bcc3834ca16",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      },
+      "runtime": {
+        "node": "v22.23.2",
+        "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)"
+      },
+      "image": "sha256:e250e4efaaa7016c52718b5eae906cf3252784d78f85ca5a016e9bcc3834ca16",
+      "network": "none"
+    }
+  ],
+  "gateAComplete": false,
+  "qualityGate": "not-assessed",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}
