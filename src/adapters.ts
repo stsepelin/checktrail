@@ -10,6 +10,7 @@ import { kustomizeCheck } from "./kustomize.js";
 import { helmCheck } from "./helm.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
+import { spotbugsCheck } from "./spotbugs.js";
 import { checkstyleCheck } from "./checkstyle.js";
 import { mavenCheck } from "./maven.js";
 import { gradleCheck } from "./gradle.js";
@@ -128,6 +129,7 @@ export const adapters = [
     checks: [
       "jvm.javac",
       "jvm.checkstyle",
+      "jvm.spotbugs",
       "jvm.maven-test",
       "jvm.gradle-test",
     ],
@@ -587,6 +589,9 @@ export async function checksFor(
         : []),
       ...(requested?.includes("jvm.maven-test")
         ? [await mavenCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.spotbugs")
+        ? [await spotbugsCheck(source, project)]
         : []),
       ...(requested?.includes("jvm.checkstyle")
         ? [await checkstyleCheck(source, project)]

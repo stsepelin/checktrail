@@ -18,11 +18,23 @@ cancel each other. Native profiles, matrix entries and assertions are unchanged.
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
+## Acceptance time budgets
+
+The main OS/Node matrix has a 60-minute job limit, including preparation, the full
+suite, required profiles and fresh installed-package checks. The required-profile
+runner applies its timeout to each entire selected test file. Sequential controls
+therefore share that file budget even when each control has its own timeout.
+
+The `dotnet-method` profile allows ten minutes per selected file. Existing
+per-control and engine execution
+limits remain in force. All other profiles retain their existing file budgets;
+any timeout still fails acceptance and leaves unobserved required cases visible.
+
 ## Pinned infrastructure preparation
 
 Infrastructure runtime setup allows at most three download attempts per artifact,
-retrying recognized connection failures after one-second and three-second waits. All attempts and body
-reads share the original 120-second deadline. HTTP errors, byte-bound violations,
+retrying recognized connection failures and HTTP 500, 502, 503 or 504 responses after one-second and three-second waits. All attempts and body
+reads share the original 120-second deadline. Other HTTP errors, byte-bound violations,
 incorrect lengths, checksum failures and an expired deadline fail preparation.
 Pinned lengths and SHA-256 digests remain mandatory before extraction or use.
 
