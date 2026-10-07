@@ -117,6 +117,12 @@ test(
       assert.equal(result.windowsExecution!.jobAssigned, true);
       assert.equal(result.windowsExecution!.resumed, true);
       assert.equal(result.windowsExecution!.cleanup, "confirmed");
+      assert.ok(result.windowsExecution!.launcherPid > 0);
+      assert.notEqual(
+        result.windowsExecution!.launcherPid,
+        result.windowsExecution!.supervisorPid,
+      );
+      assert.match(result.windowsExecution!.launcherSha256, /^[a-f0-9]{64}$/);
       assert.equal(result.windowsExecution!.activeAfterCleanup, 0);
       assert.equal(result.windowsExecution!.executionSandboxed, false);
       const failed = await runProcess(root, command("process.exit(17)"), {

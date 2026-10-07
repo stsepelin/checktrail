@@ -13,7 +13,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { withinRoot } from "./inventory.js";
-import { windowsLauncherScript } from "./windows-native.js";
+import {
+  windowsLauncherScript,
+  windowsKeeperSource,
+} from "./windows-native.js";
 import {
   windowsReceiptSchema,
   windowsExecutionSchema,
@@ -28,6 +31,9 @@ export const windowsEncodedSupervisor = Buffer.from(
   windowsLauncherScript,
   "utf16le",
 ).toString("base64");
+export const windowsLauncherSha256 = createHash("sha256")
+  .update(windowsKeeperSource)
+  .digest("hex");
 const invalid = (code: string) => Object.assign(new Error(code), { code });
 const localDrive = (value: string) => /^[A-Za-z]:\\/.test(value);
 export function quoteWindowsArgument(value: string): string {
@@ -284,7 +290,15 @@ export async function runWindowsProcess(
     ];
     windowsCommandLine(supervisor, supervisorArguments);
     return await new Promise((resolve) => {
-      const child = spawn(supervisor, supervisorArguments, {
+      const keeperArguments = [
+        "-e",
+        windowsKeeperSource,
+        supervisor,
+        windowsEncodedSupervisor,
+        requestId,
+      ];
+      windowsCommandLine(process.execPath, keeperArguments);
+      const child = spawn(process.execPath, keeperArguments, {
         cwd: directory,
         env: {
           SYSTEMROOT: systemRoot,
@@ -293,11 +307,39 @@ export async function runWindowsProcess(
           TMP: directory,
         },
         shell: false,
-        // libuv's parent job must not kill the guardian before EOF cleanup.
-        // The guardian owns its compiler and project children in native jobs.
+        // Only the Node launcher is detached. Its ordinary libuv child job
+        // keeps PowerShell alive after caller loss until native EOF cleanup.
         detached: true,
         windowsHide: true,
-        stdio: ["ignore", "pipe", "pipe"],
+        stdio: ["ignore", "pipe", "pipe", "ipc"],
+      });
+      let supervisorPid: number | undefined;
+      child.on("message", (message: unknown) => {
+        if (
+          supervisorPid !== undefined ||
+          !message ||
+          typeof message !== "object"
+        ) {
+          result.errorCode = "INVALID_WINDOWS_LAUNCHER";
+          child.kill("SIGKILL");
+          return;
+        }
+        const value = message as {
+          requestId?: unknown;
+          supervisorPid?: unknown;
+        };
+        if (
+          Object.keys(value).length !== 2 ||
+          value.requestId !== requestId ||
+          typeof value.supervisorPid !== "number" ||
+          !Number.isSafeInteger(value.supervisorPid) ||
+          value.supervisorPid <= 0
+        ) {
+          result.errorCode = "INVALID_WINDOWS_LAUNCHER";
+          child.kill("SIGKILL");
+          return;
+        }
+        supervisorPid = value.supervisorPid;
       });
       const stdout: Buffer[] = [],
         stderr: Buffer[] = [];
@@ -327,8 +369,8 @@ export async function runWindowsProcess(
           stop();
         }
       };
-      child.stdout.on("data", (chunk: Buffer) => collect(stdout, chunk));
-      child.stderr.on("data", (chunk: Buffer) => collect(stderr, chunk));
+      child.stdout!.on("data", (chunk: Buffer) => collect(stdout, chunk));
+      child.stderr!.on("data", (chunk: Buffer) => collect(stderr, chunk));
       child.on("error", (error: NodeJS.ErrnoException) => {
         result.errorCode = error.code ?? "WINDOWS_SUPERVISOR_UNAVAILABLE";
       });
@@ -336,8 +378,8 @@ export async function runWindowsProcess(
         // An exited guardian cannot hold the call open through inherited pipes.
         drain = setTimeout(() => {
           result.errorCode ??= "WINDOWS_OUTPUT_INCOMPLETE";
-          child.stdout.destroy();
-          child.stderr.destroy();
+          child.stdout!.destroy();
+          child.stderr!.destroy();
         }, 500);
       });
       const cancel = () => {
@@ -369,12 +411,14 @@ export async function runWindowsProcess(
           );
           if (
             receipt.requestId !== requestId ||
-            receipt.supervisorPid !== child.pid
+            receipt.supervisorPid !== supervisorPid
           )
             throw invalid("INVALID_WINDOWS_RECEIPT");
           result.windowsExecution = windowsExecutionSchema.parse({
             ...receipt,
             supervisorSha256: windowsSupervisorSha256,
+            launcherPid: child.pid,
+            launcherSha256: windowsLauncherSha256,
             ownership: "creation-job-list",
             executionSandboxed: false,
           });

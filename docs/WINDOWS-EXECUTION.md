@@ -83,3 +83,12 @@ This does not promote Windows Git selection, private journals/task storage,
 framework tooling, all native adapters, arbitrary wrappers or all Node versions.
 Static diagnosis reports limited platform support. Their E4/E5 requirements and
 POSIX process controls remain separate and unchanged.
+
+The current startup repair uses an engine-owned detached Node launcher and an
+ordinary PowerShell child. The launcher retains its libuv child job while the
+native guardian handles control-pipe EOF and owned descendant cleanup. The
+receipt binds the guardian PID to the launcher's original IPC notification and
+also records the launcher PID and fixed-source digest. Failed bootstrap or
+cleanup remains bounded by the existing two-second force deadline. Native
+acceptance of this repair remains pending; local compilation is not Windows
+runtime evidence.
