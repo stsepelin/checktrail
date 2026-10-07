@@ -3018,5 +3018,27 @@
       "file": "dist/test/import-history.test.js",
       "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root"
     }
+  ],
+  "init-publication": [
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "competing init writers publish one complete policy and leave no temporary files"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init ownership is acquired before discovery and existing staging entries are preserved"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init staging exclusion has an exact boundary and preserves public source fingerprints"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "init releases its owned staging directory after planning errors and unresolved choices"
+    },
+    {
+      "file": "dist/test/onboarding.test.js",
+      "name": "independent CLI init writers publish one complete policy and clean their owned staging"
+    }
   ]
 }
