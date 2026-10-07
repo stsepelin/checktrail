@@ -34,6 +34,15 @@ const invoke = (args) =>
     maxBuffer: 1024 * 1024,
   });
 const started = performance.now();
+const phaseProgress = (phase, status) =>
+  process.stderr.write(
+    JSON.stringify({
+      phase,
+      status,
+      elapsedMs: Math.round(performance.now() - started),
+    }) + "\n",
+  );
+phaseProgress("versions", "started");
 const node = invoke(["node", "--version"]).trim();
 const java = invoke(["java", "--version"]).trim();
 assert.equal(node, "v22.23.2");
@@ -41,10 +50,14 @@ assert.match(
   java,
   /^openjdk 25\.0\.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25\.0\.4\+7 /,
 );
+phaseProgress("versions", "completed");
+phaseProgress("source", "started");
 const native = JSON.parse(
   invoke(["node", "scripts/verify-required-native-tests.mjs", "scala"]),
 );
 assert.equal(native.complete, true);
+phaseProgress("source", "completed");
+phaseProgress("guards", "started");
 const guards = JSON.parse(
   invoke([
     "sh",
@@ -60,6 +73,8 @@ node scripts/verify-scala-guards.mjs`,
 );
 assert.equal(guards.sourceRestored, true);
 assert.equal(guards.callbacksUnchanged, true);
+phaseProgress("guards", "completed");
+phaseProgress("installed", "started");
 
 const installed = JSON.parse(
   execFileSync(process.execPath, ["scripts/verify-scala-package.mjs"], {
@@ -69,6 +84,7 @@ const installed = JSON.parse(
     maxBuffer: 4 * 1024 * 1024,
   }),
 );
+phaseProgress("installed", "completed");
 process.stdout.write(
   JSON.stringify({
     image,
