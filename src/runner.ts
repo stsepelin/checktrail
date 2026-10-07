@@ -1,3 +1,4 @@
+import { captureProcessOutput } from "./process-output.js";
 import { spawn } from "node:child_process";
 import { stopDescendants } from "./process-tree.js";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -7,6 +8,8 @@ import { withinRoot } from "./inventory.js";
 import type { Command, ProcessResult } from "./types.js";
 
 export interface RunOptions {
+  /** Engine/operator-selected evidence capture; grants no execution authority. */
+  captureRawOutput?: boolean;
   timeoutMs: number;
   maxOutputBytes?: number;
   signal?: AbortSignal;
@@ -25,6 +28,15 @@ export async function runProcess(
   ) {
     throw new Error("Timeout must be between 1 and 120000 milliseconds");
   }
+  if (
+    options.captureRawOutput &&
+    (!Number.isInteger(options.maxOutputBytes ?? 1024 * 1024) ||
+      (options.maxOutputBytes ?? 1024 * 1024) < 0 ||
+      (options.maxOutputBytes ?? 1024 * 1024) > 16 * 1024 * 1024)
+  )
+    throw new Error(
+      "Captured output limit must be between 0 and 16777216 bytes",
+    );
   const started = performance.now();
   const result: ProcessResult & { outputBytes: number } = {
     command,
@@ -40,7 +52,11 @@ export async function runProcess(
   };
   if (options.signal?.aborted) return { ...result, cancelled: true };
   if (process.platform === "win32")
-    return { ...result, errorCode: "UNSUPPORTED_PLATFORM" };
+    return (await import("./windows-process.js")).runWindowsProcess(
+      root,
+      command,
+      options,
+    );
   const cwd = await withinRoot(root, command.cwd);
   const env: NodeJS.ProcessEnv = {};
   for (const key of [
@@ -123,8 +139,17 @@ export async function runProcess(
         await termination;
         result.exitCode = code;
         result.signal = signal;
-        result.stdout = Buffer.concat(stdout).toString("utf8");
-        result.stderr = Buffer.concat(stderr).toString("utf8");
+        const out = Buffer.concat(stdout),
+          err = Buffer.concat(stderr);
+        result.stdout = out.toString("utf8");
+        result.stderr = err.toString("utf8");
+        if (options.captureRawOutput)
+          result.capturedOutput = captureProcessOutput(
+            out,
+            err,
+            result.outputBytes,
+            !result.truncated,
+          );
         result.durationMs = Math.round(performance.now() - started);
         resolve(result);
       });

@@ -2541,6 +2541,110 @@
       "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans"
     }
   ],
+  "windows-contract": [
+    {
+      "file": "dist/test/windows-contract.test.js",
+      "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries"
+    },
+    {
+      "file": "dist/test/windows-contract.test.js",
+      "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions"
+    }
+  ],
+  "windows-process": [
+    {
+      "file": "dist/test/windows-contract.test.js",
+      "name": "Windows literal argument encoding follows exact quote backslash empty and command length boundaries"
+    },
+    {
+      "file": "dist/test/windows-contract.test.js",
+      "name": "Windows environment matching is case insensitive strips undeclared values and rejects protected collisions"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows runs literal hostile arguments Unicode environment and exit status with confirmed job cleanup"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows resolves exact executable paths spaces missing tools ambiguous PATH and refused wrappers without execution"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows cancellation kills multiple detached descendants preserves an unrelated sibling and removes owned temporary files"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows deadlines output zero exact overrun and preaborted calls cannot become successful validation"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows shared engine CLI and MCP preserve failing skipped and trusted Node validation accounting"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows normal root exit closes detached descendants and inherited output pipes before returning"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt"
+    },
+    {
+      "file": "dist/test/windows-process.test.js",
+      "name": "native Windows guardian job cleanup does not depend on exit of the still-living launcher"
+    }
+  ],
+  "physical-process-output": [
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    }
+  ],
+  "native-raw-evidence": [
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary"
+    },
+    {
+      "file": "dist/test/process-output.test.js",
+      "name": "physical output invalid admission limits reject before a project command can execute"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim"
+    },
+    {
+      "file": "dist/test/review-probe.test.js",
+      "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases"
+    }
+  ],
   "ruby-tools-rubocop": [
     {
       "file": "dist/test/ruby-tools.test.js",

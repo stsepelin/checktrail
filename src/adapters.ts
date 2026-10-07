@@ -290,7 +290,7 @@ export async function checksFor(
           executable: process.execPath,
           args: [
             "--test",
-            `--test-reporter=${fileURLToPath(new URL("./node-reporter.js", import.meta.url))}`,
+            `--test-reporter=${new URL("./node-reporter.js", import.meta.url).href}`,
             ...files.map((file) => `./${file}`),
           ],
           cwd: project.path,

@@ -1,3 +1,5 @@
+import { capturedProcessOutputSchema } from "../dist/src/process-output.js";
+import { windowsExecutionSchema } from "../dist/src/windows-execution.js";
 import {
   importContextInputSchema,
   importContextReportSchema,
@@ -135,6 +137,8 @@ import {
 
 await mkdir(new URL("../schemas/", import.meta.url), { recursive: true });
 for (const [name, schema] of Object.entries({
+  "captured-process-output": capturedProcessOutputSchema,
+  "windows-execution": windowsExecutionSchema,
   "vue-router-config": vueRouterConfigSchema,
   "nuxt-config": nuxtConfigSchema,
   "external-manifest": externalManifestSchema,

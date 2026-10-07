@@ -36,6 +36,13 @@ The [Pyright profile](PYRIGHT.md) requires a pinned local compiler, explicit sou
 and native diagnostic accounting. Its JSON/TOML and namespace/virtual-environment
 controls are bounded; suppression exceptions and native Windows are not promoted.
 
+## Windows execution profile
+
+[WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded
+local-drive `.exe` runner and dedicated native source/offline-install CI profile.
+Native acceptance remains pending. Other Windows tool/framework/Git/persistence
+profiles are unverified; this does not promote them or close E4/E5.
+
 ## Advisory review context support
 
 Review context collection accepts bounded UTF-8 regular source files regardless
@@ -63,8 +70,11 @@ The [hypothesis catalogue and stateless API transport](REVIEW-PROVIDERS.md)
 use the same source packets without adding language semantics. Offline synthetic
 Per-assignment and optional shared verification-run API admission budgets do not
 extend native language support. The shared profile accounts for calls, reported
-tokens, estimated cost and transport bodies. Version 2 Node Boolean probes also
+tokens, estimated cost and transport bodies. Version 2 and 3 Node Boolean probes also
 share native runner-call and delivered-output admission across their fresh cases;
+version 3 retains bounded physical process bytes and replays valid observations,
+with raw artifacts omitted from summaries and independent model packets. See
+NATIVE-RAW-EVIDENCE.md for the bounded profile and its acceptance record.
 wider native/tool budget profiles remain open. Host AI budgets are outside the
 MCP server's control; native AI client orchestration is optional.
 Exact development evidence is recorded in REVIEW-PROVIDERS.md and its measurements.

@@ -717,3 +717,59 @@ test("required profile union exceeds a single manifest while retaining bounded a
   );
   await assert.rejects(access(path.join(root, "executed")), { code: "ENOENT" });
 });
+
+test("native acceptance accepts cumulative callbacks within file budgets and rejects excessive limits", async (t) => {
+  const { root, execute } = await ledgerFixture(t);
+  const file = path.join(root, "cumulative.test.mjs");
+  await writeFile(
+    file,
+    "import {test} from 'node:test';import {setTimeout} from 'node:timers/promises';for(let i=0;i<3;i++)test('original-'+i,{timeout:1000},async()=>{await setTimeout(700)});",
+  );
+  const requirements = Array.from({ length: 3 }, (_, i) => ({
+    file,
+    name: "original-" + i,
+  }));
+  const complete = execute(requirements, { timeoutMs: 4000 });
+  assert.equal(complete.complete, true, JSON.stringify(complete));
+  assert.equal(complete.passed, 3);
+  assert.deepEqual(
+    complete.ledger.cases.map((item) => item.outcome),
+    ["passed", "passed", "passed"],
+  );
+  const boundedFile = path.join(root, "bounded-callback.test.mjs");
+  await writeFile(
+    boundedFile,
+    "import {test} from 'node:test';import {setTimeout} from 'node:timers/promises';test('original-bound',{timeout:300},async()=>{await setTimeout(3000)});",
+  );
+  const bounded = execute([{ file: boundedFile, name: "original-bound" }], {
+    timeoutMs: 4000,
+  });
+  assert.equal(bounded.complete, false);
+  assert.equal(bounded.ledger.cases[0]!.outcome, "failed");
+  assert.ok(
+    bounded.problems.some(
+      (problem) =>
+        problem.name === "original-bound" && problem.reason === "failed",
+    ),
+  );
+  const ceiling = execute(requirements, { timeoutMs: 600000 });
+  assert.equal(ceiling.complete, true, JSON.stringify(ceiling));
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const rejected = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "ledger-runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+      JSON.stringify(requirements),
+      JSON.stringify({ timeoutMs: 600001 }),
+    ],
+    { encoding: "utf8", timeout: 10000, env },
+  );
+  assert.notEqual(rejected.status, 0);
+  assert.match(
+    rejected.stderr,
+    /Required test harness timeout must be bounded/,
+  );
+  assert.equal(rejected.stdout, "");
+});

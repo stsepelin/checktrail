@@ -234,3 +234,9 @@ export type {
   ImportContextInput,
   ImportContextReport,
 } from "./import-context.js";
+
+export {
+  capturedProcessOutputSchema,
+  parseCapturedProcessOutput,
+} from "./process-output.js";
+export type { CapturedProcessOutput } from "./process-output.js";

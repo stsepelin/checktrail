@@ -728,8 +728,8 @@ test("native probe run budgets admit exact call and output boundaries without re
   );
   const opts = { ...runOptions, recipe: pin(recipe) };
   const first = await runReviewProbe(root, context, candidate, opts);
-  assert.equal(first.schemaVersion, 2);
-  if (first.schemaVersion !== 2)
+  assert.equal(first.schemaVersion, 3);
+  if (first.schemaVersion !== 3)
     throw new Error("Missing native budget version");
   assert.equal(first.nativeBudget.calls, 3);
   const outputBytes = first.trials.reduce(
@@ -748,7 +748,7 @@ test("native probe run budgets admit exact call and output boundaries without re
       nativeBudget: { maxCalls, maxOutputBytes },
     });
     assert.equal(run.status, expected, JSON.stringify(run));
-    if (run.schemaVersion !== 2)
+    if (run.schemaVersion !== 3)
       throw new Error("Missing native budget version");
     assert.equal(run.nativeBudget.calls, maxCalls);
     if (maxCalls === 2) {
@@ -846,7 +846,7 @@ test("native probe output overrun counts delivered stdout and stderr and stops e
     recipe: pin(selected),
     nativeBudget: { maxCalls: 3, maxOutputBytes: 20000 },
   });
-  if (run.schemaVersion !== 2) throw new Error("Missing native budget version");
+  if (run.schemaVersion !== 3) throw new Error("Missing native budget version");
   assert.equal(run.status, "incomplete");
   assert.equal(run.nativeBudget.calls, 1);
   assert.ok(run.nativeBudget.outputBytes >= 4096);
@@ -873,7 +873,7 @@ test("retained native probe budgets reject erased accounting forged totals reord
     ...runOptions,
     recipe: pin(recipe),
   });
-  if (run.schemaVersion !== 2) throw new Error("Missing native budget version");
+  if (run.schemaVersion !== 3) throw new Error("Missing native budget version");
   type Run = typeof run;
   for (const edit of [
     (v: Run) => {
@@ -914,6 +914,13 @@ test("retained native probe budgets reject erased accounting forged totals reord
     edit(changed);
     assert.throws(() => parseReviewProbeRun(changed));
   }
+  const budgetLegacy: Record<string, unknown> = structuredClone(run);
+  budgetLegacy.schemaVersion = 2;
+  for (const t of budgetLegacy.trials as {
+    execution: Record<string, unknown> | null;
+  }[])
+    if (t.execution) delete t.execution.artifact;
+  assert.equal(parseReviewProbeRun(budgetLegacy).schemaVersion, 2);
   const legacy: Record<string, unknown> = structuredClone(run);
   legacy.schemaVersion = 1;
   delete legacy.nativeBudget;
@@ -959,7 +966,7 @@ test("native run budgets retain partial cancelled bytes and spend one wall allow
     controller.abort();
     const run = await pending;
     assert.equal(run.status, "cancelled");
-    if (run.schemaVersion !== 2)
+    if (run.schemaVersion !== 3)
       throw new Error("Missing native budget version");
     assert.equal(run.nativeBudget.calls, 1);
     assert.equal(run.nativeBudget.outputBytes, 6);
@@ -996,7 +1003,7 @@ test("native run budgets retain partial cancelled bytes and spend one wall allow
     opts,
   );
   assert.equal(fresh.status, "completed", JSON.stringify(fresh));
-  if (fresh.schemaVersion !== 2)
+  if (fresh.schemaVersion !== 3)
     throw new Error("Missing native budget version");
   assert.equal(fresh.nativeBudget.calls, 3);
 });
@@ -1051,7 +1058,7 @@ test("native cleanup failures retain spent budgets and stop later cases without 
         run.temporaryArtifacts,
         failCase ? "removed" : "cleanup-failed",
       );
-      if (run.schemaVersion !== 2)
+      if (run.schemaVersion !== 3)
         throw new Error("Missing native budget version");
       assert.equal(run.nativeBudget.calls, failCase ? 1 : 3);
       assert.equal(run.counts.unresolved, failCase ? 1 : 0);
@@ -1113,7 +1120,7 @@ test("native probe preparation that spends the wall allowance cannot start a pro
     assert.equal(run.counts.notRun, 3);
     assert.equal(run.trials[0]!.reason, "timeout");
     assert.equal(run.temporaryArtifacts, "removed");
-    if (run.schemaVersion !== 2)
+    if (run.schemaVersion !== 3)
       throw new Error("Missing native budget version");
     assert.equal(run.nativeBudget.calls, 0);
     assert.equal(run.nativeBudget.outputBytes, 0);
@@ -1122,5 +1129,190 @@ test("native probe preparation that spends the wall allowance cannot start a pro
   } finally {
     Reflect.set(fs, "writeFile", original);
     syncBuiltinESMExports();
+  }
+});
+
+test("native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(name){return name.startsWith('scope');}\n",
+  );
+  const run = await runReviewProbe(root, context, candidate, {
+    ...runOptions,
+    recipe: pin(recipe),
+  });
+  assert.equal(run.schemaVersion, 3);
+  if (run.schemaVersion !== 3)
+    throw new Error("Missing retained native attempt version");
+  assert.equal(run.status, "completed");
+  assert.equal(run.trials.length, 3);
+  for (const trial of run.trials) {
+    const execution = trial.execution!;
+    assert.equal(execution.artifact.exitCode, 0);
+    assert.equal(execution.artifact.output!.completeForObservedStreams, true);
+    const wire = JSON.parse(
+      Buffer.from(execution.artifact.output!.stdout.base64, "base64").toString(
+        "utf8",
+      ),
+    );
+    assert.equal(wire.actual, trial.actual);
+    assert.deepEqual(wire.ranges, trial.ranges);
+    assert.equal(wire.sourceDigest, run.sourceDigest);
+    assert.equal(wire.requestDigest, execution.artifact.requestDigest);
+    assert.equal(
+      execution.artifact.output!.observedBytes,
+      execution.outputBytes,
+    );
+  }
+  const summary = projectReviewProbe(run, false);
+  assert.equal(JSON.stringify(summary).includes("base64"), false);
+  assert.equal(JSON.stringify(summary).includes("artifact"), false);
+  for (const edit of [
+    (v: typeof run) => {
+      v.trials[0]!.execution!.artifact.exitCode = 1;
+    },
+    (v: typeof run) => {
+      v.trials[0]!.execution!.artifact.output = null;
+    },
+    (v: typeof run) => {
+      v.trials[0]!.execution!.artifact.requestDigest = "0".repeat(64);
+    },
+    (v: typeof run) => {
+      v.trials[0]!.execution!.artifact.output!.completeForObservedStreams = false;
+    },
+  ]) {
+    const changed = structuredClone(run);
+    edit(changed);
+    assert.throws(() => parseReviewProbeRun(changed));
+  }
+  const changed = structuredClone(run),
+    out = changed.trials[0]!.execution!.artifact.output!.stdout;
+  const altered = JSON.parse(
+    Buffer.from(out.base64, "base64").toString("utf8"),
+  );
+  altered.actual = !altered.actual;
+  const buffer = Buffer.from(JSON.stringify(altered));
+  out.base64 = buffer.toString("base64");
+  out.bytes = buffer.length;
+  out.sha256 = createHash("sha256").update(buffer).digest("hex");
+  const execution = changed.trials[0]!.execution!;
+  const delta = buffer.length - execution.outputBytes;
+  execution.outputBytes = buffer.length;
+  execution.artifact.output!.observedBytes = buffer.length;
+  changed.nativeBudget.outputBytes += delta;
+  let spent = 0;
+  for (const trial of changed.trials) {
+    if (trial.execution) {
+      trial.execution.outputLimitBytes = Math.min(
+        changed.nativeBudget.limits.maxCallOutputBytes,
+        changed.nativeBudget.limits.maxOutputBytes - spent,
+      );
+      spent += trial.execution.outputBytes;
+    }
+  }
+  assert.equal(spent, changed.nativeBudget.outputBytes);
+  assert.throws(() => parseReviewProbeRun(changed), /parsed observation/);
+});
+test("native probe retains malformed binary stdout stderr and output overruns without crediting a claim", async (t) => {
+  for (const source of [
+    "export function decision(){process.stdout.write(Buffer.from([255,0]));return true;}\n",
+    "export function decision(){process.stderr.write(Buffer.from([255,0]));return true;}\n",
+  ]) {
+    const { root, context, candidate } = await assignment(t, source);
+    const run = await runReviewProbe(root, context, candidate, {
+      ...runOptions,
+      recipe: pin(recipe),
+    });
+    assert.equal(run.schemaVersion, 3);
+    if (run.schemaVersion !== 3) throw new Error("Missing native artifacts");
+    assert.equal(run.status, "incomplete");
+    assert.equal(run.counts.observed, 0);
+    for (const trial of run.trials) {
+      assert.ok(trial.execution!.artifact.output);
+      assert.equal(
+        trial.execution!.artifact.output!.completeForObservedStreams,
+        true,
+      );
+    }
+    const first = run.trials[0]!.execution!.artifact.output!;
+    const stream = source.includes("stderr") ? first.stderr : first.stdout;
+    assert.deepEqual(
+      Buffer.from(stream.base64, "base64").subarray(0, 2),
+      Buffer.from([255, 0]),
+    );
+    parseReviewProbeRun(run);
+  }
+  const { root, context, candidate } = await assignment(
+    t,
+    "export function decision(){process.stdout.write('x'.repeat(8192));return true;}\n",
+  );
+  const run = await runReviewProbe(root, context, candidate, {
+    ...runOptions,
+    recipe: pin(recipe),
+    maxOutputBytes: 1,
+    nativeBudget: { maxCalls: 3, maxOutputBytes: 65536 },
+  });
+  assert.equal(run.schemaVersion, 3);
+  if (run.schemaVersion !== 3) throw new Error("Missing native artifacts");
+  assert.equal(run.counts.notRun, 2);
+  assert.equal(run.trials[0]!.execution!.artifact.output!.stdout.bytes, 1);
+  assert.equal(
+    run.trials[0]!.execution!.artifact.output!.completeForObservedStreams,
+    false,
+  );
+  assert.equal(run.trials[1]!.execution, null);
+  assert.equal(run.status, "incomplete");
+  parseReviewProbeRun(run);
+});
+
+test("native probe cancellation retains the reached attempt and never creates evidence for later cases", async (t) => {
+  const { root, context, candidate } = await assignment(
+    t,
+    "export async function decision(target){const io=process.getBuiltinModule('node:fs');io.writeFileSync(target,'');await new Promise(resolve=>setTimeout(resolve,50));io.writeFileSync(target,'original entered');Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0);return true;}\n",
+  );
+  const marker = path.join(root, ".checktrail/entered"),
+    selected = structuredClone(recipe);
+  for (const item of selected.cases) item.args = [marker];
+  const controller = new AbortController();
+  const pending = runReviewProbe(root, context, candidate, {
+    ...runOptions,
+    recipe: pin(selected),
+    signal: controller.signal,
+  });
+  try {
+    let entered = false;
+    for (let i = 0; i < 200; i++) {
+      try {
+        // Another process can observe the file between creation and its write.
+        if ((await readFile(marker, "utf8")) === "original entered") {
+          entered = true;
+          break;
+        }
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+      await delay(10);
+    }
+    assert.equal(
+      entered,
+      true,
+      "The source body must start before cancellation",
+    );
+    controller.abort();
+    const run = await pending;
+    assert.equal(run.schemaVersion, 3);
+    if (run.schemaVersion !== 3) throw new Error("Missing native artifacts");
+    assert.equal(run.status, "cancelled");
+    assert.equal(run.counts.observed, 0);
+    assert.equal(run.counts.notRun, 2);
+    assert.equal(run.nativeBudget.calls, 1);
+    assert.equal(run.trials[0]!.execution!.artifact.cancelled, true);
+    assert.ok(run.trials[0]!.execution!.artifact.output);
+    assert.equal(run.trials[1]!.execution, null);
+    assert.equal(run.trials[2]!.execution, null);
+    parseReviewProbeRun(run);
+  } finally {
+    controller.abort();
+    await pending;
   }
 });
