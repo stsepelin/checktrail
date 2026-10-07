@@ -346,7 +346,7 @@ test(
       );
     await mkdir(path.dirname(sentinel), { recursive: true });
     await writeFile(sentinel, "original caller-owned output");
-    const controls = [
+    const controls: readonly (readonly [string, string])[] = [
       [
         "missing output",
         original.replace(
@@ -371,7 +371,7 @@ test(
     ];
     try {
       for (const [name, source] of controls) {
-        await writeFile(file, source!);
+        await writeFile(file, source);
         const failed = (await run(root)).checks[0]!;
         assert.notEqual(failed.status, "passed", name);
         assert.equal(failed.findingsComplete, false, name);
