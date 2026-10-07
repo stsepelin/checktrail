@@ -217,3 +217,8 @@ They cannot establish present-day parity against an evolving system, or worldwid
 superiority. Report exactly the evaluated support slice and uncertainty. Failures
 return to implementation and a fresh reserved cohort; repeated tuning on the
 same holdout turns it into development data.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.

@@ -129,3 +129,8 @@ clusters. Its inputs remain operator declarations. The separate sealed synthetic
 binds raw claims, independent judgments and a common matching intake; see
 [REVIEW-BENCHMARK-MULTI.md](REVIEW-BENCHMARK-MULTI.md). Authoritative labels,
 observed host isolation and the other R5–R8 requirements remain open; see [REVIEW-MULTI-SCORING.md](REVIEW-MULTI-SCORING.md).
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.

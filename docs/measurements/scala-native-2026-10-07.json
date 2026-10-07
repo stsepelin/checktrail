@@ -1,0 +1,1170 @@
+{
+  "schemaVersion": 1,
+  "profile": "scala-jvm-source-native-v1",
+  "measuredAt": "2026-10-07T03:28:16.085804+00:00",
+  "sourceRevision": "037d8b3d7f0483476051106752dac7f8ce938a37",
+  "sourceTree": "51451079f689f1d3414dff649a38d8d4a95d3bd4",
+  "scope": "Original synthetic development acceptance for explicitly selected Scala 3 JVM source; not independent review quality or a whole-project build.",
+  "artifacts": {
+    "version": "3.9.0",
+    "archiveBytes": 177629395,
+    "archiveSha256": "2ec08ce51e400090058ad075fff0be764c7e16fb827d299c1be0d053d425770c",
+    "profile": "jvm-source-typed-backend-output-v1",
+    "runtimeLibraries": [
+      {
+        "path": "maven2/org/scala-lang/tasty-core_3/3.9.0/tasty-core_3-3.9.0.jar",
+        "name": "tasty-core_3-3.9.0.jar",
+        "bytes": 99146,
+        "sha256": "66e12dda98bb23e864f3a31f8527c8338bf47bce9b85cc380b368c69c1ba8d0f"
+      },
+      {
+        "path": "maven2/org/scala-lang/scala3-compiler_3/3.9.0/scala3-compiler_3-3.9.0.jar",
+        "name": "scala3-compiler_3-3.9.0.jar",
+        "bytes": 24756323,
+        "sha256": "3e2c09a5ca6cef17a55f2f66e123815f9c4ea061fce20d0e9d2371989405a61a"
+      },
+      {
+        "path": "maven2/org/scala-lang/scala3-interfaces/3.9.0/scala3-interfaces-3.9.0.jar",
+        "name": "scala3-interfaces-3.9.0.jar",
+        "bytes": 3949,
+        "sha256": "64dfde1d2c6309d65a01c5f3ea836137eb84338dcadeb16f85764561ef4e10db"
+      },
+      {
+        "path": "maven2/org/scala-lang/modules/scala-asm/9.9.0-scala-1/scala-asm-9.9.0-scala-1.jar",
+        "name": "scala-asm-9.9.0-scala-1.jar",
+        "bytes": 323674,
+        "sha256": "75ac366e8ecb691e06a7e85041eed0f67919a646e5262fa0901225698c104375"
+      },
+      {
+        "path": "maven2/org/scala-lang/scala3-library_3/3.9.0/scala3-library_3-3.9.0.jar",
+        "name": "scala3-library_3-3.9.0.jar",
+        "bytes": 344,
+        "sha256": "9343f9651453945fc6a9b75bb4fd230418ee28a1f88ea28ee429f3ebe0511aba"
+      },
+      {
+        "path": "maven2/org/scala-lang/scala-library/3.9.0/scala-library-3.9.0.jar",
+        "name": "scala-library-3.9.0.jar",
+        "bytes": 9823422,
+        "sha256": "b844bf6fb3080c73df6b9c523b7a69b9ef4a980bb15e5c37c35443d1d0b0e0cd"
+      },
+      {
+        "path": "maven2/org/scala-sbt/compiler-interface/1.12.0/compiler-interface-1.12.0.jar",
+        "name": "compiler-interface-1.12.0.jar",
+        "bytes": 113852,
+        "sha256": "92f487a505eafdd0a033e4ff4f38a81509a655c76257c64e6808dd873cc145c3"
+      },
+      {
+        "path": "maven2/org/scala-sbt/util-interface/1.11.5/util-interface-1.11.5.jar",
+        "name": "util-interface-1.11.5.jar",
+        "bytes": 4490,
+        "sha256": "1fc950a9e1a35385e79316e23c120d4fd184f6a7af0274e00a703b0dc76376af"
+      }
+    ],
+    "suppressionAnnotations": [
+      "scala.annotation.nowarn",
+      "scala.unchecked",
+      "scala.annotation.unchecked.uncheckedCaptures",
+      "scala.annotation.unchecked.uncheckedOverride",
+      "scala.annotation.unchecked.uncheckedStable",
+      "scala.annotation.unchecked.uncheckedVariance",
+      "java.lang.SuppressWarnings"
+    ],
+    "phases": [
+      "parser",
+      "typer",
+      "checktrail-original-frontend",
+      "Winfer-union",
+      "checkUnusedPostTyper",
+      "checkShadowing",
+      "inlinedPositions",
+      "sbt-deps",
+      "extractSemanticDBExtractSemanticInfo",
+      "posttyper",
+      "unrollDefs",
+      "prepjsinterop",
+      "SetRootTree",
+      "pickler",
+      "sbt-api",
+      "inlining",
+      "postInlining",
+      "staging",
+      "splicing",
+      "pickleQuotes",
+      "instrumentCoverage",
+      "crossVersionChecks",
+      "firstTransform",
+      "checkReentrant",
+      "elimPackagePrefixes",
+      "cookComments",
+      "checkLoopingImplicits",
+      "betaReduce",
+      "inlineVals",
+      "expandSAMs",
+      "elimRepeated",
+      "refchecks",
+      "dropForMap",
+      "initChecker",
+      "protectedAccessors",
+      "extmethods",
+      "uncacheGivenAliases",
+      "checkStatic",
+      "elimByName",
+      "hoistSuperArgs",
+      "forwardDepChecks",
+      "specializeApplyMethods",
+      "tryCatchPatterns",
+      "patternMatcher",
+      "preRecheck",
+      "recheck",
+      "setupCC",
+      "cc",
+      "checkUnusedPostPatMat",
+      "extractSemanticDBAppendDiagnostics",
+      "elimOpaque",
+      "explicitJSClasses",
+      "explicitOuter",
+      "explicitSelf",
+      "interpolators",
+      "dropBreaks",
+      "pruneErasedDefs",
+      "uninitialized",
+      "inlinePatterns",
+      "vcInlineMethods",
+      "seqLiterals",
+      "intercepted",
+      "getters",
+      "specializeFunctions",
+      "specializeTuples",
+      "collectNullableFields",
+      "elimOuterSelect",
+      "resolveSuper",
+      "functionXXLForwarders",
+      "paramForwarding",
+      "genericTuples",
+      "letOverApply",
+      "arrayConstructors",
+      "erasure",
+      "elimErasedValueType",
+      "pureStats",
+      "vcElideAllocations",
+      "etaReduce",
+      "arrayApply",
+      "addLocalJSFakeNews",
+      "elimPolyFunction",
+      "tailrec",
+      "completeJavaEnums",
+      "mixin",
+      "lazyVals",
+      "memoize",
+      "nonLocalReturns",
+      "capturedVars",
+      "constructors",
+      "instrumentation",
+      "lambdaLift",
+      "elimStaticThis",
+      "countOuterAccesses",
+      "dropOuterAccessors",
+      "dropParentRefinements",
+      "checkNoSuperThis",
+      "flatten",
+      "transformWildcards",
+      "moveStatic",
+      "expandPrivate",
+      "restoreScopes",
+      "selectStatic",
+      "junitBootstrappers",
+      "repeatableAnnotations",
+      "genSJSIR",
+      "genBCode",
+      "checktrail-original-complete"
+    ]
+  },
+  "artifactPreparation": {
+    "officialRelease": "https://github.com/scala/scala3/releases/tag/3.9.0",
+    "releaseTagCommit": "777528f19a58e794c9954a42f433373472ec57f8",
+    "archiveReleaseDigestVerified": true,
+    "publisherSignatureVerified": false,
+    "bundledLicenseClosureAudited": false
+  },
+  "fullRepositoryCheck": {
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "command": "npm run check",
+    "tests": 937,
+    "passed": 671,
+    "skipped": 266,
+    "failed": 0,
+    "optionalNativeSkipsCountAsPass": false,
+    "logSha256": "4702a3bd9606ab88ff22cd36f8f0be7af004349c053ea13916e37ff283629775"
+  },
+  "nativeAndInstalled": {
+    "image": "sha256:d19f7bf9d898e3b56fab969a1d5b5ca9cc5746efbb3a6384c6a9d739460d799f",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "scala",
+      "timeoutMs": 300000,
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 13,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "f3087df527c831cbc7b5786b677af29104b56c289a77341097ccf265c912245a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f3087df527c831cbc7b5786b677af29104b56c289a77341097ccf265c912245a"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "ee5beec3249e866076ddee6ff9cd1d03899676b803b4d9d76a32c583232322ef"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ee5beec3249e866076ddee6ff9cd1d03899676b803b4d9d76a32c583232322ef"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Scala planning remains inert explicit and unavailable without pinned prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.639301,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Scala configuration rejects unpinned versions plugins scripts mixed profiles and unsafe paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9.677384,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Scala catches type defects and accepts repairs exact near misses and CRLF with complete source output bindings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23554.110839,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6016.29434,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Scala accounts resolved declaration expression type and alias suppressions without matching identifier prefixes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 29581.593099,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Scala retains partial syntax failures BOM and empty files and never executes application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23535.236915,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native Scala rejects changed artifacts links scripts mixed sources and empty selected scope",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 308.97575,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Scala cancellation kills the reached compiler JVM and removes owned snapshots and runtime libraries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2642.184814,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5483.903552,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-3",
+            "name": "native Scala resolves pinned dependency classes without initialization and rejects missing changed source bearing and manifest dependencies",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12582.125138,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-3",
+            "name": "native Scala applies declared warning policy and preserves compiler failure summaries and partial findings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11898.246749,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-3",
+            "name": "native Scala binds same-named nested sources and all generated classes to declared JVM 17 21 and 25 targets",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17562.87771,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-4",
+            "name": "native Scala CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25896.807337,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Scala planning remains inert explicit and unavailable without pinned prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Scala configuration rejects unpinned versions plugins scripts mixed profiles and unsafe paths",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Scala catches type defects and accepts repairs exact near misses and CRLF with complete source output bindings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Scala accounts resolved declaration expression type and alias suppressions without matching identifier prefixes",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Scala retains partial syntax failures BOM and empty files and never executes application initialization",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Scala rejects changed artifacts links scripts mixed sources and empty selected scope",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Scala cancellation kills the reached compiler JVM and removes owned snapshots and runtime libraries",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Scala resolves pinned dependency classes without initialization and rejects missing changed source bearing and manifest dependencies",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Scala applies declared warning policy and preserves compiler failure summaries and partial findings",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Scala binds same-named nested sources and all generated classes to declared JVM 17 21 and 25 targets",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Scala CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "profile": "scala-compiler-guards-v1",
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "original-native-observer",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "fc59f85f63c3cf58ac371b833b9b032ff7873f7398c98215dbd9ce363239aa44",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "0b2045cb301cf1884b5a70924c656f2b93a960540c585eed9425357a91e48a2c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-finish",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "261d24a6a4852fd58d9b65aa66f1585345963111dbe0245aa6142a5a1a664842",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "f1df201ff9adc2b54b2b95ad7cc274cf79fd61136e3f037a0c5637fd72b23cec",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-source-identity",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "b119392216651185749dea55ee121e9525e609eb081b1940f04753508502e8bc",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "3066e5f6f3e8885d402c758bbc690039013f6da4b16f61514b56881fd78085c9",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-source-identity",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "cf94c8308652c9a41306fec4dd549320dd517c2005bacca9ddf0de3f44ee55fc",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "b3d32441e8695db8f06691b93a0756e98b92dc14d6aa3882172c00d7f077f725",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "resolved-suppression-accounting",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "8a419b35402aeb302a21a2de9326081873c7461d798ab6a368db4138f8bad28c",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "a7a829659bc97d2f7d744fdad4f7f75839c1403fbecc8245f9cc7f71490a93fc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-tree-accounting",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "c1913bb7e382b7798a843935fad9aa4d7720b83b9dcc654050ce938c164b390f",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "f97f6a38872eef8c04f841302647106c014a6fd103eec93c54c6133c2e13c4f5",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-type-accounting",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "3244eef4f74f66c80f78783a796d349ba2b055755217d516fd36403ca7af6cee",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "1dd7aa9d5469c78fb3708150cd9027c9f31e6b687ff81330d68ec39b2a9a8a65",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-phase-plan",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "5f9e4eaadb636ae81a1fb8de8353124cc4d8bbd7b4071bb20ea1cd7749e1f9e0",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "a6a534dbc92528db0337601d8e6c59588ee3625c6db19061fd905a723ff2bb35",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-backend-completion",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "bb595ad0c19b699c5667ca1b790642ae8fdb7fcd8ca8593f975f350e319cab26",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "bd966273b19bd889a47d2de9a4aa17dc275f64a32d33dc3ab495d2bcffcda7c1",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-class-output",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "f6770654b3811973547e6e5a3c46642291b51a51214bf6124dde8e5e54b0e5ef",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "3d26910b9df44772017365678bb62b0d128da1da73f74118c48c1994bd728c1a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "declared-class-target",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "f19b85760ee60cc29c8a00cd28068dfc15e7a7f367f9069d0bc001adbf45d6fd",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "41692ffd3046aaa0b3fb6a1df528cd5afc0ecce531501a1dddf940dc7954db0d",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-raw-integrity",
+          "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+          "callbackSha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "83b418563cd333259c645ec078e4387f1a9510fb9a601beae9ff3987bd507e2a",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "87d71a7a422b331b89be674b3efb8f2f790c939d145dd908f4536e02e0c91930",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "empty-analysis-inventory",
+          "callback": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+          "callbackSha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083",
+          "sourceSha256": "24bafe6aeb3f23e8c6448154f874553f97edbc9b4e81e7076016cfdfccd253d4",
+          "mutantSha256": "23e1903fb857d06cc7849744b511b9941442653e5e2e911d191f7effff12b395",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "5e756e728c1a6f40c2a231802fabe39c55c864094e8848d7a47cf582f0866127",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "f439470838089bf8b94f0ed9b0a8654d84c1620381d055cedf194e10bf96cd44",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "scala",
+        "timeoutMs": 300000,
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 13,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "f1d9aae47d99d5ff2366ff5a8f34215b62c787f2e5491d21ece646ea5650d24d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "f3087df527c831cbc7b5786b677af29104b56c289a77341097ccf265c912245a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "f3087df527c831cbc7b5786b677af29104b56c289a77341097ccf265c912245a"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "ee5beec3249e866076ddee6ff9cd1d03899676b803b4d9d76a32c583232322ef"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ee5beec3249e866076ddee6ff9cd1d03899676b803b4d9d76a32c583232322ef"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "Scala planning remains inert explicit and unavailable without pinned prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.755671,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "Scala configuration rejects unpinned versions plugins scripts mixed profiles and unsafe paths",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12.537524,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native Scala catches type defects and accepts repairs exact near misses and CRLF with complete source output bindings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 23641.316796,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6077.216786,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native Scala accounts resolved declaration expression type and alias suppressions without matching identifier prefixes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29551.758451,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native Scala retains partial syntax failures BOM and empty files and never executes application initialization",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 23625.849213,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native Scala rejects changed artifacts links scripts mixed sources and empty selected scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 336.673046,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native Scala cancellation kills the reached compiler JVM and removes owned snapshots and runtime libraries",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2604.145698,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5607.033943,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-3",
+              "name": "native Scala resolves pinned dependency classes without initialization and rejects missing changed source bearing and manifest dependencies",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12481.085028,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-3",
+              "name": "native Scala applies declared warning policy and preserves compiler failure summaries and partial findings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11953.886292,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-3",
+              "name": "native Scala binds same-named nested sources and all generated classes to declared JVM 17 21 and 25 targets",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17570.188322,
+              "required": true
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-4",
+              "name": "native Scala CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 25901.853727,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "Scala planning remains inert explicit and unavailable without pinned prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Scala configuration rejects unpinned versions plugins scripts mixed profiles and unsafe paths",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Scala catches type defects and accepts repairs exact near misses and CRLF with complete source output bindings",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Scala accounts resolved declaration expression type and alias suppressions without matching identifier prefixes",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Scala retains partial syntax failures BOM and empty files and never executes application initialization",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Scala rejects changed artifacts links scripts mixed sources and empty selected scope",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Scala cancellation kills the reached compiler JVM and removes owned snapshots and runtime libraries",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Scala resolves pinned dependency classes without initialization and rejects missing changed source bearing and manifest dependencies",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Scala applies declared warning policy and preserves compiler failure summaries and partial findings",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Scala binds same-named nested sources and all generated classes to declared JVM 17 21 and 25 targets",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Scala CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "outcome": "passed",
+              "terminalSequences": [13]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:d19f7bf9d898e3b56fab969a1d5b5ca9cc5746efbb3a6384c6a9d739460d799f",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 564765,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "changedFiles": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "ee700bb275bfac0ab176326f5a581cadf5fd08abf85b6fc904952ed80ae2de35",
+      "bytes": 35600
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "59411a62d2ae6f41dc10777cbb0e5520f8b7f627ae813198a8e8f83abeac8e50",
+      "bytes": 18516
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "756d65850f8b0774434ba1791e39d5a070bc83da5561dc199ffcd046f299ffb7",
+      "bytes": 27165
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "b7deaad994bf9a244dfdd8aeb4295a48e3513d8bc199ce8aea869e3e8471d4e8",
+      "bytes": 31290
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "95e87e1d87381f2b0c168918f7d66061e2a20c9592c1847c17ce4edbfff228ac",
+      "bytes": 36427
+    },
+    {
+      "file": "docs/REVIEWER-ROADMAP.md",
+      "sha256": "0f777768bd15cc77cf432a94a125e0c71fb17cada554efa4da9db13621f6db84",
+      "bytes": 33785
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "a620892aa9196adc1a31a7abd0c76abb8b1e6ac75e25c7d107116623e3e7ca80",
+      "bytes": 34775
+    },
+    {
+      "file": "docs/SCALA.md",
+      "sha256": "0bd66eecf79a98e1a777d971311af4698fc1dc1308504966b1d8ddd938841bd6",
+      "bytes": 6367
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "69ceceeb7d3b2fbb3af4bf1038cdf7f7610c219fa1187419f9f8eaaee27fcf11",
+      "bytes": 55319
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "fc391b6c0ec1384e6aea10d804b6cbe0698dbf094eca0e4ab53b1f21e1f70b52",
+      "bytes": 13899
+    },
+    {
+      "file": "schemas/scala-config.schema.json",
+      "sha256": "b21183a73725c402631b5dda3f7204b8fdea74469bad8766551bb388d9e85bb5",
+      "bytes": 1133
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "79df318258d3e91dfd76a8e8eea838379e57d7797f91df6142dde6faab4dc67d",
+      "bytes": 12901
+    },
+    {
+      "file": "scripts/prepare-scala-tools.mjs",
+      "sha256": "11f4cb8679a5aab1028e795797507015162a638d5d22b569b7f4c6aa5599d4ac",
+      "bytes": 3589
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "e9f6863276e9ae84ed65901dcaa72f2f20ea8ae2536c4002ca7b254a5cf752dd",
+      "bytes": 131893
+    },
+    {
+      "file": "scripts/scala-tools.Dockerfile",
+      "sha256": "2a03913caa13db1bcd08263515a657a1781521c62a5cd8ef6bcd72a5f605e722",
+      "bytes": 486
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "7aa96757ec8372d6f421c10c5c4861e7e68fd9f3d38635578f3926c3afcd8f37",
+      "bytes": 1177
+    },
+    {
+      "file": "scripts/verify-scala-container.mjs",
+      "sha256": "2ed7f2a9a11bfaefa4787a20b3fcd1493095d57e2da9bc84b5d5ed40a86c40cd",
+      "bytes": 2475
+    },
+    {
+      "file": "scripts/verify-scala-guards.mjs",
+      "sha256": "155ca48e602157697ac2372f44b93ebf9e475ff631df903ce1f8a62125d4fbb1",
+      "bytes": 7906
+    },
+    {
+      "file": "scripts/verify-scala-package.mjs",
+      "sha256": "8634e52ccc7d2a3bebef474ad2f21763d96dda79bc3ecc628b435fcfd1745740",
+      "bytes": 6256
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "9f86c9dfb6db0a49b4a4501243a3fb9ce8b2dbc35b084f2b66dbd11dc11d8c78",
+      "bytes": 22317
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "a6fcc33d7070fe7c807b39270eb0a7724a229ed634781114550e5c5890c8dd47",
+      "bytes": 19517
+    },
+    {
+      "file": "src/scala-archive.ts",
+      "sha256": "70bd6be2ce075dc7c8a4ecda5c9cdee28c07629a0a38ddd0c34ed44613b99d43",
+      "bytes": 3621
+    },
+    {
+      "file": "src/scala-artifacts.ts",
+      "sha256": "f229e05fc8e5df6f9438ea800c4db609bd62dbf9611e5f318801b6dea2d765e4",
+      "bytes": 4922
+    },
+    {
+      "file": "src/scala-evidence.ts",
+      "sha256": "147a3add809b7f5c2f6bc5aa9cef4bd777e0dfa057a7cb3ab1bdbc131daa71e0",
+      "bytes": 14752
+    },
+    {
+      "file": "src/scala-native.ts",
+      "sha256": "1492eff2d49913e0a5db1d2de09c4ea8201db70397e0f0cb568cb37ef8a7e1dc",
+      "bytes": 11617
+    },
+    {
+      "file": "src/scala-runner.ts",
+      "sha256": "07d0b9f55da37f94d39d0073e34626036cf866822c0e7301b4d6c38b4d6b35dc",
+      "bytes": 9043
+    },
+    {
+      "file": "src/scala.ts",
+      "sha256": "c2cff34c09cd0ba32ffce6c271a9dcf6de64378a3375e66314080fc526f2fc4c",
+      "bytes": 5691
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "2d8f3810d04dc00e6c862de91e0a9a55b223df9505821f17a630c1fd7d78a40c",
+      "bytes": 13434
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "fdf0d57487a615065489ea3d8981eb4e9b5fa94bea819f604d0a34a79b5ae29e",
+      "bytes": 23468
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "92c166b722a7810b86c1fc4fefa2308b53c577f82e9fdae1155a1486d8f21660",
+      "bytes": 5348
+    },
+    {
+      "file": "test/scala-boundaries.test.ts",
+      "sha256": "fdb35c37bb59037d7fc90913b7eaa6309ff63d6d9c68d12f32a9e916513edee9",
+      "bytes": 10105
+    },
+    {
+      "file": "test/scala-dependencies.test.ts",
+      "sha256": "b422c91395a0037aa8dcedcf90c7d5bb36f72c80653cb16e5c3b62f47bcc4045",
+      "bytes": 6857
+    },
+    {
+      "file": "test/scala-fixture.ts",
+      "sha256": "441bac85ed56ba2af421b2a11cb7514b3f364ca2183aace60f9d5a50b6e8e16e",
+      "bytes": 1935
+    },
+    {
+      "file": "test/scala-surfaces.test.ts",
+      "sha256": "3d2109707e2d9fb39eba06277b7cf1eac8da31bdeee5d83808d52f9059b2b27b",
+      "bytes": 4091
+    },
+    {
+      "file": "test/scala.test.ts",
+      "sha256": "18e5d85e91e1cf7c8a2c1e85f10b7f2e171b157d122f3e0e2c0fbac1a3acbc49",
+      "bytes": 9583
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "cfa79aa1fb6ef4871cb578253207ec7697c44880847fc584c95c6e95599d651e",
+      "bytes": 16094
+    }
+  ],
+  "developmentAttempts": [
+    {
+      "description": "Initial extraction used an incorrect archive member directory; two native tests failed. Exact pinned member paths were corrected before final acceptance.",
+      "logSha256": "36c622898c9e58c5c36093bac88c57e30542f4b92dad1eafe166eb20a601e4aa",
+      "countedAsCompletedAcceptance": false
+    },
+    {
+      "description": "One cancellation test expected a cancelled status instead of the shared inconclusive execution contract; cleanup assertions were not reached in that failed run. The callback was corrected and all final source, guard and installed checks rerun.",
+      "logSha256": "e0b94e8b8c754103f9610f32861986d13f50d2723e538b8dc267aee88e05a4da",
+      "countedAsCompletedAcceptance": false
+    },
+    {
+      "description": "Development inspection established that unchecked annotations require native resolved type traversal; this inspection alone is not acceptance.",
+      "logSha256": "19f3c0030fc68a8a904444404351cc4c0f08b2e5e161a7b50636d29a47876f01",
+      "countedAsCompletedAcceptance": false
+    }
+  ],
+  "integrityLimits": [
+    "Selected-test ledger fingerprints selected callbacks and terminal events. Imported product/dependency bytes are outside that ledger; changed source-file digests and candidate tarball identity are recorded separately.",
+    "Candidate tarball was prepared from the working source that became sourceRevision. This measurement and later ledger-only changes are outside that candidate tarball identity.",
+    "Fixture-harness duration includes source acceptance, guard baselines/mutants/restorations and fresh installation; it is not review latency.",
+    "Native acceptance is Linux ARM64 / Node22.23.2 / Temurin25.0.4+7-LTS. Hosted x64 and wider platform/runtime profiles remain separately required.",
+    "Trusted compiler execution is not OS containment. Whole-project, Scala 2, mixed/generated/script, inline/staging/macro and wider JVM profiles remain open."
+  ],
+  "gateA": "open",
+  "qualityGatePromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

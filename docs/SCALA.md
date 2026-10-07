@@ -105,3 +105,8 @@ The pinned release and compiler API documentation are primary references:
 Release checksum verification does not establish publisher signature or complete
 license/provenance closure. Native artifacts are operator-prepared and are not
 bundled in the npm package.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.

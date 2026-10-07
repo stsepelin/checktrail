@@ -72,3 +72,8 @@ This distinction does not move any unfinished requirement into that exclusion.
 Gate A remains open while required tasks or inventory decisions remain pending.
 The quality targets in the roadmap remain targets, with no claim that they have
 been achieved by these development tests.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.

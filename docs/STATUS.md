@@ -824,3 +824,8 @@ physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
 Original source, compiling guard and offline installed acceptance is
 profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
 wrappers, platforms and full provenance remain required. Gate A remains open.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
