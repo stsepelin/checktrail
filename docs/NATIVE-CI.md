@@ -20,7 +20,7 @@ the current head and latest merge-candidate run before claiming hosted success.
 
 ## Acceptance time budgets
 
-The main OS/Node matrix has a 60-minute job limit, including preparation, the full
+The main OS/Node matrix has a 75-minute job limit, including preparation, the full
 suite, required profiles and fresh installed-package checks. The required-profile
 runner applies its timeout to each entire selected test file. Sequential controls
 therefore share that file budget even when each control has its own timeout.
