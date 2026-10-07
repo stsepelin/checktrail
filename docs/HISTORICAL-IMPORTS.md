@@ -70,3 +70,8 @@ callbacks. The fresh offline package harness selects `import-history`; the
 original `import-context` profile is repeated separately. Other language,
 framework, impact and Gate A obligations remain open. No inference or field
 review is invoked by this development acceptance.
+
+Revision-pinned historical import acceptance is recorded in
+[historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
+The receipt retains both final profiles and unaccepted development attempts; it
+does not promote broader Gate A capabilities or review quality.

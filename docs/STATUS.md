@@ -835,3 +835,8 @@ base and working/index consumers, deleted/moved source and revision-specific
 edges through the shared import interface. See
 [HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
 impact obligations remain open; this does not narrow validation plans.
+
+Revision-pinned historical import acceptance is recorded in
+[historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
+The receipt retains both final profiles and unaccepted development attempts; it
+does not promote broader Gate A capabilities or review quality.
