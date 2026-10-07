@@ -14,6 +14,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import { inventory } from "../src/inventory.js";
 import { createPlan } from "../src/engine.js";
 import {
   initialize,
@@ -59,8 +60,10 @@ test("init previews without writes and creates a planner-compatible polyglot pol
     preview.configuration!.projects.flatMap((project) => project.checks).sort(),
   );
   assert.equal(
-    (await readdir(root)).filter((name) => name.startsWith(".checktrail-init-"))
-      .length,
+    (await readdir(root)).filter(
+      (name) =>
+        name === ".checktrail-init" || name.startsWith(".checktrail-init-"),
+    ).length,
     0,
   );
 });
@@ -129,6 +132,104 @@ test("competing init writers publish one complete policy and leave no temporary 
       assert.match(String(attempt.reason), /EEXIST|Project changed/);
     else assert.ok(["created", "preserved"].includes(attempt.value.status));
   }
+  assert.deepEqual(
+    JSON.parse(await readFile(path.join(root, "checktrail.json"), "utf8")),
+    JSON.parse(policy(["javascript.node-test"])),
+  );
+  assert.deepEqual((await readdir(root)).sort(), [
+    "case.test.js",
+    "checktrail.json",
+    "package.json",
+  ]);
+});
+
+test("init ownership is acquired before discovery and existing staging entries are preserved", async (t) => {
+  for (const kind of ["directory", "file", "symlink"]) {
+    const root = await fixture(t, { "package.json": "malformed" });
+    const owned = path.join(root, ".checktrail-init");
+    const original = await fixture(t, { "checktrail.json": "prior writer" });
+    if (kind === "directory") {
+      await mkdir(owned);
+      await writeFile(path.join(owned, "checktrail.json"), "prior writer");
+    } else if (kind === "file") await writeFile(owned, "prior writer");
+    else await symlink(original, owned, "dir");
+    await assert.rejects(initialize(root, { write: true }), { code: "EEXIST" });
+    assert.equal(
+      await readFile(
+        kind === "file" ? owned : path.join(owned, "checktrail.json"),
+        "utf8",
+      ),
+      "prior writer",
+    );
+    assert.equal(
+      await readFile(path.join(original, "checktrail.json"), "utf8"),
+      "prior writer",
+    );
+    assert.ok(!(await readdir(root)).includes("checktrail.json"));
+  }
+});
+
+test("init staging exclusion has an exact boundary and preserves public source fingerprints", async (t) => {
+  const root = await fixture(t, {
+    "package.json": nodeManifest,
+    "case.test.js": passingTest,
+    ".checktrail-init/checktrail.json": "incomplete publication",
+    ".checktrail-init-visible/source.js": "export const value = 1;",
+  });
+  const before = await inventory(root);
+  assert.deepEqual(before.excluded, [".checktrail-init"]);
+  assert.ok(before.files.includes(".checktrail-init-visible/source.js"));
+  assert.equal((await initialize(root)).status, "preview");
+  await writeFile(
+    path.join(root, ".checktrail-init/checktrail.json"),
+    "completed publication",
+  );
+  assert.equal((await inventory(root)).fingerprint, before.fingerprint);
+  await writeFile(
+    path.join(root, ".checktrail-init-visible/source.js"),
+    "export const value = 2;",
+  );
+  assert.notEqual((await inventory(root)).fingerprint, before.fingerprint);
+});
+
+test("init releases its owned staging directory after planning errors and unresolved choices", async (t) => {
+  const broken = await fixture(t, { "package.json": "malformed" });
+  await assert.rejects(initialize(broken, { write: true }));
+  assert.deepEqual(await readdir(broken), ["package.json"]);
+  const unresolved = await fixture(t, {
+    "test_case.py": "raise RuntimeError('must not run')",
+  });
+  assert.equal(
+    (await initialize(unresolved, { write: true })).status,
+    "needs-selection",
+  );
+  assert.deepEqual(await readdir(unresolved), ["test_case.py"]);
+});
+
+test("independent CLI init writers publish one complete policy and clean their owned staging", async (t) => {
+  const root = await fixture(t, {
+    "package.json": nodeManifest,
+    "case.test.js": passingTest,
+  });
+  const attempts = await Promise.allSettled(
+    Array.from({ length: 4 }, () =>
+      exec(process.execPath, [cli, "init", "--root", root, "--write"], {
+        cwd: root,
+      }),
+    ),
+  );
+  const statuses = attempts.flatMap((attempt) => {
+    if (attempt.status === "rejected") {
+      assert.equal(attempt.reason.code, 2);
+      assert.match(attempt.reason.stderr, /EEXIST/);
+      return [];
+    }
+    return [JSON.parse(attempt.value.stdout).status];
+  });
+  assert.equal(statuses.filter((status) => status === "created").length, 1);
+  assert.ok(
+    statuses.every((status) => status === "created" || status === "preserved"),
+  );
   assert.deepEqual(
     JSON.parse(await readFile(path.join(root, "checktrail.json"), "utf8")),
     JSON.parse(policy(["javascript.node-test"])),
