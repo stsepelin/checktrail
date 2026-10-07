@@ -20,6 +20,17 @@ const crash =
   "native Windows guardian crash kills the assigned job but cannot manufacture a completed execution receipt";
 const guards = [
   {
+    id: "launcher-directory-release",
+    name: "native Windows parent loss closes the private control pipe job termination and owned temporary directory cleanup",
+    source: "windows-native.js",
+    replacements: [
+      [
+        "process.chdir(require('node:path').parse(process.cwd()).root);",
+        "void 0;",
+      ],
+    ],
+  },
+  {
     id: "literal-trailing-backslash",
     name: literal,
     source: "windows-process.js",

@@ -15,6 +15,8 @@ export const windowsReceiptSchema = z.strictObject({
   nativeError: count.nullable(),
 });
 export const windowsExecutionSchema = windowsReceiptSchema.extend({
+  launcherPid: count.min(1),
+  launcherSha256: z.string().regex(/^[a-f0-9]{64}$/),
   supervisorSha256: z.string().regex(/^[a-f0-9]{64}$/),
   ownership: z.literal("creation-job-list"),
   executionSandboxed: z.literal(false),
