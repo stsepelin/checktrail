@@ -5,7 +5,7 @@ It is an implementation queue, not an evaluation result. “Locally verified” 
 the named development tests passed for the recorded local profile; it does not
 close a wider platform/native gate or establish reviewer quality.
 
-The required inventory is not yet frozen. [REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md)
+The required inventory is not yet frozen. Its finite profile candidate and preservation audit are in `gate-a-profiles.v1.json` and `scripts/audit-gate-inventory.mjs`; selected tooling is not accepted native behavior. [REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md)
 reconciles the capability families, explicit deferrals and remaining profile pins. The existing task families below remain
 required; cross-cutting scope decisions must be reconciled with `PLAN.md` before
 Gate A can close. No new real-project MCP field evaluation is enabled by this ledger.

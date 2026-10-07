@@ -17,7 +17,7 @@ probes, host isolation, general claim validation and the evaluation harness rema
 unfinished; Checktrail-owned AI client orchestration is optional rather than a
 completion gate. See [REVIEW-MCP-WORKFLOW.md](REVIEW-MCP-WORKFLOW.md).
 [REQUIRED-INVENTORY.md](REQUIRED-INVENTORY.md) reconciles required families and
-explicit deferrals; exact new acceptance-profile pins remain open.
+explicit deferrals; finite profile selections and tool/source pins are recorded; artifact, reference and acceptance bindings remain open.
 
 ## 1. Purpose and success criteria
 

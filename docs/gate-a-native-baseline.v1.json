@@ -3040,23 +3040,5 @@
       "file": "dist/test/onboarding.test.js",
       "name": "independent CLI init writers publish one complete policy and clean their owned staging"
     }
-  ],
-  "gate-inventory": [
-    {
-      "file": "dist/test/gate-inventory.test.js",
-      "name": "finite inventory audit preserves every original named native case without declaring implementation or quality acceptance"
-    },
-    {
-      "file": "dist/test/gate-inventory.test.js",
-      "name": "finite inventory rejects a removed or renamed native callback and coherent baseline replacement"
-    },
-    {
-      "file": "dist/test/gate-inventory.test.js",
-      "name": "finite inventory rejects silently removed obligations profiles pins cases and floating tool versions"
-    },
-    {
-      "file": "dist/test/gate-inventory.test.js",
-      "name": "finite inventory keeps pending freeze decisions and declared receipts separate from feature acceptance"
-    }
   ]
 }

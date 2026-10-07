@@ -70,7 +70,7 @@ the reserved acceptance cases.
 The immediate required task is a finite inventory mapping each obligation to its
 source document, bounded deliverable, dependencies, named acceptance cases,
 platform/tool profile and evidence location. The [required inventory](REQUIRED-INVENTORY.md) reconciles the capability families
-and explicit deferrals. Exact new acceptance-profile pins remain open. Broad phrases such as broader semantics or wider versions need
+and explicit deferrals. The finite candidate in `gate-a-profiles.v1.json` records tool/source pins and planned assertions; artifact closures, private reference/protocol identity and exact native acceptance bindings remain open. Broad phrases such as broader semantics or wider versions need
 explicit finite profiles before Gate A can be assessed. Unsupported, blocked or
 unmeasured work stays open; it cannot become optional merely to enable a trial.
 Changing an existing requirement needs an explicit scope decision.
