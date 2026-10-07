@@ -30,6 +30,12 @@ The `dotnet-method` profile allows ten minutes per selected file, and
 limits remain in force. All other profiles retain their existing file budgets;
 any timeout still fails acceptance and leaves unobserved required cases visible.
 
+The Scala container job allows thirty minutes for artifact preparation, source
+acceptance, compiling guard mutations with their original and restored callbacks,
+and fresh installed-package acceptance. The verifier records phase progress on
+stderr and retains the final JSON evidence on stdout. Existing control and engine
+execution limits remain in force; a job cutoff is incomplete acceptance.
+
 ## Pinned infrastructure preparation
 
 Infrastructure runtime setup allows at most three download attempts per artifact,
