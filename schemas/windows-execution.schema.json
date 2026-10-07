@@ -49,6 +49,8 @@
         { "type": "null" }
       ]
     },
+    "launcherPid": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
+    "launcherSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "supervisorSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "ownership": { "type": "string", "const": "creation-job-list" },
     "executionSandboxed": { "type": "boolean", "const": false }
@@ -66,6 +68,8 @@
     "activeAfterCleanup",
     "cleanup",
     "nativeError",
+    "launcherPid",
+    "launcherSha256",
     "supervisorSha256",
     "ownership",
     "executionSandboxed"
