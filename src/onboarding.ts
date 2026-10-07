@@ -3,7 +3,7 @@ import {
   access,
   link,
   lstat,
-  mkdtemp,
+  mkdir,
   realpath,
   rm,
   stat,
@@ -50,6 +50,23 @@ export async function initialize(
   options: InitOptions = {},
 ): Promise<InitResult> {
   root = await realpath(root);
+  if (!options.write) return initializePolicy(root, options);
+  const temporary = path.join(root, ".checktrail-init");
+  // Acquire before any snapshot: another publisher must not change a scanned tree.
+  // An existing entry belongs to somebody else, including a crashed prior writer.
+  await mkdir(temporary, { mode: 0o700 });
+  try {
+    return await initializePolicy(root, options, temporary);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
+}
+
+async function initializePolicy(
+  root: string,
+  options: InitOptions,
+  temporary?: string,
+): Promise<InitResult> {
   const exists = await configurationExists(root);
   const { source, plan } = await createPlan(root);
   const result: InitResult = {
@@ -158,19 +175,16 @@ export async function initialize(
   if (!options.write) return result;
   if ((await inventory(root)).fingerprint !== source.fingerprint)
     throw new Error("Project changed during setup; review a fresh preview");
-  const temporary = await mkdtemp(path.join(root, ".checktrail-init-"));
-  try {
-    const staged = path.join(temporary, "checktrail.json");
-    await writeFile(
-      staged,
-      `${JSON.stringify(result.configuration, null, 2)}\n`,
-      { flag: "wx", mode: 0o600 },
-    );
-    // An exclusive link publishes complete bytes without replacing a concurrent writer.
-    await link(staged, path.join(root, "checktrail.json"));
-  } finally {
-    await rm(temporary, { recursive: true, force: true });
-  }
+  if (!temporary)
+    throw new Error("Initialization publication requires ownership");
+  const staged = path.join(temporary, "checktrail.json");
+  await writeFile(
+    staged,
+    `${JSON.stringify(result.configuration, null, 2)}\n`,
+    { flag: "wx", mode: 0o600 },
+  );
+  // An exclusive link publishes complete bytes without replacing another writer.
+  await link(staged, path.join(root, "checktrail.json"));
   return { ...result, status: "created" };
 }
 
