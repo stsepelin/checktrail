@@ -106,6 +106,25 @@ async function ready(
     "Original native Laravel boot callback did not publish complete readiness",
   );
 }
+async function projectCachesUnchanged(root: string) {
+  for (const [file, contents] of [
+    ["original-target.txt", "original target survives cache cleanup"],
+    [".env", "SYNTHETIC_DOTENV_PROBE=original-do-not-load\n"],
+    [
+      "bootstrap/cache/config.php",
+      "<?php throw new RuntimeException('original stale config must not load');",
+    ],
+    [
+      "bootstrap/cache/routes-v7.php",
+      "<?php throw new RuntimeException('original stale routes must not load');",
+    ],
+  ])
+    assert.equal(
+      await readFile(path.join(root, file!), "utf8"),
+      contents,
+      "Project file changed: " + file,
+    );
+}
 async function absent(directory: string) {
   await assert.rejects(access(directory), { code: "ENOENT" });
 }
@@ -192,10 +211,7 @@ test(
       );
       await absent(observed.directory);
       await absent(observed.parent);
-      assert.equal(
-        await readFile(path.join(root, "original-target.txt"), "utf8"),
-        "original target survives cache cleanup",
-      );
+      await projectCachesUnchanged(root);
       assert.deepEqual(
         JSON.parse(
           await readFile(path.join(root, ".checktrail/ready.json"), "utf8"),
@@ -257,10 +273,7 @@ test(
         );
         await absent(observed.directory);
         await absent(observed.parent);
-        assert.equal(
-          await readFile(path.join(root, "original-target.txt"), "utf8"),
-          "original target survives cache cleanup",
-        );
+        await projectCachesUnchanged(root);
       } finally {
         controller.abort();
         await running;
@@ -297,10 +310,7 @@ test(
       }
       await absent(observed.directory);
       await absent(observed.parent);
-      assert.equal(
-        await readFile(path.join(root, "original-target.txt"), "utf8"),
-        "original target survives cache cleanup",
-      );
+      await projectCachesUnchanged(root);
     }
   },
 );
@@ -339,10 +349,7 @@ test(
     assert.equal(path.dirname(observed.parent), destination);
     await absent(observed.directory);
     await absent(observed.parent);
-    assert.equal(
-      await readFile(path.join(root, "original-target.txt"), "utf8"),
-      "original target survives cache cleanup",
-    );
+    await projectCachesUnchanged(root);
   },
 );
 
@@ -455,10 +462,7 @@ test(
         }
         await absent(observed.directory);
         await absent(observed.parent);
-        assert.equal(
-          await readFile(path.join(root, "original-target.txt"), "utf8"),
-          "original target survives cache cleanup",
-        );
+        await projectCachesUnchanged(root);
       } finally {
         child.stdin.end();
         const timer = setTimeout(() => child.kill("SIGKILL"), 5000);
