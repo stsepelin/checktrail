@@ -248,7 +248,15 @@ test(
       const result = await running;
       assert.equal(result.cancelled, true);
       assert.equal(result.timedOut, false);
-      assert.equal(result.errorCode, undefined);
+      assert.equal(
+        result.errorCode,
+        undefined,
+        JSON.stringify({
+          durationMs: result.durationMs,
+          windowsExecution: result.windowsExecution,
+          stderr: result.stderr,
+        }),
+      );
       assert.equal(result.windowsExecution!.cleanup, "confirmed");
       assert.ok(result.windowsExecution!.activeBeforeCleanup! >= 3);
       assert.equal(result.windowsExecution!.activeAfterCleanup, 0);
@@ -283,7 +291,15 @@ test(
       timeoutMs: 5000,
     });
     assert.equal(timed.timedOut, true);
-    assert.equal(timed.errorCode, undefined);
+    assert.equal(
+      timed.errorCode,
+      undefined,
+      JSON.stringify({
+        durationMs: timed.durationMs,
+        windowsExecution: timed.windowsExecution,
+        stderr: timed.stderr,
+      }),
+    );
     assert.equal(timed.windowsExecution!.cleanup, "confirmed");
     assert.ok(timed.durationMs < 8500);
     const exact = await runProcess(
@@ -571,7 +587,7 @@ test(
         5000,
       );
       await assert.rejects(
-        lstat(path.dirname(state.temp)),
+        async () => lstat(path.dirname(state!.temp)),
         { code: "ENOENT" },
         JSON.stringify({
           files: await readdir(path.dirname(state.temp)).catch(() => []),
