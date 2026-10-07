@@ -6,11 +6,16 @@ import {
   copyFile,
   lstat,
   mkdir,
+  mkdtemp,
+  realpath,
+  rm,
   readFile,
   readdir,
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+import { tmpdir } from "node:os";
+import { createServer, type Socket } from "node:net";
 import { randomUUID } from "node:crypto";
 
 import { setTimeout as delay } from "node:timers/promises";
@@ -22,6 +27,8 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import {
   windowsEnvironment,
   resolveWindowsExecutable,
+  windowsEncodedSupervisor,
+  windowsCommandLine,
 } from "../src/windows-process.js";
 import { runProcess } from "../src/runner.js";
 import { validate } from "../src/engine.js";
@@ -641,6 +648,126 @@ test(
       controller.abort();
       await running;
       cleanupTree(state);
+    }
+  },
+);
+
+test(
+  "native Windows guardian job cleanup does not depend on exit of the still-living launcher",
+  native,
+  async (t) => {
+    const root = await fixture(t, {}),
+      ids = path.join(root, "tree.json");
+    const owned = await realpath(
+      await mkdtemp(path.join(tmpdir(), "checktrail-windows-")),
+    );
+    t.after(() => rm(owned, { recursive: true, force: true }));
+    const temporary = path.join(owned, "original-command");
+    await mkdir(temporary);
+    const requestId = randomUUID(),
+      controlPipe = "checktrail-" + requestId;
+    let control: Socket | undefined;
+    const server = createServer((socket) => {
+      control = socket;
+      socket.on("error", () => {});
+    });
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen("\\\\.\\pipe\\" + controlPipe, resolve);
+    });
+    const systemRoot = process.env.SystemRoot ?? process.env.SYSTEMROOT;
+    assert.ok(systemRoot);
+    await writeFile(path.join(owned, "owner-id"), requestId, { flag: "wx" });
+    await writeFile(
+      path.join(owned, "request.json"),
+      JSON.stringify({
+        requestId,
+        controlPipe,
+        executable: process.execPath,
+        commandLine: windowsCommandLine(process.execPath, [
+          "-e",
+          treeSource,
+          ids,
+        ]),
+        cwd: root,
+        environment: [
+          "SYSTEMROOT=" + systemRoot,
+          "CHECKTRAIL_TEMP=" + temporary,
+        ],
+        receipt: path.join(owned, "receipt.json"),
+      }),
+      { flag: "wx" },
+    );
+    // Keep this Node host alive. Its ordinary libuv child job must not mask
+    // missing native kill-on-close flags by closing when the keeper exits.
+    const guardian = spawn(
+      path.join(systemRoot, "System32/WindowsPowerShell/v1.0/powershell.exe"),
+      [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-EncodedCommand",
+        windowsEncodedSupervisor,
+      ],
+      {
+        cwd: owned,
+        env: {
+          SYSTEMROOT: systemRoot,
+          PATH: process.env.PATH ?? "",
+          TEMP: owned,
+          TMP: owned,
+        },
+        detached: false,
+        windowsHide: true,
+        shell: false,
+        stdio: ["ignore", "ignore", "pipe"],
+      },
+    );
+    const exited = once(guardian, "exit"),
+      closed = once(guardian, "close");
+    let error = "";
+    guardian.stderr!.on("data", (bytes) => {
+      error = (error + String(bytes)).slice(-4096);
+    });
+    const sibling = spawn(
+      process.execPath,
+      ["-e", "setInterval(()=>{},1000)"],
+      { stdio: "ignore" },
+    );
+    const siblingClosed = once(sibling, "close");
+    let state: Awaited<ReturnType<typeof jsonFile>> = null;
+    try {
+      state = await waitFor(() => jsonFile(ids));
+      const receipt = await treeReceipt(state);
+      assert.equal(receipt.supervisorPid, guardian.pid);
+      assert.ok(
+        control && alive(state.a) && alive(state.b) && alive(sibling.pid!),
+      );
+      guardian.kill("SIGKILL");
+      await exited;
+      await assert.doesNotReject(
+        waitFor(
+          async () =>
+            [state!.root, state!.a, state!.b].some(alive) ? null : true,
+          3000,
+        ),
+        "Native owned descendants survived while the launcher remained alive",
+      );
+      assert.equal(alive(sibling.pid!), true);
+      const retained = windowsReceiptSchema.parse(
+        JSON.parse(await readFile(path.join(owned, "receipt.json"), "utf8")),
+      );
+      assert.equal(retained.phase, "running");
+      assert.equal(retained.cleanup, "unavailable");
+      assert.equal(error, "");
+    } finally {
+      if (guardian.exitCode === null) guardian.kill("SIGKILL");
+      cleanupTree(state);
+      control?.destroy();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      if (sibling.exitCode === null) sibling.kill("SIGKILL");
+      await siblingClosed;
+      await closed;
     }
   },
 );
