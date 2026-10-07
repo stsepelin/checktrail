@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "helmVersion": "4.3.0",
+  "kubernetesVersion": "1.36.0",
+  "platform": "linux_arm64",
+  "release": "original",
+  "namespace": "original",
+  "templates": ["templates/settings.yaml", "templates/worker.yaml"]
+}

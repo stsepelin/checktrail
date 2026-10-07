@@ -48,6 +48,7 @@ export async function toolsFor(
         "dotnet.format-whitespace",
         "infrastructure.terraform-validate",
         "infrastructure.kustomize",
+        "infrastructure.helm",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
@@ -268,6 +269,14 @@ export async function toolsFor(
         "--version",
       ]),
     ];
+  if (check.id === "infrastructure.helm" && check.commands[0])
+    return [
+      { name: "node", source: "engine-runtime" },
+      command("helm", process.execPath, [
+        ...check.commands[0].args,
+        "--version",
+      ]),
+    ];
   if (check.id === "infrastructure.kustomize" && check.commands[0])
     return [
       { name: "node", source: "engine-runtime" },
@@ -400,6 +409,7 @@ export async function identifyTool(
     return { ...result, status: "unavailable" };
   if (
     (tool.name === "terraform" ||
+      tool.name === "helm" ||
       (["kustomize", "kubeconform"].includes(tool.name) &&
         path.basename(tool.command?.args[0] ?? "") ===
           "kustomize-runner.js")) &&
@@ -413,9 +423,11 @@ export async function identifyTool(
     execution.stdout ===
       JSON.stringify({
         unavailable:
-          tool.name === "terraform"
-            ? "terraform-toolchain"
-            : "kustomize-toolchain",
+          tool.name === "helm"
+            ? "helm-toolchain"
+            : tool.name === "terraform"
+              ? "terraform-toolchain"
+              : "kustomize-toolchain",
       })
   )
     return { ...result, status: "unavailable" };
@@ -429,6 +441,14 @@ export async function identifyTool(
   )
     return result;
   const output = execution.stdout.trim();
+  if (tool.name === "helm") {
+    const verified = !execution.stderr && output === "v4.3.0";
+    return {
+      ...result,
+      status: verified ? "identified" : "inconclusive",
+      version: verified ? "4.3.0" : null,
+    };
+  }
   if (
     [
       "clang-format",

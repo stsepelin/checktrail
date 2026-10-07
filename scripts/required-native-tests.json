@@ -2327,6 +2327,44 @@
       "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust"
     }
   ],
+  "helm": [
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes"
+    },
+    {
+      "file": "dist/test/helm-lifecycle.test.js",
+      "name": "native Helm frozen collection rejects source and configuration changed after planning"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing"
+    },
+    {
+      "file": "dist/test/helm-scope.test.js",
+      "name": "Helm startup environment cannot override native chart cluster plugin and credential settings"
+    },
+    {
+      "file": "dist/test/helm-surfaces.test.js",
+      "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation"
+    },
+    {
+      "file": "dist/test/helm.test.js",
+      "name": "native Helm omitted and duplicate resources never become complete coverage"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",
