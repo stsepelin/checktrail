@@ -89,7 +89,7 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | Rust                                | Locked offline Cargo builds, explicit workspace/target profiles, Clippy/libtest/doctests and Cargo/Rustfmt |
 | Ruby                                | MRI grammar checks; bounded opt-in RuboCop/RSpec/Minitest with source and lifecycle evidence               |
 | Swift                               | Grammar checks; bounded Linux ARM64 SwiftPM builds, XCTest/Swift Testing and explicit SwiftLint rules      |
-| C / C++                             | Prepared Clang compilation databases, native diagnostics and source/header accounting; no linking or tests |
+| C / C++                             | Prepared Clang checks; bounded C17/C++20 CMake builds, CTest, clang-format and clang-tidy                  |
 | Java                                | Explicit classpath compilation and bounded pinned Checkstyle, Maven reactor and Gradle module tests        |
 | C# / .NET                           | Explicit C# compilation; bounded opt-in C#/F#/VB build/NUnit and C#/VB whitespace checks                   |
 | GitHub Actions                      | Static workflow checking with local input and per-file native evidence; no job execution                   |
@@ -364,7 +364,10 @@ inconclusive execution are separate advisory results; see [mutation experiments]
 
 The [C/C++ profile](docs/CLANG.md) validates prepared Clang argument arrays and
 requires native dependency coverage for inventoried translation units and headers.
-It does not run build systems, generate missing headers, link or execute tests.
+The separate opt-in [native tools profile](docs/CPP-TOOLS.md) builds a finite C17/C++20
+CMake declaration, generates integer-valued headers, links static libraries and
+executables, runs registered CTest callbacks, and checks formatting and explicit
+analyzer rules. Both profiles require operator trust for execution.
 
 The [Java profile](docs/JAVA.md) compiles inventoried sources with an explicit
 release and pinned local dependencies. Maven/Gradle, annotation processors and

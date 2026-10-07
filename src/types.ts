@@ -32,6 +32,7 @@ export const PARSERS = [
   "rust-test-json",
   "rustfmt-json",
   "clang-json",
+  "cpp-tools-json",
   "java-json",
   "checkstyle-json",
   "maven-json",

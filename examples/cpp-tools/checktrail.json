@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "path": ".",
+      "checks": ["cpp.build", "cpp.ctest", "cpp.clang-format", "cpp.clang-tidy"]
+    }
+  ]
+}

@@ -1,0 +1,2137 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-06T07:54:15.513159+00:00",
+  "basedOn": "45350299a74ebaaf9d34a18e0df667a6a0e8c33b",
+  "scope": "Original synthetic C17/C++20 CMake build/link, registered CTest callbacks, clang-format and explicit clang-tidy under a pinned offline Linux ARM64 profile. Broader E15 and Gate A remain open.",
+  "sourcePins": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "0b35b00f9fdfeb1684d765d5668cd8a31134f4c7f53e872350b8d66fe88af760"
+    },
+    {
+      "file": "README.md",
+      "sha256": "48b0aba2a8415455b5dbd273fcb304904cf17b68c51f5f3bbc1d81aa19bb3bd7"
+    },
+    {
+      "file": "docs/CPP-TOOLS.md",
+      "sha256": "c7b325d91e06fce3d77499e44efba744e590d12de841164d487fd10ec83eaad9"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "ac03b080a28b6c3df696cd4dd3c1d3fd93dbe091ad0c6599846032b0d8c575f7"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "e29c7f41694449aaff3850ad2160c8ccbfd9d7daf4b365a2339f6415787715a4"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "sha256": "391eef658287e5d3bf22cd0dcee3f1a41e9493ba99bc2eebffd1880b02c64333"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "d12772a0ee8ec3fedc4ed7b689e6384cffb930dd8d62f64c428fd420b3716740"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "0cf1ffcbab1a403dc587dbf4824d704070431dc70f5a3f497642e5b1554fca2e"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "bb7849155d34298eb406c5650b864ddb616e2242c0610ca3b2c77e945000cf89"
+    },
+    {
+      "file": "examples/cpp-tools/CMakeLists.txt",
+      "sha256": "1ff9a2677c122506ef22814ed87394a8dc74fb49185cd307d86fca87491892a8"
+    },
+    {
+      "file": "examples/cpp-tools/checktrail.cpp-tools.json",
+      "sha256": "c4cc4c8626cf5d81939a70e251e410edfe525b30766b81ce25e31a12207c173d"
+    },
+    {
+      "file": "examples/cpp-tools/checktrail.json",
+      "sha256": "de3b3b10f78b6afd01614df0ca0c33d4cabee28d5ab5bdeedd9b5c110d630a3e"
+    },
+    {
+      "file": "examples/cpp-tools/include/original_step.h.in",
+      "sha256": "a407ab5d8d32734a496077206dc3fd8f2bd0b69596f5f424cb75f2932071920f"
+    },
+    {
+      "file": "examples/cpp-tools/include/range.h",
+      "sha256": "9c10a9e74642eb2ae51b742e2690121cde118406353acd529d336da8a5d900cc"
+    },
+    {
+      "file": "examples/cpp-tools/include/range.hpp",
+      "sha256": "698d90494bacf10978d3ebea4aa1dbe7d10cdc62351d2f178300206eee53caae"
+    },
+    {
+      "file": "examples/cpp-tools/src/range.c",
+      "sha256": "eb8d3558a9c659e0a95474d0d5bed62244014b77a6e90d20f905648f0ed7daef"
+    },
+    {
+      "file": "examples/cpp-tools/src/range.cpp",
+      "sha256": "88820716c37b4eebf27c6ae0a1a6eb56a28c1515fea1a99ac5c57dac7de1622f"
+    },
+    {
+      "file": "examples/cpp-tools/tests/c_boundary.c",
+      "sha256": "333a39ec2ab88aaba4547bb5ac2db9ea85a4dbb5ee581f111d2cc6a69e69f8fa"
+    },
+    {
+      "file": "examples/cpp-tools/tests/cpp_boundary.cpp",
+      "sha256": "5963614083fc8c9e1bed15531ccd363dc15c0700664822d4fd3e8692a65a9a21"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "77149ffddf8cac91c9af6b7c84c88f4a9e9efa783fe5bb9235c51ea4cb357ae1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "1f5256b047c12a4490ef7e5d47ca1cff0f2dfb95dc848cf28aaedf988127d4cb"
+    },
+    {
+      "file": "schemas/cpp-tools-config.schema.json",
+      "sha256": "65eefcc12dd1cc5ae456aa1808a8c8d73511b5c8761255e5a8a38b0fbadc6175"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "d9ba70b3a628688f5c8c5efd4bcdba2ffb581c030646d1c898ca3219a3fdc28c"
+    },
+    {
+      "file": "scripts/cleanup-cpp-tools-runtime.mjs",
+      "sha256": "38b1407d5eeccc9a7d48e614adc16678cd4500e017f749fa704cbb0a509ee7c5"
+    },
+    {
+      "file": "scripts/cpp-tools-archives.json",
+      "sha256": "fa9c0d42c6d6fec82201a2b9e32569676261f7aa71e8628cd61e88de8beb2c87"
+    },
+    {
+      "file": "scripts/cpp-tools.Dockerfile",
+      "sha256": "c0b9f4d43626a6fcba9ba35900ac162d672da3fe6d2ff9da316faac209684202"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "006406cbfca99af746ae90904c5288fdee859e08a2a78685a9d75eaea3bcee4a"
+    },
+    {
+      "file": "scripts/prepare-cpp-tools-runtime.mjs",
+      "sha256": "6affc9abb3274fc7444303b86adaadc7916e81c4d64d1f647bb94fd79480efff"
+    },
+    {
+      "file": "scripts/prepare-package-cache.mjs",
+      "sha256": "e9ba63f722f246af1c6807ce217f21dbe6b75ac70b668b222da5c72b80ec0e6e"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "b1cce1ba311a46d9ee4bf726aea21586bf913132b6d1f21ba09befe31b99f855"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "c51e394bc0e935df9a3a7410a236fcb8adad918f65fccdabb8b4ce81c40e03a9"
+    },
+    {
+      "file": "scripts/verify-cpp-tools-container.mjs",
+      "sha256": "6a5b2080579b368fbb6cf86c62a76d8955c8ba649165b01b27a7e85a854d29a8"
+    },
+    {
+      "file": "scripts/verify-cpp-tools-package.mjs",
+      "sha256": "c54fc95b68a22c843cf63db0149bb36aee8abc57d3f42bd18bd23e2deebcba20"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "d0899d6a9bff9be463eae40210740f376089e945faf01141cae4b7376731cc58"
+    },
+    {
+      "file": "src/actionlint-evidence.ts",
+      "sha256": "97e08e82caeefa67a738415125b3ad5aaa585a7786e6eda7f4d60967b428fc1b"
+    },
+    {
+      "file": "src/actionlint-inputs.ts",
+      "sha256": "3065829880ec825eef4a540530b8aacb755aff1ed2915d570d96662de2698952"
+    },
+    {
+      "file": "src/actionlint-runner.ts",
+      "sha256": "18132cbc4ca06e70c7b757608fdb27e728a9d65213612d249b83154037137802"
+    },
+    {
+      "file": "src/actionlint.ts",
+      "sha256": "195252c69ff9242ffae45db6bf875d264a0b3b6abdc169f1338d80839ed8a45a"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "8b35be1193232ca6e0e82f833c98a51eccdecf6534d84c402ebcecf65ff9d349"
+    },
+    {
+      "file": "src/architecture.ts",
+      "sha256": "de3fadd649acf5d4dbb9b8356849d9ccef47068850c1bd25b2a4f74527e61444"
+    },
+    {
+      "file": "src/checkstyle-evidence.ts",
+      "sha256": "87a4aa89a5755ffc63799ebb844d1a49601d34045dcc89647e5dc5535a58f92d"
+    },
+    {
+      "file": "src/checkstyle-native.ts",
+      "sha256": "02eea009604ab049bb334efadd5eebf45eb208ea761db6147432e53d4051b320"
+    },
+    {
+      "file": "src/checkstyle-runner.ts",
+      "sha256": "aa8d4081efdbbcdb08655de75f8ba5438ef629f147cf2e28b980d80cfb3c8698"
+    },
+    {
+      "file": "src/checkstyle.ts",
+      "sha256": "1f1f51038561a3f416e8d57fee5f181f93618e9edb5804d6c589d47e8e079001"
+    },
+    {
+      "file": "src/clang-evidence.ts",
+      "sha256": "f2ce6e888dd5537bac6654f5a52861d3af770c978c57019c7bb4a95c86be1715"
+    },
+    {
+      "file": "src/clang-protocol.ts",
+      "sha256": "f25a5451f90872792b8f56251520513ea0eb3091b7c7cf36fac6a6f9e557094d"
+    },
+    {
+      "file": "src/clang-runner.ts",
+      "sha256": "ddd46a932f92a41dda9e4703510a83b20b06a356fd6abe585592c54a0034fe00"
+    },
+    {
+      "file": "src/clang.ts",
+      "sha256": "1f432ea34687d35115ca43f93b4ada4d3f9b81f634d82fe137908b6dc1ed377d"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "b39b907438483a47c636656a77b2b16209068985a0f656f7a9dd7103cbee44a9"
+    },
+    {
+      "file": "src/config.ts",
+      "sha256": "1ec576984c49f69dce4b52aabbc76040931ebc9b8fb3c84ca15fcf197977a517"
+    },
+    {
+      "file": "src/contract-schema.ts",
+      "sha256": "a05c8cf27548b70999281fa61ce79af24c307a94fe75c1c8b8bf602d9f36b012"
+    },
+    {
+      "file": "src/contract-worker.ts",
+      "sha256": "9ee35ca9b81cea63557fd49c8606b2592927d7dfd8a10adffd7b0ae6515019ed"
+    },
+    {
+      "file": "src/contracts.ts",
+      "sha256": "42e56f344d01763cfb80b38c8c9e755519f2ed755f1e850ff5fafb0083d1e035"
+    },
+    {
+      "file": "src/cpp-cmake.ts",
+      "sha256": "f3c4cb499d422c08fc5b1d0881b9c17fea322386cafc59f35891216429ff6cbb"
+    },
+    {
+      "file": "src/cpp-native.ts",
+      "sha256": "27d1935b0e86ce58e8288bd08a912cfd5557ee3a438e7db913f08738af53f20d"
+    },
+    {
+      "file": "src/cpp-tools-evidence.ts",
+      "sha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574"
+    },
+    {
+      "file": "src/cpp-tools-runner.ts",
+      "sha256": "229f6dc51e369cc07a69f2029e0a059730c17d438290bd75f6546e20306ee35b"
+    },
+    {
+      "file": "src/cpp-tools.ts",
+      "sha256": "d181e27a654e0d644d88a5f90b8f4c301ec46993e3bf6845088649a21513095f"
+    },
+    {
+      "file": "src/django-evidence.ts",
+      "sha256": "f54f78efe68120e96edbe720748d0cfb8888248ada0479783a80182493e27879"
+    },
+    {
+      "file": "src/django-runner.ts",
+      "sha256": "515ad80c22ac789f25757a0a1532c53c974e09926b6038e667179fd89bacbf35"
+    },
+    {
+      "file": "src/django.ts",
+      "sha256": "61c1abbceffd9901f0351a882c2b08ce6a193836ccfa25b33e1ea3691f46666c"
+    },
+    {
+      "file": "src/dotnet-build-evidence.ts",
+      "sha256": "4f02bcb362af49bfdd667925a1dc413c5bdde513888feec7f253d35fc2061271"
+    },
+    {
+      "file": "src/dotnet-build-native.ts",
+      "sha256": "5ef7a29fe2acbccfdd42ff3d63de13f418cafa7434d261542bdeebfb34dd52c3"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "sha256": "06442930fb4e2937c085ff34ca94a2b639314b155249b3fcb1ee90ed6c0b18c3"
+    },
+    {
+      "file": "src/dotnet-build.ts",
+      "sha256": "53a4f360602a6276985b4c242c467a2cc954604ed0df90d2947525bdc24fc930"
+    },
+    {
+      "file": "src/dotnet-compiler.ts",
+      "sha256": "95926905826b21dc95010fe9ce009048706958a780dc1cc5bcb18d932b2119b0"
+    },
+    {
+      "file": "src/dotnet-evidence.ts",
+      "sha256": "b94b9687f59183261866b291f8032a22bb23b977bf0af0604871e2e733cdf6e1"
+    },
+    {
+      "file": "src/dotnet-format-collect.ts",
+      "sha256": "f8ec77658f0b959f76144d3308905db468df0dbcc2473f3e7ab150bc1a657160"
+    },
+    {
+      "file": "src/dotnet-format-evidence.ts",
+      "sha256": "f2a78bb3885d2ae6925cc102c360ded87061abb218104a06a215da2c6f6e7a63"
+    },
+    {
+      "file": "src/dotnet-format-native.ts",
+      "sha256": "ce7564d4b2fecea0c0fe9a96a25a3f7980c4e7c294fdd6b5fe94efc8b4a5db50"
+    },
+    {
+      "file": "src/dotnet-generated-collect.ts",
+      "sha256": "de97a564c3e5672ac4905f1a5641ba30718c1ea388d2772213fdd6f566647e2d"
+    },
+    {
+      "file": "src/dotnet-nunit.ts",
+      "sha256": "fc3279fa1b4a204e59d7ce4d810987aba074387529512c782a2eb087948ad1cd"
+    },
+    {
+      "file": "src/dotnet-runner.ts",
+      "sha256": "9ad886ed3cd89f924a724ea623b854aef53eca5bc0cf6721150eafa8dd22d61e"
+    },
+    {
+      "file": "src/dotnet-test-collect.ts",
+      "sha256": "1afe643385a91b948fcbc195b7ce44282dafc2465ff7683c08b99a78a3d700e6"
+    },
+    {
+      "file": "src/dotnet-test-evidence.ts",
+      "sha256": "ca87cf3254a82fd2c5fc37e18b66913951309de975f438cbd1de27aab8ffb4f9"
+    },
+    {
+      "file": "src/dotnet-test-native.ts",
+      "sha256": "b16366b5361e1abdbddaf76b879fc23ad924594e2f3ad481c803e972939bcef4"
+    },
+    {
+      "file": "src/dotnet.ts",
+      "sha256": "4d16b454054ff9c00097fd483f71ad1604fa643da99d94dce39582ffd6b53fa5"
+    },
+    {
+      "file": "src/engine.ts",
+      "sha256": "6135b5c99b68baeac19e4d123b241372a149d478a44c2117baeb58173a81bce5"
+    },
+    {
+      "file": "src/environment.ts",
+      "sha256": "33b0f64276742bb978e0ac7f4a01f5ee2397167af02fbeb314c880570a6d5439"
+    },
+    {
+      "file": "src/eslint-evidence.ts",
+      "sha256": "e719f9ec14d71166a8df9d2161b8ee31e6768e4125e915a06462e5d6e835db2a"
+    },
+    {
+      "file": "src/eslint-runner.ts",
+      "sha256": "96b3bbdf68d2b78ad8e1f65f11173c87151a22f152c98f729be1c08759715d5a"
+    },
+    {
+      "file": "src/eslint.ts",
+      "sha256": "a6c6829df8812b6ad612606f63db8d62e14f4555eb95dafd45e8cab705bd1913"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "8624e717b73cd35afed260afb3636c6c44d8e6754db54892acb2ea4ebeb30dbc"
+    },
+    {
+      "file": "src/executable-bundle.ts",
+      "sha256": "abd4ca9751896874297b8efe8c42248b0e948b01a84a0e6683375827df9cf56c"
+    },
+    {
+      "file": "src/external-adapter.ts",
+      "sha256": "d6ed57b9a932ba9752afce6f43935c11a0b5dca87984e5b407819c5e683c09dd"
+    },
+    {
+      "file": "src/external-evidence.ts",
+      "sha256": "1124c0bda894fa4baa9f5196dda30b2ed4a25ff4d05cb2d7e637122e44df36fa"
+    },
+    {
+      "file": "src/external-runner.ts",
+      "sha256": "077d9a1dbf1010ea3eb7796e3661be2393bfcd48633a5379a1c1d695268ef818"
+    },
+    {
+      "file": "src/external-schema.ts",
+      "sha256": "7e34cf9e1a0add8b9b82fd1e7c32d353ca0bcf0ed223e48d3266a44f6b05df6e"
+    },
+    {
+      "file": "src/fastapi-evidence.ts",
+      "sha256": "1732be84f30b257a4db34a4436c75ff7ad66874df4fc6bd4a5f33cdbb0942838"
+    },
+    {
+      "file": "src/fastapi-runner.ts",
+      "sha256": "6909bd115f534cf0981bf84cd1b1f85bd94f8a8be03534f6ffddc3469a2fafa1"
+    },
+    {
+      "file": "src/fastapi.ts",
+      "sha256": "22495597c5c346e1143ef72572e934e06ac3a3cfba287638db127921ecc671d0"
+    },
+    {
+      "file": "src/fetch-adapter.ts",
+      "sha256": "c053936910eea3e415c3aa091ae368981e8e95a751eaa122633b8305b988a111"
+    },
+    {
+      "file": "src/fetch-pack.ts",
+      "sha256": "6d8d22466fb110ef0cc8c869c4833bfe925b804a587b5a0921f6e0401d5dbfef"
+    },
+    {
+      "file": "src/finding-policy-schema.ts",
+      "sha256": "95f50f34fb816d648cdcf6ef38567ab0f20a444f0a6bc4acd95b6a9abaadc766"
+    },
+    {
+      "file": "src/finding-policy.ts",
+      "sha256": "c6b941308cd5e178021c186a6904e322ec761b979c7d6065dbdb676de432c537"
+    },
+    {
+      "file": "src/git-selection.ts",
+      "sha256": "b3dd2f7896741e6e303857392c5fe4009f309032d788c435c15622beacbe59ab"
+    },
+    {
+      "file": "src/go-build-evidence.ts",
+      "sha256": "2d4c8deb681be05055e1ceb0daee343d792ba24e82655951b23584c490eb26f2"
+    },
+    {
+      "file": "src/go-build-runner.ts",
+      "sha256": "adf6ddcb1516bfe2982af751ebc65fd5626f6803048e98726222eab32086bb00"
+    },
+    {
+      "file": "src/go-build.ts",
+      "sha256": "a9d29de1ea0eeab5d4e6b8fa5f520179cb6846553e7d2fc6dd9bd09d25864fe6"
+    },
+    {
+      "file": "src/go-compile-evidence.ts",
+      "sha256": "3fb540653f4a823ff8b78670c4d4487c43544bf38f71f4780e2dff84060a958a"
+    },
+    {
+      "file": "src/go-directives.ts",
+      "sha256": "02e4a0db32b87f0b25f41bcce5e9cb4dcab6b1ef54b17054930b361e48cd0e50"
+    },
+    {
+      "file": "src/go-scope-policy.ts",
+      "sha256": "79b6a5ce5862a2ab45928f8b3f5921bc4490fc985f810221209aa2708168bc69"
+    },
+    {
+      "file": "src/go-scope.ts",
+      "sha256": "1457221c7191af0a8d312c54a8793b40f365f15ac935c5737e2fcb51caf1947a"
+    },
+    {
+      "file": "src/go-target.ts",
+      "sha256": "a6264e52f329ef8381c39a3f985880f99da069907da3e2bf1567fc72a9ed458d"
+    },
+    {
+      "file": "src/golangci-evidence.ts",
+      "sha256": "a30a7eb6e73f9b8952a079019a47bc5f58c62942d0c48a21aba78b4771ebc041"
+    },
+    {
+      "file": "src/golangci-runner.ts",
+      "sha256": "097e2959ec30bd2ace63bbb9593c9b22a3f811e4deeb937dd582630d944db1cc"
+    },
+    {
+      "file": "src/golangci.ts",
+      "sha256": "79a6cef76add6ee3566766a32619a0b4355e28632989febff9fe37c6bd24dd10"
+    },
+    {
+      "file": "src/gradle-distribution.ts",
+      "sha256": "26c68101f42415d628f9b576a4a2aed749473cfc6ed60fe1597b9d07b9d0ac86"
+    },
+    {
+      "file": "src/gradle-evidence.ts",
+      "sha256": "37d16da7ef0249651dbd2af2167064dd44f55f0a584a3aaff69763ea529a8ed0"
+    },
+    {
+      "file": "src/gradle-native.ts",
+      "sha256": "5993a392d88cdf15d7407c258d4ca4eac625059583fc2d02979f8f961451a211"
+    },
+    {
+      "file": "src/gradle-runner.ts",
+      "sha256": "245b64a60594f1ef8a20443f912cbbdd50f8d0d5b81b1af640ae93f06e04119b"
+    },
+    {
+      "file": "src/gradle.ts",
+      "sha256": "9b14a2014ada95dc1082d2cf8277be66c3f9786111706dd0c3207d14ccc5dba5"
+    },
+    {
+      "file": "src/guidance.ts",
+      "sha256": "b0b499f55dd5652cbc662628342fa798978514938f9bea1964fbb781ae7625f3"
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "1d5b09d830352cd987e6266477e4f4f3d375c42fbecc037f9da1b233e8c07121"
+    },
+    {
+      "file": "src/inventory.ts",
+      "sha256": "35557059bbbfb67610687cd4f9b8f21ee655e79c761c8520d0283dd582d6c3d5"
+    },
+    {
+      "file": "src/java-compiler.ts",
+      "sha256": "871f147f11a185e57d21cfe2dfbe43d0ceeeb11c844dcc49cb6b965adc29159a"
+    },
+    {
+      "file": "src/java-evidence.ts",
+      "sha256": "ab06c8e2a3da1c8f06c3f29247002a27074ca4fa0906919f5df3103ec55e2851"
+    },
+    {
+      "file": "src/java-runner.ts",
+      "sha256": "47d362b3cdf0cd15807157ed40c4eb471ea53095c80f7bc45ca8ff5fe889ad98"
+    },
+    {
+      "file": "src/java.ts",
+      "sha256": "babd8dcd678beb517533c5880a801e93b2b2df9477d5988ff0e478f43d6bab56"
+    },
+    {
+      "file": "src/jest-evidence.ts",
+      "sha256": "de7509e6218097154cdd7ea75671b13528dd9685adee896051540fc6ca77abaf"
+    },
+    {
+      "file": "src/jest-runner.ts",
+      "sha256": "ec20aca6cde95f08637d159fbfd81e119b91d28860fd2b9a82d2326a89518986"
+    },
+    {
+      "file": "src/jest.ts",
+      "sha256": "94626f08c579f1fdbaf049ebe6209c8cc0a0434bffd414993ef017eaa03a0a83"
+    },
+    {
+      "file": "src/junit-native.ts",
+      "sha256": "aa0e0da91dce39086d3776421b2ff9a197c51d6821bde1dd4f56b127c9ed0a53"
+    },
+    {
+      "file": "src/junit.ts",
+      "sha256": "cc8e0b498de84cbfacec6ea15106ddad40149e1b07595750fa1bf5370c1f0c91"
+    },
+    {
+      "file": "src/laravel-evidence.ts",
+      "sha256": "7feb0adcb08c3a5f7eb3344a32db30e63c3a9a3c59f1ca0cbf54f027cceda335"
+    },
+    {
+      "file": "src/laravel-runner.ts",
+      "sha256": "fe58168cc8343a7c556d0909bd9478b99012e6f733c24cc1e1643ab52876013a"
+    },
+    {
+      "file": "src/laravel.ts",
+      "sha256": "fe5935b59b43bb3a4713120f110bd5845608dcf4379dab86c387eae14eb5ba32"
+    },
+    {
+      "file": "src/local-tool.ts",
+      "sha256": "c3e9ef806e2569c7526be775f271c46f33e824c911ab8eab94724fe29317f13a"
+    },
+    {
+      "file": "src/maven-distribution.ts",
+      "sha256": "1b5ea80a032333e51302b08508d5d72c7198486a0744931b8ebb3e45f05d7e0b"
+    },
+    {
+      "file": "src/maven-evidence.ts",
+      "sha256": "487a2eb9593bb2ae101c2f52f3364a06f1a28e2809f655815dd6af05a8095931"
+    },
+    {
+      "file": "src/maven-native.ts",
+      "sha256": "9b618c20012384c5bc7ba74cf6d098ec4c6492cdb21295e20d690cbf2cba6879"
+    },
+    {
+      "file": "src/maven-runner.ts",
+      "sha256": "ea441a06244c0ed43f3c6bde63aad6c72e53ec5f94699a825b8442d969e7512e"
+    },
+    {
+      "file": "src/maven.ts",
+      "sha256": "1461287775b01916ef872a279ac7a6d1414d613a02cafe08dd42df470dad590c"
+    },
+    {
+      "file": "src/mcp-tool-catalog.ts",
+      "sha256": "f8267555a6538cab26723c1a2e2f7562875f9f61610aa20ea01970919c8153e8"
+    },
+    {
+      "file": "src/mcp-validation-tasks.ts",
+      "sha256": "3ea8b487c803387950c1986a38055a8223d99ade6955b3033c10c6fd2e596ccf"
+    },
+    {
+      "file": "src/mcp.ts",
+      "sha256": "af4f9dc48d3823edd1c0cdd0a1275c29d09631852b68d2f7f53e5123d87bb745"
+    },
+    {
+      "file": "src/mutation.ts",
+      "sha256": "dc5d38bfc68e006ad5655ac7fbf41d1e259d7a90b823c1bc6a9a540b71bec041"
+    },
+    {
+      "file": "src/mypy-evidence.ts",
+      "sha256": "2ef893fabf325855afc162374765f2261326cbd3300c95df3de62ebc08245e55"
+    },
+    {
+      "file": "src/mypy.ts",
+      "sha256": "d5da7d79c595eb53e80b0e3e715b0b369bf55cad3543a6d1c73ee8b5a19537f2"
+    },
+    {
+      "file": "src/node-reporter.ts",
+      "sha256": "2b0f0e9c81fb801fa9d98be976ae4535a40f73c5e54c422b80798c351a462cdf"
+    },
+    {
+      "file": "src/nuxt-evidence.ts",
+      "sha256": "0cb9e7604a8dd6765a2c00b40581b43fa92e9c318fd4919f68deecc1b368686d"
+    },
+    {
+      "file": "src/nuxt-protocol.ts",
+      "sha256": "5872472a9cdce384721a85a79743d1b8013e66853265b37c02a7d8aee14295c3"
+    },
+    {
+      "file": "src/nuxt-runner.ts",
+      "sha256": "f5bcfb1a70202e154ca7ec55c80b8c1ec02fb4e46e2e109174e0424cdeda149c"
+    },
+    {
+      "file": "src/nuxt.ts",
+      "sha256": "071d6fc40a5a211e4b4535cdc5fba01491c962d187fe5cc7f802d84cc52d0fbc"
+    },
+    {
+      "file": "src/onboarding.ts",
+      "sha256": "c7409bf3b079643983f6ff060d33a3aea86652947d824bfeba1db13e29bdc7ac"
+    },
+    {
+      "file": "src/output.ts",
+      "sha256": "d7ef24f6098aac58fc6baba392a061c31493ab22a619f77aba2e03ed16c02ed8"
+    },
+    {
+      "file": "src/php-cs-fixer-evidence.ts",
+      "sha256": "5c762084df8a7ebd3582f897fcd23d616fc3db665f1784869345cb4171e2754c"
+    },
+    {
+      "file": "src/php-cs-fixer-runner.ts",
+      "sha256": "e66feb01debdc7aa3e8a0ac841767b96e1b7abfed6dca4da007a8f7f5db0a0ed"
+    },
+    {
+      "file": "src/php-cs-fixer.ts",
+      "sha256": "a87b04eb812e7d94b232f51f48cedbb98a728810fb240bded72946c1ccf5e319"
+    },
+    {
+      "file": "src/phpstan-evidence.ts",
+      "sha256": "b0516a48a7a8ec513b995ba72c7283d4dc85d32e12ecaf94cdc71b8eb73a9cc9"
+    },
+    {
+      "file": "src/phpstan.ts",
+      "sha256": "61bec9f67298e1d4a8a7bdab749f39e9903eb4e5dd8ff8def0fe5c8deda37eb0"
+    },
+    {
+      "file": "src/phpunit-evidence.ts",
+      "sha256": "9b70f1cade16f2a7449c58bd0394696be214fd95938b097c542fec114f1d1e8b"
+    },
+    {
+      "file": "src/phpunit.ts",
+      "sha256": "0da4e30ff2501d7254c773183c413a9cb6130575db333a6e6348603c2dfa3e98"
+    },
+    {
+      "file": "src/pinned-download.ts",
+      "sha256": "3e72884aa0d7d841c97f02c5a99d956a038661f192002c5dd691cfa92490bcad"
+    },
+    {
+      "file": "src/pint-evidence.ts",
+      "sha256": "3e160de06a12e4e06601c90e4912a485eafd1e447f1a9d053452a5296160b698"
+    },
+    {
+      "file": "src/pint-runner.ts",
+      "sha256": "caa4759ea1ca1c2e1a05be472c0fa1ed3ae264733c0d2a3482c698a28bd77ab5"
+    },
+    {
+      "file": "src/pint.ts",
+      "sha256": "ff32fadce2a3a86f7be64bb84d96384f740b9bba48d0637432d69d522df6e7a6"
+    },
+    {
+      "file": "src/playwright-evidence.ts",
+      "sha256": "7f69ab4b8351bb16031c116fe1f9f063d4b0072a2ee74e9c0612c7e3d56d6297"
+    },
+    {
+      "file": "src/playwright-reporter.ts",
+      "sha256": "2c9a4dd7729246845a9022ec30a220e3cdcad4ba697d1c656f6e3d65bd3e0a1d"
+    },
+    {
+      "file": "src/playwright-runner.ts",
+      "sha256": "43aeef1ea6abe342336b3b65a76f7039ca6386c320eab4ae1a982a223034884f"
+    },
+    {
+      "file": "src/playwright.ts",
+      "sha256": "fc311df7a2a6bbdba61ea8958afd8bd38e1628fce99fcd68224a0f6073138b46"
+    },
+    {
+      "file": "src/policy-pack.ts",
+      "sha256": "6e3f922407158173e7d0edbf57db5ec3b09bc04f7ada1c6deec8a62f169a9433"
+    },
+    {
+      "file": "src/process-tree.ts",
+      "sha256": "e263551d3511167d254bb234ad79d2fc86922118791a482793d301b598007775"
+    },
+    {
+      "file": "src/pyright-evidence.ts",
+      "sha256": "2db8e8477a1a1339224092e098e3d3b09fee5966c67fc1703d39d81e643a4fea"
+    },
+    {
+      "file": "src/pyright-runner.ts",
+      "sha256": "22392ac05d141975545f38efff31d2b832c858aac08a5755ca8eea76fdfb01d4"
+    },
+    {
+      "file": "src/pyright.ts",
+      "sha256": "707a0be07abda351c45da768501c46a6820e04096f301db99adb5b1cbe3de349"
+    },
+    {
+      "file": "src/pytest-evidence.ts",
+      "sha256": "41b1f7f78b46bd1104125a9523cbe760ef49a7ea2c350ff4161034e28337abec"
+    },
+    {
+      "file": "src/pytest-runner.ts",
+      "sha256": "458c4256b5013b4dd8f066705fdb3532be39d71ca725be2abbcdb7d9e0922ba9"
+    },
+    {
+      "file": "src/pytest.ts",
+      "sha256": "ee3d66e118370dde2881ac0dc296d8c41ddb961f979b12c62872df89a195f282"
+    },
+    {
+      "file": "src/report-validation.ts",
+      "sha256": "75c394b9e63c8994b88d37f8dc957a68606daab4331a2c7323c973c78e90bf05"
+    },
+    {
+      "file": "src/review-adjudication.ts",
+      "sha256": "57b2ee686cbe40a28254a7712ffc9bf89636ca6693291b5a583377ff141a6541"
+    },
+    {
+      "file": "src/review-behavior-schema.ts",
+      "sha256": "3dfca04c639c273cf7732302cda050c8affe7483c696018a58430ac4e604487c"
+    },
+    {
+      "file": "src/review-behavior-validation.ts",
+      "sha256": "1304a36eb099007658996b0af4c46718678daf6b2c260ba52f2cf857d8a2f1d8"
+    },
+    {
+      "file": "src/review-behavior.ts",
+      "sha256": "acdf1b37e9d887f852dc9a121d017cbf923b6ca60cbe9c7e69075d5ee2083f48"
+    },
+    {
+      "file": "src/review-benchmark-schema.ts",
+      "sha256": "88ac2cb2dda9cf7f6b209f4a6f61b59eca0c6ef9791af4f7a8862ca20ec9b399"
+    },
+    {
+      "file": "src/review-benchmark.ts",
+      "sha256": "c5175b59d4dcb64985aa18d8bab371a1c0dee51037cd4834d261a53aed352238"
+    },
+    {
+      "file": "src/review-diff.ts",
+      "sha256": "5642804aeff8b4d55c53fa22432f43c15d88889d59a0afc6477a4f668f1a02bc"
+    },
+    {
+      "file": "src/review-engine-identity.ts",
+      "sha256": "30b856fe7b01a32205c0e8f45e814d85ca77b6b07e6ed2343356377fabbae243"
+    },
+    {
+      "file": "src/review-hypotheses.ts",
+      "sha256": "98510567871a2b028b44cf341bb7d4d7aea1ffc6bc5411491731f321ad8a4c89"
+    },
+    {
+      "file": "src/review-probe-schema.ts",
+      "sha256": "2ff82c91d5c85221fdefa8565e82226c8a8d149c17d327c919fcea9bad022cfc"
+    },
+    {
+      "file": "src/review-probe-worker.ts",
+      "sha256": "86ff795b0319ea2949b4294b35e6fb5c87d20a6ada06f077c00f8710dc05c1fb"
+    },
+    {
+      "file": "src/review-probe.ts",
+      "sha256": "19c08ec0046aaf8f2dcfeec2a97852176bf18b9dcc41b560749a27a5b5d14ff0"
+    },
+    {
+      "file": "src/review-provider-aggregate.ts",
+      "sha256": "d57cc84539bf742a99842aee1f7e06f530ec8f9c7fb1107779f08c257545c5ad"
+    },
+    {
+      "file": "src/review-provider-budget.ts",
+      "sha256": "ae91e7cc9c6491bf7da3d803f8ee96a8509dd856927361f3dee458c5a3fb3bf0"
+    },
+    {
+      "file": "src/review-provider-schema.ts",
+      "sha256": "db2a87f896d6614a0bc887daf1e204cd705a220410e08da1ccb973c07a291bee"
+    },
+    {
+      "file": "src/review-provider.ts",
+      "sha256": "ec2a15f187b8d9ab09b8e48461d2e8257f5ce2adf95374b7ada9fefc20073922"
+    },
+    {
+      "file": "src/review-refutation.ts",
+      "sha256": "64e55bea09daca5ffab1cbbb95e8d60a5e175f6ebfd2111355cc3db3863caec8"
+    },
+    {
+      "file": "src/review-scoring.ts",
+      "sha256": "fa854f468e7b5cd2ee19a34242b34bbf6ce8d1ed54bffb542b861f1d6b89413b"
+    },
+    {
+      "file": "src/review-verification.ts",
+      "sha256": "13c44adb7a6459710b676c6c43f1ec7d0b4a3dfde5523eb8593eefe062592010"
+    },
+    {
+      "file": "src/review-workflow-audit-schema.ts",
+      "sha256": "ef964ff99c92d12a7f807737bff19c5924d06ebaf6032ef1f30b578c4e187903"
+    },
+    {
+      "file": "src/review-workflow-audit.ts",
+      "sha256": "9130c0a31f698e7fa46da30f9949f5cba4a0b644646b7a42d99a569abd9f933d"
+    },
+    {
+      "file": "src/review-workflow-cli.ts",
+      "sha256": "d32f0112c9fb300cf94d5114b2271347fac09fd7eada4683e38cd1640239ce07"
+    },
+    {
+      "file": "src/review-workflow-schema.ts",
+      "sha256": "259fca626a9d9ac80f37769d03fd03c51f6a463dd9c28ab7c5727f61f25a2a8c"
+    },
+    {
+      "file": "src/review-workflow-session.ts",
+      "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+    },
+    {
+      "file": "src/review-workflow.ts",
+      "sha256": "7cacc4d6068af95035bebe95be74bdf8e93cab72703f6e9662a914dbbd7b54ed"
+    },
+    {
+      "file": "src/review.ts",
+      "sha256": "5c88d7f361be827059ae9ce4da82946c4a6c417f91112a4e336e0e4050743add"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "sha256": "49c5e5afe831767ee85e0af98de0634331f77e8880501e27ff9ffac7017cea9e"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "sha256": "baeb7e6fc30558f04da87c50574162373046cfeaf5cdf93d982e1063d2e06527"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "sha256": "2313d0d5e5432f8ce65b1cf998c2057e7c2342d0046a992a604e0ddcdbdfb211"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "sha256": "8f161a00ce4e23adf5680b04b90c8f16a71fc1535acba7f01bb856d86b6323f4"
+    },
+    {
+      "file": "src/ruby.ts",
+      "sha256": "b38512ae9e9ede83455851b9b62958958fb5401cc6282d7d230db8c7909669d6"
+    },
+    {
+      "file": "src/ruff-evidence.ts",
+      "sha256": "faf5260f24a8a22b5ea10f0c2def4a56964b37de5d6ff404d9e2d5364e37ad23"
+    },
+    {
+      "file": "src/ruff.ts",
+      "sha256": "c66a74af64bf8e20051d6e11c0e004255872f7d4d045a7a0833d73e5bd688f51"
+    },
+    {
+      "file": "src/runner.ts",
+      "sha256": "c3004d47f5db0bb91bfb1982e492e5dfe32e1f5cbfbbf0d9ad5b01a971c30727"
+    },
+    {
+      "file": "src/runtime-inventory.ts",
+      "sha256": "6a097beefcfc9679d03e09cf0da09ce3beaf7a55ff97a80c040e4ba33aeddb21"
+    },
+    {
+      "file": "src/rust-build.ts",
+      "sha256": "9ecf9dd256104865187daf9776a065ba1bb3256c3a83859ca37502eaa0ae2816"
+    },
+    {
+      "file": "src/rust-dep-info.ts",
+      "sha256": "be4af956cf24718b16892ac68c7a839eb7353f6ac77abac8deb78e954c3ffbca"
+    },
+    {
+      "file": "src/rust-evidence.ts",
+      "sha256": "abcc5b6fa8242b8a4b528470a94bc1a9c5552f0bfd715562b346343d818d1960"
+    },
+    {
+      "file": "src/rust-runner.ts",
+      "sha256": "08cebfe9b8929c8c86aea72c2efd80477e5f147d3b825f8a22f5b281a7304e86"
+    },
+    {
+      "file": "src/rust-test-events.ts",
+      "sha256": "a01e0afb51f80fc581321e4d84f0d9c589e8d52ac6438ee7a7092e7c6890228b"
+    },
+    {
+      "file": "src/rust-test-evidence.ts",
+      "sha256": "a0ac9b02b0312b721cab0b972c5366ab001a5f2d8f6d365f90b3953ef16717e4"
+    },
+    {
+      "file": "src/rust-test-native.ts",
+      "sha256": "d6402553b9fc21800e0d19c1cc19f18dbc0479cb53bb73138e52c94ccf02dba6"
+    },
+    {
+      "file": "src/rust-workspace-evidence.ts",
+      "sha256": "8771afd095357474a95486f035c119e5cecb90b22756276877d71c242709292f"
+    },
+    {
+      "file": "src/rust-workspace-runner.ts",
+      "sha256": "2f71a9beaed46a797f696ec902aa2a5a2e9422121e7df05005eb645636e92462"
+    },
+    {
+      "file": "src/rust-workspace-schema.ts",
+      "sha256": "1c914a0d4ca51cc04e2609197659c124f8c543d7c45982c04d9ac06e2c6ae332"
+    },
+    {
+      "file": "src/rust.ts",
+      "sha256": "9e788b429007941a142b4772c3328d7ab028048248a1ff0a32c8426a38a93e14"
+    },
+    {
+      "file": "src/rustfmt-evidence.ts",
+      "sha256": "ff647a7cf275e2ea19ba0af377a28a354a986dc0899db631bd919d5416ef6d2d"
+    },
+    {
+      "file": "src/rustfmt-runner.ts",
+      "sha256": "84b8ca2cd8b0644c52cce77af162b0823be6603bc393bcf0a38574751bbd827f"
+    },
+    {
+      "file": "src/rustfmt-skips.ts",
+      "sha256": "ab438167430a76565837470c784f6bbc51c21beeae47a37d1c83c2738145b93b"
+    },
+    {
+      "file": "src/rustfmt.ts",
+      "sha256": "9913f3246eb611421eb962d13e0002e07d5f21499f2745ab925311445a0cc458"
+    },
+    {
+      "file": "src/sarif.ts",
+      "sha256": "69daa3bff63f5c3bad98d2e4c2fdac063386b55a9c9734f01504fa89c48d39ee"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "7e02c96076d4c9e34a3d565250bdb75c76709bee33e601823d47d393409a8a13"
+    },
+    {
+      "file": "src/staticcheck-evidence.ts",
+      "sha256": "c649ac23f41a703972e3f8ee9f0c8d982814059a7ee68775925f1addadc77fe4"
+    },
+    {
+      "file": "src/swift-ast.ts",
+      "sha256": "eb3ac9ce3abb049b827e17aea93c22152663756bda47790b7ade6c457b02e4ed"
+    },
+    {
+      "file": "src/swift-native.ts",
+      "sha256": "29ce04733ba082815179288fd44a849b312a5b1815908890934bdb62cabd74ff"
+    },
+    {
+      "file": "src/swift-testing.ts",
+      "sha256": "82b662561e0d4fe754eb34013e452863c6b2d71ecfae60e4f9e2f6f08b810f60"
+    },
+    {
+      "file": "src/swift-tools-evidence.ts",
+      "sha256": "5992f69f7a45fe948b3decd001e183a53d5a8edc036c583ecf1fdd4f96ce4c3a"
+    },
+    {
+      "file": "src/swift-tools-runner.ts",
+      "sha256": "bb35dc203bc5d7bfc3c293f44577bfbf1d22e5e9ad0a5701d91837b8e5ac62e8"
+    },
+    {
+      "file": "src/swift-tools.ts",
+      "sha256": "8d415eb914ebc601bb82d10245e35f6b9a79828bf0f5e85c08cd51177973688b"
+    },
+    {
+      "file": "src/swift.ts",
+      "sha256": "4190fb27b2bae7d347f1373355de35747a9fceab0637187c35fc0f5fc4bc0c0d"
+    },
+    {
+      "file": "src/task-store.ts",
+      "sha256": "a0590debac5d5c23c467947d1fdb87260861163a4f04d26711c977d42b66d03d"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "e2f866cfed5f8c816ea127253a3e85556d49970ef344fdb61488bf13d6e55512"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "1b2de7cf8897b28c699cc1bd3562c542170a18463ba83135759e6ded562f07bb"
+    },
+    {
+      "file": "src/typescript-arguments.ts",
+      "sha256": "c797b29ca728adc554337837d4a2dd8b58aab252822e9926354736881c323852"
+    },
+    {
+      "file": "src/typescript-build-evidence.ts",
+      "sha256": "8bbe54349960e39060d4cc8fce261459945fea1c11be3f1c82c4a6657cdef20f"
+    },
+    {
+      "file": "src/typescript-build-runner.ts",
+      "sha256": "55d6b1e1d56d4578296d3f059b220e387dff3017ebe1d5935aab627dc73cf97f"
+    },
+    {
+      "file": "src/typescript-build.ts",
+      "sha256": "efd44d28a5540990725b89d5e4aa6cf8fa617948e9bd45b609adc190381b82d9"
+    },
+    {
+      "file": "src/typescript-runner.ts",
+      "sha256": "39d43415306448a71b428fdf8a43afeffdf28712eff601739afe4091712ff8d9"
+    },
+    {
+      "file": "src/typescript.ts",
+      "sha256": "41c67abb8f2537aa5429b2f31e48dd39ebc841d63faecbcb12ed6ee33923faf0"
+    },
+    {
+      "file": "src/validation-task-worker.ts",
+      "sha256": "9927367c66c5d3292ca2ce63138b7c49f7ac9301ac3ae82a74ac07060e3edb49"
+    },
+    {
+      "file": "src/validation-tasks-protocol.ts",
+      "sha256": "cc6134c2d9ef09bb8be34b6f4921632897ddd1ff3ce688f10e41a0949e2e3546"
+    },
+    {
+      "file": "src/validation-tasks.ts",
+      "sha256": "aa1c0bdd83cd039ae59fb1217dba1ef99b005f4b4d94be12d652fa1601d3a896"
+    },
+    {
+      "file": "src/vitest-evidence.ts",
+      "sha256": "4a68cf73ba0c6f7f4c3f86097cfe19f3dff6a15fdc9a4c39ba1af971c9aa9923"
+    },
+    {
+      "file": "src/vitest-runner.ts",
+      "sha256": "08d658c0083474b2b2c6ee9c542174149d426d2b461d46ad9fabef0170712a12"
+    },
+    {
+      "file": "src/vitest-version.ts",
+      "sha256": "56716da2a928b18504f3e88f28552d936f2886638d568fd6614e45c49735fc0e"
+    },
+    {
+      "file": "src/vitest.ts",
+      "sha256": "76a4adae1685d14d96f29f06730f0f1f595fa2a67949d172e3176662df7de191"
+    },
+    {
+      "file": "src/vue-router-capture.ts",
+      "sha256": "26510d71f073d3bf1c7bd9b58f17758a614c85795f598d243a4ebb83cc974d54"
+    },
+    {
+      "file": "src/vue-router-evidence.ts",
+      "sha256": "83993906ebb99f232b45b0b86d3c17f39a15cf9ff08caa68b7d8d281567967b0"
+    },
+    {
+      "file": "src/vue-router-protocol.ts",
+      "sha256": "5faa1d4318dde49681fa978ebc416ba2183a40059a07759bf084d6a587f7521d"
+    },
+    {
+      "file": "src/vue-router-runner.ts",
+      "sha256": "e1f48295e1550446e8563b879360cd301ad5b50e0909dfe9239ba098c49098f5"
+    },
+    {
+      "file": "src/vue-router.ts",
+      "sha256": "570459e3396029022e2d24d107354d04ebc8b0a729e476da2b25418db7d3df01"
+    },
+    {
+      "file": "src/vue-tsc-runner.ts",
+      "sha256": "22221b3309b4c40cce113d67d62ff20e2fe222af4f7881f6dee4e5fccdff1f0a"
+    },
+    {
+      "file": "src/workspace.ts",
+      "sha256": "77d5054bfccdc0cb390109c5c35c349422838f2e1116be93d2283f14f237b735"
+    },
+    {
+      "file": "test/cpp-controls.test.ts",
+      "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+    },
+    {
+      "file": "test/cpp-protocol.test.ts",
+      "sha256": "ba0dddb5f8ef393267e894db4ad9de3df88ec82408b0cb60e31612d0d8b4e9d3"
+    },
+    {
+      "file": "test/cpp-tools-cancel.test.ts",
+      "sha256": "b1acc66ee474865edf5b588d888ebc860a58a2c229409eef4205540a9f09ff2d"
+    },
+    {
+      "file": "test/cpp-tools-fixture.ts",
+      "sha256": "bf08c4979f4ab10477718620e2d62bd27361a4517418eb258b0fffc0be048cbf"
+    },
+    {
+      "file": "test/cpp-tools-lifecycle.test.ts",
+      "sha256": "47b2456b82f3f4beb34a5c75fbcced1adbec7ba73a3f9db538de0089d86880e8"
+    },
+    {
+      "file": "test/cpp-tools-surfaces.test.ts",
+      "sha256": "fa2d9b9cb08df47ddd28a841edd57d1967734e7d927e981b98c61de055ffeb51"
+    },
+    {
+      "file": "test/cpp-tools.test.ts",
+      "sha256": "67eabb567cd2a3879f6d6eb7164170d38f8ae4153a21d951ba4a3c2b5f4c76e3"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7e3832bb5b8e5aeb2ae2cbfa1c2a2acf95729bc9288b3a23dd66f9b76faf4129"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "1be10b741c590eb9cd83619d76f96f9e5a70e49c6596f00f6124c11870e929e0"
+    }
+  ],
+  "compiledRuntimeSha256": "2a66e306b9aeda98871fccba3ac2b994e5221bf43cb7bf10ba863566592f9a48",
+  "compiledRuntimeDigestScope": "SHA-256 of the compact JSON ordered list of relative dist/src file names and SHA-256 digests frozen before source and installed acceptance; source pins independently bind implementation and harness.",
+  "preparation": {
+    "task": "checktrail-cpp-tools-1006",
+    "tag": "checktrail-checktrail-cpp-tools-1006:public",
+    "image": "sha256:7dccfd53066e12367e5eebc2e394a40025cbf39446d8c55687f4e489c423064b",
+    "base": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "archives": [
+      {
+        "path": "acl-libs-2.3.2-r1.apk",
+        "bytes": 15295,
+        "sha256": "5bfce1fc46a3625268a7a60c10b5680aa846534d98856a108e692824a1f1b710",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "binutils-2.45.1-r1.apk",
+        "bytes": 3321769,
+        "sha256": "bac4a00e73296dfebf5f587c2b304b7d110e7de658cd2b05491f87c2b228420c",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "brotli-libs-1.2.0-r1.apk",
+        "bytes": 424924,
+        "sha256": "e0e7a7892f28326a9f18e09607b1aea72baedda470bc4e3d2b11262b9ae5dda3",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "c-ares-1.34.8-r0.apk",
+        "bytes": 108771,
+        "sha256": "689603d300dc56f0b99e313506e4d7b3a3ffb87cec536324f8a306bc218afe67",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "ca-certificates-bundle-20260909-r0.apk",
+        "bytes": 108526,
+        "sha256": "81a2c508dcdb3295196e6a8987274e3bc3487f99ad8d18e985f20bb2c336b5e6",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "clang22-22.1.3-r2.apk",
+        "bytes": 665142,
+        "sha256": "1f147208ddca79ef7ff8ce1ac241b43fcc5d8ce7bda25f660d8761ad3615e0c0",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "clang22-extra-tools-22.1.3-r2.apk",
+        "bytes": 16999048,
+        "sha256": "e831635377e186cdaa79cd93f1ce0b8a503847bc5fc463deadf05ec4cb4ec28b",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "clang22-headers-22.1.3-r2.apk",
+        "bytes": 1037459,
+        "sha256": "9740b2bbb74a62270f4014cbbb7fdf50d62914239ec1b5483c86156693dbfac0",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "clang22-libs-22.1.3-r2.apk",
+        "bytes": 34453671,
+        "sha256": "ad2c5f44f52daa3a8dd0fcd02ed83c1f6270059306b615040d9747847caaabcf",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "cmake-4.2.3-r0.apk",
+        "bytes": 21210484,
+        "sha256": "fbc19c4efe1a12dbcdb646952e9dc1ee2f8bf68feb6ed17fdf320f34bba252ef",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "fortify-headers-3.0.1-r2.apk",
+        "bytes": 7328,
+        "sha256": "72bf2a77475f2550a7345683c77b39487ee94ecbc2ca11ed5314161f3b927d76",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "g++-15.2.0-r5.apk",
+        "bytes": 17241310,
+        "sha256": "dc16babd6fdd7154ece263ca625ff832b03528d58f5060f9e92ca3b0bc0c079a",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "gcc-15.2.0-r5.apk",
+        "bytes": 52501295,
+        "sha256": "ff3fecfc32c9a1bed4a47a32ccfee6f6f575708258f912c218dce8ed0d892221",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "gmp-6.3.0-r4.apk",
+        "bytes": 221014,
+        "sha256": "4dab6e86b850fe1b5bc0cf2fac17efa4d7f648bea44f3d9019694cc1e1cb12b7",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "isl26-0.26-r2.apk",
+        "bytes": 870482,
+        "sha256": "c195ea26929ada2bb9e66b7bc6d64b340123591b8f4c8ed158693e4dac0923d8",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "jansson-2.15.0-r0.apk",
+        "bytes": 49825,
+        "sha256": "a13822f5ca1772cced4bb7d3d178ec5dee770d8accba5b4816b2ddc413e6f055",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libarchive-3.8.7-r0.apk",
+        "bytes": 322920,
+        "sha256": "d439db1519d7cf99cd5c989fe001a283f8e1e99e79d86faf22876dbcec8e47b4",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libatomic-15.2.0-r5.apk",
+        "bytes": 10362,
+        "sha256": "31a45fec053c43a006370f83238f16f959838a9a703fbf26bfd1a36da4f538b2",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libbz2-1.0.8-r6.apk",
+        "bytes": 34259,
+        "sha256": "28cb76bb6d11d2a55c3061b5fcb2ab84996412a248b2c9fe52bb710d0a2a84e7",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libcrypto3-3.5.9-r0.apk",
+        "bytes": 2286800,
+        "sha256": "2676a2b0b6e23ea2edccf3ee982b9842a665d52603d047de3d0a185dc316d983",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libcurl-8.22.0-r0.apk",
+        "bytes": 358024,
+        "sha256": "cbec830a63888be570c06d20d87c85649aff1db38c3b4dcc17884b14471e39e3",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libexpat-2.8.5-r0.apk",
+        "bytes": 60926,
+        "sha256": "568a12a4889a00711d1c80c197a5540ee1cdec26c1c59da38f8342ad69e7eff9",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libffi-3.5.2-r1.apk",
+        "bytes": 17799,
+        "sha256": "9a67280b0c7c62db658c2d4d32ed1199903bef859c32dd4245e1a7e35c89ab4b",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libgcc-15.2.0-r5.apk",
+        "bytes": 66323,
+        "sha256": "369aaa6e9d099a737bad6dd3e6c2fe7bb1547ca26d22b94ee0411228f709b403",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libgcc-static-15.2.0-r5.apk",
+        "bytes": 2187958,
+        "sha256": "2ec3dc4be953d842cc51193248367d86829ed699a1ed094fb5149b1b3fc62919",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libgomp-15.2.0-r5.apk",
+        "bytes": 146527,
+        "sha256": "90576a8899c560d3983b8ac8442b5b75957a917bc1c4e950e005945080f8682f",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libidn2-2.3.8-r0.apk",
+        "bytes": 105430,
+        "sha256": "d02ffda4510652f89c5fb89cd2e7ff721afb0c74e7d75476ad60bebe7ac0ae20",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libpsl-0.21.5-r3.apk",
+        "bytes": 55302,
+        "sha256": "b31e91371425d5f80c1db5cba2a849956b65c802add0b49de844b2ca961aa8da",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libssl3-3.5.9-r0.apk",
+        "bytes": 373023,
+        "sha256": "20ac252b276d73f2c69c1d25f84537c7fba81caefc026c6be1094b394af2082e",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libstdc++-15.2.0-r5.apk",
+        "bytes": 908984,
+        "sha256": "2302e766d4e4926038ec166ecb85837ee884576115236ddb565e3a5fca4a11d7",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libstdc++-dev-15.2.0-r5.apk",
+        "bytes": 4132711,
+        "sha256": "8385c811d93b64ee1877005a5473cde8ebabe82d346301f2b153ff8cb6a71510",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libunistring-1.4.2-r0.apk",
+        "bytes": 746169,
+        "sha256": "58abfcbce2459071c505771a572a79953d6043d72b643ed0d5285ca39cdaf85c",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libuv-1.52.1-r0.apk",
+        "bytes": 96457,
+        "sha256": "64e29a6c58f8375bc9cf83d57e0913e6743746cfc60851b1cb12cd572f5924f3",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "libxml2-2.13.9-r2.apk",
+        "bytes": 496747,
+        "sha256": "0a860a26ebdfea491498386fe682130f4c5565e46ee8e0a2281256db2ef1be27",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "llvm22-22.1.3-r0.apk",
+        "bytes": 43677127,
+        "sha256": "3450a82ac31ef3d9a6c3518abe5f1d13dbb512516b43a54883a93094c69a7cb2",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "llvm22-libs-22.1.3-r0.apk",
+        "bytes": 64263114,
+        "sha256": "468bc2e8efa070bf6837d0388122048806576d84e9578aa909e40bdd98109a93",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "llvm22-linker-tools-22.1.3-r0.apk",
+        "bytes": 78237,
+        "sha256": "0cf574573c455e7d7dd8ddec1fba77115a8df09c300e23ef8a84f7f78c63e5cd",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "lz4-libs-1.10.0-r1.apk",
+        "bytes": 82505,
+        "sha256": "af6cbe553adda941e04ac40cf0123455b714d65392472389113e7d6dcebbd8d8",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "make-4.4.1-r4.apk",
+        "bytes": 117543,
+        "sha256": "0a2c6c3fa0d90b652bbaeac362d1bfe54b75aae57631a6b448826f8b51c85170",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "mpc1-1.3.1-r1.apk",
+        "bytes": 53688,
+        "sha256": "c4e03923cf1b958ba0d3665196f521a00fb091132e79c39493298019fb59ae60",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "mpfr4-4.2.2-r0.apk",
+        "bytes": 294772,
+        "sha256": "81cb276c1e050138fed90c8f1ef584cf5bfce26739733753fce138fc0a092b35",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "musl-1.2.6-r2.apk",
+        "bytes": 417710,
+        "sha256": "5e9674b7f41152fe2119093b5cb4c13eaaadb19c2d5422b2d7267913e663ee6e",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "musl-dev-1.2.6-r2.apk",
+        "bytes": 2539434,
+        "sha256": "ca72b84f4eb3c36bbbec04d919eb10159d414c7a43413cc2253841d301fa9486",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "nghttp2-libs-1.70.0-r0.apk",
+        "bytes": 63644,
+        "sha256": "7ef451f4dcdc065aa872c2f3c78b9d9bb4348caa5bcc70dee0c9e1fcf8e4c1fd",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "rhash-libs-1.4.6-r0.apk",
+        "bytes": 136934,
+        "sha256": "7e48c2bbea516c1b97887e6d9cb50e772de9e61e0aa31c4e042cc34df07a3016",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "xz-libs-5.8.4-r0.apk",
+        "bytes": 119423,
+        "sha256": "9be375832e747afe14f98e400e8b55d8f6fde25e41663090c81600628daab093",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "zlib-1.3.2-r0.apk",
+        "bytes": 54312,
+        "sha256": "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3",
+        "asset": "operator-prepared-archive"
+      },
+      {
+        "path": "zstd-libs-1.5.7-r2.apk",
+        "bytes": 365383,
+        "sha256": "2bb5136c89f5b0bbe1554c8915a3b520d5aa63ae2a51d4d821eb81698db5a818",
+        "asset": "operator-prepared-archive"
+      }
+    ],
+    "nativeVersions": [
+      {
+        "name": "node",
+        "output": "v22.23.2\n"
+      },
+      {
+        "name": "clang",
+        "output": "Alpine clang version 22.1.3\nTarget: aarch64-alpine-linux-musl\nThread model: posix\nInstalledDir: /usr/lib/llvm22/bin\n"
+      },
+      {
+        "name": "clang++",
+        "output": "Alpine clang version 22.1.3\nTarget: aarch64-alpine-linux-musl\nThread model: posix\nInstalledDir: /usr/lib/llvm22/bin\n"
+      },
+      {
+        "name": "clang-format",
+        "output": "Alpine clang-format version 22.1.3\n"
+      },
+      {
+        "name": "clang-tidy",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-dwarfdump",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-ar",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-ranlib",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "cmake",
+        "output": "cmake version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      {
+        "name": "ctest",
+        "output": "ctest version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      {
+        "name": "make",
+        "output": "GNU Make 4.4.1\nBuilt for aarch64-alpine-linux-musl\nCopyright (C) 1988-2023 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"
+      }
+    ],
+    "buildNetwork": "none",
+    "packageSignaturesDisabled": false,
+    "publisherAndLicenseClosureVerified": false
+  },
+  "preparationProfile": {
+    "preparedArchivesPathExercised": true,
+    "defaultNetworkFetchPathExercised": false,
+    "archiveCount": 48,
+    "archiveBytes": 273906890,
+    "packageSignaturesDisabled": false
+  },
+  "acceptance": {
+    "image": "sha256:7dccfd53066e12367e5eebc2e394a40025cbf39446d8c55687f4e489c423064b",
+    "source": {
+      "profile": "cpp-tools",
+      "timeoutMs": 120000,
+      "passed": 13,
+      "required": 12,
+      "problems": [],
+      "complete": true
+    },
+    "installed": {
+      "tarballSha256": "9690346543b40d3c72a5b6ffd24ab12738f78c48e9d44d05942485e356b2b217",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "cpp-tools",
+        "timeoutMs": 120000,
+        "passed": 13,
+        "required": 12,
+        "problems": [],
+        "complete": true
+      },
+      "environment": {
+        "image": "sha256:7dccfd53066e12367e5eebc2e394a40025cbf39446d8c55687f4e489c423064b",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "acceptanceDurationMs": 60113,
+  "acceptanceLogSha256": "eeccb2e3d3c29035cf7a1a7d95a0c155eb209d3acb608b6b94ca18e58686d6f4",
+  "requiredNativeSkipCount": 0,
+  "extraPassingCallback": "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+  "compilingGuardMutations": {
+    "schemaVersion": 1,
+    "complete": true,
+    "sourcesRestored": true,
+    "restoredBuildPassed": true,
+    "mutations": [
+      {
+        "guard": "Input SHA",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "da20f0ec3f440efb346278886e8e44b9413f0b2fccbd4f05eba2670edf5f3543",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "input pin identity",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "5067dffb5d0a10203d356fc8a09097c7df16a28ad270b2e0ac8b7aefd146a82f",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4614
+      },
+      {
+        "guard": "Tool byte freshness",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "c84f9f96580ccc99d97328d793fe72bf74876ef10d875a33693bbd97572b4dcc",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "tool byte freshness",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "5ddb55aa1b2380230706e6793ad8a3eb198126dda6f3590bb70389a05b62fc48",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4214
+      },
+      {
+        "guard": "Artifact post-execution freshness",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "5f1d3ecf10ac73ca83d8920f555be96fd6e00a54a1811e74f3032c1e393cc16b",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "artifact freshness",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "1f84c536ed58358ec035235f4e0b1b299788212cc71027bd778067f4e1e65da1",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4210
+      },
+      {
+        "guard": "Exact native argv",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "7aed600d930de85a62cb49366cf3b5fef8e6cafd2f85f01fcefedfd68b0b80ef",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "phase command",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "1a589615821eb636e3d0c26572aa26b51354d8ab201ede23de1fd80eafcde008",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4274
+      },
+      {
+        "guard": "All compiler SARIF receipts",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "4c4496a3fbd6cebb592292620f3402908f2167125d991da45f551e15d3023e94",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "missing compiler receipt",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "be9a1617d5dd2f85ef2552075e42e2881bfeea499717bebc19c934cfd052bdc2",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4257
+      },
+      {
+        "guard": "Native compilation flags",
+        "file": "src/cpp-cmake.ts",
+        "sourceSha256": "f3c4cb499d422c08fc5b1d0881b9c17fea322386cafc59f35891216429ff6cbb",
+        "mutationSourceSha256": "4be72d110a8b7c3fe92f0ad95752fb624efbdbdb3626b617544f07389c5048a5",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "compile argument scope",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "40377601734ce3de4449963d04583d49f83a546224733b1b28840d90e1e34369",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4205
+      },
+      {
+        "guard": "Native checksum alias consistency",
+        "file": "src/cpp-native.ts",
+        "sourceSha256": "27d1935b0e86ce58e8288bd08a912cfd5557ee3a438e7db913f08738af53f20d",
+        "mutationSourceSha256": "bb752df522b47b9766a2e8985a2d4081274a64a6999c6d641d787df3b5404630",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "native source checksum",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "5b9161981deb10abc419c21ff74645576c44fc15854fde0fe0aec47d08d623d9",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4617
+      },
+      {
+        "guard": "Compiler-consumed header checksum",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "2212ab4645bfd11d09cf849ded5c95cb9a1742bec3678860e90b06e05c2f2f7a",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "native consumed header checksum",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "3e649aa28a8715faaa670bae1f70c2636ca70ef284f2673c8d65f4c6230c1ddc",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4776
+      },
+      {
+        "guard": "Archived object byte binding",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "6595e1d29434244b2e692fd44279ffb8dc3b3abfea20097f5da7d0ab6c620163",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "archive object byte identity",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "2e42f517983567daa0862af33c93a751edca2140548a87dbd79a0f0c39e8cbc2",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4747
+      },
+      {
+        "guard": "Generated header template binding",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "e87a788c6e82277e98f762c829f1f09edb818dc9f4a49bca641057477de4f092",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "generated header binding",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "33fe37838d3af6f2db43d4aa96284e1f1f27f3de5109e97a08b067eb540c22a2",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4734
+      },
+      {
+        "guard": "Exact CTest command",
+        "file": "src/cpp-cmake.ts",
+        "sourceSha256": "f3c4cb499d422c08fc5b1d0881b9c17fea322386cafc59f35891216429ff6cbb",
+        "mutationSourceSha256": "92e690b3426510359eaaec675c0d1a264b98ebf3c2110e416c18439a2a9267cb",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "test command wrapper",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "3132043294d2f6f748fd496b8cb26ed53650c074ea6b50aa07f7c3d9798bd27f",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 5651
+      },
+      {
+        "guard": "Physical CTest registration",
+        "file": "src/cpp-cmake.ts",
+        "sourceSha256": "f3c4cb499d422c08fc5b1d0881b9c17fea322386cafc59f35891216429ff6cbb",
+        "mutationSourceSha256": "36c81b43c17a9908a2d10db5168bf25ba69911af7ec4f98ad29e22737dfcacd8",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "native test registration",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "2b2e7171ec72b9d9ac56a6a0abe75f023a7b7a651d4e95c21644a7bc41743c0c",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 6244
+      },
+      {
+        "guard": "JUnit callback total",
+        "file": "src/cpp-native.ts",
+        "sourceSha256": "27d1935b0e86ce58e8288bd08a912cfd5557ee3a438e7db913f08738af53f20d",
+        "mutationSourceSha256": "db61a835e1fc9e3e04020b183de63e94b8544fb00fb5893086a191ada7cb3680",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "XML test count",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "a316bf8c42aad5523fb95c15edef0350b7b390ce42c53f70ce38b77aac3ab8f5",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4508
+      },
+      {
+        "guard": "CTest global summary percentage",
+        "file": "src/cpp-native.ts",
+        "sourceSha256": "27d1935b0e86ce58e8288bd08a912cfd5557ee3a438e7db913f08738af53f20d",
+        "mutationSourceSha256": "3ac9dbc5a43c272febdc29ebb52c8376ca54fe4b2acfda1f1b8ae158d4da1327",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "console summary",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "57b1095f5577b99d1bcc03c4dff8f22b7bd4f12e375c90db321805afb7d15194",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4503
+      },
+      {
+        "guard": "Every native artifact accounted",
+        "file": "src/cpp-tools-evidence.ts",
+        "sourceSha256": "1682f39980b6a3000e0173a6fe04451eac87176a1750236d96795fb277d5d574",
+        "mutationSourceSha256": "3cb3f6ca56bf0345af27417151eb28d0e83044bc9c4c2f7c41d5c0d63767b8fc",
+        "compiled": true,
+        "intendedAssertion": {
+          "originalCallback": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+          "originalCompiledCallLine": 30,
+          "negativeControl": "extra artifact",
+          "status": "passed instead of inconclusive"
+        },
+        "exitCode": 1,
+        "tests": 1,
+        "skipped": 0,
+        "logSha256": "d1e78c2208515e635d0731b2542370b8e6b8c59d0f8c87195342a4efed2fd56f",
+        "killedAtIntendedAssertion": true,
+        "testPins": [
+          {
+            "file": "test/cpp-controls.test.ts",
+            "sha256": "d3c3ae5c299ca463f0243efea944ddd54f1435d2022e3c1bc234ff3707e75468"
+          }
+        ],
+        "selectedOriginalCallbackSha256": "97e9916d3d701204f27b7f0d013e6ffa1872a3c0692d968dbc705a4ef604c11a",
+        "durationMs": 4310
+      }
+    ]
+  },
+  "repositoryValidation": [
+    {
+      "check": "check",
+      "command": ["npm", "run", "check"],
+      "exitCode": 0,
+      "durationMs": 59370,
+      "logSha256": "72f0c448663a96fb5ad10ae17a05d0e308185ea1809af153abfcacec23b17eb9",
+      "counts": [
+        "\u2139 tests 755",
+        "\u2139 pass 572",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 183",
+        "\u2139 todo 0"
+      ]
+    },
+    {
+      "check": "format",
+      "command": ["./node_modules/.bin/prettier", "--check", "."],
+      "exitCode": 0,
+      "durationMs": 4029,
+      "logSha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "counts": []
+    },
+    {
+      "check": "changed-lint",
+      "command": [
+        "./node_modules/.bin/eslint",
+        "scripts/cleanup-cpp-tools-runtime.mjs",
+        "scripts/generate-schemas.mjs",
+        "scripts/prepare-cpp-tools-runtime.mjs",
+        "scripts/verify-cpp-tools-container.mjs",
+        "scripts/verify-cpp-tools-package.mjs",
+        "src/adapters.ts",
+        "src/cpp-cmake.ts",
+        "src/cpp-native.ts",
+        "src/cpp-tools-evidence.ts",
+        "src/cpp-tools-runner.ts",
+        "src/cpp-tools.ts",
+        "src/evidence.ts",
+        "src/schemas.ts",
+        "src/tool-versions.ts",
+        "src/types.ts",
+        "test/cpp-controls.test.ts",
+        "test/cpp-protocol.test.ts",
+        "test/cpp-tools-cancel.test.ts",
+        "test/cpp-tools-fixture.ts",
+        "test/cpp-tools-lifecycle.test.ts",
+        "test/cpp-tools-surfaces.test.ts",
+        "test/cpp-tools.test.ts",
+        "test/schemas.test.ts"
+      ],
+      "exitCode": 0,
+      "durationMs": 784,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "counts": []
+    },
+    {
+      "check": "diff",
+      "command": ["git", "diff", "--check"],
+      "exitCode": 0,
+      "durationMs": 16,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "counts": []
+    },
+    {
+      "check": "schemas",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "dist/test/schemas.test.js"
+      ],
+      "exitCode": 0,
+      "durationMs": 1328,
+      "logSha256": "04694ef6dcaa7fb79a75f09adad6481f68fd00e7bdd95033620d24bc38099889",
+      "counts": [
+        "# tests 6",
+        "# pass 6",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ]
+    }
+  ],
+  "retainedNativeDevelopmentAttempts": [
+    {
+      "attempt": 1,
+      "logSha256": "06ce7b9395b631262d28d73f5e379354a398006c3e800b807b569a7137ac0419",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 2,
+      "logSha256": "49823c6d4db6678c7e3ae1f6d11541c67fe5311f8841f33a042130225693ae7c",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 3,
+      "logSha256": "f090c2d52f988a09b745ddc6ba13da2550787238fd24c72f4da26c5340ad2d18",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 4,
+      "logSha256": "df9ce374447b343db30a4ede39fb3f41dbaa2506b05c6e7bee5334a37226b967",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 5,
+      "logSha256": "1047c6e543be38370581af91ccd3fd75dd093ca08f6fdc5b81363b3ce3de24a7",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 6,
+      "logSha256": "b11a6b6dd7772e609cf3774f6e57e3a17a18f39b2525323ccefbcd3ce2de06c4",
+      "reportedTestCounts": [
+        "# tests 1",
+        "# pass 0",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 7,
+      "logSha256": "eecb639ea12d993f61ec8e7bfbf2aa716db912b3c4b04d34d7075c5166edb4e5",
+      "reportedTestCounts": [
+        "# tests 4",
+        "# pass 3",
+        "# fail 1",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 8,
+      "logSha256": "63716bfdebcf9085a94d9066c6794e13e769090e1e3be551dcfd418412b6cdbe",
+      "reportedTestCounts": [
+        "# tests 4",
+        "# pass 4",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 9,
+      "logSha256": "3e7dd70e62b827a7052591e4edb12abedd985d8021e5d44df89a6155c5a00016",
+      "reportedTestCounts": [
+        "# tests 10",
+        "# pass 10",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 10,
+      "logSha256": "d6d9fc440fed9f7343e68922a8843d4cbbe78c5c2d487399ffa08969c97708bb",
+      "reportedTestCounts": [
+        "# tests 12",
+        "# pass 7",
+        "# fail 5",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 11,
+      "logSha256": "a74aad3132fc86e6a7aa797e957f6e626e2d9c72f3b587ef021d0ad64a2b7e7e",
+      "reportedTestCounts": [
+        "# tests 13",
+        "# pass 11",
+        "# fail 2",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    },
+    {
+      "attempt": 12,
+      "logSha256": "d2d288bd3d9315a508b2395ab0d5c34eb6e7b0f2e65bc022c686dfdf8a2a79d4",
+      "reportedTestCounts": [
+        "# tests 5",
+        "# pass 5",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0"
+      ],
+      "developmentOnly": true
+    }
+  ],
+  "developmentObservations": [
+    "CMake compilation and link strings include terminal newlines and must be decoded passively without treating them as embedded commands.",
+    "Native DWARF file tables can alias the primary source and omit hashes for SDK startup files; conflicting project aliases and consumed project header hashes remain rejected.",
+    "CTest JUnit containers include whitespace text nodes; physical registrations and native console/result counters are separately reconciled.",
+    "A standard string-heavy use-after-move fixture exceeded the shared output bound; the original fixture was reduced while preserving a native analyzer defect and its repair.",
+    "Clang default configuration and CCC override diagnostics required explicit no-default-config version collection and the protected quiet override.",
+    "Selecting the division analyzer enables native required core checkers. The full native checker list is reconciled; individual defects are not claimed for every core checker.",
+    "Reached native callbacks that mutate a generated header or linked executable invalidate artifact freshness even when original source is unchanged."
+  ],
+  "optionalHostSkipsAreNativeAcceptance": false,
+  "evaluatedPackageScope": "The measured tarball contains the evaluated runtime/CLI, schemas and documentation before this receipt. It does not certify a later receipt-containing tarball.",
+  "boundaries": {
+    "gateA": "open",
+    "gateBEvaluationPermitted": false,
+    "gateCReviewQualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "privateSourceImported": false,
+    "nativeFailureLocationsEstablishAssertionOrProductionMechanismSeverityRemedy": false,
+    "trustedExecutionIsOSSandboxed": false,
+    "windowsExecutionVerified": false,
+    "otherNativeSDKOSArchitectureProfiles": "unverified",
+    "hostedCIForThisRevision": "unverified",
+    "fullSDKPublisherLicenseClosureVerified": false,
+    "fullNativeAllAttemptAuditCompleted": false,
+    "representativeProjectPerformance": "unmeasured",
+    "allEnabledCoreCheckersIndividuallyDefectTested": false
+  }
+}

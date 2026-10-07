@@ -3,6 +3,7 @@ import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
+import { cppToolsCheck } from "./cpp-tools.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { checkstyleCheck } from "./checkstyle.js";
@@ -150,7 +151,13 @@ export const adapters = [
   {
     id: "cpp",
     markers: ["CMakeLists.txt", "meson.build", "compile_commands.json"],
-    checks: ["cpp.clang-check"],
+    checks: [
+      "cpp.clang-check",
+      "cpp.build",
+      "cpp.ctest",
+      "cpp.clang-format",
+      "cpp.clang-tidy",
+    ],
   },
   {
     id: "infrastructure",
@@ -511,7 +518,20 @@ export async function checksFor(
         : []),
     ];
   }
-  if (project.adapter === "cpp") return [await clangCheck(source, project)];
+  if (project.adapter === "cpp")
+    return [
+      await clangCheck(source, project),
+      ...(project.files.includes("checktrail.cpp-tools.json") ||
+      requested?.some((id) =>
+        /^cpp\.(?:build|ctest|clang-format|clang-tidy)$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "ctest", "clang-format", "clang-tidy"] as const)
+              .filter((mode) => !requested || requested.includes(`cpp.${mode}`))
+              .map((mode) => cppToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
   if (project.adapter === "jvm")
     return [
       await javaCheck(source, project),

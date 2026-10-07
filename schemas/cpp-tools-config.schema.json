@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "project": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$" },
+    "clangVersion": { "type": "string", "const": "22.1.3" },
+    "cmakeVersion": { "type": "string", "const": "4.2.3" },
+    "makeVersion": { "type": "string", "const": "4.4.1" },
+    "platform": { "type": "string", "const": "aarch64-alpine-linux-musl" },
+    "includeDirectories": {
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+      }
+    },
+    "headers": {
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+      }
+    },
+    "generatedHeaders": {
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "template": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          },
+          "output": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          },
+          "values": {
+            "type": "object",
+            "propertyNames": { "type": "string", "pattern": "^CT_[A-Z0-9_]+$" },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            }
+          }
+        },
+        "required": ["template", "output", "values"],
+        "additionalProperties": false
+      }
+    },
+    "targets": {
+      "minItems": 1,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "type": { "type": "string", "enum": ["static", "executable"] },
+          "sources": {
+            "minItems": 1,
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+            }
+          },
+          "dependencies": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            }
+          }
+        },
+        "required": ["name", "type", "sources", "dependencies"],
+        "additionalProperties": false
+      }
+    },
+    "tests": {
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "target": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          }
+        },
+        "required": ["name", "target"],
+        "additionalProperties": false
+      }
+    },
+    "tidyRules": {
+      "minItems": 1,
+      "maxItems": 2,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["bugprone-use-after-move", "clang-analyzer-core.DivideZero"]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "project",
+    "clangVersion",
+    "cmakeVersion",
+    "makeVersion",
+    "platform",
+    "includeDirectories",
+    "headers",
+    "generatedHeaders",
+    "targets",
+    "tests",
+    "tidyRules"
+  ],
+  "additionalProperties": false
+}
