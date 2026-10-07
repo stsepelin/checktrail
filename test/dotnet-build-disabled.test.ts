@@ -25,7 +25,7 @@ test(
         "bootstrap failure",
         '<Target Name="OriginalFailure" BeforeTargets="CoreCompile"><Error Text="original build setup control" /></Target>',
       ],
-    ]) {
+    ] as const) {
       try {
         await writeFile(file, source.replace("</Project>", xml + "</Project>"));
         const check = (await run(root)).checks[0]!;
