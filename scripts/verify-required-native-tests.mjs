@@ -20,7 +20,7 @@ const timeoutMs = [
   "gradle",
   "detekt",
   "kotlin",
-  "kotlin",
+  "scala",
   "maven",
   "dotnet-test",
   "dotnet-format",

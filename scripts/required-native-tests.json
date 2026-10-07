@@ -2938,5 +2938,59 @@
       "file": "dist/test/kotlin-surfaces.test.js",
       "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust"
     }
+  ],
+  "scala": [
+    {
+      "file": "dist/test/scala.test.js",
+      "name": "Scala planning remains inert explicit and unavailable without pinned prerequisites"
+    },
+    {
+      "file": "dist/test/scala.test.js",
+      "name": "Scala configuration rejects unpinned versions plugins scripts mixed profiles and unsafe paths"
+    },
+    {
+      "file": "dist/test/scala.test.js",
+      "name": "native Scala catches type defects and accepts repairs exact near misses and CRLF with complete source output bindings"
+    },
+    {
+      "file": "dist/test/scala.test.js",
+      "name": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence"
+    },
+    {
+      "file": "dist/test/scala-boundaries.test.js",
+      "name": "native Scala accounts resolved declaration expression type and alias suppressions without matching identifier prefixes"
+    },
+    {
+      "file": "dist/test/scala-boundaries.test.js",
+      "name": "native Scala retains partial syntax failures BOM and empty files and never executes application initialization"
+    },
+    {
+      "file": "dist/test/scala-boundaries.test.js",
+      "name": "native Scala rejects changed artifacts links scripts mixed sources and empty selected scope"
+    },
+    {
+      "file": "dist/test/scala-boundaries.test.js",
+      "name": "native Scala cancellation kills the reached compiler JVM and removes owned snapshots and runtime libraries"
+    },
+    {
+      "file": "dist/test/scala-dependencies.test.js",
+      "name": "native Scala resolves pinned dependency classes without initialization and rejects missing changed source bearing and manifest dependencies"
+    },
+    {
+      "file": "dist/test/scala-dependencies.test.js",
+      "name": "native Scala applies declared warning policy and preserves compiler failure summaries and partial findings"
+    },
+    {
+      "file": "dist/test/scala-dependencies.test.js",
+      "name": "native Scala binds same-named nested sources and all generated classes to declared JVM 17 21 and 25 targets"
+    },
+    {
+      "file": "dist/test/scala-surfaces.test.js",
+      "name": "native Scala CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    },
+    {
+      "file": "dist/test/scala-boundaries.test.js",
+      "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks"
+    }
   ]
 }

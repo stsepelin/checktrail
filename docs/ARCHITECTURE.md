@@ -255,3 +255,12 @@ through the shared library/CLI/MCP engine. It retains partial compiler failure a
 declared warning policy. Native acceptance is scoped to the exact measured source,
 runtime and package; mixed/generated/script profiles, Scala, wider platforms and
 Gate A remain open. No inference or field evaluation is invoked.
+
+The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
+collector immediately after typing and after JVM bytecode generation. Selected
+physical and native source bytes, declaration/tree/type counts, resolved
+suppression annotations, driver/source callbacks, diagnostics, raw bytes and
+physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
+Original source, compiling guard and offline installed acceptance is
+profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
+wrappers, platforms and full provenance remain required. Gate A remains open.
