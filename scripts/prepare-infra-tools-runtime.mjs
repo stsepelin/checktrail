@@ -12,9 +12,9 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { Buffer } from "node:buffer";
 import { fileURLToPath, URL } from "node:url";
 import { mavenHash } from "../dist/src/maven.js";
+import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const task = process.env.CHECKTRAIL_TEST_TASK || `infra-tools-${process.pid}`;
 assert.equal(process.arch, "arm64");
@@ -108,7 +108,7 @@ try {
       : undefined,
     observed = [];
   for (let offset = 0; offset < downloads.length; offset += 4) {
-    const rows = await Promise.all(
+    const rows = await Promise.allSettled(
       downloads.slice(offset, offset + 4).map(async (item) => {
         let bytes, asset;
         if (local) {
@@ -123,19 +123,12 @@ try {
           bytes = await readFile(file);
           asset = "operator-prepared-artifact";
         } else {
-          const response = await globalThis.fetch(item.asset, {
-            signal: globalThis.AbortSignal.timeout(120000),
+          bytes = await requestPinnedArtifactBytes(item, {
+            onRetry: ({ attempt, waitMs }) =>
+              process.stderr.write(
+                `Retrying ${item.path} after transport failure (attempt ${attempt}/3; wait ${waitMs}ms)\n`,
+              ),
           });
-          assert.equal(response.status, 200);
-          assert.ok(response.body);
-          let count = 0;
-          const chunks = [];
-          for await (const chunk of response.body) {
-            count += chunk.length;
-            assert.ok(count <= item.bytes);
-            chunks.push(Buffer.from(chunk));
-          }
-          bytes = Buffer.concat(chunks);
           asset = item.asset;
         }
         assert.equal(bytes.length, item.bytes);
@@ -151,7 +144,14 @@ try {
         };
       }),
     );
-    observed.push(...rows);
+    // Drain the batch before cleanup can remove its staging directory.
+    const failures = rows.filter((row) => row.status === "rejected");
+    if (failures.length)
+      throw new AggregateError(
+        failures.map((row) => row.reason),
+        "Pinned artifact preparation failed",
+      );
+    observed.push(...rows.map((row) => row.value));
   }
   for (const tool of manifest.tools) {
     const archive = path.join(temporary, "artifacts/archives", tool.archive);
