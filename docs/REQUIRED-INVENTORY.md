@@ -35,6 +35,11 @@ required source/archive/notice inspection. Context collection must remain
 non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
 conservative impact fallback.
 
+Original structural and compiling-control evidence is recorded in
+[gate-inventory-2026-10-07.json](measurements/gate-inventory-2026-10-07.json).
+It assesses preservation and selection coherence; it leaves implementation/native
+acceptance and quality unassessed.
+
 ## Scope reconciliation
 
 The operator clarified that the intended reviewer is the local MCP interface used
