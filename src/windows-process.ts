@@ -271,7 +271,7 @@ export async function runWindowsProcess(
       else {
         controlSocket = socket;
         socket.on("error", () => {});
-        if (stopRequested) socket.write(Buffer.from([1]));
+        if (stopRequested) socket.end(Buffer.from([1]));
       }
     });
     await new Promise<void>((resolve, reject) => {
@@ -351,13 +351,15 @@ export async function runWindowsProcess(
         if (stopping) return;
         stopping = true;
         // Keep the connection and directory until the completion receipt is read.
+        // End the one-byte request so native readers cannot wait on an open writer.
         // A late bootstrap connection must receive the same stop request.
+        // Allow the native two-second job drain plus supervisor exit overhead.
         stopRequested = true;
-        controlSocket?.write(Buffer.from([1]));
+        controlSocket?.end(Buffer.from([1]));
         force = setTimeout(() => {
           result.errorCode = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
           child.kill("SIGKILL");
-        }, 2000);
+        }, 3000);
       };
       const collect = (chunks: Buffer[], chunk: Buffer) => {
         const available = Math.max(0, maximum - bytes);
