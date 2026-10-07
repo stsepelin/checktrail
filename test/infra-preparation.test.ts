@@ -33,12 +33,12 @@ test("pinned artifact preparation retries bounded transport failures with fresh 
 `,
   ));
 
-test("pinned artifact preparation does not retry HTTP malformed size or unknown failures", async (t) =>
+test("pinned artifact preparation does not retry permanent HTTP malformed size or unknown failures", async (t) =>
   control(
     t,
     `
  const item=${item};
- for(const [body,reason] of [[()=>new Response('original',{status:404}),/HTTP response/],[()=>new Response('original',{status:503}),/HTTP response/],[()=>new Response(null),/no body/],[()=>new Response('short'),/byte count/],[()=>new Response('too many bytes'),/byte limit/]]){
+ for(const [body,reason] of [[()=>new Response('original',{status:404}),/HTTP response/],[()=>new Response('original',{status:501}),/HTTP response/],[()=>new Response(null),/no body/],[()=>new Response('short'),/byte count/],[()=>new Response('too many bytes'),/byte limit/]]){
   let calls=0;await assert.rejects(requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return body()},delayImpl:async()=>{throw new Error('must not retry integrity or HTTP failures')}}),reason);assert.equal(calls,1);
  }
  for(const failure of [new TypeError('ETIMEDOUT without a transport code'),Object.assign(new Error('unknown'),{code:'ETIMEDOUT_EXTRA'}),Object.assign(new Error('integrity'),{code:'ERR_ASSERTION',cause:{code:'ETIMEDOUT'}})]){
@@ -107,3 +107,22 @@ test("infra preparation drains concurrent downloads before failure cleanup", asy
   preparationControl(t, false));
 test("infra preparation rejects incorrect pinned digests without retries or publication", async (t) =>
   preparationControl(t, true));
+
+test("pinned artifact preparation retries only transient server statuses without reading failed bodies", async (t) =>
+  control(
+    t,
+    `
+ const item=${item};
+ for(const status of [500,502,503,504]) {
+  let calls=0,cancelled=0;const waits=[];
+  const result=await requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return calls<3?new Response(new ReadableStream({cancel(){cancelled++}}),{status}):new Response('original')},delayImpl:async ms=>waits.push(ms)});
+  assert.equal(result.toString(),'original');assert.equal(calls,3);assert.equal(cancelled,2);assert.deepEqual(waits,[1000,3000]);
+  calls=0;const exhausted=[];await assert.rejects(requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return new Response('untrusted error body',{status})},delayImpl:async ms=>exhausted.push(ms)}),new RegExp('HTTP '+status));assert.equal(calls,3);assert.deepEqual(exhausted,[1000,3000]);
+ }
+ for(const status of [301,400,401,403,404,429,501,505]) {
+  let calls=0;await assert.rejects(requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return new Response('original',{status})},delayImpl:async()=>{throw new Error('permanent status must not retry')}}),/HTTP response/);assert.equal(calls,1);
+ }
+ const controller=new AbortController();const deadline=new Error('synthetic deadline');let calls=0;
+ await assert.rejects(requestPinnedArtifactBytes(item,{signal:controller.signal,fetchImpl:async()=>{calls++;return new Response('original',{status:500})},delayImpl:async()=>controller.abort(deadline)}),error=>error===deadline);assert.equal(calls,1);
+`,
+  ));
