@@ -1,4 +1,10 @@
 import {
+  collectImportContext,
+  projectImportContext,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "./import-context.js";
+import {
   fitReviewCalibration,
   projectReviewCalibration,
   applyReviewCalibration,
@@ -1133,6 +1139,38 @@ function createConnectionServer(
       } catch {
         return error(
           "Finding comparison failed. Inspect baseline paths, limits and evidence locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "import_context",
+    {
+      description:
+        "Collect bounded JS/TS imports, whole source declarations and affected declared consumers without executing project code. Unresolved scope retains full fallback; this does not narrow validation plans or prove runtime reachability.",
+      inputSchema: z.strictObject({ input: z.string().min(1) }),
+      outputSchema:
+        options.detailed && options.allowReviewSource
+          ? importContextReportSchema
+          : importContextSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }) => {
+      try {
+        const result = await collectImportContext(
+          options.root,
+          JSON.parse(await readProjectFile(options.root, input)),
+        );
+        return reply(
+          projectImportContext(
+            result,
+            options.detailed,
+            options.allowReviewSource === true,
+          ),
+        );
+      } catch {
+        return error(
+          "Import collection failed. Inspect scope, source freshness and limits locally with the CLI.",
         );
       }
     },

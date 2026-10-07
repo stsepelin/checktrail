@@ -1,3 +1,8 @@
+import {
+  importContextInputSchema,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "../dist/src/import-context.js";
 import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
 import { terraformConfigSchema } from "../dist/src/terraform.js";
 import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
@@ -233,6 +238,9 @@ for (const [name, schema] of Object.entries({
   "guidance-report": guidanceReportSchema,
   "guidance-summary": guidanceSummarySchema,
   "dependency-graph": dependencyGraphSchema,
+  "import-context-input": importContextInputSchema,
+  "import-context-report": importContextReportSchema,
+  "import-context-summary": importContextSummarySchema,
   "architecture-policy": architecturePolicySchema,
   "architecture-report": architectureReportSchema,
   "architecture-summary": architectureSummarySchema,

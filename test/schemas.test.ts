@@ -1,3 +1,8 @@
+import {
+  importContextInputSchema,
+  importContextReportSchema,
+  importContextSummarySchema,
+} from "../src/import-context.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -166,6 +171,9 @@ test("published schemas match runtime definitions and compile in a strict standa
     "guidance-report": guidanceReportSchema,
     "guidance-summary": guidanceSummarySchema,
     "dependency-graph": dependencyGraphSchema,
+    "import-context-input": importContextInputSchema,
+    "import-context-report": importContextReportSchema,
+    "import-context-summary": importContextSummarySchema,
     "architecture-policy": architecturePolicySchema,
     "architecture-report": architectureReportSchema,
     "architecture-summary": architectureSummarySchema,
