@@ -33,7 +33,7 @@ Windows named pipe carries a fixed stop byte or parent-disconnection EOF, read b
 an engine-owned background thread; PowerShell stdin is
 ignored so its pipeline reader cannot consume engine control data. The command
 line carries a compressed fixed engine bootstrap; project data never enters its
-script block. The receipt digest binds that actual launcher. The bootstrap uses the host SystemRoot's Windows
+script block. Separate fixed-source digests identify the PowerShell bootstrap and Node launcher. The bootstrap uses the host SystemRoot's Windows
 PowerShell executable, never PATH or a project shell command. It does not change
 execution policy. Command data is quoted according to the documented Windows CRT
 argument rules and bounded before startup. Runtime-specific argument parsers
@@ -52,7 +52,7 @@ and [argument parsing](https://learn.microsoft.com/en-us/cpp/c-language/parsing-
 
 Cancellation, timeout and output exhaustion send one fixed stop byte while the
 living parent retains the receipt directory. Parent loss closes the private pipe;
-the guardian reads EOF, terminates the owned job and removes its owned directory. The guardian is detached from libuv's parent-exit job so it can perform that cleanup; its own native jobs continue to own the compiler and project children. Normal root exit also removes remaining
+the guardian reads EOF, terminates the owned job and removes its owned directory. The Node launcher is detached from the caller's libuv job so it can retain the ordinary PowerShell child during that cleanup; the guardian's native jobs continue to own compiler and project children. Normal root exit also removes remaining
 background descendants. Guardian death invokes kernel kill-on-close; it cannot
 produce a completed receipt and is reported incomplete. Native controls include
 multiple detached descendants and an unrelated sibling.
