@@ -1283,9 +1283,11 @@ test("native probe cancellation retains the reached attempt and never creates ev
     let entered = false;
     for (let i = 0; i < 200; i++) {
       try {
-        assert.equal(await readFile(marker, "utf8"), "original entered");
-        entered = true;
-        break;
+        // Another process can observe the file between creation and its write.
+        if ((await readFile(marker, "utf8")) === "original entered") {
+          entered = true;
+          break;
+        }
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
       }
