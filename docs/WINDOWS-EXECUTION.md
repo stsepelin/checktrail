@@ -50,8 +50,8 @@ CI profile is targeted for acceptance here. See the Microsoft documentation for
 [Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects)
 and [argument parsing](https://learn.microsoft.com/en-us/cpp/c-language/parsing-c-command-line-arguments?view=msvc-170).
 
-Cancellation, timeout and output exhaustion send one fixed stop byte while the
-living parent retains the receipt directory. Parent loss closes the private pipe;
+Cancellation, timeout and output exhaustion end the control writer after one
+fixed stop byte while the living parent retains the receipt directory. Parent loss closes the private pipe;
 the guardian reads EOF, terminates the owned job and removes its owned directory. The Node launcher is detached from the caller's libuv job so it can retain the ordinary PowerShell child during that cleanup; the guardian's native jobs continue to own compiler and project children. Normal root exit also removes remaining
 background descendants. Guardian death invokes kernel kill-on-close; it cannot
 produce a completed receipt and is reported incomplete. Native controls include
@@ -89,6 +89,6 @@ ordinary PowerShell child. The launcher retains its libuv child job while the
 native guardian handles control-pipe EOF and owned descendant cleanup. The
 receipt binds the guardian PID to the launcher's original IPC notification and
 also records the launcher PID and fixed-source digest. Failed bootstrap or
-cleanup remains bounded by the existing two-second force deadline. Native
+cleanup remains bounded by the three-second stop deadline, allowing the native two-second drain and supervisor exit. Native
 acceptance of this repair remains pending; local compilation is not Windows
 runtime evidence.
