@@ -106,6 +106,10 @@ jobs:
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run check
+      - name: Verify concurrent init publication and fresh installed CLI
+        run: |
+          node scripts/verify-required-native-tests.mjs init-publication
+          node scripts/verify-init-publication-package.mjs
       - run: node scripts/verify-required-native-tests.mjs posix-cleanup
       - run: node scripts/verify-posix-cleanup-guards.mjs
       - name: Require prepared native regression profiles
