@@ -292,3 +292,29 @@ $ctReader = [IO.StreamReader]::new([IO.Compression.GZipStream]::new([IO.MemorySt
 try { $ctScript = $ctReader.ReadToEnd() } finally { $ctReader.Dispose() }
 [ScriptBlock]::Create($ctScript).Invoke()
 `;
+
+// An engine-owned Node launcher keeps libuv's ordinary child job alive while
+// Windows PowerShell performs the native guardian bootstrap and EOF cleanup.
+// Legacy Windows PowerShell exits before evaluating an encoded command when
+// launched with DETACHED_PROCESS in the measured native profile.
+export const windowsKeeperSource = String.raw`
+const {spawn}=require('node:child_process');
+const supervisor=process.argv[1],encoded=process.argv[2],request=process.argv[3];
+if(process.platform!=='win32'||!process.send||!supervisor||!encoded||!request)process.exit(253);
+let finished=false,force;
+const child=spawn(supervisor,['-NoLogo','-NoProfile','-NonInteractive','-EncodedCommand',encoded],{
+ cwd:process.cwd(),env:process.env,detached:false,windowsHide:true,shell:false,stdio:['ignore','inherit','inherit']
+});
+// Release the launcher's own Windows current-directory handle before guardian cleanup.
+try { process.chdir(require('node:path').parse(process.cwd()).root); } catch { child.kill('SIGKILL');process.exit(253); }
+if(child.pid)process.send({requestId:request,supervisorPid:child.pid},error=>{if(error&&!finished)parentLost();});
+function parentLost(){
+ if(finished||force)return;
+ // The native control pipe reaches EOF independently and performs job cleanup.
+ // Bound failed bootstrap or cleanup using the launcher's kill-on-close job.
+ force=setTimeout(()=>{if(!finished){child.kill('SIGKILL');process.exit(253);}},2000);
+}
+process.on('disconnect',parentLost);
+child.on('error',()=>{finished=true;if(force)clearTimeout(force);process.exit(253);});
+child.on('close',code=>{finished=true;if(force)clearTimeout(force);process.exit(code===null?253:code);});
+`;
