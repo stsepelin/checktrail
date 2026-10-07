@@ -78,3 +78,8 @@ artifact tampering, plus real CLI/MCP worker calls. Compiling guard mutations pr
 the original callbacks and restore the shipped runtime. The installed-package
 harness repeats the controls outside an offline production installation, with the
 wire client declared separately from production dependencies.
+
+The [implementation acceptance record](measurements/review-benchmark-multi-2026-10-07.json)
+binds the tested source, native callbacks, compiling guard controls and offline
+installed implementation candidates. It does not establish authoritative truth or
+reviewer quality.
