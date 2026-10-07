@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+ruby "4.0.7"
+gem "rubocop", "1.91.0"
+gem "rspec-core", "3.13.6"
+gem "minitest", "6.0.6"
+gem "json", "2.18.0"
+gem "prism", "1.8.1"

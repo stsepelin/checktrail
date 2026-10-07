@@ -147,6 +147,8 @@ an unavailable runtime or external service does not count as verification.
   offline dependencies, fresh build directories, native target and source
   accounting, structured compiler diagnostics and Linux regression evidence.
   Rust test execution, formatting, Clippy and workspace matrices remain separate.
+- Implemented: bounded opt-in RuboCop/RSpec/Minitest with literal data-only manifest planning, checksum-bound offline gems, native compiler/source and case reconciliation, owned output and explicit trust. RUBY-TOOLS.md and its pinned measurement record required native source/offline installed acceptance and compiling original-callback guard controls. Broader E13 profiles and Gate A remain open.
+
 - Implemented: MRI Ruby syntax checking for source and Ruby DSL manifests,
   per-file native success accounting, disabled gem/preload behavior, synthetic
   broken/fixed cases and Linux/macOS native verification. Ruby tests and framework

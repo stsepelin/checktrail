@@ -43,6 +43,7 @@ export const PARSERS = [
   "actionlint-json",
   "external-json",
   "ruby-syntax",
+  "ruby-tools-json",
   "silent-syntax",
   "ruff-json",
   "mypy-json",

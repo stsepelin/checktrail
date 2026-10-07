@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "rubyVersion": { "type": "string", "const": "4.0.7" },
+    "bundlerVersion": { "type": "string", "const": "4.0.20" },
+    "repository": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "repositoryManifest": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "repositorySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sources": {
+      "minItems": 1,
+      "maxItems": 2048,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+    },
+    "cops": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(?:Lint|Layout|Style|Naming|Metrics|Security)\\/[A-Za-z][A-Za-z0-9]+$"
+      }
+    },
+    "rspec": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "support": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        }
+      },
+      "required": ["files", "support"],
+      "additionalProperties": false
+    },
+    "minitest": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "support": {
+          "maxItems": 256,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        }
+      },
+      "required": ["files", "support"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "rubyVersion",
+    "bundlerVersion",
+    "repository",
+    "repositoryManifest",
+    "repositorySha256",
+    "sources",
+    "cops",
+    "rspec",
+    "minitest"
+  ],
+  "additionalProperties": false
+}

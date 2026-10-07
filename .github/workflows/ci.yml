@@ -452,6 +452,40 @@ jobs:
           docker pull node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/verify-ruby-container.mjs
 
+  ruby-tools:
+    name: ruby-tools (${{ matrix.profile }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - ruby-tools-rubocop
+          - ruby-tools-assertions
+          - ruby-tools-evidence
+          - ruby-tools-lifecycle
+          - ruby-tools-defaults
+          - ruby-tools-surfaces
+          - ruby-tools-cancellation
+    env:
+      CHECKTRAIL_TEST_TASK: ci-${{ matrix.profile }}
+      CHECKTRAIL_RUBY_TOOLS_PROFILE: ${{ matrix.profile }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-ruby-tools-runtime.mjs
+      - run: node scripts/prepare-ruby-tools-container-dependencies.mjs
+      - run: node scripts/verify-ruby-tools-container.mjs
+      - if: always()
+        run: node scripts/cleanup-ruby-tools-runtime.mjs
+
   swift:
     runs-on: macos-latest
     timeout-minutes: 15

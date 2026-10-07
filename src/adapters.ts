@@ -16,6 +16,7 @@ import {
 } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
 import { rubyCheck } from "./ruby.js";
+import { rubyToolsCheck } from "./ruby-tools.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
 import { rustfmtCheck } from "./rustfmt.js";
 import { golangciCheck } from "./golangci.js";
@@ -135,7 +136,11 @@ export const adapters = [
       "dotnet.format-whitespace",
     ],
   },
-  { id: "ruby", markers: ["Gemfile"], checks: ["ruby.syntax"] },
+  {
+    id: "ruby",
+    markers: ["Gemfile"],
+    checks: ["ruby.syntax", "ruby.rubocop", "ruby.rspec", "ruby.minitest"],
+  },
   { id: "swift", markers: ["Package.swift"], checks: ["swift.syntax"] },
   {
     id: "cpp",
@@ -529,7 +534,20 @@ export async function checksFor(
         : []),
     ];
   if (project.adapter === "swift") return [swiftCheck(project)];
-  if (project.adapter === "ruby") return [rubyCheck(project)];
+  if (project.adapter === "ruby")
+    return [
+      rubyCheck(project),
+      ...(project.files.includes("checktrail.ruby-tools.json") ||
+      requested?.some((id) => /^ruby\.(?:rubocop|rspec|minitest)$/.test(id))
+        ? await Promise.all(
+            (["rubocop", "rspec", "minitest"] as const)
+              .filter(
+                (mode) => !requested || requested.includes(`ruby.${mode}`),
+              )
+              .map((mode) => rubyToolsCheck(source, project, mode)),
+          )
+        : []),
+    ];
   if (project.adapter === "rust") {
     const checks = [
       rustCheck(source, project),
