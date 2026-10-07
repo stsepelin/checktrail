@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "measurement": "pinned-detekt-light-original-synthetic-acceptance",
+  "date": "2026-10-07",
+  "sourceRevision": "619cd06b7489a21cd426a29d36dbfdbd6630c81e",
+  "acceptanceScope": "Original synthetic selected-source Kotlin light rules, source/rule/suppression/lifecycle/raw-output accounting and shared CLI/MCP operator-trust/privacy controls. This does not verify compilation, type rules, whole-project behavior or reviewer quality.",
+  "fullSourceCheck": {
+    "command": "npm run check",
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "tests": 911,
+    "pass": 665,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 246,
+    "todo": 0,
+    "durationMs": 84077.656083,
+    "optionalSkipsAreAcceptance": false,
+    "rawLogSha256": "237ae9b64e0aa29907a7352dd25ba527ac2c99bdf96b12bd94237ca7224192db"
+  },
+  "earlierAttempts": [
+    {
+      "required": 9,
+      "passed": 8,
+      "complete": false,
+      "nativeCallbacksPassed": 7,
+      "failure": "The malformed pinned-artifact portable test expected generic artifact wording rather than the actual pinned-JAR mismatch message. The expectation was corrected to the verified error contract; analyzer behavior was unchanged.",
+      "rawLogSha256": "c0e9913b5b3ff222d489b29f620738f7676102ee25b54f439c90abd675d8cc6e"
+    }
+  ],
+  "artifact": {
+    "name": "detekt-cli-2.0.0-alpha.6-all.jar",
+    "size": 84733979,
+    "digest": "sha256:d46ca62ea4d62769b5d5c3ba94d49fa9b80ba11c7dba74ddb6df7fcc2c19c5fd",
+    "browser_download_url": "https://github.com/detekt/detekt/releases/download/v2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6-all.jar"
+  },
+  "configuration": {
+    "profile": "core-default-light-all-selected-v1",
+    "defaultConfigSha256": "6d8ec7aaaa945c5caf1d4924a26faf7b94ed36f93e4b329e45a36a4996441c9d",
+    "configurationSha256": "353af7173c4b71c376a201a9caafded9ab3a67b92e98612fd543705b00509480",
+    "nativeRuleInstances": 227,
+    "activeLightRules": 76,
+    "rulePlanScope": "Light native membership including inactive rules, as pinned in src/detekt-artifacts.ts. Inactive and type-dependent rules are not checked."
+  },
+  "declaredRuntimeBaseDigests": {
+    "jdk": "sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+    "node": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+  },
+  "nativeSourceCompilingGuardsAndInstalled": {
+    "image": "sha256:69445d9d2ac5495849f0403bec4191f563930a0b1191f1f5d17539125cefdd18",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "detekt",
+      "timeoutMs": 300000,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "f5347fd0d76e20acbcd9e8ba8b4ec435419bf999b6358237a9c0145c563c52f8"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f5347fd0d76e20acbcd9e8ba8b4ec435419bf999b6358237a9c0145c563c52f8"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "304c9f713eca82846147730e9091790d57a27d1b56789d327394782861b23898"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "304c9f713eca82846147730e9091790d57a27d1b56789d327394782861b23898"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "detekt planning is inert explicit and unavailable without pinned prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.381422,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "detekt policy rejects alternate plugins baselines rules versions and unsafe artifact paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.689482,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native detekt catches broken repairs and near misses across every selected source without executing Kotlin",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5855.516201,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2090.158553,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native detekt accounts exact file function and family suppressions without treating identifier prefixes as suppression",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7832.795737,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native detekt analyzes files beneath default test exclusions and binds same-named Kotlin files to their correct source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1929.008059,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native detekt rejects malformed syntax invalid source bytes and empty selected scope while retaining native failure output",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2481.815818,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native detekt rejects foreign rule severity suppression address and raw console findings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2054.853867,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-3",
+            "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9198.795637,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "detekt planning is inert explicit and unavailable without pinned prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "detekt policy rejects alternate plugins baselines rules versions and unsafe artifact paths",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native detekt catches broken repairs and near misses across every selected source without executing Kotlin",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native detekt accounts exact file function and family suppressions without treating identifier prefixes as suppression",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native detekt analyzes files beneath default test exclusions and binds same-named Kotlin files to their correct source",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native detekt rejects malformed syntax invalid source bytes and empty selected scope while retaining native failure output",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native detekt rejects foreign rule severity suppression address and raw console findings",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "profile": "detekt-light-guards-v1",
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "native-rule-plan",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "5b29eabacb89b6970722c2c01b478e8b9b9d97bac695a987ffbfb8be30dc3c60",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "34ff37084e7e9f5e4fe22dbddea4dc611c51b662c0ed0165b6dd761933d709f8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-source-identity",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "3d1d56fe37abae2b0c885f249fefceb984990c9fbe53f565fd4b7e56ffa4d6e5",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "7b1a0cc627ef36d2c660a5661ab9648a5e3f6f071931fa4e308ffc82169e44ed",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-psi-identity",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "8ba0b0859ba4a6f2fddc938cf1a08c3deda542a649c772bd7b77534054876810",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "e79daed5c2e238f40fc5426313a81ff54ebc5ee31e3f654bd69aa96f93c1c350",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-suppression-accounting",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "388001a9d13ee3c82d22dfbf4bc69d0e6a6ce3ac077685dd216755e9b24d373e",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "b75a234b79d699da847e4d68a5e5d5f31174977b6e56ccea4868e722f682892b",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-lifecycle-completion",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "eac007cc3edfb90bf6070d110f9108e2e5fc1b77c88199a05a96aaa4f0f0e739",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "3525f60fd41749b6ef7c240e6255e2fb41ec82851971248ac9d469bd29cafa8b",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-output-integrity",
+          "callback": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+          "callbackSha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d",
+          "sourceSha256": "027c1c3de39da9bfc785436ba0f6d67b3c3cd3b354c49b7c4e52823d738624ee",
+          "mutantSha256": "d1ef9bc41c453f0d38dfa985a141bead2e05f0554f2607d460eb735eb80e5807",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "b410a577e19f9c52edf2fe815ea4f62b02bb832e1f9ed014614bc78fdb043b81",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "1f504e14960ee5d2b31b6ac838786a2de9beeb8df0823e9ea14f42b1370cba6f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "detekt",
+        "timeoutMs": 300000,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "30861e9cecd843010df349c44e8cdfaf21793e16292b08ab45d8c198acfd671d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "f5347fd0d76e20acbcd9e8ba8b4ec435419bf999b6358237a9c0145c563c52f8"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "f5347fd0d76e20acbcd9e8ba8b4ec435419bf999b6358237a9c0145c563c52f8"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "304c9f713eca82846147730e9091790d57a27d1b56789d327394782861b23898"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "304c9f713eca82846147730e9091790d57a27d1b56789d327394782861b23898"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "detekt planning is inert explicit and unavailable without pinned prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18.1557,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "detekt policy rejects alternate plugins baselines rules versions and unsafe artifact paths",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.549654,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native detekt catches broken repairs and near misses across every selected source without executing Kotlin",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5813.786766,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2020.070394,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native detekt accounts exact file function and family suppressions without treating identifier prefixes as suppression",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7894.606426,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native detekt analyzes files beneath default test exclusions and binds same-named Kotlin files to their correct source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1908.246217,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native detekt rejects malformed syntax invalid source bytes and empty selected scope while retaining native failure output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2522.922333,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native detekt rejects foreign rule severity suppression address and raw console findings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1995.161609,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-3",
+              "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9407.196684,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "detekt planning is inert explicit and unavailable without pinned prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "detekt policy rejects alternate plugins baselines rules versions and unsafe artifact paths",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native detekt catches broken repairs and near misses across every selected source without executing Kotlin",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native detekt rejects missing reordered duplicated stale suppressed skipped rule source lifecycle and raw output evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native detekt accounts exact file function and family suppressions without treating identifier prefixes as suppression",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native detekt analyzes files beneath default test exclusions and binds same-named Kotlin files to their correct source",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native detekt rejects malformed syntax invalid source bytes and empty selected scope while retaining native failure output",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native detekt rejects foreign rule severity suppression address and raw console findings",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:69445d9d2ac5495849f0403bec4191f563930a0b1191f1f5d17539125cefdd18",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 107993,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "measurementPackageScope": "The retained tarball was built before this measurement document was added. Final committed packaging is checked separately to avoid a package self-digest cycle.",
+  "changedFileIdentities": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "88fd7d3daac6bdc265878b529cbd578e7869e8e87977c5072ef5f92ce59d5e3d"
+    },
+    {
+      "file": "README.md",
+      "sha256": "a58897d27b68a9ac92e45952e31bdfb7c1193e25106b35121ab04d5cf84d3265"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "e314e5d92371cdd5cf705d7ae3835682e0e8babde7b54d86a9a1a8923553da72"
+    },
+    {
+      "file": "docs/DEPENDENCIES.md",
+      "sha256": "8db7b110aecb24450ebd778407e84c4f6f769622c8c711552968c0f9fdaae12c"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "2c563dea7d392e67cd3a25dea87809afb986b1038037b0fba2bdccf6a1cbd93d"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "6cf8909035e8f157fce436db2d5a63a2f751226024e2949c0896c6bdb177a6d4"
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "1c4669c3bd3ccd6e4b538c68c840ed0750812656794557f7bfa6f8119468c795"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "59f4acc4e178e3aab482be1cfed0140ffe035b57931c4a18292e54b33a1f6dae"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "198ecc44be97c74ead89f148ad26b54d2c2648ce3fa78dba97f3e11085844c88"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "973bed27a2689cd13feb1800ae919c8d17c018e73653262527a6ddc41fdfa8cc"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "9ee718cb339ee918bc7de6db91702112f7515ec87b4f02e47ab1f423e4675ef2"
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "b3ff03a3ad32041822ad22c5a0a690bd6f8e73f7c343d48e44f09612ed760add"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "4cf6bb0b8b9bdd58b063ca52c8c1a2fd9256aaac03042dba850cbbb10c6ab219"
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "7a03989436288ee0ee83a0c1c2b8ae31b6acb5e776f21441714fa9348e020eb4"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "00f824a7bf07adbadc827f82385e179dad6548fac19156166ad37cb228f6f538"
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "cb8426bed9d1c3a363a6b85a85c548e92cc872fee0c10466e8118edb136825fd"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "65f073429bb99d7c7222d1f313e429f051a3973d6dab07b1150af59405c72c44"
+    },
+    {
+      "file": "docs/DETEKT.md",
+      "sha256": "5ed5f649c70ea3078fd0da221a7e9067a450d61dfc39674715fff2d6d60d8726"
+    },
+    {
+      "file": "schemas/detekt-config.schema.json",
+      "sha256": "fc3d10c4ec195712a0e6f91c1caf28ae6d80ec4b587e51f80487da1b3947e56b"
+    },
+    {
+      "file": "scripts/detekt-tools.Dockerfile",
+      "sha256": "b5d2594771e919fd21edd32f631cc7701169d7ccae263b1b48211dc37feb6feb"
+    },
+    {
+      "file": "scripts/prepare-detekt-tools.mjs",
+      "sha256": "9f1981ae8d35300d37bdd963208ac4eee1d787a80bd8e7537aeaf80af73363da"
+    },
+    {
+      "file": "scripts/verify-detekt-container.mjs",
+      "sha256": "b60ad731e4263c5b05d249ecbf891c3f15ac43ab6bba31513eb10776ecd99418"
+    },
+    {
+      "file": "scripts/verify-detekt-guards.mjs",
+      "sha256": "d0ee50847796d08672475f40c6c3f2e8106f93d3dd160dbb45f6ecfbe99ff482"
+    },
+    {
+      "file": "scripts/verify-detekt-package.mjs",
+      "sha256": "e8b03f814a956ba2fdd02e343f7c36e89a0a141fa43e68b6f2d0e3a14c023670"
+    },
+    {
+      "file": "src/detekt-artifacts.ts",
+      "sha256": "9a5ab342c04563270a2a522d07512adf5c793d750cb92198d0a44e4facfa6ab7"
+    },
+    {
+      "file": "src/detekt-configuration.ts",
+      "sha256": "0490c423b507ba44307b3d4f296d43ce1355035c9473fa8be00ef6f0e6a620c1"
+    },
+    {
+      "file": "src/detekt-evidence.ts",
+      "sha256": "0c7105253043e2078ed52a9fedcb7cdc3f58af4fc997f0c6e55eeaae62dbfbd9"
+    },
+    {
+      "file": "src/detekt-native.ts",
+      "sha256": "0b851ac73ae599f4513b1e98b81392a2d94ebeb2c93d1ba9f3005b3a8d08090f"
+    },
+    {
+      "file": "src/detekt-runner.ts",
+      "sha256": "e02c0157dacd6b1215a9687d36109fc7ac0dbbc922dcd9b359041d82c747e421"
+    },
+    {
+      "file": "src/detekt.ts",
+      "sha256": "fde833920fcf815621b9858b097435c215b5fbcd07a2f43120a77c4fa29cf2d4"
+    },
+    {
+      "file": "test/detekt-boundaries.test.ts",
+      "sha256": "4b832030cb1c1364eda88ecc2a1550249a97ea33a863cbb72dc75d107dbf504b"
+    },
+    {
+      "file": "test/detekt-fixture.ts",
+      "sha256": "aefe90e5c3e1450541e67368e5ba00bbd1e19cd9149ed92b939848fdc13d85ff"
+    },
+    {
+      "file": "test/detekt-surfaces.test.ts",
+      "sha256": "731f733fde9fded08436bf84850164ceb127392d13fd0856ffbc1bfdcf75a16b"
+    },
+    {
+      "file": "test/detekt.test.ts",
+      "sha256": "c17f5ea942d978bb8a4a492bacaadcbfb5ee417049212960a56874c1f5b2e635"
+    }
+  ],
+  "rawHarnessSha256": "06a9cf33b2d0c8ca14c8b34414b5fc3b06cab07dfacf200381f0c345b3623b05",
+  "publisherSignatureVerified": false,
+  "bundledLicenseClosureVerified": false,
+  "macosNativeVerified": false,
+  "windowsNativeVerified": false,
+  "kotlinCompilerVerified": false,
+  "kotlinTypeAnalysisVerified": false,
+  "scalaVerified": false,
+  "independentClaimTruthVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "calibrationPromoted": false,
+  "qualityGatePromoted": false,
+  "gateAComplete": false
+}

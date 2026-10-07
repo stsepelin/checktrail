@@ -100,3 +100,8 @@ native measurements establish their own acceptance only. Wider Kotlin/Scala,
 compiler/type, wrapper, generated/JPMS, analyzer and platform requirements remain
 open; this profile does not close E11 or Gate A. These controls perform no AI
 inference or real-project field evaluation.
+
+The original Linux ARM64 source/compiling-guard/fresh-package acceptance is recorded
+in [detekt-native-2026-10-07.json](measurements/detekt-native-2026-10-07.json).
+Optional skips in the full host suite are kept separate from the required native
+profile. The measurement does not certify later code or any other platform.
