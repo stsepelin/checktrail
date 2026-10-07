@@ -2365,6 +2365,28 @@
       "name": "native Helm omitted and duplicate resources never become complete coverage"
     }
   ],
+  "native-acceptance-ledger": [
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger binds every reached outcome and missing required case"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger retains timeout failures and unknown required outcomes"
+    },
+    {
+      "file": "dist/test/required-native-tests.test.js",
+      "name": "native acceptance ledger preflights every selected file within exact byte limits"
+    }
+  ],
   "gradle-preparation": [
     {
       "file": "dist/test/gradle-preparation.test.js",
