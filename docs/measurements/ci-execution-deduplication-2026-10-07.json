@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "scope": "CI scheduling and synthetic test-execution deduplication; not reviewer-quality or Gate A acceptance",
+  "date": "2026-10-07",
+  "finalValidationCodeCommit": "7ae82874286d06f57d848cebfa001d15bae0a3f1",
+  "baseCommit": "ad9e86bc23c3741279b25d17bdae16cf53d2761d",
+  "requiredManifestSHA256": "c78b944cccb9c6f87c7c24a404bd842575e55edd4bed3dc89186f17be3835e20",
+  "hostedBaseline": {
+    "runURL": "https://github.com/stsepelin/checktrail/actions/runs/37571396032",
+    "headSHA": "396f5ca43e310908e819304df50649970e953726",
+    "jobID": 112630612155,
+    "jobName": "checks (ubuntu-latest, 22)",
+    "queuedSeconds": 1858.0,
+    "executionSeconds": 1778.0,
+    "steps": [
+      {
+        "name": "Run npm run check",
+        "seconds": 464.0
+      },
+      {
+        "name": "Require prepared native regression profiles",
+        "seconds": 488.0
+      },
+      {
+        "name": "Verify review exchange in the packaged Linux runtime",
+        "seconds": 350.0
+      }
+    ]
+  },
+  "localExperiment": {
+    "runtime": "v26.9.0",
+    "platform": "Darwin",
+    "architecture": "arm64",
+    "selection": [
+      "review",
+      "review-git",
+      "review-provider",
+      "review-probe",
+      "review-refutation",
+      "review-scoring",
+      "review-verification",
+      "mcp-tasks-routing",
+      "mcp-tasks",
+      "mcp-task-dispatch",
+      "review-budget",
+      "review-workflow",
+      "review-workflow-audit",
+      "review-benchmark",
+      "review-benchmark-judging",
+      "review-native-budget"
+    ],
+    "separateProfileSeconds": 194.185,
+    "batchProfileSeconds": 108.798,
+    "combinedFullSuiteSeconds": 35.252,
+    "batch": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "review",
+          "required": 23
+        },
+        {
+          "profile": "review-git",
+          "required": 14
+        },
+        {
+          "profile": "review-provider",
+          "required": 19
+        },
+        {
+          "profile": "review-probe",
+          "required": 9
+        },
+        {
+          "profile": "review-refutation",
+          "required": 7
+        },
+        {
+          "profile": "review-scoring",
+          "required": 6
+        },
+        {
+          "profile": "review-verification",
+          "required": 10
+        },
+        {
+          "profile": "mcp-tasks-routing",
+          "required": 1
+        },
+        {
+          "profile": "mcp-tasks",
+          "required": 10
+        },
+        {
+          "profile": "mcp-task-dispatch",
+          "required": 1
+        },
+        {
+          "profile": "review-budget",
+          "required": 8
+        },
+        {
+          "profile": "review-workflow",
+          "required": 11
+        },
+        {
+          "profile": "review-workflow-audit",
+          "required": 19
+        },
+        {
+          "profile": "review-benchmark",
+          "required": 14
+        },
+        {
+          "profile": "review-benchmark-judging",
+          "required": 9
+        },
+        {
+          "profile": "review-native-budget",
+          "required": 11
+        }
+      ],
+      "passed": 175,
+      "required": 170,
+      "problems": [],
+      "complete": true
+    },
+    "combinedFullSuite": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "review",
+          "required": 23
+        },
+        {
+          "profile": "review-git",
+          "required": 14
+        },
+        {
+          "profile": "review-provider",
+          "required": 19
+        },
+        {
+          "profile": "review-probe",
+          "required": 9
+        },
+        {
+          "profile": "review-refutation",
+          "required": 7
+        },
+        {
+          "profile": "review-scoring",
+          "required": 6
+        },
+        {
+          "profile": "review-verification",
+          "required": 10
+        },
+        {
+          "profile": "mcp-tasks-routing",
+          "required": 1
+        },
+        {
+          "profile": "mcp-tasks",
+          "required": 10
+        },
+        {
+          "profile": "mcp-task-dispatch",
+          "required": 1
+        },
+        {
+          "profile": "review-budget",
+          "required": 8
+        },
+        {
+          "profile": "review-workflow",
+          "required": 11
+        },
+        {
+          "profile": "review-workflow-audit",
+          "required": 19
+        },
+        {
+          "profile": "review-benchmark",
+          "required": 14
+        },
+        {
+          "profile": "review-benchmark-judging",
+          "required": 9
+        },
+        {
+          "profile": "review-native-budget",
+          "required": 11
+        }
+      ],
+      "passed": 571,
+      "required": 170,
+      "problems": [],
+      "complete": true,
+      "files": 162,
+      "optionalSkipped": 154
+    },
+    "method": "One ordered trial during implementation: separate legacy invocations, batch, then full suite with the selected profiles; fresh test processes and fixtures, no saved result reuse.",
+    "limitations": [
+      "Not a statistically repeated benchmark; tool and operating-system caches may be warm.",
+      "The selected profiles are a subset of the main prepared CI obligations.",
+      "Does not establish the runtime or speedup of the new hosted matrix or the pinned container."
+    ]
+  },
+  "validation": {
+    "npmRunCheck": {
+      "tests": 725,
+      "passed": 571,
+      "failed": 0,
+      "skipped": 154,
+      "todo": 0
+    },
+    "repositoryFormatCheck": true,
+    "changedFileESLint": true,
+    "dependencyMetadataAudit": true,
+    "workflowChecker": {
+      "version": "1.7.12",
+      "artifact": "actionlint_1.7.12_darwin_arm64.tar.gz",
+      "artifactSHA256": "aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f",
+      "workflowValid": true,
+      "documentedParallelSyntaxRejected": true
+    }
+  },
+  "hostedCandidateVerified": false,
+  "changes": [
+    "Collect full-suite and required-profile evidence in one invocation with ordinary file parallelism.",
+    "Deduplicate overlapping source files within standalone profile batches.",
+    "Preserve every literal workflow profile requirement and OS/Node matrix entry.",
+    "Cancel obsolete runs for the same branch, including main; preserve independent tag refs.",
+    "Keep mutation, Tasks-enabled MCP, and fresh installed-package checks separate."
+  ],
+  "notClaimed": [
+    "No increase in GitHub account runner capacity.",
+    "No adoption of unsupported parallel-step syntax.",
+    "No actual AI inference or field MCP trial.",
+    "No completion of Gate A."
+  ]
+}
