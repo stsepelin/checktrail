@@ -202,6 +202,14 @@ export {
 } from "./review-paired-scoring.js";
 
 export {
+  reviewBenchmarkMultiProfileSchema,
+  reviewBenchmarkMatchingPacketSchema,
+  reviewBenchmarkMatchingResponseSchema,
+  reviewBenchmarkMatchingBookSchema,
+  reviewBenchmarkMappingArchiveSchema,
+  reviewBenchmarkMatchingWorkerSummarySchema,
+  reviewBenchmarkMultiScoreReportSchema,
+  reviewBenchmarkMultiScoreSummarySchema,
   reviewBenchmarkScoringProfileSchema,
   reviewBenchmarkScoreReportSchema,
   reviewBenchmarkScoreSummarySchema,

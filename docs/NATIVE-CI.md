@@ -25,8 +25,8 @@ suite, required profiles and fresh installed-package checks. The required-profil
 runner applies its timeout to each entire selected test file. Sequential controls
 therefore share that file budget even when each control has its own timeout.
 
-The `dotnet-method` profile allows ten minutes per selected file. Existing
-per-control and engine execution
+The `dotnet-method` profile allows ten minutes per selected file, and
+`review-benchmark-multi` allows five. Existing per-control and engine execution
 limits remain in force. All other profiles retain their existing file budgets;
 any timeout still fails acceptance and leaves unobserved required cases visible.
 

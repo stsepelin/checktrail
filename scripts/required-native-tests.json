@@ -2809,6 +2809,48 @@
       "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion"
     }
   ],
+  "review-benchmark-multi": [
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark multi-claim freeze rejects incomplete foreign duplicate or contradictory common inventories before writing and keeps single-claim intake"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark matching waits for sealed judgments and exposes common inventory without previous verdicts probabilities severity or sibling answers"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark sealed multi-claim scoring retains duplicates common material denominators paired repetitions and sealed reviewer probabilities"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark matching rejects wrong addresses digests quotes families hosts IDs and missing or duplicate claims while retaining every raw response"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark matching rejects curator reviewer judge and malformed sibling session reuse without claiming host isolation"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark multi-claim scoring preserves missing incomplete unresolved invalid and late mapping slots and rejects changed sealed artifacts"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark matching CLI and MCP share one startup pinned read-only slot and operator multi-score keeps incomplete exit and privacy"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark matching byte and private-file bounds preserve missing unavailable invalid cancelled and exact-limit controls"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark common positive matches never override independent wrong mechanism address remedy scope refutation or unresolved verdicts"
+    },
+    {
+      "file": "dist/test/review-benchmark-multi.test.js",
+      "name": "benchmark sealed multi-claim empty reviews and mappings remain completed controls without erasing missed common defects or inventing probabilities"
+    }
+  ],
   "init-publication": [
     {
       "file": "dist/test/onboarding.test.js",

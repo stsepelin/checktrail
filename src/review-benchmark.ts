@@ -1,3 +1,8 @@
+import {
+  scoreMultiClaimReviewTrials,
+  projectMultiClaimReviewScoring,
+  reviewMultiInputSchema,
+} from "./review-multi-scoring.js";
 import { projectReviewCandidateForIndependentStage } from "./review-provider-schema.js";
 import { projectReviewNativeObservations } from "./review-adjudication.js";
 import { createHash, randomInt, randomUUID } from "node:crypto";
@@ -39,6 +44,13 @@ import {
   reviewWorkflowCommandSchema,
 } from "./review-workflow-schema.js";
 import {
+  reviewBenchmarkMultiScoreReportSchema,
+  reviewBenchmarkMultiScoreSummarySchema,
+  reviewBenchmarkMatchingPacketSchema,
+  reviewBenchmarkMatchingResponseSchema,
+  reviewBenchmarkMatchingBookSchema,
+  reviewBenchmarkMappingArchiveSchema,
+  reviewBenchmarkMatchingWorkerSummarySchema,
   reviewBenchmarkPlanSchema,
   reviewBenchmarkScoreReportSchema,
   reviewBenchmarkScoreSummarySchema,
@@ -67,6 +79,7 @@ const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const trialSchema = z.strictObject({
   trialId: z.string().uuid(),
   blindId: z.string().uuid(),
+  matchingId: z.string().uuid().optional(),
   caseIndex: z.number().int().min(0).max(3),
   armIndex: z.number().int().min(0).max(1),
   repetition: z.number().int().min(0).max(1),
@@ -98,6 +111,24 @@ const collectionSchema = z.strictObject({
 type Manifest = z.infer<typeof manifestSchema>;
 type Trial = z.infer<typeof trialSchema>;
 type Intake = z.infer<typeof intakeSchema>;
+function matchingBinding(
+  book: z.infer<typeof reviewBenchmarkMatchingBookSchema>,
+) {
+  const {
+    schemaVersion,
+    protocolDigest,
+    collectionDigest,
+    judgingDigest,
+    judgmentsDigest,
+  } = book;
+  return {
+    schemaVersion,
+    protocolDigest,
+    collectionDigest,
+    judgingDigest,
+    judgmentsDigest,
+  };
+}
 function equal(a: unknown, b: unknown): boolean {
   const sort = (v: unknown): unknown =>
     Array.isArray(v)
@@ -229,6 +260,36 @@ function checkedManifest(value: unknown): Manifest {
     new Set(plan.cases.map((c) => c.id)).size !== plan.cases.length
   )
     throw new Error("Benchmark engine or plan identity disagrees");
+  if (plan.multiScoring) {
+    const settings = plan.multiScoring;
+    const declared = new Map(settings.cases.map((c) => [c.id, c]));
+    if (
+      plan.scoring ||
+      !plan.judging ||
+      declared.size !== settings.cases.length ||
+      declared.size !== plan.cases.length
+    )
+      throw new Error(
+        "Multi-claim scoring requires frozen independent judging and one exact common inventory",
+      );
+    for (const c of plan.cases) {
+      const row = declared.get(c.id);
+      const expected = new Set(c.labels.expectedDefects.map((d) => d.id));
+      if (
+        !row ||
+        expected.size !== c.labels.expectedDefects.length ||
+        new Set(row.defects.map((d) => d.id)).size !== row.defects.length ||
+        row.defects.length !== expected.size ||
+        row.defects.some((d) => !expected.has(d.id)) ||
+        (c.labels.variant === "broken"
+          ? !row.defects.length
+          : row.defects.length !== 0)
+      )
+        throw new Error(
+          "Multi-claim common defects must exactly match each frozen synthetic variant",
+        );
+    }
+  }
   if (plan.scoring) {
     const declared = new Set(plan.scoring.cases.map((c) => c.id));
     if (
@@ -298,6 +359,15 @@ function checkedManifest(value: unknown): Manifest {
       ids.has(trial.blindId)
     )
       throw new Error("Benchmark trial inventory disagrees");
+    if (
+      Boolean(trial.matchingId) !== Boolean(plan.multiScoring) ||
+      (trial.matchingId &&
+        (ids.has(trial.matchingId) ||
+          trial.matchingId === trial.trialId ||
+          trial.matchingId === trial.blindId))
+    )
+      throw new Error("Benchmark matching inventory disagrees");
+    if (trial.matchingId) ids.add(trial.matchingId);
     ids.add(trial.trialId);
     ids.add(trial.blindId);
   }
@@ -319,6 +389,7 @@ export function freezeReviewBenchmark(
         trials.push({
           trialId: randomUUID(),
           blindId: randomUUID(),
+          ...(plan.multiScoring ? { matchingId: randomUUID() } : {}),
           caseIndex: c,
           armIndex: a,
           repetition: r,
@@ -349,6 +420,8 @@ export function freezeReviewBenchmark(
     mkdirSync(path.join(target, "journals"), { mode: 0o700 });
     if (plan.judging)
       mkdirSync(path.join(target, "judgments"), { mode: 0o700 });
+    if (plan.multiScoring)
+      mkdirSync(path.join(target, "mappings"), { mode: 0o700 });
     const digest = writeNew(
       path.join(target, "manifest.json"),
       manifest,
@@ -494,6 +567,7 @@ export class ReviewBenchmark {
       throw new Error("Benchmark frozen manifest digest disagrees");
     const manifest = checkedManifest(decode(bytes));
     if (manifest.plan.judging) directory(path.join(root, "judgments"));
+    if (manifest.plan.multiScoring) directory(path.join(root, "mappings"));
     return { root, manifest };
   }
   #readJournal(root: string, trial: Trial): Buffer | null {
@@ -1183,6 +1257,633 @@ export class ReviewBenchmark {
           paired: projectPairedReviewScoring(report.paired, false),
         });
   }
+  #commonDefects(manifest: Manifest, trial: Trial) {
+    const c = manifest.plan.cases[trial.caseIndex]!;
+    const declared = manifest.plan.multiScoring!.cases.find(
+      (r) => r.id === c.id,
+    )!;
+    return declared.defects.map((d) => ({
+      id: sha(
+        JSON.stringify({
+          runId: manifest.runId,
+          caseIndex: trial.caseIndex,
+          defect: d.id,
+        }),
+      ),
+      family: d.family,
+      material: d.material,
+      claim: c.labels.expectedDefects.find((e) => e.id === d.id)!.claim,
+    }));
+  }
+  #matchingPacket(
+    manifest: Manifest,
+    book: z.infer<typeof reviewBenchmarkJudgingSchema>,
+    judgmentsDigest: string,
+    trial: Trial,
+  ) {
+    if (!manifest.plan.multiScoring || !trial.matchingId)
+      throw new Error("No frozen multi-claim matching profile");
+    const judged = this.#judgePacket(manifest, book, trial.blindId);
+    const payload = {
+      matchingId: trial.matchingId,
+      instructions: manifest.plan.multiScoring.matching.instructions,
+      context: manifest.plan.cases[trial.caseIndex]!.context,
+      claims: judged.claims,
+      defects: this.#commonDefects(manifest, trial).map(
+        ({ id, family, claim }) => ({ id, family, claim }),
+      ),
+    };
+    const assignmentDigest = sha(
+      JSON.stringify({
+        protocolDigest: this.#reference.sha256,
+        collectionDigest: book.collectionDigest,
+        judgmentsDigest,
+        payload,
+      }),
+    );
+    const packet = reviewBenchmarkMatchingPacketSchema.parse({
+      ...payload,
+      assignmentDigest,
+      schemaVersion: 1,
+      profile: manifest.plan.profile,
+      format: "review-benchmark-matching-packet",
+      sessionRequirement: "fresh-host-session",
+      sourceTrust: "untrusted-source-and-review-text",
+      sourceIncluded: true,
+      expectedInventoryIncluded: true,
+      priorVerdictsIncluded: false,
+      claimsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      qualityAssessed: false,
+    });
+    if (Buffer.byteLength(JSON.stringify(packet)) > JUDGE_PACKET_BYTES)
+      throw new Error("Benchmark matching packet exceeds bound");
+    return packet;
+  }
+  #expectedMatchingBook(root: string, manifest: Manifest) {
+    if (!manifest.plan.multiScoring)
+      throw new Error("No frozen multi-claim matching profile");
+    const judgments = this.#judgmentArchive(root, manifest);
+    if (!judgments)
+      throw new Error("Independent judgments must be sealed before matching");
+    const { book, collected, judgingDigest } = this.#judgeBook(root, manifest);
+    const expected = reviewBenchmarkMatchingBookSchema.parse({
+      schemaVersion: 1,
+      protocolDigest: this.#reference.sha256,
+      collectionDigest: collected.sha256,
+      judgingDigest,
+      judgmentsDigest: judgments.sha256,
+      slots: manifest.trials
+        .map((trial) => {
+          const packet = this.#matchingPacket(
+            manifest,
+            book,
+            judgments.sha256,
+            trial,
+          );
+          return {
+            matchingId: packet.matchingId,
+            assignmentDigest: packet.assignmentDigest,
+          };
+        })
+        .sort((a, b) => a.matchingId.localeCompare(b.matchingId)),
+    });
+    return { expected, book, collected, judgments, judgingDigest };
+  }
+  #matchingBook(root: string, manifest: Manifest) {
+    const inputs = this.#expectedMatchingBook(root, manifest);
+    const bytes = readPrivate(
+      path.join(root, "matching.json"),
+      JUDGE_PACKET_BYTES,
+    );
+    const matching = reviewBenchmarkMatchingBookSchema.parse(decode(bytes));
+    if (!equal(matching, inputs.expected))
+      throw new Error("Benchmark matching artifact disagrees");
+    return { ...inputs, matching, matchingDigest: sha(bytes) };
+  }
+  #mappingIntakes(
+    root: string,
+    manifest: Manifest,
+    book: z.infer<typeof reviewBenchmarkJudgingSchema>,
+    judgments: z.infer<typeof reviewBenchmarkJudgmentArchiveSchema>,
+    matching: z.infer<typeof reviewBenchmarkMatchingBookSchema>,
+  ) {
+    type Row = z.infer<
+      typeof reviewBenchmarkMappingArchiveSchema
+    >["mappings"][number];
+    const rows: Row[] = [],
+      sessions = new Map<string, Set<number>>(),
+      forbidden = new Set([manifest.plan.curatorSessionId]);
+    const collected = this.#collection(root, manifest)!;
+    for (const row of collected.collection.trials) {
+      if (!row.journalBase64) continue;
+      try {
+        for (const id of declaredSessions(
+          parseReviewWorkflowAuditArtifact(
+            Buffer.from(row.journalBase64, "base64"),
+          ),
+        ))
+          forbidden.add(id);
+      } catch {
+        /* Retain malformed raw evidence. */
+      }
+    }
+    for (const row of judgments.judgments) {
+      if (!row.responseBase64) continue;
+      try {
+        const raw = decode(Buffer.from(row.responseBase64, "base64"));
+        if (
+          raw &&
+          typeof raw === "object" &&
+          "host" in raw &&
+          raw.host &&
+          typeof raw.host === "object" &&
+          "sessionId" in raw.host &&
+          typeof raw.host.sessionId === "string"
+        )
+          forbidden.add(raw.host.sessionId);
+      } catch {
+        /* A malformed judgment does not disappear from its archive. */
+      }
+    }
+    for (const slot of matching.slots) {
+      const row: Row = {
+        matchingId: slot.matchingId,
+        status: "invalid",
+        responseDigest: null,
+        responseBase64: null,
+      };
+      rows.push(row);
+      let bytes: Buffer;
+      try {
+        bytes = readPrivate(
+          path.join(root, "mappings", `${slot.matchingId}.json`),
+          JUDGMENT_BYTES,
+        );
+      } catch (error) {
+        row.status =
+          (error as NodeJS.ErrnoException).code === "ENOENT"
+            ? "missing"
+            : "unavailable";
+        continue;
+      }
+      row.responseDigest = sha(bytes);
+      row.responseBase64 = bytes.toString("base64");
+      let raw: unknown;
+      try {
+        raw = decode(bytes);
+      } catch {
+        continue;
+      }
+      if (
+        raw &&
+        typeof raw === "object" &&
+        "host" in raw &&
+        raw.host &&
+        typeof raw.host === "object" &&
+        "sessionId" in raw.host &&
+        typeof raw.host.sessionId === "string"
+      ) {
+        const indices = sessions.get(raw.host.sessionId) ?? new Set<number>();
+        indices.add(rows.length - 1);
+        sessions.set(raw.host.sessionId, indices);
+      }
+      const parsed = reviewBenchmarkMatchingResponseSchema.safeParse(raw);
+      if (!parsed.success) continue;
+      const response = parsed.data,
+        trial = manifest.trials.find((t) => t.matchingId === slot.matchingId)!;
+      const packet = this.#matchingPacket(
+        manifest,
+        book,
+        matching.judgmentsDigest,
+        trial,
+      );
+      const { client, clientVersion, provider, model } = response.host;
+      if (
+        response.matchingId !== packet.matchingId ||
+        response.assignmentDigest !== packet.assignmentDigest ||
+        !equal(
+          { client, clientVersion, provider, model },
+          manifest.plan.multiScoring!.matching.host,
+        )
+      ) {
+        row.status = "foreign";
+        continue;
+      }
+      if (response.status !== "completed") {
+        row.status = response.output === null ? "incomplete" : "invalid";
+        continue;
+      }
+      if (!response.output) continue;
+      const claims = new Map(packet.claims.map((c) => [c.claimId, c])),
+        expected = new Set(claims.keys());
+      let valid = true;
+      for (const mapped of response.output) {
+        const candidate = claims.get(mapped.claimId)?.candidate;
+        if (
+          !expected.delete(mapped.claimId) ||
+          !candidate ||
+          (mapped.match === "defect") !== (mapped.defectId !== null) ||
+          (mapped.defectId !== null &&
+            !packet.defects.some(
+              (d) => d.id === mapped.defectId && d.family === candidate.family,
+            )) ||
+          (mapped.match !== "unresolved" && !mapped.citations.length) ||
+          !mapped.citations.every((c) => {
+            const file = packet.context.files.find((f) => f.path === c.file);
+            return (
+              file &&
+              c.revision === "current" &&
+              file.sha256 === c.sourceDigest &&
+              c.endLine >= c.startLine &&
+              c.endLine <= file.content.split("\n").length &&
+              file.content
+                .split("\n")
+                .slice(c.startLine - 1, c.endLine)
+                .join("\n")
+                .includes(c.quote)
+            );
+          })
+        )
+          valid = false;
+      }
+      if (!valid || expected.size) continue;
+      row.status =
+        response.host.isolation === "fresh" &&
+        book.packets.find((p) => p.blindId === trial.blindId)!.status ===
+          "sealed-completed"
+          ? "accepted"
+          : "incomplete";
+    }
+    for (const [id, indices] of sessions)
+      if (forbidden.has(id) || indices.size > 1)
+        for (const i of indices) rows[i]!.status = "foreign";
+    return rows;
+  }
+  #mappingArchive(root: string, manifest: Manifest) {
+    let bytes: Buffer;
+    try {
+      bytes = readPrivate(
+        path.join(root, "mappings-sealed.json"),
+        JUDGMENT_ARCHIVE_BYTES,
+      );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw error;
+    }
+    const archive = reviewBenchmarkMappingArchiveSchema.parse(decode(bytes)),
+      inputs = this.#matchingBook(root, manifest);
+    const binding = matchingBinding(inputs.matching);
+    if (
+      archive.matchingDigest !== inputs.matchingDigest ||
+      !equal(binding, {
+        schemaVersion: archive.schemaVersion,
+        protocolDigest: archive.protocolDigest,
+        collectionDigest: archive.collectionDigest,
+        judgingDigest: archive.judgingDigest,
+        judgmentsDigest: archive.judgmentsDigest,
+      }) ||
+      !equal(
+        archive.mappings,
+        this.#mappingIntakes(
+          root,
+          manifest,
+          inputs.book,
+          inputs.judgments.archive,
+          inputs.matching,
+        ),
+      )
+    )
+      throw new Error("Benchmark mappings or reached responses changed");
+    const accepted = archive.mappings.filter((m) => m.status === "accepted");
+    return {
+      archive,
+      sha256: sha(bytes),
+      matchingDigest: inputs.matchingDigest,
+      summary: {
+        planned: archive.mappings.length,
+        accounted: archive.mappings.length,
+        accepted: accepted.length,
+        resolved: accepted.filter((m) =>
+          reviewBenchmarkMatchingResponseSchema
+            .parse(decode(Buffer.from(m.responseBase64!, "base64")))
+            .output!.every((c) => c.match !== "unresolved"),
+        ).length,
+        archiveDigest: sha(bytes),
+      },
+    };
+  }
+  /** Freeze anonymous curation assignments only after independent judgments are sealed. */
+  prepareMatching() {
+    const { root, manifest } = this.#load(),
+      { expected } = this.#expectedMatchingBook(root, manifest);
+    writeNew(path.join(root, "matching.json"), expected, JUDGE_PACKET_BYTES);
+    return this.status();
+  }
+  matcherSetup(matchingId: string) {
+    const { root, manifest } = this.#load(),
+      inputs = this.#matchingBook(root, manifest);
+    if (this.#mappingArchive(root, manifest))
+      throw new Error("Benchmark matching is closed after sealing");
+    const trial = manifest.trials.find((t) => t.matchingId === matchingId);
+    if (!trial) throw new Error("Unknown matching slot");
+    const packet = this.#matchingPacket(
+      manifest,
+      inputs.book,
+      inputs.matching.judgmentsDigest,
+      trial,
+    );
+    return {
+      file: path.join(root, "mappings", `${matchingId}.json`),
+      maxBytes: JUDGMENT_BYTES,
+      maxPacketBytes: JUDGE_PACKET_BYTES,
+      binding: { matchingId, assignmentDigest: packet.assignmentDigest },
+    };
+  }
+  matcherWorkerCommand(
+    input: unknown,
+    allowSource: boolean,
+    matchingId: string,
+  ) {
+    const command = reviewBenchmarkWorkerCommandSchema.parse(input),
+      { root, manifest } = this.#load(),
+      inputs = this.#matchingBook(root, manifest);
+    const trial = manifest.trials.find((t) => t.matchingId === matchingId);
+    if (!trial) throw new Error("Unknown matching slot");
+    const archive = this.#mappingArchive(root, manifest);
+    if (command.operation === "packet") {
+      if (!allowSource)
+        throw new Error(
+          "Benchmark source disclosure requires operator startup authorization",
+        );
+      if (archive)
+        throw new Error("Benchmark matching is closed after sealing");
+      return this.#matchingPacket(
+        manifest,
+        inputs.book,
+        inputs.matching.judgmentsDigest,
+        trial,
+      );
+    }
+    const row = archive?.archive.mappings.find(
+      (m) => m.matchingId === matchingId,
+    );
+    return reviewBenchmarkMatchingWorkerSummarySchema.parse({
+      schemaVersion: 1,
+      profile: manifest.plan.profile,
+      format: "review-benchmark-matching-worker-summary",
+      matchingId,
+      state: archive ? "mappings-sealed" : "matching-prepared",
+      status: row?.status ?? null,
+      responseDigest: row?.responseDigest ?? null,
+      sourceIncluded: false,
+      claimsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      qualityAssessed: false,
+    });
+  }
+  sealMappings() {
+    const { root, manifest } = this.#load(),
+      inputs = this.#matchingBook(root, manifest);
+    if (existsSync(path.join(root, "mappings-sealed.json")))
+      throw new Error("Benchmark mappings already sealed");
+    const mappings = this.#mappingIntakes(
+      root,
+      manifest,
+      inputs.book,
+      inputs.judgments.archive,
+      inputs.matching,
+    );
+    if (
+      !equal(
+        mappings,
+        this.#mappingIntakes(
+          root,
+          manifest,
+          inputs.book,
+          inputs.judgments.archive,
+          inputs.matching,
+        ),
+      )
+    )
+      throw new Error("Benchmark mappings changed during sealing");
+    const binding = matchingBinding(inputs.matching);
+    writeNew(
+      path.join(root, "mappings-sealed.json"),
+      {
+        ...binding,
+        matchingDigest: inputs.matchingDigest,
+        createdAt: new Date().toISOString(),
+        mappings,
+      },
+      JUDGMENT_ARCHIVE_BYTES,
+    );
+    return this.status();
+  }
+  /** Operator-only multi-claim scoring; every submitted claim and frozen slot remains. */
+  scoreMulti(detailed = false) {
+    const load = () => {
+      const { root, manifest } = this.#load();
+      if (!manifest.plan.multiScoring)
+        throw new Error("Multi-claim scoring must be frozen before review");
+      const mappings = this.#mappingArchive(root, manifest);
+      if (!mappings)
+        throw new Error(
+          "Benchmark mappings must be sealed before multi-claim scoring",
+        );
+      return { manifest, mappings, ...this.#matchingBook(root, manifest) };
+    };
+    const first = load(),
+      {
+        manifest,
+        mappings,
+        book,
+        collected,
+        judgments,
+        judgingDigest,
+        matchingDigest,
+      } = first,
+      settings = manifest.plan.multiScoring!;
+    const pairs = manifest.plan.cases.flatMap((c, caseIndex) =>
+      Array.from({ length: manifest.plan.repetitions }, (_, repetition) => ({
+        id: sha(
+          JSON.stringify({ runId: manifest.runId, caseIndex, repetition }),
+        ),
+        clusterId: sha(
+          JSON.stringify({ runId: manifest.runId, group: c.group }),
+        ),
+        caseIndex,
+        repetition,
+        label:
+          c.labels.variant === "broken"
+            ? ("defect" as const)
+            : c.labels.variant === "fixed"
+              ? ("valid" as const)
+              : ("near-miss" as const),
+      })),
+    );
+    const observations: z.infer<typeof reviewMultiInputSchema>["observations"] =
+      { a: [], b: [] };
+    const accounting = {
+      plannedTrials: manifest.trials.length,
+      selectedPairs: pairs.length,
+      completedTrials: 0,
+      retainedClaims: 0,
+      unscoredClaims: 0,
+      missingJudgments: 0,
+      rejectedJudgments: 0,
+      missingMappings: 0,
+      rejectedMappings: 0,
+      unresolvedClaims: 0,
+      labelDisagreements: 0,
+    };
+    for (const trial of manifest.trials) {
+      const pair = pairs.find(
+          (p) =>
+            p.caseIndex === trial.caseIndex &&
+            p.repetition === trial.repetition,
+        )!,
+        evidence = book.packets.find((p) => p.blindId === trial.blindId)!;
+      const claims = this.#judgePacket(manifest, book, trial.blindId).claims;
+      const judged = judgments.archive.judgments.find(
+          (j) => j.blindId === trial.blindId,
+        )!,
+        mapped = mappings.archive.mappings.find(
+          (m) => m.matchingId === trial.matchingId,
+        )!;
+      if (judged.status === "missing") accounting.missingJudgments++;
+      else if (judged.status !== "accepted") accounting.rejectedJudgments++;
+      if (mapped.status === "missing") accounting.missingMappings++;
+      else if (mapped.status !== "accepted") accounting.rejectedMappings++;
+      accounting.retainedClaims += claims.length;
+      if (evidence.status === "missing") continue;
+      const completed = evidence.status === "sealed-completed";
+      if (completed) accounting.completedTrials++;
+      else accounting.unscoredClaims += claims.length;
+      const judgment =
+        judged.status === "accepted"
+          ? reviewBenchmarkJudgmentResponseSchema.parse(
+              decode(Buffer.from(judged.responseBase64!, "base64")),
+            ).output!
+          : null;
+      const matches =
+        mapped.status === "accepted"
+          ? reviewBenchmarkMatchingResponseSchema.parse(
+              decode(Buffer.from(mapped.responseBase64!, "base64")),
+            ).output!
+          : null;
+      if (judgment && judgment.label !== pair.label)
+        accounting.labelDisagreements++;
+      const rawCandidates = evidence.outputs.flatMap((o) => o.candidates);
+      observations[trial.armIndex === 0 ? "a" : "b"].push({
+        id: pair.id,
+        status: completed ? "completed" : "incomplete",
+        claims: claims.map((claim, i) => {
+          let judgement: z.infer<
+            typeof reviewMultiInputSchema
+          >["observations"]["a"][number]["claims"][number]["judgement"] =
+            "unresolved";
+          let defectId: string | null = null;
+          if (completed && judgment?.label === pair.label) {
+            const disposition = judgment.claims.find(
+              (c) => c.claimId === claim.claimId,
+            )!.judgement;
+            const match = matches?.find((c) => c.claimId === claim.claimId);
+            if (disposition !== "supported") judgement = disposition;
+            else if (
+              match?.match === "defect" &&
+              this.#commonDefects(manifest, trial).some(
+                (d) =>
+                  d.id === match.defectId &&
+                  d.family === claim.candidate.family,
+              )
+            ) {
+              judgement = "supported";
+              defectId = match.defectId;
+            }
+          }
+          if (completed && judgement === "unresolved")
+            accounting.unresolvedClaims++;
+          return {
+            id: claim.claimId,
+            family: claim.candidate.family,
+            judgement,
+            defectId,
+            probability: rawCandidates[i]!.confidence?.probability ?? null,
+          };
+        }),
+      });
+    }
+    const multi = scoreMultiClaimReviewTrials({
+      protocol: {
+        schemaVersion: 1,
+        profile: "declared-multi-claim-paired-v1",
+        purpose: "development",
+        seed: settings.seed,
+        resamples: settings.resamples,
+        confidenceLevel: settings.confidenceLevel,
+        trials: pairs.map(({ id, clusterId }) => ({ id, clusterId })),
+      },
+      labels: pairs.map(({ id, label, caseIndex }) => ({
+        id,
+        label,
+        defects: this.#commonDefects(
+          manifest,
+          manifest.trials.find((t) => t.caseIndex === caseIndex)!,
+        ).map(({ id, family, material }) => ({ id, family, material })),
+      })),
+      observations,
+    });
+    const report = reviewBenchmarkMultiScoreReportSchema.parse({
+      schemaVersion: 1,
+      format: "review-benchmark-multi-scoring-report",
+      profile: settings.profile,
+      protocolDigest: this.#reference.sha256,
+      collectionDigest: collected.sha256,
+      judgingDigest,
+      judgmentsDigest: judgments.sha256,
+      matchingDigest,
+      mappingsDigest: mappings.sha256,
+      scoringParametersDigest: sha(JSON.stringify(settings)),
+      armDigests: manifest.plan.arms.map((a) => sha(JSON.stringify(a))),
+      accounting,
+      scoringReady:
+        accounting.completedTrials === accounting.plannedTrials &&
+        accounting.missingJudgments === 0 &&
+        accounting.rejectedJudgments === 0 &&
+        accounting.missingMappings === 0 &&
+        accounting.rejectedMappings === 0 &&
+        accounting.unresolvedClaims === 0 &&
+        accounting.labelDisagreements === 0,
+      artifactBindingsChecked: true,
+      pairingBoundToManifest: true,
+      labelSource: "frozen-declared-synthetic-defect-inventory",
+      probabilitySource: "sealed-host-declared-uncalibrated-claim-probability",
+      sourceIncluded: false,
+      claimsVerified: false,
+      labelsVerified: false,
+      hostIsolationVerified: false,
+      externalAttemptsComplete: false,
+      calibratedConfidence: false,
+      qualityAssessed: false,
+      inferenceInvoked: false,
+      fieldEvaluationExecuted: false,
+      multi,
+    });
+    if (!equal(first, load()))
+      throw new Error(
+        "Benchmark multi-claim artifacts changed during computation",
+      );
+    return detailed
+      ? report
+      : reviewBenchmarkMultiScoreSummarySchema.parse({
+          ...report,
+          format: "review-benchmark-multi-scoring-summary",
+          multi: projectMultiClaimReviewScoring(report.multi, false),
+        });
+  }
   status() {
     const { root, manifest } = this.#load(),
       collected = this.#collection(root, manifest);
@@ -1210,6 +1911,17 @@ export class ReviewBenchmark {
       }
     }
     const judgments = this.#judgmentArchive(root, manifest);
+    const mappings = manifest.plan.multiScoring
+      ? this.#mappingArchive(root, manifest)
+      : null;
+    let matchingPrepared = false;
+    if (
+      manifest.plan.multiScoring &&
+      existsSync(path.join(root, "matching.json"))
+    ) {
+      this.#matchingBook(root, manifest);
+      matchingPrepared = true;
+    }
     return reviewBenchmarkSummarySchema.parse({
       schemaVersion: 1,
       profile: manifest.plan.profile,
@@ -1217,13 +1929,20 @@ export class ReviewBenchmark {
       runId: manifest.runId,
       protocolDigest: this.#reference.sha256,
       judgments: judgments?.summary ?? null,
-      state: judgments
-        ? "judgments-sealed"
-        : collected
-          ? judging
-            ? "judging-prepared"
-            : "collected"
-          : "frozen",
+      ...(manifest.plan.multiScoring
+        ? { mappings: mappings?.summary ?? null }
+        : {}),
+      state: mappings
+        ? "mappings-sealed"
+        : matchingPrepared
+          ? "matching-prepared"
+          : judgments
+            ? "judgments-sealed"
+            : collected
+              ? judging
+                ? "judging-prepared"
+                : "collected"
+              : "frozen",
       planned: rows.length,
       accounted: collected ? rows.length : 0,
       completed: rows.filter((r) => r.status === "sealed-completed").length,

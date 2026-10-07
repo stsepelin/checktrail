@@ -5,8 +5,9 @@ read-only `review_multi_score` MCP tool implement `declared-multi-claim-paired-v
 They execute no project code or model. This numerical profile uses operator-supplied
 case labels and defect mappings; it does not authenticate findings, labels,
 independence, calibration or a quality gate. The sealed benchmark's existing
-single-claim profile remains unchanged. Binding multiple sealed claims to a common
-independently adjudicated defect inventory remains required separately.
+single-claim profile remains unchanged. The separate [sealed synthetic profile](REVIEW-BENCHMARK-MULTI.md) binds multiple
+raw sealed claims to independent judgments and a frozen common matching intake.
+Authoritative truth and independently observed host isolation remain unverified.
 
 ## Inputs and identity
 

@@ -26,6 +26,7 @@ const timeoutMs =
           "dotnet-test",
           "dotnet-format",
           "dotnet-generated",
+          "review-benchmark-multi",
           "ruby-tools",
           "ruby-tools-rubocop",
           "ruby-tools-assertions",

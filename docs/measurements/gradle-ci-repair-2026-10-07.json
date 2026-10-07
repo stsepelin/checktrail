@@ -1,0 +1,1083 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "scope": "Repair the observed original native Gradle acceptance-file timeout without changing callbacks, required inventory, engine behavior, production dependencies or timeout bounds.",
+  "implementationCommit": "cc4e20f920bb167f1edcdd64c0d546deae0d0b46",
+  "fullSuiteTestedRevision": "c2ee2f664a2ae7594e9b5e03d44ed7b790534515",
+  "fullSuiteTestedTree": "a75e582ee4b1bba6fcfde14496b192484bd6a1e8",
+  "integratedCodeRevision": "9e33eb60f040270b56ed11cca8c4b4d7dc459ef4",
+  "observedFailure": {
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/37549492069/job/112561343081",
+    "required": 13,
+    "passed": 12,
+    "complete": false,
+    "cause": "The original Gradle callback file reached the existing 300000ms file timeout before its last required callback produced a terminal event."
+  },
+  "originalCallbackBodiesAndNamesByteIdentical": true,
+  "relocatedCallbacks": [
+    {
+      "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+      "file": "gradle.test.ts",
+      "sha256": "ba6c9d4afccf756cec3c8c07c01b7c2d3fcf934fcbe14e0159aa9c18ec5308bd"
+    },
+    {
+      "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+      "file": "gradle.test.ts",
+      "sha256": "8e7fe7cfb2dc45db1e257e300403e980dbc108663cc7f14c6b5dd76d00c2358c"
+    },
+    {
+      "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+      "file": "gradle-filtering.test.ts",
+      "sha256": "329427d208ce29e7185e915f9c50a0cb569e3b3f7a4866c21d99ee393ee225df"
+    },
+    {
+      "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+      "file": "gradle-filtering.test.ts",
+      "sha256": "e72b402faa0bb1890574120cfb26bbffd0ed24052d0405a679b2632df56962ca"
+    },
+    {
+      "name": "native Gradle planning reads successful project data without executing build code",
+      "file": "gradle-evidence.test.ts",
+      "sha256": "0ee88f63cab747850b8b96d25d8ca89b4d2e5a3574cccdffed641c0c1778d113"
+    },
+    {
+      "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+      "file": "gradle-evidence.test.ts",
+      "sha256": "97a7b5d69b17aa0988e544b76b7d01a13c0490425d30be961af70220aaf684a0"
+    },
+    {
+      "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+      "file": "gradle-evidence.test.ts",
+      "sha256": "f65d3dc3c5d30f28f2b69e437c007d4812e4a02362c781fd6f3128214dabc12d"
+    },
+    {
+      "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+      "file": "gradle-failures.test.ts",
+      "sha256": "d8f642234b616156a66d99f3df99e1672eb40c3e4a91ef941305b22361029e6f"
+    }
+  ],
+  "probeReadinessRepair": {
+    "observedIntegratedFailure": {
+      "tests": 902,
+      "pass": 662,
+      "fail": 1,
+      "skipped": 239,
+      "actualReadinessText": ""
+    },
+    "exactReadinessConditionPreserved": true,
+    "emptyWritePhaseIsExplicitInFixture": true,
+    "assertionRegressionGuard": {
+      "scope": "Original readiness fixture assertion regression; does not mutate the product engine.",
+      "originalCallbackSha256": "eb2b71dd105c7d4bfa446aa5fee99a7b1e0d95aca39387e2fdfe61f1fae24d75",
+      "originalPassed": true,
+      "oldAssertionCompiled": true,
+      "oldAssertionFailedOnEmptyReadiness": true,
+      "restoredPassed": true,
+      "rawMutationOutputSha256": "f5122e6cddef564733fc802de3fee11d430f975877845d2ce9b39de5b6ebc71c"
+    }
+  },
+  "requiredProfileSize": 13,
+  "fileTimeoutMs": 300000,
+  "processTimeoutMs": 120000,
+  "fullCheck": {
+    "tests": 891,
+    "pass": 652,
+    "fail": 0,
+    "skipped": 239,
+    "cancelled": 0
+  },
+  "integratedFullCheck": {
+    "tests": 902,
+    "pass": 663,
+    "fail": 0,
+    "skipped": 239,
+    "cancelled": 0
+  },
+  "files": {
+    "test/gradle.test.ts": "d3ec4425123fdf91604ce76227d2ca3cfabb3040cc4303e21c098c67b58451df",
+    "test/gradle-filtering.test.ts": "0b8becae6948680291412f04321a4bc730664a8660e13d639f5e355b00b805aa",
+    "test/gradle-evidence.test.ts": "8e28dc88d9836c2be0d504318e798278112d5414f057f0f3aa3adc196c35bc6a",
+    "test/gradle-failures.test.ts": "8f0b23845803e1e35cfd6e72663beb704270ca2a5b5b8dced767fc08895ebb41",
+    "scripts/required-native-tests.json": "3f770d561c6846887252c39e70991ac1eeda8d7bf2ed9af5045ab12cdd57ca77",
+    "scripts/verify-gradle-package.mjs": "0f6ba49c1293af34dd66f8abcb187405b676d33ffc567a479ac5de42e9275ba2",
+    "test/review-probe.test.ts": "0a8471cfcfc3d9283668fe44126457a2b211ee9565874eb507940cddb469574a"
+  },
+  "nativeAndInstalledAcceptance": {
+    "image": "sha256:27fc7552127977d0fc10c0d1007e0b713b25eaa273925663298b6e083eff4c39",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "gradle": "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n\nBuild time:    2026-09-24 13:40:00 UTC\nRevision:      a927be5e08efe79e0b87ada06c762dde6bb9f8b8\n\nKotlin:        2.4.10\nGroovy:        4.0.33\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  25.0.4 (Eclipse Adoptium 25.0.4+7-LTS)\nDaemon JVM:    /opt/java/openjdk (no Daemon JVM specified, using current Java home)\nOS:            Linux 7.0.14-orbstack-00380-ga7e0a2dc9535 aarch64"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "gradle",
+      "timeoutMs": 300000,
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 13,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27.463003,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10827.364934,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 36414.684046,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8359.402455,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-3",
+            "name": "native Gradle planning reads successful project data without executing build code",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 524.68491,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-3",
+            "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22263.67392,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10952.093915,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-4",
+            "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8598.737785,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-5",
+            "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19233.539061,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-5",
+            "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10147.547122,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-5",
+            "name": "native Gradle protects client JVM settings against project daemon overrides",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5604.352922,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-6",
+            "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22678.521143,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-6",
+            "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5056.803851,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Gradle planning reads successful project data without executing build code",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Gradle protects client JVM settings against project daemon overrides",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          }
+        ]
+      }
+    },
+    "preservedJava": {
+      "profile": "java",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 28.835304,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1635.310124,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 526.248854,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2569.870266,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2461.826012,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "96b357d7cbd5cc6229e40eaed1799e484a61a45c40f781ae1613b90e7d84a2c6",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "gradle",
+        "timeoutMs": 300000,
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 13,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-5",
+              "before": {
+                "state": "present",
+                "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-6",
+              "before": {
+                "state": "present",
+                "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 22.68135,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10437.853926,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-2",
+              "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 35076.044867,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-2",
+              "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8160.224163,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-3",
+              "name": "native Gradle planning reads successful project data without executing build code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 528.106957,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-3",
+              "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21311.267992,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-3",
+              "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10775.989762,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-4",
+              "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8263.286931,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-5",
+              "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18393.704633,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-5",
+              "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9218.61384,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-5",
+              "name": "native Gradle protects client JVM settings against project daemon overrides",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5212.103958,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-6",
+              "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 22076.867876,
+              "required": true
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-6",
+              "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5077.668923,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Gradle planning reads successful project data without executing build code",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-5",
+              "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-5",
+              "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-6",
+              "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            },
+            {
+              "fileId": "file-6",
+              "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+              "outcome": "passed",
+              "terminalSequences": [13]
+            },
+            {
+              "fileId": "file-5",
+              "name": "native Gradle protects client JVM settings against project daemon overrides",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:27fc7552127977d0fc10c0d1007e0b713b25eaa273925663298b6e083eff4c39",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 327771,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "acceptanceScope": "Native and installed controls were measured on the repair over the preceding integrated foundation. The production archive was unchanged because these edits affect external acceptance harness files. The final integrated stack then passed its full suite.",
+  "preparedPrHeads": [
+    {
+      "number": 8,
+      "head": "dependabot/npm_and_yarn/types/node-26.6.2",
+      "base": "main",
+      "before": "c36d4ece2b2b6f1e79833bfc2306f4c5202a4508",
+      "after": "f313a4bf06df890e0ef98962383141bc0601f9c8",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 25,
+      "head": "pr/dotnet-native-validation",
+      "base": "main",
+      "before": "a9031852d8ad2999d941597d6eee3a9e5cc1d1fc",
+      "after": "35ad8e33ae4e9330fadf65202cfa6b7f6f9dc0f4",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 26,
+      "head": "pr/ruby-native-validation",
+      "base": "pr/dotnet-native-validation",
+      "before": "c1e860d00e98cded1e62f1e6696ce593a84edbfe",
+      "after": "8b6e7e7ce1554ee97c37ecba7b2fd7c80b4257b5",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 27,
+      "head": "pr/swift-native-validation",
+      "base": "pr/ruby-native-validation",
+      "before": "3309f89164a68ead1cb31b0dfc405d75aa24a4a7",
+      "after": "86aaa1763e00a03052fd6aeb3bff2187ef2ad281",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 28,
+      "head": "pr/cpp-native-validation",
+      "base": "pr/swift-native-validation",
+      "before": "c9d2f88f89c475e81f964bf20d378918c26f461e",
+      "after": "befbd00842faf3921c6eb5c217dc73979f2e4a62",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 29,
+      "head": "pr/infrastructure-native-validation",
+      "base": "pr/cpp-native-validation",
+      "before": "36928e96ad19d0b6296305e2f82f3e78d37844b6",
+      "after": "c6589a6dd7072edbbe3e4b2cd1eff30247ce8def",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 30,
+      "head": "pr/helm-native-validation",
+      "base": "pr/infrastructure-native-validation",
+      "before": "442663a00d5012218d2882b946b6bd469ece1b82",
+      "after": "529bef9848f3bfd0d3214a8cc723a3534839d3c2",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 31,
+      "head": "pr/native-acceptance-ledger",
+      "base": "pr/helm-native-validation",
+      "before": "0878edceea2b0b32b8a4b59564c4468270a70f13",
+      "after": "9a8e0abad39da24b065c39870580bec9a48c5758",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 32,
+      "head": "pr/paired-review-scoring",
+      "base": "pr/native-acceptance-ledger",
+      "before": "f885bdd7cbd13dae77339757b5c5578bc0621b86",
+      "after": "eec7e2fb96d49d21fa656f9eb639566a9ba73d3f",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 33,
+      "head": "pr/sealed-benchmark-scoring",
+      "base": "pr/paired-review-scoring",
+      "before": "756a2cd7a880f85edf8a9c469e953a649908ac95",
+      "after": "00176353c532130ca9965fdf8b95d4a2194d752f",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 34,
+      "head": "pr/review-calibration",
+      "base": "pr/sealed-benchmark-scoring",
+      "before": "84dfc594da2a375c6a762d8127f3b28dd58198a2",
+      "after": "3c4222f2f7b6bf9ebdc5e4b3d0abc992397f8004",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 35,
+      "head": "pr/sealed-claim-probabilities",
+      "base": "pr/review-calibration",
+      "before": "217496e228006befcd8cdddb4d1576613d83ab7f",
+      "after": "d4efd4a1ab48716a833153e3e102d064e26124e9",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 36,
+      "head": "pr/import-consumer-context",
+      "base": "pr/sealed-claim-probabilities",
+      "before": "8bc5188b063fc9be6b9ff9fb353ec00261276c5a",
+      "after": "df639f8aaef906f9c066641874ccdf3c02eb6e82",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 37,
+      "head": "pr/windows-execution",
+      "base": "pr/import-consumer-context",
+      "before": "bc85a45c85bcb2bfd63ff92377a9a2b5c2e92c14",
+      "after": "c5b8058fd583eefca67f80535586baeba4545604",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true
+    },
+    {
+      "number": 38,
+      "head": "pr/native-raw-evidence",
+      "base": "pr/windows-execution",
+      "before": "0ff96d04dfd9e66159fbe46e0b9d8f1f9201ba5a",
+      "after": "2bdd110d2d00314139beede16461b83d73e1502b",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    },
+    {
+      "number": 39,
+      "head": "pr/native-json-probes",
+      "base": "pr/native-raw-evidence",
+      "before": "fa7a2ebf4f601a6397ce8fa6e1c3a170ca2746f1",
+      "after": "4dfc046ab05013a3e6c57baeeb9447279814392c",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    },
+    {
+      "number": 40,
+      "head": "pr/spotbugs-native-validation",
+      "base": "pr/native-json-probes",
+      "before": "668578fe7b8943b148cd44d7456956a36cf7ec2a",
+      "after": "51cbfbddaa17a56b1317452936d0da094dfb599e",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    },
+    {
+      "number": 41,
+      "head": "pr/multi-claim-scoring",
+      "base": "pr/spotbugs-native-validation",
+      "before": "2a475ac39d2fedf9ff257c7d8583c6c569fc925c",
+      "after": "b917853f7079a6a04b8c748b1d39299bbd98aa2c",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    },
+    {
+      "number": 42,
+      "head": "pr/posix-cleanup-acceptance",
+      "base": "pr/multi-claim-scoring",
+      "before": "e5ab9b1b10c3dc7aaf6af97da3150b5f095d9312",
+      "after": "ecd499a89bb4fb5874f03390c708d1d3278ceea7",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    },
+    {
+      "number": 43,
+      "head": "pr/sealed-multi-claim-scoring",
+      "base": "pr/posix-cleanup-acceptance",
+      "before": "31de576bc63f9d517c0e7c81353a428a5e59dda1",
+      "after": "bcade98bf82cb40ab8d49c16fcce8e31fb0e6fa0",
+      "typecheckPassed": true,
+      "callbackBytesChecked": true,
+      "requiredProfileChecked": true,
+      "probeReadinessRaceRepaired": true
+    }
+  ],
+  "changedFileLint": "passed",
+  "formatting": "passed",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
