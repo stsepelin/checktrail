@@ -37,6 +37,8 @@ import {
 } from "@modelcontextprotocol/server";
 import { ReviewBenchmark } from "./review-benchmark.js";
 import {
+  reviewBenchmarkMatchingPacketSchema,
+  reviewBenchmarkMatchingWorkerSummarySchema,
   reviewBenchmarkWorkerCommandSchema,
   reviewBenchmarkWorkerSummarySchema,
   reviewBenchmarkJudgePacketSchema,
@@ -186,6 +188,7 @@ export interface ServerOptions {
   reviewBenchmark?: ReviewBenchmarkReference;
   reviewBenchmarkTrialId?: string;
   reviewBenchmarkJudgeId?: string;
+  reviewBenchmarkMatchingId?: string;
   detailed: boolean;
   environment?: Record<string, string>;
   base?: string;
@@ -283,29 +286,41 @@ function createConnectionServer(
   if (
     Boolean(options.reviewBenchmark) !==
       Boolean(
-        options.reviewBenchmarkTrialId || options.reviewBenchmarkJudgeId,
+        options.reviewBenchmarkTrialId ||
+        options.reviewBenchmarkJudgeId ||
+        options.reviewBenchmarkMatchingId,
       ) ||
-    Boolean(options.reviewBenchmarkTrialId && options.reviewBenchmarkJudgeId)
+    [
+      options.reviewBenchmarkTrialId,
+      options.reviewBenchmarkJudgeId,
+      options.reviewBenchmarkMatchingId,
+    ].filter(Boolean).length > 1
   )
     throw new Error(
-      "A benchmark worker requires one startup-pinned review trial or judge slot",
+      "A benchmark worker requires one startup-pinned review, judge or matching slot",
     );
   const benchmark = options.reviewBenchmark
     ? new ReviewBenchmark(options.root, options.reviewBenchmark)
     : undefined;
   const benchmarkCommand = (input: unknown, allowSource: boolean) => {
     if (!benchmark) throw new Error("No benchmark registered");
-    return options.reviewBenchmarkJudgeId
-      ? benchmark.judgeWorkerCommand(
+    return options.reviewBenchmarkMatchingId
+      ? benchmark.matcherWorkerCommand(
           input,
           allowSource,
-          options.reviewBenchmarkJudgeId,
+          options.reviewBenchmarkMatchingId,
         )
-      : benchmark.workerCommand(
-          input,
-          allowSource,
-          options.reviewBenchmarkTrialId!,
-        );
+      : options.reviewBenchmarkJudgeId
+        ? benchmark.judgeWorkerCommand(
+            input,
+            allowSource,
+            options.reviewBenchmarkJudgeId,
+          )
+        : benchmark.workerCommand(
+            input,
+            allowSource,
+            options.reviewBenchmarkTrialId!,
+          );
   };
   if (benchmark) benchmarkCommand({ operation: "status" }, false);
   const workflowEngine =
@@ -478,21 +493,28 @@ function createConnectionServer(
     "review_benchmark",
     {
       description:
-        "Read progress or an anonymous packet for the single operator-selected review trial or judge slot from an operator-frozen original synthetic readiness run. A startup digest pins the protocol; packet source disclosure requires startup authorization. No answer labels, sibling handles or outputs, journal paths, collection or sealing operations are exposed. This tool invokes no AI or project code and does not verify host isolation, findings or quality.",
+        "Read progress or an anonymous packet for the single operator-selected review trial or judge slot from an operator-frozen original synthetic readiness run. A startup digest pins the protocol; packet source disclosure requires startup authorization. Review and judge packets hide curator answers. Matching curation explicitly receives only its frozen common defect inventory, source and blind claims after independent judgments are sealed, without prior verdicts. No sibling handles, outputs, journal paths, collection or sealing operations are exposed. This tool invokes no AI or project code and does not verify host isolation, findings or quality.",
       inputSchema: reviewBenchmarkWorkerCommandSchema,
-      outputSchema: options.reviewBenchmarkJudgeId
+      outputSchema: options.reviewBenchmarkMatchingId
         ? options.allowReviewSource
           ? z.union([
-              reviewBenchmarkJudgeWorkerSummarySchema,
-              reviewBenchmarkJudgePacketSchema,
+              reviewBenchmarkMatchingWorkerSummarySchema,
+              reviewBenchmarkMatchingPacketSchema,
             ])
-          : reviewBenchmarkJudgeWorkerSummarySchema
-        : options.allowReviewSource
-          ? z.union([
-              reviewBenchmarkWorkerSummarySchema,
-              reviewBenchmarkPacketSchema,
-            ])
-          : reviewBenchmarkWorkerSummarySchema,
+          : reviewBenchmarkMatchingWorkerSummarySchema
+        : options.reviewBenchmarkJudgeId
+          ? options.allowReviewSource
+            ? z.union([
+                reviewBenchmarkJudgeWorkerSummarySchema,
+                reviewBenchmarkJudgePacketSchema,
+              ])
+            : reviewBenchmarkJudgeWorkerSummarySchema
+          : options.allowReviewSource
+            ? z.union([
+                reviewBenchmarkWorkerSummarySchema,
+                reviewBenchmarkPacketSchema,
+              ])
+            : reviewBenchmarkWorkerSummarySchema,
       annotations: readOnly,
     },
     async (input) => {

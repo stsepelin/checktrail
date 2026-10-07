@@ -20,9 +20,44 @@
     "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "state": {
       "type": "string",
-      "enum": ["frozen", "collected", "judging-prepared", "judgments-sealed"]
+      "enum": [
+        "frozen",
+        "collected",
+        "judging-prepared",
+        "judgments-sealed",
+        "matching-prepared",
+        "mappings-sealed"
+      ]
     },
     "judgments": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "planned": { "type": "integer", "minimum": 2, "maximum": 16 },
+            "accounted": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "accepted": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "resolved": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "archiveDigest": {
+              "anyOf": [
+                { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": [
+            "planned",
+            "accounted",
+            "accepted",
+            "resolved",
+            "archiveDigest"
+          ],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    },
+    "mappings": {
       "anyOf": [
         {
           "type": "object",

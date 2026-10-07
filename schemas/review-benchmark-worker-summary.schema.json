@@ -15,7 +15,14 @@
     "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "state": {
       "type": "string",
-      "enum": ["frozen", "collected", "judging-prepared", "judgments-sealed"]
+      "enum": [
+        "frozen",
+        "collected",
+        "judging-prepared",
+        "judgments-sealed",
+        "matching-prepared",
+        "mappings-sealed"
+      ]
     },
     "trial": {
       "type": "object",

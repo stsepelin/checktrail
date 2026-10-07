@@ -17,7 +17,7 @@ import { fileURLToPath, URL } from "node:url";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
-  path.join(tmpdir(), "checktrail-benchmark-score-package-"),
+  path.join(tmpdir(), "checktrail-benchmark-multi-package-"),
 );
 try {
   const [packed] = JSON.parse(
@@ -43,7 +43,7 @@ try {
     path.join(consumer, "dist/src"),
   );
   for (const file of [
-    "review-benchmark.test.js",
+    "review-benchmark-multi.test.js",
     "review-benchmark-fixture.js",
     "review-workflow-fixture.js",
     "helpers.js",
@@ -107,10 +107,10 @@ try {
   await writeFile(
     path.join(consumer, "scripts/required-native-tests.json"),
     JSON.stringify({
-      "review-benchmark-scoring": profiles["review-benchmark-scoring"],
+      "review-benchmark-multi": profiles["review-benchmark-multi"],
     }),
   );
-  const selectedImage = process.env.CHECKTRAIL_BENCHMARK_SCORE_IMAGE;
+  const selectedImage = process.env.CHECKTRAIL_BENCHMARK_MULTI_IMAGE;
   const image = selectedImage
     ? execFileSync(
         "docker",
@@ -145,16 +145,13 @@ try {
           image,
           "node",
           "scripts/verify-required-native-tests.mjs",
-          "review-benchmark-scoring",
+          "review-benchmark-multi",
         ],
         { encoding: "utf8", maxBuffer: 1024 * 1024 },
       )
     : execFileSync(
         process.execPath,
-        [
-          "scripts/verify-required-native-tests.mjs",
-          "review-benchmark-scoring",
-        ],
+        ["scripts/verify-required-native-tests.mjs", "review-benchmark-multi"],
         { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
       );
   const acceptance = JSON.parse(output);
