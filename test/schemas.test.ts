@@ -18,6 +18,14 @@ import { z } from "zod";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import addFormatsImport from "ajv-formats";
 import {
+  reviewBenchmarkMultiProfileSchema,
+  reviewBenchmarkMatchingPacketSchema,
+  reviewBenchmarkMatchingResponseSchema,
+  reviewBenchmarkMatchingBookSchema,
+  reviewBenchmarkMappingArchiveSchema,
+  reviewBenchmarkMatchingWorkerSummarySchema,
+  reviewBenchmarkMultiScoreReportSchema,
+  reviewBenchmarkMultiScoreSummarySchema,
   vueRouterConfigSchema,
   nuxtConfigSchema,
   externalManifestSchema,
@@ -34,6 +42,7 @@ import {
   javaConfigSchema,
   checkstyleConfigSchema,
   spotbugsConfigSchema,
+  detektConfigSchema,
   mavenConfigSchema,
   gradleConfigSchema,
   mavenRepositorySchema,
@@ -139,6 +148,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "java-config": javaConfigSchema,
     "checkstyle-config": checkstyleConfigSchema,
     "spotbugs-config": spotbugsConfigSchema,
+    "detekt-config": detektConfigSchema,
     "maven-config": mavenConfigSchema,
     "gradle-config": gradleConfigSchema,
     "maven-repository": mavenRepositorySchema,
@@ -409,4 +419,42 @@ test(".NET build public input schema preserves optional native generator declara
     }),
     false,
   );
+});
+
+test("sealed multi-claim public schemas match runtime contracts and compile strictly", async () => {
+  const pairs = [
+    ["review-benchmark-multi-profile", reviewBenchmarkMultiProfileSchema],
+    ["review-benchmark-matching-packet", reviewBenchmarkMatchingPacketSchema],
+    [
+      "review-benchmark-matching-response",
+      reviewBenchmarkMatchingResponseSchema,
+    ],
+    ["review-benchmark-matching-book", reviewBenchmarkMatchingBookSchema],
+    ["review-benchmark-mapping-archive", reviewBenchmarkMappingArchiveSchema],
+    [
+      "review-benchmark-matching-worker-summary",
+      reviewBenchmarkMatchingWorkerSummarySchema,
+    ],
+    [
+      "review-benchmark-multi-score-report",
+      reviewBenchmarkMultiScoreReportSchema,
+    ],
+    [
+      "review-benchmark-multi-score-summary",
+      reviewBenchmarkMultiScoreSummarySchema,
+    ],
+  ] as const;
+  const ajv = new Ajv2020({ strict: true });
+  (addFormatsImport.default ?? addFormatsImport)(ajv);
+  for (const [name, schema] of pairs) {
+    const disk = JSON.parse(
+      await readFile(
+        new URL("../../schemas/" + name + ".schema.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    assert.deepEqual(disk, z.toJSONSchema(schema), name);
+    const validate = ajv.compile(disk);
+    assert.equal(validate({ unknown: true }), false, name);
+  }
 });

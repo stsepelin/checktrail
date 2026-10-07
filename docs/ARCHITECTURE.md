@@ -88,7 +88,7 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. The experimental bounded Windows
+POSIX hosts, and propagate cancellation. Observed descendants must exit before their waiting parents are stopped, under one bounded cleanup deadline; unavailable identity or surviving-process evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
 runner uses creation-time Job Object ownership and explicit completion/cleanup
 receipts; native acceptance and wider Windows profiles remain pending in
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md). No automatic dependency installation,
@@ -241,3 +241,10 @@ accounting and whole incident clusters. They remain unverified operator inputs;
 summary projections recompute all metrics and withhold retained identities. It
 cannot grant model/source/execution permissions or promote a quality gate; see
 [REVIEW-MULTI-SCORING.md](REVIEW-MULTI-SCORING.md).
+
+The opt-in [Kotlin detekt profile](DETEKT.md) copies selected physical source bytes
+and the pinned analyzer into owned temporary storage. An original native listener
+binds the PSI and rule plan to every selected file's lifecycle. Suppressions,
+exclusions, syntax errors, unknown diagnostics and incomplete participation cannot
+produce a passing light-analysis result. Kotlin compiler/type validation remains
+separate; this does not promote whole-project correctness or a quality gate.

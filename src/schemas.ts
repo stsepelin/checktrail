@@ -428,6 +428,14 @@ export {
 } from "./review-paired-scoring.js";
 
 export {
+  reviewBenchmarkMultiProfileSchema,
+  reviewBenchmarkMatchingPacketSchema,
+  reviewBenchmarkMatchingResponseSchema,
+  reviewBenchmarkMatchingBookSchema,
+  reviewBenchmarkMappingArchiveSchema,
+  reviewBenchmarkMatchingWorkerSummarySchema,
+  reviewBenchmarkMultiScoreReportSchema,
+  reviewBenchmarkMultiScoreSummarySchema,
   reviewBenchmarkScoringProfileSchema,
   reviewBenchmarkScoreReportSchema,
   reviewBenchmarkScoreSummarySchema,
@@ -458,3 +466,5 @@ export {
   reviewMultiReportSchema,
   reviewMultiSummarySchema,
 } from "./review-multi-scoring.js";
+
+export { detektConfigSchema } from "./detekt.js";

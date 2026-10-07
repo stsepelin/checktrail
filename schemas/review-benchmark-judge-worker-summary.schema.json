@@ -17,7 +17,14 @@
     },
     "state": {
       "type": "string",
-      "enum": ["frozen", "collected", "judging-prepared", "judgments-sealed"]
+      "enum": [
+        "frozen",
+        "collected",
+        "judging-prepared",
+        "judgments-sealed",
+        "matching-prepared",
+        "mappings-sealed"
+      ]
     },
     "blindId": {
       "type": "string",

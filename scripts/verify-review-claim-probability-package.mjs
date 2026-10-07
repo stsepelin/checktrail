@@ -44,6 +44,7 @@ try {
   );
   for (const file of [
     "review-benchmark.test.js",
+    "review-benchmark-fixture.js",
     "review-claim-probability.test.js",
     "review-workflow-fixture.js",
     "helpers.js",

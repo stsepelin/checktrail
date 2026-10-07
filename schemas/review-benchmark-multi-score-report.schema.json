@@ -1,0 +1,1348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "sealed-multi-claim-paired-synthetic-v1"
+    },
+    "claimsVerified": { "type": "boolean", "const": false },
+    "hostIsolationVerified": { "type": "boolean", "const": false },
+    "externalAttemptsComplete": { "type": "boolean", "const": false },
+    "qualityAssessed": { "type": "boolean", "const": false },
+    "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "collectionDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "judgingDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "judgmentsDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "matchingDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "mappingsDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "scoringParametersDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "armDigests": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "accounting": {
+      "type": "object",
+      "properties": {
+        "plannedTrials": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "selectedPairs": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "completedTrials": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "retainedClaims": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "unscoredClaims": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "missingJudgments": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "rejectedJudgments": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
+        },
+        "missingMappings": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "rejectedMappings": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "unresolvedClaims": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4096
+        },
+        "labelDisagreements": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 512
+        }
+      },
+      "required": [
+        "plannedTrials",
+        "selectedPairs",
+        "completedTrials",
+        "retainedClaims",
+        "unscoredClaims",
+        "missingJudgments",
+        "rejectedJudgments",
+        "missingMappings",
+        "rejectedMappings",
+        "unresolvedClaims",
+        "labelDisagreements"
+      ],
+      "additionalProperties": false
+    },
+    "scoringReady": { "type": "boolean" },
+    "artifactBindingsChecked": { "type": "boolean", "const": true },
+    "pairingBoundToManifest": { "type": "boolean", "const": true },
+    "labelSource": {
+      "type": "string",
+      "const": "frozen-declared-synthetic-defect-inventory"
+    },
+    "probabilitySource": {
+      "type": "string",
+      "const": "sealed-host-declared-uncalibrated-claim-probability"
+    },
+    "sourceIncluded": { "type": "boolean", "const": false },
+    "labelsVerified": { "type": "boolean", "const": false },
+    "calibratedConfidence": { "type": "boolean", "const": false },
+    "inferenceInvoked": { "type": "boolean", "const": false },
+    "fieldEvaluationExecuted": { "type": "boolean", "const": false },
+    "format": {
+      "type": "string",
+      "const": "review-benchmark-multi-scoring-report"
+    },
+    "multi": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": {
+          "type": "string",
+          "const": "declared-multi-claim-paired-v1"
+        },
+        "protocolDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "labelsDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "observationsDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "purpose": { "type": "string", "enum": ["development", "held-out"] },
+        "channel": { "type": "string", "const": "advisory" },
+        "nativeExecution": { "type": "boolean", "const": false },
+        "claimsVerified": { "type": "boolean", "const": false },
+        "labelsVerified": { "type": "boolean", "const": false },
+        "independenceVerified": { "type": "boolean", "const": false },
+        "pairingVerified": { "type": "boolean", "const": false },
+        "calibratedConfidence": { "type": "boolean", "const": false },
+        "qualityGate": { "type": "string", "const": "not-assessed" },
+        "deterministicOutcomeChanged": { "type": "boolean", "const": false },
+        "inputProvenance": {
+          "type": "string",
+          "const": "operator-supplied-unverified-defect-mappings"
+        },
+        "method": {
+          "type": "string",
+          "const": "paired-whole-cluster-percentile"
+        },
+        "random": { "type": "string", "const": "sha256-counter-rejection-v1" },
+        "estimand": {
+          "type": "string",
+          "const": "ratio-of-pooled-case-and-claim-counts-with-whole-cluster-resampling"
+        },
+        "assumption": {
+          "type": "string",
+          "const": "independent-representative-clusters-and-authoritative-paired-labels-not-verified"
+        },
+        "properScoreComparison": {
+          "type": "string",
+          "const": "not-computed-different-submitted-claims"
+        },
+        "resamples": { "type": "integer", "minimum": 128, "maximum": 4096 },
+        "confidenceLevel": {
+          "type": "number",
+          "minimum": 0.8,
+          "maximum": 0.99
+        },
+        "aggregate": {
+          "type": "object",
+          "properties": {
+            "selected": { "type": "integer", "minimum": 0, "maximum": 8192 },
+            "clusters": { "type": "integer", "minimum": 0, "maximum": 8192 },
+            "repeatedClusters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "missingLabels": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "unresolvedLabels": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "knownDefects": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "knownMaterialDefects": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "completePairs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "incompletePairs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8192
+            },
+            "allSlotsComplete": { "type": "boolean" },
+            "arms": {
+              "type": "object",
+              "properties": {
+                "a": {
+                  "type": "object",
+                  "properties": {
+                    "selected": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "completed": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "missingObservations": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "retainedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "unscoredClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "completedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "supportedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "uniqueSupportedDefects": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "duplicateSupportedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "unresolvedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "resolvedErrors": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "dispositions": {
+                      "type": "object",
+                      "properties": {
+                        "supported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "wrong-mechanism": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "wrong-address": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unreachable-fix": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "out-of-scope": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "refuted": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "supported",
+                        "wrong-mechanism",
+                        "wrong-address",
+                        "unreachable-fix",
+                        "out-of-scope",
+                        "refuted",
+                        "unresolved"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "supportedClaimPrecision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "uniqueDefectPrecision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "materialDefectRecall": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "completedCoverage": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "falseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "nearMissFalseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "properScores": {
+                      "type": "object",
+                      "properties": {
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unscoredClaims": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unknownProbabilities": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "brier": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "negativeLogLikelihood": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "infiniteLogLoss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "scored",
+                        "unscoredClaims",
+                        "unknownProbabilities",
+                        "brier",
+                        "negativeLogLikelihood",
+                        "infiniteLogLoss"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "selected",
+                    "completed",
+                    "missingObservations",
+                    "retainedClaims",
+                    "unscoredClaims",
+                    "completedClaims",
+                    "supportedClaims",
+                    "uniqueSupportedDefects",
+                    "duplicateSupportedClaims",
+                    "unresolvedClaims",
+                    "resolvedErrors",
+                    "dispositions",
+                    "supportedClaimPrecision",
+                    "uniqueDefectPrecision",
+                    "materialDefectRecall",
+                    "completedCoverage",
+                    "falseAlarmRate",
+                    "nearMissFalseAlarmRate",
+                    "properScores"
+                  ],
+                  "additionalProperties": false
+                },
+                "b": {
+                  "type": "object",
+                  "properties": {
+                    "selected": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "completed": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "missingObservations": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "retainedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "unscoredClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "completedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "supportedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "uniqueSupportedDefects": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "duplicateSupportedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "unresolvedClaims": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "resolvedErrors": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "dispositions": {
+                      "type": "object",
+                      "properties": {
+                        "supported": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "wrong-mechanism": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "wrong-address": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unreachable-fix": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "out-of-scope": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "refuted": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unresolved": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "supported",
+                        "wrong-mechanism",
+                        "wrong-address",
+                        "unreachable-fix",
+                        "out-of-scope",
+                        "refuted",
+                        "unresolved"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "supportedClaimPrecision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "uniqueDefectPrecision": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "materialDefectRecall": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "completedCoverage": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "falseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "nearMissFalseAlarmRate": {
+                      "type": "object",
+                      "properties": {
+                        "numerator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "denominator": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "value": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["numerator", "denominator", "value"],
+                      "additionalProperties": false
+                    },
+                    "properScores": {
+                      "type": "object",
+                      "properties": {
+                        "scored": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unscoredClaims": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "unknownProbabilities": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "brier": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0, "maximum": 1 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "negativeLogLikelihood": {
+                          "anyOf": [
+                            { "type": "number", "minimum": 0 },
+                            { "type": "null" }
+                          ]
+                        },
+                        "infiniteLogLoss": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "scored",
+                        "unscoredClaims",
+                        "unknownProbabilities",
+                        "brier",
+                        "negativeLogLikelihood",
+                        "infiniteLogLoss"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "selected",
+                    "completed",
+                    "missingObservations",
+                    "retainedClaims",
+                    "unscoredClaims",
+                    "completedClaims",
+                    "supportedClaims",
+                    "uniqueSupportedDefects",
+                    "duplicateSupportedClaims",
+                    "unresolvedClaims",
+                    "resolvedErrors",
+                    "dispositions",
+                    "supportedClaimPrecision",
+                    "uniqueDefectPrecision",
+                    "materialDefectRecall",
+                    "completedCoverage",
+                    "falseAlarmRate",
+                    "nearMissFalseAlarmRate",
+                    "properScores"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["a", "b"],
+              "additionalProperties": false
+            },
+            "differences": {
+              "minItems": 6,
+              "maxItems": 6,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "metric": {
+                    "type": "string",
+                    "enum": [
+                      "supportedClaimPrecision",
+                      "uniqueDefectPrecision",
+                      "materialDefectRecall",
+                      "completedCoverage",
+                      "falseAlarmRate",
+                      "nearMissFalseAlarmRate"
+                    ]
+                  },
+                  "direction": {
+                    "type": "string",
+                    "enum": ["higher-is-better", "lower-is-better"]
+                  },
+                  "a": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 8192
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 8192
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "b": {
+                    "type": "object",
+                    "properties": {
+                      "numerator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 8192
+                      },
+                      "denominator": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 8192
+                      },
+                      "value": {
+                        "anyOf": [
+                          { "type": "number", "minimum": 0, "maximum": 1 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": ["numerator", "denominator", "value"],
+                    "additionalProperties": false
+                  },
+                  "differenceBMinusA": {
+                    "anyOf": [
+                      { "type": "number", "minimum": -1, "maximum": 1 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "bootstrap": {
+                    "type": "object",
+                    "properties": {
+                      "state": {
+                        "type": "string",
+                        "enum": [
+                          "available",
+                          "insufficient-clusters",
+                          "undefined-point",
+                          "undefined-resamples",
+                          "degenerate"
+                        ]
+                      },
+                      "validResamples": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4096
+                      },
+                      "undefinedResamples": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4096
+                      },
+                      "interval": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "lower": {
+                                "type": "number",
+                                "minimum": -1,
+                                "maximum": 1
+                              },
+                              "upper": {
+                                "type": "number",
+                                "minimum": -1,
+                                "maximum": 1
+                              }
+                            },
+                            "required": ["lower", "upper"],
+                            "additionalProperties": false
+                          },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "state",
+                      "validResamples",
+                      "undefinedResamples",
+                      "interval"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "metric",
+                  "direction",
+                  "a",
+                  "b",
+                  "differenceBMinusA",
+                  "bootstrap"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "selected",
+            "clusters",
+            "repeatedClusters",
+            "missingLabels",
+            "unresolvedLabels",
+            "knownDefects",
+            "knownMaterialDefects",
+            "completePairs",
+            "incompletePairs",
+            "allSlotsComplete",
+            "arms",
+            "differences"
+          ],
+          "additionalProperties": false
+        },
+        "format": { "type": "string", "const": "review-multi-scoring-report" },
+        "input": {
+          "type": "object",
+          "properties": {
+            "protocol": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": { "type": "number", "const": 1 },
+                "profile": {
+                  "type": "string",
+                  "const": "declared-multi-claim-paired-v1"
+                },
+                "purpose": {
+                  "type": "string",
+                  "enum": ["development", "held-out"]
+                },
+                "seed": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                "resamples": {
+                  "type": "integer",
+                  "minimum": 128,
+                  "maximum": 4096
+                },
+                "confidenceLevel": {
+                  "type": "number",
+                  "minimum": 0.8,
+                  "maximum": 0.99
+                },
+                "trials": {
+                  "minItems": 1,
+                  "maxItems": 512,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      },
+                      "clusterId": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      }
+                    },
+                    "required": ["id", "clusterId"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "profile",
+                "purpose",
+                "seed",
+                "resamples",
+                "confidenceLevel",
+                "trials"
+              ],
+              "additionalProperties": false
+            },
+            "labels": {
+              "maxItems": 512,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "enum": ["defect", "valid", "near-miss", "unresolved"]
+                  },
+                  "defects": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                        },
+                        "family": {
+                          "type": "string",
+                          "enum": [
+                            "authorization-tenancy",
+                            "identifiers-allowlists",
+                            "types-numeric-semantics",
+                            "lifecycle-ordering",
+                            "assembly-wiring",
+                            "concurrency-resources",
+                            "atomic-artifacts",
+                            "dependencies-builds",
+                            "test-adequacy"
+                          ]
+                        },
+                        "material": { "type": "boolean" }
+                      },
+                      "required": ["id", "family", "material"],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["id", "label", "defects"],
+                "additionalProperties": false
+              }
+            },
+            "observations": {
+              "type": "object",
+              "properties": {
+                "a": {
+                  "maxItems": 512,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "unsupported",
+                          "incomplete",
+                          "budget-exhausted",
+                          "unreviewed",
+                          "stale",
+                          "cancelled"
+                        ]
+                      },
+                      "claims": {
+                        "maxItems": 192,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                            },
+                            "family": {
+                              "type": "string",
+                              "enum": [
+                                "authorization-tenancy",
+                                "identifiers-allowlists",
+                                "types-numeric-semantics",
+                                "lifecycle-ordering",
+                                "assembly-wiring",
+                                "concurrency-resources",
+                                "atomic-artifacts",
+                                "dependencies-builds",
+                                "test-adequacy"
+                              ]
+                            },
+                            "judgement": {
+                              "type": "string",
+                              "enum": [
+                                "supported",
+                                "wrong-mechanism",
+                                "wrong-address",
+                                "unreachable-fix",
+                                "out-of-scope",
+                                "refuted",
+                                "unresolved"
+                              ]
+                            },
+                            "defectId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "probability": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "family",
+                            "judgement",
+                            "defectId",
+                            "probability"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": ["id", "status", "claims"],
+                    "additionalProperties": false
+                  }
+                },
+                "b": {
+                  "maxItems": 512,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "completed",
+                          "unsupported",
+                          "incomplete",
+                          "budget-exhausted",
+                          "unreviewed",
+                          "stale",
+                          "cancelled"
+                        ]
+                      },
+                      "claims": {
+                        "maxItems": 192,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                            },
+                            "family": {
+                              "type": "string",
+                              "enum": [
+                                "authorization-tenancy",
+                                "identifiers-allowlists",
+                                "types-numeric-semantics",
+                                "lifecycle-ordering",
+                                "assembly-wiring",
+                                "concurrency-resources",
+                                "atomic-artifacts",
+                                "dependencies-builds",
+                                "test-adequacy"
+                              ]
+                            },
+                            "judgement": {
+                              "type": "string",
+                              "enum": [
+                                "supported",
+                                "wrong-mechanism",
+                                "wrong-address",
+                                "unreachable-fix",
+                                "out-of-scope",
+                                "refuted",
+                                "unresolved"
+                              ]
+                            },
+                            "defectId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "probability": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 1
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "family",
+                            "judgement",
+                            "defectId",
+                            "probability"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": ["id", "status", "claims"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["a", "b"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["protocol", "labels", "observations"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "protocolDigest",
+        "labelsDigest",
+        "observationsDigest",
+        "purpose",
+        "channel",
+        "nativeExecution",
+        "claimsVerified",
+        "labelsVerified",
+        "independenceVerified",
+        "pairingVerified",
+        "calibratedConfidence",
+        "qualityGate",
+        "deterministicOutcomeChanged",
+        "inputProvenance",
+        "method",
+        "random",
+        "estimand",
+        "assumption",
+        "properScoreComparison",
+        "resamples",
+        "confidenceLevel",
+        "aggregate",
+        "format",
+        "input"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "claimsVerified",
+    "hostIsolationVerified",
+    "externalAttemptsComplete",
+    "qualityAssessed",
+    "protocolDigest",
+    "collectionDigest",
+    "judgingDigest",
+    "judgmentsDigest",
+    "matchingDigest",
+    "mappingsDigest",
+    "scoringParametersDigest",
+    "armDigests",
+    "accounting",
+    "scoringReady",
+    "artifactBindingsChecked",
+    "pairingBoundToManifest",
+    "labelSource",
+    "probabilitySource",
+    "sourceIncluded",
+    "labelsVerified",
+    "calibratedConfidence",
+    "inferenceInvoked",
+    "fieldEvaluationExecuted",
+    "format",
+    "multi"
+  ],
+  "additionalProperties": false
+}

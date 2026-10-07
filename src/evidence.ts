@@ -13,6 +13,7 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
+import { detektEvidence } from "./detekt-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
 import { checkstyleEvidence } from "./checkstyle-evidence.js";
 import { mavenEvidence } from "./maven-evidence.js";
@@ -361,6 +362,8 @@ export function evaluate(
     return { ...result, ...gradleEvidence(check, processes) };
   if (check.parser === "maven-json")
     return { ...result, ...mavenEvidence(check, processes) };
+  if (check.parser === "detekt-json")
+    return { ...result, ...detektEvidence(check, processes, root) };
   if (check.parser === "spotbugs-json")
     return { ...result, ...spotbugsEvidence(check, processes, root) };
   if (check.parser === "checkstyle-json")
