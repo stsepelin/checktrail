@@ -19,6 +19,7 @@ const excludedDirectories = new Set([
   ".nuxt",
   ".output",
   ".checktrail",
+  ".checktrail-init",
   ".repo-verifier",
   ".terraform",
   "obj",
