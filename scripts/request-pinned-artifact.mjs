@@ -16,6 +16,9 @@ const transientCodes = new Set([
   "UND_ERR_BODY_TIMEOUT",
 ]);
 
+const transientStatuses = new Set([500, 502, 503, 504]);
+class TransientArtifactResponseError extends Error {}
+
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
   { asset, bytes },
@@ -38,6 +41,10 @@ export async function requestPinnedArtifactBytes(
       try {
         response = await fetchImpl(asset, { signal });
         signal.throwIfAborted();
+        if (transientStatuses.has(response.status))
+          throw new TransientArtifactResponseError(
+            `Pinned artifact HTTP ${response.status}`,
+          );
         assert.equal(response.status, 200, "Pinned artifact HTTP response");
         assert.ok(response.body, "Pinned artifact response has no body");
         let count = 0;
@@ -55,7 +62,8 @@ export async function requestPinnedArtifactBytes(
     } catch (error) {
       signal.throwIfAborted();
       if (
-        !transientCodes.has(error?.code ?? error?.cause?.code) ||
+        (!(error instanceof TransientArtifactResponseError) &&
+          !transientCodes.has(error?.code ?? error?.cause?.code)) ||
         attempt > waits.length
       )
         throw error;
