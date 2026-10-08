@@ -1,4 +1,9 @@
 import {
+  captureRustBindings,
+  type RustSyntaxUnit,
+} from "./review-rust-bindings.js";
+import { resolveRustBindings } from "./review-rust-resolution.js";
+import {
   capturePhpBindings,
   type PhpSyntaxUnit,
 } from "./review-php-bindings.js";
@@ -350,6 +355,7 @@ async function collectReviewPolyglotCore(
   pythonRoots?: string[],
   goRoots?: GoModuleRoot[],
   phpRoots?: string[],
+  rustRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -370,6 +376,7 @@ async function collectReviewPolyglotCore(
   const pythonUnits: PythonSyntaxUnit[] = [];
   const goUnits: GoSyntaxUnit[] = [];
   const phpUnits: PhpSyntaxUnit[] = [];
+  const rustUnits: RustSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -583,6 +590,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (rustRoots && asset.grammar === "rust")
+          rustUnits.push(captureRustBindings(nodes, fnIds, decls, range));
         if (phpRoots && asset.grammar === "php")
           phpUnits.push(capturePhpBindings(nodes, fnIds, decls, range));
         if (goRoots && asset.grammar === "go")
@@ -611,6 +620,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (rustRoots)
+    return resolveRustBindings(result, rustUnits, rustRoots, primary);
   if (phpRoots) return resolvePhpBindings(result, phpUnits, phpRoots, primary);
   if (goRoots)
     return resolveGoBindings(
@@ -689,6 +700,29 @@ export async function collectReviewPhpBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewRustBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "rust-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewRustBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       roots,

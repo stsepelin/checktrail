@@ -17,7 +17,7 @@ const controls = [
     file: "review.js",
     name: "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
     before:
-      "bytes >\n        (parsed.schemaVersion === 7 ||\n            parsed.schemaVersion === 8 ||\n            parsed.schemaVersion === 9 ||\n            parsed.schemaVersion === 10\n            ? 1048576\n            : 131072)",
+      "bytes >\n        (parsed.schemaVersion === 7 ||\n            parsed.schemaVersion === 8 ||\n            parsed.schemaVersion === 9 ||\n            parsed.schemaVersion === 10 ||\n            parsed.schemaVersion === 11\n            ? 1048576\n            : 131072)",
     after: "false",
   },
   {

@@ -3400,5 +3400,43 @@
       "file": "dist/test/gate-context-php.test.js",
       "name": "context-php installed acceptance"
     }
+  ],
+  "context-rust": [
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-rust.test.js",
+      "name": "context-rust installed acceptance"
+    }
   ]
 }
