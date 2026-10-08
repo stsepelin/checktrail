@@ -38,6 +38,8 @@ const timeoutMs = selection.includes("dotnet-method")
           "dotnet-build",
           "gradle",
           "detekt",
+          "kotlin",
+          "scala",
           "maven",
           "dotnet-test",
           "dotnet-format",

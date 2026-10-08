@@ -22,7 +22,7 @@ the current head and latest merge-candidate run before claiming hosted success.
 
 ## Acceptance time budgets
 
-The main OS/Node matrix has a 60-minute job limit, including preparation, the full
+The main OS/Node matrix has a 75-minute job limit, including preparation, the full
 suite, required profiles and fresh installed-package checks. The required-profile
 runner applies its timeout to each entire selected test file. Sequential controls
 therefore share that file budget even when each control has its own timeout.
@@ -39,6 +39,12 @@ original, mutant and restored callback. Those callbacks cover several paired
 trials and invalid mapping variations. It reports each stage on stderr and still
 requires the exact unchanged callback to pass, kill its compiling mutant, and
 pass again after restoration. Nested review execution budgets remain unchanged.
+
+The Scala container job allows thirty minutes for artifact preparation, source
+acceptance, compiling guard mutations with their original and restored callbacks,
+and fresh installed-package acceptance. The verifier records phase progress on
+stderr and retains the final JSON evidence on stdout. Existing control and engine
+execution limits remain in force; a job cutoff is incomplete acceptance.
 
 ## Pinned infrastructure preparation
 

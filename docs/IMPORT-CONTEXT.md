@@ -105,3 +105,9 @@ unchanged-assertion mutations and limits. It establishes this bounded parser pro
 not reviewer quality. R1/R5/E3 still require other language collectors, wider caller
 and framework context, historical consumer discovery and live integrations. Gate A
 remains open; this work runs no model inference or real-project field review.
+
+The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
+base and working/index consumers, deleted/moved source and revision-specific
+edges through the shared import interface. See
+[HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
+impact obligations remain open; this does not narrow validation plans.

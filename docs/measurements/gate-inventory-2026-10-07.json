@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "profile": "finite-gate-inventory-selection-v1",
+  "sourceCommit": "c3c0c31458aad30e4b035cb325809fd864bdb274",
+  "sourceTree": "24507ffc3c8487104332e148728eb6f28e4ee846",
+  "scope": "Development-only structural selection and required-case preservation; no native implementation or quality acceptance is assessed.",
+  "runtime": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.9.0"
+  },
+  "structuralAudit": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "requiredControls": {
+    "required": 4,
+    "complete": true,
+    "ledgerSha256": "7d32314583499a46ffd3ae3499f2ea947aa69996f9773d6f09be5c3cb9f407ce"
+  },
+  "compilingControls": [
+    {
+      "id": "required-profile-membership",
+      "callback": "finite inventory rejects a removed or renamed native callback and coherent baseline replacement",
+      "callbackSha256": "9383547cc2879d5c605f68142e8a595e6fe68ddc747a7cf1a4e54906c8a42159",
+      "sourceSha256": "01d0a1ff5d3f8471070aa064a13a8fb41088e1d9e8370be4d7dff36ae8ac78d7",
+      "mutantSha256": "75f954b1d1198fb4ad0ad0ea4b98f0c965b1da08f203872d0c0ef76f86472311",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "selected-scope-binding",
+      "callback": "finite inventory rejects silently removed obligations profiles pins cases and floating tool versions",
+      "callbackSha256": "9383547cc2879d5c605f68142e8a595e6fe68ddc747a7cf1a4e54906c8a42159",
+      "sourceSha256": "01d0a1ff5d3f8471070aa064a13a8fb41088e1d9e8370be4d7dff36ae8ac78d7",
+      "mutantSha256": "5be8f3085fb26ff65b2efb15bbbf3366f2f239747ef75d5125f7ea44b8dcbd1e",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "false-acceptance-metadata",
+      "callback": "finite inventory keeps pending freeze decisions and declared receipts separate from feature acceptance",
+      "callbackSha256": "9383547cc2879d5c605f68142e8a595e6fe68ddc747a7cf1a4e54906c8a42159",
+      "sourceSha256": "01d0a1ff5d3f8471070aa064a13a8fb41088e1d9e8370be4d7dff36ae8ac78d7",
+      "mutantSha256": "c96fd7263e93d4e198df9e4b2897745d5c9450cbcfa2d85be3472d884f5743c5",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    }
+  ],
+  "fullCheck": {
+    "tests": 951,
+    "pass": 685,
+    "fail": 0,
+    "skipped": 266,
+    "cancelled": 0,
+    "logSha256": "7dc53d843102128a9e0859ac9fddbac39ae1fcdc7c338bf35561540528225801",
+    "optionalSkipsAreAcceptance": false
+  },
+  "workflowSyntax": {
+    "passed": true,
+    "declaredVersion": "(devel)",
+    "verifiedReleaseVersion": null,
+    "binarySha256": "1f472088fcdb4546f8bf20e2813c283fd544110060eb63d9fc055fa258c1e508",
+    "doesNotCertifyPinnedReleaseProfile": true
+  },
+  "limits": [
+    "The inventory candidate is not frozen; three explicit freeze decisions remain.",
+    "Required profile/callback entries can share the same callback; unique and repeated counts are reported separately.",
+    "Future profile names and selected tool/grammar pins are requirements, not implemented capabilities or verified archive/license closures.",
+    "The audit is a development command in a source checkout; no installed-product surface is added.",
+    "Current native compatibility and all Gate A implementations remain separately required."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

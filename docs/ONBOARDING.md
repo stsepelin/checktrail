@@ -138,3 +138,9 @@ The candidate must preserve the policy through `init --write`, diagnose it, and
 import the baseline report through SARIF export. Output records artifact hashes
 and measured stages. This exercises a synthetic Node workflow, not migration of
 every language/tool profile.
+
+Revision-pinned original init concurrency, ownership, exact exclusion, error cleanup,
+independent CLI and offline installed-package controls are recorded in
+[init-publication-2026-10-07.json](measurements/init-publication-2026-10-07.json).
+This is synthetic development acceptance; updated hosted runtime checks remain
+separate and it does not close Gate A.

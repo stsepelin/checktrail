@@ -33,7 +33,7 @@ jobs:
           - os: macos-latest
             node: "24"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -109,14 +109,22 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+      - name: Audit finite inventory structure and preserved native obligations
+        run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
       - run: node scripts/verify-posix-cleanup-guards.mjs
       - run: node scripts/verify-review-benchmark-multi-guards.mjs
+      - name: Verify native Laravel owned-cache guards and fresh package
+        run: |
+          node scripts/verify-laravel-cache-guards.mjs
+          node scripts/verify-laravel-cache-package.mjs
+      - name: Verify historical import guard controls
+        run: node scripts/verify-import-history-guards.mjs
       - run: npm run format:check
       - run: node scripts/audit-dependencies.mjs
       - name: Prepare package-install cache with network access
@@ -132,6 +140,8 @@ jobs:
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify import context in the production package
         run: node scripts/verify-import-context-package.mjs
+      - name: Verify fresh historical import package
+        run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=import-history node scripts/verify-import-context-package.mjs
       - name: Repeat physical native evidence controls in an offline installed package
         run: node scripts/verify-native-raw-package.mjs
       - name: Repeat structured native value controls in an offline installed package
@@ -306,6 +316,48 @@ jobs:
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-detekt-container.mjs
+
+  kotlin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned kotlin artifact
+        run: node scripts/prepare-kotlin-tools.mjs
+      - name: Prepare pinned kotlin runtime
+        run: docker build --file scripts/kotlin-tools.Dockerfile --tag checktrail-kotlin-test:2.4.10 .checktrail/kotlin-tools
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-kotlin-container.mjs
+
+  scala:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned scala artifact
+        run: node scripts/prepare-scala-tools.mjs
+      - name: Prepare pinned scala runtime
+        run: docker build --file scripts/scala-tools.Dockerfile --tag checktrail-scala-test:3.9.0 .checktrail/scala-tools
+      - name: Prepare package-install cache with network access
+        run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/verify-scala-container.mjs
 
   maven:
     runs-on: ubuntu-latest

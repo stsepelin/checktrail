@@ -1,0 +1,1169 @@
+{
+  "schemaVersion": 1,
+  "profile": "historical-js-ts-import-context-v1",
+  "measuredAt": "2026-10-07T03:51:17.669413+00:00",
+  "sourceRevision": "643614a97c2f9b0436f2c0e51d3423ea355c4e7d",
+  "sourceTree": "5c93078c08385c4014d40a767c5dca002cfca477",
+  "scope": "Original synthetic development acceptance for a bounded immutable-base/current import and consumer context; not runtime reachability, complete project-module resolution or independent review quality.",
+  "fullRepositoryCheck": {
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "git": "git version 2.54.0 (Apple Git-157)"
+    },
+    "command": "npm run check",
+    "tests": 943,
+    "passed": 677,
+    "skipped": 266,
+    "failed": 0,
+    "optionalNativeSkipsCountAsPass": false,
+    "logSha256": "0916ec9af64c9993423b12918ee0fb0964db7b8145925920da6e790255a66896"
+  },
+  "macOS": {
+    "required": {
+      "profile": "import-history",
+      "timeoutMs": 120000,
+      "passed": 6,
+      "required": 6,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 6,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 772.683375,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 901.031,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1680.0275,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2421.07025,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2906.93225,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31.711792,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "profile": "import-history-guards-v1",
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "configured-git-root",
+          "callback": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "b326863be3e3b4e3424acf67fcbeed6b469bb8cbec998a9dacbdd68e5a35ad4d",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "826fc83abaf5fb2c55eafa470f978c6c834127ede6869bebb3d8932d11be9055",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "historical-file-union",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "7b32fd421bbb2408032c352fa44e141b79d811c9f7a9958e3f1bf7744d474106",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "c3d807815c5eef7d4270bc2c0e067bc44f10bfc2a3720af7b6cfd8e8d37e5dfd",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "historical-edge-union",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "5e17f361bffe3e6d4829d14988be802421512f7a905963ac936ea8836e050e88",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "a012b29fc6c4265393959eb4c6a9bb8ec960b6dadef46f0dedae6b675b565ee8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "revision-edge-binding",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "4b22c1e7d35d8c032cabec693ad7cdc9a7b743b2219ad94278f861440e683f51",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "b22de6e18fa4f7da34458d7546da8e5a4736a30269ec92e11663c09248d69a13",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "selected-file-mode",
+          "callback": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "d089702d780d60482dc12d9b855f9d532c9491f40cc3533d89516a0ed3f8a57f",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "d55b998dfb77595931b44ed1b89f7df4113f30f8b435f6120c8a69fda88db7e2",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "unknown-import-fallback",
+          "callback": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "e8ebf5a09074bf1e8b1cadeddaff2563012d9d82706b49d12e0324c9f947edc6",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "c89c388c015a52c8d323cd7a2445062f65a3a1c5d53e735d0e407a4d0b6a2235",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "source-reconstruction",
+          "callback": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "ddb2baa6ef2ad62d594107baf915a33b4f0822b97ce25150c788de9a2dc8a466",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "95b7ebf0ed7082a45ce25f0537473f11b720cb5c16811632894fc583dbe94b2a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "470ddab9a14a7b83c9c357b631a33119e2ae0199cd4f6463965d5297583dd435",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "import-history",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 762.908833,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 889.940708,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1697.283458,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2492.182166,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2958.973334,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31.238625,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    }
+  },
+  "linuxNativeAndInstalled": {
+    "profile": "historical-imports-native-installed-v1",
+    "image": "sha256:2e3a6de1793ec3f994d52d9506ba29c564623d1f630603ce8e809a5a38575130",
+    "versions": {
+      "node": "v22.23.2",
+      "git": "git version 2.47.3"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "temporaryFilesystemMiB": 256,
+    "preserved": {
+      "profile": "import-context",
+      "timeoutMs": 120000,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 282.738184,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 42.863682,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 249.183051,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 130.403097,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3975.586538,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "native": {
+      "profile": "import-history",
+      "timeoutMs": 120000,
+      "passed": 6,
+      "required": 6,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 6,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 368.679716,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 188.183107,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 455.794296,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 556.122902,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2637.449389,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9.720176,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "profile": "import-history-guards-v1",
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "configured-git-root",
+          "callback": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "b326863be3e3b4e3424acf67fcbeed6b469bb8cbec998a9dacbdd68e5a35ad4d",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "190efa67c716432c5473d4a4b09d964f8d7dc6276595a3a2a1b776910dc00fdd",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "historical-file-union",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "7b32fd421bbb2408032c352fa44e141b79d811c9f7a9958e3f1bf7744d474106",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "75cb39a60c4b5765da5b6e85f7687f22240bd7a2ef01c11c81b75a0af484e1a6",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "historical-edge-union",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "5e17f361bffe3e6d4829d14988be802421512f7a905963ac936ea8836e050e88",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "2cb86fbcf62100db93040c477d2ecdaed5a7637e309bf6a8eee27363a89d28b4",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "revision-edge-binding",
+          "callback": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "4b22c1e7d35d8c032cabec693ad7cdc9a7b743b2219ad94278f861440e683f51",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "a3beedc7b539e647da7648380bd106e983178a906dcc5e5ad62b703d610368f1",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "selected-file-mode",
+          "callback": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "d089702d780d60482dc12d9b855f9d532c9491f40cc3533d89516a0ed3f8a57f",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "1c40c0ae059f56fdf50da013d2fbec5660d5d4a630fe3771077221ca2fb9e073",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "unknown-import-fallback",
+          "callback": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "e8ebf5a09074bf1e8b1cadeddaff2563012d9d82706b49d12e0324c9f947edc6",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "a327b5b46ee908985dd97d011af4bce0f3ddb803fa021c3b650a7b6200ea2f43",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "source-reconstruction",
+          "callback": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+          "callbackSha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565",
+          "sourceSha256": "49403a865c4f80eb5f0d700cfb34e07b90a2b21071b6798e9808bef70655b44a",
+          "mutantSha256": "ddb2baa6ef2ad62d594107baf915a33b4f0822b97ce25150c788de9a2dc8a466",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "ddab81c06158288f4fafd80c1932b30000af4ff5547d7ab08d64e7cb2e2f2c1a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "470ddab9a14a7b83c9c357b631a33119e2ae0199cd4f6463965d5297583dd435",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "import-history",
+        "timeoutMs": 120000,
+        "passed": 6,
+        "required": 6,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 6,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5373ac4b52dd8e7d185d60db635ce1e8911f0a5d161f3bd5b4b816724fbf1565"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 361.343219,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 179.319352,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 436.829071,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 543.638462,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2665.386534,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.874635,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "historical imports retain deleted consumers and whole old decisions while fixed and root-boundary near misses remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports distinguish stage-zero index working bytes mode-only changes and moved source without guessing renames",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports retain full fallback for old missing aliases ambiguous targets symlinks malformed source and exhausted discovery",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical import reconstruction rejects stale base current index modes scope and coherent rehashed edges or impact",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical import CLI and SDK MCP share old consumers privacy operator disclosure and unchanged validation plans",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "historical imports reject parent Git enumeration before reading objects outside the configured nested root",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:2e3a6de1793ec3f994d52d9506ba29c564623d1f630603ce8e809a5a38575130",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "preservedInstalled": {
+      "tarballSha256": "470ddab9a14a7b83c9c357b631a33119e2ae0199cd4f6463965d5297583dd435",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "profile": "import-context",
+        "timeoutMs": 120000,
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "aef26632a4ede137fba536f3087497833c1677049c8c1baab87fbd6c545537a3"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 271.413708,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 42.952891,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 238.885247,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 123.92823,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3992.466626,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "import context automatically retains exact root-boundary consumers and whole decisions without project or configuration execution",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import graph catches forbidden broken edges while fixed and valid boundary near misses remain clean",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "unknown import kinds ambiguity omitted source and syntax exhaustion retain every declared project in full fallback",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import context rejects root escapes overlaps stale modes and rehashed forged dependency or impact evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "import collection shares exact library CLI MCP evidence and summary disclosure without changing validation plans",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:2e3a6de1793ec3f994d52d9506ba29c564623d1f630603ce8e809a5a38575130",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "durationMs": 34271,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "changedFiles": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "8434ed8b438239f7c7113384601890add4e5d6cc23125bf7fb4caa1f5fa5d5ba",
+      "bytes": 35889
+    },
+    {
+      "file": "docs/HISTORICAL-IMPORTS.md",
+      "sha256": "14f6a8a213ec43e7cd71aa80ea7adc415ed3aecec9f010884c8ce5f758f7bcd7",
+      "bytes": 4075
+    },
+    {
+      "file": "docs/IMPORT-CONTEXT.md",
+      "sha256": "9c5552e636a42e854e8d4f31dc5a213e34cc4ab0f58a2163f55192175aff183f",
+      "bytes": 6559
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "5e8cf49ed016b8219f685214bfae83636406e5ffa596ad0fae2821692dca8cd4",
+      "bytes": 31648
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "4d79feb784dd5abbfb471b4d6f777eb61d5b6b688911581810e9a1f15647fc5b",
+      "bytes": 37094
+    },
+    {
+      "file": "docs/REVIEWER-TASKS.md",
+      "sha256": "3f30d3568c34dc5bfce13d1d9e45f4ab1f8cd2abe77f05490da913fb65ddbc51",
+      "bytes": 35442
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "3aef2fbbfed1701ee0987ec640ea347174896ca3b6818065621eb54f8657ee6e",
+      "bytes": 55986
+    },
+    {
+      "file": "schemas/import-context-input.schema.json",
+      "sha256": "932ae4d1f60f7644919191956caf61a274d5727e1944f19d57556d99b1df1a4e",
+      "bytes": 2323
+    },
+    {
+      "file": "schemas/import-context-report.schema.json",
+      "sha256": "9311d8c8693654f9e00b8d073b7726a1992ebd148a5e0df1ed16838e2dfb87c3",
+      "bytes": 400186
+    },
+    {
+      "file": "schemas/import-context-summary.schema.json",
+      "sha256": "745da69ff6f8119afbdf75302fca27243e4952cbaa9b9b8b6fecf4a07475a658",
+      "bytes": 8177
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "4d4666f3245d69f1c98e53a6aebcbf71ab9a03df77b22e94891c03ade8bc5d15",
+      "bytes": 133109
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "sha256": "9b5e98c0af23c5e88553ca1f853bfa6ec0633ab94be92da0db2b7234cda0961c",
+      "bytes": 5898
+    },
+    {
+      "file": "scripts/verify-import-history-container.mjs",
+      "sha256": "5d30afa518c709e32ffe6ae5690b7cbe5a5ede7bafbdcaff8b2ca9dee52276d2",
+      "bytes": 3329
+    },
+    {
+      "file": "scripts/verify-import-history-guards.mjs",
+      "sha256": "a1030e153fc56683eb175c065ca11c153dae4f7ffc9203d6c67ca5992edd83f5",
+      "bytes": 5717
+    },
+    {
+      "file": "src/import-context.ts",
+      "sha256": "e409148e521134e912527a9691865e6eff6c684349688c94f2e062d9dffa8f9d",
+      "bytes": 12381
+    },
+    {
+      "file": "src/import-history.ts",
+      "sha256": "e9738064521930a85f47749d8740182574d60f4b210ae7a4e6a75e980ae6bc71",
+      "bytes": 16019
+    },
+    {
+      "file": "src/index.ts",
+      "sha256": "59b0a63c08d126e13f8f453f35f808c968100e887cfaa7192f4e00f8e92e3d4f",
+      "bytes": 7379
+    },
+    {
+      "file": "test/import-history.test.ts",
+      "sha256": "fe48988e822317dbd80b255d5941e3e7b062ae01dfb2e654fff82bb123151652",
+      "bytes": 16448
+    }
+  ],
+  "developmentAttempts": [
+    {
+      "description": "Initial freshness fixture expected a working mode to invalidate a stage-zero receipt. The declared source contract instead binds the staged mode. Final comparative controls reject changed working modes for working receipts, retain unchanged stage-zero modes, and reject a changed stage-zero mode.",
+      "logSha256": "8607705aaa5f2ecdca65682f6a057be455deff39470aea80e0dc18772e4aa0e7",
+      "countedAsCompletedAcceptance": false
+    },
+    {
+      "description": "Pre-final five-case acceptance preceded discovery of missing early canonical Git-root validation. The implementation now rejects parent-tree enumeration before reading Git objects, with an original regression callback and compiling root-gate mutation. All final six-case source, seven-guard and installed profiles were rerun.",
+      "logSha256": "d90235d959973334be1f9ed9690e5063d75e85271498ab5702951b3ddcc41841",
+      "countedAsCompletedAcceptance": false
+    }
+  ],
+  "integrityLimits": [
+    "Selected-test ledgers fingerprint selected callback bytes and terminal events, not all imported product/dependency bytes. Changed source-file digests and exact candidate tarball identities are recorded separately.",
+    "Candidate packages came from the working source that became sourceRevision. This measurement and subsequent ledger-only changes are outside those package identities.",
+    "Read-only host Git subprocesses inspect local data. executionInvoked:false denotes no project-code execution, not absence of Git subprocesses. Trusted execution is not OS containment.",
+    "Harness durations include baselines/mutations/restorations, fixture setup and fresh installation; they are not review latency.",
+    "Native acceptance is macOS ARM64 / Node26.9.0 / Apple Git2.54.0 and Linux ARM64 / Node22.23.2 / Git2.47.3. Wider platform/runtime and language context profiles remain separately required."
+  ],
+  "gateA": "open",
+  "qualityGatePromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

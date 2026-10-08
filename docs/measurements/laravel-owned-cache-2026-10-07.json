@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-07T05:36:19.027761+00:00",
+  "profile": "laravel-owned-cache-v1",
+  "codeCommit": "e251f0cc6f91a58d069ab8d2b6389011975e3503",
+  "scope": "Original Laravel framework boot and owned-cache cleanup while the shared Node runner remains alive; no Node-owner-loss or universal process containment claim",
+  "sourceFiles": {
+    "src/laravel.ts": "57b93b2b5863d4986e695ad615cd15bc374bb6d2ab9fe79ddcf67eaf4c48c56c",
+    "src/laravel-runner.ts": "a67482f07aa83e998af571ccc389b821625a9c00762d130dfe7a2ea4ca388914",
+    "src/runner.ts": "8364a483c5f6fd5b717b9c0783a59c9325f46ec55328ff424fa2bcb324b1fa10",
+    "test/laravel-cache.test.ts": "5449fb16c077a0a8c6b9312967eaa0e665a77247df0027a98dba6d63625eaaae",
+    "test/laravel.test.ts": "5454eb664f75221b1d468cd69d0a011cee11b400755e4853ac42957a5aee64a1",
+    "scripts/verify-laravel-cache-guards.mjs": "06a4a115994f24aa542eb17d18f380dc3482062666a37497d574cf6f8f1a7e6f",
+    "scripts/verify-laravel-cache-package.mjs": "16362125c76b6904ac8599c90e8cad9fc01348d3896156b0c48eabec628d7bc2",
+    "scripts/required-native-tests.json": "cc86b92206eb70daa65741739fb11c3395de611e4cc7b7185c91a0e8db7fece3",
+    "scripts/laravel-tools/composer.lock": "186589810af2bbc7a48ee025c6bf198107bd32e3403402308d223ece78416366",
+    "package-lock.json": "d1190dd124f0f8fb3d7c35979384239f10ba2c2c28e9dffb66b0eddee8b2bdf2",
+    ".github/workflows/ci.yml": "3b71509a73bf0904464538cbd3ccdce4bfb953d247eeee5c38eb305af29b89a3"
+  },
+  "builtFiles": {
+    "dist/src/laravel.js": "b2ecd641dbef8a3db381ce42a09083656fb256e1c417d0fdcc66563f80ea6d63",
+    "dist/src/laravel-runner.js": "4fe2e2a0c4ab440e26b752888a2826a208e91c361d7da12cfa9785e4b00a1113",
+    "dist/src/runner.js": "96370184d8152c4625978fa346d94a9585e758eba19fa149bc03dca631665e89",
+    "dist/test/laravel-cache.test.js": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18",
+    "dist/test/laravel.test.js": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+  },
+  "runtime": {
+    "node": "v22.23.2",
+    "platform": "linux",
+    "architecture": "arm64",
+    "php": "PHP 8.5.6 (cli) (built: May  8 2026 16:43:53) (NTS)",
+    "composer": "Composer version 2.9.8 2026-05-13 09:28:38",
+    "osRelease": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.23.4\nPRETTY_NAME=\"Alpine Linux v3.23\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+    "laravel": "v13.32.0",
+    "image": "sha256:afa1f30cd3e56fb6a4ea5e74be7687ec8dfc3444f6f7babeec448eb48d9aa08c",
+    "baseNodeImage": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "baseComposerImage": "sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+    "network": "none",
+    "rootFilesystem": "readonly",
+    "sourceFixtureMount": "readonly",
+    "guardFixtureMount": "writable for restored compiling controls",
+    "cpus": 2,
+    "memoryBytes": 2147483648,
+    "temporaryFilesystemBytes": 536870912
+  },
+  "source": {
+    "profile": "laravel-cache",
+    "timeoutMs": 120000,
+    "passed": 6,
+    "required": 6,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 1024,
+      "terminalEventCount": 6,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 20.670848,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1880.377397,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 9419.5024,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3093.925373,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1630.591459,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4922.24119,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        }
+      ]
+    }
+  },
+  "preservedSource": {
+    "profile": "laravel",
+    "timeoutMs": 120000,
+    "passed": 3,
+    "required": 3,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 1024,
+      "terminalEventCount": 3,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 39.303437,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1697.193317,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1609.737402,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        }
+      ]
+    }
+  },
+  "guards": {
+    "profile": "laravel-owned-cache-guards-v1",
+    "node": "v22.23.2",
+    "platform": "linux",
+    "arch": "arm64",
+    "guards": [
+      {
+        "id": "shared-owned-parent-cleanup",
+        "callback": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+        "callbackSha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18",
+        "sourceSha256": "96370184d8152c4625978fa346d94a9585e758eba19fa149bc03dca631665e89",
+        "mutantSha256": "70829ab6d0fd7f1d36b8ad1aa38785df08a965893153f46c3e73a9128676d054",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutput": "TAP version 13\n# Subtest: native Laravel forced PHP termination after boot removes cache files and the shared owned parent\nnot ok 1 - native Laravel forced PHP termination after boot removes cache files and the shared owned parent\n  ---\n  duration_ms: 1526.498423\n  type: 'test'\n  location: '/workspace/dist/test/laravel-cache.test.js:120:1'\n  failureType: 'testCodeFailure'\n  error: 'Missing expected rejection.'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    code: 'ENOENT'\n  operator: 'rejects'\n  stack: |-\n    async absent (file:///workspace/dist/test/laravel-cache.test.js:82:5)\n    async TestContext.<anonymous> (file:///workspace/dist/test/laravel-cache.test.js:142:9)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1687.510438\n",
+        "mutantStderr": ""
+      },
+      {
+        "id": "php-owned-cache-location",
+        "callback": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+        "callbackSha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18",
+        "sourceSha256": "4fe2e2a0c4ab440e26b752888a2826a208e91c361d7da12cfa9785e4b00a1113",
+        "mutantSha256": "03fb837d8b4b26f38dab51b4add11d270d2614a806ea8efc44b5f7d3fa0a3609",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutput": "TAP version 13\n# Subtest: native Laravel forced PHP termination after boot removes cache files and the shared owned parent\nnot ok 1 - native Laravel forced PHP termination after boot removes cache files and the shared owned parent\n  ---\n  duration_ms: 1478.897411\n  type: 'test'\n  location: '/workspace/dist/test/laravel-cache.test.js:120:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'original-outside-5c2f74999e523134'\n    - 'laravel-cache'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'laravel-cache'\n  actual: 'original-outside-5c2f74999e523134'\n  operator: 'strictEqual'\n  stack: |-\n    owned (file:///workspace/dist/test/laravel-cache.test.js:90:12)\n    TestContext.<anonymous> (file:///workspace/dist/test/laravel-cache.test.js:134:9)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1627.947664\n",
+        "mutantStderr": ""
+      },
+      {
+        "id": "protected-dotenv-loader",
+        "callback": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+        "callbackSha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18",
+        "sourceSha256": "4fe2e2a0c4ab440e26b752888a2826a208e91c361d7da12cfa9785e4b00a1113",
+        "mutantSha256": "e4fe7536000ddd445ab9bf2f1965efe8a01104c462237052da3918f5b1a2a611",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutput": "TAP version 13\n# Subtest: native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents\nnot ok 1 - native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents\n  ---\n  duration_ms: 1544.599806\n  type: 'test'\n  location: '/workspace/dist/test/laravel-cache.test.js:192:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'original-do-not-load'\n    - null\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: ~\n  actual: 'original-do-not-load'\n  operator: 'strictEqual'\n  stack: |-\n    owned (file:///workspace/dist/test/laravel-cache.test.js:93:12)\n    TestContext.<anonymous> (file:///workspace/dist/test/laravel-cache.test.js:201:9)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1694.238689\n",
+        "mutantStderr": ""
+      }
+    ],
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "installed": {
+    "tarballSha256": "5dc7fdc051ef2c89a3c7a53289ea5d77550cdca8946e0b9a18bf0840cfb88a99",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "profile": "laravel-cache",
+      "timeoutMs": 120000,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18.579224,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1544.397887,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9447.497639,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2915.617077,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1563.828994,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4841.98429,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 38.717213,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1760.198418,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1635.129026,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:afa1f30cd3e56fb6a4ea5e74be7687ec8dfc3444f6f7babeec448eb48d9aa08c",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 957.0,
+    "pass": 686.0,
+    "fail": 0.0,
+    "cancelled": 0.0,
+    "skipped": 271.0,
+    "todo": 0.0,
+    "duration_ms": 88571.053,
+    "optionalSkipsAreNotNativeAcceptance": true
+  },
+  "workflowSyntax": {
+    "passed": true,
+    "toolDeclaredVersion": "(devel)",
+    "verifiedReleaseVersion": null,
+    "doesNotCertifyPinnedReleaseProfile": true
+  },
+  "acceptanceLimitations": [
+    "Windows and macOS native Laravel acceptance remain pending their current CI jobs",
+    "Loss of the shared Node owner remains a separate required lifecycle profile",
+    "Observed descendant cleanup is not OS containment of malicious trusted project code"
+  ],
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

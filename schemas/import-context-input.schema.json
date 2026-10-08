@@ -1,34 +1,77 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "profile": { "type": "string", "const": "js-ts-selected-imports-v1" },
-    "projects": {
-      "minItems": 1,
-      "maxItems": 16,
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string", "minLength": 1, "maxLength": 128 },
-          "root": {
-            "anyOf": [
-              { "type": "string", "const": "." },
-              { "type": "string", "minLength": 1, "maxLength": 1024 }
-            ]
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "profile": { "type": "string", "const": "js-ts-selected-imports-v1" },
+        "projects": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "root": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 1024 }
+                ]
+              }
+            },
+            "required": ["id", "root"],
+            "additionalProperties": false
           }
         },
-        "required": ["id", "root"],
-        "additionalProperties": false
-      }
+        "changedFiles": {
+          "maxItems": 1024,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        }
+      },
+      "required": ["schemaVersion", "profile", "projects", "changedFiles"],
+      "additionalProperties": false
     },
-    "changedFiles": {
-      "maxItems": 1024,
-      "type": "array",
-      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "profile": { "type": "string", "const": "js-ts-historical-imports-v1" },
+        "projects": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "root": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 1024 }
+                ]
+              }
+            },
+            "required": ["id", "root"],
+            "additionalProperties": false
+          }
+        },
+        "baseCommit": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "currentSource": { "type": "string", "enum": ["working-tree", "index"] }
+      },
+      "required": [
+        "schemaVersion",
+        "profile",
+        "projects",
+        "baseCommit",
+        "currentSource"
+      ],
+      "additionalProperties": false
     }
-  },
-  "required": ["schemaVersion", "profile", "projects", "changedFiles"],
-  "additionalProperties": false
+  ]
 }

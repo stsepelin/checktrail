@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "sha256": {
+      "type": "string",
+      "const": "473dd66c7a3ef4b182065b3da670466c1bf2773a9dbb0ed8b33a39fe9d4f876d"
+    },
+    "profile": {
+      "type": "string",
+      "const": "jvm-source-frontend-ir-output-v1"
+    },
+    "jvmTarget": { "type": "string", "enum": ["17", "21", "25"] },
+    "warningsAsErrors": { "type": "boolean" },
+    "classPath": {
+      "maxItems": 128,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["path", "sha256"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "archive",
+    "sha256",
+    "profile",
+    "jvmTarget",
+    "warningsAsErrors",
+    "classPath"
+  ],
+  "additionalProperties": false
+}

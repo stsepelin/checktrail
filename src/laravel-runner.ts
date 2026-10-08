@@ -62,14 +62,19 @@ $rv_temporary = null;
 $rv_autoload = $argv[1];
 ob_start(function ($text) { fwrite(STDERR, $text); return ''; }, 1);
 try {
+    // The shared runner owns this parent and removes it after forced termination.
+    $rv_owned = getenv('CHECKTRAIL_TEMP');
+    if (!is_string($rv_owned) || $rv_owned === '' || !is_dir($rv_owned) || is_link($rv_owned)) throw new RuntimeException('Missing owned temporary directory');
+    $rv_owned = realpath($rv_owned);
+    if (!is_string($rv_owned)) throw new RuntimeException('Cannot resolve owned temporary directory');
+    $rv_temporary = $rv_owned.'/laravel-cache';
+    if (!mkdir($rv_temporary, 0700)) throw new RuntimeException('Cannot create temporary cache directory');
     require $rv_autoload;
     if (!class_exists(Illuminate\Foundation\Application::class) || Illuminate\Foundation\Application::VERSION !== '13.32.0') {
         fwrite(STDOUT, json_encode(['unavailable' => 'laravel-runtime', 'reason' => 'unsupported-version']));
         exit(3);
     }
     $config = json_decode($argv[2], true, flags: JSON_THROW_ON_ERROR);
-    $rv_temporary = sys_get_temp_dir().'/checktrail-laravel-'.bin2hex(random_bytes(16));
-    if (!mkdir($rv_temporary, 0700)) throw new RuntimeException('Cannot create temporary cache directory');
     register_shutdown_function(function () use ($rv_temporary) {
         foreach (glob($rv_temporary.'/*') as $file) if (is_file($file) || is_link($file)) @unlink($file);
         @rmdir($rv_temporary);

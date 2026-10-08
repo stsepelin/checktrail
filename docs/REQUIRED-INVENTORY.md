@@ -6,6 +6,40 @@ below. Exact acceptance-profile pins for the new integrations remain open, so
 Gate A's inventory is not yet frozen. No new field evaluation is authorized here.
 A required integration stays pending when its toolchain is unavailable.
 
+## Selected profile candidate
+
+[gate-a-profiles.v1.json](gate-a-profiles.v1.json) selects finite extension
+profiles, exact tool versions, runtime slots, parser source commits and named
+planned acceptance assertions. [gate-a-native-baseline.v1.json](gate-a-native-baseline.v1.json)
+preserves every required native callback at its declared source revision. These
+are obligations, rather than completed acceptance. The candidate keeps the
+remaining artifact-closure, independent-reference/protocol and native-matrix
+binding decisions visible; it is not frozen.
+
+Run `node scripts/audit-gate-inventory.mjs .` to check the immutable selection
+identity and preservation of existing callback identities. Counts are derived
+from these artifacts. Added implementation tests may extend current profiles;
+removing or renaming a preserved callback fails the audit. Changing selected
+profiles, tool pins or planned assertions requires a reviewable inventory
+revision. `--require-frozen` exits nonzero while freeze decisions remain pending.
+The audit always reports implementation acceptance and quality as unassessed:
+it cannot turn declared receipts, historical measurements or a green structural
+check into Gate A completion. Native source/installed evidence remains separate.
+
+The selected runtime matrix retains Node 22/24/26 on Linux and macOS, the
+existing Linux ARM64 native-tool runtime and Windows direct-executable runtime.
+The current hosted `checks` job exercises four Linux/macOS slots. The additional
+macOS slots and exact OS-image/tool identities still require native acceptance.
+A repository license label and a selected grammar commit do not replace the
+required source/archive/notice inspection. Context collection must remain
+non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
+conservative impact fallback.
+
+Original structural and compiling-control evidence is recorded in
+[gate-inventory-2026-10-07.json](measurements/gate-inventory-2026-10-07.json).
+It assesses preservation and selection coherence; it leaves implementation/native
+acceptance and quality unassessed.
+
 ## Scope reconciliation
 
 The operator clarified that the intended reviewer is the local MCP interface used
@@ -69,7 +103,7 @@ at its measured revision and cannot certify later source.
 | E8   | Python Pyright                                                                                                                           | Pinned local Pyright execution and original project/namespace/venv/native error controls; see PYRIGHT.md. Wider versions and suppression exceptions remain unpromoted.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | E9   | PHP Larastan and non-rewriting PHP-CS-Fixer                                                                                              | Bounded project-enabled Larastan/PHPStan/Laravel and native non-rewriting formatter profiles have Linux and offline installed CLI/MCP controls; see PHPCS-LARASTAN.md. Wider versions/platforms remain unverified.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | E10  | Rust cargo fmt, clippy and test                                                                                                          | Pinned Linux offline locked workspace, explicit feature/target and generated/proc-macro controls with native and offline installed CLI/MCP evidence in RUST-BUILD.md. Wider runtime/platform profiles remain E4/E5.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| E11  | Maven/Gradle tests; Checkstyle, SpotBugs and detekt                                                                                      | CHECKSTYLE.md, SPOTBUGS.md, DETEKT.md, MAVEN.md and GRADLE.md record bounded pinned Java audit/build-test and Kotlin light-analysis profiles. Pinned wrappers, wider/generated/JPMS scope, Kotlin compilation/type analysis, Scala and wider analyzer/detekt profiles remain required. Discovery-only languages cannot be represented as checked.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| E11  | Maven/Gradle tests; Checkstyle, SpotBugs and detekt                                                                                      | CHECKSTYLE.md, SPOTBUGS.md, DETEKT.md, KOTLIN.md, SCALA.md, MAVEN.md and GRADLE.md record bounded pinned Java audit/build-test, Kotlin light-analysis and Kotlin and Scala 3 JVM source compiler profiles. Pinned wrappers, wider/generated/JPMS scope, mixed/generated/script Kotlin compilation, wider Scala 2/script/mixed/inline/staging/compiler and wider analyzer/detekt profiles remain required. Discovery-only languages cannot be represented as checked.                                                                                                                                                                                                                                                                                                                                                           |
 | E12  | dotnet format/build/test                                                                                                                 | Explicit C#/F#/VB and target-framework scope, restore/analyzers/generated code, reconciled TRX and native evidence. DOTNET-FORMAT.md adds bounded C#/VB whitespace participation. DOTNET-GENERATED.md adds declared C#/VB native generator build/test participation; DOTNET-METHOD.md adds bounded native C#/F#/VB custom-name method provenance; broader formatting, generator and method/framework profiles remain open.                                                                                                                                                                                                                                                                                                                                                                                                     |
 | E13  | RuboCop, RSpec and Minitest                                                                                                              | RUBY-TOOLS.md records the pinned literal-manifest, raw-checksum offline Bundler/native compiler-source, diagnostic/case/lifecycle and installed-package profile with compiling guard controls. Broader manifests/frameworks and E4–E6 profiles remain open.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | E14  | swift build/test and SwiftLint                                                                                                           | SWIFT-TOOLS.md records pinned Linux ARM64 native manifest/compiler/AST/case/lifecycle/lint evidence, source and offline installed CLI/MCP acceptance and compiling guard controls. Broader manifest/framework/SDK profiles and E4–E6 remain open.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -129,3 +163,19 @@ clusters. Its inputs remain operator declarations. The separate sealed synthetic
 binds raw claims, independent judgments and a common matching intake; see
 [REVIEW-BENCHMARK-MULTI.md](REVIEW-BENCHMARK-MULTI.md). Authoritative labels,
 observed host isolation and the other R5–R8 requirements remain open; see [REVIEW-MULTI-SCORING.md](REVIEW-MULTI-SCORING.md).
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
+base and working/index consumers, deleted/moved source and revision-specific
+edges through the shared import interface. See
+[HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
+impact obligations remain open; this does not narrow validation plans.
+
+Revision-pinned historical import acceptance is recorded in
+[historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
+The receipt retains both final profiles and unaccepted development attempts; it
+does not promote broader Gate A capabilities or review quality.

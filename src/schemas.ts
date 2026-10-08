@@ -468,3 +468,7 @@ export {
 } from "./review-multi-scoring.js";
 
 export { detektConfigSchema } from "./detekt.js";
+
+export { kotlinConfigSchema } from "./kotlin.js";
+
+export { scalaConfigSchema } from "./scala.js";

@@ -248,3 +248,19 @@ binds the PSI and rule plan to every selected file's lifecycle. Suppressions,
 exclusions, syntax errors, unknown diagnostics and incomplete participation cannot
 produce a passing light-analysis result. Kotlin compiler/type validation remains
 separate; this does not promote whole-project correctness or a quality gate.
+
+The opt-in [Kotlin JVM compiler profile](KOTLIN.md) uses an original fixed FIR/IR
+observer, resolved suppression accounting and independent physical output bindings
+through the shared library/CLI/MCP engine. It retains partial compiler failure and
+declared warning policy. Native acceptance is scoped to the exact measured source,
+runtime and package; mixed/generated/script profiles, Scala, wider platforms and
+Gate A remain open. No inference or field evaluation is invoked.
+
+The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
+collector immediately after typing and after JVM bytecode generation. Selected
+physical and native source bytes, declaration/tree/type counts, resolved
+suppression annotations, driver/source callbacks, diagnostics, raw bytes and
+physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
+Original source, compiling guard and offline installed acceptance is
+profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
+wrappers, platforms and full provenance remain required. Gate A remains open.

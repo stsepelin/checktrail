@@ -76,7 +76,7 @@ display names. Matching client JVM settings and protected Java-home selection
 prevent the observed ordinary single-use daemon cancellation escape. The
 [local record](measurements/gradle-native-2026-10-05.json) binds required native
 and installed CLI/MCP controls, compiling guard mutations and public preparers.
-Wrappers, analyzers, Kotlin/Scala source, generated/JPMS scope and wider profiles
+Wrappers, wider analyzer and mixed/generated/script Kotlin/Scala profiles, generated/JPMS scope and wider profiles
 remain required under E11; Gate A remains open.
 
 Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
@@ -85,7 +85,7 @@ source-declaration and JUnit events reconcile with fresh reports; skipped,
 filtered, empty, foreign and incomplete participation cannot pass. The
 [local record](measurements/maven-native-2026-10-05.json) binds original controls,
 installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
-for wrappers, wider Gradle profiles, generated/JPMS scope, Kotlin/Scala, SpotBugs and detekt.
+for wrappers, wider Gradle profiles, generated/JPMS scope, mixed/generated/script Kotlin, Scala and wider analyzer profiles.
 Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
 remains open.
 
@@ -95,7 +95,7 @@ data-only planning, startup-only MCP trust and owned POSIX cancellation cleanup.
 The [local measurement](measurements/checkstyle-native-2026-10-05.json) binds
 original controls, assertion-verified compiling mutations and a fresh offline
 installed CLI/MCP package profile. E11 remains partial: wider Maven/Gradle profiles,
-SpotBugs, detekt and Kotlin/Scala coverage still need their native profiles.
+wider SpotBugs/detekt and mixed/generated/script Kotlin/Scala coverage remain required.
 Hosted CI for this revision, broader platforms and full bundled provenance are
 unverified; Gate A remains open.
 
@@ -576,7 +576,11 @@ declared projections, including wildcard listeners and container factory targets
 and initializes Artisan before collecting `withSchedule()` registrations. Native
 cases compare changed/fixed assemblies and reject unsupported, empty or failed
 capture. The tests read the public synthetic Laravel example files directly.
-See `LARAVEL.md`; this does not establish application authorization correctness or
+Its shared runner also owns Laravel cache parents and cleans them after reached
+PHP termination, cancellation, timeout and output exhaustion. Original native
+library, CLI/MCP and fresh production-package controls preserve stale project
+caches, dotenv exclusion and external symlink targets. Node-owner loss remains
+unverified. See `LARAVEL.md`; this does not establish application authorization correctness or
 complete container/object-state equivalence.
 
 Public FastAPI and Django examples are also exercised through their native Linux
@@ -808,3 +812,35 @@ reported evidence. It never means the entire repository has been reviewed.
 - [Descriptive confidence scoring](REVIEW-SCORING.md) separates proper probability
   losses, reliability, risk/coverage and incomplete/unreviewed accounting. Labels and
   independence remain operator declarations; no calibration or quality gate is claimed.
+
+The opt-in [Kotlin JVM compiler profile](KOTLIN.md) uses an original fixed FIR/IR
+observer, resolved suppression accounting and independent physical output bindings
+through the shared library/CLI/MCP engine. It retains partial compiler failure and
+declared warning policy. Native acceptance is scoped to the exact measured source,
+runtime and package; mixed/generated/script profiles, Scala, wider platforms and
+Gate A remain open. No inference or field evaluation is invoked.
+
+The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
+collector immediately after typing and after JVM bytecode generation. Selected
+physical and native source bytes, declaration/tree/type counts, resolved
+suppression annotations, driver/source callbacks, diagnostics, raw bytes and
+physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
+Original source, compiling guard and offline installed acceptance is
+profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
+wrappers, platforms and full provenance remain required. Gate A remains open.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
+base and working/index consumers, deleted/moved source and revision-specific
+edges through the shared import interface. See
+[HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
+impact obligations remain open; this does not narrow validation plans.
+
+Revision-pinned historical import acceptance is recorded in
+[historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
+The receipt retains both final profiles and unaccepted development attempts; it
+does not promote broader Gate A capabilities or review quality.
