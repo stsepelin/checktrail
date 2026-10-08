@@ -180,7 +180,7 @@ function arm() {
   return z.strictObject({
     id: identity,
     instructions: z.string().min(1).max(8192),
-    settings: reviewWorkflowAuditSettingsSchema,
+    settings: reviewWorkflowAuditSettingsSchema.omit({ candidateScope: true }),
     host: z.strictObject({
       client: identity,
       clientVersion: identity,

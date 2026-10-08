@@ -184,6 +184,7 @@ export interface ServerOptions {
   allowExecution: boolean;
   allowReviewSource?: boolean;
   reviewWorkflowLimits?: ReviewWorkflowLimits;
+  reviewWorkflowCandidateScope?: "selected" | "all";
   reviewWorkflowAudit?: ReviewWorkflowAuditOptions;
   reviewBenchmark?: ReviewBenchmarkReference;
   reviewBenchmarkTrialId?: string;
@@ -231,6 +232,9 @@ function createWorkflowSession(
     options.root,
     {
       allowReviewSource: Boolean(options.allowReviewSource),
+      ...(options.reviewWorkflowCandidateScope
+        ? { candidateScope: options.reviewWorkflowCandidateScope }
+        : {}),
       ...(options.reviewWorkflowAudit
         ? { audit: options.reviewWorkflowAudit }
         : {}),

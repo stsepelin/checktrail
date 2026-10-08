@@ -1,21 +1,77 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "maxWorkflows": { "type": "integer", "minimum": 0, "maximum": 16 },
-    "maxAssignments": { "type": "integer", "minimum": 0, "maximum": 6 },
-    "wallMs": { "type": "integer", "minimum": 1, "maximum": 3600000 },
-    "maxPacketBytes": { "type": "integer", "minimum": 0, "maximum": 1048576 },
-    "maxResponseBytes": { "type": "integer", "minimum": 0, "maximum": 262144 },
-    "maxRetainedBytes": { "type": "integer", "minimum": 0, "maximum": 16777216 }
-  },
-  "required": [
-    "maxWorkflows",
-    "maxAssignments",
-    "wallMs",
-    "maxPacketBytes",
-    "maxResponseBytes",
-    "maxRetainedBytes"
-  ],
-  "additionalProperties": false
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "maxWorkflows": { "type": "integer", "minimum": 0, "maximum": 16 },
+        "maxAssignments": { "type": "integer", "minimum": 0, "maximum": 6 },
+        "wallMs": { "type": "integer", "minimum": 1, "maximum": 3600000 },
+        "maxPacketBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "maxResponseBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 262144
+        },
+        "maxRetainedBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777216
+        }
+      },
+      "required": [
+        "maxWorkflows",
+        "maxAssignments",
+        "wallMs",
+        "maxPacketBytes",
+        "maxResponseBytes",
+        "maxRetainedBytes"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "maxWorkflows": { "type": "integer", "minimum": 0, "maximum": 16 },
+        "maxAssignments": { "type": "integer", "minimum": 0, "maximum": 128 },
+        "wallMs": { "type": "integer", "minimum": 1, "maximum": 3600000 },
+        "maxPacketBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "maxResponseBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 262144
+        },
+        "maxRetainedBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777216
+        },
+        "maxNativeCalls": { "type": "integer", "minimum": 0, "maximum": 512 },
+        "maxNativeOutputBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16777216
+        }
+      },
+      "required": [
+        "maxWorkflows",
+        "maxAssignments",
+        "wallMs",
+        "maxPacketBytes",
+        "maxResponseBytes",
+        "maxRetainedBytes",
+        "maxNativeCalls",
+        "maxNativeOutputBytes"
+      ],
+      "additionalProperties": false
+    }
+  ]
 }

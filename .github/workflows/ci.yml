@@ -120,12 +120,13 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
       - run: node scripts/verify-posix-cleanup-guards.mjs
       - run: node scripts/verify-review-benchmark-multi-guards.mjs
+      - run: node scripts/verify-review-workflow-multi-guards.mjs
       - name: Verify native Laravel owned-cache guards and fresh package
         run: |
           node scripts/verify-laravel-cache-guards.mjs
@@ -143,6 +144,8 @@ jobs:
         run: node scripts/verify-review-budget-package.mjs
       - name: Verify model-independent workflow in the production package
         run: node scripts/verify-review-workflow-package.mjs
+      - name: Verify every candidate and its audit in the production package
+        run: node scripts/verify-review-workflow-package.mjs --all-candidates
       - name: Verify durable workflow audits in the production package
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify import context in the production package

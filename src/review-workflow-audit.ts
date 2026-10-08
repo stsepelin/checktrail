@@ -29,7 +29,10 @@ import {
   parseReviewProbeRun,
   reviewProbeInputScale,
 } from "./review-probe.js";
-import type { ReviewWorkflowOptions } from "./review-workflow.js";
+import {
+  resolveReviewWorkflowLimits,
+  type ReviewWorkflowOptions,
+} from "./review-workflow.js";
 import {
   reviewWorkflowAuditOptionsSchema,
   reviewWorkflowAuditBindingSchema,
@@ -65,6 +68,7 @@ type Capture = z.infer<typeof captureSchema>;
 export const reviewWorkflowAuditSettingsSchema = z.strictObject({
   allowReviewSource: z.literal(true),
   trusted: z.boolean(),
+  candidateScope: z.literal("all").optional(),
   workflowLimits: z.record(z.string(), z.number()).nullable(),
   nativeWallMs: count,
   maxNativeOutputBytes: count,
@@ -254,7 +258,13 @@ function prepareAudit(
     settings: {
       allowReviewSource: true,
       trusted: Boolean(engine.trusted),
-      workflowLimits: engine.limits ?? null,
+      ...(engine.candidateScope === "all"
+        ? { candidateScope: "all" as const }
+        : {}),
+      workflowLimits:
+        engine.candidateScope === "all"
+          ? resolveReviewWorkflowLimits(engine)
+          : (engine.limits ?? null),
       nativeWallMs: engine.nativeWallMs ?? 30000,
       maxNativeOutputBytes: engine.maxNativeOutputBytes ?? 65536,
       nativeBudget: engine.nativeBudget ?? {
@@ -562,6 +572,7 @@ function checkSnapshots(
     const state = workflows.get(old.workflowId);
     if (
       !state ||
+      state.schemaVersion !== old.schemaVersion ||
       state.contextDigest !== old.contextDigest ||
       JSON.stringify(state.limits) !== JSON.stringify(old.limits) ||
       state.assignments.length < old.assignments.length ||
@@ -572,11 +583,29 @@ function checkSnapshots(
     if (
       old.native.accountingComplete &&
       old.native.status !== "not-started" &&
-      (!state.native.accountingComplete ||
-        state.native.calls! < old.native.calls! ||
-        state.native.outputBytes! < old.native.outputBytes!)
+      ((!state.native.accountingComplete &&
+        !(
+          state.schemaVersion === 2 &&
+          ["running", "cancellation-pending", "error"].includes(
+            state.native.status,
+          )
+        )) ||
+        (state.native.accountingComplete &&
+          (state.native.calls! < old.native.calls! ||
+            state.native.outputBytes! < old.native.outputBytes!)))
     )
       throw new Error("Audit native accounting changed");
+    if (
+      old.schemaVersion === 2 &&
+      state.schemaVersion === 2 &&
+      (JSON.stringify(
+        state.completedTargets.slice(0, old.completedTargets.length),
+      ) !== JSON.stringify(old.completedTargets) ||
+        (old.candidateHandles.length > 0 &&
+          JSON.stringify(state.candidateHandles) !==
+            JSON.stringify(old.candidateHandles)))
+    )
+      throw new Error("Audit candidate history changed");
     for (const [i, before] of old.assignments.entries()) {
       const after = state.assignments[i]!;
       if (
@@ -598,10 +627,25 @@ function checkNativeReceipt(
   receipt: ReviewWorkflowNativeReceipt,
   state: z.infer<typeof reviewWorkflowSummarySchema>,
   startup: z.infer<typeof reviewWorkflowAuditSettingsSchema>,
+  prior: { calls: number; outputBytes: number },
 ): void {
   const recipe = parseReviewProbe(receipt.recipe);
   const run = parseReviewProbeRun(receipt.run);
   const registered = startup.probes.find((p) => p.id === receipt.probeId);
+  const maxCalls =
+    state.schemaVersion === 2
+      ? Math.min(
+          startup.nativeBudget.maxCalls,
+          Math.max(0, state.limits.maxNativeCalls - prior.calls),
+        )
+      : startup.nativeBudget.maxCalls;
+  const maxOutputBytes =
+    state.schemaVersion === 2
+      ? Math.min(
+          startup.nativeBudget.maxOutputBytes,
+          Math.max(0, state.limits.maxNativeOutputBytes - prior.outputBytes),
+        )
+      : startup.nativeBudget.maxOutputBytes;
   if (
     !startup.trusted ||
     !registered ||
@@ -621,13 +665,13 @@ function checkNativeReceipt(
         c.revision === "current" &&
         c.sourceDigest === run.sourceDigest,
     ) ||
-    run.nativeBudget.calls !== state.native.calls ||
-    run.nativeBudget.outputBytes !== state.native.outputBytes ||
+    run.nativeBudget.calls + prior.calls !== state.native.calls ||
+    run.nativeBudget.outputBytes + prior.outputBytes !==
+      state.native.outputBytes ||
     !state.native.accountingComplete ||
     run.trials.length !== recipe.cases.length ||
-    run.nativeBudget.limits.maxCalls !== startup.nativeBudget.maxCalls ||
-    run.nativeBudget.limits.maxOutputBytes !==
-      startup.nativeBudget.maxOutputBytes ||
+    run.nativeBudget.limits.maxCalls !== maxCalls ||
+    run.nativeBudget.limits.maxOutputBytes !== maxOutputBytes ||
     run.nativeBudget.limits.maxCallOutputBytes !==
       startup.maxNativeOutputBytes ||
     run.nativeBudget.limits.wallMs > startup.nativeWallMs ||
@@ -644,6 +688,58 @@ function checkNativeReceipt(
     throw new Error(
       "Audit native receipt evidence or startup binding disagrees",
     );
+}
+function nativeTotals(receipts: ReviewWorkflowNativeReceipt[]): {
+  calls: number;
+  outputBytes: number;
+} {
+  return receipts.reduce(
+    (sum, receipt) => {
+      if (receipt.run.schemaVersion === 1)
+        throw new Error("Audit native receipt has no bounded accounting");
+      return {
+        calls: sum.calls + receipt.run.nativeBudget.calls,
+        outputBytes: sum.outputBytes + receipt.run.nativeBudget.outputBytes,
+      };
+    },
+    { calls: 0, outputBytes: 0 },
+  );
+}
+function acceptedAdjudicationTarget(
+  began: Extract<Body, { kind: "begin" }>,
+  state: z.infer<typeof reviewWorkflowSummarySchema>,
+): string | null {
+  const command = reviewWorkflowCommandSchema.safeParse(began.capture.value);
+  if (
+    !command.success ||
+    command.data.operation !== "submit" ||
+    command.data.workflowId !== state.workflowId
+  )
+    return null;
+  const response = reviewWorkflowResponseSchema.safeParse(
+    command.data.response,
+  );
+  if (
+    !response.success ||
+    response.data.status !== "completed" ||
+    !response.data.output
+  )
+    return null;
+  const before = began.states.find((s) => s.workflowId === state.workflowId);
+  const assigned = before?.assignments.at(-1);
+  const attempt = state.assignments.find(
+    (a) => a.assignmentId === response.data.assignmentId,
+  );
+  return assigned?.stage === "adjudicator" &&
+    assigned.status === "awaiting-host" &&
+    assigned.assignmentId === response.data.assignmentId &&
+    assigned.assignmentDigest === response.data.assignmentDigest &&
+    attempt?.stage === "adjudicator" &&
+    attempt.status === "accepted" &&
+    attempt.assignmentDigest === response.data.assignmentDigest &&
+    attempt.responseDigest === sha(JSON.stringify(command.data.response))
+    ? before!.selectedTarget
+    : null;
 }
 /** Inspect a frozen private journal; no resume, source output, execution or host inference. */
 /** Operator-only snapshot. It contains untrusted source and response text. */
@@ -703,8 +799,9 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     end: Extract<Body, { kind: "end" }> | undefined;
   const pending = new Map<string, Extract<Body, { kind: "begin" }>>(),
     seen = new Set<string>(),
-    nativeReceipts = new Map<string, ReviewWorkflowNativeReceipt>(),
-    candidates = new Map<string, Map<string, string>>();
+    nativeReceipts = new Map<string, ReviewWorkflowNativeReceipt[]>(),
+    candidates = new Map<string, Map<string, string>>(),
+    completedStages = new Map<string, Set<string>>();
   let snapshots: z.infer<typeof states> = [],
     finished = 0,
     rejected = 0,
@@ -733,6 +830,8 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
       if (event.body.kind !== "header") throw new Error("Missing audit header");
       header = event.body;
       if (
+        (header.settings.candidateScope === "all" &&
+          header.settings.workflowLimits === null) ||
         header.maxBytes > MAX_BYTES ||
         header.maxEvents > 4096 ||
         content.length > header.maxBytes ||
@@ -745,15 +844,14 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     const body = event.body;
     checkSnapshots(body.states, snapshots);
     snapshots = body.states;
-    for (const [id, receipt] of nativeReceipts) {
-      const native = snapshots.find((s) => s.workflowId === id)!.native;
+    for (const state of snapshots) {
       if (
-        receipt.run.schemaVersion === 1 ||
-        native.calls !== receipt.run.nativeBudget.calls ||
-        native.outputBytes !== receipt.run.nativeBudget.outputBytes ||
-        !native.accountingComplete
+        (state.schemaVersion === 2) !==
+          (header!.settings.candidateScope === "all") ||
+        (header!.settings.workflowLimits !== null &&
+          !isDeepStrictEqual(state.limits, header!.settings.workflowLimits))
       )
-        throw new Error("Audit retained native accounting changed");
+        throw new Error("Audit workflow startup binding disagrees");
     }
     if (body.kind === "begin") {
       checkedCapture(body.capture);
@@ -815,6 +913,17 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
           );
         }
       }
+      if (body.outcome === "result")
+        for (const state of snapshots) {
+          if (state.schemaVersion !== 2) continue;
+          const target = acceptedAdjudicationTarget(began, state);
+          if (target && state.completedTargets.includes(target)) {
+            const completed =
+              completedStages.get(state.workflowId) ?? new Set<string>();
+            completed.add(target);
+            completedStages.set(state.workflowId, completed);
+          }
+        }
       if ("nativeReceipt" in body) {
         const receipt = body.nativeReceipt;
         const workflowId =
@@ -830,7 +939,24 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
             receipt.workflowId !== command.data.workflowId ||
             receipt.probeId !== command.data.probeId ||
             receipt.targetHandle !== state.selectedTarget ||
-            nativeReceipts.has(receipt.workflowId) ||
+            (state.schemaVersion === 2 &&
+              (() => {
+                const before = began.states.find(
+                  (s) => s.workflowId === state.workflowId,
+                );
+                return (
+                  before?.nextStage !== "probe" ||
+                  before.status !== "ready" ||
+                  before.selectedTarget !== receipt.targetHandle ||
+                  before.assignments.at(-1)?.stage !== "refuter" ||
+                  before.assignments.at(-1)?.status !== "accepted"
+                );
+              })()) ||
+            (state.schemaVersion === 1 &&
+              nativeReceipts.has(receipt.workflowId)) ||
+            nativeReceipts
+              .get(receipt.workflowId)
+              ?.some((r) => r.targetHandle === receipt.targetHandle) ||
             candidates.get(receipt.workflowId)?.get(receipt.targetHandle) !==
               sha(JSON.stringify(receipt.candidate))
           )
@@ -843,12 +969,30 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
               header!.runtime.node.replace(/^v/, "")
           )
             throw new Error("Audit native runtime identity disagrees");
-          checkNativeReceipt(receipt, state, header!.settings);
-          nativeReceipts.set(receipt.workflowId, receipt);
+          const receipts = nativeReceipts.get(receipt.workflowId) ?? [];
+          checkNativeReceipt(
+            receipt,
+            state,
+            header!.settings,
+            nativeTotals(receipts),
+          );
+          nativeReceipts.set(receipt.workflowId, [...receipts, receipt]);
         } else if (
           state?.native.accountingComplete &&
           state.native.status !== "not-started" &&
-          !nativeReceipts.has(state.workflowId)
+          (!nativeReceipts.has(state.workflowId) ||
+            (body.outcome === "result" &&
+              (() => {
+                const before = began.states.find(
+                  (s) => s.workflowId === state.workflowId,
+                )?.native;
+                return (
+                  !before ||
+                  before.status !== state.native.status ||
+                  before.calls !== state.native.calls ||
+                  before.outputBytes !== state.native.outputBytes
+                );
+              })()))
         )
           throw new Error("Audit reached native receipt is missing");
       }
@@ -881,6 +1025,62 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
         throw new Error("Audit terminal accounting disagrees");
       end = body;
     }
+    const pendingProbe = (id: string) =>
+      [...pending.values()].some((began) => {
+        const command = reviewWorkflowCommandSchema.safeParse(
+          began.capture.value,
+        );
+        return (
+          command.success &&
+          command.data.operation === "probe" &&
+          command.data.workflowId === id
+        );
+      });
+    for (const [id, receipts] of nativeReceipts) {
+      const state = snapshots.find((s) => s.workflowId === id)!;
+      const totals = nativeTotals(receipts);
+      if (
+        state.native.accountingComplete
+          ? (state.native.calls !== totals.calls ||
+              state.native.outputBytes !== totals.outputBytes) &&
+            !(
+              state.schemaVersion === 2 &&
+              pendingProbe(id) &&
+              state.native.calls! >= totals.calls &&
+              state.native.calls! <= state.limits.maxNativeCalls &&
+              state.native.outputBytes! >= totals.outputBytes &&
+              state.native.outputBytes! <= state.limits.maxNativeOutputBytes
+            )
+          : !(
+              state.schemaVersion === 2 &&
+              ["running", "cancellation-pending", "error"].includes(
+                state.native.status,
+              )
+            )
+      )
+        throw new Error("Audit retained native accounting changed");
+    }
+    for (const state of snapshots) {
+      if (state.schemaVersion !== 2) continue;
+      for (const target of state.completedTargets) {
+        const completed =
+          completedStages.get(state.workflowId)?.has(target) ||
+          [...pending.values()].some(
+            (began) => acceptedAdjudicationTarget(began, state) === target,
+          );
+        const receipt = nativeReceipts
+          .get(state.workflowId)
+          ?.find((r) => r.targetHandle === target);
+        if (
+          !completed ||
+          (receipt?.run.status !== "completed" &&
+            !pendingProbe(state.workflowId))
+        )
+          throw new Error(
+            "Audit completed target lacks accepted independent stages",
+          );
+      }
+    }
   }
   const trailing = content.length - prefix.length;
   if (end && trailing) throw new Error("Bytes follow audit finalization");
@@ -902,7 +1102,10 @@ export function parseReviewWorkflowAuditArtifact(content: Buffer) {
     digest: previous!,
     allCommandBodiesRetained: allBodies,
     nativeReceipts: {
-      retained: nativeReceipts.size,
+      retained: [...nativeReceipts.values()].reduce(
+        (sum, receipts) => sum + receipts.length,
+        0,
+      ),
       complete:
         !pending.size &&
         snapshots.every(

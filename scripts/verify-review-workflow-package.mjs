@@ -11,6 +11,11 @@ import { setTimeout, clearTimeout } from "node:timers";
 import { fileURLToPath, pathToFileURL, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+assert.ok(
+  process.argv.length === 2 ||
+    (process.argv.length === 3 && process.argv[2] === "--all-candidates"),
+);
+const allCandidates = process.argv[2] === "--all-candidates";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-workflow-package-"),
@@ -41,13 +46,16 @@ try {
   const consumer = path.join(temporary, "consumer");
   await installAcceptancePackage(repository, tarball, consumer);
   const installed = path.join(consumer, "node_modules/@stsepelin/checktrail");
-  const { createReviewContext, ReviewWorkflowEngine } = await import(
-    pathToFileURL(path.join(installed, "dist/src/index.js"))
-  );
+  const {
+    createReviewContext,
+    ReviewWorkflowEngine,
+    ReviewWorkflowSession,
+    inspectReviewWorkflowAudit,
+  } = await import(pathToFileURL(path.join(installed, "dist/src/index.js")));
   const root = path.join(temporary, "original-source");
   const operator = path.join(temporary, "operator");
   await mkdir(path.join(root, ".checktrail"), { recursive: true });
-  await mkdir(operator);
+  await mkdir(operator, { mode: 0o700 });
   const source =
     "export function decision(name){return name.startsWith('grant');}\n";
   await writeFile(path.join(root, "subject.mjs"), source);
@@ -137,10 +145,12 @@ try {
     },
   });
   const exchange = async (call) => {
+    const count = allCandidates ? 2 : 1;
     const opened = await call({
       operation: "open",
       context: ".checktrail/context.json",
     });
+    assert.equal(opened.schemaVersion, allCandidates ? 2 : 1);
     const reviewer = await call({
       operation: "next",
       workflowId: opened.workflowId,
@@ -149,46 +159,71 @@ try {
     const reviewed = await call({
       operation: "submit",
       workflowId: opened.workflowId,
-      response: response(reviewer, [target]),
+      response: response(
+        reviewer,
+        allCandidates
+          ? [
+              target,
+              {
+                ...target,
+                id: "OriginalSecondPackageClaim",
+                claim: "Original second package boundary concern.",
+              },
+            ]
+          : [target],
+      ),
     });
-    const refuter = await call({
-      operation: "next",
-      workflowId: opened.workflowId,
-      target: reviewed.candidateHandles[0],
-    });
-    assert.equal(refuter.stage, "refuter");
-    assert.equal(refuter.packet.includes(target.id), false);
-    await call({
-      operation: "submit",
-      workflowId: opened.workflowId,
-      response: response(refuter),
-    });
-    const native = await call({
-      operation: "probe",
-      workflowId: opened.workflowId,
-      probeId: "OriginalPackageWorkflow",
-    });
-    assert.equal(native.native.status, "completed");
-    assert.equal(native.native.calls, 3);
-    const adjudicator = await call({
-      operation: "next",
-      workflowId: opened.workflowId,
-    });
-    assert.equal(adjudicator.stage, "adjudicator");
-    assert.equal(
-      JSON.parse(adjudicator.packet).nativeObservations.cases[1].actual,
-      true,
-    );
-    const done = await call({
-      operation: "submit",
-      workflowId: opened.workflowId,
-      response: response(adjudicator),
-    });
-    assert.equal(done.disposition, "advisory-stages-completed");
+    let done;
+    for (let i = 0; i < count; i++) {
+      const refuter = await call({
+        operation: "next",
+        workflowId: opened.workflowId,
+        target: reviewed.candidateHandles[i],
+      });
+      assert.equal(refuter.stage, "refuter");
+      assert.equal(refuter.packet.includes(target.id), false);
+      if (i) assert.equal(refuter.packet.includes(target.claim), false);
+      await call({
+        operation: "submit",
+        workflowId: opened.workflowId,
+        response: response(refuter),
+      });
+      const native = await call({
+        operation: "probe",
+        workflowId: opened.workflowId,
+        probeId: "OriginalPackageWorkflow",
+      });
+      assert.equal(native.native.status, "completed");
+      assert.equal(native.native.calls, 3 * (i + 1));
+      const adjudicator = await call({
+        operation: "next",
+        workflowId: opened.workflowId,
+      });
+      assert.equal(adjudicator.stage, "adjudicator");
+      assert.equal(
+        JSON.parse(adjudicator.packet).nativeObservations.cases[1].actual,
+        true,
+      );
+      done = await call({
+        operation: "submit",
+        workflowId: opened.workflowId,
+        response: response(adjudicator),
+      });
+      assert.equal(done.status, i + 1 === count ? "completed" : "ready");
+      assert.equal(
+        done.disposition,
+        i + 1 === count ? "advisory-stages-completed" : "not-complete",
+      );
+      if (allCandidates)
+        assert.deepEqual(
+          done.completedTargets,
+          reviewed.candidateHandles.slice(0, i + 1),
+        );
+    }
     assert.equal(done.claimsVerified, false);
     assert.equal(done.hostIsolationVerified, false);
     assert.equal(done.resolution, "unresolved");
-    assert.equal(done.assignments.length, 3);
+    assert.equal(done.assignments.length, 1 + count * 2);
     const closed = await call({
       operation: "close",
       workflowId: opened.workflowId,
@@ -196,15 +231,25 @@ try {
     assert.equal(closed.retainedBytes, 0);
     assert.equal(closed.native.rawEvidenceRetained, false);
     return {
-      stages: 3,
-      nativeCalls: 3,
+      stages: 1 + count * 2,
+      nativeCalls: 3 * count,
       claimsVerified: false,
       hostIsolationVerified: false,
       rawWorkflowArtifactsDiscarded: true,
+      ...(allCandidates
+        ? { completedTargets: count, unverifiedCandidates: count }
+        : {}),
     };
   };
-  const engine = new ReviewWorkflowEngine(root, {
+  const auditFiles = ["library", "cli", "mcp"].map((surface) =>
+    path.join(operator, surface + ".jsonl"),
+  );
+  const Engine = allCandidates ? ReviewWorkflowSession : ReviewWorkflowEngine;
+  const engine = new Engine(root, {
     allowReviewSource: true,
+    ...(allCandidates
+      ? { candidateScope: "all", audit: { file: auditFiles[0] } }
+      : {}),
     trusted: true,
     probes: [pinned],
   });
@@ -218,6 +263,9 @@ try {
   const child = spawn(process.execPath, [
     cli,
     "review-session",
+    ...(allCandidates
+      ? ["--workflow-candidates", "all", "--workflow-audit", auditFiles[1]]
+      : []),
     "--root",
     root,
     "--detailed",
@@ -275,6 +323,9 @@ try {
       args: [
         cli,
         "serve",
+        ...(allCandidates
+          ? ["--workflow-candidates", "all", "--workflow-audit", auditFiles[2]]
+          : []),
         "--root",
         root,
         "--detailed",
@@ -294,9 +345,37 @@ try {
     assert.equal(output.isError, undefined, JSON.stringify(output));
     return output.structuredContent;
   });
+  await client.close();
+  const audits = [];
+  if (allCandidates)
+    for (const file of auditFiles) {
+      const audit = inspectReviewWorkflowAudit(file);
+      assert.equal(audit.journalStatus, "sealed");
+      assert.equal(audit.nativeReceipts.retained, 2);
+      assert.equal(audit.nativeReceipts.complete, true);
+      assert.equal(audit.nativeAccountingComplete, true);
+      assert.equal(audit.workflows[0].completedTargets.length, 2);
+      assert.equal(audit.workflows[0].native.calls, 6);
+      const header = JSON.parse(
+        (await readFile(file, "utf8")).split("\n")[0],
+      ).body;
+      assert.deepEqual(
+        header.settings.workflowLimits,
+        audit.workflows[0].limits,
+      );
+      audits.push({
+        receipts: 2,
+        completedTargets: 2,
+        nativeCalls: 6,
+        claimsVerified: false,
+      });
+    }
   result = {
     schemaVersion: 1,
-    profile: "original-synthetic-workflow-production-package",
+    profile: allCandidates
+      ? "original-synthetic-all-candidate-workflow-production-package"
+      : "original-synthetic-workflow-production-package",
+    ...(allCandidates ? { audits } : {}),
     tarballSha256,
     productionInstall: "offline-omit-dev-ignore-scripts",
     library,

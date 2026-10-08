@@ -28,7 +28,8 @@ import { reviewNativeBudgetLimitsSchema } from "./review-probe-schema.js";
 import {
   reviewWorkflowAssignmentSchema,
   reviewWorkflowCommandSchema,
-  reviewWorkflowLimitsSchema,
+  reviewWorkflowSelectedLimitsSchema,
+  reviewWorkflowAllLimitsSchema,
   reviewWorkflowResponseSchema,
   reviewWorkflowSummarySchema,
   type ReviewWorkflowAssignment,
@@ -71,15 +72,43 @@ interface Workflow {
   timer: ReturnType<typeof setTimeout>;
   controller: AbortController;
   busy: boolean;
+  completed: Array<{
+    refuter: ReviewModelOutput;
+    adjudicator: ReviewModelOutput;
+    probe: ReviewProbeRun;
+    pinned: PinnedReviewProbe;
+  }>;
+  nativeCalls: number;
+  nativeOutputBytes: number;
 }
 export interface ReviewWorkflowOptions {
   allowReviewSource: boolean;
+  candidateScope?: "selected" | "all";
   limits?: ReviewWorkflowLimits;
   trusted?: boolean;
   probes?: PinnedReviewProbe[];
   nativeWallMs?: number;
   maxNativeOutputBytes?: number;
   nativeBudget?: ReviewNativeBudgetLimits;
+}
+export function resolveReviewWorkflowLimits(
+  options: Pick<ReviewWorkflowOptions, "candidateScope" | "limits">,
+): ReviewWorkflowLimits {
+  if (
+    options.candidateScope !== undefined &&
+    !["selected", "all"].includes(options.candidateScope)
+  )
+    throw new Error("Invalid operator candidate scope");
+  return options.candidateScope === "all"
+    ? reviewWorkflowAllLimitsSchema.parse(
+        options.limits ?? {
+          ...defaultLimits,
+          maxAssignments: 65,
+          maxNativeCalls: 96,
+          maxNativeOutputBytes: 65536,
+        },
+      )
+    : reviewWorkflowSelectedLimitsSchema.parse(options.limits ?? defaultLimits);
 }
 /** One bounded engine epoch. No persistence, model invocation or host credential access. */
 export class ReviewWorkflowEngine {
@@ -94,9 +123,7 @@ export class ReviewWorkflowEngine {
   constructor(root: string, options: ReviewWorkflowOptions) {
     this.#root = root;
     this.#options = structuredClone(options);
-    this.#limits = reviewWorkflowLimitsSchema.parse(
-      options.limits ?? defaultLimits,
-    );
+    this.#limits = resolveReviewWorkflowLimits(options);
     if ((options.probes?.length ?? 0) > 8)
       throw new Error("Too many workflow probes");
     for (const input of options.probes ?? []) {
@@ -136,7 +163,13 @@ export class ReviewWorkflowEngine {
       const context = parseReviewContext(input);
       if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
         throw new Error("Workflow requires modern revision citations");
-      if (bytes({ context, outputs: {} }) > this.#limits.maxRetainedBytes)
+      if (
+        bytes({
+          context,
+          outputs: {},
+          ...(this.#options.candidateScope === "all" ? { completed: [] } : {}),
+        }) > this.#limits.maxRetainedBytes
+      )
         throw new Error("Workflow source exceeds retention admission");
       if (signal?.aborted || this.#disposed || !(await this.#fresh(context)))
         throw new Error("Workflow context is stale or cancelled");
@@ -144,7 +177,9 @@ export class ReviewWorkflowEngine {
         throw new Error("Workflow opening cancelled");
       const workflowId = randomUUID();
       const report = reviewWorkflowSummarySchema.parse({
-        schemaVersion: 1,
+        ...(this.#options.candidateScope === "all"
+          ? { schemaVersion: 2, candidateScope: "all", completedTargets: [] }
+          : { schemaVersion: 1 }),
         format: "review-workflow-summary",
         ...flags,
         workflowId,
@@ -190,6 +225,9 @@ export class ReviewWorkflowEngine {
         controller,
         timer,
         busy: false,
+        completed: [],
+        nativeCalls: 0,
+        nativeOutputBytes: 0,
       });
       return structuredClone(report);
     } finally {
@@ -234,6 +272,7 @@ export class ReviewWorkflowEngine {
     delete workflow.probe;
     delete workflow.pinned;
     workflow.outputs = {};
+    workflow.completed = [];
     workflow.targets.clear();
     workflow.report.retainedBytes = 0;
     workflow.report.native.rawEvidenceRetained = false;
@@ -279,9 +318,10 @@ export class ReviewWorkflowEngine {
   }
   #retained(
     workflow: Workflow,
-    patch: Partial<
-      Pick<Workflow, "pending" | "outputs" | "probe" | "pinned">
-    > = {},
+    patch: {
+      [K in "pending" | "outputs" | "probe" | "pinned" | "completed"]?:
+        Workflow[K] | undefined;
+    } = {},
   ): number {
     return bytes({
       context: workflow.context,
@@ -289,6 +329,9 @@ export class ReviewWorkflowEngine {
       pending: workflow.pending,
       probe: workflow.probe,
       pinned: workflow.pinned,
+      ...(workflow.report.schemaVersion === 2
+        ? { completed: workflow.completed }
+        : {}),
       ...patch,
     });
   }
@@ -346,8 +389,14 @@ export class ReviewWorkflowEngine {
         if (
           !target ||
           !workflow.targets.has(target) ||
+          (workflow.report.schemaVersion === 2 &&
+            workflow.report.completedTargets.includes(target)) ||
           (workflow.report.selectedTarget !== null &&
-            workflow.report.selectedTarget !== target)
+            workflow.report.selectedTarget !== target &&
+            (workflow.report.schemaVersion === 1 ||
+              !workflow.report.completedTargets.includes(
+                workflow.report.selectedTarget,
+              )))
         )
           throw new Error("Select an issued target handle");
       } else if (target !== undefined)
@@ -603,10 +652,50 @@ export class ReviewWorkflowEngine {
       } else if (assignment.stage === "refuter")
         workflow.report.nextStage = "probe";
       else {
-        workflow.report.nextStage = "finished";
-        workflow.report.status = "completed";
-        workflow.report.disposition = "advisory-stages-completed";
-        clearTimeout(workflow.timer);
+        if (workflow.report.schemaVersion === 2) {
+          const completed = [
+            ...workflow.completed,
+            {
+              refuter: workflow.outputs.refuter!,
+              adjudicator: response.output,
+              probe: workflow.probe!,
+              pinned: workflow.pinned!,
+            },
+          ];
+          const outputs = { reviewer: workflow.outputs.reviewer! };
+          if (
+            this.#retained(workflow, {
+              completed,
+              outputs,
+              probe: undefined,
+              pinned: undefined,
+            }) > this.#limits.maxRetainedBytes
+          ) {
+            this.#end(workflow, "incomplete", "retention-limit");
+            return this.status(id);
+          }
+          workflow.completed = completed;
+          workflow.outputs = outputs;
+          delete workflow.probe;
+          delete workflow.pinned;
+          workflow.report.completedTargets.push(
+            workflow.report.selectedTarget!,
+          );
+          if (workflow.report.completedTargets.length < workflow.targets.size) {
+            workflow.report.nextStage = "refuter";
+            workflow.report.native.rawEvidenceRetained = true;
+          } else {
+            workflow.report.nextStage = "finished";
+            workflow.report.status = "completed";
+            workflow.report.disposition = "advisory-stages-completed";
+            clearTimeout(workflow.timer);
+          }
+        } else {
+          workflow.report.nextStage = "finished";
+          workflow.report.status = "completed";
+          workflow.report.disposition = "advisory-stages-completed";
+          clearTimeout(workflow.timer);
+        }
       }
       workflow.report.retainedBytes = this.#retained(workflow);
       return this.status(id);
@@ -658,9 +747,32 @@ export class ReviewWorkflowEngine {
             ),
           ),
           maxOutputBytes: this.#options.maxNativeOutputBytes ?? 65536,
-          ...(this.#options.nativeBudget
-            ? { nativeBudget: this.#options.nativeBudget }
-            : {}),
+          ...(workflow.report.schemaVersion === 2
+            ? {
+                nativeBudget: {
+                  maxCalls: Math.min(
+                    this.#options.nativeBudget?.maxCalls ?? 16,
+                    Math.max(
+                      0,
+                      workflow.report.limits.maxNativeCalls -
+                        workflow.nativeCalls,
+                    ),
+                  ),
+                  maxOutputBytes: Math.min(
+                    this.#options.nativeBudget?.maxOutputBytes ??
+                      this.#options.maxNativeOutputBytes ??
+                      65536,
+                    Math.max(
+                      0,
+                      workflow.report.limits.maxNativeOutputBytes -
+                        workflow.nativeOutputBytes,
+                    ),
+                  ),
+                },
+              }
+            : this.#options.nativeBudget
+              ? { nativeBudget: this.#options.nativeBudget }
+              : {}),
           signal: signal
             ? AbortSignal.any([signal, workflow.controller.signal])
             : workflow.controller.signal,
@@ -672,10 +784,14 @@ export class ReviewWorkflowEngine {
         return this.status(id);
       }
       workflow.report.native.accountingComplete = run.schemaVersion !== 1;
+      if (run.schemaVersion !== 1) {
+        workflow.nativeCalls += run.nativeBudget.calls;
+        workflow.nativeOutputBytes += run.nativeBudget.outputBytes;
+      }
       workflow.report.native.calls =
-        run.schemaVersion !== 1 ? run.nativeBudget.calls : null;
+        run.schemaVersion !== 1 ? workflow.nativeCalls : null;
       workflow.report.native.outputBytes =
-        run.schemaVersion !== 1 ? run.nativeBudget.outputBytes : null;
+        run.schemaVersion !== 1 ? workflow.nativeOutputBytes : null;
       workflow.report.native.status =
         run.status === "unsupported" ? "incomplete" : run.status;
       // Capture reached evidence before freshness, cancellation or retention cleanup.

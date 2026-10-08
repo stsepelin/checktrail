@@ -172,8 +172,12 @@ assignments and consumes one-use host responses around a live operator-pinned
 native probe. CLI JSON-lines and `review_workflow` use this same engine through `ReviewWorkflowSession`, with optional startup-only durable command auditing.
 Protected startup quotas, packet/response/retention admission, source checks and
 consumed attempt metadata are observed engine controls; host sessions, models and
-usage remain unverified declarations. The workflow processes one selected target
-and retains unresolved claims and unassigned severity even when all stages finish.
+usage remain unverified declarations. The default workflow processes one selected
+target. Startup-only all-candidate mode separately refutes, probes and adjudicates
+every retained target, with shared native allowances, retained completed evidence
+and append-only completed coverage. Candidate packets exclude sibling responses
+and observations. Both modes retain unresolved claims and unassigned severity
+even when all stages finish. The frozen benchmark intake remains selected-target.
 Private transcripts retain admitted JSON commands, issued packets and native ledger snapshots before result release, without feeding history to workers. Version 2 journals retain returned structured native run receipts and pinned recipes before result release, including early termination and native cleanup, without requiring adjudication. Raw native output and host-model attempts remain incomplete. The shared `ReviewBenchmark` freezes original synthetic paired contexts/labels/settings, binds predeclared workflow journals and prepares anonymous judging packets after all-slot intake. Its MCP view is startup-bound to one trial; collection and judging preparation are operator-only. Full independent evaluation, observed host isolation and complete model/native all-attempt artifacts remain planned; a native AI
 client launcher is optional. The server cannot clear the host's conversation or enforce
 its model-token/billing budget. See REVIEW-MCP-WORKFLOW.md and REVIEW-BENCHMARK.md.

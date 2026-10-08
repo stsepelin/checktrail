@@ -39,7 +39,7 @@ import {
 } from "./review-workflow-audit.js";
 import { reviewWorkflowAuditBindingSchema } from "./review-workflow-audit-schema.js";
 import {
-  reviewWorkflowLimitsSchema,
+  reviewWorkflowSelectedLimitsSchema,
   reviewWorkflowResponseSchema,
   reviewWorkflowCommandSchema,
 } from "./review-workflow-schema.js";
@@ -308,7 +308,7 @@ function checkedManifest(value: unknown): Manifest {
       );
   }
   for (const arm of plan.arms) {
-    const limits = reviewWorkflowLimitsSchema.parse(
+    const limits = reviewWorkflowSelectedLimitsSchema.parse(
       arm.settings.workflowLimits,
     );
     reviewNativeBudgetLimitsSchema.parse(arm.settings.nativeBudget);
@@ -470,6 +470,7 @@ function checkTrial(
     return false;
   for (const state of summary.workflows)
     if (
+      state.schemaVersion !== 1 ||
       state.contextDigest !== c.context.contextDigest ||
       !equal(state.limits, arm.settings.workflowLimits)
     )

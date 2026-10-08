@@ -11,7 +11,7 @@ const identity = z
   .min(1)
   .max(256)
   .regex(/^[A-Za-z0-9][A-Za-z0-9._:/-]*$/);
-export const reviewWorkflowLimitsSchema = z.strictObject({
+export const reviewWorkflowSelectedLimitsSchema = z.strictObject({
   maxWorkflows: z.number().int().min(0).max(16),
   maxAssignments: z.number().int().min(0).max(6),
   wallMs: z.number().int().min(1).max(3_600_000),
@@ -19,6 +19,16 @@ export const reviewWorkflowLimitsSchema = z.strictObject({
   maxResponseBytes: z.number().int().min(0).max(262_144),
   maxRetainedBytes: z.number().int().min(0).max(16_777_216),
 });
+export const reviewWorkflowAllLimitsSchema =
+  reviewWorkflowSelectedLimitsSchema.extend({
+    maxAssignments: z.number().int().min(0).max(128),
+    maxNativeCalls: z.number().int().min(0).max(512),
+    maxNativeOutputBytes: z.number().int().min(0).max(16_777_216),
+  });
+export const reviewWorkflowLimitsSchema = z.union([
+  reviewWorkflowSelectedLimitsSchema,
+  reviewWorkflowAllLimitsSchema,
+]);
 export const reviewWorkflowResponseSchema = z.strictObject({
   assignmentId: z.string().uuid(),
   assignmentDigest: digest,
@@ -126,7 +136,7 @@ const attempt = z.strictObject({
   usage: reviewWorkflowResponseSchema.shape.usage.nullable(),
   declaredCandidates: z.number().int().min(0).max(32),
 });
-export const reviewWorkflowSummarySchema = z.strictObject({
+export const reviewWorkflowSelectedSummarySchema = z.strictObject({
   schemaVersion: z.literal(1),
   format: z.literal("review-workflow-summary"),
   ...flags,
@@ -172,7 +182,7 @@ export const reviewWorkflowSummarySchema = z.strictObject({
   candidateHandles: z.array(z.string().uuid()).max(32),
   selectedTarget: z.string().uuid().nullable(),
   unverifiedCandidates: z.number().int().min(0).max(32),
-  limits: reviewWorkflowLimitsSchema,
+  limits: reviewWorkflowSelectedLimitsSchema,
   assignments: z.array(attempt).max(6),
   issuedPacketBytes: count,
   responseBytes: count,
@@ -199,6 +209,35 @@ export const reviewWorkflowSummarySchema = z.strictObject({
   hostModelBudgetsEnforced: z.literal(false),
   sourceIncluded: z.literal(false),
 });
+export const reviewWorkflowAllSummarySchema =
+  reviewWorkflowSelectedSummarySchema
+    .extend({
+      schemaVersion: z.literal(2),
+      candidateScope: z.literal("all"),
+      completedTargets: z.array(z.string().uuid()).max(32),
+      limits: reviewWorkflowAllLimitsSchema,
+      assignments: z.array(attempt).max(128),
+    })
+    .superRefine((value, ctx) => {
+      const handles = new Set(value.candidateHandles);
+      if (
+        handles.size !== value.candidateHandles.length ||
+        new Set(value.completedTargets).size !==
+          value.completedTargets.length ||
+        value.completedTargets.some((id) => !handles.has(id)) ||
+        (value.selectedTarget !== null && !handles.has(value.selectedTarget)) ||
+        (value.disposition === "advisory-stages-completed" &&
+          value.completedTargets.length !== handles.size)
+      )
+        ctx.addIssue({
+          code: "custom",
+          message: "All-candidate coverage does not reconcile",
+        });
+    });
+export const reviewWorkflowSummarySchema = z.discriminatedUnion(
+  "schemaVersion",
+  [reviewWorkflowSelectedSummarySchema, reviewWorkflowAllSummarySchema],
+);
 export type ReviewWorkflowLimits = z.infer<typeof reviewWorkflowLimitsSchema>;
 export type ReviewWorkflowAssignment = z.infer<
   typeof reviewWorkflowAssignmentSchema
