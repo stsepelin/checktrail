@@ -43,6 +43,7 @@ export const PARSERS = [
   "checkstyle-json",
   "spotbugs-json",
   "detekt-json",
+  "kotlin-json",
   "maven-json",
   "gradle-json",
   "dotnet-json",

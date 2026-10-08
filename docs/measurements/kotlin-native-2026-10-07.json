@@ -1,0 +1,986 @@
+{
+  "schemaVersion": 1,
+  "profile": "kotlin-jvm-source-native-v1",
+  "measuredAt": "2026-10-07T02:38:23.688680+00:00",
+  "sourceRevision": "5c8931bf2b35849a95ad398dcbf3e87a47092eab",
+  "sourceTree": "69d250b1dab9f104bec38332b39a0df89cd01137",
+  "scope": "Original synthetic development acceptance for explicitly selected Kotlin JVM source; not independent review quality or a whole-project build.",
+  "artifacts": {
+    "version": "2.4.10",
+    "archiveBytes": 87077443,
+    "archiveSha256": "473dd66c7a3ef4b182065b3da670466c1bf2773a9dbb0ed8b33a39fe9d4f876d",
+    "profile": "jvm-source-frontend-ir-output-v1",
+    "runtimeLibraries": [
+      {
+        "name": "kotlin-compiler.jar",
+        "bytes": 61903538,
+        "sha256": "db12b1af0db0e10eeedfc15d5dac0316604e5c556321f60e3bcd73075a66f0a3"
+      },
+      {
+        "name": "kotlin-stdlib.jar",
+        "bytes": 1841933,
+        "sha256": "4ec0293bc3751423b203f1d8493251c57c42e73eb6377a6b8560d0974ff0a6df"
+      },
+      {
+        "name": "kotlin-reflect.jar",
+        "bytes": 3750100,
+        "sha256": "25a1aef7454d46548ecaaf51021b0e52e38141a62ed75af124da109b7324c4e5"
+      },
+      {
+        "name": "kotlinx-coroutines-core-jvm.jar",
+        "bytes": 1548360,
+        "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5"
+      },
+      {
+        "name": "annotations-13.0.jar",
+        "bytes": 17536,
+        "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+      },
+      {
+        "name": "kotlin-script-runtime.jar",
+        "bytes": 46565,
+        "sha256": "f4a5b30c2fdfbe386b097101b7989dbeea3743c06396136664784e08e15c6899"
+      }
+    ],
+    "compilerManifestClassPath": [
+      "annotations-13.0.jar",
+      "kotlin-stdlib.jar",
+      "kotlin-reflect.jar",
+      "kotlin-script-runtime.jar",
+      "kotlinx-coroutines-core-jvm.jar"
+    ]
+  },
+  "artifactPreparation": {
+    "officialRelease": "https://github.com/JetBrains/kotlin/releases/tag/v2.4.10",
+    "archiveReleaseDigestVerified": true,
+    "publisherSignatureVerified": false,
+    "bundledLicenseClosureAudited": false
+  },
+  "fullRepositoryCheck": {
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "command": "npm run check",
+    "tests": 924,
+    "passed": 669,
+    "skipped": 255,
+    "failed": 0,
+    "optionalNativeSkipsCountAsPass": false,
+    "logSha256": "fbb668a50f7b5e9b3a3e306f4e95236484c66d9ee99f11c3848462de6bed28ad"
+  },
+  "nativeAndInstalled": {
+    "image": "sha256:c128d9c816c009975fbd036e1d4d35c8c17ee1002ca8556a654485d2e983b13f",
+    "versions": {
+      "node": "v22.23.2",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)"
+    },
+    "network": "none",
+    "init": true,
+    "cpus": 2,
+    "memory": "2g",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "native": {
+      "profile": "kotlin",
+      "timeoutMs": 300000,
+      "passed": 13,
+      "required": 13,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 13,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.9801,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9.428545,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18276.217431,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3929.233967,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22084.640193,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7940.770245,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1293.315827,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.285715,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-3",
+            "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.939019,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-3",
+            "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8029.715224,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-3",
+            "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6962.297273,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-3",
+            "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10986.831693,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-4",
+            "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15320.242099,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "profile": "kotlin-compiler-guards-v1",
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "guards": [
+        {
+          "id": "original-native-plugin",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "7d410a1a5b1a75b3a3ad812ee3ca633906744d9c99161ac47e08d9a6ee675d64",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "62e0987595241d1caa48a15a53823bdc35fe73601717fe75b184ac26899f6936",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-source-identity",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "cdac6e1da48b283114c3c63c2f6e494c8e560363dda1c95247485265189f4f1e",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "54cca9d8b9c227add75ed95d34cf7c16d8630d429e3d65c6bde08ea64b519613",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-source-identity",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "e3d45759c3d1a0b5c23c795fdc495c56d64aab20de915b425201c0ff3d843d78",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "8e152ba3add957f1b66739dde0fb8ff06b70dc4d041d06ef49236e08389e9b72",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "resolved-suppression-accounting",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "d3d3390cc8c67eb1a050266d46fcbfe41c8b01db66ddf1699387d5217258d285",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "0ea6512a965e15009213794b3f328aca12e704f54e9bae5e8203716b25ab46c8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-node-accounting",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "7321e6b70788bd0f71930192e06dc925c0aa524ca450459b33e3d94284a81872",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "06a41b618c3fb5995373616a5d3adceb0c1328ca52cb2e533320b1261ba2bd51",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "native-ir-completion",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "c29d6e9b57155a83dc7ca363ae3641bbda5b50d9e0f4cf75486daf17a2d957bb",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "22dfb62198bd70d51a1b71f2ffc8608bf6fdd0396284af4031d22559f8694b23",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-class-output",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "8f05526cad6bbb10ce7e846307351953fe707fc03e5d8f64373f8c08981d96b1",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "d0da33911029012c07c46b3a0405a06d7193513e60aa2f5ee7dc51f1254f586d",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "declared-class-target",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "21cc4685e5ccca78d421cc447cfedeb0fe89be0683f486c2bd1baa676caad575",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "80bc1576a002e2ee7024891b08cfcef8c7d6e634b0845c8bc273858014241fa4",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "id": "physical-raw-integrity",
+          "callback": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+          "callbackSha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98",
+          "sourceSha256": "307b9ebdc1c598c5d2b2487a5b6da307249446da396ec26ac489eb96cd99660f",
+          "mutantSha256": "f6dc2d8e52d5db88ab8126119b90221fc01c2f10da42a0e54b7895f775a724d9",
+          "originalPassed": true,
+          "mutantKilled": true,
+          "mutantOutputSha256": "261c6eab38bad2c2962c95dce36f07b405b7fc7c38ce5ba1aed30b48733b3a5c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "14868657a78c52d40234b4309ae052d7d305cffd683d06b5088828a7e815c3c0",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientVersion": "2.3.0",
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "acceptanceClientCopiedOutsideInstalledPackage": true,
+      "profile": {
+        "profile": "kotlin",
+        "timeoutMs": 300000,
+        "passed": 13,
+        "required": 13,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 13,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 19.976554,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12.964813,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18089.615041,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3945.071372,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-2",
+              "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 22193.154549,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7951.482205,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1288.516316,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-3",
+              "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.270298,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-3",
+              "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3.690018,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-3",
+              "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8135.649007,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-3",
+              "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7432.743837,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-3",
+              "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15907.020179,
+              "required": true
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-4",
+              "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 25374.362127,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-3",
+              "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-3",
+              "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+              "outcome": "passed",
+              "terminalSequences": [13]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c128d9c816c009975fbd036e1d4d35c8c17ee1002ca8556a654485d2e983b13f",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "windowsVerified": false
+    },
+    "durationMs": 322001,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "changedFiles": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "f024d1f358e74eb2078e92b8da820348eb82236bf0d5d32fa07d7ef7b7957ae2",
+      "bytes": 34757
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "fda4e741f4719427f43944e7cdfd8a077ec54b8aadb68248e8cf20c4da9c1dad",
+      "bytes": 17899
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "04975c6282880ba97808554bd1bd31ae7f74aa767c5301f1cbd4a87fe56a5e18",
+      "bytes": 26548
+    },
+    {
+      "file": "docs/KOTLIN.md",
+      "sha256": "869f6e35b230b4b0a3c85b56302d37ac19d845d6d0f98d337779d08f1fcb8004",
+      "bytes": 5195
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "59a2c9cf8f06619026d5a6d2e6d25dc2c5ea3329c8bea3df3ca5fb44f8dd776f",
+      "bytes": 30153
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "6979e3e720a9745906caff7407156bfd2a0840994e51bbdeb729185481311427",
+      "bytes": 36427
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "5cbb54da7fa84485fa8e7f09530ca9b304a0ea519bad329aa7b037db051545c8",
+      "bytes": 54702
+    },
+    {
+      "file": "schemas/kotlin-config.schema.json",
+      "sha256": "b60bf3003400e0f1bda7bf6b36ebe319b7541f55f0d70a2df5db85373dd323cb",
+      "bytes": 1131
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "sha256": "a306814a67f4b7ea72f921a6bc790e0ebcc2ecefb4b61542479220545d11bd66",
+      "bytes": 13871
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "sha256": "10c6eaefe4dcdb4e445d3eb5f9eaaeed8de978352e9f6813993b2fc07188b2df",
+      "bytes": 12843
+    },
+    {
+      "file": "scripts/kotlin-tools.Dockerfile",
+      "sha256": "5cdd53387376012160f27cc3e53a8470222bac8cadf257ed72c3a7aaa2b23729",
+      "bytes": 516
+    },
+    {
+      "file": "scripts/prepare-kotlin-tools.mjs",
+      "sha256": "4c9a470d8c8bf3269be6c86bddc727d8038534c60a7eede33b652a27c91303ae",
+      "bytes": 3616
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "d761ca08d6b99de3f17cf94dea6d7f6af828e6ddd5a67462785c91e5cc3fa4c3",
+      "bytes": 129461
+    },
+    {
+      "file": "scripts/verify-kotlin-container.mjs",
+      "sha256": "cf0f728ddf50e51c7b7bd8cac40235348f20cd14a873a51571478341cfcaa6cd",
+      "bytes": 2487
+    },
+    {
+      "file": "scripts/verify-kotlin-guards.mjs",
+      "sha256": "e7b1e67b59a832b4a7309dc4060dbf4c2da19256387ed1611fc9e1eaea1759f5",
+      "bytes": 5984
+    },
+    {
+      "file": "scripts/verify-kotlin-package.mjs",
+      "sha256": "03d4554b3b1131f0fe570d472f0fba26d1353079499ba91a95fa11aa343d5bbe",
+      "bytes": 6267
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "6474eaf395f35e1007de7a5f5f595d974db35b95b475f459ccac624b08998066",
+      "bytes": 1178
+    },
+    {
+      "file": "src/adapters.ts",
+      "sha256": "cbda5ebe8c9e9629937b2f257a5dc1baf4171f3b8726a6f7b8b4d9bffbe3c9eb",
+      "bytes": 22122
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "b9dae2e77c7ac0b8f80418812707543e381aef96fe8deda0b3bff9d9a1c2cfa8",
+      "bytes": 19359
+    },
+    {
+      "file": "src/kotlin-archive.ts",
+      "sha256": "526cdf1bb640c390e1fecf70139df48dfcdad3aac51471f8f363328e9a4defa7",
+      "bytes": 3664
+    },
+    {
+      "file": "src/kotlin-artifacts.ts",
+      "sha256": "1928c8552d35f10d00767feabd9e4fee9060ee42325683c6c2ab6289533a9a9b",
+      "bytes": 1415
+    },
+    {
+      "file": "src/kotlin-evidence.ts",
+      "sha256": "b04da0a7d9afd813804218ed58050c4595f646a29e865544271c906526421bee",
+      "bytes": 15437
+    },
+    {
+      "file": "src/kotlin-io.ts",
+      "sha256": "f936b27a68e475429bc892a444b14d85dfc66d0641df7794f9cd1712a03af23a",
+      "bytes": 1943
+    },
+    {
+      "file": "src/kotlin-jar.ts",
+      "sha256": "5f7cb8d8b1b6027c43dd091f2a9ed5d4d8cad81dfced6a6198fb80479128f64b",
+      "bytes": 4060
+    },
+    {
+      "file": "src/kotlin-native.ts",
+      "sha256": "991c48a5cebe57b7067ce7dfb9fa3d8b48d9d37b47b01806594a0b5b3fcbdb94",
+      "bytes": 12352
+    },
+    {
+      "file": "src/kotlin-runner.ts",
+      "sha256": "c322406f7a6424d9367530690a5dfcbcd83962ff9556effea5201cfeef3ee947",
+      "bytes": 10068
+    },
+    {
+      "file": "src/kotlin.ts",
+      "sha256": "651947af3a088a969f104100475ebd5961e80a34c15c6bcb82abd3ac5bf6ff2e",
+      "bytes": 6056
+    },
+    {
+      "file": "src/schemas.ts",
+      "sha256": "0426524eb951c18b637e6c4a0193e3f24db6e06c39fadf2045f1e745c7a35121",
+      "bytes": 13385
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "sha256": "0834929d03e4f4222b16ef5d1d431e2d764ec778a20fa55b27f8e31669d5e4d4",
+      "bytes": 22806
+    },
+    {
+      "file": "src/types.ts",
+      "sha256": "3f60622219d23eaadc0d15760bd87bb184cc10d63d62fb11a561483db310737e",
+      "bytes": 5332
+    },
+    {
+      "file": "test/kotlin-boundaries.test.ts",
+      "sha256": "fd9539091564f2cb11390e270d4c51cad82981c3de027414a438e327d7834fba",
+      "bytes": 4557
+    },
+    {
+      "file": "test/kotlin-dependencies.test.ts",
+      "sha256": "40baac4b96ad0859ff83b2d8d1592448cad8dd7cbbba11dd739fd140946c084e",
+      "bytes": 8663
+    },
+    {
+      "file": "test/kotlin-fixture.ts",
+      "sha256": "49d943e8b886ff10ebc872fc07d51811b1cdf835f23f7603506584fd0d4f5b6c",
+      "bytes": 2026
+    },
+    {
+      "file": "test/kotlin-surfaces.test.ts",
+      "sha256": "625e3476c6caeae38e2e3f3ec74e2cb6283d1a806425978acb79f3cafc9cf6c8",
+      "bytes": 4082
+    },
+    {
+      "file": "test/kotlin.test.ts",
+      "sha256": "87fa1dfb99a28864f8df4bd627009cfe089d62270ddb720f8c78e52b85d74e71",
+      "bytes": 10035
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "sha256": "89915dbe07a34a859232a25b8b7320873c7bc38650d5e22a1995a6bc1e8e79ee",
+      "bytes": 16034
+    }
+  ],
+  "priorGuardAttempt": {
+    "requiredNativePassed": 13,
+    "requiredNative": 13,
+    "guardOutcome": "declared-class-target mutant survived because the coherent tamper assertion was missing; the acceptance callback was corrected and the entire final native/guard/installed profile rerun",
+    "failedAttemptLogSha256": "af4222224f513fb8dd436447ddc207e4cb7162067f8c8d283aa82c56801e60aa",
+    "countedAsCompletedAcceptance": false
+  },
+  "integrityLimits": [
+    "Selected-test ledger does not fingerprint all imported product/dependency bytes. Changed source-file digests and exact candidate tarball identity are recorded separately.",
+    "Candidate tarball was prepared from the working source that became sourceRevision. This measurement and subsequent Windows repair are outside that candidate tarball identity.",
+    "Fixture-harness duration includes native source acceptance, guard baselines/mutants/restorations and offline installed-package checks; it is not review latency.",
+    "Native acceptance is Linux ARM64 / Node22.23.2 / Temurin25.0.4+7-LTS. Hosted x64 and wider platform/runtime profiles remain separately required.",
+    "Trusted execution is not OS containment. Whole-project, mixed/generated/script and wider JVM profiles remain open."
+  ],
+  "gateA": "open",
+  "qualityGatePromoted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

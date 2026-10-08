@@ -11,6 +11,7 @@ import { helmCheck } from "./helm.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { detektCheck } from "./detekt.js";
+import { kotlinCheck } from "./kotlin.js";
 import { spotbugsCheck } from "./spotbugs.js";
 import { checkstyleCheck } from "./checkstyle.js";
 import { mavenCheck } from "./maven.js";
@@ -131,12 +132,14 @@ export const adapters = [
       "build.gradle",
       "build.gradle.kts",
       "checktrail.detekt.json",
+      "checktrail.kotlin.json",
     ],
     checks: [
       "jvm.javac",
       "jvm.checkstyle",
       "jvm.spotbugs",
       "jvm.detekt",
+      "jvm.kotlin",
       "jvm.maven-test",
       "jvm.gradle-test",
     ],
@@ -596,6 +599,9 @@ export async function checksFor(
         : []),
       ...(requested?.includes("jvm.maven-test")
         ? [await mavenCheck(source, project)]
+        : []),
+      ...(requested?.includes("jvm.kotlin")
+        ? [await kotlinCheck(source, project)]
         : []),
       ...(requested?.includes("jvm.detekt")
         ? [await detektCheck(source, project)]

@@ -2889,6 +2889,60 @@
       "name": "native detekt CLI and negotiated MCP share failures privacy and operator-only execution trust"
     }
   ],
+  "kotlin": [
+    {
+      "file": "dist/test/kotlin.test.js",
+      "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites"
+    },
+    {
+      "file": "dist/test/kotlin.test.js",
+      "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths"
+    },
+    {
+      "file": "dist/test/kotlin.test.js",
+      "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings"
+    },
+    {
+      "file": "dist/test/kotlin.test.js",
+      "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence"
+    },
+    {
+      "file": "dist/test/kotlin-boundaries.test.js",
+      "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions"
+    },
+    {
+      "file": "dist/test/kotlin-boundaries.test.js",
+      "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics"
+    },
+    {
+      "file": "dist/test/kotlin-boundaries.test.js",
+      "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope"
+    },
+    {
+      "file": "dist/test/kotlin-dependencies.test.js",
+      "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code"
+    },
+    {
+      "file": "dist/test/kotlin-dependencies.test.js",
+      "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence"
+    },
+    {
+      "file": "dist/test/kotlin-dependencies.test.js",
+      "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies"
+    },
+    {
+      "file": "dist/test/kotlin-dependencies.test.js",
+      "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure"
+    },
+    {
+      "file": "dist/test/kotlin-dependencies.test.js",
+      "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target"
+    },
+    {
+      "file": "dist/test/kotlin-surfaces.test.js",
+      "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust"
+    }
+  ],
   "init-publication": [
     {
       "file": "dist/test/onboarding.test.js",
