@@ -14,6 +14,7 @@ import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
 import { kotlinEvidence } from "./kotlin-evidence.js";
+import { scalaEvidence } from "./scala-evidence.js";
 import { detektEvidence } from "./detekt-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
 import { checkstyleEvidence } from "./checkstyle-evidence.js";
@@ -363,6 +364,8 @@ export function evaluate(
     return { ...result, ...gradleEvidence(check, processes) };
   if (check.parser === "maven-json")
     return { ...result, ...mavenEvidence(check, processes) };
+  if (check.parser === "scala-json")
+    return { ...result, ...scalaEvidence(check, processes, root) };
   if (check.parser === "kotlin-json")
     return { ...result, ...kotlinEvidence(check, processes, root) };
   if (check.parser === "detekt-json")

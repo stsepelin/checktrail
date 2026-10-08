@@ -96,7 +96,7 @@ platform evidence. The complete named set is:
 | Go                    | Broader golangci-lint settings and module/workspace/build-tag/platform constraints.                                                                                                                                                                                                                                                 | Pending. |
 | PHP                   | Larastan integration and PHP-CS-Fixer, extensions/generated proxies/framework initialization.                                                                                                                                                                                                                                       | Pending. |
 | Rust                  | cargo fmt, clippy and test; feature/target/workspace coverage and offline dependencies.                                                                                                                                                                                                                                             | Pending. |
-| JVM                   | Maven/Gradle test, Checkstyle, SpotBugs and detekt; wrapper/module/JVM/generated-source prerequisites. KOTLIN.md records bounded Kotlin JVM source compilation; mixed/generated/script Kotlin and discovery-only Scala remain required.                                                                                             | Pending. |
+| JVM                   | Maven/Gradle test, Checkstyle, SpotBugs and detekt; wrapper/module/JVM/generated-source prerequisites. KOTLIN.md and SCALA.md record bounded JVM source compilation; mixed/generated/script Kotlin and wider Scala 2/script/mixed/inline/staging/compiler scope remain required.                                                    | Pending. |
 | .NET                  | dotnet format, build and test, restore/analyzer/framework/generated-code/TRX coverage. Reconcile the declared C#/F#/Visual Basic execution profiles and their remaining formatting/framework scope.                                                                                                                                 | Pending. |
 | Ruby                  | RuboCop, RSpec and Minitest, Bundler/runtime configuration constraints.                                                                                                                                                                                                                                                             | Pending. |
 | Swift                 | swift build/test and SwiftLint, manifest/platform/SDK constraints.                                                                                                                                                                                                                                                                  | Pending. |
@@ -217,3 +217,8 @@ They cannot establish present-day parity against an evolving system, or worldwid
 superiority. Report exactly the evaluated support slice and uncertainty. Failures
 return to implementation and a fresh reserved cohort; repeated tuning on the
 same holdout turns it into development data.
+
+The bounded Scala 3 JVM profile has source, compiling-guard and offline installed
+acceptance recorded at its code revision in
+[scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
+declared profile only; the remaining Scala/JVM and Gate A obligations stay open.

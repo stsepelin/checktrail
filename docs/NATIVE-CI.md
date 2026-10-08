@@ -36,6 +36,12 @@ trials and invalid mapping variations. It reports each stage on stderr and still
 requires the exact unchanged callback to pass, kill its compiling mutant, and
 pass again after restoration. Nested review execution budgets remain unchanged.
 
+The Scala container job allows thirty minutes for artifact preparation, source
+acceptance, compiling guard mutations with their original and restored callbacks,
+and fresh installed-package acceptance. The verifier records phase progress on
+stderr and retains the final JSON evidence on stdout. Existing control and engine
+execution limits remain in force; a job cutoff is incomplete acceptance.
+
 ## Pinned infrastructure preparation
 
 Infrastructure runtime setup allows at most three download attempts per artifact,

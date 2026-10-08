@@ -44,6 +44,7 @@ export const PARSERS = [
   "spotbugs-json",
   "detekt-json",
   "kotlin-json",
+  "scala-json",
   "maven-json",
   "gradle-json",
   "dotnet-json",
