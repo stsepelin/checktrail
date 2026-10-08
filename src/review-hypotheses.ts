@@ -191,7 +191,7 @@ const catalogue = z
 const catalogueDigest = createHash("sha256")
   .update(JSON.stringify(catalogue))
   .digest("hex");
-const count = z.number().int().nonnegative().max(32);
+const count = z.number().int().nonnegative().max(64);
 const metadata = {
   schemaVersion: z.literal(1),
   format: z.literal("review-hypothesis-plan"),
@@ -206,7 +206,7 @@ const metadata = {
   contextDigest: z.string().regex(/^[a-f0-9]{64}$/),
   catalogueDigest: z.string().regex(/^[a-f0-9]{64}$/),
   scope: z.strictObject({
-    selectedPaths: count.min(1).max(16),
+    selectedPaths: count.min(1).max(32),
     capturedViews: count.min(1),
     syntaxCollectedViews: count,
     syntaxPartialViews: count,
@@ -232,10 +232,11 @@ export function createHypothesisPlan(
   if (
     context.schemaVersion !== 4 &&
     context.schemaVersion !== 5 &&
-    context.schemaVersion !== 6
+    context.schemaVersion !== 6 &&
+    context.schemaVersion !== 7
   )
     throw new Error(
-      "Hypothesis planning requires review context version 4, 5 or 6",
+      "Hypothesis planning requires review context version 4, 5, 6 or 7",
     );
   const selection = hypothesisSelectionSchema.parse(input);
   if (new Set(selection.families).size !== selection.families.length)

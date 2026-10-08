@@ -138,6 +138,7 @@ export const reviewJavascriptBehaviorSchema = z.strictObject({
 export const reviewPolyglotBehaviorSchema =
   reviewJavascriptBehaviorSchema.extend({
     profile: z.literal("selected-syntax-v1"),
+    files: z.array(reviewJavascriptBehaviorSchema.shape.files.element).max(64),
     parser: z.literal("typescript-and-tree-sitter-wasm"),
     parserVersion: z.literal("6.0.3/0.27.0"),
     grammarManifestDigest: id,

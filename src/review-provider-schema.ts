@@ -134,7 +134,7 @@ export const reviewModelOutputSchema = z.strictObject({
         note: z.string().max(1024),
       }),
     )
-    .max(16),
+    .max(32),
   candidates: z.array(reviewCandidateSchema).max(32),
 });
 export const reviewAttemptStatusSchema = z.enum([
@@ -230,10 +230,10 @@ const common = {
     providerRetention: z.literal("provider-policy"),
   }),
   nativeExecution: z.literal(false),
-  selectedPaths: z.number().int().min(1).max(16),
-  declaredReviewed: z.number().int().min(0).max(16),
-  declaredNotReviewed: z.number().int().min(0).max(16),
-  unaccounted: z.number().int().min(0).max(16),
+  selectedPaths: z.number().int().min(1).max(32),
+  declaredReviewed: z.number().int().min(0).max(32),
+  declaredNotReviewed: z.number().int().min(0).max(32),
+  unaccounted: z.number().int().min(0).max(32),
 };
 export const reviewProviderRunSchema = z.strictObject({
   ...common,

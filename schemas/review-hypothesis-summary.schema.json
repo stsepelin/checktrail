@@ -17,17 +17,17 @@
     "scope": {
       "type": "object",
       "properties": {
-        "selectedPaths": { "type": "integer", "minimum": 1, "maximum": 16 },
-        "capturedViews": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "selectedPaths": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "capturedViews": { "type": "integer", "minimum": 1, "maximum": 64 },
         "syntaxCollectedViews": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 32
+          "maximum": 64
         },
         "syntaxPartialViews": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 32
+          "maximum": 64
         },
         "repositoryComplete": { "type": "boolean", "const": false },
         "runtimeReachability": { "type": "string", "const": "unknown" }

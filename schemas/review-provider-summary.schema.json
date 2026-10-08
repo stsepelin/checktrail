@@ -621,10 +621,10 @@
       "additionalProperties": false
     },
     "nativeExecution": { "type": "boolean", "const": false },
-    "selectedPaths": { "type": "integer", "minimum": 1, "maximum": 16 },
-    "declaredReviewed": { "type": "integer", "minimum": 0, "maximum": 16 },
-    "declaredNotReviewed": { "type": "integer", "minimum": 0, "maximum": 16 },
-    "unaccounted": { "type": "integer", "minimum": 0, "maximum": 16 },
+    "selectedPaths": { "type": "integer", "minimum": 1, "maximum": 32 },
+    "declaredReviewed": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "declaredNotReviewed": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "unaccounted": { "type": "integer", "minimum": 0, "maximum": 32 },
     "candidates": { "type": "integer", "minimum": 0, "maximum": 32 },
     "matchedCitations": {
       "type": "integer",

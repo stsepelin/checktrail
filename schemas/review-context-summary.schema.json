@@ -10,7 +10,7 @@
     "deterministicOutcomeChanged": { "type": "boolean", "const": false },
     "format": { "type": "string", "const": "review-context-summary" },
     "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "selectedFiles": { "type": "integer", "minimum": 1, "maximum": 16 },
+    "selectedFiles": { "type": "integer", "minimum": 1, "maximum": 32 },
     "sourceBytes": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
     "sourceIncluded": { "type": "boolean", "const": false }
   },

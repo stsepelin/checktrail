@@ -3210,5 +3210,43 @@
       "file": "dist/test/gate-go-extensions.test.js",
       "name": "go-extensions installed acceptance"
     }
+  ],
+  "review-context-limits": [
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context leaves versions one through six on their previous selected source bounds"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting"
+    },
+    {
+      "file": "dist/test/review-context-limits.test.js",
+      "name": "expanded context original controls execute against a fresh offline installed runtime"
+    }
   ]
 }
