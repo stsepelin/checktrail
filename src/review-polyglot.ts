@@ -1,4 +1,9 @@
 import {
+  captureCsharpBindings,
+  type CsharpSyntaxUnit,
+} from "./review-csharp-bindings.js";
+import { resolveCsharpBindings } from "./review-csharp-resolution.js";
+import {
   captureScalaBindings,
   type ScalaSyntaxUnit,
 } from "./review-scala-bindings.js";
@@ -374,6 +379,7 @@ async function collectReviewPolyglotCore(
   javaRoots?: string[],
   kotlinRoots?: string[],
   scalaRoots?: string[],
+  csharpRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -398,6 +404,7 @@ async function collectReviewPolyglotCore(
   const javaUnits: JavaSyntaxUnit[] = [];
   const kotlinUnits: KotlinSyntaxUnit[] = [];
   const scalaUnits: ScalaSyntaxUnit[] = [];
+  const csharpUnits: CsharpSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -595,8 +602,18 @@ async function collectReviewPolyglotCore(
             scalaRoots !== undefined &&
             asset.grammar === "scala" &&
             node.type === "instance_expression";
+          const csharpConstructor =
+            csharpRoots !== undefined &&
+            asset.grammar === "c_sharp" &&
+            [
+              "object_creation_expression",
+              "implicit_object_creation_expression",
+            ].includes(node.type);
           if (
-            (!calls.has(node.type) && !javaConstructor && !scalaConstructor) ||
+            (!calls.has(node.type) &&
+              !javaConstructor &&
+              !scalaConstructor &&
+              !csharpConstructor) ||
             node.startIndex >= node.endIndex
           )
             continue;
@@ -610,7 +627,10 @@ async function collectReviewPolyglotCore(
             ...range(node),
             callerFunctionId,
             targetFunctionId: null,
-            kind: javaConstructor || scalaConstructor ? "construct" : "call",
+            kind:
+              javaConstructor || scalaConstructor || csharpConstructor
+                ? "construct"
+                : "call",
             optional: node.type === "nullsafe_member_call_expression",
             resolution: "unsupported-dispatch",
           });
@@ -642,6 +662,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (csharpRoots && asset.grammar === "c_sharp")
+          csharpUnits.push(captureCsharpBindings(nodes, fnIds, decls, range));
         if (scalaRoots && asset.grammar === "scala")
           scalaUnits.push(captureScalaBindings(nodes, fnIds, decls, range));
         if (kotlinRoots && asset.grammar === "kotlin")
@@ -678,6 +700,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (csharpRoots)
+    return resolveCsharpBindings(result, csharpUnits, csharpRoots, primary);
   if (scalaRoots)
     return resolveScalaBindings(result, scalaUnits, scalaRoots, primary);
   if (kotlinRoots)
@@ -860,6 +884,35 @@ export async function collectReviewScalaBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewCsharpBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<
+  Extract<ReviewBehavior, { profile: "csharp-selected-bindings-v1" }>
+> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewCsharpBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

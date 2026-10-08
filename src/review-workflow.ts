@@ -172,7 +172,8 @@ export class ReviewWorkflowEngine {
         context.schemaVersion !== 11 &&
         context.schemaVersion !== 12 &&
         context.schemaVersion !== 13 &&
-        context.schemaVersion !== 14
+        context.schemaVersion !== 14 &&
+        context.schemaVersion !== 15
       )
         throw new Error("Workflow requires modern revision citations");
       if (

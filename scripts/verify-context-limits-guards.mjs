@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import ts from "typescript";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
@@ -11,13 +12,53 @@ const callback = new URL(
 );
 const originalCallback = await readFile(callback);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
+// Locate the original intake byte guard structurally so adding a context version
+// cannot silently invalidate the preserved mutation address.
+const intakeSource = await readFile(
+  new URL("../dist/src/review.js", import.meta.url),
+  "utf8",
+);
+const intakeTree = ts.createSourceFile(
+  "review.js",
+  intakeSource,
+  ts.ScriptTarget.Latest,
+  true,
+  ts.ScriptKind.JS,
+);
+const intakeGuards = [];
+function findIntakeGuard(node) {
+  if (
+    ts.isBinaryExpression(node) &&
+    node.operatorToken.kind === ts.SyntaxKind.GreaterThanToken &&
+    ts.isIdentifier(node.left) &&
+    node.left.text === "bytes" &&
+    ts.isParenthesizedExpression(node.right) &&
+    ts.isConditionalExpression(node.right.expression)
+  ) {
+    const condition = node.right.expression;
+    if (
+      ts.isNumericLiteral(condition.whenTrue) &&
+      condition.whenTrue.text === "1048576" &&
+      ts.isNumericLiteral(condition.whenFalse) &&
+      condition.whenFalse.text === "131072" &&
+      condition.condition.getText(intakeTree).includes("parsed.schemaVersion")
+    )
+      intakeGuards.push(node.getText(intakeTree));
+  }
+  ts.forEachChild(node, findIntakeGuard);
+}
+findIntakeGuard(intakeTree);
+assert.equal(
+  intakeGuards.length,
+  1,
+  "Exactly one original combined source intake guard",
+);
 const controls = [
   {
     id: "combined-source-reconstruction-bound",
     file: "review.js",
     name: "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
-    before:
-      "bytes >\n        (parsed.schemaVersion === 7 ||\n            parsed.schemaVersion === 8 ||\n            parsed.schemaVersion === 9 ||\n            parsed.schemaVersion === 10 ||\n            parsed.schemaVersion === 11 ||\n            parsed.schemaVersion === 12 ||\n            parsed.schemaVersion === 13 ||\n            parsed.schemaVersion === 14\n            ? 1048576\n            : 131072)",
+    before: intakeGuards[0],
     after: "false",
   },
   {

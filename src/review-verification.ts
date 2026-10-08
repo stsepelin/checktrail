@@ -185,10 +185,11 @@ function inputs(
     context.schemaVersion !== 11 &&
     context.schemaVersion !== 12 &&
     context.schemaVersion !== 13 &&
-    context.schemaVersion !== 14
+    context.schemaVersion !== 14 &&
+    context.schemaVersion !== 15
   )
     throw new Error(
-      "Verification requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 or 14",
+      "Verification requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 or 15",
     );
   if (recipe.family !== target.family)
     throw new Error("Verification probe family does not match target");
