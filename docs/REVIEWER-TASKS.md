@@ -102,3 +102,5 @@ The finite `context-python` slice adds opt-in version 8 captured lexical/import 
 The finite `context-go` slice adds opt-in version 9 captured package/import bindings, source-bound module identities and bounded revision-specific callers. REVIEW-GO-CONTEXT.md records its support and limits. Wider R1.3/R1.4 languages, assembly scope and complete Gate A acceptance remain open.
 
 Exact local and pinned Linux ARM64 source/fresh offline installation evidence and original compiling guard controls are recorded in [go-context-2026-10-08.json](measurements/go-context-2026-10-08.json). Gate A remains open.
+
+The finite `context-php` slice adds opt-in version 10 captured namespace/function/constant bindings, explicit roots and bounded revision-specific callers. REVIEW-PHP-CONTEXT.md and measurements/php-context-2026-10-08.json record the exact pinned Linux ARM64 source/fresh offline installation and compiling guard acceptance. PHP is unavailable on the measured host PATH; required native controls are separately accepted on Linux. Wider R1.3/R1.4 languages, assembly scope and complete Gate A acceptance remain open.

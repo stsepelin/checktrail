@@ -180,9 +180,12 @@ function inputs(
     context.schemaVersion !== 6 &&
     context.schemaVersion !== 7 &&
     context.schemaVersion !== 8 &&
-    context.schemaVersion !== 9
+    context.schemaVersion !== 9 &&
+    context.schemaVersion !== 10
   )
-    throw new Error("Verification requires context version 4, 5, 6, 7, 8 or 9");
+    throw new Error(
+      "Verification requires context version 4, 5, 6, 7, 8, 9 or 10",
+    );
   if (recipe.family !== target.family)
     throw new Error("Verification probe family does not match target");
   if (context.evidence.track === "snapshot" && target.attribution !== "unknown")

@@ -121,7 +121,7 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
@@ -828,3 +828,22 @@ jobs:
         if: always()
         run: |
           node --input-type=module -e 'import {execFileSync} from "node:child_process"; console.log(JSON.stringify({sourceCommit:process.env.GITHUB_SHA,node:process.version,platform:process.platform,arch:process.arch,imageOS:process.env.ImageOS,imageVersion:process.env.ImageVersion,go:execFileSync("go",["version"],{encoding:"utf8"}).trim(),staticcheck:execFileSync("staticcheck",["-version"],{encoding:"utf8"}).trim(),golangciLint:execFileSync("golangci-lint",["version","--short"],{encoding:"utf8"}).trim(),python:execFileSync("python3",["--version"],{encoding:"utf8"}).trim(),inferenceInvoked:false},null,2))'
+
+  php-context-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned PHP context runtime
+        run: docker build --file scripts/php-context-tools.Dockerfile --tag checktrail-php-context:synthetic-v1 scripts
+      - name: Verify original selected PHP bindings and compiling guards
+        run: node scripts/verify-php-context-container.mjs
