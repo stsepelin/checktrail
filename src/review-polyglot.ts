@@ -1,4 +1,9 @@
 import {
+  captureRubyBindings,
+  type RubySyntaxUnit,
+} from "./review-ruby-bindings.js";
+import { resolveRubyBindings } from "./review-ruby-resolution.js";
+import {
   captureFsharpBindings,
   type FsharpSyntaxUnit,
 } from "./review-fsharp-bindings.js";
@@ -386,6 +391,7 @@ async function collectReviewPolyglotCore(
   scalaRoots?: string[],
   csharpRoots?: string[],
   fsharpRoots?: string[],
+  rubyRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -412,6 +418,7 @@ async function collectReviewPolyglotCore(
   const scalaUnits: ScalaSyntaxUnit[] = [];
   const csharpUnits: CsharpSyntaxUnit[] = [];
   const fsharpUnits: FsharpSyntaxUnit[] = [];
+  const rubyUnits: RubySyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -573,6 +580,25 @@ async function collectReviewPolyglotCore(
           }
           if (
             (decisions.has(node.type) ||
+              (rubyRoots &&
+                asset.grammar === "ruby" &&
+                [
+                  "if",
+                  "elsif",
+                  "unless",
+                  "if_modifier",
+                  "unless_modifier",
+                  "conditional",
+                  "binary",
+                  "case",
+                  "case_match",
+                  "when",
+                  "while",
+                  "until",
+                  "while_modifier",
+                  "until_modifier",
+                  "for",
+                ].includes(node.type)) ||
               (fsharpRoots &&
                 asset.grammar === "fsharp" &&
                 node.type === "infix_expression") ||
@@ -645,6 +671,25 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const rubyUnit =
+          rubyRoots && asset.grammar === "ruby"
+            ? captureRubyBindings(nodes, fnIds, decls, range)
+            : undefined;
+        if (rubyUnit)
+          for (const call of rubyUnit.calls.filter((call) => call.bare))
+            output.calls.push({
+              revision: call.revision,
+              file: call.file,
+              start: call.start,
+              end: call.end,
+              startLine: call.startLine,
+              endLine: call.endLine,
+              callerFunctionId: call.caller,
+              targetFunctionId: null,
+              kind: "call",
+              optional: false,
+              resolution: "unsupported-dispatch",
+            });
         if (
           result.functions.length + output.functions.length > 1024 ||
           result.declarations.length + output.declarations.length > 4096 ||
@@ -670,6 +715,7 @@ async function collectReviewPolyglotCore(
         result.decisions.push(...output.decisions);
         result.modules.push(...output.modules);
         record.state = "collected";
+        if (rubyUnit) rubyUnits.push(rubyUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -715,6 +761,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (rubyRoots)
+    return resolveRubyBindings(result, rubyUnits, rubyRoots, primary);
   if (fsharpRoots)
     return resolveFsharpBindings(result, fsharpUnits, fsharpRoots, primary);
   if (csharpRoots)
@@ -958,6 +1006,35 @@ export async function collectReviewFsharpBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewRubyBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "ruby-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewRubyBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,
