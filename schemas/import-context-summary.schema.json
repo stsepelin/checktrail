@@ -1,102 +1,261 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "format": { "type": "string", "const": "import-context" },
-    "profile": { "type": "string", "const": "js-ts-selected-imports-v1" },
-    "engineVersion": { "type": "string" },
-    "parser": { "type": "string", "const": "typescript" },
-    "parserVersion": { "type": "string", "const": "6.0.3" },
-    "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "reportDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "state": { "type": "string", "enum": ["collected", "partial"] },
-    "executionInvoked": { "type": "boolean", "const": false },
-    "runtimeReachabilityVerified": { "type": "boolean", "const": false },
-    "runtimeGraphComplete": { "type": "boolean", "const": false },
-    "validationPlanUnchanged": { "type": "boolean", "const": true },
-    "scope": {
-      "type": "string",
-      "const": "inventoried-js-ts-files-under-declared-project-roots"
-    },
-    "counts": {
+  "anyOf": [
+    {
       "type": "object",
       "properties": {
-        "projects": { "type": "integer", "minimum": 0, "maximum": 20000 },
-        "observedFiles": { "type": "integer", "minimum": 0, "maximum": 20000 },
-        "capturedFiles": { "type": "integer", "minimum": 0, "maximum": 20000 },
-        "omittedFiles": { "type": "integer", "minimum": 0, "maximum": 20000 },
-        "importOccurrences": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 20000
+        "schemaVersion": { "type": "number", "const": 1 },
+        "format": { "type": "string", "const": "import-context" },
+        "profile": { "type": "string", "const": "js-ts-selected-imports-v1" },
+        "engineVersion": { "type": "string" },
+        "parser": { "type": "string", "const": "typescript" },
+        "parserVersion": { "type": "string", "const": "6.0.3" },
+        "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "reportDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "state": { "type": "string", "enum": ["collected", "partial"] },
+        "executionInvoked": { "type": "boolean", "const": false },
+        "runtimeReachabilityVerified": { "type": "boolean", "const": false },
+        "runtimeGraphComplete": { "type": "boolean", "const": false },
+        "validationPlanUnchanged": { "type": "boolean", "const": true },
+        "scope": {
+          "type": "string",
+          "const": "inventoried-js-ts-files-under-declared-project-roots"
         },
-        "resolvedOccurrences": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 20000
+        "counts": {
+          "type": "object",
+          "properties": {
+            "projects": { "type": "integer", "minimum": 0, "maximum": 20000 },
+            "observedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "capturedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "omittedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "importOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "resolvedOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "unresolvedOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "projectEdges": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "affectedProjects": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            }
+          },
+          "required": [
+            "projects",
+            "observedFiles",
+            "capturedFiles",
+            "omittedFiles",
+            "importOccurrences",
+            "resolvedOccurrences",
+            "unresolvedOccurrences",
+            "projectEdges",
+            "affectedProjects"
+          ],
+          "additionalProperties": false
         },
-        "unresolvedOccurrences": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 20000
+        "omissions": {
+          "minItems": 6,
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "runtime-dispatch",
+              "project-module-resolution",
+              "unselected-projects",
+              "excluded-build-vendor-source",
+              "non-js-ts-source",
+              "historical-consumers"
+            ]
+          }
         },
-        "projectEdges": { "type": "integer", "minimum": 0, "maximum": 20000 },
-        "affectedProjects": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 20000
+        "impactMode": {
+          "type": "string",
+          "enum": ["affected", "full-fallback"]
         }
       },
       "required": [
-        "projects",
-        "observedFiles",
-        "capturedFiles",
-        "omittedFiles",
-        "importOccurrences",
-        "resolvedOccurrences",
-        "unresolvedOccurrences",
-        "projectEdges",
-        "affectedProjects"
+        "schemaVersion",
+        "format",
+        "profile",
+        "engineVersion",
+        "parser",
+        "parserVersion",
+        "sourceFingerprint",
+        "reportDigest",
+        "state",
+        "executionInvoked",
+        "runtimeReachabilityVerified",
+        "runtimeGraphComplete",
+        "validationPlanUnchanged",
+        "scope",
+        "counts",
+        "omissions",
+        "impactMode"
       ],
       "additionalProperties": false
     },
-    "omissions": {
-      "minItems": 6,
-      "maxItems": 6,
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "runtime-dispatch",
-          "project-module-resolution",
-          "unselected-projects",
-          "excluded-build-vendor-source",
-          "non-js-ts-source",
-          "historical-consumers"
-        ]
-      }
-    },
-    "impactMode": { "type": "string", "enum": ["affected", "full-fallback"] }
-  },
-  "required": [
-    "schemaVersion",
-    "format",
-    "profile",
-    "engineVersion",
-    "parser",
-    "parserVersion",
-    "sourceFingerprint",
-    "reportDigest",
-    "state",
-    "executionInvoked",
-    "runtimeReachabilityVerified",
-    "runtimeGraphComplete",
-    "validationPlanUnchanged",
-    "scope",
-    "counts",
-    "omissions",
-    "impactMode"
-  ],
-  "additionalProperties": false
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "format": { "type": "string", "const": "import-context" },
+        "profile": { "type": "string", "const": "js-ts-historical-imports-v1" },
+        "engineVersion": { "type": "string" },
+        "parser": { "type": "string", "const": "typescript" },
+        "parserVersion": { "type": "string", "const": "6.0.3" },
+        "sourceFingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "reportDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "state": { "type": "string", "enum": ["collected", "partial"] },
+        "executionInvoked": { "type": "boolean", "const": false },
+        "runtimeReachabilityVerified": { "type": "boolean", "const": false },
+        "runtimeGraphComplete": { "type": "boolean", "const": false },
+        "validationPlanUnchanged": { "type": "boolean", "const": true },
+        "renamesInferred": { "type": "boolean", "const": false },
+        "scope": {
+          "type": "string",
+          "const": "inventoried-base-and-current-js-ts-files-under-declared-project-roots"
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "projects": { "type": "integer", "minimum": 0, "maximum": 20000 },
+            "observedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "capturedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "omittedFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "baseFiles": { "type": "integer", "minimum": 0, "maximum": 20000 },
+            "currentFiles": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "importOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "resolvedOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "unresolvedOccurrences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "projectEdges": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "affectedProjects": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            },
+            "capturedChanges": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20000
+            }
+          },
+          "required": [
+            "projects",
+            "observedFiles",
+            "capturedFiles",
+            "omittedFiles",
+            "baseFiles",
+            "currentFiles",
+            "importOccurrences",
+            "resolvedOccurrences",
+            "unresolvedOccurrences",
+            "projectEdges",
+            "affectedProjects",
+            "capturedChanges"
+          ],
+          "additionalProperties": false
+        },
+        "omissions": {
+          "minItems": 6,
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "runtime-dispatch",
+              "project-module-resolution",
+              "unselected-projects",
+              "excluded-build-vendor-source",
+              "non-js-ts-source",
+              "rename-identity"
+            ]
+          }
+        },
+        "impactMode": {
+          "type": "string",
+          "enum": ["affected", "full-fallback"]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "format",
+        "profile",
+        "engineVersion",
+        "parser",
+        "parserVersion",
+        "sourceFingerprint",
+        "reportDigest",
+        "state",
+        "executionInvoked",
+        "runtimeReachabilityVerified",
+        "runtimeGraphComplete",
+        "validationPlanUnchanged",
+        "renamesInferred",
+        "scope",
+        "counts",
+        "omissions",
+        "impactMode"
+      ],
+      "additionalProperties": false
+    }
+  ]
 }

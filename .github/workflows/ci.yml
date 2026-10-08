@@ -149,6 +149,8 @@ jobs:
           node scripts/verify-required-native-tests.mjs review-multi-scoring
           node scripts/verify-required-native-tests.mjs review-calibration
           node scripts/verify-required-native-tests.mjs import-context
+          node scripts/verify-required-native-tests.mjs import-history
+          node scripts/verify-import-history-guards.mjs
           node scripts/verify-required-native-tests.mjs review-claim-probability
           node scripts/verify-required-native-tests.mjs review-native-budget
       - run: npm run format:check
@@ -166,6 +168,8 @@ jobs:
         run: node scripts/verify-review-workflow-audit-package.mjs
       - name: Verify import context in the production package
         run: node scripts/verify-import-context-package.mjs
+      - name: Verify fresh historical import package
+        run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=import-history node scripts/verify-import-context-package.mjs
       - name: Repeat physical native evidence controls in an offline installed package
         run: node scripts/verify-native-raw-package.mjs
       - name: Repeat structured native value controls in an offline installed package

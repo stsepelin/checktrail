@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "profile": "init-publication",
+  "date": "2026-10-07",
+  "sourceCommit": "f086249c3f89d1f2e049d2ccf396fcae272fe55c",
+  "sourceTree": "d0ee397b64a828bb85cebc4ea526d15268c170c7",
+  "fullCheckCommit": "dd8c1bd314cfe8815c879b79d8a8759c51e4afbf",
+  "fullCheckTreeIdentical": true,
+  "runtime": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "26.9.0"
+  },
+  "acceptance": {
+    "required": 5,
+    "sourceComplete": true,
+    "installedComplete": true,
+    "tarballSha256": "6cc46495690062feadf2ad3d37ae10585739a21a7a7234c5197737afcf6a7010",
+    "sourceLedgerSha256": "f088bcd08cc3a57c271086e7ba296611bc4ec04f043bd6446617174910529bdd",
+    "installedLedgerSha256": "a16ab43b66b025c4d8d1f270e505905ed657d43f2c97e06f19164e8e3494654d",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false
+  },
+  "compilingControls": [
+    {
+      "id": "pre-discovery-ownership",
+      "callback": "init ownership is acquired before discovery and existing staging entries are preserved",
+      "callbackSha256": "6a1f75beb5ee8d345189dbe28a6187e26875c01ccbef100db873edb10d275cae",
+      "sourceSha256": "77387f165fcb9edeac1d66619095c4cb7fbde7f64ac466591d2479128726f532",
+      "mutantSha256": "78feeb6dc9b1f8fed027fdfff223c879127519079bd2687723f13631e0af336d",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "intendedAssertion": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "exact-staging-exclusion",
+      "callback": "init staging exclusion has an exact boundary and preserves public source fingerprints",
+      "callbackSha256": "6a1f75beb5ee8d345189dbe28a6187e26875c01ccbef100db873edb10d275cae",
+      "sourceSha256": "e152750f63e9af77941fd0793f1b3b6d5eaeebf7409a71c4229e9735453b064f",
+      "mutantSha256": "efdeef5765150e5f0df89f966ee6c800ee31eaf38ea552e5b5f9c78ee8882320",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "intendedAssertion": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "owned-directory-release",
+      "callback": "init releases its owned staging directory after planning errors and unresolved choices",
+      "callbackSha256": "6a1f75beb5ee8d345189dbe28a6187e26875c01ccbef100db873edb10d275cae",
+      "sourceSha256": "77387f165fcb9edeac1d66619095c4cb7fbde7f64ac466591d2479128726f532",
+      "mutantSha256": "12ae9ec9affce87184fbdd55b1f02d979a06a258fdc51074e9325179f5ee7e69",
+      "compiles": true,
+      "originalPassed": true,
+      "mutantKilled": true,
+      "intendedAssertion": true,
+      "callbackUnchanged": true,
+      "restoredPassed": true
+    }
+  ],
+  "fullCheck": {
+    "tests": 947,
+    "pass": 681,
+    "fail": 0,
+    "skipped": 266,
+    "cancelled": 0,
+    "logSha256": "292b5a680a49b295c78d5316f2c58bd31253cbbe81c5fe09ba69631401df1b0b",
+    "optionalSkipsAreAcceptance": false
+  },
+  "workflowSyntax": {
+    "passed": true,
+    "toolDeclaredVersion": "(devel)",
+    "verifiedReleaseVersion": null,
+    "binarySha256": "1f472088fcdb4546f8bf20e2813c283fd544110060eb63d9fc055fa258c1e508",
+    "doesNotCertifyPinnedReleaseProfile": true
+  },
+  "limits": [
+    "No Windows native acceptance is claimed.",
+    "Hosted checks at the updated PR heads remain pending.",
+    "The selected callback ledger is distinct from product source capture.",
+    "Abrupt process loss can leave the exact reserved staging directory; an existing entry is preserved and requires explicit inspection/removal before retrying."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}

@@ -4,6 +4,14 @@ import { z } from "zod";
 import { inventory } from "./inventory.js";
 import { createReviewContext, reviewContextSchema } from "./review.js";
 import { dependencyGraphSchema } from "./architecture.js";
+import {
+  historicalImportInputSchema,
+  historicalImportReportSchema,
+  historicalImportSummarySchema,
+  collectHistoricalImports,
+  assertHistoricalImportsCurrent,
+  projectHistoricalImports,
+} from "./import-history.js";
 import { VERSION } from "./types.js";
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
@@ -25,13 +33,13 @@ const project = z.strictObject({
   root: z.union([z.literal("."), relative]),
 });
 const count = z.number().int().nonnegative().max(20000);
-export const importContextInputSchema = z.strictObject({
+const currentImportInputSchema = z.strictObject({
   schemaVersion: z.literal(1),
   profile: z.literal("js-ts-selected-imports-v1"),
   projects: z.array(project).min(1).max(16),
   changedFiles: z.array(relative).max(1024),
 });
-export const importContextReportSchema = z.strictObject({
+const currentImportReportSchema = z.strictObject({
   schemaVersion: z.literal(1),
   format: z.literal("import-context"),
   profile: z.literal("js-ts-selected-imports-v1"),
@@ -39,7 +47,7 @@ export const importContextReportSchema = z.strictObject({
   parser: z.literal("typescript"),
   parserVersion: z.literal("6.0.3"),
   sourceFingerprint: digest,
-  input: importContextInputSchema,
+  input: currentImportInputSchema,
   reportDigest: digest,
   state: z.enum(["collected", "partial"]),
   executionInvoked: z.literal(false),
@@ -91,7 +99,7 @@ export const importContextReportSchema = z.strictObject({
     )
     .length(6),
 });
-export const importContextSummarySchema = importContextReportSchema
+const currentImportSummarySchema = currentImportReportSchema
   .omit({
     input: true,
     files: true,
@@ -100,8 +108,21 @@ export const importContextSummarySchema = importContextReportSchema
     impact: true,
   })
   .extend({ impactMode: z.enum(["affected", "full-fallback"]) });
+export const importContextInputSchema = z.union([
+  currentImportInputSchema,
+  historicalImportInputSchema,
+]);
+export const importContextReportSchema = z.union([
+  currentImportReportSchema,
+  historicalImportReportSchema,
+]);
+export const importContextSummarySchema = z.union([
+  currentImportSummarySchema,
+  historicalImportSummarySchema,
+]);
 export type ImportContextReport = z.infer<typeof importContextReportSchema>;
 export type ImportContextInput = z.infer<typeof importContextInputSchema>;
+type CurrentImportContextInput = z.infer<typeof currentImportInputSchema>;
 const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const supported = /\.(?:js|jsx|mjs|cjs|ts|tsx|mts|cts)$/i;
@@ -116,9 +137,9 @@ function bounded(value: unknown, maximum: number) {
   if (typeof serialized !== "string" || Buffer.byteLength(serialized) > maximum)
     throw new Error("Import context exceeds input limit");
 }
-function parseInput(value: unknown): ImportContextInput {
+function parseInput(value: unknown): CurrentImportContextInput {
   bounded(value, 2 * 1024 * 1024);
-  const input = importContextInputSchema.parse(value);
+  const input = currentImportInputSchema.parse(value);
   unique(input.projects.map((item) => item.id));
   unique(input.projects.map((item) => item.root));
   unique(input.changedFiles);
@@ -136,6 +157,9 @@ export async function collectImportContext(
   root: string,
   value: unknown,
 ): Promise<ImportContextReport> {
+  bounded(value, 2 * 1024 * 1024);
+  if (importContextInputSchema.parse(value).schemaVersion === 2)
+    return collectHistoricalImports(root, value);
   const input = parseInput(value);
   const before = await inventory(root);
   const owner = (file: string) =>
@@ -296,7 +320,7 @@ export async function collectImportContext(
       "historical-consumers",
     ],
   };
-  const report = importContextReportSchema.parse({
+  const report = currentImportReportSchema.parse({
     ...body,
     reportDigest: hash(body),
   });
@@ -311,6 +335,8 @@ export async function assertImportContextCurrent(
 ): Promise<ImportContextReport> {
   bounded(value, 2 * 1024 * 1024);
   const report = importContextReportSchema.parse(value);
+  if (report.schemaVersion === 2)
+    return assertHistoricalImportsCurrent(root, report);
   const rebuilt = await collectImportContext(root, report.input);
   if (JSON.stringify(report) !== JSON.stringify(rebuilt))
     throw new Error("Stale or forged import context");
@@ -322,6 +348,8 @@ export function projectImportContext(
   sourceEnabled: boolean,
 ): Record<string, unknown> {
   const parsed = importContextReportSchema.parse(report);
+  if (parsed.schemaVersion === 2)
+    return projectHistoricalImports(parsed, detailed, sourceEnabled);
   const { reportDigest, ...body } = parsed;
   if (reportDigest !== hash(body))
     throw new Error("Import report digest mismatch");

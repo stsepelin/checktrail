@@ -367,3 +367,9 @@ Suppressed or empty analysis cannot pass. Original source, compiling-guard and
 installed-package acceptance remains profile-specific. Scala 2, scripts, mixed
 source, inline/staging/macros, build wrappers, wider analyzers and the remaining
 E11/platform/provenance requirements remain open.
+
+The bounded `js-ts-historical-imports-v1` profile additionally captures immutable
+base and working/index consumers, deleted/moved source and revision-specific
+edges through the shared import interface. See
+[HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
+impact obligations remain open; this does not narrow validation plans.
