@@ -1,0 +1,1249 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-java-selected-bindings-v1",
+  "recordedAt": "2026-10-08T19:42:41.141455+00:00",
+  "scope": "Captured selected Java package/type/static-member and lexical scope metadata plus trusted original native controls; no capture execution, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "18a9726b595ce36eb476a69dce5a170a33e7d975",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 41684,
+        "sha256": "0bd3714476ba72473ad620944a46f8750aac38766bb067a5a72c483251f30c8f"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-java.wasm",
+        "bytes": 415233,
+        "sha256": "6476728734128931bd50de2d1e5e9c75c506b51e278f54eaf709836a0de35759"
+      },
+      {
+        "file": "docs/REVIEW-JAVA-CONTEXT.md",
+        "bytes": 6011,
+        "sha256": "ba59195f6d37c9c1a3ccc74b6dd088fa0ca52e0077a750abe6641973827a5028"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 1307032,
+        "sha256": "a89d8387f20190b6b9dd16fc0dd3220ec11c269bac7347b7541fd9baef1a0f28"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 606233,
+        "sha256": "4c208cfbe1154aa501902084f6837d70fed8826afba2dd1f0f1785dbe64adbf0"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 716504,
+        "sha256": "94237b063c6508ba38b115a3d2b59dfa9b6ff1adc7004d0eb27e973c8ea39ae4"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 516439,
+        "sha256": "d0bbe278651c9e85506c5048e88027d5aad241c59b9fe2dbf979916f4895e6d5"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 511991,
+        "sha256": "16555f43d15452ab4e06a2de569b298c76af4b50bbf0094b557b8cf7eaf23187"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 630308,
+        "sha256": "187a5eb022a83b079b1fa0cecf5ea4fd7a93b899c9649d7ed950f63711b44273"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 432166,
+        "sha256": "89e87e1e97da98348622e5ac1c8671dd4d0016224f80753729e54971d7068621"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 35453,
+        "sha256": "bfa57308aba32f451eb0a974075f46dd5de198a35b5c63474815d9833c268154"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 1683589,
+        "sha256": "b6135ac31b0ec453843ae79ff25528057c8dcd29c38eaaaa7ce34d05e9b3bf3d"
+      },
+      {
+        "file": "scripts/java-context-tools.Dockerfile",
+        "bytes": 1035,
+        "sha256": "3a9e90f95b4d66da9a3123be54daa74d40a465ae9019789519e8b85e7acd0bf7"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 149030,
+        "sha256": "ef08143e3c84cc77409bd2c24896c50423f79899d1b2f6e7c70e35d1b4544041"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4400,
+        "sha256": "e86b7a720e2139551b651f67198148e38bb8debeec93df5a859562447eae2f9c"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 8398,
+        "sha256": "001433da82d71105fe654174929128877ec9b861020da58df9d8331f3e1988fa"
+      },
+      {
+        "file": "scripts/verify-java-context-container.mjs",
+        "bytes": 4214,
+        "sha256": "eb886972fc6db1a20ea122a5b4861dcefbacf55158e0e6111133875a340558a0"
+      },
+      {
+        "file": "scripts/verify-java-context-guards.mjs",
+        "bytes": 9893,
+        "sha256": "7abe521eff0ceb25b3090b94f692d609d507b75c55d9726f26c01094024976a2"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 12628,
+        "sha256": "83f874d48f24d8bdf44f93c1cb3d35265b7a6003dd2740a23d55785639983cfe"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7655,
+        "sha256": "a2c6f0c5ba41036734e46365e37611abc3664edf3bab867e05fde7137fc222d8"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13734,
+        "sha256": "249f0aff0897f1259aa303145cc420873254779f4348caba197c2ea88fd194c6"
+      },
+      {
+        "file": "src/review-java-bindings.ts",
+        "bytes": 15184,
+        "sha256": "d9fe79b039990dc869455f2111c6247dc9f3d4a8e88b4c823b8a0538eb0e7197"
+      },
+      {
+        "file": "src/review-java-resolution.ts",
+        "bytes": 18577,
+        "sha256": "ce3af0e6d5748c130a418f6ab9a3e9271741b6b116bd79f4c067aa270643dac9"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 23641,
+        "sha256": "1a8f011b80ddae19f115e11f31d2c6b06b7779ed30442251cc498796dd819982"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32048,
+        "sha256": "86cf2bb3e3100312ad0166a19f7543905bd7e66800ae6c4e9ffff1978a4fabcb"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33177,
+        "sha256": "36eb0aefcd5368c8c3ddbbfaac9b1ffa941828a233f2ac6d964836bfef522043"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19604,
+        "sha256": "69dd5b7b34a5a438c38e9375af8f430d8af9dafdacceef7af1861f7645c8eb5b"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31751,
+        "sha256": "c96fc4c8a788f4694083400f5a18efa3db96d95202d1c8555d7d1372e0cb76f8"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 57949,
+        "sha256": "c5f5f560adb42521a18513d3272173ebd7725e11cafa3174fa54bea080653a6f"
+      },
+      {
+        "file": "test/gate-context-java.test.ts",
+        "bytes": 37771,
+        "sha256": "71f1b026685ef8a196232abf8261c920c553535ae9e5bffe789ab9597f9e0bd2"
+      },
+      {
+        "file": "test/review-call-identity-fixture.ts",
+        "bytes": 6507,
+        "sha256": "dfeab975ba29ed520c6de399ddc62d5d72af0171bf6e979f5bc15e1ce501eda0"
+      },
+      {
+        "file": "test/review-call-identity.test.ts",
+        "bytes": 1859,
+        "sha256": "f44ae56ff525ab59187ff2a914ca18d285e9dde396668830243633cdcacb705d"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10831,
+        "sha256": "9befc2ec8ace2cdf1e6391dd9715c5f7293f71e5cdbb0a238586b8660f6818ec"
+      },
+      {
+        "file": "test/review-java-boundaries-fixture.ts",
+        "bytes": 8290,
+        "sha256": "7ac54707aa2ab85101a779c6d09aae148835abaa29a74a146b3ca133057c7439"
+      },
+      {
+        "file": "test/review-java-boundaries.test.ts",
+        "bytes": 958,
+        "sha256": "d199a9efb40e1411e103dfd99998e24aef1aab53c5ee134834aead16dad6992f"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 13037,
+        "sha256": "3dbdee3f4a3ee43db1765fcce457d8d1ff623c81e9de78ea5c94672ed087d710"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 7461,
+        "sha256": "b9aca7e17b46c3dd70e0463cef9c4d52c1bbaee602d462abdd9c0a1bb21d7076"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 13923,
+        "sha256": "b2323da13f144a367cc8bf7f6c90f02761045cdf54158e1c67657065389a1426"
+      },
+      {
+        "file": "dist/src/review-java-bindings.js",
+        "bytes": 14821,
+        "sha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e"
+      },
+      {
+        "file": "dist/src/review-java-resolution.js",
+        "bytes": 18045,
+        "sha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 24081,
+        "sha256": "0ff759062a6e98eafb9f6d5f98e3b9990270c416ebd7c41795bd7942553b7c6b"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 33710,
+        "sha256": "a5c83b1eba5d64d7f16561ec620f5abd1541ac5990f31123bb8e5982e5e470fa"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35101,
+        "sha256": "74bc8b66ba7b738666cf92fc4bce320da6f07c923b99894ab19abdce45d81e7f"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19524,
+        "sha256": "11a6b67651e6b653c22a3827c73356e2b51dbc70a8d6916ac29947899284a419"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32607,
+        "sha256": "a84bdd6a14a75a441c83b98febe3ced9a315e87c58feab04c8b2c5d7bb12b951"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 59428,
+        "sha256": "d230e9363b9851bd272adc81d1fc9130575ef8c06c3b731890148dd8a114a7d5"
+      },
+      {
+        "file": "dist/test/gate-context-java.test.js",
+        "bytes": 37362,
+        "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+      },
+      {
+        "file": "dist/test/review-call-identity-fixture.js",
+        "bytes": 6528,
+        "sha256": "6e897bd5dc5b7cd9251fa0d0b9436fa24f471ffa2a9ff093beaf4ee00ccb20ba"
+      },
+      {
+        "file": "dist/test/review-call-identity.test.js",
+        "bytes": 1842,
+        "sha256": "fa65e57ebb6f6aec4af2f583d0a970c9df8cff867838d8314718a7735a9b699d"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11233,
+        "sha256": "3112376f7694adb39a2a48a92c9aed940fa97cce49c181a75c8ac3a6a338eecc"
+      },
+      {
+        "file": "dist/test/review-java-boundaries-fixture.js",
+        "bytes": 8153,
+        "sha256": "ace2b9a0d7e7a4593ebae82ec7934383f7b7f48bff07f50b9d69a1b3498532fb"
+      },
+      {
+        "file": "dist/test/review-java-boundaries.test.js",
+        "bytes": 903,
+        "sha256": "89d718b251cceec67b6b0d6d7c470626fa5183925067296d61b3398d2b643d38"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic Java selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "javac": "javac 25.0.4",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+    },
+    "image": "sha256:d22ff339125fbfb66025bd877529c190ab7df95eca3ea1a46fae3b2468512e6a",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-java",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-java broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 569.425987,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-java fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 241.233901,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-java near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2601.863051,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-java prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 172.678199,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-java stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 89.614203,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-java empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 190.140803,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-java privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2208.352075,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-java lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3449.557702,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-java installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13938.660315,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-java broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic Java captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "java-method-reference-receiver",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "a6ee6a7c6e5865eb2faae2e0d48cf88eeb1b93d7feaff8dc491b7b730b923b32",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-enclosing-type-accessibility",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "7fb1efdd446a7ea18c1da61638d231c564cd1334a214932b647fdc34eb7324bc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-unicode-preprocessing-boundary",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "7f082586f17ea3aa5afafaf423a74a7a88a4e57b33326606f15ce09f14e652e9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-unicode-source-reconstruction",
+          "callback": "context-java stale acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "4e63f449aa41bc686e244f1e80af6aab6c1319b44387794c2b34cf37dbbdde61",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-constructor-omission-reconstruction",
+          "callback": "context-java stale acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "05e762ac55746e3e035df0aaa276c605924c0ed7cbc651b4cd4f49611100656c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-complete-call-range",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "fd5403bd1800916a1d60ccba0a26b1f1d1f96e2b6ada3d1c70795f8750311d14",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-local-type-visibility",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "01d8b6594b2f3dede3fe21c28484a354bfa8696620cb44f2ea06a14234d6475a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-competing-absent-import",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "293596de527a9857ae82dc0b6bafee2653c4208ca0ba5e59ccb848dab26d19f6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-retained-constructor-dispatch",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "0ff759062a6e98eafb9f6d5f98e3b9990270c416ebd7c41795bd7942553b7c6b",
+          "mutantSha256": "6ddc5a4484c78ec6f8042500877edc5c3e652c377e26383ba154bcc884416db5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-method-reference-name",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "ffac325d46de04478d6c1ee852898d5947030144f7180db265538b8cf74f39b3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-local-own-initializer",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "c6e6ac50ef7a5cff60e396e7357379758797a8f09418de1168600af85004d96c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-method-value-namespace",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "6b738e056dd3ea58720bcf89adcff6ad6c4ef4b2b33e614573eccf00d73c1e92",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-value-qualifier-boundary",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "1ebd76cb61de9bea241cb4ec6bf4aa5967617c482a46892b08a98a4b5c6741b5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-member-overload-ambiguity",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "ef24a832c9608527994b691b35d9e3d973f89aa4a311d70bb780a8fdfe57049c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-duplicate-type-ambiguity",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "6b1ee82aa2d1768ea34a8a259047fc766cf2d0bcfc987e7811f91950e3f0e086",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-label-use-namespace",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "57134f120d3163d298b6e07ea236f8282b0a10d2a135c893607d845cd4d4541c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-label-declaration-namespace",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "ae4da9fd9149a69d2e36f336b3cd8abae7c2d296c5d0caafbd1332791c8fd907",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-inheritance-unknown",
+          "callback": "context-java near-miss acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "b81c4c1a7a648c4cd0828b4833cc41e19661bd87fb4e53cbbfbb797de5c8832e",
+          "mutantSha256": "056809f3e5e592928155f91cd455dd472973ff87478a19bc9b89cb4626886079",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-primary-caller-closure",
+          "callback": "context-java broken acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa",
+          "mutantSha256": "406004a65045e70ba4af6730ca9c6a6fab78214568aad8feda9a92c90a0e9e5c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-root-reconstruction-binding",
+          "callback": "context-java stale acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "81649f7cc705e0fcbba7d3e10247fedc0d9a64c8f891ba2e52668571c7e291a5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-summary-count-reconciliation",
+          "callback": "context-java stale acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "c804d924be2e2e74b8482e0f3968c67b05b3450f7af818b12f458787be1cdd6e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "java-outside-root-reconstruction",
+          "callback": "context-java stale acceptance",
+          "callbackSha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97",
+          "sourceSha256": "371bdfa389ab0cacafd49f757b1fdafb6568fe649ae446f79f8f3230ce5be12c",
+          "mutantSha256": "80c97004b083b50e44b5f61f7eb9d2f8fb06162cf4889d3c2f8b6fa65bc2e778",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "d18b134f11aae75e148b867624c164939eee97ce2d09eb741f0719bf8f4d3f08",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-java",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-java broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 554.999234,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-java fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 249.381282,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-java near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2576.528026,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-java prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 176.22097,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-java stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 92.874805,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-java empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 209.623087,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-java privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2319.768324,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-java lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3439.68731,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-java installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.329919,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-java broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-java installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:d22ff339125fbfb66025bd877529c190ab7df95eca3ea1a46fae3b2468512e6a",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "419e460dce8d22217d01815704ff3ecdba1be1dde5bd91780e350b18f640a156",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-java",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7d2363be7966cc21cbaf975eaece154835bffdb882e283e0c94d519679cabf97"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-java broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 575.640732,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-java fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 257.130954,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-java near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2583.194066,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-java prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 175.245215,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-java stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 90.840543,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-java empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 226.349103,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-java privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2334.904039,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-java lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3476.979949,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-java installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.73638,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-java broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-java installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:d22ff339125fbfb66025bd877529c190ab7df95eca3ea1a46fae3b2468512e6a",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d230e9363b9851bd272adc81d1fc9130575ef8c06c3b731890148dd8a114a7d5",
+        "mutantSha256": "7c84a58745613fcaf88abf57ed1a5e53daa1911890d4fe3d0dc866ff72d88335",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d230e9363b9851bd272adc81d1fc9130575ef8c06c3b731890148dd8a114a7d5",
+        "mutantSha256": "906e42d3ff5be048c71eccda55841bb1f7d93aec25abbf03241bc63d41a088c2",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d230e9363b9851bd272adc81d1fc9130575ef8c06c3b731890148dd8a114a7d5",
+        "mutantSha256": "4303fa03dd9c89d7d635fae3b6221e25e3f2bf9abf9d965c7a77e06284d24bbe",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1071,
+      "pass": 792,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 279,
+      "todo": 0
+    },
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "pinnedNativeJavaUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "ae280dc9fd67ad0aae4d3df29a94e29962080c3e46ff11101bcd0351e09ea34a"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

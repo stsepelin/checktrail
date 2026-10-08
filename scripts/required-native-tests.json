@@ -3438,5 +3438,43 @@
       "file": "dist/test/gate-context-rust.test.js",
       "name": "context-rust installed acceptance"
     }
+  ],
+  "context-java": [
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-java.test.js",
+      "name": "context-java installed acceptance"
+    }
   ]
 }
