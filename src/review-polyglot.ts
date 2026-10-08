@@ -1,4 +1,9 @@
 import {
+  captureKotlinBindings,
+  type KotlinSyntaxUnit,
+} from "./review-kotlin-bindings.js";
+import { resolveKotlinBindings } from "./review-kotlin-resolution.js";
+import {
   captureJavaBindings,
   type JavaSyntaxUnit,
 } from "./review-java-bindings.js";
@@ -362,6 +367,7 @@ async function collectReviewPolyglotCore(
   phpRoots?: string[],
   rustRoots?: string[],
   javaRoots?: string[],
+  kotlinRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -384,6 +390,7 @@ async function collectReviewPolyglotCore(
   const phpUnits: PhpSyntaxUnit[] = [];
   const rustUnits: RustSyntaxUnit[] = [];
   const javaUnits: JavaSyntaxUnit[] = [];
+  const kotlinUnits: KotlinSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -538,7 +545,19 @@ async function collectReviewPolyglotCore(
               resolution: specifier === null ? "dynamic" : "external",
             });
           }
-          if (decisions.has(node.type) && node.startIndex < node.endIndex) {
+          if (
+            (decisions.has(node.type) ||
+              (kotlinRoots &&
+                asset.grammar === "kotlin" &&
+                [
+                  "comparison_expression",
+                  "equality_expression",
+                  "conjunction_expression",
+                  "disjunction_expression",
+                  "elvis_expression",
+                ].includes(node.type))) &&
+            node.startIndex < node.endIndex
+          ) {
             const address = range(node);
             output.decisions.push({
               ...address,
@@ -604,6 +623,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (kotlinRoots && asset.grammar === "kotlin")
+          kotlinUnits.push(captureKotlinBindings(nodes, fnIds, decls, range));
         if (javaRoots && asset.grammar === "java")
           javaUnits.push(captureJavaBindings(nodes, fnIds, decls, range));
         if (rustRoots && asset.grammar === "rust")
@@ -636,6 +657,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (kotlinRoots)
+    return resolveKotlinBindings(result, kotlinUnits, kotlinRoots, primary);
   if (javaRoots)
     return resolveJavaBindings(result, javaUnits, javaRoots, primary);
   if (rustRoots)
@@ -763,6 +786,33 @@ export async function collectReviewJavaBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewKotlinBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<
+  Extract<ReviewBehavior, { profile: "kotlin-selected-bindings-v1" }>
+> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewKotlinBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,
