@@ -84,3 +84,5 @@ This profile does not establish whole-project Kotlin correctness, mixed/generate
 compilation, scripts, build plugins, reflection/dynamic dispatch, framework behavior,
 Scala support, review quality or Gate A completion. Detekt light rules remain a
 separate check.
+
+The compiler-guard harness reuses a passing positive control only for identical source and original callback bytes, verifies restoration after every mutant and runs a final fresh positive control. Every compiling mutant still executes the unchanged original callback and must fail its named evidence assertion. The source and installed compiler checks remain separate. [kotlin-guard-execution-2026-10-08.json](measurements/kotlin-guard-execution-2026-10-08.json) records the exact invocation accounting and native runtime; it does not compare performance across different runtimes or close broader Kotlin/Gate A scope.
