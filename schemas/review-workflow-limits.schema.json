@@ -10,7 +10,7 @@
         "maxPacketBytes": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 1048576
+          "maximum": 8388608
         },
         "maxResponseBytes": {
           "type": "integer",
@@ -42,7 +42,7 @@
         "maxPacketBytes": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 1048576
+          "maximum": 8388608
         },
         "maxResponseBytes": {
           "type": "integer",

@@ -184,7 +184,7 @@
               "additionalProperties": false
             },
             "files": {
-              "maxItems": 16,
+              "maxItems": 32,
               "type": "array",
               "items": {
                 "type": "object",
@@ -556,7 +556,7 @@
               "additionalProperties": false
             },
             "files": {
-              "maxItems": 16,
+              "maxItems": 32,
               "type": "array",
               "items": {
                 "type": "object",

@@ -131,9 +131,10 @@ export async function runReviewProbe(
   if (
     context.schemaVersion !== 4 &&
     context.schemaVersion !== 5 &&
-    context.schemaVersion !== 6
+    context.schemaVersion !== 6 &&
+    context.schemaVersion !== 7
   )
-    throw new Error("Native probes require context version 4, 5 or 6");
+    throw new Error("Native probes require context version 4, 5, 6 or 7");
   if (recipe.family !== candidate.family)
     throw new Error("Probe does not address the candidate family");
   const target = context.files.find((file) => file.path === recipe.file);

@@ -21,7 +21,7 @@
     },
     "contextDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "instructions": { "type": "string", "maxLength": 8192 },
-    "packet": { "type": "string", "maxLength": 1048576 },
+    "packet": { "type": "string", "maxLength": 8388608 },
     "responseSchema": { "type": "string", "maxLength": 65536 },
     "sessionRequirement": { "type": "string", "const": "fresh-host-session" },
     "sourceTrust": { "type": "string", "const": "untrusted-source-text" }

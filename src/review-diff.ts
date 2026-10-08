@@ -69,6 +69,7 @@ export async function reviewGit(
   baseCommit: string,
   selected: string[],
   currentSource: "working-tree" | "index" = "working-tree",
+  sourceLimit: 131072 | 1048576 = 131072,
 ) {
   commitId.parse(baseCommit);
   const read = gitReader(root);
@@ -114,7 +115,7 @@ export async function reviewGit(
       !Number.isSafeInteger(size) ||
       size < 0 ||
       size > 65536 ||
-      (total += size) > 131072
+      (total += size) > sourceLimit
     )
       throw new Error("Review source exceeds limits");
     const content = await read(["cat-file", "blob", oid]);

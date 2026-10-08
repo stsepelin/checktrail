@@ -94,7 +94,7 @@
           "type": "object",
           "properties": {
             "files": {
-              "maxItems": 16,
+              "maxItems": 32,
               "type": "array",
               "items": {
                 "type": "object",

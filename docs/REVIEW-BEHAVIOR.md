@@ -163,3 +163,9 @@ non-JavaScript grammars while preserving the existing JS/TS collector. Source,
 revision/mode, assessment and disclosure contracts remain shared. Wider-language
 call targets and import/consumer resolution stay unknown; the complete language
 profiles remain pending. See [CONTEXT-GRAMMARS.md](CONTEXT-GRAMMARS.md).
+
+Opt-in version 7 retains version 6 syntax behavior with the planned finite
+32-path/1 MiB source capture limits; see
+[REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md). Older version bounds remain
+unchanged. Syntax, serialization and operator workflow quotas remain separately
+bounded.

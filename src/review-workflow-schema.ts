@@ -15,7 +15,7 @@ export const reviewWorkflowSelectedLimitsSchema = z.strictObject({
   maxWorkflows: z.number().int().min(0).max(16),
   maxAssignments: z.number().int().min(0).max(6),
   wallMs: z.number().int().min(1).max(3_600_000),
-  maxPacketBytes: z.number().int().min(0).max(1_048_576),
+  maxPacketBytes: z.number().int().min(0).max(8_388_608),
   maxResponseBytes: z.number().int().min(0).max(262_144),
   maxRetainedBytes: z.number().int().min(0).max(16_777_216),
 });
@@ -105,7 +105,7 @@ export const reviewWorkflowAssignmentSchema = z.strictObject({
   stage: reviewWorkflowStageSchema,
   contextDigest: digest,
   instructions: z.string().max(8192),
-  packet: z.string().max(1_048_576),
+  packet: z.string().max(8_388_608),
   responseSchema: z.string().max(65536),
   sessionRequirement: z.literal("fresh-host-session"),
   sourceTrust: z.literal("untrusted-source-text"),

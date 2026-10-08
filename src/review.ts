@@ -95,6 +95,18 @@ const polyglotSelectionSchema = z.discriminatedUnion("track", [
   completeSelectionSchema.options[0].extend({ schemaVersion: z.literal(6) }),
   completeSelectionSchema.options[1].extend({ schemaVersion: z.literal(6) }),
 ]);
+const expandedSelectionSchema = z.discriminatedUnion("track", [
+  polyglotSelectionSchema.options[0].extend({
+    schemaVersion: z.literal(7),
+    files: z.array(filePath).min(1).max(32),
+    supportFiles: z.array(filePath).max(31),
+  }),
+  polyglotSelectionSchema.options[1].extend({
+    schemaVersion: z.literal(7),
+    files: z.array(filePath).min(1).max(32),
+    supportFiles: z.array(filePath).max(31),
+  }),
+]);
 export const reviewSelectionSchema = z.union([
   legacySelectionSchema,
   assignmentSelectionSchema,
@@ -102,6 +114,7 @@ export const reviewSelectionSchema = z.union([
   revisionSelectionSchema,
   completeSelectionSchema,
   polyglotSelectionSchema,
+  expandedSelectionSchema,
 ]);
 const sourceFileSchema = z.strictObject({
   path: filePath,
@@ -229,6 +242,21 @@ const polyglotContextSchema = completeContextSchema.extend({
     behavior: z.literal("bounded-selected-syntax"),
   }),
 });
+const expandedContextSchema = polyglotContextSchema.extend({
+  schemaVersion: z.literal(7),
+  selection: expandedSelectionSchema,
+  files: z.array(sourceFileSchema).max(32),
+  evidence: z.discriminatedUnion("track", [
+    completeContextSchema.shape.evidence.options[0].extend({
+      fileModes: z.array(fileModesSchema.element).min(1).max(32),
+    }),
+    completeContextSchema.shape.evidence.options[1].extend({
+      baseFiles: z.array(sourceFileSchema).max(32),
+      changes: z.array(diffSchema.shape.changes.element).min(1).max(32),
+      fileModes: z.array(fileModesSchema.element).min(1).max(32),
+    }),
+  ]),
+});
 export const reviewContextSchema = z.union([
   legacyContextSchema,
   assignmentContextSchema,
@@ -236,6 +264,7 @@ export const reviewContextSchema = z.union([
   revisionContextSchema,
   completeContextSchema,
   polyglotContextSchema,
+  expandedContextSchema,
 ]);
 export type ReviewContext = z.infer<typeof reviewContextSchema>;
 const metadata = {
@@ -250,7 +279,7 @@ export const reviewContextSummarySchema = z.strictObject({
   ...metadata,
   format: z.literal("review-context-summary"),
   contextDigest: digest,
-  selectedFiles: z.number().int().min(1).max(16),
+  selectedFiles: z.number().int().min(1).max(32),
   sourceBytes: integer,
   sourceIncluded: z.literal(false),
 });
@@ -297,7 +326,7 @@ const legacyAssessmentSchema = z.strictObject({
         note: z.string().max(1024),
       }),
     )
-    .max(16),
+    .max(32),
   observations: z.array(observationSchema).max(64),
 });
 const revisionCitationSchema = citationSchema.extend({
@@ -458,7 +487,8 @@ function selectedPaths(
   return selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
     selection.schemaVersion === 5 ||
-    selection.schemaVersion === 6
+    selection.schemaVersion === 6 ||
+    selection.schemaVersion === 7
     ? [...selection.files, ...selection.supportFiles].sort()
     : selection.files;
 }
@@ -519,7 +549,12 @@ async function sourceBytes(root: string, file: string): Promise<Buffer> {
   return (await sourceSnapshot(root, file)).bytes;
 }
 export function parseReviewContext(input: unknown): ReviewContext {
-  bounded(input, 1024 * 1024);
+  bounded(
+    input,
+    (input as { schemaVersion?: unknown } | null)?.schemaVersion === 7
+      ? 8 * 1024 * 1024
+      : 1024 * 1024,
+  );
   const parsed = reviewContextSchema.parse(input);
   unique(parsed.selection.files);
   unique(parsed.selection.topics);
@@ -559,7 +594,10 @@ export function parseReviewContext(input: unknown): ReviewContext {
   ].sort();
   const paths = selectedPaths(parsed.selection);
   unique(paths);
-  if (paths.length > 16 || JSON.stringify(paths) !== JSON.stringify(captured))
+  if (
+    paths.length > (parsed.schemaVersion === 7 ? 32 : 16) ||
+    JSON.stringify(paths) !== JSON.stringify(captured)
+  )
     throw new Error("Review source selection does not reconcile");
   if (parsed.schemaVersion !== 1) {
     if (parsed.selection.track !== parsed.evidence.track)
@@ -573,7 +611,11 @@ export function parseReviewContext(input: unknown): ReviewContext {
     )
       throw new Error("Review diff evidence does not reconcile");
   }
-  if (parsed.schemaVersion === 5 || parsed.schemaVersion === 6) {
+  if (
+    parsed.schemaVersion === 5 ||
+    parsed.schemaVersion === 6 ||
+    parsed.schemaVersion === 7
+  ) {
     if (parsed.selection.currentSource !== parsed.evidence.currentSource)
       throw new Error("Review current source mismatch");
     unique(parsed.evidence.fileModes.map((item) => item.path));
@@ -602,12 +644,14 @@ export function parseReviewContext(input: unknown): ReviewContext {
     if (content.length > 65536 || hash(content) !== file.sha256)
       throw new Error("Review source digest mismatch");
   }
-  if (bytes > 131072) throw new Error("Review source total exceeds limits");
+  if (bytes > (parsed.schemaVersion === 7 ? 1048576 : 131072))
+    throw new Error("Review source total exceeds limits");
   if (
     parsed.schemaVersion === 3 ||
     parsed.schemaVersion === 4 ||
     parsed.schemaVersion === 5 ||
-    parsed.schemaVersion === 6
+    parsed.schemaVersion === 6 ||
+    parsed.schemaVersion === 7
   ) {
     validateReviewBehavior(
       parsed.analysis,
@@ -635,12 +679,14 @@ export async function createReviewContext(
     selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
     selection.schemaVersion === 5 ||
-    selection.schemaVersion === 6
+    selection.schemaVersion === 6 ||
+    selection.schemaVersion === 7
   )
     selection.supportFiles.sort();
   const paths = selectedPaths(selection);
   unique(paths);
-  if (paths.length > 16) throw new Error("Combined review file limit exceeded");
+  if (paths.length > (selection.schemaVersion === 7 ? 32 : 16))
+    throw new Error("Combined review file limit exceeded");
   const before = await inventory(root);
   const git =
     selection.schemaVersion !== 1 && selection.track === "diff"
@@ -648,9 +694,12 @@ export async function createReviewContext(
           before.root,
           selection.baseCommit,
           paths,
-          selection.schemaVersion === 5 || selection.schemaVersion === 6
+          selection.schemaVersion === 5 ||
+            selection.schemaVersion === 6 ||
+            selection.schemaVersion === 7
             ? selection.currentSource
             : "working-tree",
+          selection.schemaVersion === 7 ? 1048576 : 131072,
         )
       : undefined;
   let bytes = (git?.baseFiles ?? []).reduce(
@@ -668,7 +717,9 @@ export async function createReviewContext(
     )
       throw new Error("Review source path is excluded");
     if (
-      (selection.schemaVersion === 5 || selection.schemaVersion === 6) &&
+      (selection.schemaVersion === 5 ||
+        selection.schemaVersion === 6 ||
+        selection.schemaVersion === 7) &&
       selection.currentSource === "index"
     ) {
       const source = git?.indexFiles.find((source) => source.path === file);
@@ -685,7 +736,8 @@ export async function createReviewContext(
     const data = source.bytes;
     workingModes.set(file, source.mode);
     bytes += data.length;
-    if (bytes > 131072) throw new Error("Review source total exceeds limits");
+    if (bytes > (selection.schemaVersion === 7 ? 1048576 : 131072))
+      throw new Error("Review source total exceeds limits");
     const content = new TextDecoder("utf-8", {
       fatal: true,
       ignoreBOM: true,
@@ -698,9 +750,10 @@ export async function createReviewContext(
     selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
     selection.schemaVersion === 5 ||
-    selection.schemaVersion === 6
+    selection.schemaVersion === 6 ||
+    selection.schemaVersion === 7
       ? await (
-          selection.schemaVersion === 6
+          selection.schemaVersion === 6 || selection.schemaVersion === 7
             ? (await import("./review-polyglot.js"))
                 .collectReviewPolyglotBehavior
             : (await import("./review-behavior.js")).collectReviewBehavior
@@ -716,7 +769,9 @@ export async function createReviewContext(
     throw new Error("Source changed while preparing review context");
   await git?.assertCurrent();
   if (
-    (selection.schemaVersion === 5 || selection.schemaVersion === 6) &&
+    (selection.schemaVersion === 5 ||
+      selection.schemaVersion === 6 ||
+      selection.schemaVersion === 7) &&
     selection.currentSource === "working-tree"
   ) {
     for (const file of files) {
@@ -733,7 +788,9 @@ export async function createReviewContext(
       throw new Error("Source changed while preparing review context");
   }
   const modeEvidence =
-    selection.schemaVersion === 5 || selection.schemaVersion === 6
+    selection.schemaVersion === 5 ||
+    selection.schemaVersion === 6 ||
+    selection.schemaVersion === 7
       ? {
           currentSource: selection.currentSource,
           fileModes: paths.map((file) => ({
@@ -785,7 +842,9 @@ export async function createReviewContext(
               ? revisionContextSchema.omit({ contextDigest: true })
               : selection.schemaVersion === 5
                 ? completeContextSchema.omit({ contextDigest: true })
-                : polyglotContextSchema.omit({ contextDigest: true })
+                : selection.schemaVersion === 6
+                  ? polyglotContextSchema.omit({ contextDigest: true })
+                  : expandedContextSchema.omit({ contextDigest: true })
         ).parse({
           ...common,
           evidence: git
@@ -806,13 +865,15 @@ export async function createReviewContext(
                   ...completeness,
                   selection: "operator-selected-primary-and-support-files",
                   behavior:
-                    selection.schemaVersion === 6
+                    selection.schemaVersion === 6 ||
+                    selection.schemaVersion === 7
                       ? "bounded-selected-syntax"
                       : "bounded-js-ts-syntax",
                   callers: "selected-context-only",
                   declarations: "selected-context-only",
                   ...(selection.schemaVersion === 5 ||
-                  selection.schemaVersion === 6
+                  selection.schemaVersion === 6 ||
+                  selection.schemaVersion === 7
                     ? { fileModes: "selected-regular-files" }
                     : {}),
                 },
@@ -856,7 +917,8 @@ export async function receiveReview(
   if (
     (context.schemaVersion === 4 ||
       context.schemaVersion === 5 ||
-      context.schemaVersion === 6) !==
+      context.schemaVersion === 6 ||
+      context.schemaVersion === 7) !==
     (assessment.schemaVersion === 2)
   )
     throw new Error("Review assessment and context version mismatch");
@@ -864,7 +926,8 @@ export async function receiveReview(
     assessment.schemaVersion === 2 &&
     (context.schemaVersion === 4 ||
       context.schemaVersion === 5 ||
-      context.schemaVersion === 6) &&
+      context.schemaVersion === 6 ||
+      context.schemaVersion === 7) &&
     context.evidence.track === "snapshot" &&
     assessment.observations.some((item) => item.attribution !== "unknown")
   )
@@ -940,7 +1003,8 @@ export async function receiveReview(
   const current = await inventory(root);
   let matchesCurrent = current.fingerprint === context.sourceFingerprint;
   for (const file of (context.schemaVersion === 5 ||
-    context.schemaVersion === 6) &&
+    context.schemaVersion === 6 ||
+    context.schemaVersion === 7) &&
   context.evidence.currentSource === "index"
     ? []
     : context.files) {
@@ -959,6 +1023,7 @@ export async function receiveReview(
     context.schemaVersion === 4 ||
     context.schemaVersion === 5 ||
     context.schemaVersion === 6 ||
+    context.schemaVersion === 7 ||
     (context.schemaVersion === 2 && context.evidence.track === "diff")
   ) {
     try {

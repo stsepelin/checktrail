@@ -88,3 +88,11 @@ Revision-pinned historical import acceptance is recorded in
 [historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
 The receipt retains both final profiles and unaccepted development attempts; it
 does not promote broader Gate A capabilities or review quality.
+
+The opt-in version 7 context slice implements the planned finite 32-path/1 MiB
+source budget with original source/installed macOS and Linux ARM64 controls and
+compiling mutation checks. See
+[REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md) and
+[review-context-limits-2026-10-08.json](measurements/review-context-limits-2026-10-08.json).
+Older context bounds and workflow defaults remain unchanged; language callers,
+consumers, notice closure and the wider runtime obligations remain open.

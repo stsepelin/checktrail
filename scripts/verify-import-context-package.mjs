@@ -18,10 +18,15 @@ import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 const profile =
   process.env.CHECKTRAIL_IMPORT_CONTEXT_PROFILE ?? "import-context";
 assert.ok(
-  ["import-context", "import-history", "selected-syntax-context"].includes(
-    profile,
-  ),
+  [
+    "import-context",
+    "import-history",
+    "selected-syntax-context",
+    "review-context-limits",
+  ].includes(profile),
 );
+if (profile === "review-context-limits")
+  process.env.CHECKTRAIL_CONTEXT_LIMITS_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -52,6 +57,7 @@ try {
   for (const file of [
     "import-context.test.js",
     "review-polyglot.test.js",
+    "review-context-limits.test.js",
     "review-polyglot-fixture.js",
     "import-history.test.js",
     "git-fixture.js",
@@ -137,6 +143,9 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "review-context-limits"
+            ? ["--env", "CHECKTRAIL_CONTEXT_LIMITS_INSTALLED=1"]
+            : []),
           "--read-only",
           "--cpus",
           "2",

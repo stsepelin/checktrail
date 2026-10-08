@@ -333,7 +333,7 @@ export async function collectReviewPolyglotBehavior(
   diff: boolean,
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
-    ...(await collectReviewBehavior(current, base, primary, diff)),
+    ...(await collectReviewBehavior(current, base, primary, diff, 64)),
     profile: "selected-syntax-v1",
     parser: "typescript-and-tree-sitter-wasm",
     parserVersion: "6.0.3/0.27.0",

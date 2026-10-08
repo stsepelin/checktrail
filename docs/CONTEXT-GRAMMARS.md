@@ -39,7 +39,8 @@ plugin, manifest, import, build or source module is executed. The same source
 disclosure boundary applies through the library, CLI and MCP. Summary output
 withholds source and syntax detail; tool input grants no disclosure or execution.
 
-The existing file/source limits remain in force. The new walk additionally caps
+Version 6 keeps the existing file/source limits. Opt-in version 7 uses the finite
+expanded capture bounds in [REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md). The new walk additionally caps
 combined visited nodes, nesting, retained records and serialized analysis. Parsing
 uses a cooperative elapsed-time callback; this is not an OS deadline. Malformed,
 unsupported, missing/changed parser and exhausted views retain distinct states.

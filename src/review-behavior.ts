@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
+import { z } from "zod";
 import type ts from "typescript";
 import {
   reviewBehaviorSchema,
+  reviewJavascriptBehaviorSchema,
   type ReviewBehavior,
 } from "./review-behavior-schema.js";
 import { reviewChanges } from "./review-diff.js";
@@ -46,6 +48,7 @@ export async function collectReviewBehavior(
   base: Source[],
   primary: string[],
   diff: boolean,
+  maxViews: 32 | 64 = 32,
 ): Promise<ReviewBehavior> {
   // Only this explicit profile loads the bundled parser. No consumer parser,
   // config, plugin, filesystem host, emit or project code participates.
@@ -767,5 +770,13 @@ export async function collectReviewBehavior(
   result.state = result.files.some((file) => file.state !== "collected")
     ? "partial"
     : "collected";
-  return reviewBehaviorSchema.parse(result);
+  return maxViews === 64
+    ? reviewJavascriptBehaviorSchema
+        .extend({
+          files: z
+            .array(reviewJavascriptBehaviorSchema.shape.files.element)
+            .max(64),
+        })
+        .parse(result)
+    : reviewBehaviorSchema.parse(result);
 }

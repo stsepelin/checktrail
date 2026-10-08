@@ -913,22 +913,22 @@
                 "selectedPaths": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredNotReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "unaccounted": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "candidates": {
                   "type": "integer",
@@ -2774,22 +2774,22 @@
                 "selectedPaths": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredNotReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "unaccounted": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "candidates": {
                   "type": "integer",
@@ -3809,22 +3809,22 @@
                 "selectedPaths": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredNotReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "unaccounted": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "candidates": {
                   "type": "integer",
@@ -5670,22 +5670,22 @@
                 "selectedPaths": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "declaredNotReviewed": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "unaccounted": {
                   "type": "integer",
                   "minimum": 0,
-                  "maximum": 16
+                  "maximum": 32
                 },
                 "candidates": {
                   "type": "integer",

@@ -1,0 +1,952 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-expanded-context-v1",
+  "recordedAt": "2026-10-08T12:17:59.627824+00:00",
+  "scope": "Opt-in version 7 planned finite source budget with independent syntax, framing and operator workflow limits. No model inference or field review.",
+  "sourceBinding": {
+    "baseCommit": "d58ad7036b81b5282191a022a62cc65602f4f40b",
+    "kind": "source-runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 38237,
+        "sha256": "52f92556850408b849e1779f58cc819da765d4f3de2daca64ebb140ced75bfbf"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 631754,
+        "sha256": "74855c7c9c234e04edeab2cfb37449430075c62551ac8c6f94726bb0f213293d"
+      },
+      {
+        "file": "schemas/review-assessment.schema.json",
+        "bytes": 11179,
+        "sha256": "5679c7243ce03394db71bb132733496c9f2debf3216ef68c8c150e3ff244befa"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 304170,
+        "sha256": "29e8bb00df6570e7685405d028aa062847d637e38b2622adf2c362b49d2194f0"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 396049,
+        "sha256": "bba0e61b713ae6e5a52d112e45abb61d813908e706f39f059685080deeaf611a"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 248504,
+        "sha256": "db09448e75d109c7f01515745b16bc6c40cafefb551933c86282845b8ebe3525"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 244056,
+        "sha256": "205b1665bc9475da084d3dd30aac1fa627b7499a605954f244544dedc33f1368"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 309853,
+        "sha256": "75095c44c76aa583f5627b4f52f879c9705188c2d7082c963d8f81dd9cda5eb9"
+      },
+      {
+        "file": "schemas/review-context-summary.schema.json",
+        "bytes": 1106,
+        "sha256": "bb6f057f432f52096745eb09f7d11290cadab65a227bf947d638c7b001fd2b6a"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 206021,
+        "sha256": "686bcfa508017aba66ecd21fd51caddbf88111f864f5e68658d6459a1992efc5"
+      },
+      {
+        "file": "schemas/review-hypothesis-plan.schema.json",
+        "bytes": 3794,
+        "sha256": "696829390637cf80835eaf41ce8b23de3b93cf8489a04b0942a64c83e468ec76"
+      },
+      {
+        "file": "schemas/review-hypothesis-summary.schema.json",
+        "bytes": 2502,
+        "sha256": "d3afa77425d164eed57e4b146400ca38b8bc6c0ebe1fc2164c24d17ec1ea476f"
+      },
+      {
+        "file": "schemas/review-model-output.schema.json",
+        "bytes": 4651,
+        "sha256": "94ab91c4c39812c78eb0e4e93b666d0432f0d3a4444723efc70ed9b54754ad5c"
+      },
+      {
+        "file": "schemas/review-provider-run.schema.json",
+        "bytes": 56836,
+        "sha256": "0e229539de0095927d5a6210e1b8b9492dbecaae783bb34ad648f5489ce80488"
+      },
+      {
+        "file": "schemas/review-provider-summary.schema.json",
+        "bytes": 20350,
+        "sha256": "3c3e798aaf58043f3ddb5230c26ef441df150d690714aaca7fb5ebfdad5c7a5c"
+      },
+      {
+        "file": "schemas/review-receipt.schema.json",
+        "bytes": 24183,
+        "sha256": "7c44fc776698562b6c3b9d7b2274b1d36ae6e6ac68d7e7231b7e5fc6e20ee0f9"
+      },
+      {
+        "file": "schemas/review-refutation-run.schema.json",
+        "bytes": 72002,
+        "sha256": "a4f92d104de10d0de4d0b4b9ca1e7b98c9daaed47ddf436a0d622c613988cee7"
+      },
+      {
+        "file": "schemas/review-refutation-summary.schema.json",
+        "bytes": 26716,
+        "sha256": "1d09c09d049c190e4d6d88305038d5fb602e76c8fdc9e6844deadaa7e8b5f1a1"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 17256,
+        "sha256": "bff3f80343a8ecc65cf6fdc2c589ead040e9c07eb43558dfcc255cc2bfc2c022"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 1079463,
+        "sha256": "47133fb06756ebc138ab164e2bb4bb3cf5a9feb52e0ec0bf9f21a41973c7843d"
+      },
+      {
+        "file": "schemas/review-verification-summary.schema.json",
+        "bytes": 225608,
+        "sha256": "639b4d05118b862cccc0fb786f2f5d42f8e409ebb216bfbc79b6f652a3779909"
+      },
+      {
+        "file": "schemas/review-workflow-assignment.schema.json",
+        "bytes": 1809,
+        "sha256": "c932c2b34f79a6dda0b12f4314697fa12888095e28d818c6f14df910611f0a6e"
+      },
+      {
+        "file": "schemas/review-workflow-audit-summary.schema.json",
+        "bytes": 36261,
+        "sha256": "2c76f0d18cec773198c89f02bc4103742d18d32c4e0e053ffe8214401f42439e"
+      },
+      {
+        "file": "schemas/review-workflow-limits.schema.json",
+        "bytes": 2100,
+        "sha256": "bde696c516285a77a49c7e9ece08125d35ca38b6449e354c3cc2da46a004eee5"
+      },
+      {
+        "file": "schemas/review-workflow-response.schema.json",
+        "bytes": 9388,
+        "sha256": "56ad3fae4cfda3ee0f48a402c023044818043fc0c3c6e3803ff2dbdac806d841"
+      },
+      {
+        "file": "schemas/review-workflow-summary.schema.json",
+        "bytes": 27341,
+        "sha256": "5bea6e5d7aa482e232cb3216d3a759baaa26d1535ba07d282fff91b53bc339b4"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 142535,
+        "sha256": "d3559ad546ccd221ea5d51596b90f20934af21012ff73f46b5fa9e47233c4bbe"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 6310,
+        "sha256": "ff727aab9f55c201c4d9e7409b89df551b29a8ad48de9f37e592b23edd44fbdd"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 4392,
+        "sha256": "da3dd5c67b52b8704d05290e6b9c1684c1baa097cac57b842c1cb54ebf1951d5"
+      },
+      {
+        "file": "src/review-behavior.ts",
+        "bytes": 28394,
+        "sha256": "939dfb68f0eafeb7eb72df20b14a68e889f0c0c76672c67b38300b5279af2351"
+      },
+      {
+        "file": "src/review-diff.ts",
+        "bytes": 6355,
+        "sha256": "7313c2bf966e198f0904563e31579d8236ef6c1fe2ba9e4f05519c4138ea46ac"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13538,
+        "sha256": "18ed7595aff08eb10ef6da55eade25e90470792171f90cf86317f479994ff9fb"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 18476,
+        "sha256": "db7fc53f8e3fd0b2ff52d27d3c3a5231cf5f5fcb0db876518b2c5eb626e81b08"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 31839,
+        "sha256": "8bdfdd7f5440b7269c434d45bc5d74b592cd3a73b3f5821a0db523b6fb6e789b"
+      },
+      {
+        "file": "src/review-provider-schema.ts",
+        "bytes": 8830,
+        "sha256": "d35644b261b6054b92b9925281655091fe0616a79a071a83d7c616cf1e114d55"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 32759,
+        "sha256": "871e40ff3de415a54ec4a79cfd5849abcfb69f791d4a22f55085ac02977cfb97"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19395,
+        "sha256": "af24fa69008a68075e8b9394567166f7f1fd0c071938dea3147af6257e0cf372"
+      },
+      {
+        "file": "src/review-workflow-schema.ts",
+        "bytes": 7962,
+        "sha256": "0207759965f3be9b7103efc0e93cd4ec8a9dfd17321254f752bb89bc533e75a2"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31553,
+        "sha256": "667000fb8fe3370989a2de9b0cf9f0060e8bc201a1a805589b0020454d28f4e2"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 39732,
+        "sha256": "165fbf040fb153545936f7257fde45b01f14a6bd0cf2feac395560b6056d9901"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10800,
+        "sha256": "d3ad57fc2d6cb0fa428e8c4aec84cf79f2c156bd8116b3a390d2796f8edefb3f"
+      },
+      {
+        "file": "scripts/context-tools.Dockerfile",
+        "bytes": 749,
+        "sha256": "acbb8799d015781964d03678584e0ce688c93b9fae4954cce05aca892e54f418"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4141,
+        "sha256": "31487ba661e383be4e338f2cfbcf42d74fb56c0c63d564b0cdc0b1b7f7f3c104"
+      },
+      {
+        "file": "test/review-context-limits.test.ts",
+        "bytes": 16673,
+        "sha256": "bee6b302363b48d8b9ca2ef780c396906270ca83185cec022f9ae9d18ff2de71"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 40796,
+        "sha256": "89c13e47b5293b6decf4254b794aa8f2bbbf0f3448b323d54a3f3e52db0748dc"
+      },
+      {
+        "file": "dist/src/review-behavior.js",
+        "bytes": 31787,
+        "sha256": "857990d7df663ee402538bf8a30790d33b42357042d19e46001d838a3b521ee7"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 20237,
+        "sha256": "98ec35c44751c36e58e9b4d59617e9593146774502f04c127db5ff99600468f2"
+      },
+      {
+        "file": "dist/src/review-diff.js",
+        "bytes": 6538,
+        "sha256": "d09b4d4755dc1d5cd8f84458d4a36733782b57ceb543947e6cb4e30d32618333"
+      },
+      {
+        "file": "dist/test/review-context-limits.test.js",
+        "bytes": 16702,
+        "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+      }
+    ]
+  },
+  "captureLimits": {
+    "selectedPaths": 32,
+    "sourceBytesPerFile": 65536,
+    "sourceBytesCombinedAcrossRevisions": 1048576,
+    "revisionViews": 64,
+    "serializedContextBytes": 8388608,
+    "legacyLimitsUnchanged": true,
+    "defaultWorkflowQuotasUnchanged": true
+  },
+  "hostRuntime": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "requiredHostProfile": {
+    "timeoutMs": 120000,
+    "profile": "review-context-limits",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 1024,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 203.952209,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 14.194125,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 28.3535,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 23.846583,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3356.117,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "expanded context leaves versions one through six on their previous selected source bounds",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 22.501125,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 271.140292,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2268.685584,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "expanded context original controls execute against a fresh offline installed runtime",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 10983.267417,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context leaves versions one through six on their previous selected source bounds",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "expanded context original controls execute against a fresh offline installed runtime",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "compilingMutationControls": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "89c13e47b5293b6decf4254b794aa8f2bbbf0f3448b323d54a3f3e52db0748dc",
+        "mutantSha256": "16934a96b3d69c1f5fdcfca5b5627c7bc7191e7178184deec62512201ad512d7",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "89c13e47b5293b6decf4254b794aa8f2bbbf0f3448b323d54a3f3e52db0748dc",
+        "mutantSha256": "60d009be4c28014b79cebeed99fe757993620835825c54bf9b90fb3a31fec8b9",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "89c13e47b5293b6decf4254b794aa8f2bbbf0f3448b323d54a3f3e52db0748dc",
+        "mutantSha256": "c1c6e1abc89e45dc2a9778e02396b4419708ae43977757a6567d27a539d2ab2b",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "requiredLinuxRuntime": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+    },
+    "image": "sha256:f861d6eb042e1cf2b55995d02caf874b500e68cbf5a6ac8495179b3016939390",
+    "network": "none",
+    "sourceMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "2g",
+      "pids": 256,
+      "sourceTemporaryFilesystemMiB": 512
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "review-context-limits",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 443.433117,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 41.253205,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 68.71555,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 64.99374,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 598.033551,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "expanded context leaves versions one through six on their previous selected source bounds",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 49.05691,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 641.692018,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3264.79145,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "expanded context original controls execute against a fresh offline installed runtime",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9713.767077,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context leaves versions one through six on their previous selected source bounds",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "expanded context original controls execute against a fresh offline installed runtime",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "a995e44256202245d2b71b9ccb41bcca625bd64599dfa7ea50b73f5041acb2c7",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "review-context-limits",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 494.903456,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 54.875439,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 71.448896,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 66.410371,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 617.084895,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "expanded context leaves versions one through six on their previous selected source bounds",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 43.622133,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 606.161133,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3150.368966,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "expanded context original controls execute against a fresh offline installed runtime",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.294335,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context rejects combined primary support overflow duplicate paths and forged extra scope",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context binds 64 base current views and counts immutable index bytes in the same source budget",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context leaves versions one through six on their previous selected source bounds",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context keeps startup packet quotas cancellation and 32-file neutral workflow accounting",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context library CLI and MCP preserve identical large source grants summaries and receipt accounting",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "expanded context original controls execute against a fresh offline installed runtime",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:f861d6eb042e1cf2b55995d02caf874b500e68cbf5a6ac8495179b3016939390",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 1005,
+    "passed": 741,
+    "failed": 0,
+    "explicitOptionalSkips": 264,
+    "requiredContextControlsSkipped": 0,
+    "goAnalyzersPrepared": true
+  },
+  "inventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "unacceptedDevelopmentAttempts": [
+    {
+      "condition": "The first view-array extension retained its previous 32-item bound and a fixture introduced an excluded directory after source capture.",
+      "accepted": false,
+      "resolution": "Construct the 64-view array explicitly and initialize the excluded fixture directory before capture."
+    },
+    {
+      "condition": "The new worktree lacked pinned Go analyzers on PATH and a legacy rejection assertion still named the old version list.",
+      "accepted": false,
+      "resolution": "Run checks with pinned analyzer visibility and retain legacy rejection with the expanded supported version list."
+    }
+  ],
+  "remaining": [
+    "Wider-language lexical callers/import consumers and broader syntax/assembly remain required.",
+    "The finite full runtime matrix and grammar/compiler notice closure remain open.",
+    "Frozen benchmark eligibility remains on its previously declared context version; no inference or holdout execution is enabled."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

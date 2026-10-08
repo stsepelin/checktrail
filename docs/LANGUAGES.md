@@ -394,3 +394,8 @@ The bounded [inventoried Go workspace profile](GO-WORKSPACES.md) adds captured
 member/local replacement manifests and native main-module reconciliation while
 preserving build-tag and target controls. It does not complete broader platform
 or artifact-provenance obligations.
+
+The opt-in version 7 context profile supports the finite expanded source budget
+through library/CLI/MCP with separate incomplete syntax and operator quota states.
+See [REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md); broader lexical/import
+profiles and runtime acceptance remain open.
