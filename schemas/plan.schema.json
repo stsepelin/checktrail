@@ -127,6 +127,46 @@
             "required": ["schemaVersion", "excludedFiles"],
             "additionalProperties": false
           },
+          "goWorkspace": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": { "type": "number", "const": 1 },
+              "file": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "modules": {
+                "minItems": 1,
+                "maxItems": 16,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "directory": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    },
+                    "module": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    },
+                    "manifestDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": ["member", "replacement"]
+                    }
+                  },
+                  "required": ["directory", "module", "manifestDigest", "role"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["schemaVersion", "file", "sha256", "modules"],
+            "additionalProperties": false
+          },
           "goBuild": {
             "type": "object",
             "properties": {

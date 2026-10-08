@@ -389,3 +389,8 @@ This is captured-string context, with unresolved wider-language calls/imports an
 explicit partial states. It adds no native compiler/framework validation or
 verified findings. Visual Basic syntax, broader node forms, lexical consumers,
 complete build-tool provenance and full runtime acceptance remain required.
+
+The bounded [inventoried Go workspace profile](GO-WORKSPACES.md) adds captured
+member/local replacement manifests and native main-module reconciliation while
+preserving build-tag and target controls. It does not complete broader platform
+or artifact-provenance obligations.

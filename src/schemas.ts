@@ -10,6 +10,7 @@ import {
 } from "./go-build.js";
 export { goBuildPolicySchema } from "./go-build.js";
 import { goScopePolicySchema } from "./go-scope-policy.js";
+import { goWorkspaceSchema } from "./go-workspace.js";
 export { goScopePolicySchema } from "./go-scope-policy.js";
 import { externalIdentitySchema } from "./external-adapter.js";
 export {
@@ -184,6 +185,7 @@ export const reportSchema = z.strictObject({
       project: z.string(),
       scope: strings,
       goScope: goScopePolicySchema.optional(),
+      goWorkspace: goWorkspaceSchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
       rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),
@@ -267,6 +269,7 @@ export const planSchema = z.strictObject({
       project: z.string(),
       scope: strings,
       goScope: goScopePolicySchema.optional(),
+      goWorkspace: goWorkspaceSchema.optional(),
       goBuild: goBuildSelectionSchema.optional(),
       rustBuild: rustBuildSelectionSchema.optional(),
       executionId: executionIdSchema.optional(),

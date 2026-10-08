@@ -1,4 +1,5 @@
 import { goScopePolicySchema } from "./go-scope-policy.js";
+import { goWorkspaceSchema } from "./go-workspace.js";
 import path from "node:path";
 import { z } from "zod";
 import type { Check, Command, ProcessResult } from "./types.js";
@@ -57,6 +58,14 @@ const names = z.array(z.string()).default([]);
 const packageSchema = z.object({
   Dir: z.string(),
   ImportPath: z.string().min(1),
+  Module: z
+    .object({
+      Path: z.string(),
+      Main: z.boolean().optional(),
+      Dir: z.string(),
+      GoMod: z.string(),
+    })
+    .optional(),
   GoFiles: names,
   CgoFiles: names,
   TestGoFiles: names,
@@ -91,6 +100,18 @@ export function goScopeComplete(
     return false;
   try {
     const packages = goPackages(process.stdout);
+    const workspace = check.goWorkspace
+      ? goWorkspaceSchema.parse(check.goWorkspace)
+      : undefined;
+    const member = workspace?.modules.find(
+      (item) => item.role === "member" && item.directory === check.project,
+    );
+    if (
+      workspace &&
+      (!member ||
+        process.command.env?.GOWORK !== path.resolve(root, workspace.file))
+    )
+      return false;
     const expected = new Set(
       check.scope.map((file) => path.resolve(root, check.project, file)),
     );
@@ -118,6 +139,15 @@ export function goScopeComplete(
         ids.has(item.ImportPath) ||
         item.Error ||
         item.DepsErrors?.length
+      )
+        return false;
+      if (
+        member &&
+        (!item.Module ||
+          item.Module.Main !== true ||
+          item.Module.Path !== member.module ||
+          item.Module.Dir !== path.resolve(root, check.project) ||
+          item.Module.GoMod !== path.resolve(root, check.project, "go.mod"))
       )
         return false;
       ids.add(item.ImportPath);

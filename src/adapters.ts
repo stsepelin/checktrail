@@ -36,6 +36,7 @@ import { djangoCheck } from "./django.js";
 import { nuxtCheck } from "./nuxt.js";
 import { vueRouterCheck } from "./vue-router.js";
 import { goEnvironment, goScopeCommand } from "./go-scope.js";
+import { applyGoWorkspace } from "./go-workspace.js";
 import { pintCheck } from "./pint.js";
 import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
@@ -518,6 +519,7 @@ export async function checksFor(
           "Run installed Staticcheck with all checks, surfaced suppressions and native Go file accounting.",
       });
     if (explicit) checks.push(await golangciCheck(source, project));
+    await applyGoWorkspace(source, project, checks);
     await applyGoScopePolicy(source, project, checks);
     await applyGoBuildPolicy(source, project, checks);
     return checks;

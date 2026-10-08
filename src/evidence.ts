@@ -220,6 +220,7 @@ export function evaluate(
   const result: CheckResult = {
     ...(check.executionId ? { executionId: check.executionId } : {}),
     ...(check.goScope ? { goScope: check.goScope } : {}),
+    ...(check.goWorkspace ? { goWorkspace: check.goWorkspace } : {}),
     ...(check.goBuild ? { goBuild: check.goBuild } : {}),
     ...(check.rustBuild ? { rustBuild: check.rustBuild } : {}),
     ...(check.external ? { external: check.external } : {}),
