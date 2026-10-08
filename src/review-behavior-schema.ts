@@ -444,6 +444,51 @@ export const reviewKotlinBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(24),
   }),
 });
+export const reviewScalaBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("scala-selected-bindings-v1"),
+  scalaBindings: z.strictObject({
+    moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
+    scope: z.literal("selected-captured-scala-source"),
+    state: z.enum(["collected", "partial"]),
+    callerDepthLimit: z.literal(8),
+    callerEdges:
+      reviewPythonBehaviorSchema.shape.pythonBindings.shape.callerEdges,
+    counts: reviewPythonBehaviorSchema.shape.pythonBindings.shape.counts,
+    fullImpactFallback: z.literal(true),
+    runtimeReachabilityVerified: z.literal(false),
+    nativeNameResolutionVerified: z.literal(false),
+    moduleLoadingVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "runtime-rebinding",
+          "runtime-dispatch",
+          "module-loading-unknown",
+          "build-selection-unknown",
+          "unsupported-package",
+          "unsupported-binding",
+          "unsupported-type",
+          "annotations-unknown",
+          "unsupported-pattern",
+          "unsupported-import",
+          "unsupported-function",
+          "constructor-dispatch-unknown",
+          "script-loading-unknown",
+          "unresolved-call",
+          "unresolved-import",
+          "ambiguous-definition",
+          "outside-module-roots",
+          "partial-syntax",
+          "non-scala-source",
+          "no-selected-functions",
+          "depth-limit",
+        ]),
+      )
+      .max(24),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
@@ -453,5 +498,6 @@ export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewRustBehaviorSchema,
   reviewJavaBehaviorSchema,
   reviewKotlinBehaviorSchema,
+  reviewScalaBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

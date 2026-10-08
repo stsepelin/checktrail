@@ -11,6 +11,7 @@ export function selectedGrammar(file: string) {
       kt: "kotlin",
       kts: "kotlin",
       scala: "scala",
+      sc: "scala",
       cs: "c_sharp",
       fs: "fsharp",
       fsx: "fsharp",

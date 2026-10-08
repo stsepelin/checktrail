@@ -30,6 +30,7 @@ assert.ok(
     "context-rust",
     "context-java",
     "context-kotlin",
+    "context-scala",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -47,6 +48,8 @@ if (profile === "context-java")
   process.env.CHECKTRAIL_CONTEXT_JAVA_INSTALLED = "1";
 if (profile === "context-kotlin")
   process.env.CHECKTRAIL_CONTEXT_KOTLIN_INSTALLED = "1";
+if (profile === "context-scala")
+  process.env.CHECKTRAIL_CONTEXT_SCALA_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -89,6 +92,8 @@ try {
     "gate-context-rust.test.js",
     "gate-context-java.test.js",
     "gate-context-kotlin.test.js",
+    "gate-context-scala.test.js",
+    "review-scala-boundaries-fixture.js",
     "review-kotlin-boundaries-fixture.js",
     "review-java-boundaries-fixture.js",
     "gate-host-session-readiness.test.js",
@@ -199,6 +204,9 @@ try {
           ...(profile === "context-kotlin"
             ? ["--env", "CHECKTRAIL_CONTEXT_KOTLIN_INSTALLED=1"]
             : []),
+          ...(profile === "context-scala"
+            ? ["--env", "CHECKTRAIL_CONTEXT_SCALA_INSTALLED=1"]
+            : []),
           "--read-only",
           "--cpus",
           "2",
@@ -209,7 +217,9 @@ try {
           "--tmpfs",
           ["context-go", "context-rust"].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=256m"
-            : "/tmp:rw,nosuid,nodev,size=256m",
+            : profile === "context-scala"
+              ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
+              : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
             ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
             : []),

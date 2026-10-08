@@ -905,3 +905,24 @@ jobs:
         run: docker build --file scripts/kotlin-context-tools.Dockerfile --tag checktrail-kotlin-context:synthetic-v1 .checktrail/kotlin-tools
       - name: Verify original selected Kotlin bindings and compiling guards
         run: node scripts/verify-kotlin-context-container.mjs
+
+  scala-context-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-package-cache.mjs
+      - run: node scripts/prepare-scala-tools.mjs
+      - run: node scripts/prepare-scala-context-tools.mjs
+      - name: Prepare pinned Scala context runtime
+        run: docker build --file scripts/scala-context-tools.Dockerfile --tag checktrail-scala-context:synthetic-v1 .checktrail/scala-tools
+      - name: Verify original selected Scala bindings and compiling guards
+        run: node scripts/verify-scala-context-container.mjs
