@@ -407,3 +407,5 @@ and protocol readiness; arbitrary host filesystem isolation, model freshness and
 review quality remain unverified.
 
 The opt-in [Python context profile](REVIEW-PYTHON-CONTEXT.md) retains selected literal imports, lexical bindings and bounded callers from captured source in version 8. Unknown imports and runtime dispatch retain full impact fallback; discovery executes no Python. Native adapter support and broader context/runtime acceptance remain separate.
+
+The opt-in [Go context profile](REVIEW-GO-CONTEXT.md) adds version 9 selected package/import bindings and bounded callers from captured source and explicitly selected module manifests. Native module resolution, build selection and runtime dispatch remain unverified; unknown cases retain full impact fallback. Capture executes no Go code.

@@ -1,4 +1,10 @@
 import {
+  captureGoBindings,
+  type GoSyntaxUnit,
+  type GoModuleRoot,
+} from "./review-go-bindings.js";
+import { resolveGoBindings } from "./review-go-resolution.js";
+import {
   capturePythonBindings,
   type PythonSyntaxUnit,
 } from "./review-python-bindings.js";
@@ -337,6 +343,7 @@ async function collectReviewPolyglotCore(
   primary: string[],
   diff: boolean,
   pythonRoots?: string[],
+  goRoots?: GoModuleRoot[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -355,6 +362,7 @@ async function collectReviewPolyglotCore(
       )
     : [];
   const pythonUnits: PythonSyntaxUnit[] = [];
+  const goUnits: GoSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -568,6 +576,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (goRoots && asset.grammar === "go")
+          goUnits.push(captureGoBindings(nodes, fnIds, decls, range));
         if (!bindings.has(asset.grammar)) {
           result.grammarBindings.push({
             grammar: asset.grammar,
@@ -592,6 +602,16 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (goRoots)
+    return resolveGoBindings(
+      result,
+      goUnits,
+      goRoots,
+      primary,
+      current,
+      base,
+      diff,
+    );
   return pythonRoots
     ? resolvePythonBindings(result, pythonUnits, pythonRoots, primary)
     : reviewPolyglotBehaviorSchema.parse(result);
@@ -620,5 +640,26 @@ export async function collectReviewPythonBehavior(
     await import("./review-behavior-schema.js")
   ).reviewPythonBehaviorSchema.parse(
     await collectReviewPolyglotCore(current, base, primary, diff, roots),
+  );
+}
+
+export async function collectReviewGoBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: GoModuleRoot[],
+): Promise<Extract<ReviewBehavior, { profile: "go-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewGoBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
+      roots,
+    ),
   );
 }

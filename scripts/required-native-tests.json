@@ -3324,5 +3324,43 @@
       "file": "dist/test/gate-context-python.test.js",
       "name": "context-python installed acceptance"
     }
+  ],
+  "context-go": [
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-go.test.js",
+      "name": "context-go installed acceptance"
+    }
   ]
 }

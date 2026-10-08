@@ -1,0 +1,1014 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-go-selected-bindings-v1",
+  "recordedAt": "2026-10-08T16:20:31.073633+00:00",
+  "scope": "Captured selected Go binding and caller metadata with captured module directives plus trusted synthetic native controls; no discovery execution, runtime impact narrowing, finding verification, AI inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "a87904edebac0f83ff70f2a17124e52051ef5e35",
+    "kind": "source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": "src/review-go-bindings.ts",
+        "bytes": 10350,
+        "sha256": "f4808d12f9f5b27bcb443d6f797e5c148a2866d2c0124231db7bbaeb70a6e87b"
+      },
+      {
+        "file": "src/review-go-resolution.ts",
+        "bytes": 16581,
+        "sha256": "d3b59593c2c510a34e8dcead2e3a0d99f85246bedb6c9f724d40e7488a4a8df7"
+      },
+      {
+        "file": "src/go-workspace.ts",
+        "bytes": 11371,
+        "sha256": "15a823866e9ea33a01ce489b0abfa498241de5f6ee37cbf221c79296edfcdf8e"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 8033,
+        "sha256": "3a3f66be48a5247a375523eead972692d5a2884e6412897404525c125bdd4de3"
+      },
+      {
+        "file": "src/review-behavior.ts",
+        "bytes": 28421,
+        "sha256": "4b79e35048ae9c6fbddf8c58469be9a75f2d99af15dcdbba664c5a1c8a6ff529"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 20621,
+        "sha256": "322cda2fa212d97c5e927c530b79e38e9ad53d211e24a6ab85cd7a63897b534a"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 48776,
+        "sha256": "695fc795e7ff5aa76938629f41b926dffe666e3579dff06e3b0b7d7116fb7806"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7488,
+        "sha256": "2a86684f0eed26983c8158a8a898c3e4c8a7de1d5ffd106d6895ff48f3dadcf6"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13203,
+        "sha256": "582c91184c9a7e1b349bcf511bb8a47a6b22e01892fa66bf5572b9298788fceb"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13614,
+        "sha256": "d38401329793a1b8fb89824de8d736b39dfcea5223a82c64d9cd89db477f7d36"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 32924,
+        "sha256": "b0a9d3ad30cb3fd81a08f0470d878421d95693ae611cd98b7f3e919c5f2e9000"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31631,
+        "sha256": "ab76cb368a4234f3749957cee9c24ce58e35c00724b3182b533402f2359b6c05"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 31915,
+        "sha256": "610726acd9645a0dd50d53245108641eab3d67ca7270119923df8177a578e755"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19471,
+        "sha256": "9d22c8b11e0baccd5c86df4344c54ec75a44abce8cc01c9cde0dca9898194aa1"
+      },
+      {
+        "file": "test/gate-context-go.test.ts",
+        "bytes": 33773,
+        "sha256": "3e5522f991575e77e3d7fdee3d6daeb86d9d4909fe7cdcc47bc86a008197a521"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10819,
+        "sha256": "b46fc1fb545edea41e4a0c751e1930c80409d93a93997139ea9cdf13f515ff54"
+      },
+      {
+        "file": "scripts/verify-go-context-guards.mjs",
+        "bytes": 5598,
+        "sha256": "0640a47b6ff7c9382ab5a10e9eb7fc8a7310fef84e0c30a8d934340843558f5c"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4268,
+        "sha256": "b5dd1425ee9efe38c3a6cc6c869da99b5586098b38760cc7540b8e5c2e90dc5c"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 7401,
+        "sha256": "bf8fbc59a5bbb23bae7c6c9fe10485a70e7b192bdfd822b49c7560c34a959994"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 145887,
+        "sha256": "a997a27b597bff5cbd8282d33297a874ef436da09c62cb2063787d69abb61b0c"
+      },
+      {
+        "file": "scripts/go-workspace-tools.Dockerfile",
+        "bytes": 949,
+        "sha256": "babe3fe31dc4046903c7b6168788b40cd4a5922808bbb66b150133665279e595"
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 39283,
+        "sha256": "e68eb2e505aed789a185c3e620f0b1c2a4fa8f205d561f769223d6923531d9ce"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-go.wasm",
+        "bytes": 217764,
+        "sha256": "058a4f6c7cb7156c599c2ca07af9645f03b3f655b84bced9c72816e755c7030b"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 297367,
+        "sha256": "03c5feb21aafa9525bbf0c4356170cd2f5ed46994d4aa9f699c1e31fb02322e4"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 24642,
+        "sha256": "8c1e86b2d33d7a1dcc0f18e2bdd607b2256598c1339929bc18dfae6f5957473f"
+      },
+      {
+        "file": "dist/src/review-go-bindings.js",
+        "bytes": 9609,
+        "sha256": "087ba29a70dd24312513e32c19b04d737339be153dcb7d22b75e1e3e38b20b5a"
+      },
+      {
+        "file": "dist/src/review-go-resolution.js",
+        "bytes": 16118,
+        "sha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 50037,
+        "sha256": "db5ef764ebd8e225e722ae440d67db861dfe07a52633b4a48be0fc7e50cd03a6"
+      },
+      {
+        "file": "dist/test/gate-context-go.test.js",
+        "bytes": 33436,
+        "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+      }
+    ]
+  },
+  "bounds": {
+    "contextVersion": 9,
+    "selectedPaths": 32,
+    "utf8BytesPerFile": 65536,
+    "combinedSourceBytes": 1048576,
+    "revisionViews": 64,
+    "moduleRoots": 16,
+    "moduleManifestViews": 32,
+    "callerDepth": 8,
+    "callerEdges": 4096,
+    "syntaxMetadataBytes": 262144,
+    "serializedContextBytes": 8388608,
+    "fullImpactFallback": true,
+    "runtimeReachabilityVerified": false,
+    "nativeModuleResolutionVerified": false,
+    "validationPlanUnchanged": true
+  },
+  "local": {
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "go": "go version go1.27.1 darwin/arm64"
+    },
+    "requiredAcceptance": {
+      "timeoutMs": 120000,
+      "profile": "context-go",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-go broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2102.68225,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-go fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 285.166,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-go near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 403.616666,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-go prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 140.78225,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-go stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 319.867542,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-go empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 120.940125,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-go privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1669.928625,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-go lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3760.817,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-go installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13474.608208,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-go broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "counts": {
+        "tests": 1032,
+        "suites": 0,
+        "pass": 768,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 264,
+        "todo": 0
+      },
+      "preparedPinnedGoAnalyzersOnPath": true,
+      "unselectedOptionalNativeProfilesReportedSkipped": true,
+      "requiredGoContextControlsSkipped": false,
+      "logSha256": "114636a2f06215d1e772338e132a17dcea685a9e50fe9d26abed497f3455431f"
+    }
+  },
+  "nativeLinuxArm64": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "go": "go version go1.27.1 linux/arm64",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+    },
+    "image": "sha256:d2708fac362f87f3069fb22f97182e79fb059a9b14f1b1bccd70ddff7c9efa71",
+    "compilerPreparation": {
+      "goArchive": {
+        "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz",
+        "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
+        "bytes": 67009954
+      },
+      "builderGo": "1.27.1",
+      "tools": [
+        {
+          "platform": "host",
+          "tool": "staticcheck",
+          "sha256": "3aaf8f53c645de82008f61b866481351b2d667ce5bd870db99606c3ef18ae3da",
+          "bytes": 16314034,
+          "officialReleaseBinary": false,
+          "cachedModuleBuild": true
+        },
+        {
+          "platform": "host",
+          "tool": "golangci-lint",
+          "sha256": "59baeb70d27f94606e50fb49517a471e9f202a7425a0e2d15f954f22bd592e3f",
+          "bytes": 62644018,
+          "officialReleaseBinary": false,
+          "cachedModuleBuild": true
+        },
+        {
+          "platform": "linux",
+          "tool": "staticcheck",
+          "sha256": "977355e792fc0ce064fa61eb8bf77d6dbc1661d567b001ad6b719476512c3aa6",
+          "bytes": 15798730,
+          "officialReleaseBinary": false,
+          "cachedModuleBuild": true
+        },
+        {
+          "platform": "linux",
+          "tool": "golangci-lint",
+          "sha256": "dab46c6ff06a29143d18267a2d8a276347a86957965da606c80da3fb4b60120f",
+          "bytes": 53491051,
+          "officialReleaseBinary": false,
+          "cachedModuleBuild": true
+        }
+      ]
+    },
+    "compilerTreeSha256": "a455c33fc8b6e1ace55c645d7ddf6a6aac319d7c53b5314d1b80fff9aa281727",
+    "compilerFilesVerified": 15639,
+    "network": "none",
+    "sourceMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "2g",
+      "pids": 256,
+      "sourceTemporaryFilesystemMiB": 512
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-go",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-go broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2728.573424,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-go fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 82.618761,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-go near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 204.457202,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-go prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 189.768811,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-go stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 91.526738,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-go empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 226.12568,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-go privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2210.809626,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-go lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3263.363252,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-go installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13248.390724,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-go broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-go installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "814f87342aaf464121b1797e905cf616e8a6f81788bd5781c2674c22905a0f91",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-go",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-go broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2762.223329,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-go fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 86.559671,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-go near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 219.082353,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-go prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 169.07858,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-go stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 86.787338,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-go empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 217.976974,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-go privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2271.366429,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-go lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3258.838748,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-go installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.56496,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-go broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:d2708fac362f87f3069fb22f97182e79fb059a9b14f1b1bccd70ddff7c9efa71",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "temporaryFilesystemExecutable": true
+  },
+  "compilingBindingGuardControls": {
+    "scope": "Original synthetic Go captured-binding controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "go-module-block-rejection",
+        "callback": "context-go empty acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "565882cb48ec6eab06cd5672d6a0bb44a947c27b9e4ff0bc416bd546a76538b6",
+        "mutantSha256": "3b5ddd78970f95def354253fd162d87615e1827acc0e61c4e815ff2e21c5eb9c",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-unknown-implicit-import",
+        "callback": "context-go near-miss acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+        "mutantSha256": "1097df388c2898feba4cf9d2f2a3f8b3d350f156aba99a36a4778d9d60daf509",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-parameter-shadowing",
+        "callback": "context-go near-miss acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "087ba29a70dd24312513e32c19b04d737339be153dcb7d22b75e1e3e38b20b5a",
+        "mutantSha256": "b49837cfac1dfb5c8a84b9638400aafb5793ee52b3647b9fb11dbddf688bbb92",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-local-declaration-visibility",
+        "callback": "context-go near-miss acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "087ba29a70dd24312513e32c19b04d737339be153dcb7d22b75e1e3e38b20b5a",
+        "mutantSha256": "822287d4c00a3418a8e7836941e4ef912000d8cf70b1f8ad6de71ba9cbcc6422",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-import-file-namespace",
+        "callback": "context-go near-miss acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+        "mutantSha256": "8f85448d12cdf2e279aef38adf457b1f87f0f111acfaf9d0c86e005ef9bc8e7b",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-duplicate-package-identity",
+        "callback": "context-go near-miss acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+        "mutantSha256": "17178015e575bf005c8ec872df14793c9c780d710aceb160469ebe3e793f9767",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-primary-caller-closure",
+        "callback": "context-go broken acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+        "mutantSha256": "3e23c9b32fd7b555e22b1f45706d4021d17c47ec7486c1ad1db556f1be981161",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-manifest-reconstruction-binding",
+        "callback": "context-go stale acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+        "mutantSha256": "4f6fefc52e9bf9387d9e96249886ab01384018e24077720e7ffb8e0798dafaec",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "go-summary-count-reconciliation",
+        "callback": "context-go stale acceptance",
+        "callbackSha256": "f015a901de4631cddf19b70122c7f09248056a034430d066af81404fc4f6ccf2",
+        "sourceSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+        "mutantSha256": "d847a84aef55738c921dd5d3d48287c41404d69ac74904bc3b6c6195f5fdd0be",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "preservedExpandedContextGuardControls": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "db5ef764ebd8e225e722ae440d67db861dfe07a52633b4a48be0fc7e50cd03a6",
+        "mutantSha256": "8b7b00b706284238a2b9bea0f6e14fe74c7ffb2a691d5dd7173329acffc597b1",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "db5ef764ebd8e225e722ae440d67db861dfe07a52633b4a48be0fc7e50cd03a6",
+        "mutantSha256": "a4a000861531eda0df80335ba9b23733a4cfda70c9ce1768b50879dda83c5faf",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "db5ef764ebd8e225e722ae440d67db861dfe07a52633b4a48be0fc7e50cd03a6",
+        "mutantSha256": "cf00475e9d9cda154c0a5a7eeb26da856b41617cc3e9f08b02cc41aae3b8e88d",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "hostIsolationVerified": false,
+  "modelFreshnessVerified": false,
+  "claimsVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

@@ -171,3 +171,5 @@ unchanged. Syntax, serialization and operator workflow quotas remain separately
 bounded.
 
 Opt-in context version 8 adds bounded selected Python bindings and caller metadata with explicit module roots. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md) for exact binding support, omissions, source/metadata ceilings and unchanged full-plan fallback.
+
+Opt-in context version 9 adds bounded selected Go bindings and caller metadata with source-bound module directives. See [REVIEW-GO-CONTEXT.md](REVIEW-GO-CONTEXT.md) for exact support, omissions and unchanged validation planning.

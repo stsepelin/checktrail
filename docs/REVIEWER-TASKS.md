@@ -98,3 +98,7 @@ Older context bounds and workflow defaults remain unchanged; language callers,
 consumers, notice closure and the wider runtime obligations remain open.
 
 The finite `context-python` slice adds opt-in version 8 captured lexical/import bindings, explicit module roots and bounded revision-specific callers. Original source, fresh offline installed and pinned Linux ARM64 controls are in REVIEW-PYTHON-CONTEXT.md and measurements/python-context-2026-10-08.json. Wider R1.3/R1.4 languages, assembly scope and complete Gate A acceptance remain open; runtime reachability stays unknown.
+
+The finite `context-go` slice adds opt-in version 9 captured package/import bindings, source-bound module identities and bounded revision-specific callers. REVIEW-GO-CONTEXT.md records its support and limits. Wider R1.3/R1.4 languages, assembly scope and complete Gate A acceptance remain open.
+
+Exact local and pinned Linux ARM64 source/fresh offline installation evidence and original compiling guard controls are recorded in [go-context-2026-10-08.json](measurements/go-context-2026-10-08.json). Gate A remains open.
