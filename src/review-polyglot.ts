@@ -1,4 +1,9 @@
 import {
+  captureFsharpBindings,
+  type FsharpSyntaxUnit,
+} from "./review-fsharp-bindings.js";
+import { resolveFsharpBindings } from "./review-fsharp-resolution.js";
+import {
   captureCsharpBindings,
   type CsharpSyntaxUnit,
 } from "./review-csharp-bindings.js";
@@ -380,6 +385,7 @@ async function collectReviewPolyglotCore(
   kotlinRoots?: string[],
   scalaRoots?: string[],
   csharpRoots?: string[],
+  fsharpRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -405,6 +411,7 @@ async function collectReviewPolyglotCore(
   const kotlinUnits: KotlinSyntaxUnit[] = [];
   const scalaUnits: ScalaSyntaxUnit[] = [];
   const csharpUnits: CsharpSyntaxUnit[] = [];
+  const fsharpUnits: FsharpSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -566,6 +573,9 @@ async function collectReviewPolyglotCore(
           }
           if (
             (decisions.has(node.type) ||
+              (fsharpRoots &&
+                asset.grammar === "fsharp" &&
+                node.type === "infix_expression") ||
               (scalaRoots &&
                 asset.grammar === "scala" &&
                 node.type === "infix_expression") ||
@@ -662,6 +672,11 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (
+          fsharpRoots &&
+          ["fsharp", "fsharp_signature"].includes(asset.grammar)
+        )
+          fsharpUnits.push(captureFsharpBindings(nodes, fnIds, decls, range));
         if (csharpRoots && asset.grammar === "c_sharp")
           csharpUnits.push(captureCsharpBindings(nodes, fnIds, decls, range));
         if (scalaRoots && asset.grammar === "scala")
@@ -700,6 +715,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (fsharpRoots)
+    return resolveFsharpBindings(result, fsharpUnits, fsharpRoots, primary);
   if (csharpRoots)
     return resolveCsharpBindings(result, csharpUnits, csharpRoots, primary);
   if (scalaRoots)
@@ -912,6 +929,36 @@ export async function collectReviewCsharpBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewFsharpBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<
+  Extract<ReviewBehavior, { profile: "fsharp-selected-bindings-v1" }>
+> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewFsharpBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

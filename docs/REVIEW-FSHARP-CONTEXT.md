@@ -1,0 +1,31 @@
+# Selected F# source bindings
+
+Opt-in context version 16 adds `fsharp-selected-bindings-v1` through the shared library, CLI and MCP engine. Earlier versions retain their profiles. It keeps the expanded 32-path, 64 KiB per-file, 1 MiB combined revision-source, 64-view and separate 8 MiB context limits.
+
+```json
+{
+  "schemaVersion": 16,
+  "track": "snapshot",
+  "currentSource": "working-tree",
+  "files": ["src/policy/Policy.fs"],
+  "supportFiles": ["src/consumer/Consumer.fs"],
+  "moduleRoots": ["src"],
+  "topics": []
+}
+```
+
+One to sixteen disjoint canonical relative directories select captured strings. They do not infer project files, compilation order, assemblies, reference packs or compiler symbols. Fixed pinned parsers receive immutable strings while their trees remain alive. Capture executes no F#, initializer, compiler, FSI, MSBuild, restore or repository configuration. Whole function and literal initializer ranges, touched infix decisions and callers retain base/current/index identities, including deleted consumers. Ordinary F# functions have no optional-parameter defaults in this subset; member optional parameters remain unsupported.
+
+The literal subset accepts one explicit top-level [module](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/modules) with a plain ASCII qualified name, ordinary non-recursive single-argument or unit functions, literal immutable values, explicit module aliases and literal `open` declarations. Implicit filename modules, namespaces, nested/multiple/recursive modules, types and members remain unknown. Selected modules and exports must be unique; duplicate selected module names remain ambiguous. Private declarations retain candidates only within their captured file.
+
+F# [open declarations](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/import-declarations-the-open-keyword) and [let bindings](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/functions/let-bindings) have ordered visibility. The most recent applicable `open` or binding wins, so a later open can shadow an earlier own module binding. Non-recursive locals become visible after their initializer/body; an earlier local function retains its earlier binding despite a later same-name local function. An initializer such as `let LIMIT = LIMIT` can therefore refer to an earlier literal value. Original pinned compiler witnesses exercise these rules separately from callback/qualifier shadowing. Selected source is still not a proof of actual project compilation order.
+
+Parameters and local values mask callable candidates. Own-file module qualification and aliases remain unresolved; native original controls reject the self-module names while ordinary earlier unqualified bindings compile. Literal module aliases require a uniquely selected direct target; alias chains and value-receiver qualifiers are not inferred. A missing later open blocks fallback to an earlier selected export. Calls use complete start/end identities, so an outer curried or delegate invocation cannot inherit a named inner application's target. Import/type/parameter names and inert literals/comments are not literal-value reads. Nonliteral values can mask names without claiming constant provenance.
+
+Recursion, mutable/inline/internal/generic declarations (including combined private modifiers), grouped declarations, multiple curried arguments, attributes, active/destructured patterns, loops/matches/computation/try/object scopes, lambdas, types/members, open-type declarations, operators and escaped identifiers remain unresolved or partial. Unknown value patterns cannot leave imported callable guesses visible. Any raw `[<` attribute-marker spelling, line beginning with a preprocessing marker, `.fsx` script or `.fsi` signature is marked unknown. Selected signatures are not treated as implementations. Inert marker text can also make capture partial; this is a conservative source boundary, not FSI execution or preprocessing. Intake derives the attribute/script/signature/conditional omissions again from both captured revisions, so a rebound digest cannot erase them.
+
+Reverse callers start at selected primary `.fs` functions and stop after eight levels or the edge ceiling. Syntax and metadata remain bounded. Missing/changed parser bytes, empty, malformed or exhausted capture and outside roots cannot establish complete coverage. Intake reconciles roots, call/import counts, canonical omission state and caller closure. Full impact fallback and unchanged validation planning remain mandatory; native name resolution, assembly loading and runtime reachability flags remain false. Summary views withhold source and bindings. MCP arguments grant neither disclosure nor operator execution trust.
+
+The required `context-fsharp` controls exercise original broken/fixed/near-miss native outcomes, exact aliases/ordered opens, sequential functions and value shadowing, initializer addresses, revision changes, parser prerequisites, empty/exhausted capture, exact budgets and shared CLI/MCP privacy. Native witnesses directly invoke the pinned SDK's `fsc.dll` against its fixed reference pack and FSharp.Core, with explicit references and no SDK project evaluation or restore. Reached F# runtime parent/child controls must disappear after pre-start cancellation, reached cancellation, timeout and output exhaustion; owned assembly output is removed. These are runtime lifecycle controls, not compiler-process cancellation certification.
+
+A fresh locked offline production installation runs the external original harness against the installed engine. Each compiling guard mutation must fail an original assertion; each mutated source is restored immediately, and original callbacks run again after final byte restoration. [fsharp-context-2026-10-09.json](measurements/fsharp-context-2026-10-09.json) records the measured profile. Package hashes identify tested packages before that measurement record, not a final release artifact. Optional host-native callbacks are skipped when the pinned SDK is absent; the required Linux ARM64 profile requires every callback. Wider language, assembly, runtime matrix, artifact/license and independent evaluation obligations keep Gate A open. No inference, field evaluation or comparative accuracy is measured here.

@@ -3590,5 +3590,43 @@
       "file": "dist/test/gate-context-csharp.test.js",
       "name": "context-csharp installed acceptance"
     }
+  ],
+  "context-fsharp": [
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-fsharp.test.js",
+      "name": "context-fsharp installed acceptance"
+    }
   ]
 }
