@@ -1,0 +1,3210 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "gate-a-profiles-v1",
+  "state": "selection-candidate",
+  "frozen": false,
+  "sourceCommit": "85b8802a67051d5f8d3f9a8a460a8b20a25e2056",
+  "requiredObligations": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "F1",
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12",
+    "E13",
+    "E14",
+    "E15",
+    "E16",
+    "E17"
+  ],
+  "preservedNativeBaseline": {
+    "file": "docs/gate-a-native-baseline.v1.json",
+    "sha256": "04b2ba50cb1e4516d5472ff2412478b75ec5f5803de34d62fa4b78237a1d5568",
+    "sourceFile": "scripts/required-native-tests.json",
+    "allNamedCasesRequired": true,
+    "historicalReceiptsCertifyCurrentSource": false
+  },
+  "toolVersions": {
+    "typescript": "6.0.3",
+    "eslint": "10.11.0",
+    "vitest": "5.0.1",
+    "jest": "30.5.2",
+    "playwright": "1.63.0",
+    "vue-tsc": "3.3.11",
+    "vue": "3.5.43",
+    "vue-router": "5.3.1",
+    "nuxt": "4.5.2",
+    "vite": "8.3.0",
+    "python": "3.12.13",
+    "pytest": "9.1.1",
+    "ruff": "0.16.8",
+    "mypy": "2.3.1",
+    "go": "1.27.1",
+    "staticcheck": "0.8.1",
+    "golangci-lint": "2.13.2",
+    "php": "8.5.6",
+    "laravel": "13.32.0",
+    "php-cs-fixer": "3.95.27",
+    "larastan": "3.12.3",
+    "phpstan": "2.2.14",
+    "rust": "1.98.1",
+    "java": "25.0.4+7",
+    "maven": "3.10.0",
+    "gradle": "9.8.0",
+    "kotlin": "2.4.10",
+    "scala3": "3.9.0",
+    "scala2": "2.13.18",
+    "spotbugs": "4.10.4",
+    "detekt": "2.0.0-alpha.6",
+    "dotnet": "10.0.401",
+    "dotnet-runtime": "10.0.12",
+    "fantomas": "8.0.7",
+    "ruby": "4.0.7",
+    "bundler": "4.0.20",
+    "rubocop": "1.91.0",
+    "rspec": "3.13.6",
+    "minitest": "6.0.6",
+    "swift": "6.2.0",
+    "swiftlint": "0.65.1",
+    "clang": "22.1.3",
+    "cmake": "4.2.3",
+    "terraform": "1.16.5",
+    "terraform-random": "3.9.1",
+    "helm": "4.3.0",
+    "kustomize": "5.8.2",
+    "kubeconform": "0.8.0",
+    "kubernetes": "1.36.0",
+    "mcp-sdk": "2.3.0",
+    "mcp-protocol": "2026-07-28",
+    "tree-sitter": "0.27.0"
+  },
+  "runtimeProfiles": [
+    {
+      "id": "ci-linux-node22",
+      "platform": "linux",
+      "architecture": "x64",
+      "osFamily": "Ubuntu 24.04",
+      "node": "22.23.3",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "ci-linux-node24",
+      "platform": "linux",
+      "architecture": "x64",
+      "osFamily": "Ubuntu 24.04",
+      "node": "24.21.0",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "ci-linux-node26",
+      "platform": "linux",
+      "architecture": "x64",
+      "osFamily": "Ubuntu 24.04",
+      "node": "26.10.0",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "ci-macos-node22",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osFamily": "macOS 26",
+      "node": "22.23.3",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "ci-macos-node24",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osFamily": "macOS 26",
+      "node": "24.20.0",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "ci-macos-node26",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osFamily": "macOS 26",
+      "node": "26.9.0",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "native-linux-arm64-node22",
+      "platform": "linux",
+      "architecture": "arm64",
+      "node": "22.23.2",
+      "exactOsImageIdentityRequired": true
+    },
+    {
+      "id": "windows-node22",
+      "platform": "win32",
+      "architecture": "x64",
+      "osFamily": "Windows Server 2025",
+      "node": "22.23.3",
+      "exactOsImageIdentityRequired": true
+    }
+  ],
+  "contextGrammarPins": [
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-python",
+      "commit": "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+      "commitDate": "2025-09-15T21:33:35Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-go",
+      "commit": "2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
+      "commitDate": "2025-09-15T23:33:52Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-php",
+      "commit": "58d5643086ae60e93a3746cca648363ee97c8761",
+      "commitDate": "2026-10-06T16:44:08Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-rust",
+      "commit": "77a3747266f4d621d0757825e6b11edcbf991ca5",
+      "commitDate": "2026-03-27T21:05:57Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-java",
+      "commit": "e10607b45ff745f5f876bfa3e94fbcc6b44bdc11",
+      "commitDate": "2025-09-15T03:45:52Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/fwcd/tree-sitter-kotlin",
+      "commit": "1852ea17b7f60fb3f9d84e0b1555d56b46b39fb1",
+      "commitDate": "2026-08-01T23:03:05Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-scala",
+      "commit": "db390f312a54b04b13790e1767bfac32665c17ac",
+      "commitDate": "2026-08-25T09:26:53Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-c-sharp",
+      "commit": "8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5",
+      "commitDate": "2026-09-29T08:10:04Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/ionide/tree-sitter-fsharp",
+      "commit": "aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+      "commitDate": "2026-09-12T14:19:28Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-ruby",
+      "commit": "ad907a69da0c8a4f7a943a7fe012712208da6dee",
+      "commitDate": "2026-03-10T06:27:41Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/alex-pinkus/tree-sitter-swift",
+      "commit": "171fa3bc343233fe07f5e17205aaada33d778825",
+      "commitDate": "2026-10-04T03:02:08Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-c",
+      "commit": "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+      "commitDate": "2026-04-22T08:03:16Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter/tree-sitter-cpp",
+      "commit": "c009222808634c1014f82438d4883753516a2c24",
+      "commitDate": "2026-09-17T20:01:52Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter-grammars/tree-sitter-hcl",
+      "commit": "64ad62785d442eb4d45df3a1764962dafd5bc98b",
+      "commitDate": "2026-01-17T14:42:48Z",
+      "license": "Apache-2.0",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    },
+    {
+      "repository": "https://github.com/tree-sitter-grammars/tree-sitter-yaml",
+      "commit": "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+      "commitDate": "2026-05-22T05:56:15Z",
+      "license": "MIT",
+      "selectedFrom": "official default branch observed 2026-10-07; selection is not build acceptance"
+    }
+  ],
+  "contextLimits": {
+    "selectedFiles": 32,
+    "bytesPerFile": 65536,
+    "combinedBytes": 1048576,
+    "projectRoots": 16,
+    "callerDepth": 8,
+    "runtimeGraphClaimed": false
+  },
+  "extensionProfiles": [
+    {
+      "id": "context-python",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-python.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-python broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-python fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-python near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-python prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-python stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-python empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-python privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-python lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-python installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-go",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-go.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-go broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-go fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-go near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-go prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-go stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-go empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-go privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-go lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-go installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-php",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-php.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-php broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-php fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-php near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-php prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-php stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-php empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-php privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-php lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-php installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-rust",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-rust.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-rust broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-rust fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-rust near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-rust prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-rust stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-rust empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-rust privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-rust lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-rust installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-java",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-java.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-java broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-java fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-java near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-java prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-java stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-java empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-java privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-java lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-java installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-kotlin",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-kotlin.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-kotlin broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-kotlin fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-kotlin near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-kotlin prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-kotlin stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-kotlin empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-kotlin privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-kotlin lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-kotlin installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-scala",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-scala.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-scala broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-scala fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-scala near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-scala prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-scala stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-scala empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-scala privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-scala lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-scala installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-csharp",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-csharp.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-csharp broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-csharp fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-csharp near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-csharp prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-csharp stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-csharp empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-csharp privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-csharp lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-csharp installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-fsharp",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-fsharp.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-fsharp broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-fsharp fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-fsharp near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-fsharp prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-fsharp stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-fsharp empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-fsharp privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-fsharp lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-fsharp installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-vb",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["dotnet"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-vb.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-vb broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-vb fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-vb near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-vb prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-vb stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-vb empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-vb privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-vb lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-vb installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-ruby",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-ruby.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-ruby broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-ruby fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-ruby near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-ruby prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-ruby stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-ruby empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-ruby privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-ruby lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-ruby installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-swift",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-swift.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-swift broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-swift fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-swift near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-swift prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-swift stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-swift empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-swift privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-swift lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-swift installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-c",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-c.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-c broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-c fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-c near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-c prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-c stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-c empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-c privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-c lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-c installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-cpp",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-cpp.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-cpp broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-cpp fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-cpp near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-cpp prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-cpp stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-cpp empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-cpp privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-cpp lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-cpp installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-hcl",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-hcl.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-hcl broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-hcl fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-hcl near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-hcl prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-hcl stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-hcl empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-hcl privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-hcl lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-hcl installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "context-yaml",
+      "obligations": ["M3", "M5", "R1", "E3"],
+      "deliverable": "Captured-string syntax trees retain whole touched decisions, declaration defaults, literal imports and bounded lexical callers in immutable-base/current/index revisions; dynamic dispatch and unknown imports force full impact fallback.",
+      "tools": ["tree-sitter"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-context-yaml.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "context-yaml broken acceptance",
+          "assertion": "A deleted/moved consumer or shadowed alias exposes the old complete decision and distinct before/current edges."
+        },
+        {
+          "id": "fixed",
+          "name": "context-yaml fixed acceptance",
+          "assertion": "A repaired producer and its exactly resolved consumers have revision-bound declarations and source addresses."
+        },
+        {
+          "id": "near-miss",
+          "name": "context-yaml near-miss acceptance",
+          "assertion": "Same-prefix identifiers, local shadowing, inert literals/comments, generated exclusions and unresolved runtime dispatch are never silently resolved."
+        },
+        {
+          "id": "prerequisite",
+          "name": "context-yaml prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "context-yaml stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "context-yaml empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "context-yaml privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "context-yaml lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "context-yaml installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "assembly-laravel",
+      "obligations": ["M3", "R1", "R4", "R7", "E3"],
+      "deliverable": "Route methods/middleware, global middleware order, event listener multiplicity, schedules and container bindings/tags/contextual bindings/extenders/method bindings after boot; inherited model defaults and reached scale guards.",
+      "tools": ["php", "laravel"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-assembly-laravel.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "assembly-laravel broken acceptance",
+          "assertion": "Duplicated or misordered registrations, a hidden default or package-provided caller triggers an original observable defect."
+        },
+        {
+          "id": "fixed",
+          "name": "assembly-laravel fixed acceptance",
+          "assertion": "Repair changes the native assembled inventory and removes the reached defect."
+        },
+        {
+          "id": "near-miss",
+          "name": "assembly-laravel near-miss acceptance",
+          "assertion": "Distinct methods/hosts/namespaces, legitimate multiple listeners and explicit inherited defaults remain distinct."
+        },
+        {
+          "id": "prerequisite",
+          "name": "assembly-laravel prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "assembly-laravel stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "assembly-laravel empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "assembly-laravel privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "assembly-laravel lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "assembly-laravel installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "assembly-vue-router",
+      "obligations": ["M3", "R1", "R4", "R7", "E3"],
+      "deliverable": "Nested records, aliases/redirects, named views, dynamic registrations, guard ordering and route metadata/defaults after router readiness.",
+      "tools": ["vue", "vue-router"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-assembly-vue-router.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "assembly-vue-router broken acceptance",
+          "assertion": "Duplicated or misordered registrations, a hidden default or package-provided caller triggers an original observable defect."
+        },
+        {
+          "id": "fixed",
+          "name": "assembly-vue-router fixed acceptance",
+          "assertion": "Repair changes the native assembled inventory and removes the reached defect."
+        },
+        {
+          "id": "near-miss",
+          "name": "assembly-vue-router near-miss acceptance",
+          "assertion": "Distinct methods/hosts/namespaces, legitimate multiple listeners and explicit inherited defaults remain distinct."
+        },
+        {
+          "id": "prerequisite",
+          "name": "assembly-vue-router prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "assembly-vue-router stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "assembly-vue-router empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "assembly-vue-router privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "assembly-vue-router lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "assembly-vue-router installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "assembly-nuxt",
+      "obligations": ["M3", "R1", "R4", "R7", "E3"],
+      "deliverable": "Generated page/server routes, middleware order, runtime-config boundaries and producer/consumer route/type contracts after preparation.",
+      "tools": ["nuxt", "vue", "vite"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-assembly-nuxt.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "assembly-nuxt broken acceptance",
+          "assertion": "Duplicated or misordered registrations, a hidden default or package-provided caller triggers an original observable defect."
+        },
+        {
+          "id": "fixed",
+          "name": "assembly-nuxt fixed acceptance",
+          "assertion": "Repair changes the native assembled inventory and removes the reached defect."
+        },
+        {
+          "id": "near-miss",
+          "name": "assembly-nuxt near-miss acceptance",
+          "assertion": "Distinct methods/hosts/namespaces, legitimate multiple listeners and explicit inherited defaults remain distinct."
+        },
+        {
+          "id": "prerequisite",
+          "name": "assembly-nuxt prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "assembly-nuxt stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "assembly-nuxt empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "assembly-nuxt privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "assembly-nuxt lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "assembly-nuxt installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "assembly-django",
+      "obligations": ["M3", "R1", "R4", "R7", "E3"],
+      "deliverable": "Installed-app setup, nested URL tables/namespaces, global middleware order and signal receiver multiplicity after setup.",
+      "tools": ["python"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-assembly-django.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "assembly-django broken acceptance",
+          "assertion": "Duplicated or misordered registrations, a hidden default or package-provided caller triggers an original observable defect."
+        },
+        {
+          "id": "fixed",
+          "name": "assembly-django fixed acceptance",
+          "assertion": "Repair changes the native assembled inventory and removes the reached defect."
+        },
+        {
+          "id": "near-miss",
+          "name": "assembly-django near-miss acceptance",
+          "assertion": "Distinct methods/hosts/namespaces, legitimate multiple listeners and explicit inherited defaults remain distinct."
+        },
+        {
+          "id": "prerequisite",
+          "name": "assembly-django prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "assembly-django stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "assembly-django empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "assembly-django privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "assembly-django lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "assembly-django installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "assembly-fastapi",
+      "obligations": ["M3", "R1", "R4", "R7", "E3"],
+      "deliverable": "HTTP/WebSocket routes including mounted apps and hosts, dependencies/security scopes, response models and middleware/lifespan registration order.",
+      "tools": ["python"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-assembly-fastapi.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "assembly-fastapi broken acceptance",
+          "assertion": "Duplicated or misordered registrations, a hidden default or package-provided caller triggers an original observable defect."
+        },
+        {
+          "id": "fixed",
+          "name": "assembly-fastapi fixed acceptance",
+          "assertion": "Repair changes the native assembled inventory and removes the reached defect."
+        },
+        {
+          "id": "near-miss",
+          "name": "assembly-fastapi near-miss acceptance",
+          "assertion": "Distinct methods/hosts/namespaces, legitimate multiple listeners and explicit inherited defaults remain distinct."
+        },
+        {
+          "id": "prerequisite",
+          "name": "assembly-fastapi prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "assembly-fastapi stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "assembly-fastapi empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "assembly-fastapi privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "assembly-fastapi lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "assembly-fastapi installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "javascript-extensions",
+      "obligations": ["M2", "E5"],
+      "deliverable": "ESLint language/parser/processor source participation; declared JS/TS ESM/CJS loaders; Vite library build and downstream declarations.",
+      "tools": ["typescript", "eslint", "vitest", "jest", "playwright", "vite"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-javascript-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "javascript-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "javascript-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "javascript-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "javascript-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "javascript-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "javascript-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "javascript-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "javascript-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "javascript-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "python-extensions",
+      "obligations": ["M2", "E8"],
+      "deliverable": "Namespace packages, explicit virtualenv dependencies and project-enabled pytest/mypy plugin loading with complete selected-source/test accounting.",
+      "tools": ["python", "pytest", "ruff", "mypy"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-python-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "python-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "python-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "python-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "python-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "python-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "python-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "python-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "python-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "python-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "go-extensions",
+      "obligations": ["M2", "F1", "E1"],
+      "deliverable": "Two-module go.work, ordinary/race build tags, generated source, local replacements and supported host/foreign target classification; analyzer infrastructure/source diagnostics stay distinct.",
+      "tools": ["go", "staticcheck", "golangci-lint"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-go-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "go-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "go-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "go-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "go-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "go-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "go-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "go-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "go-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "go-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "php-extensions",
+      "obligations": ["M2", "E9"],
+      "deliverable": "Explicit native extension closure, generated proxies and Laravel initialization with reflection/accessor/default evidence.",
+      "tools": ["php", "larastan", "phpstan", "php-cs-fixer", "laravel"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-php-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "php-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "php-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "php-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "php-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "php-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "php-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "php-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "php-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "php-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "rust-extensions",
+      "obligations": ["M2", "E10"],
+      "deliverable": "Host-native feature combinations/workspace/runtime tests and foreign wasm32 compilation; generated/proc-macro participation remains explicit.",
+      "tools": ["rust"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-rust-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "rust-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "rust-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "rust-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "rust-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "rust-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "rust-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "rust-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "rust-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "rust-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "jvm-wrappers",
+      "obligations": ["M2", "E11"],
+      "deliverable": "Pinned offline Maven/Gradle wrapper distributions and all wrapper artifacts; conventional two-module generated Java and JPMS producer/consumer builds.",
+      "tools": ["java", "maven", "gradle"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-jvm-wrappers.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "jvm-wrappers broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "jvm-wrappers fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "jvm-wrappers near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "jvm-wrappers prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "jvm-wrappers stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "jvm-wrappers empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "jvm-wrappers privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "jvm-wrappers lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "jvm-wrappers installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "kotlin-extensions",
+      "obligations": ["M2", "E11"],
+      "deliverable": "Mixed Java/Kotlin producer-consumer source, declared generated Kotlin and .kts compilation; executed script results remain a separately trusted check.",
+      "tools": ["java", "kotlin", "gradle"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-kotlin-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "kotlin-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "kotlin-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "kotlin-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "kotlin-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "kotlin-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "kotlin-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "kotlin-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "kotlin-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "kotlin-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "scala-extensions",
+      "obligations": ["M2", "E11"],
+      "deliverable": "Scala 2 compilation plus Scala 3 script/mixed/generated/inline/staging/macro compilation with native source and class/TASTy participation.",
+      "tools": ["java", "scala2", "scala3"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-scala-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "scala-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "scala-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "scala-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "scala-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "scala-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "scala-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "scala-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "scala-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "scala-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "jvm-analyzer-extensions",
+      "obligations": ["M2", "E11"],
+      "deliverable": "Nested/generated/library/JPMS class scopes, SpotBugs plugin/rule provenance and detekt type-resolution prerequisites and source-bound diagnostics.",
+      "tools": ["java", "spotbugs", "detekt", "kotlin"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "jvm-analyzer-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "jvm-analyzer-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "jvm-analyzer-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "jvm-analyzer-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "jvm-analyzer-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "jvm-analyzer-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "jvm-analyzer-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "jvm-analyzer-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "jvm-analyzer-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "dotnet-format-extensions",
+      "obligations": ["M2", "E12"],
+      "deliverable": "C#/VB code-style/analyzer and generated-source formatting participation with complete physical edit/report reconciliation.",
+      "tools": ["dotnet", "dotnet-runtime"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-dotnet-format-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "dotnet-format-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "dotnet-format-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "dotnet-format-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "dotnet-format-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "dotnet-format-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "dotnet-format-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "dotnet-format-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "dotnet-format-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "dotnet-format-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "dotnet-fsharp-format",
+      "obligations": ["M2", "E12"],
+      "deliverable": "Non-rewriting F# formatting with exact source/document participation and complete formatter diagnostics.",
+      "tools": ["dotnet", "fantomas"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "dotnet-fsharp-format broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "dotnet-fsharp-format fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "dotnet-fsharp-format near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "dotnet-fsharp-format prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "dotnet-fsharp-format stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "dotnet-fsharp-format empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "dotnet-fsharp-format privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "dotnet-fsharp-format lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "dotnet-fsharp-format installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "dotnet-generator-extensions",
+      "obligations": ["M2", "E12"],
+      "deliverable": "Declared incremental generators, inherited/overloaded/parameterized C#/F#/VB test methods and net10.0 project-reference producer/consumer assemblies.",
+      "tools": ["dotnet", "dotnet-runtime"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "dotnet-generator-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "dotnet-generator-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "dotnet-generator-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "dotnet-generator-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "dotnet-generator-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "dotnet-generator-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "dotnet-generator-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "dotnet-generator-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "dotnet-generator-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "ruby-extensions",
+      "obligations": ["M2", "E13"],
+      "deliverable": "Grouped/platform-conditional and evaluated-path manifest DSL with offline lock/source closure; RSpec shared examples/hooks and Minitest inherited cases.",
+      "tools": ["ruby", "bundler", "rubocop", "rspec", "minitest"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-ruby-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "ruby-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "ruby-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "ruby-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "ruby-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "ruby-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "ruby-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "ruby-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "ruby-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "ruby-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "swift-extensions",
+      "obligations": ["M2", "E14"],
+      "deliverable": "Conditional manifest branches, local package products/plugins, generated source and Linux Foundation/Swift Testing/XCTest producer/consumer scope with SDK/header provenance.",
+      "tools": ["swift", "swiftlint"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-swift-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "swift-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "swift-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "swift-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "swift-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "swift-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "swift-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "swift-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "swift-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "swift-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "cpp-extensions",
+      "obligations": ["M2", "E15"],
+      "deliverable": "Multiple static/shared/executable CMake targets, local add_subdirectory, transitive include/link interfaces and explicit sysroot/standard-library/generated-header closure.",
+      "tools": ["clang", "cmake"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-cpp-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "cpp-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "cpp-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "cpp-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "cpp-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "cpp-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "cpp-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "cpp-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "cpp-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "cpp-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "terraform-extensions",
+      "obligations": ["M2", "E16"],
+      "deliverable": "Pinned offline registry random provider and local HCL/JSON modules, variables and provider-schema diagnostics without init downloads, plan or apply.",
+      "tools": ["terraform", "terraform-random"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-terraform-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "terraform-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "terraform-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "terraform-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "terraform-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "terraform-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "terraform-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "terraform-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "terraform-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "terraform-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "helm-extensions",
+      "obligations": ["M2", "E16"],
+      "deliverable": "Local dependency/subcharts, values constraints and source-bound physical/rendered Go-template diagnostics with complete chart participation.",
+      "tools": ["helm", "kubernetes"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-helm-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "helm-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "helm-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "helm-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "helm-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "helm-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "helm-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "helm-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "helm-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "helm-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "kustomize-extensions",
+      "obligations": ["M2", "E16"],
+      "deliverable": "Local strategic/JSON patches, name/namespace/image/replica transforms and generator references reconciled against source-bound complete rendered documents.",
+      "tools": ["kustomize", "kubeconform", "kubernetes"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-kustomize-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "kustomize-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "kustomize-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "kustomize-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "kustomize-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "kustomize-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "kustomize-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "kustomize-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "kustomize-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "kustomize-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "kubernetes-extensions",
+      "obligations": ["M2", "E16"],
+      "deliverable": "Offline pinned StatefulSet, DaemonSet, Job, CronJob, Ingress, Secret, Namespace, Role, RoleBinding and persistent-volume-claim schemas in addition to existing kinds.",
+      "tools": ["kubeconform", "kubernetes"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-kubernetes-extensions.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "kubernetes-extensions broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "kubernetes-extensions fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "kubernetes-extensions near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "kubernetes-extensions prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "kubernetes-extensions stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "kubernetes-extensions empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "kubernetes-extensions privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "kubernetes-extensions lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "kubernetes-extensions installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "consumer-impact",
+      "obligations": ["M3", "M5", "R1", "R4", "E3"],
+      "deliverable": "Non-evaluating resolved imports combine conservatively with declared graphs; one native producer/consumer chain per advertised language plus shared JSON-contract consumers; a misdeclared/unknown graph retains the full plan.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-consumer-impact.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "consumer-impact broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "consumer-impact fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "consumer-impact near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "consumer-impact prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "consumer-impact stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "consumer-impact empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "consumer-impact privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "consumer-impact lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "consumer-impact installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "mutation-runners",
+      "obligations": ["M5", "R4", "E2"],
+      "deliverable": "Fresh copied mutation attempts for flat Vitest/Jest, pytest and PHPUnit fixtures; killed/survived/skipped/setup errors remain distinct and originals stay unchanged.",
+      "tools": ["vitest", "jest", "pytest", "php"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-mutation-runners.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "mutation-runners broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "mutation-runners fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "mutation-runners near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "mutation-runners prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "mutation-runners stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "mutation-runners empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "mutation-runners privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "mutation-runners lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "mutation-runners installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "host-session-readiness",
+      "obligations": ["M5", "R3", "R8", "E2", "E7"],
+      "deliverable": "Separate synthetic SDK host processes for reviewer/refuter/judge with independently observed process/session provenance, source revocation and answer hiding; no model freshness is inferred from a nonce.",
+      "tools": ["mcp-sdk", "mcp-protocol"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-host-session-readiness.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "host-session-readiness broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "host-session-readiness fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "host-session-readiness near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "host-session-readiness prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "host-session-readiness stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "host-session-readiness empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "host-session-readiness privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "host-session-readiness lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "host-session-readiness installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "multi-candidate-workflow",
+      "obligations": ["M5", "R2", "R4", "R5", "R6", "R8"],
+      "deliverable": "All candidates traverse separate refutation/native/judgment attempts, exact current addresses and reachable repairs; underlying-defect deduplication preserves paths and regression/pre-existing/follow-up scope; severity derives from consequences.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-multi-candidate-workflow.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "multi-candidate-workflow broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "multi-candidate-workflow fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "multi-candidate-workflow near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "multi-candidate-workflow prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "multi-candidate-workflow stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "multi-candidate-workflow empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "multi-candidate-workflow privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "multi-candidate-workflow lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "multi-candidate-workflow installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "confidence-provenance",
+      "obligations": ["M5", "R6", "R8"],
+      "deliverable": "Evidence tiers, source/claim/label provenance, verified versus host-declared confidence, unsupported/unreviewed/abstained states and descriptive scoring survive every shared surface without quality claims.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-confidence-provenance.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "confidence-provenance broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "confidence-provenance fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "confidence-provenance near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "confidence-provenance prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "confidence-provenance stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "confidence-provenance empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "confidence-provenance privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "confidence-provenance lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "confidence-provenance installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "attempt-archives",
+      "obligations": ["M4", "M5", "R7", "R8", "E4"],
+      "deliverable": "Every reached required native tool and optional engine-owned model attempt retains bounded physical outputs/errors/usage with replay, no credentials and complete failed/missing/cancelled attempt accounting; external host AI usage remains unknown unless independently supplied.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-attempt-archives.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "attempt-archives broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "attempt-archives fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "attempt-archives near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "attempt-archives prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "attempt-archives stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "attempt-archives empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "attempt-archives privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "attempt-archives lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "attempt-archives installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "lifecycle-platforms",
+      "obligations": ["M1", "M4", "R7", "E4"],
+      "deliverable": "Windows direct .exe/job ownership plus POSIX tree ownership through all bootstrap/body/cancel/deadline/parent-loss phases; wrappers obey the same cleanup/privacy/trust boundaries; Laravel cache paths are engine-owned.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-lifecycle-platforms.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "lifecycle-platforms broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "lifecycle-platforms fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "lifecycle-platforms near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "lifecycle-platforms prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "lifecycle-platforms stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "lifecycle-platforms empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "lifecycle-platforms privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "lifecycle-platforms lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "lifecycle-platforms installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "tasks-matrix",
+      "obligations": ["M5", "R3", "R7", "E2", "E5"],
+      "deliverable": "Standard Tasks negotiation/polling, ordinary-call fallback, worker/store, concurrent tasks, restart/expiry/cancellation/output isolation and offline client/server acceptance on every required engine runtime.",
+      "tools": ["mcp-sdk", "mcp-protocol"],
+      "runtime": "native-linux-arm64-node22",
+      "acceptanceFile": "dist/test/gate-tasks-matrix.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "tasks-matrix broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "tasks-matrix fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "tasks-matrix near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "tasks-matrix prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "tasks-matrix stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "tasks-matrix empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "tasks-matrix privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "tasks-matrix lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "tasks-matrix installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "native-license-provenance",
+      "obligations": ["M0", "M4", "E6", "E17"],
+      "deliverable": "Production/development npm, native/compiler/framework archives and container/runtime closure have pinned provenance and original license/notice audit; unknown or changed notices remain gaps.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-native-license-provenance.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "native-license-provenance broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "native-license-provenance fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "native-license-provenance near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "native-license-provenance prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "native-license-provenance stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "native-license-provenance empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "native-license-provenance privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "native-license-provenance lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "native-license-provenance installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "resource-release-readiness",
+      "obligations": ["M0", "M4", "M5", "R7", "E6"],
+      "deliverable": "Source/installed schema/package/privacy/upgrade readiness and representative small/large/polyglot/native CPU, child RSS, wall time, output and archive storage accounting; no tag or publication is performed.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-resource-release-readiness.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "resource-release-readiness broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "resource-release-readiness fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "resource-release-readiness near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "resource-release-readiness prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "resource-release-readiness stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "resource-release-readiness empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "resource-release-readiness privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "resource-release-readiness lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "resource-release-readiness installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    },
+    {
+      "id": "independent-evaluation-protocol",
+      "obligations": ["M5", "R3", "R5", "R6", "R8", "E7"],
+      "deliverable": "Opaque frozen reference/prior-workflow identities, licensed eligibility/exclusion manifests, reserved answer-hidden cohorts, independent judgments, paired incident-cluster scoring and externally measured host cost/latency intake; actual inference and held-out outcomes follow Gates A/B.",
+      "tools": [],
+      "runtime": "engine-matrix",
+      "acceptanceFile": "dist/test/gate-independent-evaluation-protocol.test.js",
+      "acceptanceCases": [
+        {
+          "id": "broken",
+          "name": "independent-evaluation-protocol broken acceptance",
+          "assertion": "An original synthetic case exercises the specified decision/scale/assembly path and fails for its named defect, with a source-bound native witness."
+        },
+        {
+          "id": "fixed",
+          "name": "independent-evaluation-protocol fixed acceptance",
+          "assertion": "The paired original repair removes the defect while preserving complete native source/case accounting."
+        },
+        {
+          "id": "near-miss",
+          "name": "independent-evaluation-protocol near-miss acceptance",
+          "assertion": "Valid adjacent syntax, identifiers, configuration, defaults, callers and unsupported profiles retain their declared outcomes."
+        },
+        {
+          "id": "prerequisite",
+          "name": "independent-evaluation-protocol prerequisite acceptance",
+          "assertion": "Absent, incompatible or changed pinned tooling remains unavailable before capture/execution."
+        },
+        {
+          "id": "stale",
+          "name": "independent-evaluation-protocol stale acceptance",
+          "assertion": "Changed source, dependency, policy or environment identity invalidates the receipt."
+        },
+        {
+          "id": "empty",
+          "name": "independent-evaluation-protocol empty acceptance",
+          "assertion": "Empty, all-skipped, omitted, malformed or exhausted evidence cannot close the profile."
+        },
+        {
+          "id": "privacy",
+          "name": "independent-evaluation-protocol privacy acceptance",
+          "assertion": "Summary/source-grant boundaries and operator-only execution trust survive library, CLI and MCP."
+        },
+        {
+          "id": "lifecycle",
+          "name": "independent-evaluation-protocol lifecycle acceptance",
+          "assertion": "Reached cancellation, timeout and output exhaustion account for descendants and owned artifacts."
+        },
+        {
+          "id": "installed",
+          "name": "independent-evaluation-protocol installed acceptance",
+          "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
+        }
+      ],
+      "implementationState": "pending",
+      "acceptanceState": "not-measured"
+    }
+  ],
+  "unresolvedFreezeDecisions": [
+    {
+      "id": "expanded-native-artifact-closures",
+      "detail": "Verify complete pinned archive/build/license closures for the selected new profiles, including Tree-sitter/WASM, Scala 2, Fantomas and random provider. A chosen version or GitHub license label is not this verification."
+    },
+    {
+      "id": "independent-reference-and-prior-workflow",
+      "detail": "Finalize the opaque private reference/prior-workflow identities and reserved cohort acquisition/adjudication protocol without opening acceptance cases. Keep names/source/reference answers outside Git."
+    },
+    {
+      "id": "matrix-and-acceptance-bindings",
+      "detail": "Bind each selected extension and every preserved profile to exact source/installed native run identities and the finite runtime matrix; currently observed CI covers four of the six Linux/macOS Node slots, not all six."
+    }
+  ],
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794"
+}

@@ -107,6 +107,10 @@ jobs:
       - name: Prepare pinned Chromium for native browser fixtures
         run: PLAYWRIGHT_BROWSERS_PATH=.checktrail/playwright-browsers node node_modules/playwright/cli.js install chromium --only-shell --with-deps
       - run: npm run check
+      - name: Audit finite inventory structure and preserved native obligations
+        run: |
+          node scripts/audit-gate-inventory.mjs .
+          node scripts/verify-required-native-tests.mjs gate-inventory
       - name: Verify concurrent init publication and fresh installed CLI
         run: |
           node scripts/verify-required-native-tests.mjs init-publication

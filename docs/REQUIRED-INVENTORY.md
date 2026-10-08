@@ -6,6 +6,40 @@ below. Exact acceptance-profile pins for the new integrations remain open, so
 Gate A's inventory is not yet frozen. No new field evaluation is authorized here.
 A required integration stays pending when its toolchain is unavailable.
 
+## Selected profile candidate
+
+[gate-a-profiles.v1.json](gate-a-profiles.v1.json) selects finite extension
+profiles, exact tool versions, runtime slots, parser source commits and named
+planned acceptance assertions. [gate-a-native-baseline.v1.json](gate-a-native-baseline.v1.json)
+preserves every required native callback at its declared source revision. These
+are obligations, rather than completed acceptance. The candidate keeps the
+remaining artifact-closure, independent-reference/protocol and native-matrix
+binding decisions visible; it is not frozen.
+
+Run `node scripts/audit-gate-inventory.mjs .` to check the immutable selection
+identity and preservation of existing callback identities. Counts are derived
+from these artifacts. Added implementation tests may extend current profiles;
+removing or renaming a preserved callback fails the audit. Changing selected
+profiles, tool pins or planned assertions requires a reviewable inventory
+revision. `--require-frozen` exits nonzero while freeze decisions remain pending.
+The audit always reports implementation acceptance and quality as unassessed:
+it cannot turn declared receipts, historical measurements or a green structural
+check into Gate A completion. Native source/installed evidence remains separate.
+
+The selected runtime matrix retains Node 22/24/26 on Linux and macOS, the
+existing Linux ARM64 native-tool runtime and Windows direct-executable runtime.
+The current hosted `checks` job exercises four Linux/macOS slots. The additional
+macOS slots and exact OS-image/tool identities still require native acceptance.
+A repository license label and a selected grammar commit do not replace the
+required source/archive/notice inspection. Context collection must remain
+non-evaluating; dynamic dispatch, unsupported syntax and exhausted capture retain
+conservative impact fallback.
+
+Original structural and compiling-control evidence is recorded in
+[gate-inventory-2026-10-07.json](measurements/gate-inventory-2026-10-07.json).
+It assesses preservation and selection coherence; it leaves implementation/native
+acceptance and quality unassessed.
+
 ## Scope reconciliation
 
 The operator clarified that the intended reviewer is the local MCP interface used
