@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src test scripts examples/javascript examples/contracts examples/package-contract examples/mutations examples/vue-router examples/nuxt examples/review eslint.config.js",
     "format:check": "prettier --check .",
-    "test": "npm run build && node --test dist/test/*.test.js",
+    "test": "npm run build && node scripts/run-test-suite.mjs",
     "check": "npm run typecheck && npm run lint && npm run test",
     "probe:mcp-tasks": "node scripts/probe-mcp-tasks.mjs"
   },

@@ -337,3 +337,9 @@ losses, certainty errors, override/tamper/incomplete-slot controls and CLI/MCP
 agreement. `verify-review-claim-probability-package.mjs` repeats the same callbacks
 from a fresh offline production installation. No external model calls or field
 reviews are part of this development profile.
+
+## Full-suite worker capacity
+
+`npm test` builds the project and runs every compiled `dist/test/*.test.js` file through `scripts/run-test-suite.mjs`. The worker pool is bounded by the smaller of four workers and the runtime's available parallelism. It stays parallel and does not select, omit, retry or weaken test callbacks. An empty compiled inventory, a worker failure or a terminated test run cannot pass.
+
+Native controls can launch additional compilers, adapters and child processes within each test worker. Bounding test-file fanout prevents a high-core host from starting a full CPU-sized set of those nested workloads at once. Dedicated required-native profile runners and independent CI jobs keep their existing scheduling and strict completion checks.
