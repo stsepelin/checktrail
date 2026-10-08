@@ -44,7 +44,7 @@ try {
   for (const file of packed.files)
     assert.match(
       file.path,
-      /^(?:dist\/src\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
+      /^(?:dist\/src\/|assets\/context-grammars\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
     );
   const consumer = path.join(temporary, "consumer");
   await installAcceptancePackage(

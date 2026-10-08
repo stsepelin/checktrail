@@ -1,4 +1,9 @@
 import { createHash } from "node:crypto";
+import { selectedGrammar } from "./review-grammar-profile.js";
+import {
+  grammarAssets,
+  grammarManifestDigest,
+} from "./review-grammar-assets.js";
 import type { ReviewBehavior } from "./review-behavior-schema.js";
 
 type Source = { path: string; sha256: string; content: string };
@@ -178,6 +183,55 @@ export function validateReviewBehavior(
       declarations.get(value.targetDeclarationId)?.revision !== value.revision
     )
       fail();
+  }
+  if (analysis.profile === "selected-syntax-v1") {
+    if (
+      analysis.grammarManifestDigest !== grammarManifestDigest ||
+      new Set(analysis.grammarBindings.map((binding) => binding.grammar))
+        .size !== analysis.grammarBindings.length
+    )
+      fail();
+    const expected = [
+      ...new Set(
+        analysis.files
+          .filter((file) => file.state === "collected")
+          .flatMap((file) => {
+            const asset = selectedGrammar(file.file);
+            return asset ? [asset.grammar] : [];
+          }),
+      ),
+    ].sort((a, b) => a.localeCompare(b, "en"));
+    if (
+      JSON.stringify(expected) !==
+      JSON.stringify(analysis.grammarBindings.map((binding) => binding.grammar))
+    )
+      fail();
+    for (const binding of analysis.grammarBindings) {
+      const asset = grammarAssets.find(
+        (asset) => asset.grammar === binding.grammar,
+      );
+      if (
+        !asset ||
+        asset.sha256 !== binding.wasmSha256 ||
+        asset.sourceCommit !== binding.sourceCommit
+      )
+        fail();
+    }
+    for (const value of analysis.decisions) {
+      checkRange(value);
+      if (
+        value.id !==
+        hash([
+          "decision",
+          value.revision,
+          value.file,
+          value.start,
+          value.end,
+          value.nodeType,
+        ])
+      )
+        fail();
+    }
   }
   for (const value of analysis.modules) {
     checkRange(value);

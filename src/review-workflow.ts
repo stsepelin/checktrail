@@ -161,7 +161,11 @@ export class ReviewWorkflowEngine {
     this.#opening++;
     try {
       const context = parseReviewContext(input);
-      if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
+      if (
+        context.schemaVersion !== 4 &&
+        context.schemaVersion !== 5 &&
+        context.schemaVersion !== 6
+      )
         throw new Error("Workflow requires modern revision citations");
       if (
         bytes({

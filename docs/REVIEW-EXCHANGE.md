@@ -298,3 +298,11 @@ Synthetic model names in tests are labels, not evidence of inference. No indepen
 held-out assessment, prior-workflow comparison, model accuracy, measured token
 cost or calibrated confidence is claimed by this feature. Those M5 evaluation
 requirements remain separate from correctness of the exchange protocol.
+
+## Context version 6
+
+Selection/context version 6 keeps version 5 working/index/mode behavior and the
+version 2 assessment/receipt contract. It opts into the fixed selected-language
+syntax profile in CONTEXT-GRAMMARS.md. Earlier context versions retain their
+existing parser contract. Wider-language calls/imports remain unresolved and do
+not establish semantic completeness or verified findings.

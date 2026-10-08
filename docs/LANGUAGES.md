@@ -380,3 +380,12 @@ base and working/index consumers, deleted/moved source and revision-specific
 edges through the shared import interface. See
 [HISTORICAL-IMPORTS.md](HISTORICAL-IMPORTS.md). Broader language, framework and
 impact obligations remain open; this does not narrow validation plans.
+
+## Selected wider-language review syntax
+
+[Context version 6](CONTEXT-GRAMMARS.md) adds original synthetic syntax-range and
+default controls for the finite pinned WASM grammars through the shared engine.
+This is captured-string context, with unresolved wider-language calls/imports and
+explicit partial states. It adds no native compiler/framework validation or
+verified findings. Visual Basic syntax, broader node forms, lexical consumers,
+complete build-tool provenance and full runtime acceptance remain required.

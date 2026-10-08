@@ -10,7 +10,7 @@ const range = {
   startLine: z.number().int().min(1).max(65537),
   endLine: z.number().int().min(1).max(65537),
 };
-export const reviewBehaviorSchema = z.strictObject({
+export const reviewJavascriptBehaviorSchema = z.strictObject({
   profile: z.literal("js-ts-syntax-v1"),
   parser: z.literal("typescript"),
   parserVersion: z.literal("6.0.3"),
@@ -135,4 +135,39 @@ export const reviewBehaviorSchema = z.strictObject({
     )
     .max(16),
 });
+export const reviewPolyglotBehaviorSchema =
+  reviewJavascriptBehaviorSchema.extend({
+    profile: z.literal("selected-syntax-v1"),
+    parser: z.literal("typescript-and-tree-sitter-wasm"),
+    parserVersion: z.literal("6.0.3/0.27.0"),
+    grammarManifestDigest: id,
+    grammarBindings: z
+      .array(
+        z.strictObject({
+          grammar: z
+            .string()
+            .regex(/^[a-z_]+$/)
+            .max(64),
+          sourceCommit: z.string().regex(/^[a-f0-9]{40}$/),
+          wasmSha256: id,
+        }),
+      )
+      .max(16),
+    decisions: z
+      .array(
+        z.strictObject({
+          ...range,
+          id,
+          nodeType: z
+            .string()
+            .regex(/^[a-z_]+$/)
+            .max(128),
+        }),
+      )
+      .max(4096),
+  });
+export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
+  reviewJavascriptBehaviorSchema,
+  reviewPolyglotBehaviorSchema,
+]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

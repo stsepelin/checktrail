@@ -288,8 +288,12 @@ export async function runProviderRefutationAssignment(
       "Refutation requires operator inference and source-disclosure grants",
     );
   const context = parseReviewContext(contextInput);
-  if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
-    throw new Error("Refutation requires context version 4 or 5");
+  if (
+    context.schemaVersion !== 4 &&
+    context.schemaVersion !== 5 &&
+    context.schemaVersion !== 6
+  )
+    throw new Error("Refutation requires context version 4, 5 or 6");
   const target = reviewCandidateSchema.parse(candidateInput);
   const binding = await receiveReview(root, context, {
     schemaVersion: 2,
@@ -335,8 +339,12 @@ async function runProviderAssignment(
     );
   const config = reviewProviderConfigSchema.parse(options.config);
   const context = parseReviewContext(contextInput);
-  if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
-    throw new Error("Provider review requires context version 4 or 5");
+  if (
+    context.schemaVersion !== 4 &&
+    context.schemaVersion !== 5 &&
+    context.schemaVersion !== 6
+  )
+    throw new Error("Provider review requires context version 4, 5 or 6");
   const hypotheses = createHypothesisPlan(context);
   const packet = adjudication
     ? createAdjudicationPacket(context, adjudication)

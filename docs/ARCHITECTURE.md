@@ -268,3 +268,10 @@ physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
 Original source, compiling guard and offline installed acceptance is
 profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
 wrappers, platforms and full provenance remain required. Gate A remains open.
+
+Context version 6 preserves the version 5 source/mode and revision-aware receipt
+contracts and adds the opt-in `selected-syntax-v1` analysis. Fixed packaged
+TypeScript/WASM parsers receive captured strings. Runtime and grammar bytes have
+embedded identity bindings; source intake validates grammar provenance and ranges
+without loading a project host. Wider-language call/import targets are unresolved,
+and native validation/claim truth stays separate. See CONTEXT-GRAMMARS.md.

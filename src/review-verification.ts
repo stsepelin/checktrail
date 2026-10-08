@@ -174,8 +174,12 @@ function inputs(
   const context = parseReviewContext(contextInput);
   const target = reviewCandidateSchema.parse(targetInput);
   const recipe = parseReviewProbe(pinned);
-  if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
-    throw new Error("Verification requires context version 4 or 5");
+  if (
+    context.schemaVersion !== 4 &&
+    context.schemaVersion !== 5 &&
+    context.schemaVersion !== 6
+  )
+    throw new Error("Verification requires context version 4, 5 or 6");
   if (recipe.family !== target.family)
     throw new Error("Verification probe family does not match target");
   if (context.evidence.track === "snapshot" && target.attribution !== "unknown")

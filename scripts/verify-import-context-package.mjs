@@ -17,7 +17,11 @@ import { fileURLToPath, URL } from "node:url";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 const profile =
   process.env.CHECKTRAIL_IMPORT_CONTEXT_PROFILE ?? "import-context";
-assert.ok(["import-context", "import-history"].includes(profile));
+assert.ok(
+  ["import-context", "import-history", "selected-syntax-context"].includes(
+    profile,
+  ),
+);
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -47,6 +51,8 @@ try {
   );
   for (const file of [
     "import-context.test.js",
+    "review-polyglot.test.js",
+    "review-polyglot-fixture.js",
     "import-history.test.js",
     "git-fixture.js",
     "helpers.js",
