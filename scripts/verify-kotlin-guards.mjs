@@ -102,12 +102,47 @@ function run(name) {
   assert.equal(result.signal, null, result.stdout + result.stderr);
   return result;
 }
+function requireTerminal(result, name, failed) {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  assert.match(
+    result.stdout,
+    new RegExp(
+      "^" + (failed ? "not ok" : "ok") + " [0-9]+ - " + escaped + "$",
+      "m",
+    ),
+    "The exact original callback must run without a skip",
+  );
+}
 const evidence = [];
+const positiveControls = new Map();
+let positiveControlExecutions = 0;
 for (const guard of guards) {
   const source = path.join(repository, "dist/src", guard.source),
     original = await readFile(source, "utf8");
-  const baseline = run(guard.name);
-  assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
+  assert.deepEqual(
+    await readFile(file),
+    originalCallback,
+    "Original callback changed before baseline reuse",
+  );
+  const positiveIdentity = JSON.stringify([
+    file,
+    guard.name,
+    source,
+    digest(original),
+    digest(originalCallback),
+  ]);
+  if (!positiveControls.has(positiveIdentity)) {
+    const baseline = run(guard.name);
+    assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
+    requireTerminal(baseline, guard.name, false);
+    positiveControls.set(positiveIdentity, {
+      name: guard.name,
+      source,
+      original,
+      callback: originalCallback,
+    });
+    positiveControlExecutions++;
+  }
   let mutant = original;
   for (const [before, after] of guard.replacements) {
     assert.equal(
@@ -134,6 +169,9 @@ for (const guard of guards) {
         result.stderr,
     );
     assert.match(result.stdout, /ERR_ASSERTION/);
+    requireTerminal(result, guard.name, true);
+    assert.match(result.stdout, /expected: 'inconclusive'/);
+    assert.match(result.stdout, /actual: 'passed'/);
     assert.doesNotMatch(
       result.stdout + result.stderr,
       /SyntaxError|ERR_MODULE_NOT_FOUND|Cannot find (?:module|package)/i,
@@ -157,8 +195,27 @@ for (const guard of guards) {
   } finally {
     await writeFile(source, original);
   }
-  const restored = run(guard.name);
+  assert.equal(
+    await readFile(source, "utf8"),
+    original,
+    "Mutated source was not restored",
+  );
+}
+for (const positive of positiveControls.values()) {
+  assert.equal(
+    await readFile(positive.source, "utf8"),
+    positive.original,
+    "Original source changed before final positive control",
+  );
+  assert.deepEqual(
+    await readFile(file),
+    positive.callback,
+    "Original callback changed before final positive control",
+  );
+  const restored = run(positive.name);
   assert.equal(restored.status, 0, restored.stdout + restored.stderr);
+  requireTerminal(restored, positive.name, false);
+  positiveControlExecutions++;
 }
 process.stdout.write(
   JSON.stringify({
@@ -167,6 +224,8 @@ process.stdout.write(
     platform: process.platform,
     arch: process.arch,
     guards: evidence,
+    positiveControlExecutions,
+    positiveControlsReusedOnlyForIdenticalBytes: true,
     sourceRestored: true,
     callbacksUnchanged: true,
     inferenceInvoked: false,
