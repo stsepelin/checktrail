@@ -3,6 +3,7 @@ import type { WindowsExecution } from "./windows-execution.js";
 import type { RustBuildSelection } from "./rust-build.js";
 import type { GoTargetEvidence, GoBuildSelection } from "./go-build.js";
 import type { GoScopePolicy } from "./go-scope-policy.js";
+import type { GoWorkspace } from "./go-workspace.js";
 import type { ExternalIdentity } from "./external-adapter.js";
 import type { RuntimeInventory } from "./runtime-inventory.js";
 export const VERSION = "0.1.0-alpha.5";
@@ -108,6 +109,7 @@ export interface ToolEvidence {
 
 export interface Check {
   goScope?: GoScopePolicy;
+  goWorkspace?: GoWorkspace;
   goBuild?: GoBuildSelection;
   rustBuild?: RustBuildSelection;
   executionId?: string;
@@ -191,6 +193,7 @@ export interface Finding {
 export interface CheckResult {
   goTarget?: GoTargetEvidence;
   goScope?: GoScopePolicy;
+  goWorkspace?: GoWorkspace;
   goBuild?: GoBuildSelection;
   rustBuild?: RustBuildSelection;
   executionId?: string;

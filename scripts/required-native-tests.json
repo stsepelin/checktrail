@@ -3172,5 +3172,43 @@
       "file": "dist/test/review-polyglot.test.js",
       "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants"
     }
+  ],
+  "go-extensions": [
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-go-extensions.test.js",
+      "name": "go-extensions installed acceptance"
+    }
   ]
 }

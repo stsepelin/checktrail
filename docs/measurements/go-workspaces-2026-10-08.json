@@ -1,0 +1,858 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-inventoried-go-workspaces-v1",
+  "recordedAt": "2026-10-08T11:52:02.880593+00:00",
+  "scope": "Finite two-member workspace, local replacement, generated/tagged/race/foreign Go controls through the shared engine; no model inference or field review.",
+  "sourceBinding": {
+    "baseCommit": "b12e93a8d84ddfe301bbf6778a7cd1a0b4547d0f",
+    "kind": "source-runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "3bf025b98a2a41cb1db3ad0efec49a1061450669c5bb1859970bdd43ba66985d",
+        "bytes": 37657
+      },
+      {
+        "file": "schemas/plan.schema.json",
+        "sha256": "67c10dad51f1bf503a7497ca91bad84603822cf6fb2de5038135f520147a1205",
+        "bytes": 15399
+      },
+      {
+        "file": "schemas/report.schema.json",
+        "sha256": "2318c6882399fffb7e311ffc3f9857615087736008c97d0961a004a8b4a93785",
+        "bytes": 39003
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "f9ca795ebc20c8c94fcb0c7fc8cca228d0ea7271c4515ea4fac9fe55788720cd",
+        "bytes": 140823
+      },
+      {
+        "file": "scripts/verify-required-native-tests.mjs",
+        "sha256": "da776e9323b06ddddb9eb764874c948d4d08ddf459e20d5b7200e76b7d3a7474",
+        "bytes": 2515
+      },
+      {
+        "file": "src/adapters.ts",
+        "sha256": "fb81050c519facd8ff927c5a058e499ef498c2b0a4423c4a2f111268c0f0a43c",
+        "bytes": 22424
+      },
+      {
+        "file": "src/evidence.ts",
+        "sha256": "8fa5da4ddd7e966e2bcb15aa8c0c9bb4135cc9e460c92706f98f9f5e6c1a25dd",
+        "bytes": 19587
+      },
+      {
+        "file": "src/go-build.ts",
+        "sha256": "e81562713c14ed523be38d7db1aa91966332720810862f1554e83f5917448728",
+        "bytes": 9578
+      },
+      {
+        "file": "src/go-scope.ts",
+        "sha256": "916dab5bfd0ca860c962dfb6535f699de377f2c2954e8ce540706e57dbfe70a3",
+        "bytes": 6232
+      },
+      {
+        "file": "src/schemas.ts",
+        "sha256": "ca78940f504424f65ab255a9ca7a65f0b0000ac1ff5d31c2644f02c1b2d150ac",
+        "bytes": 13587
+      },
+      {
+        "file": "src/types.ts",
+        "sha256": "cc007392300b37fc5a2c5024fda883fceb3563aaab3e096284ccfb4677c02cce",
+        "bytes": 5460
+      },
+      {
+        "file": "scripts/go-workspace-tools.Dockerfile",
+        "sha256": "babe3fe31dc4046903c7b6168788b40cd4a5922808bbb66b150133665279e595",
+        "bytes": 949
+      },
+      {
+        "file": "scripts/verify-go-workspace-guards.mjs",
+        "sha256": "c4f5f39ddb44ba0cebf1e962896a78b804a7361c61acf00c3111296db6a9984f",
+        "bytes": 4234
+      },
+      {
+        "file": "scripts/verify-go-workspace-package.mjs",
+        "sha256": "132f93d46ef37df97a52c71a069486f8ceba215c725a47f0b20f8a001aaa21c7",
+        "bytes": 6130
+      },
+      {
+        "file": "src/go-workspace.ts",
+        "sha256": "faad0c4eb47cc75ee2940c78095c562170b703df98effb84f2fd4d8bee9af549",
+        "bytes": 10575
+      },
+      {
+        "file": "test/gate-go-extensions.test.ts",
+        "sha256": "edc80b1265456981f4aa7f601063733ab169d7d419082b61c3aa5f882c88aab3",
+        "bytes": 23437
+      },
+      {
+        "file": "test/go-workspace-fixture.ts",
+        "sha256": "ca17bd5f67513aa23dbb2c2c3d32df413dfb2dc88d1d890b2c6718da6c5faafd",
+        "bytes": 2832
+      },
+      {
+        "file": "package.json",
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171",
+        "bytes": 1995
+      },
+      {
+        "file": "package-lock.json",
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "bytes": 258687
+      },
+      {
+        "file": "dist/src/go-workspace.js",
+        "sha256": "45e0f3c40d03c5c5bd2dd775ee9a8439b4bcd2a23458ee8c0a55f31c95eb7234",
+        "bytes": 10937
+      },
+      {
+        "file": "dist/src/go-scope.js",
+        "sha256": "fc014553774a8a24649eaafdbb15adf40b9f358d7c9a8c6f0fae18e6d6de407c",
+        "bytes": 6790
+      },
+      {
+        "file": "dist/test/gate-go-extensions.test.js",
+        "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "bytes": 24150
+      },
+      {
+        "file": "dist/test/go-workspace-fixture.js",
+        "sha256": "a840482bc26c9e408f7b6966114a4cccb8b4bca03b7143c66e074877b7a09e79",
+        "bytes": 2770
+      }
+    ]
+  },
+  "hostRuntime": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "go": "1.27.1",
+    "staticcheck": "0.8.1",
+    "golangciLint": "2.13.2"
+  },
+  "hostRequiredProfile": {
+    "timeoutMs": 300000,
+    "profile": "go-extensions",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 1024,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "go-extensions broken acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2202.083541,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "go-extensions fixed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1217.263417,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "go-extensions near-miss acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 7099.322958,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "go-extensions prerequisite acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 105.329792,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "go-extensions stale acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 470.220708,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "go-extensions empty acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 152.441958,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "go-extensions privacy acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5879.444292,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "go-extensions lifecycle acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 6986.8715,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "go-extensions installed acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 30851.722792,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "go-extensions broken acceptance",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions fixed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions near-miss acceptance",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions prerequisite acceptance",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions stale acceptance",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions empty acceptance",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions privacy acceptance",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions lifecycle acceptance",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "go-extensions installed acceptance",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "compilingMutationControls": {
+    "scope": "Original synthetic inventoried-workspace controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "workspace-command-binding",
+        "callback": "go-extensions fixed acceptance",
+        "callbackSha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "sourceSha256": "45e0f3c40d03c5c5bd2dd775ee9a8439b4bcd2a23458ee8c0a55f31c95eb7234",
+        "mutantSha256": "cc49f031c600f3050b26348c05d1c3938408fa7d98df734325581eede79b1f42",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "workspace-file-digest",
+        "callback": "go-extensions broken acceptance",
+        "callbackSha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "sourceSha256": "45e0f3c40d03c5c5bd2dd775ee9a8439b4bcd2a23458ee8c0a55f31c95eb7234",
+        "mutantSha256": "2cad3521e75d266e738da2f256b7bf32b773402c043e41936a60d88ce60d2965",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "workspace-module-digest",
+        "callback": "go-extensions fixed acceptance",
+        "callbackSha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "sourceSha256": "45e0f3c40d03c5c5bd2dd775ee9a8439b4bcd2a23458ee8c0a55f31c95eb7234",
+        "mutantSha256": "01bc6a896e8d1eea68fec72ca7482a30e35b01b470fddf126ab460a7a2fb023f",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "workspace-native-main",
+        "callback": "go-extensions empty acceptance",
+        "callbackSha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "sourceSha256": "fc014553774a8a24649eaafdbb15adf40b9f358d7c9a8c6f0fae18e6d6de407c",
+        "mutantSha256": "e9deefa5363f59ac616285b1e8cd428e40ee70d34bb12fe1431c3a558c367d30",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "workspace-native-selection",
+        "callback": "go-extensions empty acceptance",
+        "callbackSha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4",
+        "sourceSha256": "fc014553774a8a24649eaafdbb15adf40b9f358d7c9a8c6f0fae18e6d6de407c",
+        "mutantSha256": "0fd414196788fc42a8b66653aaf9c481a5b467d6239999079e004898d5e97d8b",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "requiredLinuxRuntime": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "go": "go version go1.27.1 linux/arm64",
+      "staticcheck": "staticcheck 2026.2.1 (0.8.1)",
+      "golangciLint": "2.13.2",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+    },
+    "image": "sha256:669afac8b8edf50f4d5f676749c9f19fb0e50a4bd6abd01a763adc5a83eef978",
+    "network": "none",
+    "sourceMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "4g",
+      "pids": 512,
+      "sourceTemporaryFilesystemMiB": 2048
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "go-extensions",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "go-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7680.706311,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "go-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 809.574223,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "go-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19796.862209,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "go-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 370.407581,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "go-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 284.657215,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "go-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 147.533679,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "go-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4711.098834,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "go-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5727.417658,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "go-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24620.280812,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "go-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "c329acad265d1cc4bcbb98ab3d168f589b720ecbc8745703720f6a4b6a4afcd3",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "go-extensions",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e16131c0a626fac1e6fb30f1cc57c7a52afbccf2ee30bd4f1295316dc37c95f4"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "go-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6353.105911,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "go-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 548.075891,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "go-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12631.85752,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "go-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 108.298412,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "go-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 147.914473,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "go-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 74.729512,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "go-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2673.967408,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "go-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5484.22239,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "go-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1034.75418,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "go-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "go-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:669afac8b8edf50f4d5f676749c9f19fb0e50a4bd6abd01a763adc5a83eef978",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "toolPreparation": {
+    "goArchive": {
+      "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz",
+      "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
+      "bytes": 67009954
+    },
+    "builderGo": "1.27.1",
+    "tools": [
+      {
+        "platform": "host",
+        "tool": "staticcheck",
+        "sha256": "3aaf8f53c645de82008f61b866481351b2d667ce5bd870db99606c3ef18ae3da",
+        "bytes": 16314034,
+        "officialReleaseBinary": false,
+        "cachedModuleBuild": true
+      },
+      {
+        "platform": "host",
+        "tool": "golangci-lint",
+        "sha256": "59baeb70d27f94606e50fb49517a471e9f202a7425a0e2d15f954f22bd592e3f",
+        "bytes": 62644018,
+        "officialReleaseBinary": false,
+        "cachedModuleBuild": true
+      },
+      {
+        "platform": "linux",
+        "tool": "staticcheck",
+        "sha256": "977355e792fc0ce064fa61eb8bf77d6dbc1661d567b001ad6b719476512c3aa6",
+        "bytes": 15798730,
+        "officialReleaseBinary": false,
+        "cachedModuleBuild": true
+      },
+      {
+        "platform": "linux",
+        "tool": "golangci-lint",
+        "sha256": "dab46c6ff06a29143d18267a2d8a276347a86957965da606c80da3fb4b60120f",
+        "bytes": 53491051,
+        "officialReleaseBinary": false,
+        "cachedModuleBuild": true
+      }
+    ]
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 996,
+    "passed": 732,
+    "failed": 0,
+    "cancelled": 0,
+    "explicitOptionalSkips": 264,
+    "requiredGoControlsSkipped": 0
+  },
+  "inventory": {
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "baselinePreserved": true
+  },
+  "unacceptedDevelopmentAttempts": [
+    {
+      "condition": "Temporary native test binaries on a noexec container mount",
+      "accepted": false,
+      "resolution": "Use a bounded executable temporary filesystem for explicitly trusted native execution."
+    },
+    {
+      "condition": "Unlocked preparation cached a transitive range rather than the production lock entry",
+      "accepted": false,
+      "resolution": "Prepare the exact consumer lock with npm ci; fresh verification remains offline."
+    }
+  ],
+  "remaining": [
+    "Full runtime matrix and platform lifecycle acceptance remain open.",
+    "Native compiler/analyzer dependency and license closure remains a separate obligation.",
+    "External Go module-cache content is not audited by this workspace source binding."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

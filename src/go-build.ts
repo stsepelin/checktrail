@@ -88,6 +88,7 @@ export function goExecutionGroup(
   check: Pick<Check, "id" | "project" | "scope"> & {
     goBuild?: GoBuildSelection | undefined;
     goScope?: Check["goScope"] | undefined;
+    goWorkspace?: Check["goWorkspace"] | undefined;
   },
 ): string {
   return JSON.stringify([
@@ -99,6 +100,18 @@ export function goExecutionGroup(
     check.goScope,
     check.goBuild?.target ?? null,
     check.goBuild?.repetition?.total,
+    ...(check.goWorkspace
+      ? [
+          [
+            check.goWorkspace.file,
+            check.goWorkspace.modules.map(({ directory, module, role }) => [
+              directory,
+              module,
+              role,
+            ]),
+          ],
+        ]
+      : []),
   ]);
 }
 export function goExecutionId(

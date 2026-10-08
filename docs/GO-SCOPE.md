@@ -31,9 +31,10 @@ coverage or assertion quality. Formatting still checks all inventoried Go files
 directly and does not require package selection.
 
 Go commands use `GOPROXY=off`, `GOTOOLCHAIN=local`, `GOFLAGS=-mod=readonly`,
-`GOWORK=off`, `GOENV=off` and an empty `GOCACHEPROG`. This keeps module validation
-independent of a surrounding workspace, persisted Go settings and custom cache
-programs. Cross-module workspace builds need a separate explicit profile. Native
+`GOENV=off` and an empty `GOCACHEPROG`. `GOWORK=off` isolates modules from ambient
+workspaces; an inventoried workspace instead receives a bounded explicit binding
+from [GO-WORKSPACES.md](GO-WORKSPACES.md). Persisted Go settings and custom cache
+programs remain disabled. Native
 compiler/analyzer caches may be used; test result caching remains disabled.
 Dependencies and toolchains must be prepared separately.
 
