@@ -1,25 +1,40 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import process from "node:process";
 import { URL } from "node:url";
-import { runRequiredTests } from "./required-test-evidence.mjs";
-assert.equal(process.argv.length, 3, "Pass a required native test profile");
+import {
+  runRequiredProfiles,
+  runRequiredTests,
+} from "./required-test-evidence.mjs";
+assert.ok(
+  process.argv.length >= 3,
+  "Pass one or more required native test profiles",
+);
 const profiles = JSON.parse(
   await readFile(
     new URL("./required-native-tests.json", import.meta.url),
     "utf8",
   ),
 );
-const profile = process.argv[2];
+const fullSuite = process.argv[2] === "--full-suite";
+const selection = process.argv.slice(fullSuite ? 3 : 2);
 assert.ok(
-  Object.hasOwn(profiles, profile),
-  "Unknown required native test profile",
+  selection.length > 0,
+  "Pass one or more required native test profiles",
 );
+assert.equal(new Set(selection).size, selection.length, "Duplicate profile");
+for (const profile of selection) {
+  assert.ok(
+    Object.hasOwn(profiles, profile),
+    "Unknown required native test profile",
+  );
+}
 // node:test applies this timeout to the whole selected file, not each callback.
-const timeoutMs =
-  profile === "dotnet-method"
-    ? 600000
-    : [
+const timeoutMs = selection.includes("dotnet-method")
+  ? 600000
+  : fullSuite ||
+      selection.some((profile) =>
+        [
           "dotnet-build",
           "gradle",
           "detekt",
@@ -39,9 +54,29 @@ const timeoutMs =
           "ruby-tools-surfaces",
           "ruby-tools-cancellation",
           "swift-tools",
-        ].includes(profile)
-      ? 300000
-      : 120000;
-const report = await runRequiredTests(profiles[profile], { timeoutMs });
-process.stdout.write(JSON.stringify({ profile, timeoutMs, ...report }) + "\n");
+        ].includes(profile),
+      )
+    ? 300000
+    : 120000;
+// Retain the single-profile report used by installed acceptance harnesses.
+const additionalFiles = fullSuite
+  ? (await readdir(new URL("../dist/test/", import.meta.url)))
+      .filter((name) => name.endsWith(".test.js"))
+      .map((name) => new URL(`../dist/test/${name}`, import.meta.url))
+  : [];
+assert.ok(
+  !fullSuite || additionalFiles.length > 0,
+  "Compiled full suite is empty",
+);
+const report =
+  selection.length === 1 && !fullSuite
+    ? {
+        profile: selection[0],
+        ...(await runRequiredTests(profiles[selection[0]], { timeoutMs })),
+      }
+    : await runRequiredProfiles(profiles, selection, {
+        timeoutMs,
+        additionalFiles,
+      });
+process.stdout.write(JSON.stringify({ timeoutMs, ...report }) + "\n");
 process.exitCode = report.complete ? 0 : 1;

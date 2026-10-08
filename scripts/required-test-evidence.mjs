@@ -49,9 +49,13 @@ const fingerprint = async (file) => {
 const sameFingerprint = (left, right) =>
   JSON.stringify(left) === JSON.stringify(right);
 
-export async function runRequiredTests(
-  requirements,
-  { timeoutMs = 120000, maxTerminalEvents = MAX_EVENTS } = {},
+async function executeRequiredTests(
+  expected,
+  {
+    timeoutMs = 120000,
+    maxTerminalEvents = MAX_EVENTS,
+    additionalFiles = [],
+  } = {},
 ) {
   assert.ok(
     Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 600000,
@@ -63,31 +67,14 @@ export async function runRequiredTests(
       maxTerminalEvents <= MAX_EVENTS,
     "Required terminal ledger must be bounded",
   );
-  assert.ok(
-    Array.isArray(requirements) &&
-      requirements.length > 0 &&
-      requirements.length <= MAX_REQUIREMENTS,
-  );
-  const expected = await Promise.all(
-    requirements.map(async ({ file, name }) => {
-      assert.ok(
-        typeof file === "string" &&
-          file.length > 0 &&
-          file.length <= 4096 &&
-          typeof name === "string" &&
-          name.length > 0 &&
-          name.length <= MAX_NAME_CHARACTERS,
-      );
-      const resolved = await realpath(file).catch((error) => {
-        if (error.code === "ENOENT") return path.resolve(file);
-        throw error;
-      });
-      return { file: resolved, name };
-    }),
+  assert.ok(Array.isArray(additionalFiles));
+  const requiredFiles = new Set(expected.map((item) => item.file));
+  const optionalFiles = new Set(
+    await Promise.all(additionalFiles.map((file) => realpath(file))),
   );
   const expectedKeys = new Set(expected.map(key));
   assert.equal(expectedKeys.size, expected.length);
-  const files = [...new Set(expected.map((item) => item.file))];
+  const files = [...new Set([...requiredFiles, ...optionalFiles])];
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
@@ -96,11 +83,12 @@ export async function runRequiredTests(
   const terminalEvents = [];
   const problems = [];
   let passed = 0;
+  let optionalSkipped = 0;
   let terminalEventCount = 0;
   if (before.every((item) => item.state === "present"))
     for await (const { type, data } of run({
       files,
-      concurrency: 1,
+      concurrency: additionalFiles.length > 0 ? true : 1,
       timeout: timeoutMs,
       execArgv: [],
     })) {
@@ -161,11 +149,19 @@ export async function runRequiredTests(
         });
       }
       if (skipped || todo) {
-        if (retained)
+        if (
+          skipped &&
+          !todo &&
+          optionalFiles.has(file) &&
+          !requiredFiles.has(file)
+        ) {
+          optionalSkipped++;
+        } else if (retained) {
           problems.push({
             name: data.name.slice(0, MAX_NAME_CHARACTERS),
             reason: "skipped-or-todo",
           });
+        }
         continue;
       }
       if (type === "test:pass" && !suite) passed++;
@@ -219,6 +215,9 @@ export async function runRequiredTests(
     required: expected.length,
     problems,
     complete: problems.length === 0,
+    ...(additionalFiles.length > 0
+      ? { files: files.length, optionalSkipped }
+      : {}),
     ledger: {
       schemaVersion: 1,
       scope:
@@ -231,4 +230,67 @@ export async function runRequiredTests(
       cases,
     },
   };
+}
+
+async function resolveRequirements(requirements) {
+  assert.ok(
+    Array.isArray(requirements) &&
+      requirements.length > 0 &&
+      requirements.length <= MAX_REQUIREMENTS,
+  );
+  const expected = await Promise.all(
+    requirements.map(async ({ file, name }) => {
+      assert.ok(
+        typeof file === "string" &&
+          file.length > 0 &&
+          file.length <= 4096 &&
+          typeof name === "string" &&
+          name.length > 0 &&
+          name.length <= MAX_NAME_CHARACTERS,
+      );
+      const resolved = await realpath(file).catch((error) => {
+        if (error.code === "ENOENT") return path.resolve(file);
+        throw error;
+      });
+      return { file: resolved, name };
+    }),
+  );
+  assert.equal(new Set(expected.map(key)).size, expected.length);
+  return expected;
+}
+
+export async function runRequiredTests(requirements, options = {}) {
+  return executeRequiredTests(await resolveRequirements(requirements), options);
+}
+
+export async function runRequiredProfiles(profiles, selection, options = {}) {
+  assert.ok(
+    Array.isArray(selection) &&
+      selection.length > 0 &&
+      selection.length <= MAX_REQUIREMENTS,
+  );
+  assert.equal(new Set(selection).size, selection.length, "Duplicate profile");
+  const selected = [];
+  const requirements = new Map();
+  // Validate every manifest before executing any selected file.
+  for (const profile of selection) {
+    assert.ok(
+      typeof profile === "string" && Object.hasOwn(profiles, profile),
+      "Unknown required native test profile",
+    );
+    const expected = await resolveRequirements(profiles[profile]);
+    selected.push({ profile, required: expected.length });
+    for (const item of expected) requirements.set(key(item), item);
+  }
+  // Every obligation needs a retained terminal event. Keep the batch bounded
+  // by the ledger while preserving the narrower single-profile limit.
+  assert.ok(
+    requirements.size <= MAX_EVENTS,
+    "Required profile batch exceeds terminal ledger bound",
+  );
+  const report = await executeRequiredTests(
+    [...requirements.values()],
+    options,
+  );
+  return { profiles: selected, ...report };
 }

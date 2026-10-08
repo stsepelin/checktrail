@@ -12,11 +12,21 @@ tag pushes retain verification. A newly opened PR triggers its checks even when
 its initial branch push did not. Each PR has its own workflow concurrency group;
 a newer merge-candidate run supersedes older runs for that PR, including runs
 caused by predecessor updates. This does not serialize jobs within a run or other
-PRs. Non-PR runs use unique run IDs, so main, tags and independent pushes do not
-cancel each other. Native profiles, matrix entries and assertions are unchanged.
+PRs. Branch pushes also share a group per branch, so a newer push cancels an older
+run for that branch, including main during consecutive merges. Different
+branches and tag refs have separate groups; running tag verification is not
+cancelled by a newer push. Native profiles, matrix entries and assertions are unchanged.
 
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
+
+The macOS matrix uses the commit-pinned `setup-php` 2.40.0-beta build-cache path
+for PHP 8.5. The previous pinned action failed before tests on both current main
+and the replacement PR run, leaving no PHP executable. The upstream cache path
+tries prebuilt packages before Homebrew and fails if it cannot establish the
+requested PHP version. Linux retains its existing action pin. This is a beta
+setup dependency; current hosted acceptance must verify it. It does not replace
+test execution or supply cached test results.
 
 ## Acceptance time budgets
 
@@ -25,10 +35,12 @@ suite, required profiles and fresh installed-package checks. The required-profil
 runner applies its timeout to each entire selected test file. Sequential controls
 therefore share that file budget even when each control has its own timeout.
 
-The `dotnet-method` profile allows ten minutes per selected file, and
-`review-benchmark-multi` allows five. Existing per-control and engine execution
-limits remain in force. All other profiles retain their existing file budgets;
-any timeout still fails acceptance and leaves unobserved required cases visible.
+Full-suite runs allow five minutes per file, including additional files outside
+the selected required profiles. The `dotnet-method` profile allows ten minutes
+per selected file. Existing per-control and engine execution limits remain in
+force. Standalone profiles retain their existing file budgets, including five
+minutes for `review-benchmark-multi`; any timeout still fails acceptance and
+leaves unobserved required cases visible.
 
 The sealed multi-claim guard runner allows at most two minutes for each selected
 original, mutant and restored callback. Those callbacks cover several paired
@@ -69,6 +81,39 @@ passing suite from a passing test. A similarly named test, a test in another
 file, or a passing unit test cannot stand in for a missing native regression.
 Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
+
+Several profiles may be passed to one invocation. The runner validates all
+selected manifests before starting tests, then executes the union of their files
+once, with file execution still sequential. Identical file/name obligations
+shared by profiles are checked once; duplicates within a profile remain errors.
+The batch lists each selected profile and its requirement count, while `required`
+is the number of unique obligations. A failed batch establishes none of its
+selected profiles as complete. The single-profile JSON format remains available
+for fresh installed-package harnesses. Each profile retains its 256-obligation
+limit; a batch may contain at most 1,024 unique obligations, subject to the
+1,024-event terminal ledger. Every selected file, including additional full-suite
+files, is fingerprinted before and after execution. Unavailable or changed bytes,
+truncated names and truncated ledgers fail acceptance even when observed tests pass.
+
+The main matrix uses `--full-suite` with its prepared profiles after type checking,
+linting and building. This executes every compiled `dist/test/*.test.js` file
+with the ordinary Node test runner's file parallelism, and checks the selected
+profiles in the same fresh invocation, replacing the
+separate ordinary suite and repeated source-profile passes. Explicit optional
+skips from files outside the selected profiles are counted as `optionalSkipped`;
+no such skip counts as a pass. A failure anywhere, or a skip/TODO anywhere in a
+required file, fails the run. Missing and duplicate required cases still fail.
+The separate Tasks-enabled MCP run, mutation checks and fresh package checks
+remain separate executions. No saved test-result cache supplies acceptance.
+
+GitHub also supports [parallel steps and background steps](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsparallel)
+within one runner. The pinned actionlint 1.7.12 does not support those keys;
+[upstream support is proposed](https://github.com/rhysd/actionlint/pull/694).
+Do not bypass workflow linting to enable them. After checker support is pinned
+and verified, independent setup in disjoint directories is a candidate for
+parallel steps. Tests that mutate compiled files must finish before source or
+package checks read those files. Step parallelism does not increase runner
+capacity, and CPU-heavy steps still compete for the same runner's resources.
 
 The main CI matrix prepares and requires `core`, `javascript`, `python`,
 `frameworks`, `go` (including `go-matrix`), `php-tools`, `php-review`, `laravel`,
