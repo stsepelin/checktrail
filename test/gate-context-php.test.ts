@@ -28,6 +28,7 @@ import { createHypothesisPlan } from "../src/review-hypotheses.js";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
+import { callIdentityFixture } from "./review-call-identity-fixture.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 const broken =
   "<?php\nnamespace Rules;\nconst FALLBACK = 'grant';\nfunction Decision(string $value = FALLBACK): bool { return str_starts_with($value, FALLBACK); }\n";
@@ -255,6 +256,7 @@ test("context-php fixed acceptance", native, async (t) => {
   );
 });
 test("context-php near-miss acceptance", native, async (t) => {
+  await callIdentityFixture(t, "php", true);
   const { root } = await original(t, near);
   assert.deepEqual(await witness(root), [true, false, false, false]);
   const cases: [string, string][] = [

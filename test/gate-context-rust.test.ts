@@ -28,6 +28,7 @@ import { createHypothesisPlan } from "../src/review-hypotheses.js";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
+import { callIdentityFixture } from "./review-call-identity-fixture.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 
 const broken =
@@ -267,6 +268,7 @@ test("context-rust fixed acceptance", native, async (t) => {
   );
 });
 test("context-rust near-miss acceptance", native, async (t) => {
+  await callIdentityFixture(t, "rust", true);
   const { root } = await original(t, near);
   assert.deepEqual(await witness(root), [true, false, false, false]);
   const cases: [string, string][] = [

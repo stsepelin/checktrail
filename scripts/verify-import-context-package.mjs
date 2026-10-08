@@ -76,6 +76,7 @@ try {
     "import-history.test.js",
     "git-fixture.js",
     "helpers.js",
+    "review-call-identity-fixture.js",
     "gate-context-python.test.js",
     "gate-context-go.test.js",
     "gate-context-php.test.js",
