@@ -167,8 +167,61 @@ export const reviewPolyglotBehaviorSchema =
       )
       .max(4096),
   });
+export const reviewPythonBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("python-selected-bindings-v1"),
+  pythonBindings: z.strictObject({
+    moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
+    scope: z.literal("selected-captured-python-source"),
+    state: z.enum(["collected", "partial"]),
+    callerDepthLimit: z.literal(8),
+    callerEdges: z
+      .array(
+        z.strictObject({
+          revision: range.revision,
+          targetFunctionId: id,
+          callerFunctionId: id,
+          depth: z.number().int().min(1).max(8),
+        }),
+      )
+      .max(4096),
+    counts: z.strictObject({
+      calls: z.number().int().min(0).max(4096),
+      resolvedCalls: z.number().int().min(0).max(4096),
+      unresolvedCalls: z.number().int().min(0).max(4096),
+      imports: z.number().int().min(0).max(512),
+      resolvedImports: z.number().int().min(0).max(512),
+      unresolvedImports: z.number().int().min(0).max(512),
+    }),
+    fullImpactFallback: z.literal(true),
+    runtimeReachabilityVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "runtime-rebinding",
+          "runtime-dispatch",
+          "unsupported-binding",
+          "unsupported-scope-mutation",
+          "wildcard-import",
+          "unsupported-import",
+          "unresolved-call",
+          "unresolved-import",
+          "binding-cycle",
+          "depth-limit",
+          "budget-exhausted",
+          "partial-syntax",
+          "no-selected-functions",
+          "outside-module-roots",
+          "non-python-source",
+        ]),
+      )
+      .max(16),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
+  reviewPythonBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

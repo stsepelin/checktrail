@@ -184,7 +184,10 @@ export function validateReviewBehavior(
     )
       fail();
   }
-  if (analysis.profile === "selected-syntax-v1") {
+  if (
+    analysis.profile === "selected-syntax-v1" ||
+    analysis.profile === "python-selected-bindings-v1"
+  ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||
       new Set(analysis.grammarBindings.map((binding) => binding.grammar))

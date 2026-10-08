@@ -3286,5 +3286,43 @@
       "file": "dist/test/gate-host-session-readiness.test.js",
       "name": "host-session-readiness installed acceptance"
     }
+  ],
+  "context-python": [
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-python.test.js",
+      "name": "context-python installed acceptance"
+    }
   ]
 }

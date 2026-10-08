@@ -145,7 +145,7 @@ test("hypothesis planning rejects empty duplicate unknown family selection and f
     supportFiles: [],
     topics: [],
   });
-  assert.throws(() => createHypothesisPlan(legacy), /version 4, 5, 6 or 7/);
+  assert.throws(() => createHypothesisPlan(legacy), /version 4, 5, 6, 7 or 8/);
 });
 
 const variants = [

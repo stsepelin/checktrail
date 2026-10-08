@@ -1,3 +1,5 @@
+import { validatePythonModuleRoots } from "./review-python-bindings.js";
+import { pythonCallerClosure } from "./review-python-resolution.js";
 import { createHash } from "node:crypto";
 import { constants } from "node:fs";
 import { open } from "node:fs/promises";
@@ -8,6 +10,7 @@ import { commitId, reviewChanges, reviewGit } from "./review-diff.js";
 import {
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
+  reviewPythonBehaviorSchema,
 } from "./review-behavior-schema.js";
 import { validateReviewBehavior } from "./review-behavior-validation.js";
 import {
@@ -107,6 +110,22 @@ const expandedSelectionSchema = z.discriminatedUnion("track", [
     supportFiles: z.array(filePath).max(31),
   }),
 ]);
+const pythonSelectionSchema = z.discriminatedUnion("track", [
+  expandedSelectionSchema.options[0].extend({
+    schemaVersion: z.literal(8),
+    moduleRoots: z
+      .array(z.union([z.literal("."), filePath]))
+      .min(1)
+      .max(16),
+  }),
+  expandedSelectionSchema.options[1].extend({
+    schemaVersion: z.literal(8),
+    moduleRoots: z
+      .array(z.union([z.literal("."), filePath]))
+      .min(1)
+      .max(16),
+  }),
+]);
 export const reviewSelectionSchema = z.union([
   legacySelectionSchema,
   assignmentSelectionSchema,
@@ -115,6 +134,7 @@ export const reviewSelectionSchema = z.union([
   completeSelectionSchema,
   polyglotSelectionSchema,
   expandedSelectionSchema,
+  pythonSelectionSchema,
 ]);
 const sourceFileSchema = z.strictObject({
   path: filePath,
@@ -257,6 +277,11 @@ const expandedContextSchema = polyglotContextSchema.extend({
     }),
   ]),
 });
+const pythonContextSchema = expandedContextSchema.extend({
+  schemaVersion: z.literal(8),
+  selection: pythonSelectionSchema,
+  analysis: reviewPythonBehaviorSchema,
+});
 export const reviewContextSchema = z.union([
   legacyContextSchema,
   assignmentContextSchema,
@@ -265,6 +290,7 @@ export const reviewContextSchema = z.union([
   completeContextSchema,
   polyglotContextSchema,
   expandedContextSchema,
+  pythonContextSchema,
 ]);
 export type ReviewContext = z.infer<typeof reviewContextSchema>;
 const metadata = {
@@ -479,6 +505,9 @@ const completeness = {
 const polyglotInstructions =
   completeInstructions +
   " Fixed bundled WASM grammars index captured source syntax. Wider-language calls are unresolved; imports, runtime reachability and semantic completeness are not inferred.";
+const pythonInstructions =
+  completeInstructions +
+  " Fixed bundled WASM grammars capture syntax. Python literal selected-module and lexical caller bindings are bounded to declared roots and eight caller levels. Runtime values, dispatch, rebinding and reachability remain unverified; unknown imports and calls retain full impact fallback. Other language bindings remain unresolved.";
 const hash = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
 function selectedPaths(
@@ -488,7 +517,8 @@ function selectedPaths(
     selection.schemaVersion === 4 ||
     selection.schemaVersion === 5 ||
     selection.schemaVersion === 6 ||
-    selection.schemaVersion === 7
+    selection.schemaVersion === 7 ||
+    selection.schemaVersion === 8
     ? [...selection.files, ...selection.supportFiles].sort()
     : selection.files;
 }
@@ -551,11 +581,100 @@ async function sourceBytes(root: string, file: string): Promise<Buffer> {
 export function parseReviewContext(input: unknown): ReviewContext {
   bounded(
     input,
-    (input as { schemaVersion?: unknown } | null)?.schemaVersion === 7
+    (input as { schemaVersion?: unknown } | null)?.schemaVersion === 7 ||
+      (input as { schemaVersion?: unknown } | null)?.schemaVersion === 8
       ? 8 * 1024 * 1024
       : 1024 * 1024,
   );
   const parsed = reviewContextSchema.parse(input);
+  if (parsed.schemaVersion === 8) {
+    validatePythonModuleRoots(parsed.selection.moduleRoots);
+    if (
+      JSON.stringify(parsed.analysis.pythonBindings.moduleRoots) !==
+      JSON.stringify(parsed.selection.moduleRoots)
+    )
+      throw new Error("Python binding module roots differ");
+    const bindings = parsed.analysis.pythonBindings;
+    const pythonFiles = new Set(
+      parsed.analysis.files
+        .filter(
+          (file) => file.state === "collected" && file.file.endsWith(".py"),
+        )
+        .map((file) => JSON.stringify([file.revision, file.file])),
+    );
+    const calls = parsed.analysis.calls.filter((call) =>
+      pythonFiles.has(JSON.stringify([call.revision, call.file])),
+    );
+    const imports = parsed.analysis.modules.filter((module) =>
+      pythonFiles.has(JSON.stringify([module.revision, module.file])),
+    );
+    const resolvedCalls = calls.filter(
+      (call) => call.resolution === "lexical-binding",
+    ).length;
+    const resolvedImports = imports.filter(
+      (module) => module.resolution === "selected",
+    ).length;
+    const counts = {
+      calls: calls.length,
+      resolvedCalls,
+      unresolvedCalls: calls.length - resolvedCalls,
+      imports: imports.length,
+      resolvedImports,
+      unresolvedImports: imports.length - resolvedImports,
+    };
+    if (JSON.stringify(counts) !== JSON.stringify(bindings.counts))
+      throw new Error("Python binding counts do not reconcile");
+    const mandatory = [
+      "unselected-source",
+      "runtime-rebinding",
+      "runtime-dispatch",
+    ];
+    if (counts.unresolvedCalls) mandatory.push("unresolved-call");
+    if (counts.unresolvedImports) mandatory.push("unresolved-import");
+    if (parsed.analysis.files.some((file) => file.state !== "collected"))
+      mandatory.push("partial-syntax");
+    if (parsed.analysis.files.some((file) => !file.file.endsWith(".py")))
+      mandatory.push("non-python-source");
+    if (
+      !parsed.analysis.functions.some(
+        (fn) =>
+          fn.file.endsWith(".py") && parsed.selection.files.includes(fn.file),
+      )
+    )
+      mandatory.push("no-selected-functions");
+    if (
+      mandatory.some(
+        (value) =>
+          !bindings.omissions.includes(
+            value as (typeof bindings.omissions)[number],
+          ),
+      ) ||
+      JSON.stringify(bindings.omissions) !==
+        JSON.stringify([...new Set(bindings.omissions)].sort()) ||
+      bindings.state !==
+        (bindings.omissions.some(
+          (value) =>
+            ![
+              "unselected-source",
+              "runtime-rebinding",
+              "runtime-dispatch",
+            ].includes(value),
+        )
+          ? "partial"
+          : "collected")
+    )
+      throw new Error("Python binding omissions do not reconcile");
+    const closure = pythonCallerClosure(
+      parsed.analysis,
+      parsed.selection.files.filter((file) => file.endsWith(".py")),
+    );
+    if (
+      (closure.exhausted && !bindings.omissions.includes("depth-limit")) ||
+      JSON.stringify(closure.edges) !==
+        JSON.stringify(parsed.analysis.pythonBindings.callerEdges)
+    )
+      throw new Error("Python caller closure does not reconcile");
+  }
   unique(parsed.selection.files);
   unique(parsed.selection.topics);
   unique(parsed.files.map((file) => file.path));
@@ -571,7 +690,9 @@ export function parseReviewContext(input: unknown): ReviewContext {
               ? revisionInstructions
               : parsed.schemaVersion === 5
                 ? completeInstructions
-                : polyglotInstructions) ||
+                : parsed.schemaVersion === 8
+                  ? pythonInstructions
+                  : polyglotInstructions) ||
     JSON.stringify(parsed.guidance) !==
       JSON.stringify(
         retrieveGuidance({
@@ -595,7 +716,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
   const paths = selectedPaths(parsed.selection);
   unique(paths);
   if (
-    paths.length > (parsed.schemaVersion === 7 ? 32 : 16) ||
+    paths.length >
+      (parsed.schemaVersion === 7 || parsed.schemaVersion === 8 ? 32 : 16) ||
     JSON.stringify(paths) !== JSON.stringify(captured)
   )
     throw new Error("Review source selection does not reconcile");
@@ -614,7 +736,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
   if (
     parsed.schemaVersion === 5 ||
     parsed.schemaVersion === 6 ||
-    parsed.schemaVersion === 7
+    parsed.schemaVersion === 7 ||
+    parsed.schemaVersion === 8
   ) {
     if (parsed.selection.currentSource !== parsed.evidence.currentSource)
       throw new Error("Review current source mismatch");
@@ -644,14 +767,20 @@ export function parseReviewContext(input: unknown): ReviewContext {
     if (content.length > 65536 || hash(content) !== file.sha256)
       throw new Error("Review source digest mismatch");
   }
-  if (bytes > (parsed.schemaVersion === 7 ? 1048576 : 131072))
+  if (
+    bytes >
+    (parsed.schemaVersion === 7 || parsed.schemaVersion === 8
+      ? 1048576
+      : 131072)
+  )
     throw new Error("Review source total exceeds limits");
   if (
     parsed.schemaVersion === 3 ||
     parsed.schemaVersion === 4 ||
     parsed.schemaVersion === 5 ||
     parsed.schemaVersion === 6 ||
-    parsed.schemaVersion === 7
+    parsed.schemaVersion === 7 ||
+    parsed.schemaVersion === 8
   ) {
     validateReviewBehavior(
       parsed.analysis,
@@ -671,6 +800,10 @@ export async function createReviewContext(
 ): Promise<ReviewContext> {
   bounded(input, 32768);
   const selection = reviewSelectionSchema.parse(input);
+  if (selection.schemaVersion === 8) {
+    validatePythonModuleRoots(selection.moduleRoots);
+    selection.moduleRoots.sort();
+  }
   unique(selection.files);
   unique(selection.topics);
   selection.files.sort();
@@ -680,12 +813,16 @@ export async function createReviewContext(
     selection.schemaVersion === 4 ||
     selection.schemaVersion === 5 ||
     selection.schemaVersion === 6 ||
-    selection.schemaVersion === 7
+    selection.schemaVersion === 7 ||
+    selection.schemaVersion === 8
   )
     selection.supportFiles.sort();
   const paths = selectedPaths(selection);
   unique(paths);
-  if (paths.length > (selection.schemaVersion === 7 ? 32 : 16))
+  if (
+    paths.length >
+    (selection.schemaVersion === 7 || selection.schemaVersion === 8 ? 32 : 16)
+  )
     throw new Error("Combined review file limit exceeded");
   const before = await inventory(root);
   const git =
@@ -696,10 +833,13 @@ export async function createReviewContext(
           paths,
           selection.schemaVersion === 5 ||
             selection.schemaVersion === 6 ||
-            selection.schemaVersion === 7
+            selection.schemaVersion === 7 ||
+            selection.schemaVersion === 8
             ? selection.currentSource
             : "working-tree",
-          selection.schemaVersion === 7 ? 1048576 : 131072,
+          selection.schemaVersion === 7 || selection.schemaVersion === 8
+            ? 1048576
+            : 131072,
         )
       : undefined;
   let bytes = (git?.baseFiles ?? []).reduce(
@@ -719,7 +859,8 @@ export async function createReviewContext(
     if (
       (selection.schemaVersion === 5 ||
         selection.schemaVersion === 6 ||
-        selection.schemaVersion === 7) &&
+        selection.schemaVersion === 7 ||
+        selection.schemaVersion === 8) &&
       selection.currentSource === "index"
     ) {
       const source = git?.indexFiles.find((source) => source.path === file);
@@ -736,7 +877,12 @@ export async function createReviewContext(
     const data = source.bytes;
     workingModes.set(file, source.mode);
     bytes += data.length;
-    if (bytes > (selection.schemaVersion === 7 ? 1048576 : 131072))
+    if (
+      bytes >
+      (selection.schemaVersion === 7 || selection.schemaVersion === 8
+        ? 1048576
+        : 131072)
+    )
       throw new Error("Review source total exceeds limits");
     const content = new TextDecoder("utf-8", {
       fatal: true,
@@ -747,23 +893,33 @@ export async function createReviewContext(
     files.push({ path: file, sha256: hash(data), content });
   }
   const analysis =
-    selection.schemaVersion === 3 ||
-    selection.schemaVersion === 4 ||
-    selection.schemaVersion === 5 ||
-    selection.schemaVersion === 6 ||
-    selection.schemaVersion === 7
+    selection.schemaVersion === 8
       ? await (
-          selection.schemaVersion === 6 || selection.schemaVersion === 7
-            ? (await import("./review-polyglot.js"))
-                .collectReviewPolyglotBehavior
-            : (await import("./review-behavior.js")).collectReviewBehavior
-        )(
+          await import("./review-polyglot.js")
+        ).collectReviewPythonBehavior(
           files,
           git?.baseFiles ?? [],
           selection.files,
           selection.track === "diff",
+          selection.moduleRoots,
         )
-      : undefined;
+      : selection.schemaVersion === 3 ||
+          selection.schemaVersion === 4 ||
+          selection.schemaVersion === 5 ||
+          selection.schemaVersion === 6 ||
+          selection.schemaVersion === 7
+        ? await (
+            selection.schemaVersion === 6 || selection.schemaVersion === 7
+              ? (await import("./review-polyglot.js"))
+                  .collectReviewPolyglotBehavior
+              : (await import("./review-behavior.js")).collectReviewBehavior
+          )(
+            files,
+            git?.baseFiles ?? [],
+            selection.files,
+            selection.track === "diff",
+          )
+        : undefined;
   const after = await inventory(before.root);
   if (before.fingerprint !== after.fingerprint)
     throw new Error("Source changed while preparing review context");
@@ -771,7 +927,8 @@ export async function createReviewContext(
   if (
     (selection.schemaVersion === 5 ||
       selection.schemaVersion === 6 ||
-      selection.schemaVersion === 7) &&
+      selection.schemaVersion === 7 ||
+      selection.schemaVersion === 8) &&
     selection.currentSource === "working-tree"
   ) {
     for (const file of files) {
@@ -790,7 +947,8 @@ export async function createReviewContext(
   const modeEvidence =
     selection.schemaVersion === 5 ||
     selection.schemaVersion === 6 ||
-    selection.schemaVersion === 7
+    selection.schemaVersion === 7 ||
+    selection.schemaVersion === 8
       ? {
           currentSource: selection.currentSource,
           fileModes: paths.map((file) => ({
@@ -823,7 +981,9 @@ export async function createReviewContext(
               ? revisionInstructions
               : selection.schemaVersion === 5
                 ? completeInstructions
-                : polyglotInstructions,
+                : selection.schemaVersion === 8
+                  ? pythonInstructions
+                  : polyglotInstructions,
     guidance: retrieveGuidance({
       schemaVersion: 1,
       checks: [],
@@ -844,7 +1004,9 @@ export async function createReviewContext(
                 ? completeContextSchema.omit({ contextDigest: true })
                 : selection.schemaVersion === 6
                   ? polyglotContextSchema.omit({ contextDigest: true })
-                  : expandedContextSchema.omit({ contextDigest: true })
+                  : selection.schemaVersion === 7
+                    ? expandedContextSchema.omit({ contextDigest: true })
+                    : pythonContextSchema.omit({ contextDigest: true })
         ).parse({
           ...common,
           evidence: git
@@ -866,14 +1028,16 @@ export async function createReviewContext(
                   selection: "operator-selected-primary-and-support-files",
                   behavior:
                     selection.schemaVersion === 6 ||
-                    selection.schemaVersion === 7
+                    selection.schemaVersion === 7 ||
+                    selection.schemaVersion === 8
                       ? "bounded-selected-syntax"
                       : "bounded-js-ts-syntax",
                   callers: "selected-context-only",
                   declarations: "selected-context-only",
                   ...(selection.schemaVersion === 5 ||
                   selection.schemaVersion === 6 ||
-                  selection.schemaVersion === 7
+                  selection.schemaVersion === 7 ||
+                  selection.schemaVersion === 8
                     ? { fileModes: "selected-regular-files" }
                     : {}),
                 },
@@ -918,7 +1082,8 @@ export async function receiveReview(
     (context.schemaVersion === 4 ||
       context.schemaVersion === 5 ||
       context.schemaVersion === 6 ||
-      context.schemaVersion === 7) !==
+      context.schemaVersion === 7 ||
+      context.schemaVersion === 8) !==
     (assessment.schemaVersion === 2)
   )
     throw new Error("Review assessment and context version mismatch");
@@ -927,7 +1092,8 @@ export async function receiveReview(
     (context.schemaVersion === 4 ||
       context.schemaVersion === 5 ||
       context.schemaVersion === 6 ||
-      context.schemaVersion === 7) &&
+      context.schemaVersion === 7 ||
+      context.schemaVersion === 8) &&
     context.evidence.track === "snapshot" &&
     assessment.observations.some((item) => item.attribution !== "unknown")
   )
@@ -1004,7 +1170,8 @@ export async function receiveReview(
   let matchesCurrent = current.fingerprint === context.sourceFingerprint;
   for (const file of (context.schemaVersion === 5 ||
     context.schemaVersion === 6 ||
-    context.schemaVersion === 7) &&
+    context.schemaVersion === 7 ||
+    context.schemaVersion === 8) &&
   context.evidence.currentSource === "index"
     ? []
     : context.files) {
@@ -1024,6 +1191,7 @@ export async function receiveReview(
     context.schemaVersion === 5 ||
     context.schemaVersion === 6 ||
     context.schemaVersion === 7 ||
+    context.schemaVersion === 8 ||
     (context.schemaVersion === 2 && context.evidence.track === "diff")
   ) {
     try {

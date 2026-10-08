@@ -3,7 +3,6 @@ import path from "node:path";
 import { z } from "zod";
 import type ts from "typescript";
 import {
-  reviewBehaviorSchema,
   reviewJavascriptBehaviorSchema,
   type ReviewBehavior,
 } from "./review-behavior-schema.js";
@@ -49,7 +48,7 @@ export async function collectReviewBehavior(
   primary: string[],
   diff: boolean,
   maxViews: 32 | 64 = 32,
-): Promise<ReviewBehavior> {
+): Promise<Extract<ReviewBehavior, { profile: "js-ts-syntax-v1" }>> {
   // Only this explicit profile loads the bundled parser. No consumer parser,
   // config, plugin, filesystem host, emit or project code participates.
   const ts = (await import("typescript")).default;
@@ -778,5 +777,5 @@ export async function collectReviewBehavior(
             .max(64),
         })
         .parse(result)
-    : reviewBehaviorSchema.parse(result);
+    : reviewJavascriptBehaviorSchema.parse(result);
 }

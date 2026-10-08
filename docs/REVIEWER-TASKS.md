@@ -96,3 +96,5 @@ compiling mutation checks. See
 [review-context-limits-2026-10-08.json](measurements/review-context-limits-2026-10-08.json).
 Older context bounds and workflow defaults remain unchanged; language callers,
 consumers, notice closure and the wider runtime obligations remain open.
+
+The finite `context-python` slice adds opt-in version 8 captured lexical/import bindings, explicit module roots and bounded revision-specific callers. Original source, fresh offline installed and pinned Linux ARM64 controls are in REVIEW-PYTHON-CONTEXT.md and measurements/python-context-2026-10-08.json. Wider R1.3/R1.4 languages, assembly scope and complete Gate A acceptance remain open; runtime reachability stays unknown.

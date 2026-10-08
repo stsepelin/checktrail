@@ -6,33 +6,61 @@ import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const callback = new URL(
-  "../dist/test/review-context-limits.test.js",
+  "../dist/test/gate-context-python.test.js",
   import.meta.url,
 );
 const originalCallback = await readFile(callback);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
   {
-    id: "combined-source-reconstruction-bound",
-    file: "review.js",
-    name: "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
-    before:
-      "bytes >\n        (parsed.schemaVersion === 7 || parsed.schemaVersion === 8\n            ? 1048576\n            : 131072)",
+    id: "python-default-enclosing-scope",
+    file: "review-python-bindings.js",
+    name: "context-python near-miss acceptance",
+    before: 'scope && within(node, field(parent, "body"))',
+    after: "scope",
+  },
+  {
+    id: "python-unsupported-scope-mutation",
+    file: "review-python-resolution.js",
+    name: "context-python near-miss acceptance",
+    before: "if (current.unknown)",
+    after: "if (false)",
+  },
+  {
+    id: "python-reassignment-ambiguity",
+    file: "review-python-resolution.js",
+    name: "context-python near-miss acceptance",
+    before: "if (values.length > 1)",
+    after: "if (false)",
+  },
+  {
+    id: "python-class-namespace-boundary",
+    file: "review-python-resolution.js",
+    name: "context-python near-miss acceptance",
+    before: 'previous.kind === "function" && current?.kind === "class"',
     after: "false",
   },
   {
-    id: "per-file-utf8-reconstruction-bound",
-    file: "review.js",
-    name: "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
-    before: "content.length > 65536 || hash(content) !== file.sha256",
-    after: "hash(content) !== file.sha256",
+    id: "python-primary-caller-closure",
+    file: "review-python-resolution.js",
+    name: "context-python broken acceptance",
+    before: "analysis.functions.filter((fn) => primary.includes(fn.file))",
+    after: "analysis.functions.filter(() => false)",
   },
   {
-    id: "shared-selected-path-accounting",
+    id: "python-summary-count-reconciliation",
     file: "review.js",
-    name: "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
-    before: "selected: declaredScope.size",
-    after: "selected: 16",
+    name: "context-python stale acceptance",
+    before: "JSON.stringify(counts) !== JSON.stringify(bindings.counts)",
+    after: "false",
+  },
+  {
+    id: "python-root-reconstruction-binding",
+    file: "review.js",
+    name: "context-python stale acceptance",
+    before:
+      "JSON.stringify(parsed.analysis.pythonBindings.moduleRoots) !==\n            JSON.stringify(parsed.selection.moduleRoots)",
+    after: "false",
   },
 ];
 const environment = { ...process.env };
@@ -121,7 +149,7 @@ for (const control of controls) {
 process.stdout.write(
   JSON.stringify({
     scope:
-      "Original synthetic expanded-context controls; no model inference or field evaluation",
+      "Original synthetic Python captured-binding controls; no model inference or field evaluation",
     controls: evidence,
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

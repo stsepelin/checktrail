@@ -41,3 +41,5 @@ quality, actual host isolation or field readiness.
 Revision-specific macOS and pinned Linux ARM64 source/fresh-install controls and
 compiling mutations are recorded in
 [review-context-limits-2026-10-08.json](measurements/review-context-limits-2026-10-08.json).
+
+Version 8 keeps these expanded capture/context limits and adds bounded selected Python binding metadata with explicit module roots. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md); older versions retain their original semantics.

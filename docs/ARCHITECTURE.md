@@ -275,3 +275,5 @@ TypeScript/WASM parsers receive captured strings. Runtime and grammar bytes have
 embedded identity bindings; source intake validates grammar provenance and ranges
 without loading a project host. Wider-language call/import targets are unresolved,
 and native validation/claim truth stays separate. See CONTEXT-GRAMMARS.md.
+
+Context version 8 adds selected Python lexical/import bindings from the captured native AST while it remains alive. Declared module roots bind same-revision modules; static shadowing and unresolved scope/dispatch retain conservative metadata. Derived binding counts, omission state and caller closure reconcile at context intake. Full impact fallback and unchanged validation planning remain explicit; capture executes no project code. See REVIEW-PYTHON-CONTEXT.md.
