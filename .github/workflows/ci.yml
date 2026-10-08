@@ -78,6 +78,7 @@ jobs:
           .checktrail/go-tools/bin/staticcheck -version
           GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
           .checktrail/go-tools/bin/golangci-lint version --short
+          echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
           mkdir -p .checktrail/php-tools
