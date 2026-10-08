@@ -399,3 +399,9 @@ The opt-in version 7 context profile supports the finite expanded source budget
 through library/CLI/MCP with separate incomplete syntax and operator quota states.
 See [REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md); broader lexical/import
 profiles and runtime acceptance remain open.
+
+The [one-assignment host bridge](REVIEW-HOST-LEASES.md) exposes a startup-scoped
+MCP packet lease through the shared library. Original synthetic SDK host processes
+exercise stage separation, source revocation and bounded cleanup. This is process
+and protocol readiness; arbitrary host filesystem isolation, model freshness and
+review quality remain unverified.

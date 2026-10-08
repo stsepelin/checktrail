@@ -23,10 +23,13 @@ assert.ok(
     "import-history",
     "selected-syntax-context",
     "review-context-limits",
+    "host-session-readiness",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
   process.env.CHECKTRAIL_CONTEXT_LIMITS_INSTALLED = "1";
+if (profile === "host-session-readiness")
+  process.env.CHECKTRAIL_HOST_SESSION_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -62,6 +65,9 @@ try {
     "import-history.test.js",
     "git-fixture.js",
     "helpers.js",
+    "gate-host-session-readiness.test.js",
+    "review-host-process-fixture.js",
+    "review-workflow-fixture.js",
   ])
     await cp(
       path.join(repository, "dist/test", file),
@@ -146,6 +152,9 @@ try {
           ...(profile === "review-context-limits"
             ? ["--env", "CHECKTRAIL_CONTEXT_LIMITS_INSTALLED=1"]
             : []),
+          ...(profile === "host-session-readiness"
+            ? ["--env", "CHECKTRAIL_HOST_SESSION_INSTALLED=1"]
+            : []),
           "--read-only",
           "--cpus",
           "2",
@@ -179,7 +188,7 @@ try {
       tarballSha256,
       offlineProductionInstall: true,
       lifecycleScriptsExecuted: false,
-      installedCliEvaluated: true,
+      installedCliEvaluated: profile !== "host-session-readiness",
       installedRuntimeEvaluated: true,
       harnessOutsideInstalledPackage: true,
       acceptanceClientDependencies: dependencies,
