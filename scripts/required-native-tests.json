@@ -3062,5 +3062,31 @@
       "file": "dist/test/gate-inventory.test.js",
       "name": "finite inventory keeps pending freeze decisions and declared receipts separate from feature acceptance"
     }
+  ],
+  "laravel-cache": [
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload"
+    },
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent"
+    },
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass"
+    },
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents"
+    },
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets"
+    },
+    {
+      "file": "dist/test/laravel-cache.test.js",
+      "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust"
+    }
   ]
 }
