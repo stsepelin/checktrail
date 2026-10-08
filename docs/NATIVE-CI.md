@@ -20,6 +20,14 @@ cancelled by a newer push. Native profiles, matrix entries and assertions are un
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
+The macOS matrix uses the commit-pinned `setup-php` 2.40.0-beta build-cache path
+for PHP 8.5. The previous pinned action failed before tests on both current main
+and the replacement PR run, leaving no PHP executable. The upstream cache path
+tries prebuilt packages before Homebrew and fails if it cannot establish the
+requested PHP version. Linux retains its existing action pin. This is a beta
+setup dependency; current hosted acceptance must verify it. It does not replace
+test execution or supply cached test results.
+
 ## Acceptance time budgets
 
 The main OS/Node matrix has a 75-minute job limit, including preparation, the full
