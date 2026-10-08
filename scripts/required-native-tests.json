@@ -3088,5 +3088,51 @@
       "file": "dist/test/laravel-cache.test.js",
       "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust"
     }
+  ],
+  "review-workflow-multi": [
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow processes broken fixed and near-miss targets independently without upgrading claim truth"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow rejects skipping switching or repeating targets and operator grants in commands"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow shares exact zero and exhausted native call budgets across targets"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow shrinks the remaining native output allowance and records reached bytes"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow counts retries against shared assignment limits and rejects reused host sessions"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate workflow retains completed coverage when later source becomes stale and empty reviews abstain"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate audit replays every native receipt and rejects altered coverage receipts limits and totals"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate CLI and MCP share the bounded workflow and keep startup grants outside tool input"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate audit accounts zero-call later attempts without treating unfinished targets as completed"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate closure during later native execution retains prior coverage and final cleanup accounting"
+    },
+    {
+      "file": "dist/test/review-workflow-multi.test.js",
+      "name": "all-candidate audit tolerates concurrent status snapshots while the later native receipt is pending"
+    }
   ]
 }

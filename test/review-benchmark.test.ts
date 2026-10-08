@@ -86,6 +86,29 @@ test("benchmark freezes complete paired synthetic protocols before writes and re
         },
       })),
     },
+    {
+      ...f.plan,
+      arms: f.plan.arms.map((arm) => ({
+        ...arm,
+        settings: { ...arm.settings, candidateScope: "all" },
+      })),
+    },
+    {
+      ...f.plan,
+      arms: f.plan.arms.map((arm) => ({
+        ...arm,
+        settings: {
+          ...arm.settings,
+          workflowLimits: {
+            ...limits,
+            maxWorkflows: 1,
+            maxAssignments: 65,
+            maxNativeCalls: 96,
+            maxNativeOutputBytes: 65536,
+          },
+        },
+      })),
+    },
     { ...f.plan, profile: "held-out-real-project" },
   ];
   for (const [i, invalid] of invalids.entries()) {

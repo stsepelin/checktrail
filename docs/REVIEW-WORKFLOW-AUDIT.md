@@ -81,6 +81,17 @@ memory.
 Completed runs need no subsequent adjudicator assignment to persist; partial,
 zero-call, failed, cancelled, timed-out and stale runs preserve reached trials,
 unrun cases, cleanup status and native ledgers when the runner returns a receipt.
+All-candidate startup is bound in the header as `candidateScope: "all"`. Each
+target's returned receipt is retained separately. Inspection checks candidate and
+command bindings, the remaining shared native allowances, cumulative reached
+calls/output, and append-only completed coverage backed by accepted adjudication.
+A zero-call later attempt still needs its own returned receipt. During later
+native execution, total accounting remains unknown until cleanup returns that
+receipt; earlier receipts remain in the journal. `nativeReceipts.complete` means
+reached evidence is accounted for, not that every candidate completed its stages.
+Read each workflow's disposition and `completedTargets` as well. The selected-target
+default and legacy journal formats remain readable.
+
 A preparation exception with no returned receipt leaves accounting unknown. Errors retain the command and an
 error outcome; arbitrary exception messages are not copied into the journal.
 

@@ -66,8 +66,17 @@ new assignment and a new declared session within the same total attempt budget.
 The engine retains response byte counts/digests and valid host/usage declarations,
 not malformed response bodies in engine memory. Opt-in [command auditing](REVIEW-WORKFLOW-AUDIT.md) separately retains admitted raw JSON submissions in private operator storage.
 
-A reviewer may propose several unverified candidates. This bounded workflow
-processes one selected opaque target; siblings remain unverified. Refutation
+A reviewer may propose several unverified candidates. The default selected-target
+protocol processes one opaque target. Operator startup `--workflow-candidates all`
+(library `candidateScope: "all"`) enables a version 2 summary and separate
+refutation, native probing and adjudication for every issued candidate handle.
+After one target finishes, `nextStage` returns to `refuter`; the host supplies an
+unprocessed handle to `next`. Mid-cycle switching and completed-handle reuse are
+rejected. `completedTargets` records only targets whose three advisory stages
+finished. `advisory-stages-completed` requires every retained handle; exhausted
+limits, cancellation and stale source preserve the completed prefix and leave
+the disposition incomplete. All candidates remain unverified, including completed
+ones. Refutation
 withholds the original candidate identity, severity, attribution, fix scope and
 prior verdicts. A complete live operator-pinned probe is required before
 adjudication. Adjudication receives raw native observations and unverified target
@@ -115,6 +124,28 @@ The default file content is:
   "maxRetainedBytes": 4194304
 }
 ```
+
+All-candidate startup uses the same defaults above except `maxAssignments: 65`,
+and requires two additional workflow limits: `maxNativeCalls: 96` and
+`maxNativeOutputBytes: 65536`. These defaults admit the reviewer and two host
+assignments for each of the maximum 32 candidates, before retries. Custom files
+must include the two additional fields; selected-target files reject them. The
+native call/output allowances are shared across all probes in that workflow,
+including partial attempts, and each probe also respects its existing per-run
+startup limits. Completed refuter/adjudicator outputs, recipes and native receipts
+remain charged to retention; their contents are excluded from later candidates'
+worker packets. Source context is still rechecked for each stage. The existing
+frozen benchmark protocol remains selected-target and rejects version 2 workflow
+journals until a separate evaluation protocol is implemented.
+
+The required `review-workflow-multi` profile and
+`verify-review-workflow-package.mjs --all-candidates` exercise original synthetic
+controls, including fresh installed library/CLI/MCP exchanges and private audit
+replay. Compiling mutation controls require the original assertions to reject
+premature completion, discarded retention accounting and reset native allowances.
+See the [development measurement](measurements/review-workflow-multi-2026-10-08.json).
+This implements bounded traversal, not general claim resolution,
+underlying-defect deduplication, reachable repairs or consequence-based severity.
 
 Closed/terminal workflows retain their metadata and consume an epoch slot; closing
 cannot reset the quota. Assignment admission counts every issued retry across

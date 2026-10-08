@@ -861,10 +861,11 @@ test(
     for (let index = 0; index < 200; index++) {
       try {
         ready = (await readFile(marker, "utf8")) === "ready";
-        break;
+        if (ready) break;
       } catch {
-        await delay(25);
+        // The marker may not exist until the provider transport starts.
       }
+      await delay(25);
     }
     assert.equal(ready, true);
     for (const [name, args] of [

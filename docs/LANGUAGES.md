@@ -90,6 +90,13 @@ surfaces on macOS. Contexts require revision-aware versions 4/5; native
 corroboration retains the plain Node Boolean profile. This adds neither language
 semantics, actual AI-client acceptance, host isolation nor verified findings. See
 REVIEW-MCP-WORKFLOW.md and measurements/review-workflow-2026-10-03.json.
+Startup-only all-candidate mode additionally traverses each retained target through
+separate refutation/native/adjudication stages, shares per-workflow native quotas,
+and replays multiple private audit receipts. Required original synthetic controls
+and fresh installed library/CLI/MCP acceptance cover the recorded macOS arm64
+Node 26.9.0 development profile; broader platform receipts remain pending. It
+does not add general claim verification, deduplication or severity resolution,
+and the frozen benchmark protocol retains its selected-target contract.
 Opt-in [durable workflow command audits](REVIEW-WORKFLOW-AUDIT.md) share the library,
 CLI and MCP session wrapper on the recorded POSIX profiles. Required original
 synthetic controls cover private storage, crash prefixes, ordering, budgets,

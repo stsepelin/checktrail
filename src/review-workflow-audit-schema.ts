@@ -30,7 +30,7 @@ export const reviewWorkflowAuditSummarySchema = z.strictObject({
   allCommandBodiesRetained: z.boolean(),
   nativeAccountingComplete: z.boolean(),
   nativeReceipts: z.strictObject({
-    retained: z.number().int().nonnegative().max(16),
+    retained: z.number().int().nonnegative().max(512),
     complete: z.boolean(),
     rawOutputIncluded: z.literal(false),
   }),

@@ -952,16 +952,12 @@ test("native run budgets retain partial cancelled bytes and spend one wall allow
     const deadline = Date.now() + 5000;
     while (true) {
       try {
-        assert.equal(await readFile(marker, "utf8"), "ready");
-        break;
+        if ((await readFile(marker, "utf8")) === "ready") break;
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-        assert.ok(
-          Date.now() < deadline,
-          "Original native fixture did not start",
-        );
-        await delay(10);
       }
+      assert.ok(Date.now() < deadline, "Original native fixture did not start");
+      await delay(10);
     }
     controller.abort();
     const run = await pending;

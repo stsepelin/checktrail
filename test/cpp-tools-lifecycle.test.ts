@@ -135,7 +135,7 @@ test(
       while (Date.now() < deadline) {
         try {
           native = await readFile(marker, "utf8");
-          break;
+          if (native.endsWith("/build/original_c_boundary")) break;
         } catch (error) {
           if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
         }

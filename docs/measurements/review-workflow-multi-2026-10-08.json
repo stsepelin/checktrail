@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-all-candidate-workflow-v2",
+  "recordedAt": "2026-10-08T09:37:58.983991Z",
+  "scope": "Bounded synthetic implementation acceptance; no actual model inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "41e6191ce595bed9fd0a3ce4f1b7ee8d9b5caa93",
+    "kind": "source-runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": "src/review-workflow.ts",
+        "sha256": "c1acc50593643d88140e6ba70d31ce610973cab865b21fc616e2da2893752e75"
+      },
+      {
+        "file": "src/review-workflow-schema.ts",
+        "sha256": "7e32154cf4202dfc742582ecb2e98182bfecf65af914df952b17fb8ffd843f60"
+      },
+      {
+        "file": "src/review-workflow-audit.ts",
+        "sha256": "be4631a79df4ee393875ff602a7d8347c25ed80ecf692070d161be7d694adf5b"
+      },
+      {
+        "file": "src/review-workflow-audit-schema.ts",
+        "sha256": "7da60415f368815bc021b9d0d8d11218da37595fa2d3ec5762241c42ea41e628"
+      },
+      {
+        "file": "src/review-workflow-session.ts",
+        "sha256": "ffa9ef398022f536f0764e11a7998f05ce445d7b4556ff1cc5321450bd2bab1f"
+      },
+      {
+        "file": "src/review-benchmark.ts",
+        "sha256": "cd079631a7efe93c633a4d589502ac4f137ed52eb92a6e7a6fd27ad0a705230f"
+      },
+      {
+        "file": "src/review-benchmark-schema.ts",
+        "sha256": "8b2a11365b22e581dc563b4c51371311dd09c5f8aa650f4ddcdb6e1788aedf2d"
+      },
+      {
+        "file": "src/cli.ts",
+        "sha256": "c1a62e634d2f1aad14e42f5dd17b807850ac044198d7e2e0698ecf3e8573736d"
+      },
+      {
+        "file": "src/mcp.ts",
+        "sha256": "1cc4cc30c4b2731e6af915990ed12ba7a0b0d3c2f5d1c0611a051ae8d7ec0a3e"
+      },
+      {
+        "file": "test/review-workflow-multi.test.ts",
+        "sha256": "c237f2b2c3329e005e0043e29225b93ca98c8911bd7e6a26b8fcef8d993c9080"
+      },
+      {
+        "file": "test/review-benchmark.test.ts",
+        "sha256": "2d7b3fdc584792da8db073a295ed3f0ce23bfdf904da0dfe9520528fb5ac2d46"
+      },
+      {
+        "file": "test/review-verification.test.ts",
+        "sha256": "0d18d43c4a458c2a99dc55d98eb311912e39171349973b3923a948cde6a7c34b"
+      },
+      {
+        "file": "test/review-probe.test.ts",
+        "sha256": "f39860ff33f2c196a148be274875b5a83cc1d3e2d3ba2baca2281dcee94bc25b"
+      },
+      {
+        "file": "test/cpp-tools-lifecycle.test.ts",
+        "sha256": "5a5df01f2058bbd7a47356f6aa0e05324982573325e359784361a2b68d3c81cc"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "8feb03e7d9b1cf767f175364e54cf5092106f043a8d3cabf6be0188867f76970"
+      },
+      {
+        "file": "scripts/verify-review-workflow-package.mjs",
+        "sha256": "d1b539b6aeba0b0a7e890daad5f82be0311cfe8980ed32b839e4686f33b2abb5"
+      },
+      {
+        "file": "scripts/verify-review-workflow-multi-guards.mjs",
+        "sha256": "30c64bfaa16ded74aab353bbc250e47bb6254aa074416fc0700a74d5be17a7e7"
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "fd0837804d8f44998104adbafacfe16326239d4d89c9fcb76ca7cace11a78365"
+      },
+      {
+        "file": "schemas/review-workflow-limits.schema.json",
+        "sha256": "500711e17e901b04a9e275579f86e776c36730ba4cab42ce926af50f6241786d"
+      },
+      {
+        "file": "schemas/review-workflow-summary.schema.json",
+        "sha256": "ecf944e13daeddeffb035b8cbad76baaec2e5fb9c284fc97b25a474e265b0ae0"
+      },
+      {
+        "file": "schemas/review-workflow-audit-summary.schema.json",
+        "sha256": "63cbaf1c97bbfa1cdfe96652d926aa8e0e1b0fa4814c4e8c9180a5d1477fc69a"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "sha256": "3825b0cc5a247f51ddee73e1333600cef71b121b34dabdbe78db4fa9a51a95bf"
+      },
+      {
+        "file": "dist/src/review-workflow-audit.js",
+        "sha256": "a5fae150b666ae3ab22dd452fc5923020160e4df9f4f6123d54fdfcd2df620e6"
+      },
+      {
+        "file": "dist/src/review-workflow-schema.js",
+        "sha256": "7e0b1b05df97294cef9fba1ee3618a13d104db904f142b4bac751e9e8421e801"
+      },
+      {
+        "file": "dist/src/review-benchmark.js",
+        "sha256": "28ce8d066fb65c17de4dbc7d3838872bcb33d4741dfc5c74e430db24d7e67a76"
+      },
+      {
+        "file": "dist/src/review-benchmark-schema.js",
+        "sha256": "631fa80066b900fc41d8be053b1871679fa415ef16af9f03f9ed12be619145eb"
+      },
+      {
+        "file": "dist/src/cli.js",
+        "sha256": "656323df2dd07a88b5b23178a4a6a4587c2504b9f580a837b75fab30bfd92bb2"
+      },
+      {
+        "file": "dist/src/mcp.js",
+        "sha256": "a52aeee6df058d0b147ace1375ec14f33b3671e32a7957230d82d1d08d199601"
+      },
+      {
+        "file": "dist/test/review-workflow-multi.test.js",
+        "sha256": "39ff5215113efd7479a49dbecd152b458ca6aa2d0f5e6d938578dc4510c5ff19"
+      }
+    ]
+  },
+  "runtime": {
+    "node": "26.9.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "implementation": {
+    "operatorStartupCandidateScope": "all",
+    "workflowSummaryVersion": 2,
+    "selectedTargetDefaultVersion": 1,
+    "completedCoverageRetained": true,
+    "sharedWorkflowNativeAllowances": true,
+    "completedEvidenceChargedToRetention": true,
+    "defaultLimitsExplicitInAudit": true,
+    "separateReturnedNativeReceipts": true,
+    "frozenBenchmarkMode": "selected-target",
+    "claimsVerified": false,
+    "hostIsolationVerified": false,
+    "generalClaimVerificationImplemented": false,
+    "defectDeduplicationImplemented": false,
+    "consequenceSeverityImplemented": false
+  },
+  "requiredProfile": {
+    "profile": "review-workflow-multi",
+    "passed": 11,
+    "complete": true
+  },
+  "compilingMutationControls": [
+    {
+      "id": "finish-every-target",
+      "callback": "all-candidate workflow processes broken fixed and near-miss targets independently without upgrading claim truth",
+      "callbackSha256": "39ff5215113efd7479a49dbecd152b458ca6aa2d0f5e6d938578dc4510c5ff19",
+      "sourceSha256": "3825b0cc5a247f51ddee73e1333600cef71b121b34dabdbe78db4fa9a51a95bf",
+      "mutantSha256": "7cbd401afe724c67e0ee8dfba857c9d1920aac7aff1a65fa56eda28c36d54a3d",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "retain-earlier-evidence",
+      "callback": "all-candidate workflow processes broken fixed and near-miss targets independently without upgrading claim truth",
+      "callbackSha256": "39ff5215113efd7479a49dbecd152b458ca6aa2d0f5e6d938578dc4510c5ff19",
+      "sourceSha256": "3825b0cc5a247f51ddee73e1333600cef71b121b34dabdbe78db4fa9a51a95bf",
+      "mutantSha256": "0e07533165c554e199d40cb8dc13c6c1c0bd388f3f737e5d1d27dfac30acdf3f",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "shared-call-allowance",
+      "callback": "all-candidate workflow shares exact zero and exhausted native call budgets across targets",
+      "callbackSha256": "39ff5215113efd7479a49dbecd152b458ca6aa2d0f5e6d938578dc4510c5ff19",
+      "sourceSha256": "3825b0cc5a247f51ddee73e1333600cef71b121b34dabdbe78db4fa9a51a95bf",
+      "mutantSha256": "c632dff1926c7b73e71a41e41af77ef19f1a6410150f878345f708881e235770",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "shared-output-allowance",
+      "callback": "all-candidate workflow shrinks the remaining native output allowance and records reached bytes",
+      "callbackSha256": "39ff5215113efd7479a49dbecd152b458ca6aa2d0f5e6d938578dc4510c5ff19",
+      "sourceSha256": "3825b0cc5a247f51ddee73e1333600cef71b121b34dabdbe78db4fa9a51a95bf",
+      "mutantSha256": "c00fc42d590edd40c40babf309daa4a77c4d8bd135b11a2aa901030c27bd8475",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    }
+  ],
+  "installedPackage": {
+    "allCandidate": {
+      "schemaVersion": 1,
+      "profile": "original-synthetic-all-candidate-workflow-production-package",
+      "audits": [
+        {
+          "receipts": 2,
+          "completedTargets": 2,
+          "nativeCalls": 6,
+          "claimsVerified": false
+        },
+        {
+          "receipts": 2,
+          "completedTargets": 2,
+          "nativeCalls": 6,
+          "claimsVerified": false
+        },
+        {
+          "receipts": 2,
+          "completedTargets": 2,
+          "nativeCalls": 6,
+          "claimsVerified": false
+        }
+      ],
+      "tarballSha256": "32e07ea9fc0baee99b2035be95883137c34d205cea22508a0a499b1e42d0c167",
+      "productionInstall": "offline-omit-dev-ignore-scripts",
+      "library": {
+        "stages": 5,
+        "nativeCalls": 6,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true,
+        "completedTargets": 2,
+        "unverifiedCandidates": 2
+      },
+      "cli": {
+        "stages": 5,
+        "nativeCalls": 6,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true,
+        "completedTargets": 2,
+        "unverifiedCandidates": 2
+      },
+      "mcp": {
+        "stages": 5,
+        "nativeCalls": 6,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true,
+        "completedTargets": 2,
+        "unverifiedCandidates": 2
+      },
+      "providerConfigured": false,
+      "actualInference": false,
+      "complete": true,
+      "ownedArtifactsRemoved": true
+    },
+    "selectedTarget": {
+      "schemaVersion": 1,
+      "profile": "original-synthetic-workflow-production-package",
+      "tarballSha256": "32e07ea9fc0baee99b2035be95883137c34d205cea22508a0a499b1e42d0c167",
+      "productionInstall": "offline-omit-dev-ignore-scripts",
+      "library": {
+        "stages": 3,
+        "nativeCalls": 3,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true
+      },
+      "cli": {
+        "stages": 3,
+        "nativeCalls": 3,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true
+      },
+      "mcp": {
+        "stages": 3,
+        "nativeCalls": 3,
+        "claimsVerified": false,
+        "hostIsolationVerified": false,
+        "rawWorkflowArtifactsDiscarded": true
+      },
+      "providerConfigured": false,
+      "actualInference": false,
+      "complete": true,
+      "ownedArtifactsRemoved": true
+    },
+    "existingAuditComplete": true,
+    "existingAuditOwnedArtifactsRemoved": true,
+    "productionInstall": "offline-omit-dev-ignore-scripts",
+    "measurementRecordAddedAfterPackageExecution": true
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 978,
+    "pass": 706,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 272,
+    "todo": 0
+  },
+  "inventory": {
+    "consistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "gateAComplete": false
+  },
+  "widerRuntimeAcceptance": "pending",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
