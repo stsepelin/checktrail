@@ -1,0 +1,15 @@
+--- a/src/scanner.c
++++ b/src/scanner.c
+@@ -282,8 +282,12 @@
+ void *tree_sitter_swift_external_scanner_create() {
+     void *payload = calloc(1, sizeof(struct ScannerState));
+     if (!payload) {
++#if defined(__wasm__)
++        abort();
++#else
+         fprintf(stderr, "tree-sitter-swift: out of memory allocating scanner state\n");
+         exit(1);
++#endif
+     }
+     return payload;
+ }

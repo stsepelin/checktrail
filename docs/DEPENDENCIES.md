@@ -56,3 +56,13 @@ The opt-in Kotlin analyzer uses the pinned upstream detekt CLI fat JAR described
 npm package. Its exact release size and SHA-256 are checked before preparation and
 execution. Publisher signatures and the full bundled native component/license
 closure remain unverified E6 obligations; the npm metadata audit does not cover them.
+
+## Fixed context grammar assets
+
+Context version 6 adds the exact `web-tree-sitter@0.27.0` production dependency.
+Its installed MIT notice is retained by the existing npm audit. The package also
+ships the selected compiled grammar assets with their upstream notices under
+`assets/context-grammars/`; the source/archive/generated-file and WASM identities
+are recorded separately. `audit-context-grammars.mjs` reconciles that exact asset
+inventory. Build-tool transitive notices remain an explicit gap. See
+[CONTEXT-GRAMMARS.md](CONTEXT-GRAMMARS.md).

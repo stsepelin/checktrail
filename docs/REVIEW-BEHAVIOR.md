@@ -155,3 +155,11 @@ The bounded [import and consumer collector](IMPORT-CONTEXT.md) automatically cap
 inventoried JS/TS source under explicit disjoint project roots. It retains whole
 source and static consumer edges, with full declared-scope fallback for unresolved
 or incomplete capture. Other languages and historical consumers remain open.
+
+## Additional selected syntax
+
+Opt-in selection/context version 6 adds fixed WASM syntax capture for the selected
+non-JavaScript grammars while preserving the existing JS/TS collector. Source,
+revision/mode, assessment and disclosure contracts remain shared. Wider-language
+call targets and import/consumer resolution stay unknown; the complete language
+profiles remain pending. See [CONTEXT-GRAMMARS.md](CONTEXT-GRAMMARS.md).

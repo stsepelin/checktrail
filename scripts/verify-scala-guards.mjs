@@ -147,6 +147,8 @@ function requireTerminal(result, name, failed) {
   );
 }
 const evidence = [];
+const positiveControls = new Map();
+let positiveControlExecutions = 0;
 for (const guard of guards) {
   const selectedFile = guard.file
     ? path.join(repository, "dist/test", guard.file)
@@ -154,9 +156,26 @@ for (const guard of guards) {
   const originalCallback = await readFile(selectedFile);
   const source = path.join(repository, "dist/src", guard.source),
     original = await readFile(source, "utf8");
-  const baseline = run(guard.name, selectedFile);
-  assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
-  requireTerminal(baseline, guard.name, false);
+  const positiveIdentity = JSON.stringify([
+    selectedFile,
+    guard.name,
+    source,
+    digest(original),
+    digest(originalCallback),
+  ]);
+  if (!positiveControls.has(positiveIdentity)) {
+    const baseline = run(guard.name, selectedFile);
+    assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
+    requireTerminal(baseline, guard.name, false);
+    positiveControls.set(positiveIdentity, {
+      name: guard.name,
+      file: selectedFile,
+      source,
+      original,
+      callback: originalCallback,
+    });
+    positiveControlExecutions++;
+  }
   let mutant = original;
   for (const [before, after] of guard.replacements) {
     assert.equal(
@@ -209,9 +228,27 @@ for (const guard of guards) {
   } finally {
     await writeFile(source, original);
   }
-  const restored = run(guard.name, selectedFile);
+  assert.equal(
+    await readFile(source, "utf8"),
+    original,
+    "Mutated source was not restored",
+  );
+}
+for (const positive of positiveControls.values()) {
+  assert.equal(
+    await readFile(positive.source, "utf8"),
+    positive.original,
+    "Original source changed before final positive control",
+  );
+  assert.deepEqual(
+    await readFile(positive.file),
+    positive.callback,
+    "Original callback changed before final positive control",
+  );
+  const restored = run(positive.name, positive.file);
   assert.equal(restored.status, 0, restored.stdout + restored.stderr);
-  requireTerminal(restored, guard.name, false);
+  requireTerminal(restored, positive.name, false);
+  positiveControlExecutions++;
 }
 process.stdout.write(
   JSON.stringify({
@@ -220,6 +257,8 @@ process.stdout.write(
     platform: process.platform,
     arch: process.arch,
     guards: evidence,
+    positiveControlExecutions,
+    positiveControlsReusedOnlyForIdenticalBytes: true,
     sourceRestored: true,
     callbacksUnchanged: true,
     inferenceInvoked: false,

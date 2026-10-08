@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-selected-syntax-v1",
+  "recordedAt": "2026-10-08T10:58:47.484906+00:00",
+  "scope": "Fixed captured-string syntax assets and bounded original controls; no model inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "81304e3b04656e006148885a99f9d0d9d99e19d7",
+    "kind": "source-runtime-and-acceptance-file-byte-pins",
+    "files": [
+      {
+        "file": "src/review-polyglot.ts",
+        "sha256": "37b9d466df7153156a81b10e4d0cacf15e2794998a7c9b0a438999b561dbf81c",
+        "bytes": 18472
+      },
+      {
+        "file": "src/review-grammar-assets.ts",
+        "sha256": "1dc4c0dbb2513dee90d37de40f9632864536a010ed7103dd347fb57fac692598",
+        "bytes": 4233
+      },
+      {
+        "file": "src/review-grammar-profile.ts",
+        "sha256": "70aa02ee659fa88e16922ee0468a276c13ca97a62f06f2a2a4e24114359d5b31",
+        "bytes": 836
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "sha256": "f6f290d5a439228cc7ae1adfbe64b73a4529e50a4b5fcf7b4cb61a753e036d4e",
+        "bytes": 4312
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "sha256": "5393456d85b4dfa9e577f9b5f104566a78a4eef54a4a689eb3a2cbd37f2cde56",
+        "bytes": 7368
+      },
+      {
+        "file": "src/review.ts",
+        "sha256": "0bc53529c77fb7d86e6ea29963ca672f6eafd49187ab130b83a6ec1a99d5b624",
+        "bytes": 37495
+      },
+      {
+        "file": "test/review-polyglot.test.ts",
+        "sha256": "220abb598eb0a29635b694e4d30252309d63a651af6fe270f83b160e40abe490",
+        "bytes": 15976
+      },
+      {
+        "file": "test/review-polyglot-fixture.ts",
+        "sha256": "65c8a9e7027d8ca5f8b2c190438286610eb1c3e6f1da0022f34a22ff09f6a25b",
+        "bytes": 2678
+      },
+      {
+        "file": "scripts/verify-selected-syntax-guards.mjs",
+        "sha256": "a1dc1f43812bda5c31d2209e55b153b84af22b59b492fd4c238591105d6c7cf9",
+        "bytes": 4424
+      },
+      {
+        "file": "scripts/audit-context-grammars.mjs",
+        "sha256": "133a95c18ef384390111bf77c73405f3889423d0f55a3f329709241f54623c43",
+        "bytes": 5134
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "sha256": "05d6c92656a707b554725edc0a8524bfd8835de113d190a542e5cf4d7d12131b",
+        "bytes": 6004
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "36ddb94bd64de62dea0bd83fd3027257d02d68713df743378b32c45bceae0e86",
+        "bytes": 139750
+      },
+      {
+        "file": "package.json",
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171",
+        "bytes": 1995
+      },
+      {
+        "file": "package-lock.json",
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "bytes": 258687
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "511d44a7882e59c8691d6a2be14b37496dcc4bbdd16e1f6b6e45140d22765db2",
+        "bytes": 35519
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "sha256": "1fa6cb320a56b8a377ef196205d8cdb689492f953a191b9849df00e6087280e3",
+        "bytes": 167443
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "sha256": "3780cef928ba8395a84862a63d807e4e17db60ed90f689a90db4b4645e91490e",
+        "bytes": 14313
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb",
+        "bytes": 4657
+      },
+      {
+        "file": "docs/measurements/context-grammar-build-2026-10-08.json",
+        "sha256": "639e582c29cce571010f5fb1d46e8b381c3c369d4fac771502683a4532a2bb85",
+        "bytes": 532183
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "sha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+        "bytes": 20233
+      },
+      {
+        "file": "dist/test/review-polyglot.test.js",
+        "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "bytes": 15740
+      }
+    ]
+  },
+  "runtime": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "requiredProfile": {
+    "timeoutMs": 120000,
+    "profile": "selected-syntax-context",
+    "passed": 9,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 1024,
+      "terminalEventCount": 9,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 363.806,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "selected syntax separates repaired text from broken text without treating syntax as verified behavior",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 4.134583,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "selected syntax ignores comment and string lookalikes and leaves dynamic calls and imports unresolved",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 10.213708,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "selected syntax retains malformed unsupported and empty views as distinct source outcomes",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3.661208,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 256.678791,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "selected syntax rejects rehashed grammar source and decision address tampering and legacy promotion",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5.611875,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 172.819792,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "selected syntax bounds node and source exhaustion while preserving valid adjacent controls",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 38.282584,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1705.888417,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax separates repaired text from broken text without treating syntax as verified behavior",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax ignores comment and string lookalikes and leaves dynamic calls and imports unresolved",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax retains malformed unsupported and empty views as distinct source outcomes",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax rejects rehashed grammar source and decision address tampering and legacy promotion",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax bounds node and source exhaustion while preserving valid adjacent controls",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        }
+      ]
+    }
+  },
+  "compilingMutationControls": [
+    {
+      "id": "whole-function-retention",
+      "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+      "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+      "sourceSha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+      "mutantSha256": "faa99059e5418f1ac50f4265fae28c21758c5ebf21710e6a55ee1924c348bb23",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "decision-retention",
+      "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+      "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+      "sourceSha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+      "mutantSha256": "f9513c54e639825d94b271bbabca4bc8327ed8641fa707fcb474662586d2fbfc",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "default-retention",
+      "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+      "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+      "sourceSha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+      "mutantSha256": "3539da6fff225b31479b96fd96dd04f291c5390fba62e119151bc411873300ea",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "grammar-byte-binding",
+      "callback": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+      "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+      "sourceSha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+      "mutantSha256": "c68a654123f014419e1712c5d2f5505f47823148a7a28321e92ac6e573b393c2",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    },
+    {
+      "id": "base-function-retention",
+      "callback": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+      "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+      "sourceSha256": "fec9e71b3d57edc00bea50c5a9563cb0c5fbc9e640688b19fdc19d00992c6092",
+      "mutantSha256": "d1e87512464e94ae8e5c83aea7efe6ceeb3960c8e11d492ee4d7d6259e17d415",
+      "originalPassed": true,
+      "mutantCompiled": true,
+      "mutantFailedAssertion": true,
+      "restoredPassed": true
+    }
+  ],
+  "installedPackage": {
+    "tarballSha256": "7fb910ac55c9824d62800fc84ce00c317fbfd5962c9d01be7d4f82ed19445410",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "selected-syntax-context",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 345.290959,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "selected syntax separates repaired text from broken text without treating syntax as verified behavior",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.75775,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "selected syntax ignores comment and string lookalikes and leaves dynamic calls and imports unresolved",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10.612958,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "selected syntax retains malformed unsupported and empty views as distinct source outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.506,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 260.318875,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "selected syntax rejects rehashed grammar source and decision address tampering and legacy promotion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6.184292,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 114.807042,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "selected syntax bounds node and source exhaustion while preserving valid adjacent controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 41.754833,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1738.420875,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax separates repaired text from broken text without treating syntax as verified behavior",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax ignores comment and string lookalikes and leaves dynamic calls and imports unresolved",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax retains malformed unsupported and empty views as distinct source outcomes",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax rejects rehashed grammar source and decision address tampering and legacy promotion",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax bounds node and source exhaustion while preserving valid adjacent controls",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed",
+    "measurementRecordAddedAfterPackageExecution": true
+  },
+  "grammarArtifacts": {
+    "scope": "selected-parser-artifact-bindings",
+    "artifactBindingsComplete": true,
+    "grammars": 16,
+    "wasmBytes": 45802018,
+    "runtime": "web-tree-sitter@0.27.0",
+    "manifestSha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb",
+    "buildToolNoticeClosureVerified": false,
+    "semanticContextComplete": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "tests": 987,
+    "pass": 715,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 272,
+    "todo": 0,
+    "skipsCertifyRequiredNativeProfiles": false
+  },
+  "inventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "remaining": [
+    "Broader function/declaration forms and inherited semantic defaults",
+    "Wider-language lexical/import consumers and unresolved dispatch",
+    "Visual Basic syntax context",
+    "Transitive build-tool notice closure",
+    "Every selected finite extension profile and exact required runtime source/installed matrix"
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false,
+  "packageSmoke": {
+    "package": "stsepelin-checktrail-0.1.0-alpha.5.tgz",
+    "files": 981,
+    "checks": [
+      "node-test",
+      "typescript",
+      "typescript-build",
+      "eslint",
+      "vitest",
+      "jest",
+      "vue-tsc",
+      "playwright"
+    ],
+    "library": "passed",
+    "cli": "passed",
+    "mcp": "passed",
+    "installation": "offline",
+    "reviewBehavior": "passed",
+    "reviewerTransport": "offline-synthetic",
+    "sourceBoundProbe": "original-native",
+    "independentRefutation": "offline-synthetic",
+    "reviewScoring": "original-synthetic",
+    "pyright": "not-run-unavailable",
+    "reproduciblePacking": "same-checkout",
+    "junit": "passed",
+    "sarif": "passed",
+    "architecture": "passed",
+    "guidance": "passed",
+    "mutations": "passed",
+    "clang": "passed",
+    "unavailableChecksCertifyGateA": false
+  }
+}

@@ -16,7 +16,7 @@ model inference, independent AI sessions or finding quality. See the
 
 ## Stage exchange
 
-Use a captured version 4 or 5 context artifact. The host orchestrator keeps the
+Use a captured version 4, 5 or 6 context artifact. The host orchestrator keeps the
 workflow handle and gives each worker only its issued assignment.
 
 | Operation | Input                                                    | Result                                                            |

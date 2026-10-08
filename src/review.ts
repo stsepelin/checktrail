@@ -5,7 +5,10 @@ import path from "node:path";
 import { z } from "zod";
 import { inventory, inventorySourcePath, withinRoot } from "./inventory.js";
 import { commitId, reviewChanges, reviewGit } from "./review-diff.js";
-import { reviewBehaviorSchema } from "./review-behavior-schema.js";
+import {
+  reviewJavascriptBehaviorSchema,
+  reviewPolyglotBehaviorSchema,
+} from "./review-behavior-schema.js";
 import { validateReviewBehavior } from "./review-behavior-validation.js";
 import {
   guidanceReportSchema,
@@ -88,12 +91,17 @@ const completeSelectionSchema = z.discriminatedUnion("track", [
     baseCommit: commitId,
   }),
 ]);
+const polyglotSelectionSchema = z.discriminatedUnion("track", [
+  completeSelectionSchema.options[0].extend({ schemaVersion: z.literal(6) }),
+  completeSelectionSchema.options[1].extend({ schemaVersion: z.literal(6) }),
+]);
 export const reviewSelectionSchema = z.union([
   legacySelectionSchema,
   assignmentSelectionSchema,
   behaviorSelectionSchema,
   revisionSelectionSchema,
   completeSelectionSchema,
+  polyglotSelectionSchema,
 ]);
 const sourceFileSchema = z.strictObject({
   path: filePath,
@@ -169,7 +177,7 @@ const assignmentContextSchema = z.strictObject({
 const behaviorContextSchema = assignmentContextSchema.extend({
   schemaVersion: z.literal(3),
   selection: behaviorSelectionSchema,
-  analysis: reviewBehaviorSchema,
+  analysis: reviewJavascriptBehaviorSchema,
   completeness: z.strictObject({
     selection: z.literal("operator-selected-primary-and-support-files"),
     repositoryComplete: z.literal(false),
@@ -213,12 +221,21 @@ const completeContextSchema = revisionContextSchema.extend({
     fileModes: z.literal("selected-regular-files"),
   }),
 });
+const polyglotContextSchema = completeContextSchema.extend({
+  schemaVersion: z.literal(6),
+  selection: polyglotSelectionSchema,
+  analysis: reviewPolyglotBehaviorSchema,
+  completeness: completeContextSchema.shape.completeness.extend({
+    behavior: z.literal("bounded-selected-syntax"),
+  }),
+});
 export const reviewContextSchema = z.union([
   legacyContextSchema,
   assignmentContextSchema,
   behaviorContextSchema,
   revisionContextSchema,
   completeContextSchema,
+  polyglotContextSchema,
 ]);
 export type ReviewContext = z.infer<typeof reviewContextSchema>;
 const metadata = {
@@ -430,6 +447,9 @@ const completeness = {
   renames: "not-inferred" as const,
   fileModes: "not-compared" as const,
 };
+const polyglotInstructions =
+  completeInstructions +
+  " Fixed bundled WASM grammars index captured source syntax. Wider-language calls are unresolved; imports, runtime reachability and semantic completeness are not inferred.";
 const hash = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
 function selectedPaths(
@@ -437,7 +457,8 @@ function selectedPaths(
 ): string[] {
   return selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
-    selection.schemaVersion === 5
+    selection.schemaVersion === 5 ||
+    selection.schemaVersion === 6
     ? [...selection.files, ...selection.supportFiles].sort()
     : selection.files;
 }
@@ -513,7 +534,9 @@ export function parseReviewContext(input: unknown): ReviewContext {
             ? behaviorInstructions
             : parsed.schemaVersion === 4
               ? revisionInstructions
-              : completeInstructions) ||
+              : parsed.schemaVersion === 5
+                ? completeInstructions
+                : polyglotInstructions) ||
     JSON.stringify(parsed.guidance) !==
       JSON.stringify(
         retrieveGuidance({
@@ -550,7 +573,7 @@ export function parseReviewContext(input: unknown): ReviewContext {
     )
       throw new Error("Review diff evidence does not reconcile");
   }
-  if (parsed.schemaVersion === 5) {
+  if (parsed.schemaVersion === 5 || parsed.schemaVersion === 6) {
     if (parsed.selection.currentSource !== parsed.evidence.currentSource)
       throw new Error("Review current source mismatch");
     unique(parsed.evidence.fileModes.map((item) => item.path));
@@ -583,7 +606,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
   if (
     parsed.schemaVersion === 3 ||
     parsed.schemaVersion === 4 ||
-    parsed.schemaVersion === 5
+    parsed.schemaVersion === 5 ||
+    parsed.schemaVersion === 6
   ) {
     validateReviewBehavior(
       parsed.analysis,
@@ -610,7 +634,8 @@ export async function createReviewContext(
   if (
     selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
-    selection.schemaVersion === 5
+    selection.schemaVersion === 5 ||
+    selection.schemaVersion === 6
   )
     selection.supportFiles.sort();
   const paths = selectedPaths(selection);
@@ -623,7 +648,7 @@ export async function createReviewContext(
           before.root,
           selection.baseCommit,
           paths,
-          selection.schemaVersion === 5
+          selection.schemaVersion === 5 || selection.schemaVersion === 6
             ? selection.currentSource
             : "working-tree",
         )
@@ -642,7 +667,10 @@ export async function createReviewContext(
       )
     )
       throw new Error("Review source path is excluded");
-    if (selection.schemaVersion === 5 && selection.currentSource === "index") {
+    if (
+      (selection.schemaVersion === 5 || selection.schemaVersion === 6) &&
+      selection.currentSource === "index"
+    ) {
       const source = git?.indexFiles.find((source) => source.path === file);
       if (source) files.push(source);
       else if (!git?.baseFiles.some((source) => source.path === file))
@@ -669,10 +697,14 @@ export async function createReviewContext(
   const analysis =
     selection.schemaVersion === 3 ||
     selection.schemaVersion === 4 ||
-    selection.schemaVersion === 5
+    selection.schemaVersion === 5 ||
+    selection.schemaVersion === 6
       ? await (
-          await import("./review-behavior.js")
-        ).collectReviewBehavior(
+          selection.schemaVersion === 6
+            ? (await import("./review-polyglot.js"))
+                .collectReviewPolyglotBehavior
+            : (await import("./review-behavior.js")).collectReviewBehavior
+        )(
           files,
           git?.baseFiles ?? [],
           selection.files,
@@ -684,7 +716,7 @@ export async function createReviewContext(
     throw new Error("Source changed while preparing review context");
   await git?.assertCurrent();
   if (
-    selection.schemaVersion === 5 &&
+    (selection.schemaVersion === 5 || selection.schemaVersion === 6) &&
     selection.currentSource === "working-tree"
   ) {
     for (const file of files) {
@@ -701,7 +733,7 @@ export async function createReviewContext(
       throw new Error("Source changed while preparing review context");
   }
   const modeEvidence =
-    selection.schemaVersion === 5
+    selection.schemaVersion === 5 || selection.schemaVersion === 6
       ? {
           currentSource: selection.currentSource,
           fileModes: paths.map((file) => ({
@@ -732,7 +764,9 @@ export async function createReviewContext(
             ? behaviorInstructions
             : selection.schemaVersion === 4
               ? revisionInstructions
-              : completeInstructions,
+              : selection.schemaVersion === 5
+                ? completeInstructions
+                : polyglotInstructions,
     guidance: retrieveGuidance({
       schemaVersion: 1,
       checks: [],
@@ -749,7 +783,9 @@ export async function createReviewContext(
             ? behaviorContextSchema.omit({ contextDigest: true })
             : selection.schemaVersion === 4
               ? revisionContextSchema.omit({ contextDigest: true })
-              : completeContextSchema.omit({ contextDigest: true })
+              : selection.schemaVersion === 5
+                ? completeContextSchema.omit({ contextDigest: true })
+                : polyglotContextSchema.omit({ contextDigest: true })
         ).parse({
           ...common,
           evidence: git
@@ -769,10 +805,14 @@ export async function createReviewContext(
               : {
                   ...completeness,
                   selection: "operator-selected-primary-and-support-files",
-                  behavior: "bounded-js-ts-syntax",
+                  behavior:
+                    selection.schemaVersion === 6
+                      ? "bounded-selected-syntax"
+                      : "bounded-js-ts-syntax",
                   callers: "selected-context-only",
                   declarations: "selected-context-only",
-                  ...(selection.schemaVersion === 5
+                  ...(selection.schemaVersion === 5 ||
+                  selection.schemaVersion === 6
                     ? { fileModes: "selected-regular-files" }
                     : {}),
                 },
@@ -814,13 +854,17 @@ export async function receiveReview(
   if (assessment.contextDigest !== context.contextDigest)
     throw new Error("Assessment belongs to a different review context");
   if (
-    (context.schemaVersion === 4 || context.schemaVersion === 5) !==
+    (context.schemaVersion === 4 ||
+      context.schemaVersion === 5 ||
+      context.schemaVersion === 6) !==
     (assessment.schemaVersion === 2)
   )
     throw new Error("Review assessment and context version mismatch");
   if (
     assessment.schemaVersion === 2 &&
-    (context.schemaVersion === 4 || context.schemaVersion === 5) &&
+    (context.schemaVersion === 4 ||
+      context.schemaVersion === 5 ||
+      context.schemaVersion === 6) &&
     context.evidence.track === "snapshot" &&
     assessment.observations.some((item) => item.attribution !== "unknown")
   )
@@ -895,7 +939,8 @@ export async function receiveReview(
     }
   const current = await inventory(root);
   let matchesCurrent = current.fingerprint === context.sourceFingerprint;
-  for (const file of context.schemaVersion === 5 &&
+  for (const file of (context.schemaVersion === 5 ||
+    context.schemaVersion === 6) &&
   context.evidence.currentSource === "index"
     ? []
     : context.files) {
@@ -913,6 +958,7 @@ export async function receiveReview(
     context.schemaVersion === 3 ||
     context.schemaVersion === 4 ||
     context.schemaVersion === 5 ||
+    context.schemaVersion === 6 ||
     (context.schemaVersion === 2 && context.evidence.track === "diff")
   ) {
     try {

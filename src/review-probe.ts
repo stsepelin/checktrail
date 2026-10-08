@@ -128,8 +128,12 @@ export async function runReviewProbe(
   const recipe = parseReviewProbe(pinned);
   const candidate = reviewCandidateSchema.parse(candidateInput);
   const context = parseReviewContext(contextInput);
-  if (context.schemaVersion !== 4 && context.schemaVersion !== 5)
-    throw new Error("Native probes require context version 4 or 5");
+  if (
+    context.schemaVersion !== 4 &&
+    context.schemaVersion !== 5 &&
+    context.schemaVersion !== 6
+  )
+    throw new Error("Native probes require context version 4, 5 or 6");
   if (recipe.family !== candidate.family)
     throw new Error("Probe does not address the candidate family");
   const target = context.files.find((file) => file.path === recipe.file);

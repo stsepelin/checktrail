@@ -1,0 +1,130 @@
+export const grammarManifestDigest =
+  "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb";
+export const grammarAssets = [
+  {
+    grammar: "python",
+    file: "tree-sitter-python.wasm",
+    sha256: "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d",
+    bytes: 457492,
+    sourceCommit: "26855eabccb19c6abf499fbc5b8dc7cc9ab8bc64",
+  },
+  {
+    grammar: "go",
+    file: "tree-sitter-go.wasm",
+    sha256: "058a4f6c7cb7156c599c2ca07af9645f03b3f655b84bced9c72816e755c7030b",
+    bytes: 217764,
+    sourceCommit: "2346a3ab1bb3857b48b29d779a1ef9799a248cd7",
+  },
+  {
+    grammar: "php",
+    file: "tree-sitter-php.wasm",
+    sha256: "bd5e2bf8d42306b7aa32e6b7e39ae9fd9543c62a875ad8b2bc3d488242f72817",
+    bytes: 1081285,
+    sourceCommit: "58d5643086ae60e93a3746cca648363ee97c8761",
+  },
+  {
+    grammar: "rust",
+    file: "tree-sitter-rust.wasm",
+    sha256: "158bd555055271ba754f52574fc12c8d5c6aa7316fefeddd3fa563297f50d5c8",
+    bytes: 1115157,
+    sourceCommit: "77a3747266f4d621d0757825e6b11edcbf991ca5",
+  },
+  {
+    grammar: "java",
+    file: "tree-sitter-java.wasm",
+    sha256: "6476728734128931bd50de2d1e5e9c75c506b51e278f54eaf709836a0de35759",
+    bytes: 415233,
+    sourceCommit: "e10607b45ff745f5f876bfa3e94fbcc6b44bdc11",
+  },
+  {
+    grammar: "kotlin",
+    file: "tree-sitter-kotlin.wasm",
+    sha256: "2f68d2a9be3c2136fb59687abbc94ed016ef5d4ef7984e023f5ec024de366f70",
+    bytes: 5773627,
+    sourceCommit: "1852ea17b7f60fb3f9d84e0b1555d56b46b39fb1",
+  },
+  {
+    grammar: "scala",
+    file: "tree-sitter-scala.wasm",
+    sha256: "fb17a89ba0bb1d350f03d4718174f3c1d36b75d9ddccc5dcfcedacec4574bb07",
+    bytes: 4014596,
+    sourceCommit: "db390f312a54b04b13790e1767bfac32665c17ac",
+  },
+  {
+    grammar: "c_sharp",
+    file: "tree-sitter-c_sharp.wasm",
+    sha256: "315d54ed50bb56940e978ea75c75b74743407fa113c3c98b87aad72c919aaf18",
+    bytes: 5845081,
+    sourceCommit: "8c0abe0b84a3681d3e6852ce2e2a1eecb4f731c5",
+  },
+  {
+    grammar: "fsharp",
+    file: "tree-sitter-fsharp.wasm",
+    sha256: "ff1a927387fec25e184d120d9e18ec7cd5271b30f6380f02d494d3548a99f7b7",
+    bytes: 11430318,
+    sourceCommit: "aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+  },
+  {
+    grammar: "fsharp_signature",
+    file: "tree-sitter-fsharp_signature.wasm",
+    sha256: "23de7d67ae268119f524ad361806773ae8df5c0d54af02b738e60897f9c4cdb5",
+    bytes: 2695892,
+    sourceCommit: "aefd0c8741bdf3aeb827a228aa4a996a6536697e",
+  },
+  {
+    grammar: "ruby",
+    file: "tree-sitter-ruby.wasm",
+    sha256: "e255f2dd39812e9730a824f85e4f5c8660426bd8e8d9a4790e8e7e6e41da3761",
+    bytes: 2107106,
+    sourceCommit: "ad907a69da0c8a4f7a943a7fe012712208da6dee",
+  },
+  {
+    grammar: "c",
+    file: "tree-sitter-c.wasm",
+    sha256: "2030a766fa6c6fe18039524008e52fd4a4995bdd9ed07fc4a73ec892450d2f4a",
+    bytes: 625963,
+    sourceCommit: "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+  },
+  {
+    grammar: "cpp",
+    file: "tree-sitter-cpp.wasm",
+    sha256: "ab9e891709f5dc88fd6b1b4d33f110fb23e5ddc5e64296caf4a41d0a3e585ebe",
+    bytes: 5585559,
+    sourceCommit: "c009222808634c1014f82438d4883753516a2c24",
+  },
+  {
+    grammar: "hcl",
+    file: "tree-sitter-hcl.wasm",
+    sha256: "3483fda1b5a6b2409454f66ec341f82a4041befeafcb81583712c072bd98da3f",
+    bytes: 94489,
+    sourceCommit: "64ad62785d442eb4d45df3a1764962dafd5bc98b",
+  },
+  {
+    grammar: "yaml",
+    file: "tree-sitter-yaml.wasm",
+    sha256: "a6493a7ec9533dc532e4c4db221439064aae4923612f8b0ced4d2eb88131bae3",
+    bytes: 192686,
+    sourceCommit: "a1c4812a73ec5e089de8e441fdea3a921e8d5079",
+  },
+  {
+    grammar: "swift",
+    file: "tree-sitter-swift.wasm",
+    sha256: "8591c61d1313ca331ab651d32b6544a0125dad10168a60887cde3801b15fcea0",
+    bytes: 4149770,
+    sourceCommit: "171fa3bc343233fe07f5e17205aaada33d778825",
+  },
+] as const;
+export const grammarRuntimeAssets = {
+  "web-tree-sitter.js": {
+    sha256: "7c49e3c1d87e24e0bb4c2def909d17154dfde281f5f8280225450090bb4b8110",
+    bytes: 156132,
+  },
+  "web-tree-sitter.wasm": {
+    sha256: "c03bccdc3b448a32848f5ae327e209c982bbb0840d43eec8bc2d5759544a1ed3",
+    bytes: 209613,
+  },
+  LICENSE: {
+    sha256: "c5cfb43042b6b72045f4ba997834d0a7786d2793d91680868b5815b39f14fc78",
+    bytes: 1080,
+  },
+} as const;

@@ -3134,5 +3134,43 @@
       "file": "dist/test/review-workflow-multi.test.js",
       "name": "all-candidate audit tolerates concurrent status snapshots while the later native receipt is pending"
     }
+  ],
+  "selected-syntax-context": [
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax separates repaired text from broken text without treating syntax as verified behavior"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax ignores comment and string lookalikes and leaves dynamic calls and imports unresolved"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax retains malformed unsupported and empty views as distinct source outcomes"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax keeps immutable base index and working views distinct across moves and deletions"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax rejects rehashed grammar source and decision address tampering and legacy promotion"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax reports missing or changed grammar prerequisites before parsing captured source"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax bounds node and source exhaustion while preserving valid adjacent controls"
+    },
+    {
+      "file": "dist/test/review-polyglot.test.js",
+      "name": "selected syntax library CLI and MCP share identical source-granted output and reject tool grants"
+    }
   ]
 }

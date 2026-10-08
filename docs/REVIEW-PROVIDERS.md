@@ -1,6 +1,6 @@
 # Optional stateless provider review
 
-The shared library, CLI and MCP can send one captured version 4/5 assignment to
+The shared library, CLI and MCP can send one captured version 4/5/6 assignment to
 OpenAI Responses or Anthropic Messages. This is the bounded `stateless-inline-api-v1`
 profile. It proposes advisory candidates with a family, trigger, consequence,
 evidence gaps and exact source citations. It does not execute project code,
