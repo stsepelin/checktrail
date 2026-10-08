@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-08T15:02:53.237929+00:00",
+  "profile": "original-synthetic-acceptance-ledger-capacity-v2",
+  "scope": "Checkout acceptance harness, not an installed product capability or whole imported runtime identity.",
+  "sourceBinding": {
+    "baseCommit": "3c67a7bc6b96db9a063442fb72842d45b4be6ea4",
+    "files": [
+      {
+        "file": "scripts/required-test-evidence.mjs",
+        "sha256": "85e9986cf5cd3c315e0897c7c821a74e3fa38180c19844b3cacf4c84466925d6",
+        "bytes": 9659
+      },
+      {
+        "file": "scripts/verify-acceptance-ledger-guards.mjs",
+        "sha256": "28f76ae8a3745da38b27b87f616e3cbe4f13ff9c63e4488ebbeea70a26822081",
+        "bytes": 3770
+      },
+      {
+        "file": "scripts/verify-required-native-tests.mjs",
+        "sha256": "da776e9323b06ddddb9eb764874c948d4d08ddf459e20d5b7200e76b7d3a7474",
+        "bytes": 2515
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "sha256": "f2e9b4ec98e528f3755edbe090961402e074273f23ab928f073c3159e1affa49",
+        "bytes": 144871
+      },
+      {
+        "file": "test/required-native-tests.test.ts",
+        "sha256": "aa6919d34889c81919a67c164bb62b164a492eb6c7d302cdb8151e0c9ef75d71",
+        "bytes": 30629
+      },
+      {
+        "file": "dist/test/required-native-tests.test.js",
+        "sha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da",
+        "bytes": 29328
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "1c8e8169e3350bbd8a72a1664f390473b2ff89a3f2cdcca192d5921576bfc16c",
+        "bytes": 39049
+      },
+      {
+        "file": "docs/REQUIRED-INVENTORY.md",
+        "sha256": "2c0c5e981bf3b0a573385d13df90e318a155b6eefde271d3affc21bb34aa418e",
+        "bytes": 40204
+      }
+    ]
+  },
+  "bounds": {
+    "terminalEvents": 4096,
+    "singleProfileRequirements": 256,
+    "selectedProfiles": 256,
+    "testFileBytes": 4194304,
+    "nameCharacters": 512
+  },
+  "originalControls": {
+    "exactBoundRequiredCallbacks": 4096,
+    "uniqueRetainedTerminalSequences": 4096,
+    "firstExtraBatchRequirementRejectedBeforeExecution": true,
+    "firstExtraConfiguredEventCeilingRejectedBeforeExecution": true,
+    "retainingOnly4095Of4096EventsRemainsIncomplete": true,
+    "largeSyntheticInvocationUsesFileInsteadOfOperatingSystemArgument": true
+  },
+  "localRequiredProfile": {
+    "timeoutMs": 120000,
+    "profile": "native-acceptance-ledger",
+    "passed": 8,
+    "required": 5,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 8,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2084.720583,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "native acceptance ledger binds every reached outcome and missing required case",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1116.311042,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 601.826417,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5193.966834,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "native acceptance ledger preflights every selected file within exact byte limits",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 612.4615,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "required profile batches execute shared files once and preserve all obligations",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 5110.402833,
+          "required": false
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "required profile union exceeds a single manifest while retaining bounded acceptance",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 1244.11275,
+          "required": false
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "native acceptance accepts cumulative callbacks within file budgets and rejects excessive limits",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 7870.434917,
+          "required": false
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native acceptance ledger binds every reached outcome and missing required case",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "native acceptance ledger preflights every selected file within exact byte limits",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        }
+      ]
+    }
+  },
+  "nativeLinuxArm64": {
+    "imageManifest": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "requiredProfile": {
+      "timeoutMs": 120000,
+      "profile": "native-acceptance-ledger",
+      "passed": 8,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 640.038937,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native acceptance ledger binds every reached outcome and missing required case",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 339.245327,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 182.40902,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1036.91857,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native acceptance ledger preflights every selected file within exact byte limits",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 198.788298,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "required profile batches execute shared files once and preserve all obligations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1828.293859,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "required profile union exceeds a single manifest while retaining bounded acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1240.666192,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "native acceptance accepts cumulative callbacks within file budgets and rejects excessive limits",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7448.830977,
+            "required": false
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "required native runner rejects skipped, todo, absent, duplicate and failing cases",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native acceptance ledger binds every reached outcome and missing required case",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native acceptance ledger rejects truncation and changed or unavailable test bytes",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native acceptance ledger retains timeout failures and unknown required outcomes",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native acceptance ledger preflights every selected file within exact byte limits",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "network": "none",
+    "readonlyRootFilesystem": true,
+    "readonlySource": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "1g",
+      "pids": 128,
+      "temporaryFilesystemMiB": 256
+    }
+  },
+  "compilingGuardControls": {
+    "scope": "Original exact-bound native acceptance ledger controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "acceptance-ledger-event-cap",
+        "callback": "required profile union exceeds a single manifest while retaining bounded acceptance",
+        "callbackSha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da",
+        "sourceSha256": "85e9986cf5cd3c315e0897c7c821a74e3fa38180c19844b3cacf4c84466925d6",
+        "mutantSha256": "67ed44aecf577c490f9bc21750c17e640601dc77d3e97c4362ab07bfd19c8b21",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "acceptance-ledger-batch-preflight",
+        "callback": "required profile union exceeds a single manifest while retaining bounded acceptance",
+        "callbackSha256": "3d67431458497436ae3d084d567d98aa133b8df0c692bce555a676c3f98840da",
+        "sourceSha256": "85e9986cf5cd3c315e0897c7c821a74e3fa38180c19844b3cacf4c84466925d6",
+        "mutantSha256": "2a2bc441d0b0a8f0941bbd2d4cc1564b1811819b623acf48a2350757c2582167",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1023,
+      "pass": 759,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 264,
+      "todo": 0
+    },
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "1ab0eb6aaa01e20760d78bac1c279c6caab7263083007091ad621fd13515a521"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
