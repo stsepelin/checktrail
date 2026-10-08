@@ -1,4 +1,5 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
+import { access, readFile, rename, writeFile } from "node:fs/promises";
 import { randomUUID, createHash } from "node:crypto";
 import { fileURLToPath, URL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
@@ -87,13 +88,32 @@ if (mode === "server") {
       }
     };
     if (config.operation === "hold" || config.operation === "flood") {
+      const pendingPath = config.readyPath + ".pending";
       await writeFile(
-        config.readyPath,
+        pendingPath,
         JSON.stringify({
           workerPid: process.pid,
           serverPid: observedServerPid,
         }),
       );
+      if (config.publicationGate) {
+        let released = false;
+        for (let attempt = 0; attempt < 500; attempt++) {
+          released = await access(config.publicationGate)
+            .then(() => true)
+            .catch((error) => {
+              if (error.code !== "ENOENT") throw error;
+              return false;
+            });
+          if (released) break;
+          await delay(20);
+        }
+        if (!released)
+          throw new Error(
+            "Original identity publication gate was not released",
+          );
+      }
+      await rename(pendingPath, config.readyPath);
       if (config.operation === "flood")
         process.stdout.write("x".repeat(1048576));
       await new Promise<void>(() => {});

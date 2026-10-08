@@ -5,15 +5,20 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
 const repository = fileURLToPath(new URL("../", import.meta.url));
-const source = new URL("../dist/src/review-host-lease.js", import.meta.url);
 const callback = new URL(
   "../dist/test/gate-host-session-readiness.test.js",
   import.meta.url,
 );
-const original = await readFile(source, "utf8"),
-  originalCallback = await readFile(callback);
+const originalCallback = await readFile(callback);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
+  {
+    id: "atomic-process-identity-publication",
+    file: "dist/test/review-host-process-fixture.js",
+    name: "host-session-readiness lifecycle acceptance",
+    before: "await writeFile(pendingPath,",
+    after: "await writeFile(config.readyPath,",
+  },
   {
     id: "synchronous-submission-deadline",
     name: "host-session-readiness lifecycle acceptance",
@@ -91,6 +96,11 @@ function run(name) {
 }
 const evidence = [];
 for (const control of controls) {
+  const source = new URL(
+    "../" + (control.file ?? "dist/src/review-host-lease.js"),
+    import.meta.url,
+  );
+  const original = await readFile(source, "utf8");
   const baseline = run(control.name);
   assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
   assert.equal(

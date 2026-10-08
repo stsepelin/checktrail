@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { performance } from "node:perf_hooks";
 import { createHash, randomUUID } from "node:crypto";
 import { execFile, spawnSync } from "node:child_process";
-import { readFile, writeFile, realpath } from "node:fs/promises";
+import { access, readFile, writeFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
@@ -513,6 +513,7 @@ test("host-session-readiness lifecycle acceptance", async (t) => {
       const { hostConfig } = await configs(root, packet, {
         operation: termination === "output" ? "flood" : "hold",
         readyPath,
+        publicationGate: readyPath + ".release",
       });
       const controller = new AbortController();
       const pending = runProcess(
@@ -528,29 +529,57 @@ test("host-session-readiness lifecycle acceptance", async (t) => {
           maxOutputBytes: termination === "output" ? 1024 : 65536,
         },
       );
-      let identities: { workerPid: number; serverPid: number } | undefined;
-      for (let attempt = 0; attempt < 150; attempt++) {
-        identities = await readFile(readyPath, "utf8")
-          .then(JSON.parse)
-          .catch((e) => {
-            if (e.code !== "ENOENT") throw e;
-          });
-        if (identities) break;
-        await delay(20);
-      }
-      assert.ok(identities, "Reached SDK assignment before termination");
-      if (termination === "cancel") {
-        assert.equal(alive(identities.workerPid), true);
-        assert.equal(alive(identities.serverPid), true);
+      try {
+        let pendingPublished = false;
+        for (let attempt = 0; attempt < 150; attempt++) {
+          pendingPublished = await access(readyPath + ".pending")
+            .then(() => true)
+            .catch((error) => {
+              if (error.code !== "ENOENT") throw error;
+              return false;
+            });
+          if (pendingPublished) break;
+          await delay(20);
+        }
+        assert.equal(
+          pendingPublished,
+          true,
+          "Reached SDK assignment before publication",
+        );
+        await assert.rejects(
+          access(readyPath),
+          { code: "ENOENT" },
+          "Identity file must remain absent before publication",
+        );
+        await writeFile(readyPath + ".release", "");
+        let identities: { workerPid: number; serverPid: number } | undefined;
+        for (let attempt = 0; attempt < 150; attempt++) {
+          identities = await readFile(readyPath, "utf8")
+            .then(JSON.parse)
+            .catch((e) => {
+              if (e.code !== "ENOENT") throw e;
+            });
+          if (identities) break;
+          await delay(20);
+        }
+        assert.ok(identities, "Reached SDK assignment before termination");
+        if (termination === "cancel") {
+          assert.equal(alive(identities.workerPid), true);
+          assert.equal(alive(identities.serverPid), true);
+          controller.abort();
+        }
+        const result = await pending;
+        assert.equal(result.cancelled, termination === "cancel");
+        assert.equal(result.timedOut, termination === "timeout");
+        assert.equal(result.truncated, termination === "output");
+        assert.equal(result.errorCode, undefined);
+        assert.equal(alive(identities.workerPid), false);
+        assert.equal(alive(identities.serverPid), false);
+      } finally {
         controller.abort();
+        const cleanup = await pending;
+        assert.equal(cleanup.errorCode, undefined);
       }
-      const result = await pending;
-      assert.equal(result.cancelled, termination === "cancel");
-      assert.equal(result.timedOut, termination === "timeout");
-      assert.equal(result.truncated, termination === "output");
-      assert.equal(result.errorCode, undefined);
-      assert.equal(alive(identities.workerPid), false);
-      assert.equal(alive(identities.serverPid), false);
     }
   } finally {
     engine.dispose();
