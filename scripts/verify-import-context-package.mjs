@@ -33,6 +33,7 @@ assert.ok(
     "context-scala",
     "context-csharp",
     "context-fsharp",
+    "context-ruby",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -56,6 +57,8 @@ if (profile === "context-csharp")
   process.env.CHECKTRAIL_CONTEXT_CSHARP_INSTALLED = "1";
 if (profile === "context-fsharp")
   process.env.CHECKTRAIL_CONTEXT_FSHARP_INSTALLED = "1";
+if (profile === "context-ruby")
+  process.env.CHECKTRAIL_CONTEXT_RUBY_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -101,6 +104,8 @@ try {
     "gate-context-scala.test.js",
     "gate-context-csharp.test.js",
     "gate-context-fsharp.test.js",
+    "gate-context-ruby.test.js",
+    "review-ruby-boundaries-fixture.js",
     "review-fsharp-boundaries-fixture.js",
     "review-csharp-boundaries-fixture.js",
     "review-scala-boundaries-fixture.js",
@@ -223,6 +228,9 @@ try {
           ...(profile === "context-fsharp"
             ? ["--env", "CHECKTRAIL_CONTEXT_FSHARP_INSTALLED=1"]
             : []),
+          ...(profile === "context-ruby"
+            ? ["--env", "CHECKTRAIL_CONTEXT_RUBY_INSTALLED=1"]
+            : []),
           "--read-only",
           "--cpus",
           "2",
@@ -233,7 +241,9 @@ try {
           "--tmpfs",
           ["context-go", "context-rust"].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=256m"
-            : ["context-scala", "context-csharp"].includes(profile)
+            : ["context-scala", "context-csharp", "context-ruby"].includes(
+                  profile,
+                )
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK

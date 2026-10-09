@@ -1667,6 +1667,128 @@
           "additionalProperties": false
         }
       ]
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 17 },
+            "files": {
+              "minItems": 1,
+              "maxItems": 32,
+              "type": "array",
+              "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+            },
+            "topics": {
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "test-lifecycle",
+                  "analysis-scope",
+                  "package-consumers",
+                  "python-imports",
+                  "framework-assembly",
+                  "execution-depth"
+                ]
+              }
+            },
+            "supportFiles": {
+              "maxItems": 31,
+              "type": "array",
+              "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+            },
+            "track": { "type": "string", "const": "snapshot" },
+            "currentSource": { "type": "string", "const": "working-tree" },
+            "moduleRoots": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 1024 }
+                ]
+              }
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "files",
+            "topics",
+            "supportFiles",
+            "track",
+            "currentSource",
+            "moduleRoots"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": { "type": "number", "const": 17 },
+            "files": {
+              "minItems": 1,
+              "maxItems": 32,
+              "type": "array",
+              "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+            },
+            "topics": {
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "test-lifecycle",
+                  "analysis-scope",
+                  "package-consumers",
+                  "python-imports",
+                  "framework-assembly",
+                  "execution-depth"
+                ]
+              }
+            },
+            "supportFiles": {
+              "maxItems": 31,
+              "type": "array",
+              "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+            },
+            "track": { "type": "string", "const": "diff" },
+            "currentSource": {
+              "type": "string",
+              "enum": ["working-tree", "index"]
+            },
+            "baseCommit": {
+              "type": "string",
+              "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+            },
+            "moduleRoots": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 1024 }
+                ]
+              }
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "files",
+            "topics",
+            "supportFiles",
+            "track",
+            "currentSource",
+            "baseCommit",
+            "moduleRoots"
+          ],
+          "additionalProperties": false
+        }
+      ]
     }
   ]
 }

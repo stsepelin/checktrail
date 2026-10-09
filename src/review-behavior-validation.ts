@@ -194,7 +194,8 @@ export function validateReviewBehavior(
     analysis.profile === "kotlin-selected-bindings-v1" ||
     analysis.profile === "scala-selected-bindings-v1" ||
     analysis.profile === "csharp-selected-bindings-v1" ||
-    analysis.profile === "fsharp-selected-bindings-v1"
+    analysis.profile === "fsharp-selected-bindings-v1" ||
+    analysis.profile === "ruby-selected-bindings-v1"
   ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||

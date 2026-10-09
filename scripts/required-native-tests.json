@@ -3628,5 +3628,43 @@
       "file": "dist/test/gate-context-fsharp.test.js",
       "name": "context-fsharp installed acceptance"
     }
+  ],
+  "context-ruby": [
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-ruby.test.js",
+      "name": "context-ruby installed acceptance"
+    }
   ]
 }
