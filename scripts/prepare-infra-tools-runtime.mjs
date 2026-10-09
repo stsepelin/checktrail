@@ -25,7 +25,10 @@ const manifest = JSON.parse(
   await readFile(path.join(root, "scripts/infra-tools-artifacts.json"), "utf8"),
 );
 assert.equal(manifest.schemaVersion, 1);
-assert.match(manifest.base, /^node@sha256:[a-f0-9]{64}$/);
+assert.match(
+  manifest.base,
+  /^public\.ecr\.aws\/docker\/library\/node@sha256:[a-f0-9]{64}$/,
+);
 const downloads = [
   ...manifest.tools.map((t) => ({
     path: "archives/" + t.archive,

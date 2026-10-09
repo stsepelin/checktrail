@@ -54,7 +54,7 @@ const task =
   process.env.CHECKTRAIL_TEST_TASK ?? `python-extension-prepare-${process.pid}`;
 assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
 const image =
-  "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df";
+  "public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df";
 let committed = false;
 try {
   for (const r of records) {

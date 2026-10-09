@@ -16,10 +16,10 @@ function installedImage(name) {
   return digest;
 }
 const image = installedImage(
-  "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+  "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
 );
 const nodeImage = installedImage(
-  "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
 );
 const temporary = await mkdtemp(path.join(tmpdir(), "checktrail-ruby-"));
 const repository = fileURLToPath(new URL("../", import.meta.url));
