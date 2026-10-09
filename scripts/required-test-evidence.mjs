@@ -4,7 +4,11 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { open, realpath } from "node:fs/promises";
 import { constants } from "node:fs";
+import { availableParallelism } from "node:os";
 import { run } from "node:test";
+
+export const testFileWorkerLimit = () =>
+  Math.max(1, Math.min(4, availableParallelism()));
 
 const MAX_REQUIREMENTS = 256;
 const MAX_EVENTS = 4096;
@@ -68,6 +72,8 @@ async function executeRequiredTests(
     "Required terminal ledger must be bounded",
   );
   assert.ok(Array.isArray(additionalFiles));
+  const fileWorkerLimit =
+    additionalFiles.length > 0 ? testFileWorkerLimit() : 1;
   const requiredFiles = new Set(expected.map((item) => item.file));
   const optionalFiles = new Set(
     await Promise.all(additionalFiles.map((file) => realpath(file))),
@@ -88,7 +94,7 @@ async function executeRequiredTests(
   if (before.every((item) => item.state === "present"))
     for await (const { type, data } of run({
       files,
-      concurrency: additionalFiles.length > 0 ? true : 1,
+      concurrency: fileWorkerLimit,
       timeout: timeoutMs,
       execArgv: [],
     })) {
@@ -211,6 +217,7 @@ async function executeRequiredTests(
     };
   });
   return {
+    fileWorkerLimit,
     passed,
     required: expected.length,
     problems,

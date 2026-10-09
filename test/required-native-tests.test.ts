@@ -800,3 +800,76 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
   );
   assert.equal(rejected.stdout, "");
 });
+
+test("required full-suite files run in parallel within the shared worker ceiling and retain every outcome", async (t) => {
+  const { availableParallelism } = await import("node:os"),
+    { readFile } = await import("node:fs/promises");
+  const worker = `import{test}from'node:test';import{readFile,writeFile,rename,mkdir,rm,access}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';import path from'node:path';const directory=process.env.ORIGINAL_WORKER_DIRECTORY;async function update(change){let locked=false;for(let i=0;i<1000;i++){try{await mkdir(path.join(directory,'lock'));locked=true;break;}catch(error){if(error.code!=='EEXIST')throw error;await delay(2)}}if(!locked)throw Error('Original counter lock exhausted');try{const file=path.join(directory,'counts.json'),counts=JSON.parse(await readFile(file,'utf8'));change(counts);counts.maximum=Math.max(counts.maximum,counts.active);await writeFile(path.join(directory,'counts.pending'),JSON.stringify(counts));await rename(path.join(directory,'counts.pending'),file);if(counts.active>=2)await writeFile(path.join(directory,'parallel.ready'),'reached');}finally{await rm(path.join(directory,'lock'),{recursive:true});}}test('original-worker-'+process.env.ORIGINAL_WORKER_NAME,async()=>{await update(c=>c.active++);try{if(process.env.ORIGINAL_EXPECT_OVERLAP==='1')for(let i=0;i<500;i++){try{await access(path.join(directory,'parallel.ready'));break;}catch(error){if(error.code!=='ENOENT')throw error;await delay(2)}}await delay(1000);}finally{await update(c=>{c.active--;c.completed++;});}});`;
+  const files = Object.fromEntries(
+    Array.from({ length: 9 }, (_, i) => [
+      "worker" + i + ".mjs",
+      worker.replace(
+        "process.env.ORIGINAL_WORKER_NAME",
+        JSON.stringify(String(i)),
+      ),
+    ]),
+  );
+  const root = await fixture(t, {
+    ...files,
+    "counts.json": JSON.stringify({ active: 0, maximum: 0, completed: 0 }),
+    "runner.mjs":
+      "const {runRequiredTests}=await import(process.argv[2]);console.log(JSON.stringify(await runRequiredTests(JSON.parse(process.argv[3]),{additionalFiles:JSON.parse(process.argv[4]),timeoutMs:20000})));",
+  });
+  const environment: NodeJS.ProcessEnv = {
+    ...process.env,
+    ORIGINAL_WORKER_DIRECTORY: root,
+    ORIGINAL_EXPECT_OVERLAP: availableParallelism() >= 2 ? "1" : "0",
+  };
+  delete environment.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+      JSON.stringify([
+        { file: path.join(root, "worker0.mjs"), name: "original-worker-0" },
+      ]),
+      JSON.stringify(
+        Array.from({ length: 8 }, (_, i) =>
+          path.join(root, "worker" + (i + 1) + ".mjs"),
+        ),
+      ),
+    ],
+    { env: environment, encoding: "utf8", timeout: 30000, maxBuffer: 1048576 },
+  );
+  assert.equal(
+    result.error,
+    undefined,
+    result.error?.message ?? "Original worker process failed",
+  );
+  assert.equal(result.signal, null);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const receipt = JSON.parse(result.stdout);
+  assert.equal(receipt.complete, true, JSON.stringify(receipt.problems));
+  assert.equal(receipt.passed, 9);
+  assert.equal(receipt.required, 1);
+  assert.equal(receipt.optionalSkipped, 0);
+  assert.equal(receipt.files, 9);
+  assert.equal(receipt.ledger.terminalEventCount, 9);
+  assert.equal(receipt.ledger.files.length, 9);
+  assert.ok(receipt.ledger.files.every((f: { stable: boolean }) => f.stable));
+  assert.equal(receipt.ledger.cases[0].outcome, "passed");
+  const counts = JSON.parse(
+    await readFile(path.join(root, "counts.json"), "utf8"),
+  );
+  assert.equal(counts.active, 0, "Every worker must release the active slot");
+  assert.equal(counts.completed, 9, "Every selected file must run");
+  assert.ok(
+    counts.maximum <= 4,
+    "Actual concurrently executing files exceeded the shared ceiling: " +
+      counts.maximum,
+  );
+  if (availableParallelism() >= 2)
+    assert.ok(counts.maximum >= 2, "Full-suite files were serialized");
+  else assert.equal(counts.maximum, 1);
+});
