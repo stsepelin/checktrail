@@ -3894,5 +3894,43 @@
       "file": "dist/test/gate-context-yaml.test.js",
       "name": "context-yaml installed acceptance"
     }
+  ],
+  "assembly-vue-router": [
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-vue-router.test.js",
+      "name": "assembly-vue-router installed acceptance"
+    }
   ]
 }

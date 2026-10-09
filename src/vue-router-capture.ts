@@ -1,4 +1,4 @@
-import { vueRouteIdentitySchema } from "./vue-router.js";
+import { vueRouteIdentitySchema } from "./vue-router-identity.js";
 import {
   vueRouteAttributesSchema,
   vueRouteKey,
@@ -18,7 +18,7 @@ export interface Router {
   getRoutes(): RouteRecord[];
   resolve(value: string): { matched: RouteRecord[] };
 }
-function data(
+export function vueRouteData(
   value: unknown,
   depth = 0,
   budget = { remaining: 1024 },
@@ -49,7 +49,7 @@ function data(
       const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
       if (!descriptor || !("value" in descriptor))
         throw new Error("Sparse or computed array metadata is unsupported");
-      return data(descriptor.value, depth + 1, budget);
+      return vueRouteData(descriptor.value, depth + 1, budget);
     });
   }
   if (
@@ -71,7 +71,10 @@ function data(
       .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
     if (entries.length > 64) throw new Error("Route metadata exceeds limits");
     return Object.fromEntries(
-      entries.map(([key, item]) => [key, data(item, depth + 1, budget)]),
+      entries.map(([key, item]) => [
+        key,
+        vueRouteData(item, depth + 1, budget),
+      ]),
     );
   }
   throw new Error("Route data is not a supported JSON value");
@@ -108,11 +111,11 @@ export function captureVueRecords(
           ? vueRecordIdentity(record.aliasOf).name
           : null,
         views: Object.keys(record.components ?? {}).sort(),
-        meta: JSON.stringify(data(record.meta)),
+        meta: JSON.stringify(vueRouteData(record.meta)),
         redirect:
           record.redirect === undefined
             ? "null"
-            : JSON.stringify(data(record.redirect)),
+            : JSON.stringify(vueRouteData(record.redirect)),
         beforeEnter: guards.map((guard) => (guard as { name: string }).name),
         children: record.children.length,
         globalStrict: config.strict,

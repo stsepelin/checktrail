@@ -40,6 +40,7 @@ assert.ok(
     "context-cpp",
     "context-hcl",
     "context-yaml",
+    "assembly-vue-router",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -79,6 +80,8 @@ if (profile === "context-yaml") {
   process.env.CHECKTRAIL_CONTEXT_YAML_INSTALLED = "1";
   process.env.CHECKTRAIL_CONTEXT_YAML_NATIVE = "1";
 }
+if (profile === "assembly-vue-router")
+  process.env.CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -131,6 +134,8 @@ try {
     "gate-context-cpp.test.js",
     "gate-context-hcl.test.js",
     "gate-context-yaml.test.js",
+    "gate-assembly-vue-router.test.js",
+    "review-vue-router-assembly-fixture.js",
     "review-yaml-boundaries-fixture.js",
     "review-hcl-boundaries-fixture.js",
     "review-name-boundaries-fixture.js",
@@ -152,6 +157,18 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "assembly-vue-router") {
+    const prepared = path.join(
+      consumer,
+      ".checktrail/vue-router-tools/node_modules",
+    );
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      path.join(repository, ".checktrail/vue-router-tools/node_modules"),
+      prepared,
+      { recursive: true },
+    );
+  }
   const lock = JSON.parse(
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
@@ -228,6 +245,9 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "assembly-vue-router"
+            ? ["--env", "CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED=1"]
+            : []),
           ...(profile === "review-context-limits"
             ? ["--env", "CHECKTRAIL_CONTEXT_LIMITS_INSTALLED=1"]
             : []),
@@ -322,6 +342,7 @@ try {
                   "context-vb",
                   "context-hcl",
                   "context-yaml",
+                  "assembly-vue-router",
                 ].includes(profile)
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",

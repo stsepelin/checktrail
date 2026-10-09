@@ -9,6 +9,13 @@ import { pathToFileURL } from "node:url";
 import { vueRouterConfigSchema } from "./vue-router.js";
 import { vueRouterResultSchema } from "./vue-router-protocol.js";
 
+import {
+  observeVueHooks,
+  navigateVueAssembly,
+  vueAssemblyOperations,
+  type AssemblyRouter,
+} from "./vue-router-assembly.js";
+import { vueRouterAssemblyRuntimeMatches } from "./vue-router-runtime-pins.js";
 async function main() {
   const [routerEntry, vueMetadata, moduleEntry, encoded, fingerprint] =
     process.argv.slice(2);
@@ -30,6 +37,19 @@ async function main() {
     process.exitCode = 3;
     return;
   }
+  if (
+    config.schemaVersion === 2 &&
+    !(await vueRouterAssemblyRuntimeMatches(routerEntry!))
+  ) {
+    process.stdout.write(
+      JSON.stringify({
+        unavailable: "vue-router-runtime",
+        reason: "runtime-byte-mismatch",
+      }),
+    );
+    process.exitCode = 3;
+    return;
+  }
   const native = (await import(pathToFileURL(routerEntry!).href)) as {
     createRouter(options: unknown): Router;
     createMemoryHistory(): unknown;
@@ -42,6 +62,14 @@ async function main() {
   });
   const routes = router.getRoutes.bind(router);
   const resolve = router.resolve.bind(router);
+  const nativeAssembly =
+    config.schemaVersion === 2
+      ? vueAssemblyOperations(router as AssemblyRouter)
+      : null;
+  const assemblyHooks =
+    config.schemaVersion === 2
+      ? observeVueHooks(router as AssemblyRouter)
+      : null;
   const startup: Record<string, unknown> = await import(
     pathToFileURL(moduleEntry!).href
   );
@@ -49,6 +77,15 @@ async function main() {
   if (typeof configure !== "function")
     throw new Error("Missing route startup function");
   await configure(router);
+  assemblyHooks?.verify();
+  const navigation =
+    assemblyHooks && nativeAssembly && config.schemaVersion === 2
+      ? await navigateVueAssembly(
+          nativeAssembly,
+          assemblyHooks,
+          config.navigation.map((probe) => probe.path),
+        )
+      : null;
   const records = routes();
   if (records.length > 2048) throw new Error("Route inventory exceeds limits");
   const { entries, indices } = captureVueRecords(records, config);
@@ -74,7 +111,8 @@ async function main() {
   )
     throw new Error("Route assembly changed during capture");
   const result = vueRouterResultSchema.parse({
-    schemaVersion: 1,
+    schemaVersion: config.schemaVersion,
+    ...(assemblyHooks ? { hooks: assemblyHooks.receipts(), navigation } : {}),
     versions: { router: routerVersion, vue: vueVersion },
     totalRoutes: records.length,
     supportedRoutes: entries.length,
@@ -84,7 +122,10 @@ async function main() {
     runtime: {
       schemaVersion: 1,
       format: "runtime-inventory",
-      producer: { name: "checktrail.vue-router", version: "1.0.0" },
+      producer: {
+        name: "checktrail.vue-router",
+        version: config.schemaVersion === 2 ? "2.0.0" : "1.0.0",
+      },
       assembly: { name: config.assembly, environment: config.environment },
       sourceFingerprint: fingerprint,
       capturedAt: new Date().toISOString(),
@@ -95,6 +136,21 @@ async function main() {
           ordered: true,
           entries,
         },
+        ...(assemblyHooks
+          ? [
+              {
+                kind: "middleware",
+                complete: assemblyHooks
+                  .receipts()
+                  .every((hook) => hook.reached),
+                ordered: true,
+                entries: assemblyHooks.receipts().map((hook) => ({
+                  key: JSON.stringify([hook.phase, hook.name]),
+                  attributes: hook,
+                })),
+              },
+            ]
+          : []),
       ],
     },
   });

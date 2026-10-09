@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Vue Router navigation assembly](VUE-ROUTER-ASSEMBLY.md) adds explicit
+final record, active hook and ordered native navigation contracts after readiness,
+with original guard-order defect/repair, callback/remover identity, field,
+prerequisite, stale/empty, trust/privacy and reached cleanup controls. The
+[local record](measurements/vue-router-assembly-2026-10-09.json) binds pinned Linux
+source and fresh offline production acceptance and compiling mutations. Version 1
+resolution remains separately verified. The selected router bundle bytes do not
+close whole dependency/publisher/license provenance. Remaining profiles, freezes
+and final runtime acceptance keep Gate A open; no inference or field evaluation
+is invoked.
+
 The bounded [Helm profile](HELM.md) validates a declared root application chart
 with pinned strict lint and client-only rendering. Frozen source/tool bytes, typed
 values and complete template participation bind native evidence to original

@@ -308,7 +308,7 @@ test("route schema prefixes and request boundaries agree in runtime and standard
     ["Vue attributes", vueRouteAttributesSchema.shape.path, false, false],
     [
       "Vue probe",
-      vueRouterConfigSchema.shape.probes.element.shape.path,
+      vueRouterConfigSchema.options[0].shape.probes.element.shape.path,
       true,
       false,
     ],

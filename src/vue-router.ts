@@ -6,12 +6,14 @@ import { readProjectFile, withinRoot } from "./inventory.js";
 import { localTool } from "./local-tool.js";
 import type { Check, Inventory, Project } from "./types.js";
 
-const routePath = z.string().regex(/^\//).max(4096);
-export const vueRouteIdentitySchema = z.strictObject({
-  path: routePath,
-  name: z.string().max(256).nullable(),
-});
-export const vueRouterConfigSchema = z.strictObject({
+import { vueRouteIdentitySchema } from "./vue-router-identity.js";
+export { vueRouteIdentitySchema } from "./vue-router-identity.js";
+import { vueRouteAttributesSchema } from "./vue-router-protocol.js";
+import {
+  vueHookSchema,
+  vueNavigationSchema,
+} from "./vue-router-assembly-schema.js";
+const vueRouterResolveConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
   module: z
     .string()
@@ -47,6 +49,17 @@ export const vueRouterConfigSchema = z.strictObject({
     .min(1)
     .max(256),
 });
+export const vueRouterAssemblyConfigSchema =
+  vueRouterResolveConfigSchema.extend({
+    schemaVersion: z.literal(2),
+    expectedRecords: z.array(vueRouteAttributesSchema).min(1).max(2048),
+    expectedHooks: z.array(vueHookSchema).max(256),
+    navigation: z.array(vueNavigationSchema).min(1).max(64),
+  });
+export const vueRouterConfigSchema = z.discriminatedUnion("schemaVersion", [
+  vueRouterResolveConfigSchema,
+  vueRouterAssemblyConfigSchema,
+]);
 export async function vueRouterCheck(
   source: Inventory,
   project: Project,

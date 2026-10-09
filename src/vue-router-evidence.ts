@@ -24,11 +24,12 @@ export function vueRouterEvidence(
     try {
       z.strictObject({
         unavailable: z.literal("vue-router-runtime"),
-        reason: z.literal("unsupported-version"),
+        reason: z.enum(["unsupported-version", "runtime-byte-mismatch"]),
       }).parse(JSON.parse(execution.stdout));
       return {
         status: "unavailable",
-        reason: "The verified Vue Router/Vue versions are not installed.",
+        reason:
+          "Verified Vue Router/Vue versions or selected router runtime byte bindings are unavailable.",
         findingsComplete: false,
       };
     } catch {
@@ -50,10 +51,13 @@ export function vueRouterEvidence(
     if (
       result.runtime.sourceFingerprint !== check.commands[0]!.args[5] ||
       result.runtime.producer.name !== "checktrail.vue-router" ||
-      result.runtime.producer.version !== "1.0.0" ||
+      result.schemaVersion !== config.schemaVersion ||
+      result.runtime.producer.version !==
+        (config.schemaVersion === 2 ? "2.0.0" : "1.0.0") ||
       result.runtime.assembly.name !== config.assembly ||
       result.runtime.assembly.environment !== config.environment ||
-      result.runtime.collections.length !== 1 ||
+      result.runtime.collections.length !==
+        (config.schemaVersion === 2 ? 2 : 1) ||
       collection.kind !== "routes" ||
       !collection.ordered ||
       collection.complete !== (result.supportedRoutes === result.totalRoutes) ||
@@ -125,7 +129,64 @@ export function vueRouterEvidence(
       JSON.stringify(result.coveredIndices)
     )
       return incomplete;
+    let assemblyComplete = true;
+    if (result.schemaVersion === 2 && config.schemaVersion === 2) {
+      const hooks = result.runtime.collections[1]!;
+      if (
+        hooks.kind !== "middleware" ||
+        !hooks.ordered ||
+        hooks.complete !== result.hooks.every((hook) => hook.reached) ||
+        JSON.stringify(hooks.entries) !==
+          JSON.stringify(
+            result.hooks.map((hook) => ({
+              key: JSON.stringify([hook.phase, hook.name]),
+              attributes: hook,
+            })),
+          ) ||
+        result.navigation.length !== config.navigation.length ||
+        result.navigation.some(
+          (step, index) =>
+            step.path !== config.navigation[index]!.path ||
+            step.hooks.some(
+              (event) =>
+                !result.hooks.some(
+                  (hook) =>
+                    hook.phase === event.phase && hook.name === event.name,
+                ),
+            ),
+        )
+      )
+        return incomplete;
+      assemblyComplete = hooks.complete;
+      const comparisons = [
+        [
+          "records",
+          collection.entries.map((entry) =>
+            vueRouteAttributesSchema.parse(entry.attributes),
+          ),
+          config.expectedRecords,
+        ],
+        [
+          "hooks",
+          result.hooks.map(({ phase, name }) => ({ phase, name })),
+          config.expectedHooks,
+        ],
+        ["navigation", result.navigation, config.navigation],
+      ] as const;
+      for (const [kind, actual, expected] of comparisons)
+        if (JSON.stringify(actual) !== JSON.stringify(expected))
+          findings.push({
+            ruleId: "vue-router/assembly-" + kind + "-mismatch",
+            level: "error" as const,
+            message:
+              "Native router " +
+              kind +
+              " differ from the declared assembled contract.",
+            file: path.posix.join(check.project, "checktrail.vue-router.json"),
+          });
+    }
     const complete =
+      assemblyComplete &&
       collection.complete &&
       result.coveredIndices.length === result.totalRoutes;
     const evidence = {
@@ -138,14 +199,14 @@ export function vueRouterEvidence(
         ...evidence,
         status: "failed",
         reason:
-          "Native Vue Router resolution differs from the declared route contract.",
+          "Native Vue Router resolution or assembly differs from the declared contract.",
       };
     if (!complete) return { ...evidence, ...incomplete };
     return {
       ...evidence,
       status: "passed",
       reason:
-        "Every native route record participated in a probe and all resolved route chains matched the declared contract.",
+        "Every native route record participated in a probe and all declared route and assembly contracts matched.",
     };
   } catch {
     return incomplete;

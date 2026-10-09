@@ -1,0 +1,1541 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-vue-router-navigation-assembly-v2",
+  "recordedAt": "2026-10-09T05:05:52.202928+00:00",
+  "scope": "Selected native memory-router registration, readiness, ordered navigation and projected final records/hooks. Original operator contracts, runtime byte/version gates, fresh installation, privacy/trust and reached process cleanup are exercised. This is not production-assembly equivalence, general authorization/guard-body truth, whole dependency/publisher/license closure, model quality or Gate A closure.",
+  "sourceBinding": {
+    "baseCommit": "3c86ce580b1586aace381a7324f4e5f83138afc2",
+    "kind": "current-implementation-original-acceptance-and-compiled-control-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 51813,
+        "sha256": "2e5c18a37a45b6a2f7b8b0fc6dd58cd1af07d1757c0118e0807ad9cb731423d5"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 26503,
+        "sha256": "49f082f85ae47960f5e9798d8ae6601c942748ad6df6cdba95b0e4e2b9e96fa0"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 40755,
+        "sha256": "a7864b2a7049cb377806012794f6b8753f2d724fb864493e020264276980e06d"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 46337,
+        "sha256": "c6fc03934e1be5625508f07810b735a1aebdcb1cece11a7759ac2f99a7b340f5"
+      },
+      {
+        "file": "docs/STATUS.md",
+        "bytes": 57350,
+        "sha256": "88774e86317fd1a0258962e360a86f02f2a2094d7bf51655a4b110fea38a1625"
+      },
+      {
+        "file": "docs/VUE-ROUTER-ASSEMBLY.md",
+        "bytes": 6433,
+        "sha256": "5eb785858f6c142657f9dc6a49923f10b3db86c3fa5d0dc7c2a62b672ede84f7"
+      },
+      {
+        "file": "docs/VUE-ROUTER.md",
+        "bytes": 6692,
+        "sha256": "88e6ad99c61aa7cd811a02093234f76c4567a03d6de7a4b02229a2602a8287dd"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146075,
+        "sha256": "9ad00086e2c772ed016ed4739e1713cd2dda9f49bd9ff6a5ec32bcdf87716acb"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/vue-router-config.schema.json",
+        "bytes": 9112,
+        "sha256": "1e005ce17ede6bc72128f23809525cd0344760437820af244c322c205f578e86"
+      },
+      {
+        "file": "scripts/prepare-acceptance-cache-subset.mjs",
+        "bytes": 3215,
+        "sha256": "d567067e3a4dd7263dc93e3f4db431c4c1f08ebff0def398bca0dc0c281c57f5"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 161830,
+        "sha256": "63c09cfb4106d8a05786fb9c6ee1011781e9d5a91e99b22101746392ccd266c7"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 13597,
+        "sha256": "17536ef883efad5ab67a052ad350a9880e73034f1e6da42063879e5291416efe"
+      },
+      {
+        "file": "scripts/verify-vue-router-assembly-container.mjs",
+        "bytes": 5185,
+        "sha256": "787c3cda8ab3bd67900d9a833f0f60f228d060e1b1ecad64e7cb9ab3d86226c6"
+      },
+      {
+        "file": "scripts/verify-vue-router-assembly-guards.mjs",
+        "bytes": 13468,
+        "sha256": "6076471fc71840b1083813dfe417baed4777b8f9bf7839ec1ebf8f62455a6515"
+      },
+      {
+        "file": "scripts/vue-router-tools/package-lock.json",
+        "bytes": 28045,
+        "sha256": "82ca8ec0d1616b9775ffc3ffb1531a54163f51cfc98e78352a7db5e9f8122068"
+      },
+      {
+        "file": "scripts/vue-router-tools/package.json",
+        "bytes": 165,
+        "sha256": "8b8e4729813b8b31ec3ad07bd797b033ef09f65461160189c4e6f29b75ff3996"
+      },
+      {
+        "file": "src/vue-router-assembly-schema.ts",
+        "bytes": 916,
+        "sha256": "5370f0ad9d53d08c409c6138b36d81afd27f3eb8f42c6cd072547cfccbcaf91c"
+      },
+      {
+        "file": "src/vue-router-assembly.ts",
+        "bytes": 7217,
+        "sha256": "653154a97f58635a891606018d3fe64bc880b762ba532028e38011432543f670"
+      },
+      {
+        "file": "src/vue-router-capture.ts",
+        "bytes": 4279,
+        "sha256": "49e3bf7bf7bea2442494a2a387042f9c09a54bdee2be89bcaae100c4dcc678c0"
+      },
+      {
+        "file": "src/vue-router-evidence.ts",
+        "bytes": 7542,
+        "sha256": "653a1e24cca73716fbd87ea87ce56d90d9a3bd05be84b318762dd06f750cd22f"
+      },
+      {
+        "file": "src/vue-router-identity.ts",
+        "bytes": 167,
+        "sha256": "2d4230ea72390ef1a746c3a9c7a3361782898c21e94c4c87f118845ee9fd5ede"
+      },
+      {
+        "file": "src/vue-router-protocol.ts",
+        "bytes": 1962,
+        "sha256": "b938373708000de6b9445fbde4f662105aa1b066188770beb56be00a95257a52"
+      },
+      {
+        "file": "src/vue-router-runner.ts",
+        "bytes": 5188,
+        "sha256": "ef4ee19e0293b18a8f641508a1f65ba3adc47aa27f6351f8b49dcaa8ace14c40"
+      },
+      {
+        "file": "src/vue-router-runtime-pins.ts",
+        "bytes": 1676,
+        "sha256": "50d37e04255d9cfc62936a005ce35e73f93244e1b7787cb035079b538bb61571"
+      },
+      {
+        "file": "src/vue-router.ts",
+        "bytes": 4531,
+        "sha256": "d2570dc6a75e95e491cd3a044903a6eec92f6f19231a741a49a8a6bf877f652b"
+      },
+      {
+        "file": "test/gate-assembly-vue-router.test.ts",
+        "bytes": 18117,
+        "sha256": "c57ae9f7338312d11395e707b3c96f4f8195fb2a1eeefc2bc266d2941d18f9ec"
+      },
+      {
+        "file": "test/review-vue-router-assembly-fixture.ts",
+        "bytes": 6780,
+        "sha256": "1c182204c4547e022001af1253f9b2f18e62a296664db5284555fa61dccc3ac9"
+      },
+      {
+        "file": "test/review-vue-router-assembly-guards.test.ts",
+        "bytes": 10736,
+        "sha256": "a40435648fae015daac6a57b8a547bb870b3d8240c007f9d63de86a36637bba6"
+      },
+      {
+        "file": "test/schemas.test.ts",
+        "bytes": 16105,
+        "sha256": "93ee5a28d9827a54aab8de54c86b69cf06c3414fe90188bae1cb0a3fb46d8f2b"
+      }
+    ],
+    "compiledFiles": [
+      {
+        "file": "dist/src/vue-router-assembly-schema.js",
+        "bytes": 834,
+        "sha256": "375af8e34f9ef8c31eb5f7909ffe40ea585fdb05a9cf8f10e0c61a796124965b"
+      },
+      {
+        "file": "dist/src/vue-router-assembly.js",
+        "bytes": 6627,
+        "sha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae"
+      },
+      {
+        "file": "dist/src/vue-router-capture.js",
+        "bytes": 4122,
+        "sha256": "d2e2d3d0dbd0301513b59adf2a7a4dba432f09a5b47b55830cae33ee413504bc"
+      },
+      {
+        "file": "dist/src/vue-router-evidence.js",
+        "bytes": 8007,
+        "sha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6"
+      },
+      {
+        "file": "dist/src/vue-router-identity.js",
+        "bytes": 171,
+        "sha256": "40c9860112cd38c61d07eef937a182fd30816a079e0b9ec6be745e4188cc8314"
+      },
+      {
+        "file": "dist/src/vue-router-protocol.js",
+        "bytes": 1963,
+        "sha256": "56895bd7bc2cdf0001e4e1154625f09ebd3d32ca2eb48a2416b608bb1d4bfcab"
+      },
+      {
+        "file": "dist/src/vue-router-runner.js",
+        "bytes": 5419,
+        "sha256": "e7433999f33b26df86520e3ad8be05d8ab45b3e4cb12bc8f0d4e370ff674a127"
+      },
+      {
+        "file": "dist/src/vue-router-runtime-pins.js",
+        "bytes": 1797,
+        "sha256": "3d3f3c5b32048b5add9022d5aed474627710f7ba752b20eb7dca68ef1b715887"
+      },
+      {
+        "file": "dist/src/vue-router.js",
+        "bytes": 4577,
+        "sha256": "316353f11484ad3c5df951c3aebcc08ef93bf8275c91033af0070019e7b3aec4"
+      },
+      {
+        "file": "dist/test/gate-assembly-vue-router.test.js",
+        "bytes": 17862,
+        "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+      },
+      {
+        "file": "dist/test/review-vue-router-assembly-fixture.js",
+        "bytes": 6867,
+        "sha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4"
+      },
+      {
+        "file": "dist/test/review-vue-router-assembly-guards.test.js",
+        "bytes": 9854,
+        "sha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348"
+      }
+    ],
+    "acceptedPackagePrecedesThisMeasurementRecord": true
+  },
+  "nativeAcceptance": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "router": "5.3.1",
+      "vue": "3.5.43",
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+      "nodeBinary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "selectedRouterBundles": [
+        {
+          "file": "vue-router.node.mjs",
+          "bytes": 74,
+          "sha256": "8e81cc52d7e609d9d5547664ca746d5223616d04ec35451d4fa606b7df84ef4c"
+        },
+        {
+          "file": "dist/vue-router.js",
+          "bytes": 57788,
+          "sha256": "274a8d36d942e3102a961c7be15bfb6dcc41a69b5e8a72f0f36f91eb8c8556cb"
+        },
+        {
+          "file": "dist/devtools-CN5uWJaH.js",
+          "bytes": 36524,
+          "sha256": "7d8c7fbe4944d717d70b9b026ca4dce118b96f61136b9af1f223d32a344aac4c"
+        },
+        {
+          "file": "dist/useApi-BPuI6ZR9.js",
+          "bytes": 21759,
+          "sha256": "9056b6e651a58c60aab83d5dc19a052a876f0efebc861fae5e4d022837a20f3b"
+        },
+        {
+          "file": "dist/navigation-guard-Csroba8S.js",
+          "bytes": 10257,
+          "sha256": "0928108e820a0c38246811df16a00f6473383e173c49e9afa586f6e84817a464"
+        }
+      ],
+      "selectedRouterBytesMatch": true
+    },
+    "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "assembly-vue-router",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "assembly-vue-router broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 404.317694,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "assembly-vue-router fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 406.414581,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "assembly-vue-router near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1161.669539,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "assembly-vue-router prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 338.021065,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "assembly-vue-router stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 490.445022,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "assembly-vue-router empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1158.819649,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "assembly-vue-router privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2717.596883,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "assembly-vue-router lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6014.033295,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "assembly-vue-router installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18284.36115,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "cachePreparation": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "guards": {
+      "scope": "Original synthetic Vue Router assembly controls; selected byte-pinned native runtime; no inference or field evaluation",
+      "controls": [
+        {
+          "id": "same-callback-identity",
+          "callback": "assembly-vue-router near-miss acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "013ad966ada6fff992e0eb2fdfec12dff6682fa3c2cbea3a0f28e4f83476673e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "callback-arity",
+          "callback": "assembly-vue-router near-miss acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "4b13fce15966eb9fd9fc467dfb99cf5812c478dd542fb4eebe86d95f1853a3d0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "invocation-reached",
+          "callback": "assembly-vue-router fixed acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "10c6b7625a30dc6bae9b86ae12fe0a1a0e58880471c225e80704241740ca4f6c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-remover",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "674c171efe473266b9d2d24d1038daa008f8ee5bac9874b737806732859bad5c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "first-match-removal",
+          "callback": "assembly-vue-router near-miss acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "a8497e07867935266aa20ee21c03325be74b9864c9a6060f334fb6745cecdb4d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "registration-observer",
+          "callback": "assembly-vue-router empty acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "0379c5ef105384ea39d694ef221ba6c75e41665a48022529fe883b1f1cd96fb2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "unawaited-after-hook",
+          "callback": "assembly-vue-router unawaited after hook guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "3c3ed7c7b9cc87075fc0ae2c40d72f8e8c9090b3fb7fed57298e6f543dd2bf3c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "inert-then-data",
+          "callback": "assembly-vue-router inert then metadata guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "47c85c2c230f136d1a7f223865b085808f6c3d35dc389ffca0d80e9be377806b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "lifetime-registration-budget",
+          "callback": "assembly-vue-router registration and event budget guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "98eef9c5517cd2a40c5b39d85524065e1527dbc27066984a85e2815de7ecb57c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "invocation-event-budget",
+          "callback": "assembly-vue-router registration and event budget guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "a45999cb737aff17330dc505ccdd697a4427de12317a775f211bc2a17c6fece7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "active-registration-identity",
+          "callback": "assembly-vue-router identical-name assembly drift guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "4a444479c3881b439f88960d1ddc4d851ac729265a397e7c52f7b33bf1a0a43c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-push-capture",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "96b8a357e5367d32f73e48cfc2b2084efe3a25056cf30db7c30403255d7680c1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-ready-capture",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "bb94f07929559395a7e00f105a4174b76a28ccbf63413c781b92c9fdbc85b8b5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-records-capture",
+          "callback": "assembly-vue-router identical-record assembly drift guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "b9084e735a2e6fc08236e79921f7fd278556a8c44edc7d610cdff3ef7b1a7404",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-current-capture",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "aa88845ab3bcbbe39af4e9fd8040681319060e4acbdcd800c2de695dff2cc2ae",
+          "mutantSha256": "7cc8d4745576bd6e83eb9218cd1552f0127b29826eebec111c9d60a0258edbdb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-resolve-capture",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "e7433999f33b26df86520e3ad8be05d8ab45b3e4cb12bc8f0d4e370ff674a127",
+          "mutantSha256": "856dcc05093ab3c1498ec8ef956417ae262ec8a4f1ee04b7840f3ce38d4bfd12",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-final-record-capture",
+          "callback": "assembly-vue-router native facade and repeated remover guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "e7433999f33b26df86520e3ad8be05d8ab45b3e4cb12bc8f0d4e370ff674a127",
+          "mutantSha256": "3a6d6075309b24f80b3b4958981331e2538c23029169dcc6bc7e7693e86c6c5f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "await-startup",
+          "callback": "assembly-vue-router fixed acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "e7433999f33b26df86520e3ad8be05d8ab45b3e4cb12bc8f0d4e370ff674a127",
+          "mutantSha256": "ef1877f44459b4bbe0984e0b172bdf3efa03c98294cbf9dfe9d648131741a1b6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "runtime-byte-gate",
+          "callback": "assembly-vue-router changed runtime byte guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "e7433999f33b26df86520e3ad8be05d8ab45b3e4cb12bc8f0d4e370ff674a127",
+          "mutantSha256": "10ace9395bc596c5ca9044c8fcc396b97cd500cb58da15bd6ae550584a1daede",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "runtime-byte-digest",
+          "callback": "assembly-vue-router changed runtime byte guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "3d3f3c5b32048b5add9022d5aed474627710f7ba752b20eb7dca68ef1b715887",
+          "mutantSha256": "a70974619c973fc682649461a8df7581ee6d412e403f23efd1fd8cf80a76c572",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-source",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "4328642f44a90f47b31e6bd7b7891ebe157290fa8074223d0346cfb37f191b5b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-name",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "270f86b644b0472c84d49523f542370f60d2063bed047100516a4322ae770040",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-version",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "7eadf25ac179e036e6c0fbf09fc220f48f4926404898acffe3c30d1ec23473aa",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly-name",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "5eeb2c4b15f5c37aa01ae39feeb30ad99a51044fcbbf46e7d609a39209e946f5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly-environment",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "95b08c195c807ecf733fb59877129078b9d0b61a9f46f6968e127ef409cdd7a3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-collection-kind",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "4b6a1c0a1ee6417cfd4e33c3bd75fb305b120a611ce6a17eade9033795e44ff3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-collection-order",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "86c5d2749a0393d981050b3c4e65b38869926044ea4360615e20406cc81e2f48",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-collection-completeness",
+          "callback": "assembly-vue-router fixed acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "d067134862b7873b781cd38d050e5c3521ffed283bd651008423b8b58b4e069b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-navigation-count",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "22541aa0c2e309f15f119ff39b3f1d99ea363658763ada6d7e0d6542d19870f6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-navigation-path",
+          "callback": "assembly-vue-router stale acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "2e394e83195fd74cbe75bebfcb1176469db3a5a722d63fc6c027993b5e036ff4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "record-contract",
+          "callback": "assembly-vue-router declared records guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "724f955f300e9367dafb24f1db36126b64cc970c2c45d62f22a637217bbb9fd0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hook-contract",
+          "callback": "assembly-vue-router broken acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "df580e3003b25eef520dff83b0042a82b2cf9eb7acd02444c0a4de42135bc5ed",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "navigation-contract",
+          "callback": "assembly-vue-router broken acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "8108072994dcfe7fcf58687eb838a586fe42dc2fd34411a6f793f627a19aa827",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hook-reach-completeness",
+          "callback": "assembly-vue-router unreachable hooks guard acceptance",
+          "callbackSha256": "a12508b4ab14058fb9fe0ecd184168ef605cfa56e6d30ade35967d6d13657348",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "f0ea153a71b7526c891cd3430b6a66b16208549e4e8d2b3fa476ed762ab86753",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "route-probe-coverage",
+          "callback": "assembly-vue-router empty acceptance",
+          "callbackSha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a",
+          "fixtureSha256": "9302428d0532b18309b81c7507f5d1e639666a22670d3766d124289b8a38dbf4",
+          "sourceSha256": "ef7501b59371ed43795d52d9dfbe27d9ec0148004f18e17694a505b1ae3adea6",
+          "mutantSha256": "3cc6cf03e54392f7396ee40f4223340e945675a6e41060eb4df8a2b93026b592",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "supplemental": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "afe684a043af135a52de47737caecf286a104b593733345e946203ad362c68e7",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "assembly-vue-router",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "assembly-vue-router broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 460.728583,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "assembly-vue-router fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 387.386674,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "assembly-vue-router near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1228.565055,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "assembly-vue-router prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 358.261828,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "assembly-vue-router stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 516.998304,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "assembly-vue-router empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1205.975958,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "assembly-vue-router privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2855.73727,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "assembly-vue-router lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6011.079716,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "assembly-vue-router installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.320418,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-vue-router installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "hostAcceptance": {
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "assembly-vue-router",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6f0f2cd2056ba3af227b3baa79dac95aa085a3c1c74331dad340e879746b374a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "assembly-vue-router broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 315.836458,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "assembly-vue-router fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 302.21725,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "assembly-vue-router near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 890.472833,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "assembly-vue-router prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 277.10875,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "assembly-vue-router stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 433.841875,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "assembly-vue-router empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 885.180042,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "assembly-vue-router privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2453.300208,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "assembly-vue-router lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5644.0315,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "assembly-vue-router installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16918.272416,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-vue-router installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "preparedGoAnalyzers": {
+      "staticcheck": "0.8.1",
+      "golangciLint": "2.13.2"
+    }
+  },
+  "preservedVersion1Acceptance": [
+    {
+      "timeoutMs": 120000,
+      "profile": "vue-router",
+      "fileWorkerLimit": 1,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d0bdc63f4067ffe8f23cb83163f2e7e83225742767f9243b6590689c7e04519d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d0bdc63f4067ffe8f23cb83163f2e7e83225742767f9243b6590689c7e04519d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Vue Router planning validates explicit scope without executing startup or granting trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 49.409979,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Vue Router captures async registration, nested default children and aliases without loading views or navigation guards",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 848.967322,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Vue Router cannot pass uncovered or shadowed records, unsupported dynamic redirects or an empty router",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1502.494326,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Vue Router probes preserve case and trailing-slash options and capture static redirects without navigating",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 669.898773,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "Vue Router evidence reconciles native record indices, probe participation, versions and source identity",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 424.917809,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "Vue Router version gates, protected environment and native readers survive startup facade replacement",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 508.048918,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "Vue Router CLI preserves explicit trust and returns path-free summary evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 879.01847,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "Vue Router MCP keeps runtime route metadata behind the operator detail setting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1495.841534,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Vue Router planning validates explicit scope without executing startup or granting trust",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Vue Router captures async registration, nested default children and aliases without loading views or navigation guards",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Vue Router cannot pass uncovered or shadowed records, unsupported dynamic redirects or an empty router",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Vue Router probes preserve case and trailing-slash options and capture static redirects without navigating",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Vue Router evidence reconciles native record indices, probe participation, versions and source identity",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Vue Router version gates, protected environment and native readers survive startup facade replacement",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Vue Router CLI preserves explicit trust and returns path-free summary evidence",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Vue Router MCP keeps runtime route metadata behind the operator detail setting",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          }
+        ]
+      }
+    },
+    {
+      "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "node": "22.23.2",
+      "vue": "3.5.43",
+      "router": "5.3.1",
+      "network": "none",
+      "native": "passed",
+      "installation": "offline",
+      "library": "passed",
+      "cli": "passed",
+      "broken": "failed as expected",
+      "mcp": "passed"
+    }
+  ],
+  "repositoryCheck": {
+    "tests": 1204,
+    "passed": 877,
+    "failed": 0,
+    "cancelled": 0,
+    "optionalNativeSkipped": 327,
+    "todo": 0,
+    "durationMs": 198316.657958
+  },
+  "targetedChecks": {
+    "checks": {
+      "direct-lint": true,
+      "format-changed": true,
+      "typecheck": true,
+      "schema-generation": true,
+      "diff-check": true,
+      "preserved-context-limits": true,
+      "preserved-selected-syntax": true,
+      "workflow-actionlint": true
+    },
+    "directCodeFiles": 17,
+    "changedFiles": 27,
+    "schemaCount": 144,
+    "onlyChangedSchema": "schemas/vue-router-config.schema.json",
+    "schemaRegenerationStable": true
+  },
+  "inventoryAudit": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "gateProgress": {
+    "implementedExtensions": 19,
+    "selectedExtensions": 51,
+    "pendingExtensions": 32,
+    "unresolvedFreezeDecisions": 3,
+    "finalExactMatrixAcceptanceComplete": false
+  },
+  "readinessBoundaries": {
+    "planningExecutesProjectCode": false,
+    "executionRequiresOperatorTrust": true,
+    "mcpArgumentsCanGrantExecutionTrust": false,
+    "summaryDisclosesPathsMetadataHooks": false,
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "engineRunsProjectCodeSandboxed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityAssessed": false,
+    "gateAComplete": false
+  }
+}
