@@ -629,6 +629,63 @@ export const reviewRubyBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(32),
   }),
 });
+export const reviewSwiftBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("swift-selected-bindings-v1"),
+  swiftBindings: z.strictObject({
+    moduleRoots: z
+      .array(
+        z.strictObject({
+          directory: z.string().min(1).max(1024),
+          module: z
+            .string()
+            .regex(/^[A-Za-z_][A-Za-z_0-9]*$/)
+            .max(256),
+        }),
+      )
+      .min(1)
+      .max(16),
+    scope: z.literal("selected-captured-swift-source"),
+    state: z.enum(["collected", "partial"]),
+    callerDepthLimit: z.literal(8),
+    callerEdges:
+      reviewPythonBehaviorSchema.shape.pythonBindings.shape.callerEdges,
+    counts: reviewPythonBehaviorSchema.shape.pythonBindings.shape.counts,
+    fullImpactFallback: z.literal(true),
+    runtimeReachabilityVerified: z.literal(false),
+    nativeNameResolutionVerified: z.literal(false),
+    moduleLoadingVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "runtime-rebinding",
+          "runtime-dispatch",
+          "module-loading-unknown",
+          "build-selection-unknown",
+          "module-identity-declared",
+          "unsupported-binding",
+          "unsupported-parameters",
+          "unsupported-scope",
+          "unsupported-import",
+          "unsupported-function",
+          "type-or-member-dispatch-unknown",
+          "nonliteral-global-unknown",
+          "manifest-source-unknown",
+          "conditional-source-unknown",
+          "unresolved-call",
+          "unresolved-import",
+          "ambiguous-definition",
+          "outside-module-roots",
+          "partial-syntax",
+          "non-swift-source",
+          "no-selected-functions",
+          "depth-limit",
+        ]),
+      )
+      .max(32),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
@@ -642,5 +699,6 @@ export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewCsharpBehaviorSchema,
   reviewFsharpBehaviorSchema,
   reviewRubyBehaviorSchema,
+  reviewSwiftBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;
