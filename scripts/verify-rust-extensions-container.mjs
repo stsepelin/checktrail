@@ -168,6 +168,7 @@ const regressions = run([
   "--test",
   "--test-reporter=tap",
   "dist/test/rust-extensions.test.js",
+  "dist/test/rust-workspace-directory.test.js",
   "dist/test/schemas.test.js",
 ]);
 assert.match(regressions, /# fail 0\n/);

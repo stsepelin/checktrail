@@ -1,4 +1,5 @@
 import { rustNativeToolchainMatches } from "./rust-toolchain-native.js";
+import { rustWorkspaceTemporaryBase } from "./rust-workspace-directory.js";
 import { inventory } from "./inventory.js";
 import { spawn } from "node:child_process";
 import {
@@ -137,14 +138,9 @@ async function main() {
       return unavailable("target-prerequisite");
     }
   }
-  const temporaryBase = process.env.CHECKTRAIL_TEMP;
-  if (
-    !temporaryBase ||
-    !path.isAbsolute(temporaryBase) ||
-    (await realpath(temporaryBase)) !== temporaryBase ||
-    !(await stat(temporaryBase)).isDirectory()
-  )
-    throw Error("Rust workspace needs its engine-owned temporary directory");
+  const temporaryBase = await rustWorkspaceTemporaryBase(
+    process.env.CHECKTRAIL_TEMP,
+  );
   const temporary = await realpath(
     await mkdtemp(path.join(temporaryBase, "checktrail-rust-workspace-")),
   );
