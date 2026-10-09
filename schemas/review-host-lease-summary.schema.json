@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "format": { "type": "string", "const": "review-host-lease-summary" },
+    "assignmentId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "assignmentDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "stage": {
+      "type": "string",
+      "enum": ["reviewer", "refuter", "adjudicator"]
+    },
+    "state": { "type": "string", "enum": ["issued", "submitted", "revoked"] },
+    "sourceAccessRevoked": { "type": "boolean" },
+    "reads": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "responseDigest": {
+      "anyOf": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "null" }
+      ]
+    },
+    "sourceIncluded": { "type": "boolean", "const": false },
+    "hostProvenance": { "type": "string", "const": "host-declared-unverified" },
+    "hostIsolationVerified": { "type": "boolean", "const": false },
+    "modelFreshnessVerified": { "type": "boolean", "const": false },
+    "claimsVerified": { "type": "boolean", "const": false }
+  },
+  "required": [
+    "schemaVersion",
+    "format",
+    "assignmentId",
+    "assignmentDigest",
+    "stage",
+    "state",
+    "sourceAccessRevoked",
+    "reads",
+    "responseDigest",
+    "sourceIncluded",
+    "hostProvenance",
+    "hostIsolationVerified",
+    "modelFreshnessVerified",
+    "claimsVerified"
+  ],
+  "additionalProperties": false
+}

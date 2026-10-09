@@ -3248,5 +3248,43 @@
       "file": "dist/test/review-context-limits.test.js",
       "name": "expanded context original controls execute against a fresh offline installed runtime"
     }
+  ],
+  "host-session-readiness": [
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "name": "host-session-readiness installed acceptance"
+    }
   ]
 }

@@ -1,4 +1,8 @@
 import {
+  reviewHostLeaseSummarySchema,
+  reviewHostLeaseOptionsSchema,
+} from "../dist/src/review-host-lease.js";
+import {
   reviewMultiProtocolSchema,
   reviewMultiInputSchema,
   reviewMultiReportSchema,
@@ -252,6 +256,8 @@ for (const [name, schema] of Object.entries({
   "review-workflow-command": reviewWorkflowCommandSchema,
   "review-workflow-assignment": reviewWorkflowAssignmentSchema,
   "review-workflow-summary": reviewWorkflowSummarySchema,
+  "review-host-lease-summary": reviewHostLeaseSummarySchema,
+  "review-host-lease-options": reviewHostLeaseOptionsSchema,
   "review-verification-run": reviewVerificationRunSchema,
   "review-verification-summary": reviewVerificationSummarySchema,
   "review-refutation-run": reviewRefutationRunSchema,

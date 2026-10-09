@@ -1,0 +1,939 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-08T14:25:56.045981+00:00",
+  "profile": "original-synthetic-lifecycle-identity-publication-v1",
+  "scope": "Fixture publication and cleanup repair; no production review semantics, model inference or field evaluation.",
+  "observedFailure": {
+    "ciJob": "https://github.com/stsepelin/checktrail/actions/runs/37782437376/job/113328638257",
+    "host": "Parent parsed the visible identity file before the asynchronous JSON write finished.",
+    "localGo": "Parent read the visible native PID file before its write finished.",
+    "fix": "Write a pending file, assert final publication has not occurred while gated, then atomically rename the completed file; await cancellation cleanup in finally."
+  },
+  "sourceBinding": {
+    "baseCommit": "0bf9f49a61658c23676e020c9651c685b9c808a1",
+    "files": [
+      {
+        "file": "test/gate-host-session-readiness.test.ts",
+        "bytes": 21819,
+        "sha256": "1f681c2007dbb5a80b7e37e22cfa0087a97aa163cdf84b82645c700beb96f0e1"
+      },
+      {
+        "file": "test/review-host-process-fixture.ts",
+        "bytes": 8007,
+        "sha256": "ae91ae5c8edc28a343c7a124c9d7244ef554461023c114de82b679acb056d973"
+      },
+      {
+        "file": "test/gate-go-extensions.test.ts",
+        "bytes": 24406,
+        "sha256": "63026603aee8ad0a95cb7c95416dfb74bf6e8d1b00f9019ebffaefc904ba2973"
+      },
+      {
+        "file": "scripts/verify-host-session-guards.mjs",
+        "bytes": 5188,
+        "sha256": "c2a89ada46bcefec840055bdcddb12f25ae52f9a9710c62c5a27aa4945e07eb1"
+      },
+      {
+        "file": "dist/test/gate-host-session-readiness.test.js",
+        "bytes": 22940,
+        "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+      },
+      {
+        "file": "dist/test/review-host-process-fixture.js",
+        "bytes": 9032,
+        "sha256": "4f96621a240590f759820d6d98eb6014e7f92cc43c10d6c807a5d706df901724"
+      },
+      {
+        "file": "dist/test/gate-go-extensions.test.js",
+        "bytes": 25239,
+        "sha256": "558de714baf85dbf6cea550a9aac00c3b6f7a14836d6d54b232518ec64f3d6b3"
+      }
+    ]
+  },
+  "local": {
+    "hostRequired": {
+      "timeoutMs": 120000,
+      "profile": "host-session-readiness",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "host-session-readiness broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1821.960917,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "host-session-readiness fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1651.9215,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "host-session-readiness near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1663.574042,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "host-session-readiness prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.699791,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "host-session-readiness stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8.9085,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "host-session-readiness empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13.336625,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "host-session-readiness privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 421.140625,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "host-session-readiness lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6885.109417,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "host-session-readiness installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17292.622459,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "goRequired": {
+      "timeoutMs": 300000,
+      "profile": "go-extensions",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "558de714baf85dbf6cea550a9aac00c3b6f7a14836d6d54b232518ec64f3d6b3"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "558de714baf85dbf6cea550a9aac00c3b6f7a14836d6d54b232518ec64f3d6b3"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "go-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2151.723,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "go-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1300.583958,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "go-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6643.81,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "go-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 66.994959,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "go-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 380.567292,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "go-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 129.915709,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "go-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3926.626084,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "go-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6524.143042,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "go-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27988.893917,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "go-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "go-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "counts": {
+        "tests": 1014,
+        "pass": 750,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 264,
+        "todo": 0
+      },
+      "preparedPinnedGoAnalyzersOnPath": true,
+      "unselectedOptionalNativeProfilesReportedSkipped": true,
+      "logSha256": "e68971c5f8267ac003d7e2769c54de821154144cf9b5b641181e2457fb7fb38c"
+    }
+  },
+  "hostNativeLinuxArm64": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+    },
+    "image": "sha256:0dee1c0f5d776ea0b2949ca0386d7473b82df1bf3bde045df389172a6eda8902",
+    "network": "none",
+    "sourceMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "2g",
+      "pids": 256,
+      "sourceTemporaryFilesystemMiB": 512
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "host-session-readiness",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "host-session-readiness broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1730.908001,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "host-session-readiness fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1394.385252,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "host-session-readiness near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1446.503491,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "host-session-readiness prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14.544215,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "host-session-readiness stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16.932855,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "host-session-readiness empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.850243,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "host-session-readiness privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 445.058545,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "host-session-readiness lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6380.377977,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "host-session-readiness installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15958.862533,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "host-session-readiness installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "53dffeeab701ccc54c83db892b821cf473ec05ca2bdf795b16ecb5a36f36985d",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": false,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "host-session-readiness",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "host-session-readiness broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1919.064666,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "host-session-readiness fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1475.177623,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "host-session-readiness near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1498.147723,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "host-session-readiness prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15.257261,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "host-session-readiness stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17.960319,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "host-session-readiness empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 24.666777,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "host-session-readiness privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 495.288813,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "host-session-readiness lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6376.45239,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "host-session-readiness installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.509336,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "host-session-readiness installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:0dee1c0f5d776ea0b2949ca0386d7473b82df1bf3bde045df389172a6eda8902",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "compilingHostGuardControls": {
+    "scope": "Original synthetic one-assignment host controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "atomic-process-identity-publication",
+        "callback": "host-session-readiness lifecycle acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "4f96621a240590f759820d6d98eb6014e7f92cc43c10d6c807a5d706df901724",
+        "mutantSha256": "99eccce86e558dc418cb16f1d92a7ba84a1152a9762e7d7c7f1accf744b32ac8",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "synchronous-submission-deadline",
+        "callback": "host-session-readiness lifecycle acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "78dc52a4750a4c21199f9922b0c7ae8bda277ce7d566d08002047b0800d9ffac",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "transport-close-revokes-issued-source",
+        "callback": "host-session-readiness lifecycle acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "4c52cef14f84de395e4d9b431340f4a66520e5d34ecfb19c36b7238dc2c1a75e",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "operator-source-disclosure",
+        "callback": "host-session-readiness prerequisite acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "ac68759a60b599dd242726c45512dd115810150c9417f8dd7ac49dcb33242d68",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "assignment-byte-binding",
+        "callback": "host-session-readiness prerequisite acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "a47be6c29def1f442b1d54eccc4ae28727e201ac4a0c4b9e7ca0246fae6c7faf",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "response-digest-binding",
+        "callback": "host-session-readiness stale acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "df7f3f6b8730ead531d55929b91eee7d2944857c5cf31404f67d55365877b94f",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "source-read-budget",
+        "callback": "host-session-readiness empty acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "5a29752a7de2635cfb0504ac4c20e6bdfd7d9bb9a611b5e0e659f415929c4fda",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "source-read-clone",
+        "callback": "host-session-readiness near-miss acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "66fc94c9448d5493b0b92b44801071a477b789427da511811a6b81bb7259f69c",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "malformed-wire-submission-consumes-lease",
+        "callback": "host-session-readiness privacy acceptance",
+        "callbackSha256": "2fbd0bba30ab712b441d7a0091296f6f471ce7a51e65f1b0142719a00a7b1733",
+        "sourceSha256": "2435c79a5ec0dccb605c9b4504f6b871f17cbd7bbdb8c626ebb2bfc2d89e5698",
+        "mutantSha256": "c68b5aa1c27cfd86d3a2a7aa5dfb2d2ac2da1c5c2fb5ee5de7675e79b6a4e4e8",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

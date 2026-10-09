@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import {
+  access,
   chmod,
   mkdir,
   readFile,
@@ -581,7 +582,7 @@ test(
       ],
     });
     files["app/lifecycle_test.go"] =
-      'package app\nimport "testing"\nimport "os"\nimport "os/exec"\nimport "syscall"\nimport "strconv"\nimport "fmt"\nimport "strings"\nimport "time"\nfunc TestLifecycle(t *testing.T){mode:=os.Getenv("ORIGINAL_WORKSPACE_MODE");if mode=="warm"{return}; if mode=="flood"{fmt.Print(strings.Repeat("x",2*1024*1024));return};cmd:=exec.Command("sleep","60");cmd.SysProcAttr=&syscall.SysProcAttr{Setpgid:true};if err:=cmd.Start();err!=nil{t.Fatal(err)};go cmd.Wait();if err:=os.WriteFile(".checktrail/pid",[]byte(strconv.Itoa(cmd.Process.Pid)),0600);err!=nil{t.Fatal(err)};for{time.Sleep(time.Second)}}\n';
+      'package app\nimport "testing"\nimport "os"\nimport "os/exec"\nimport "syscall"\nimport "strconv"\nimport "fmt"\nimport "strings"\nimport "time"\nfunc TestLifecycle(t *testing.T){mode:=os.Getenv("ORIGINAL_WORKSPACE_MODE");if mode=="warm"{return}; if mode=="flood"{fmt.Print(strings.Repeat("x",2*1024*1024));return};cmd:=exec.Command("sleep","60");cmd.SysProcAttr=&syscall.SysProcAttr{Setpgid:true};if err:=cmd.Start();err!=nil{t.Fatal(err)};go cmd.Wait();if err:=os.WriteFile(".checktrail/pid.pending",[]byte(strconv.Itoa(cmd.Process.Pid)),0600);err!=nil{t.Fatal(err)};for{if _,err:=os.Stat(".checktrail/release");err==nil{break};time.Sleep(20*time.Millisecond)};if err:=os.Rename(".checktrail/pid.pending",".checktrail/pid");err!=nil{t.Fatal(err)};for{time.Sleep(time.Second)}}\n';
     const root = await fixture(t, files);
     await mkdir(path.join(root, "app/.checktrail"));
     const environment = (mode: string) => ({ ORIGINAL_WORKSPACE_MODE: mode });
@@ -594,13 +595,28 @@ test(
     for (const mode of ["cancel", "timeout"]) {
       const controller = new AbortController();
       let pid: number | undefined;
+      const pending = validate(root, {
+        ...workspaceOptions,
+        timeoutMs: mode === "timeout" ? 5000 : 120000,
+        signal: controller.signal,
+        environment: environment(mode),
+      });
       try {
-        const pending = validate(root, {
-          ...workspaceOptions,
-          timeoutMs: mode === "timeout" ? 5000 : 120000,
-          signal: controller.signal,
-          environment: environment(mode),
-        });
+        const deadline = Date.now() + 30000;
+        let prepared = false;
+        while (Date.now() < deadline) {
+          prepared = await access(marker + ".pending")
+            .then(() => true)
+            .catch((error) => {
+              if (error.code !== "ENOENT") throw error;
+              return false;
+            });
+          if (prepared) break;
+          await tick();
+        }
+        assert.equal(prepared, true, "Reached native child before publication");
+        await assert.rejects(access(marker), { code: "ENOENT" });
+        await writeFile(path.join(root, "app/.checktrail/release"), "");
         pid = Number(await waitFile(marker));
         assert.ok(Number.isInteger(pid) && pid > 1);
         if (mode === "cancel") controller.abort();
@@ -612,9 +628,9 @@ test(
             mode === "cancel" ? result.cancelled : result.timedOut,
           ),
         );
-        const deadline = Date.now() + 5000;
+        const exitDeadline = Date.now() + 5000;
         let alive = true;
-        while (Date.now() < deadline) {
+        while (Date.now() < exitDeadline) {
           try {
             process.kill(pid, 0);
           } catch {
@@ -630,6 +646,7 @@ test(
         );
       } finally {
         controller.abort();
+        await pending;
         if (pid) {
           try {
             process.kill(pid, "SIGKILL");
@@ -638,6 +655,8 @@ test(
           }
         }
         await rm(marker, { force: true });
+        await rm(marker + ".pending", { force: true });
+        await rm(path.join(root, "app/.checktrail/release"), { force: true });
       }
     }
     const flood = await validate(root, {
