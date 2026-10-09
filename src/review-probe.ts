@@ -136,10 +136,11 @@ export async function runReviewProbe(
     context.schemaVersion !== 8 &&
     context.schemaVersion !== 9 &&
     context.schemaVersion !== 10 &&
-    context.schemaVersion !== 11
+    context.schemaVersion !== 11 &&
+    context.schemaVersion !== 12
   )
     throw new Error(
-      "Native probes require context version 4, 5, 6, 7, 8, 9, 10 or 11",
+      "Native probes require context version 4, 5, 6, 7, 8, 9, 10, 11 or 12",
     );
   if (recipe.family !== candidate.family)
     throw new Error("Probe does not address the candidate family");

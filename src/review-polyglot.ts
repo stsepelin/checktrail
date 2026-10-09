@@ -1,4 +1,9 @@
 import {
+  captureJavaBindings,
+  type JavaSyntaxUnit,
+} from "./review-java-bindings.js";
+import { resolveJavaBindings } from "./review-java-resolution.js";
+import {
   captureRustBindings,
   type RustSyntaxUnit,
 } from "./review-rust-bindings.js";
@@ -356,6 +361,7 @@ async function collectReviewPolyglotCore(
   goRoots?: GoModuleRoot[],
   phpRoots?: string[],
   rustRoots?: string[],
+  javaRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -377,6 +383,7 @@ async function collectReviewPolyglotCore(
   const goUnits: GoSyntaxUnit[] = [];
   const phpUnits: PhpSyntaxUnit[] = [];
   const rustUnits: RustSyntaxUnit[] = [];
+  const javaUnits: JavaSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -546,7 +553,14 @@ async function collectReviewPolyglotCore(
               nodeType: node.type,
             });
           }
-          if (!calls.has(node.type) || node.startIndex >= node.endIndex)
+          const javaConstructor =
+            javaRoots !== undefined &&
+            asset.grammar === "java" &&
+            node.type === "object_creation_expression";
+          if (
+            (!calls.has(node.type) && !javaConstructor) ||
+            node.startIndex >= node.endIndex
+          )
             continue;
           let callerFunctionId: string | null = null;
           for (let parent = node.parent; parent; parent = parent.parent)
@@ -558,7 +572,7 @@ async function collectReviewPolyglotCore(
             ...range(node),
             callerFunctionId,
             targetFunctionId: null,
-            kind: "call",
+            kind: javaConstructor ? "construct" : "call",
             optional: node.type === "nullsafe_member_call_expression",
             resolution: "unsupported-dispatch",
           });
@@ -590,6 +604,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (javaRoots && asset.grammar === "java")
+          javaUnits.push(captureJavaBindings(nodes, fnIds, decls, range));
         if (rustRoots && asset.grammar === "rust")
           rustUnits.push(captureRustBindings(nodes, fnIds, decls, range));
         if (phpRoots && asset.grammar === "php")
@@ -620,6 +636,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (javaRoots)
+    return resolveJavaBindings(result, javaUnits, javaRoots, primary);
   if (rustRoots)
     return resolveRustBindings(result, rustUnits, rustRoots, primary);
   if (phpRoots) return resolvePhpBindings(result, phpUnits, phpRoots, primary);
@@ -722,6 +740,30 @@ export async function collectReviewRustBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewJavaBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "java-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewJavaBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

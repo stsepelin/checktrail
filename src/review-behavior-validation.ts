@@ -189,7 +189,8 @@ export function validateReviewBehavior(
     analysis.profile === "python-selected-bindings-v1" ||
     analysis.profile === "go-selected-bindings-v1" ||
     analysis.profile === "php-selected-bindings-v1" ||
-    analysis.profile === "rust-selected-bindings-v1"
+    analysis.profile === "rust-selected-bindings-v1" ||
+    analysis.profile === "java-selected-bindings-v1"
   ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||

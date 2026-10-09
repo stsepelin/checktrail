@@ -7,6 +7,11 @@ import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
 
 const sources = {
+  java: [
+    "Sample.java",
+    "class Sample{static Sample choose(){return new Sample();}boolean decision(){return true;}static boolean useit(){return choose().decision();}}",
+    "choose",
+  ],
   python: [
     "sample.py",
     "def choose():\n    return lambda: True\ndef useit():\n    return choose()()\n",
@@ -51,21 +56,29 @@ export async function callIdentityFixture(
         ? { ...common, schemaVersion: 9, moduleRoots: ["."] }
         : language === "php"
           ? { ...common, schemaVersion: 10, moduleRoots: ["."] }
-          : { ...common, schemaVersion: 11, crateRoots: [file] };
+          : language === "rust"
+            ? { ...common, schemaVersion: 11, crateRoots: [file] }
+            : { ...common, schemaVersion: 12, moduleRoots: ["."] };
   const context = await createReviewContext(root, selection);
-  assert.ok(context.schemaVersion >= 8 && context.schemaVersion <= 11);
+  assert.ok(context.schemaVersion >= 8 && context.schemaVersion <= 12);
   if (
     context.schemaVersion !== 8 &&
     context.schemaVersion !== 9 &&
     context.schemaVersion !== 10 &&
-    context.schemaVersion !== 11
+    context.schemaVersion !== 11 &&
+    context.schemaVersion !== 12
   )
     throw Error("Original binding context required");
   const analysis = context.analysis;
   const choose = analysis.functions.find((fn) => fn.name === name)!;
   assert.ok(choose);
   const calls = analysis.calls
-    .filter((call) => call.file === file)
+    .filter(
+      (call) =>
+        call.file === file &&
+        (language !== "java" ||
+          source.slice(call.start, call.end).startsWith(name + "()")),
+    )
     .sort((left, right) => right.end - left.end);
   assert.equal(calls.length, 2);
   const [outer, inner] = calls;
@@ -76,7 +89,10 @@ export async function callIdentityFixture(
   );
   assert.ok(outer!.end > inner!.end, "The full ranges distinguish the calls");
   assert.equal(source.slice(inner!.start, inner!.end), name + "()");
-  assert.equal(source.slice(outer!.start, outer!.end), name + "()()");
+  assert.equal(
+    source.slice(outer!.start, outer!.end),
+    name + (language === "java" ? "().decision()" : "()()"),
+  );
   assert.equal(
     outer!.resolution,
     "unsupported-dispatch",
@@ -92,10 +108,12 @@ export async function callIdentityFixture(
         ? analysis.goBindings
         : "phpBindings" in analysis
           ? analysis.phpBindings
-          : analysis.rustBindings;
-  assert.equal(bindings.counts.calls, 2);
+          : "rustBindings" in analysis
+            ? analysis.rustBindings
+            : analysis.javaBindings;
+  assert.equal(bindings.counts.calls, language === "java" ? 3 : 2);
   assert.equal(bindings.counts.resolvedCalls, 1);
-  assert.equal(bindings.counts.unresolvedCalls, 1);
+  assert.equal(bindings.counts.unresolvedCalls, language === "java" ? 2 : 1);
   assert.equal(
     bindings.callerEdges.filter(
       (edge) => edge.depth === 1 && edge.targetFunctionId === choose.id,
@@ -146,6 +164,21 @@ export async function callIdentityFixture(
       'package main\nimport "fmt"\nfunc main(){fmt.Println(Useit())}\n',
     );
     output = (await execute("go", ["run", file, "witness.go"])).stdout;
+  } else if (language === "java") {
+    await writeFile(
+      path.join(root, "Witness.java"),
+      "class Witness{public static void main(String[] args){System.out.println(Sample.useit());}}",
+    );
+    await execute("javac", [
+      "-J-Xmx256m",
+      "-proc:none",
+      "--release",
+      "25",
+      file,
+      "Witness.java",
+    ]);
+    output = (await execute("java", ["-Xmx256m", "-cp", root, "Witness"]))
+      .stdout;
   } else {
     await writeFile(
       path.join(root, "witness.rs"),

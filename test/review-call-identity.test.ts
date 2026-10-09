@@ -49,3 +49,7 @@ test("nested JavaScript and TypeScript calls preserve direct AST identities", as
     assert.equal(calls[1]!.resolution, "lexical-binding");
   }
 });
+
+test("nested call ranges retain distinct Java targets", async (t) => {
+  await callIdentityFixture(t, "java");
+});
