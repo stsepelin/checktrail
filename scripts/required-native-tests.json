@@ -3514,5 +3514,43 @@
       "file": "dist/test/gate-context-kotlin.test.js",
       "name": "context-kotlin installed acceptance"
     }
+  ],
+  "context-scala": [
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-scala.test.js",
+      "name": "context-scala installed acceptance"
+    }
   ]
 }

@@ -1,0 +1,1392 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-scala-selected-bindings-v1",
+  "recordedAt": "2026-10-08T21:11:01.773171+00:00",
+  "scope": "Captured Scala literal selected package/import and lexical candidates plus trusted original native controls; no capture execution, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "49251333ab375747264f0c9e94b91ff0a031d0ba",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 43482,
+        "sha256": "c4396802b5fe9976ef591de2246dbc3a417b298720f6a5cdf4b758204d2884a9"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-scala.wasm",
+        "bytes": 4014596,
+        "sha256": "fb17a89ba0bb1d350f03d4718174f3c1d36b75d9ddccc5dcfcedacec4574bb07"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 22483,
+        "sha256": "54feea9b658547af34f474e3d6179b1a871a2410ec2a8185ffe9bdcd01e5e206"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 36627,
+        "sha256": "cebddc69825ad95d65530d4e80bacd1087f3f7d5c13c51e668b804135df43215"
+      },
+      {
+        "file": "docs/NATIVE-CI.md",
+        "bytes": 23064,
+        "sha256": "e9a182990fcc8cf50b11c7e943099ca1d8e0b20bd56cc2ca72966826329cc6cd"
+      },
+      {
+        "file": "docs/REVIEW-SCALA-CONTEXT.md",
+        "bytes": 5715,
+        "sha256": "9fa93bbc976eec8073591889107ad2aaddf98fd53de4f50fae109d687245bfff"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 42299,
+        "sha256": "aed681b7705e01ef37649e5029cdf9dc2aa4d1e9e8b4e31c08ac42b0fb360bf3"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 145985,
+        "sha256": "701f3afba28efd4ebb82c8605da16687c0504f2227c7bddf74a5a23cfd456d5c"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "7265553ce8e968e359959c58bbdc90eefbb833dd07cb97286cfc15b2e0267d86"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 1576386,
+        "sha256": "86e1e15e9346dafeb3383a64026b75e5b0d117f9be0dddf1e18037745507757c"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 726774,
+        "sha256": "ab22b81f53b5ef5a8e7cec074d16d3f1a47e32da4bf049090965592a032cff88"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 844385,
+        "sha256": "01218a6e50e4a1be41083046b34e7f471ab80a715e24c65a4577ec6e8e60f89c"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 623400,
+        "sha256": "0708452e67d289763a4e324c2f06684057ec745e8ddb91757fe72ae2d597de2e"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 618952,
+        "sha256": "ef9d862fdb010f0de5de44153aabbfe2d533b0101ab970f03654cd80b9857d56"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 758189,
+        "sha256": "cd40d572f06d4a710b9aec04a8573070b3e674b49655f58f32be08075cb9e96d"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 522339,
+        "sha256": "4a085e713b7bd132d83e0e0b4f68b2eed8061e57eb909d19595fed2ca1283d3f"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 42843,
+        "sha256": "a0a2f68955314e905c012442bdda3e85bb3f970e8a34d376594ad06cd3b26c28"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 1924671,
+        "sha256": "6b2ab1665464e2d889375544c0aebfa1abfdd6f777827255dc1fdf0921df014a"
+      },
+      {
+        "file": "scripts/prepare-scala-context-tools.mjs",
+        "bytes": 2573,
+        "sha256": "38dc8f1039efab1b1fb1cc3f362012b3bb12c40c6dcbe8dbde8dafc4fe7c308b"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 151195,
+        "sha256": "010d69503acadf2641c8723ff6d008ae07b2ac1a53a9e9bc89d6262089f84670"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/scala-context-tools.Dockerfile",
+        "bytes": 1336,
+        "sha256": "5eaaecc173fc809a1e0cf84ad0d77dc0fba1ac17b6179483048ee0affe74a638"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4488,
+        "sha256": "2dad24422c593fbf66e00fba035ab512d6fd69f435b569c4253cdefcc3dc162c"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 9127,
+        "sha256": "e1bfb6b3f3cd98b238bd4ba48a5cb0edf964fb7b6f8bfd96a856b3f636fc3519"
+      },
+      {
+        "file": "scripts/verify-scala-context-container.mjs",
+        "bytes": 5357,
+        "sha256": "0f1017304c7a15269d394b2b1758040883915354616b2635ecd75f1f617a05f1"
+      },
+      {
+        "file": "scripts/verify-scala-context-guards.mjs",
+        "bytes": 10360,
+        "sha256": "77627e034aec00ed4d3bbf165a6b9e91344d6b44cecb3fd96c119488b17003d9"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 15848,
+        "sha256": "1586736bca455ab3b900943debaa6fa67ff0e85be79fd2314352b86aacf286d3"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7770,
+        "sha256": "ecc20ccb81d79dea9d5e72399e0e63e0b099dc8ee0d7cc5e53d71c516bd99044"
+      },
+      {
+        "file": "src/review-grammar-profile.ts",
+        "bytes": 855,
+        "sha256": "d53e8190bf4bdf888ad4258aa9090c8d1684fa918bb865b342623f8d31185fe6"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13814,
+        "sha256": "9f596e317d232cd40edff2d069a5e8fdda2ba2aa111cd726a685b66a6d3c54ec"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 26551,
+        "sha256": "c8251ba845120907925a1028f9cabef1c479be553f42bf1346ab5fbd1bbb2c6f"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32128,
+        "sha256": "0a271d7e9962d94ace3a9948e8daea1ebf29e9475199863215039c8ae551e260"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33337,
+        "sha256": "f767fda653afc5eba26ad087a4c4c10f99789960dfbcd84af997c16c47b97ffb"
+      },
+      {
+        "file": "src/review-scala-bindings.ts",
+        "bytes": 13783,
+        "sha256": "65a33f8f5b556a858450091bbd1237690e091a95980f96d5c6d39c0b08e4814b"
+      },
+      {
+        "file": "src/review-scala-resolution.ts",
+        "bytes": 15210,
+        "sha256": "982f62495de1bb20036ba8bf24d4ccbdbeb849546dd440a09d451890056f46fe"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19684,
+        "sha256": "fb10a765317daa898ff8c589d7b331b505f493b9357c01d4f6e6b90887179dd6"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31831,
+        "sha256": "f59cf5390179bafc8fd76a054e376a60db8429d877beda113f066e73255e9fc2"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 64292,
+        "sha256": "75d10aa0bf3228f57bbc2ace67aae93ce463cfe87dfbd43cac8fc1d27d7cec5e"
+      },
+      {
+        "file": "src/scala-artifacts.ts",
+        "bytes": 4922,
+        "sha256": "f229e05fc8e5df6f9438ea800c4db609bd62dbf9611e5f318801b6dea2d765e4"
+      },
+      {
+        "file": "test/gate-context-scala.test.ts",
+        "bytes": 31862,
+        "sha256": "a84297e7383b1b5eb750f3e8fb3ea6f4d9fbdf9fdc0ef1ceca5af9780cd3abec"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10839,
+        "sha256": "3ccc07c0986dbeabea37706bb8a6b955e88455c7f4d466d45970b791d82b5929"
+      },
+      {
+        "file": "test/review-scala-boundaries-fixture.ts",
+        "bytes": 11857,
+        "sha256": "5e262335074fd62490c103da06ce31f50c8194356444b4dafba14d3a29b85b65"
+      },
+      {
+        "file": "test/review-scala-boundaries.test.ts",
+        "bytes": 236,
+        "sha256": "08f6266dfdbd8b5756750a9d2830def6c650f842378ada21db5866b13f53a09d"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 16435,
+        "sha256": "156f37eae5919630dec8568904a311c65e3e62137b42a9c9fa8cf6d69ed1a024"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 7584,
+        "sha256": "ca1257873e990dc16613a59ae0bdc30844a1a8672806ef2354cdc188ac8448b9"
+      },
+      {
+        "file": "dist/src/review-grammar-profile.js",
+        "bytes": 878,
+        "sha256": "8dc0fbef0650876d7eb28437da3637fd2adff77e9af40e2b1a3ac8103cd6832d"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14011,
+        "sha256": "f51a1340485b99d205d60ad1e59aa14bd27f198822326e643f86ecb9152e88a2"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 26701,
+        "sha256": "11bd7826cb5f62ba454d404c478ba51a0ba2076258c5ba11e38087142e5bd64e"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 33798,
+        "sha256": "24a5ff6bf0360b504f8a6549596aa3a845267fc72895019210dcbdff4a6e10c6"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35277,
+        "sha256": "86fcded29cfa904af76f6eceec3d909ddd9a7d79212bfe797100711fa5c5171b"
+      },
+      {
+        "file": "dist/src/review-scala-bindings.js",
+        "bytes": 13154,
+        "sha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763"
+      },
+      {
+        "file": "dist/src/review-scala-resolution.js",
+        "bytes": 14498,
+        "sha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19612,
+        "sha256": "8c44c0ea83741e6206448d0dce5b4e0e8c9ec5965491095e3b13431ccf8cc626"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32703,
+        "sha256": "7fef1f37925823d6af72fb166a30718ab673a3d368be2b778179f6a16d3b167e"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 65987,
+        "sha256": "eeca3573c223a4b900bd79a4106c04e9c250bb36597243fe4f15a301f4ed42c2"
+      },
+      {
+        "file": "dist/src/scala-artifacts.js",
+        "bytes": 5577,
+        "sha256": "c2c5cd774c924c377fc7b25c0a1135757adb6b0bcfd8bb611ee8046fe18c72a0"
+      },
+      {
+        "file": "dist/test/gate-context-scala.test.js",
+        "bytes": 31348,
+        "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11241,
+        "sha256": "ceaf56cc427d588cc03397619b8210916e031d389212549380b17f8b5b937431"
+      },
+      {
+        "file": "dist/test/review-scala-boundaries-fixture.js",
+        "bytes": 11502,
+        "sha256": "087c18c7f3142d1f8960cc5e6beed204d84075e5fbbf5c35666f7e8a87af4b66"
+      },
+      {
+        "file": "dist/test/review-scala-boundaries.test.js",
+        "bytes": 229,
+        "sha256": "6dc6a7ca118497632a9a243bf42d1251c351d831fb730953b2bf487a2c491e63"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic Scala selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "scalaArchiveBytes": 177629395,
+      "scalaArchiveSha256": "2ec08ce51e400090058ad075fff0be764c7e16fb827d299c1be0d053d425770c",
+      "scalaLibraries": [
+        {
+          "name": "compiler-interface-1.12.0.jar",
+          "bytes": 113852,
+          "sha256": "92f487a505eafdd0a033e4ff4f38a81509a655c76257c64e6808dd873cc145c3"
+        },
+        {
+          "name": "scala-asm-9.9.0-scala-1.jar",
+          "bytes": 323674,
+          "sha256": "75ac366e8ecb691e06a7e85041eed0f67919a646e5262fa0901225698c104375"
+        },
+        {
+          "name": "scala-library-3.9.0.jar",
+          "bytes": 9823422,
+          "sha256": "b844bf6fb3080c73df6b9c523b7a69b9ef4a980bb15e5c37c35443d1d0b0e0cd"
+        },
+        {
+          "name": "scala3-compiler_3-3.9.0.jar",
+          "bytes": 24756323,
+          "sha256": "3e2c09a5ca6cef17a55f2f66e123815f9c4ea061fce20d0e9d2371989405a61a"
+        },
+        {
+          "name": "scala3-interfaces-3.9.0.jar",
+          "bytes": 3949,
+          "sha256": "64dfde1d2c6309d65a01c5f3ea836137eb84338dcadeb16f85764561ef4e10db"
+        },
+        {
+          "name": "scala3-library_3-3.9.0.jar",
+          "bytes": 344,
+          "sha256": "9343f9651453945fc6a9b75bb4fd230418ee28a1f88ea28ee429f3ebe0511aba"
+        },
+        {
+          "name": "tasty-core_3-3.9.0.jar",
+          "bytes": 99146,
+          "sha256": "66e12dda98bb23e864f3a31f8527c8338bf47bce9b85cc380b368c69c1ba8d0f"
+        },
+        {
+          "name": "util-interface-1.11.5.jar",
+          "bytes": 4490,
+          "sha256": "1fc950a9e1a35385e79316e23c120d4fd184f6a7af0274e00a703b0dc76376af"
+        }
+      ],
+      "scalaVersion": "Scala compiler version 3.9.0 -- Copyright 2002-2026, LAMP/EPFL",
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "javac": "javac 25.0.4",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+    },
+    "image": "sha256:0cb84b7a6e043741205c7c85a36459a4a224c4230a55939b9255923d90c2cf28",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-scala",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-scala broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1686.241796,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-scala fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1233.236996,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-scala near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2567.631469,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-scala prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 200.681361,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-scala stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 92.735263,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-scala empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 213.571766,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-scala privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2731.598877,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-scala lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3432.106738,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-scala installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16654.138154,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-scala broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic Scala captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "scala-import-value-receiver",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "31f42edae4869f3170e80cd5ff3c329a58b54135cf51627e4e0d12b6a2bb16ef",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-generated-output-exclusion",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "eeca3573c223a4b900bd79a4106c04e9c250bb36597243fe4f15a301f4ed42c2",
+          "mutantSha256": "9d8e44e2bbd3c192c4e3d5bc383a62c18af1ef652d2e4d23e10a1f494e972356",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-complete-call-range",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "eea07d552051bff2dd878bbc18edf62afe9961b0a39b464beb3d9d356d1fb797",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-local-function-forward-scope",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "2540b84e9357ef2271d31ce897e683bb03e43f739d4c2f154a77e57da9eedd1e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-same-file-definition-priority",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "da7d94b6571d2c9b2b8c9d86f083e8c6969275e7e3ef25ca27c050e965d9961c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-top-level-import-lifting",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "635bbe2595559571da934aedeb8447d600912d601414f9ad506684bbc1c36e83",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-callable-value-shadow",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "72bdce2e648ecbd06614d03e30ebef9bb589008b04e014351edd75c6dbdf6dcc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-exact-import-alias",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "9770d4df5c389d33bcb53c43a7c2c5e3996ef2bb51687c66d077d4bf2f6e9ffb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-native-overload-ambiguity",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "69a453379cd008f2db4ee1095cdb061aedfd01ec1936221c948a9afed6352cb9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-private-access",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "2cdd7384d0194fbfc5fe6ea706a929d8578eb19558def752705add7ef8a3acab",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-class-member-boundary",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "ec5381be2def4ddd79896c6c1c326361abfa4b4b4f42ed0e604e92fe1475b9e9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-lambda-boundary",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "eac82b22f38891265485af9ec9c01ebdbff26d043d5216cf2c9daf861d0b7641",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-local-import-unknown",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "5985b0f0427cdaead414ff78dba893bfc55be92bafca390b23b8c39a80d37c43",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-named-argument-key",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "d8df80472ad2290e88405d96ad5674b591fbf9d97b3d5dbc39c282569ec9d684",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-script-loading-producer",
+          "callback": "context-scala near-miss acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "88c944e1dc4968500ce848d27438bbaaaadf1efdaf1afddaad093061f9580763",
+          "mutantSha256": "b3e90987c7b492324799bd69e2e831e84148ba39ad5905cbf1ce276b3b0362ce",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-roots-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "80d2d13fa9d506a91e965f980d4ed478c76568ca648e3a5b2c715fa7c45d2647",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-counts-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "a5d85b5fe50646f3f55e0f751e289dbfb3edffd7a6c590bc724fc9301b9b7170",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-closure-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "546b8218f0b2bbfba047ac3543824192a4fb75d62260a5479f88131aa470cdba",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-outside-roots-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "25ed1df489958a929dff398e1af1e5145350155714df3d13d6d5bf73497b6f04",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-script-omission-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "f7ccb39a0856df30522ed57b55105487042fb6618dda85094ee8886039aa0796",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-constructor-omission-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ac1d04e8f7bc4648dc693a9a596a7921f1e4e3785ef5565cc808c2e8485adad8",
+          "mutantSha256": "453a0f8619c92ee3a08a3b80f9b5fbbd0d696a1b40d6ab643c31358cefb43f09",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-grammar-identity-reconstruction",
+          "callback": "context-scala stale acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "ca1257873e990dc16613a59ae0bdc30844a1a8672806ef2354cdc188ac8448b9",
+          "mutantSha256": "103afec00bd285ee0a7f32400a75faf76f8e5b6eb9835d19514d7dd76006db66",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "scala-declaration-default-capture",
+          "callback": "context-scala broken acceptance",
+          "callbackSha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb",
+          "sourceSha256": "11bd7826cb5f62ba454d404c478ba51a0ba2076258c5ba11e38087142e5bd64e",
+          "mutantSha256": "fc768bfa820b475facff228f1fc3d4a330460ecb1f6b7aaef80565f287627936",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "6fc30844cadc1a00cfe41bca6f349d46c88ca1360088f17bf502a6a949c2ab26",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-scala",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-scala broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1724.601566,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-scala fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1269.877533,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-scala near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2532.706659,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-scala prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 189.630549,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-scala stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 92.189512,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-scala empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 185.648531,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-scala privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2785.016875,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-scala lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3476.900094,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-scala installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.319002,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-scala broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-scala installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:0cb84b7a6e043741205c7c85a36459a4a224c4230a55939b9255923d90c2cf28",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "nativeLibraryPreparationControls": {
+    "scope": "Original owned Scala tool-preparation controls; no project execution",
+    "libraries": [
+      {
+        "name": "tasty-core_3-3.9.0.jar",
+        "bytes": 99146,
+        "sha256": "66e12dda98bb23e864f3a31f8527c8338bf47bce9b85cc380b368c69c1ba8d0f"
+      },
+      {
+        "name": "scala3-compiler_3-3.9.0.jar",
+        "bytes": 24756323,
+        "sha256": "3e2c09a5ca6cef17a55f2f66e123815f9c4ea061fce20d0e9d2371989405a61a"
+      },
+      {
+        "name": "scala3-interfaces-3.9.0.jar",
+        "bytes": 3949,
+        "sha256": "64dfde1d2c6309d65a01c5f3ea836137eb84338dcadeb16f85764561ef4e10db"
+      },
+      {
+        "name": "scala-asm-9.9.0-scala-1.jar",
+        "bytes": 323674,
+        "sha256": "75ac366e8ecb691e06a7e85041eed0f67919a646e5262fa0901225698c104375"
+      },
+      {
+        "name": "scala3-library_3-3.9.0.jar",
+        "bytes": 344,
+        "sha256": "9343f9651453945fc6a9b75bb4fd230418ee28a1f88ea28ee429f3ebe0511aba"
+      },
+      {
+        "name": "scala-library-3.9.0.jar",
+        "bytes": 9823422,
+        "sha256": "b844bf6fb3080c73df6b9c523b7a69b9ef4a980bb15e5c37c35443d1d0b0e0cd"
+      },
+      {
+        "name": "compiler-interface-1.12.0.jar",
+        "bytes": 113852,
+        "sha256": "92f487a505eafdd0a033e4ff4f38a81509a655c76257c64e6808dd873cc145c3"
+      },
+      {
+        "name": "util-interface-1.11.5.jar",
+        "bytes": 4490,
+        "sha256": "1fc950a9e1a35385e79316e23c120d4fd184f6a7af0274e00a703b0dc76376af"
+      }
+    ],
+    "firstPrepared": true,
+    "cachedVerified": true,
+    "corruptArchiveRejectedBeforeOutput": true,
+    "changedLibraryRejected": true,
+    "incompleteLibraryDirectoryRejected": true,
+    "restoredBytesVerified": true,
+    "stagingClean": true
+  },
+  "ordinarySuiteWorkerControls": {
+    "scope": "Original synthetic ordinary full-suite worker controls",
+    "emptyInventoryRejected": true,
+    "allSelectedCompiledFilesExecuted": true,
+    "originalAssertionFailurePropagated": true,
+    "validCallbacks": 2,
+    "brokenCallbacks": 2
+  },
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "2c880436881c3567bdba88c11e921eb8d66ad8194e55758302da48bdd608c5e5",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-scala",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b7bf43e15a33c1390b528fd20aea65295bca35ad5efb42ccdaee7a73832325bb"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-scala broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1747.519098,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-scala fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1252.150353,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-scala near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2552.303796,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-scala prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 162.742041,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-scala stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 94.381799,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-scala empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 181.367183,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-scala privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2774.329489,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-scala lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3462.474978,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-scala installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.356044,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-scala broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-scala installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:0cb84b7a6e043741205c7c85a36459a4a224c4230a55939b9255923d90c2cf28",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "eeca3573c223a4b900bd79a4106c04e9c250bb36597243fe4f15a301f4ed42c2",
+        "mutantSha256": "bb8af1dfa89e171b06af302fcf047d12a6577163229e39e328fb6d2570d462d1",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "eeca3573c223a4b900bd79a4106c04e9c250bb36597243fe4f15a301f4ed42c2",
+        "mutantSha256": "ddfe1364d782f6d5ec7fa3d357754e9600a676796a7cfb43896f9073b45944df",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "eeca3573c223a4b900bd79a4106c04e9c250bb36597243fe4f15a301f4ed42c2",
+        "mutantSha256": "07f5cdd9035e25f7603980c15be2317622bdf951af690d00f200d69c1badef21",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1091,
+      "pass": 802,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 289,
+      "todo": 0
+    },
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "observedHostAvailableParallelism": 18,
+    "pinnedNativeScalaUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "47786ad019acf9ebeebd9d04a586fc52c61942394d73942395b6591fb6a260b7"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
