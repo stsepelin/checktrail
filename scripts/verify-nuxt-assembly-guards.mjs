@@ -257,6 +257,17 @@ const controls = [
     after: "false",
   },
 ];
+if (process.argv.length === 3 && process.argv[2] === "--list") {
+  process.stdout.write(
+    JSON.stringify({
+      ids: controls.map((c) => c.id),
+      shards: [0, 1, 2].map((shard) =>
+        controls.filter((_, i) => i % 3 === shard).map((c) => c.id),
+      ),
+    }) + "\n",
+  );
+  process.exit(0);
+}
 const environment = { ...process.env };
 delete environment.NODE_TEST_CONTEXT;
 function run(name) {

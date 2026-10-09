@@ -70,10 +70,16 @@ Exact duplicate compiled server route/method pairs produce findings. Arbitrary
 route overlap, cache internals, live serving, authorization correctness, databases,
 full artifact/license closure and independent host/model sessions remain unverified.
 
-The required `nuxt-assembly-arm64` CI job prepares public locked tools and runs
-`node scripts/verify-nuxt-assembly-container.mjs`. It verifies source originals,
-compiling guard removals, legacy route cases, supplemental adversarial cases and
-the same originals against an offline production installation. The acceptance
+The required `nuxt-assembly-arm64` CI matrix prepares public locked tools. Its
+`acceptance` phase verifies source originals, legacy route cases, supplemental
+adversarial cases and the same originals against an offline production installation.
+Three `guards-*` phases partition all compiling guard controls by manifest position;
+the controller checks that the partitions are disjoint and cover the complete
+manifest. All four jobs must pass. Running
+`node scripts/verify-nuxt-assembly-container.mjs` without a phase still verifies the
+complete combined profile locally. Stage timings are written to stderr. The full
+native suite uses a bounded ten-minute file budget because its timeout covers all
+callbacks in a file, including repeated native builds. The acceptance
 container has read-only source/root, no network, two CPUs, 2 GiB memory, 256 PIDs
 and 1 GiB temporary storage. Temporary storage permits executable native compiler
 bindings copied into fresh fixture projects. Its process isolation does not prove

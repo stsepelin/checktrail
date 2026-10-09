@@ -608,8 +608,12 @@ jobs:
   nuxt-assembly-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [acceptance, guards-1, guards-2, guards-3]
     env:
-      CHECKTRAIL_TEST_TASK: ci-nuxt-assembly
+      CHECKTRAIL_TEST_TASK: ci-nuxt-assembly-${{ matrix.phase }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -627,7 +631,7 @@ jobs:
           docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native originals, compiling controls and offline installed acceptance
-        run: node scripts/verify-nuxt-assembly-container.mjs
+        run: node scripts/verify-nuxt-assembly-container.mjs ${{ matrix.phase }}
 
   nuxt:
     runs-on: ubuntu-latest

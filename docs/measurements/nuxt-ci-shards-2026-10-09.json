@@ -1,0 +1,1045 @@
+{
+  "schemaVersion": 1,
+  "profile": "assembly-nuxt-ci-shards",
+  "capturedAt": "2026-10-09T11:28:18.626034+00:00",
+  "sourceBaseCommit": "269532d3710c1669d65fe511a7398d44b968cb01",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "224a769d1a088c6ae5539468c967b093c6ce6976708af3495fd8f135fbf687e5",
+    "docs/NUXT-ASSEMBLY.md": "f22b3019f0c5a048c25870044db36818708dd30b6496519a3a22cae2f509df08",
+    "scripts/verify-nuxt-assembly-container.mjs": "8614cfbed2f32be0addc43a254df1b4ff4ec4492e637f4eedfac596524a09ffe",
+    "scripts/verify-nuxt-assembly-guards.mjs": "62e537a0b20552ca736c561dbe44de50244c2d2208f03e59911e63bd2781bb94",
+    "scripts/verify-required-native-tests.mjs": "2e2edd22cd8b61ffa54eb6c320c4366f7271b086f7e518fb20a7e2ecc5171105",
+    "test/required-native-tests.test.ts": "4f691913dc05a24076e161ec4c4c970225c60e3edff2b9c21a4c7ce647b4ac0c"
+  },
+  "trigger": {
+    "requiredJob": "nuxt-assembly-arm64",
+    "jobLimitMinutes": 20,
+    "conclusion": "cancelled",
+    "fullSuiteFile": "gate-assembly-nuxt.test.js",
+    "fileTimeoutMs": 300000,
+    "fileConclusion": "testTimeoutFailure",
+    "precedingAcceptanceCallbacksPassed": 6
+  },
+  "phases": [
+    {
+      "phase": "guards-1",
+      "elapsedMs": 196125,
+      "controls": [
+        {
+          "id": "native-api-query-collision",
+          "callback": "assembly-nuxt native query collision guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "1cb5f4f54ec0cf255741d0753063020c96393501fd2fd8b8b95f71ed1698e554",
+          "mutantSha256": "6ea5dc550777a51ddea41864c68c140231da0356b232256f565d837618387aaf",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-version",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "f5fbf57cdc7033e42516de77100ff7bfa6ff35fb528856bbc0497d0b74eedb2d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-supported-types",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "ae88ff277737d2678a19d6a81e729c8a8fa4b171a54051331b88afec8412ef9a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-versions-values",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "4da7f8dcb54743b2d46eb86a531a107348dc0ba5253a18a6f2f5638714179033",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-collection-complete",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "700132f8aaa13bfe4d68a5bcb4d3e8b6da551d090cd72549f5a1f71083bbeb61",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-counts",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "a64dc48a3ce5dc928ff583c48597b9f13ebca634f3ae638a08859bea38c47442",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-consumer-diagnostics",
+          "callback": "assembly-nuxt broken acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "b7dde463fab8ba12bb6b8b7355401fee782b14ae5080b6da3edfb0f3bb89bff6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "each-consumer-participates",
+          "callback": "assembly-nuxt generated consumer participation guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "1cb5f4f54ec0cf255741d0753063020c96393501fd2fd8b8b95f71ed1698e554",
+          "mutantSha256": "59f2fe182adb290eb8bc4f8825ef1e7ce6445c03cd868f34d39a7c9771c0c52f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-byte-digest",
+          "callback": "assembly-nuxt prerequisite acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "570afb61a25e187c25e2d62930e268010d8b65ccaec7a22ceddc15472bf93a78",
+          "mutantSha256": "673d0e92ac1ad21e986ec8e9fb5b5a2471d6f590aac0d94cfdec6e2103f739d0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-middleware-handler-identity",
+          "callback": "assembly-nuxt middleware identity guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "3f80d9ca79ed749380e257c9097620568ef6a8604d9cb7522d36dbc7f68077d9",
+          "mutantSha256": "6b400ea345f3c9a20b464eb35cc334d2a53cbae073793e81b131b6d8ee4d8b7d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "dynamic-app-middleware-boundary",
+          "callback": "assembly-nuxt dynamic middleware guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "3f80d9ca79ed749380e257c9097620568ef6a8604d9cb7522d36dbc7f68077d9",
+          "mutantSha256": "930daa724da380f6fb0d757ed7e513bd528f9701d9b754cb773670360219271e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "source": null,
+      "legacy": null,
+      "supplemental": null,
+      "installed": null,
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    {
+      "phase": "guards-2",
+      "elapsedMs": 140695,
+      "controls": [
+        {
+          "id": "receipt-source",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "10928ea113ac9d6e2aca86e2d714cc25121551637f496b43e14d8f0ad07e5f0a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "452a8fa6da98f461bf8cb7c2958cf37cd97156722349845405dadc2779b95e10",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-ordered-collection",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "86441d656ffa36f556012efc601cd4273ffcf108a77ff5f882b89d7cfbda05c7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-consumers",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "6b620926bf9224a07ae2c91adc5bde18603f40a8d0aa77779b6b5cd0e7bca30e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-derived-middleware",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "d7e1e41bcb0574d76f1ab1469fb4e35b35de6e4e4a5e4c0fc368f848d3ac4b88",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-request-identity",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "08e06619a7f2999691f6e770d764080442615e97feda68e7d3be665a26689842",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "declared-type-contract",
+          "callback": "assembly-nuxt broken acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "d0a5122117688a2800d8a4104b99c924db738bd18a0ca12b54778ba9183ad518",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "all-selected-apis-participate",
+          "callback": "assembly-nuxt generated API participation guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "1cb5f4f54ec0cf255741d0753063020c96393501fd2fd8b8b95f71ed1698e554",
+          "mutantSha256": "9fcec63bee3f9c8d0c3ed95b6015279325f4ab00e7a536f460faa5f851de3ab2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-response-byte-bound",
+          "callback": "assembly-nuxt response byte budget guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "570afb61a25e187c25e2d62930e268010d8b65ccaec7a22ceddc15472bf93a78",
+          "mutantSha256": "07fab7fa7988bc8b06ec0cdbd79fd6b6d3598448811fc2f00236c7ff9fe60205",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-registration-lifetime",
+          "callback": "assembly-nuxt router registration guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "3f80d9ca79ed749380e257c9097620568ef6a8604d9cb7522d36dbc7f68077d9",
+          "mutantSha256": "978a87df214d41724a04ff3bacb1407f14892b398b6f8ba722b9cc2d97a403da",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "source": null,
+      "legacy": null,
+      "supplemental": null,
+      "installed": null,
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    {
+      "phase": "guards-3",
+      "elapsedMs": 139811,
+      "controls": [
+        {
+          "id": "receipt-producer-name",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "e2abeee037e74019706f49204055b05af2f89a3bdd718437e5bacffc7ba17ad2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-environment",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "6d85663c8bd62514a311c8f63894a8b055d08c90d47d1d12610a3377160c80c4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-versions-keys",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "fd458bec11f03633596b69789faae2d3be0080164f8d27d42b2ad813f70d4df9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-collection-kind",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "60d886386f90485ac4bbfafaa1955be3a2e2169ba09c77d096f58bea4d66ba3d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-derived-bindings",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "8d73e63bdcd331f54b11b5ff173c000dceb8148ea929049259bfcee2746bd2ee",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-event-membership",
+          "callback": "assembly-nuxt stale acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "845863eb4678ce6be3fb8d1f8408b7cf2e323dde49e9c4e803777ebcdab79f38",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "declared-request-contract",
+          "callback": "assembly-nuxt broken acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "dfa57850b180b177bcfc6f915d57a8c7ddcfcd94e0be762421ad57955985ca6d",
+          "mutantSha256": "bcc269fd7935164899631fc7169ca69261155ea292bf498829f4838a1e28d27b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-version-bootstrap",
+          "callback": "assembly-nuxt prerequisite acceptance",
+          "callbackSha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "570afb61a25e187c25e2d62930e268010d8b65ccaec7a22ceddc15472bf93a78",
+          "mutantSha256": "910c82b2b528465c2192e51a8ec2c5205265d2ade4fca638d408a3a3da9dfc09",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "reserved-config-boundaries",
+          "callback": "assembly-nuxt reserved config boundary guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "3f80d9ca79ed749380e257c9097620568ef6a8604d9cb7522d36dbc7f68077d9",
+          "mutantSha256": "d17d0812270797912823601ad8f063be35094915dfa285d72167f94932607459",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-page-getter-identity",
+          "callback": "assembly-nuxt page identity guard acceptance",
+          "callbackSha256": "ff4e190498dd90640475204c8e092ea125a6a5394e573b238e8b35b9d2a07734",
+          "fixtureSha256": "b860505775802d833cc3f2afa02eb1f489ba42118e32a06e38df7f9acf48cbe9",
+          "sourceSha256": "3f80d9ca79ed749380e257c9097620568ef6a8604d9cb7522d36dbc7f68077d9",
+          "mutantSha256": "b737724925dbd40894cc5a71e522c28f1554c4ddcf35e066907c694a30d28b52",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "source": null,
+      "legacy": null,
+      "supplemental": null,
+      "installed": null,
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    {
+      "phase": "acceptance",
+      "elapsedMs": 363132,
+      "controls": [],
+      "source": {
+        "timeoutMs": 300000,
+        "profile": "assembly-nuxt",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "assembly-nuxt broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12054.606176,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "assembly-nuxt fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6028.157323,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "assembly-nuxt near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17779.734239,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "assembly-nuxt prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3788.988862,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "assembly-nuxt stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8521.711561,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "assembly-nuxt empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21534.06,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "assembly-nuxt privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15582.824677,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "assembly-nuxt lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 28264.007298,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "assembly-nuxt installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17208.513649,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-nuxt installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "legacy": {
+        "timeoutMs": 120000,
+        "profile": "nuxt",
+        "fileWorkerLimit": 1,
+        "passed": 7,
+        "required": 7,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 7,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "734056cb905343b3f062c4b369505c2331cdbb34a4dffb432c751bfc53c1d602"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "734056cb905343b3f062c4b369505c2331cdbb34a4dffb432c751bfc53c1d602"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "Nuxt planning requires an explicit profile, inventoried config and prepared tools without evaluating Nuxt config",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 47.754436,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native Nuxt SSR captures generated pages and async runtime registration, catches a changed contract and uncovered records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10266.37801,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native Nuxt SSR distinguishes HTTP failures, request-dependent route assemblies and unsupported metadata",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8461.387629,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "Nuxt cancellation terminates a live startup and removes its owned build directory",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3864.837605,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "Nuxt native evidence reconciles capture identity, ordered records and probe accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4972.120755,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "Nuxt capture includes awaited app:rendered changes registered after the observer",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5215.593878,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "Nuxt rejects unsupported runtime identities and protects test environment without loading dotenv or stale build output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5503.097288,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "Nuxt planning requires an explicit profile, inventoried config and prepared tools without evaluating Nuxt config",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Nuxt SSR captures generated pages and async runtime registration, catches a changed contract and uncovered records",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Nuxt SSR distinguishes HTTP failures, request-dependent route assemblies and unsupported metadata",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Nuxt cancellation terminates a live startup and removes its owned build directory",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Nuxt native evidence reconciles capture identity, ordered records and probe accounting",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Nuxt capture includes awaited app:rendered changes registered after the observer",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "Nuxt rejects unsupported runtime identities and protects test environment without loading dotenv or stale build output",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            }
+          ]
+        }
+      },
+      "supplemental": {
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "installed": {
+        "tarballSha256": "592d1a4ea679784d1476ae964c2fc2644a82863afc565e446bebe2ae491cfc73",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 300000,
+          "profile": "assembly-nuxt",
+          "fileWorkerLimit": 1,
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "179c885f2b4c930eb6416c00dc4fc9009d94885aeb3e1ec8834aa7e566e2ea32"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "assembly-nuxt broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 12239.501166,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "assembly-nuxt fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5887.316531,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "assembly-nuxt near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 19234.189139,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "assembly-nuxt prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4157.865757,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "assembly-nuxt stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 8533.033342,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "assembly-nuxt empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 21089.403358,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "assembly-nuxt privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 15623.508272,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "assembly-nuxt lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 28442.116158,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "assembly-nuxt installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.310586,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "assembly-nuxt installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 1024,
+          "temporaryFilesystemExecutable": true
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      },
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      }
+    }
+  ],
+  "guardPartition": {
+    "controls": 31,
+    "disjoint": true,
+    "complete": true
+  },
+  "fullProjectCheck": {
+    "tests": 1263,
+    "pass": 857,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 406,
+    "todo": 0,
+    "durationMs": 194097.700042
+  },
+  "fullSuiteHarness": {
+    "timeoutMs": 600000,
+    "complete": true,
+    "passed": 857,
+    "required": 4,
+    "optionalSkipped": 406,
+    "problems": []
+  },
+  "verification": {
+    "npmRunCheckPassed": true,
+    "directChangedFileEslintPassed": true,
+    "actionlintVersion": "1.7.12",
+    "actionlintPassed": true,
+    "formatPassed": true,
+    "hostedCiVerifiedAtThisRevision": false
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "reviewQualityAssessed": false,
+  "gateAComplete": false
+}
