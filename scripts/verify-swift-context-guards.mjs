@@ -356,7 +356,7 @@ for (const name of baselines.keys()) {
 process.stdout.write(
   JSON.stringify({
     scope:
-      "Original synthetic Ruby captured-binding controls; no model inference or field evaluation",
+      "Original synthetic Swift captured-binding controls; no model inference or field evaluation",
     controls: evidence,
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

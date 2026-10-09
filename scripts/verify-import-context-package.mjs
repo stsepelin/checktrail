@@ -35,6 +35,7 @@ assert.ok(
     "context-fsharp",
     "context-ruby",
     "context-swift",
+    "context-vb",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -62,6 +63,7 @@ if (profile === "context-ruby")
   process.env.CHECKTRAIL_CONTEXT_RUBY_INSTALLED = "1";
 if (profile === "context-swift")
   process.env.CHECKTRAIL_CONTEXT_SWIFT_INSTALLED = "1";
+if (profile === "context-vb") process.env.CHECKTRAIL_CONTEXT_VB_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -109,6 +111,8 @@ try {
     "gate-context-fsharp.test.js",
     "gate-context-ruby.test.js",
     "gate-context-swift.test.js",
+    "gate-context-vb.test.js",
+    "review-vb-boundaries-fixture.js",
     "review-swift-boundaries-fixture.js",
     "review-ruby-boundaries-fixture.js",
     "review-fsharp-boundaries-fixture.js",
@@ -239,6 +243,16 @@ try {
           ...(profile === "context-swift"
             ? ["--env", "CHECKTRAIL_CONTEXT_SWIFT_INSTALLED=1"]
             : []),
+          ...(profile === "context-vb"
+            ? [
+                "--env",
+                "CHECKTRAIL_CONTEXT_VB_INSTALLED=1",
+                "--env",
+                "DOTNET_CLI_HOME=/tmp",
+                "--env",
+                "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1",
+              ]
+            : []),
           "--read-only",
           "--cpus",
           "2",
@@ -249,9 +263,12 @@ try {
           "--tmpfs",
           ["context-go", "context-rust", "context-swift"].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=256m"
-            : ["context-scala", "context-csharp", "context-ruby"].includes(
-                  profile,
-                )
+            : [
+                  "context-scala",
+                  "context-csharp",
+                  "context-ruby",
+                  "context-vb",
+                ].includes(profile)
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
@@ -296,6 +313,7 @@ try {
               "context-go",
               "context-rust",
               "context-swift",
+              "context-vb",
             ].includes(profile),
           }
         : {

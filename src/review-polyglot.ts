@@ -1,3 +1,5 @@
+import { captureVbBindings, type VbSyntaxUnit } from "./review-vb-bindings.js";
+import { resolveVbBindings } from "./review-vb-resolution.js";
 import {
   captureSwiftBindings,
   type SwiftSyntaxUnit,
@@ -238,7 +240,12 @@ async function language(
       const { Language } = await runtime();
       const bytes = await readFile(
         new URL(
-          "../../assets/context-grammars/" + grammar.file,
+          "../../assets/" +
+            (grammar.grammar === "vbnet"
+              ? "context-vb-grammar"
+              : "context-grammars") +
+            "/" +
+            grammar.file,
           import.meta.url,
         ),
       );
@@ -399,6 +406,7 @@ async function collectReviewPolyglotCore(
   fsharpRoots?: string[],
   rubyRoots?: string[],
   swiftRoots?: SwiftModuleRoot[],
+  vbRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -427,6 +435,7 @@ async function collectReviewPolyglotCore(
   const fsharpUnits: FsharpSyntaxUnit[] = [];
   const rubyUnits: RubySyntaxUnit[] = [];
   const swiftUnits: SwiftSyntaxUnit[] = [];
+  const vbUnits: VbSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -434,7 +443,7 @@ async function collectReviewPolyglotCore(
     ["current", current],
   ] as const)
     for (const source of sources) {
-      const asset = selectedGrammar(source.path);
+      const asset = selectedGrammar(source.path, vbRoots !== undefined);
       if (!asset) continue;
       const record = result.files.find(
         (record) => record.revision === revision && record.file === source.path,
@@ -485,14 +494,19 @@ async function collectReviewPolyglotCore(
         };
         const decls = new Map<number, ReviewBehavior["declarations"][number]>();
         for (const node of nodes) {
-          const kind = isFunction(node)
-            ? "function"
-            : (declarations.get(node.type) ??
-              (scalaRoots &&
-              asset.grammar === "scala" &&
-              node.type === "object_definition"
-                ? ("class" as const)
-                : undefined));
+          const kind =
+            vbRoots &&
+            asset.grammar === "vbnet" &&
+            node.type === "module_declaration"
+              ? "class"
+              : isFunction(node)
+                ? "function"
+                : (declarations.get(node.type) ??
+                  (scalaRoots &&
+                  asset.grammar === "scala" &&
+                  node.type === "object_definition"
+                    ? ("class" as const)
+                    : undefined));
           if (!kind || node.startIndex >= node.endIndex) continue;
           const address = range(node),
             initial = initializer(node, kind);
@@ -655,6 +669,14 @@ async function collectReviewPolyglotCore(
             ].includes(node.type);
           if (
             (!calls.has(node.type) &&
+              !(
+                vbRoots &&
+                asset.grammar === "vbnet" &&
+                [
+                  "array_access_expression",
+                  "generic_invocation_expression",
+                ].includes(node.type)
+              ) &&
               !javaConstructor &&
               !scalaConstructor &&
               !csharpConstructor) ||
@@ -679,6 +701,10 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const vbUnit =
+          vbRoots && asset.grammar === "vbnet"
+            ? captureVbBindings(nodes, fnIds, decls, range)
+            : undefined;
         const swiftUnit =
           swiftRoots && asset.grammar === "swift"
             ? captureSwiftBindings(nodes, fnIds, decls, range)
@@ -729,6 +755,7 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (rubyUnit) rubyUnits.push(rubyUnit);
         if (swiftUnit) swiftUnits.push(swiftUnit);
+        if (vbUnit) vbUnits.push(vbUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -774,6 +801,7 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (vbRoots) return resolveVbBindings(result, vbUnits, vbRoots, primary);
   if (swiftRoots)
     return resolveSwiftBindings(result, swiftUnits, swiftRoots, primary);
   if (rubyRoots)
@@ -1078,6 +1106,37 @@ export async function collectReviewSwiftBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewVbBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "vb-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewVbBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

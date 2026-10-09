@@ -387,8 +387,9 @@ impact obligations remain open; this does not narrow validation plans.
 default controls for the finite pinned WASM grammars through the shared engine.
 This is captured-string context, with unresolved wider-language calls/imports and
 explicit partial states. It adds no native compiler/framework validation or
-verified findings. Visual Basic syntax, broader node forms, lexical consumers,
-complete build-tool provenance and full runtime acceptance remain required.
+verified findings. Its legacy profile does not parse Visual Basic; version 19 adds
+the separate opt-in profile below. Broader node forms, complete build-tool
+provenance and full runtime acceptance remain required.
 
 The bounded [inventoried Go workspace profile](GO-WORKSPACES.md) adds captured
 member/local replacement manifests and native main-module reconciliation while
@@ -427,3 +428,5 @@ Context version 16 adds the opt-in [selected F# binding profile](REVIEW-FSHARP-C
 Ruby context version 17 retains bounded flat-module singleton candidates, literal constants/defaults, exact selected require-relative edges, whole decisions and parser-order bare calls. Classes, reopening, dynamic dispatch, unsupported scopes and runtime loading remain unknown; capture executes no Ruby. [REVIEW-RUBY-CONTEXT.md](REVIEW-RUBY-CONTEXT.md) records the subset and original native/installed acceptance.
 
 Swift context version 18 retains bounded plain-function/literal-let candidates, explicit declared module labels, default-expression provenance and exact access/lexical boundaries from immutable captured source. Types, members, overloads, unsupported scopes and native module/build resolution remain unknown; capture executes no compiler or manifest. [REVIEW-SWIFT-CONTEXT.md](REVIEW-SWIFT-CONTEXT.md) records the selected subset and its required native/installed controls.
+
+Opt-in context version 19 adds selected Visual Basic flat-module methods, literal constants/imports, defaults and case-folded lexical candidates under declared source roots. Parenthesized call/index forms remain source candidates; root namespaces, project imports, assembly visibility, dynamic dispatch and unsupported scopes stay unknown with full fallback and unchanged planning. Capture executes no compiler or project configuration. The supplemental grammar has separate source/notice/patch and runtime byte bindings. See [REVIEW-VB-CONTEXT.md](REVIEW-VB-CONTEXT.md).

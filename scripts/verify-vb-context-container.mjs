@@ -5,8 +5,8 @@ import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const selected =
-  process.env.CHECKTRAIL_SWIFT_CONTEXT_IMAGE ??
-  "checktrail-swift-context:synthetic-v1";
+  process.env.CHECKTRAIL_VB_CONTEXT_IMAGE ??
+  "checktrail-vb-context:synthetic-v1";
 const image = execFileSync(
   "docker",
   ["image", "inspect", selected, "--format", "{{.Id}}"],
@@ -31,7 +31,7 @@ const base = [
   "--pids-limit",
   "256",
   "--tmpfs",
-  "/tmp:rw,exec,nosuid,nodev,size=512m",
+  "/tmp:rw,nosuid,nodev,noexec,size=512m",
   ...(process.env.CHECKTRAIL_TEST_TASK
     ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
     : []),
@@ -43,41 +43,41 @@ const base = [
   "/workspace",
   "--env",
   "npm_config_cache=/tmp/npm-cache",
+  "--env",
+  "DOTNET_CLI_HOME=/tmp",
+  "--env",
+  "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1",
   image,
 ];
 const run = (args) =>
   execFileSync("docker", [...base, ...args], {
     encoding: "utf8",
     maxBuffer: 4 * 1048576,
-    timeout: 480000,
+    timeout: 240000,
   });
 const runtime = JSON.parse(
   run([
     "node",
     "--input-type=module",
     "-e",
-    'import{execFileSync}from"node:child_process";import{readFileSync,realpathSync}from"node:fs";import{createHash}from"node:crypto";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,swift:execFileSync("swiftc",["--version"],{encoding:"utf8"}).trim(),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8"),toolBytes:["/usr/bin/swiftc","/usr/bin/swift-frontend","/usr/local/bin/node","/usr/bin/git"].map(file=>{const bytes=readFileSync(file);return{file,resolved:realpathSync(file),bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")}})}));',
+    'import {execFileSync} from "node:child_process";import {readFileSync,readdirSync} from "node:fs";import {createHash} from "node:crypto";const ref="/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0";console.log(JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,compiler:execFileSync("dotnet",["exec","/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/vbc.dll","-version"],{encoding:"utf8"}).trim(),dotnet:execFileSync("dotnet",["--version"],{encoding:"utf8"}).trim(),runtimes:execFileSync("dotnet",["--list-runtimes"],{encoding:"utf8"}).trim(),referenceLibraries:readdirSync(ref).filter(name=>name.endsWith(".dll")).sort().map(name=>({name,bytes:readFileSync(ref+"/"+name).length,sha256:createHash("sha256").update(readFileSync(ref+"/"+name)).digest("hex")})),git:execFileSync("git",["--version"],{encoding:"utf8"}).trim(),npm:execFileSync("npm",["--version"],{encoding:"utf8"}).trim(),os:readFileSync("/etc/os-release","utf8")}));',
   ]),
 );
 assert.equal(runtime.node, "v22.23.2");
 assert.equal(runtime.platform, "linux");
 assert.equal(runtime.arch, "arm64");
+assert.equal(runtime.dotnet, "10.0.401");
 assert.equal(
-  runtime.swift,
-  "Swift version 6.2 (swift-6.2-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  runtime.compiler,
+  "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)",
 );
-assert.equal(runtime.git, "git version 2.43.0");
-assert.equal(runtime.npm, "10.9.8");
-assert.ok(
-  runtime.toolBytes.every(
-    (pin) => pin.bytes > 0 && /^[a-f0-9]{64}$/.test(pin.sha256),
-  ),
-);
+assert.match(runtime.runtimes, /Microsoft.NETCore.App 10\.0\.12/);
+assert.ok(runtime.referenceLibraries.length > 100);
 const source = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-swift",
+    "cp -a /prepared-cache /tmp/npm-cache && node scripts/verify-required-native-tests.mjs context-vb",
   ]),
 );
 assert.equal(source.complete, true);
@@ -87,10 +87,10 @@ const guards = JSON.parse(
   run([
     "/bin/sh",
     "-c",
-    "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-swift-context-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-swift-context-guards.mjs",
+    "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-vb-context-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-vb-context-guards.mjs",
   ]),
 );
-assert.equal(guards.controls.length, 26);
+assert.equal(guards.controls.length, 23);
 assert.ok(
   guards.controls.every(
     (control) =>
@@ -108,7 +108,7 @@ const installed = JSON.parse(
       cwd: repository,
       env: {
         ...process.env,
-        CHECKTRAIL_IMPORT_CONTEXT_PROFILE: "context-swift",
+        CHECKTRAIL_IMPORT_CONTEXT_PROFILE: "context-vb",
         CHECKTRAIL_IMPORT_CONTEXT_IMAGE: image,
       },
       encoding: "utf8",
@@ -122,7 +122,7 @@ assert.equal(installed.profile.passed, 9);
 process.stdout.write(
   JSON.stringify({
     scope:
-      "Original synthetic Swift selected-binding controls; no AI inference or field evaluation",
+      "Original synthetic Visual Basic selected-binding controls; no AI inference or field evaluation",
     runtime,
     image,
     source,
@@ -136,7 +136,7 @@ process.stdout.write(
       memoryMiB: 2048,
       pids: 256,
       temporaryFilesystemMiB: 512,
-      temporaryFilesystemExecutable: true,
+      temporaryFilesystemExecutable: false,
     },
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

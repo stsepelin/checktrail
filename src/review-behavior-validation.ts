@@ -1,3 +1,7 @@
+import {
+  vbGrammarAsset,
+  vbGrammarManifestDigest,
+} from "./review-vb-grammar-assets.js";
 import { createHash } from "node:crypto";
 import { selectedGrammar } from "./review-grammar-profile.js";
 import {
@@ -196,7 +200,8 @@ export function validateReviewBehavior(
     analysis.profile === "csharp-selected-bindings-v1" ||
     analysis.profile === "fsharp-selected-bindings-v1" ||
     analysis.profile === "ruby-selected-bindings-v1" ||
-    analysis.profile === "swift-selected-bindings-v1"
+    analysis.profile === "swift-selected-bindings-v1" ||
+    analysis.profile === "vb-selected-bindings-v1"
   ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||
@@ -204,12 +209,20 @@ export function validateReviewBehavior(
         .size !== analysis.grammarBindings.length
     )
       fail();
+    if (
+      analysis.profile === "vb-selected-bindings-v1" &&
+      analysis.vbGrammarManifestDigest !== vbGrammarManifestDigest
+    )
+      fail();
     const expected = [
       ...new Set(
         analysis.files
           .filter((file) => file.state === "collected")
           .flatMap((file) => {
-            const asset = selectedGrammar(file.file);
+            const asset = selectedGrammar(
+              file.file,
+              analysis.profile === "vb-selected-bindings-v1",
+            );
             return asset ? [asset.grammar] : [];
           }),
       ),
@@ -220,9 +233,11 @@ export function validateReviewBehavior(
     )
       fail();
     for (const binding of analysis.grammarBindings) {
-      const asset = grammarAssets.find(
-        (asset) => asset.grammar === binding.grammar,
-      );
+      const asset =
+        analysis.profile === "vb-selected-bindings-v1" &&
+        binding.grammar === "vbnet"
+          ? vbGrammarAsset
+          : grammarAssets.find((asset) => asset.grammar === binding.grammar);
       if (
         !asset ||
         asset.sha256 !== binding.wasmSha256 ||

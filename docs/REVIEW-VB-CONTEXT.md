@@ -1,0 +1,27 @@
+# Selected Visual Basic source bindings
+
+Opt-in context version 19 adds `vb-selected-bindings-v1` through the shared library, CLI and MCP engine. Earlier versions retain their selection shapes and profiles, including unsupported Visual Basic syntax. Expanded limits remain 32 selected paths, 64 KiB per file, 1 MiB combined base/current source, 64 views and a separate 8 MiB context limit.
+
+```json
+{
+  "schemaVersion": 19,
+  "track": "snapshot",
+  "currentSource": "working-tree",
+  "files": ["src/policy/Policy.vb"],
+  "supportFiles": ["src/consumer/Consumer.vb"],
+  "moduleRoots": ["src"],
+  "topics": []
+}
+```
+
+Declared roots select captured source candidates. Plain ASCII namespaces, flat modules, module methods, literal immutable constants, parameter defaults and exact imports retain bounded case-insensitive identities. Alias and member identifiers are matched in full, including prefix neighbours. Same-module members take priority over selected namespace/import candidates; parameters and local declarations mask callable candidates throughout their enclosing method, including reads before a local declaration. Default expressions use enclosing module scope while keeping function and parameter-initializer ownership. Private members remain candidates only inside their owning selected module. Public and Friend source candidates do not certify assembly accessibility.
+
+The supplemental WASM grammar is prepared from a pinned public source archive and its actual MIT notice. The upstream package metadata says ISC; that discrepancy remains recorded rather than substituting metadata for the notice. The source grammar originally treated newlines as extras and lost a valid multiline `If` block. A distributed patch removes that extra while retaining statement terminators; the original whole-block assertion verifies both branches and `End If`. Two preparations with the pinned tools produced identical WASM bytes. The old sixteen-asset manifest is unchanged; only this opt-in profile admits the supplemental grammar binding. Runtime and grammar byte identity checks reject missing or modified valid WASM before source parsing. The supplemental artifact audit checks its manifest, source/archive/notice/patch bindings and package allowlist. Transitive build-tool notice closure remains unverified and part of Gate A's artifact freeze.
+
+Parenthesized VB syntax can be a call or an array/default-member access. Captured forms are source candidates only: lexical values, arbitrary receivers and nonliteral constants stay unresolved. Complete start/end call identities keep the inner `factory()` separate from an outer `factory()()`. Declaration names, types, argument labels, comments and inert literal text are not constant reads; arguments, defaults and whole touched decisions keep exact source ranges. Duplicate modules, case-folded aliases and overloaded method names remain ambiguous. Root namespaces, project imports, compiler options and build/assembly selection are not inferred from directory names or project files. Unsupported source options and preprocessor directives are reconstructed from both revisions at intake.
+
+Classes, instances, nested namespaces, generic/attributed methods, ByRef/ParamArray parameters, loops, lambdas, LINQ, With/Try/Select scopes, assignments and other unsupported forms retain unknown metadata. Unsupported exported method scopes also make foreign call candidates unknown. Unknowns preserve full impact fallback and the validation plan. Counts, sorted omissions, source roots and the depth-eight caller closure reconcile at intake; native name resolution, module loading and runtime reachability remain false. Capture runs only packaged fixed parsers on immutable strings and invokes no compiler, MSBuild, initializer or project configuration.
+
+Trusted original native witnesses use the immutable .NET SDK image, Roslyn Visual Basic compiler and reference assemblies declared by the synthetic profile. Direct `vbc` argument arrays use explicit references, strict checking and an empty `My` application profile. A native type-name assertion verifies the direct compiler profile's default empty root namespace; they do not evaluate MSBuild or restore dependencies. Original broken/fixed/prefix-neighbour controls, implicit module lookup, defaults and the compiler's rejection of a before-declaration local read have independent native assertions. Required source and locked offline production-install callbacks reject unavailable, skipped, empty and stale evidence.
+
+Lifecycle controls compile an original parent/child program, publish reached process identities atomically and exercise cancellation, timeout and output exhaustion. Both identities and owned ready/source/assembly outputs must disappear. These are runtime controls, not universal compiler cancellation certification. Dedicated native containers have no network, a read-only root and source/consumer mounts, two CPUs, 2 GiB memory, 256 PIDs and owned non-executable temporary storage. Guard mutations must compile, fail the original assertions, preserve actual callback/helper bytes and restore source before a final baseline. Optional host-native skips are reported as such and cannot satisfy required acceptance. Wider context, assembly, artifact, exact runtime-matrix and evaluation-protocol obligations keep Gate A open. No inference, field review or comparative accuracy is measured here.

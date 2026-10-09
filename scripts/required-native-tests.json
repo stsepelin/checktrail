@@ -3704,5 +3704,43 @@
       "file": "dist/test/gate-context-swift.test.js",
       "name": "context-swift installed acceptance"
     }
+  ],
+  "context-vb": [
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-vb.test.js",
+      "name": "context-vb installed acceptance"
+    }
   ]
 }

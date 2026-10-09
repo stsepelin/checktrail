@@ -1,0 +1,10 @@
+--- a/grammar.js
++++ b/grammar.js
+@@ -25,7 +25,6 @@
+     $.comment,
+     $.preprocessor_directive,
+     /[ \t\v\f]+/,
+-    /\r?\n/,
+     /_[ \t]*\r?\n/,
+   ],
+ 
