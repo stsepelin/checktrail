@@ -1,4 +1,10 @@
 import {
+  captureYamlBindings,
+  yamlDeclaration,
+  type YamlSyntaxUnit,
+} from "./review-yaml-bindings.js";
+import { resolveYamlBindings } from "./review-yaml-resolution.js";
+import {
   captureHclBindings,
   hclDeclaration,
   type HclSyntaxUnit,
@@ -428,6 +434,7 @@ async function collectReviewPolyglotCore(
   cRoots?: string[],
   cppRoots?: string[],
   hclRoots?: string[],
+  yamlRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -460,6 +467,7 @@ async function collectReviewPolyglotCore(
   const cUnits: CSyntaxUnit[] = [];
   const cppUnits: CppSyntaxUnit[] = [];
   const hclUnits: HclSyntaxUnit[] = [];
+  const yamlUnits: YamlSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -522,27 +530,36 @@ async function collectReviewPolyglotCore(
         };
         const decls = new Map<number, ReviewBehavior["declarations"][number]>();
         for (const node of nodes) {
+          const yamlInfo =
+            yamlRoots && asset.grammar === "yaml"
+              ? yamlDeclaration(node)
+              : undefined;
           const hclInfo =
             hclRoots && asset.grammar === "hcl"
               ? hclDeclaration(node)
               : undefined;
-          const kind = hclInfo
-            ? hclInfo.kind
-            : vbRoots &&
-                asset.grammar === "vbnet" &&
-                node.type === "module_declaration"
-              ? "class"
-              : isFunction(node)
-                ? "function"
-                : (declarations.get(node.type) ??
-                  (scalaRoots &&
-                  asset.grammar === "scala" &&
-                  node.type === "object_definition"
-                    ? ("class" as const)
-                    : undefined));
+          const kind = yamlInfo
+            ? yamlInfo.kind
+            : hclInfo
+              ? hclInfo.kind
+              : vbRoots &&
+                  asset.grammar === "vbnet" &&
+                  node.type === "module_declaration"
+                ? "class"
+                : isFunction(node)
+                  ? "function"
+                  : (declarations.get(node.type) ??
+                    (scalaRoots &&
+                    asset.grammar === "scala" &&
+                    node.type === "object_definition"
+                      ? ("class" as const)
+                      : undefined));
           if (!kind || node.startIndex >= node.endIndex) continue;
           const address = range(node),
-            initial = hclInfo?.initializer ?? initializer(node, kind);
+            initial =
+              yamlInfo?.initializer ??
+              hclInfo?.initializer ??
+              initializer(node, kind);
           if (
             kind === "parameter" &&
             initial &&
@@ -561,17 +578,19 @@ async function collectReviewPolyglotCore(
               address.end,
               kind,
             ]),
-            name: hclInfo
-              ? hclInfo.name
-              : cppRoots &&
-                  asset.grammar === "cpp" &&
-                  node.type === "function_definition"
-                ? cppFunctionName(node)
-                : cRoots &&
-                    asset.grammar === "c" &&
+            name: yamlInfo
+              ? yamlInfo.name
+              : hclInfo
+                ? hclInfo.name
+                : cppRoots &&
+                    asset.grammar === "cpp" &&
                     node.type === "function_definition"
-                  ? cFunctionName(node)
-                  : name(node),
+                  ? cppFunctionName(node)
+                  : cRoots &&
+                      asset.grammar === "c" &&
+                      node.type === "function_definition"
+                    ? cFunctionName(node)
+                    : name(node),
             kind,
             initializer: initial
               ? { start: initial.startIndex, end: initial.endIndex }
@@ -761,6 +780,10 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const yamlUnit =
+          yamlRoots && asset.grammar === "yaml"
+            ? captureYamlBindings(nodes, decls, range)
+            : undefined;
         const hclUnit =
           hclRoots && asset.grammar === "hcl"
             ? captureHclBindings(nodes, decls, range)
@@ -831,6 +854,7 @@ async function collectReviewPolyglotCore(
         if (cUnit) cUnits.push(cUnit);
         if (cppUnit) cppUnits.push(cppUnit);
         if (hclUnit) hclUnits.push(hclUnit);
+        if (yamlUnit) yamlUnits.push(yamlUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -876,6 +900,11 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (yamlRoots)
+    return resolveYamlBindings(result, yamlUnits, yamlRoots, primary, [
+      ...base,
+      ...current,
+    ]);
   if (hclRoots)
     return resolveHclBindings(result, hclUnits, hclRoots, primary, [
       ...base,
@@ -1322,6 +1351,41 @@ export async function collectReviewHclBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewYamlBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "yaml-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewYamlBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

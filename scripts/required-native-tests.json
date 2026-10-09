@@ -3856,5 +3856,43 @@
       "file": "dist/test/gate-context-hcl.test.js",
       "name": "context-hcl installed acceptance"
     }
+  ],
+  "context-yaml": [
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-yaml.test.js",
+      "name": "context-yaml installed acceptance"
+    }
   ]
 }
