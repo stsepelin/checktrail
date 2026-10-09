@@ -1,6 +1,6 @@
 # C# compilation
 
-For the separate opt-in C#/F#/VB SDK build profile, see [DOTNET-BUILD.md](DOTNET-BUILD.md). Test execution and formatting integration remain unfinished.
+For the separate opt-in C#/F#/VB SDK build profile, see [DOTNET-BUILD.md](DOTNET-BUILD.md). Bounded SDK test and C#/VB whitespace formatting profiles are documented in [DOTNET-TEST.md](DOTNET-TEST.md) and [DOTNET-FORMAT.md](DOTNET-FORMAT.md); broader formatting and generator profiles remain required.
 
 `dotnet.csharp` compiles all inventoried `.cs` files in a project as one explicitly
 configured assembly. It requires one project-root `.csproj` marker, a prepared

@@ -3552,5 +3552,43 @@
       "file": "dist/test/gate-context-scala.test.js",
       "name": "context-scala installed acceptance"
     }
+  ],
+  "context-csharp": [
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-csharp.test.js",
+      "name": "context-csharp installed acceptance"
+    }
   ]
 }
