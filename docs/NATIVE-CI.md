@@ -70,6 +70,21 @@ retain the registry used when they were captured; identical image-index bytes do
 not establish broader license, publisher or whole-runtime provenance. Hosted CI
 at a repaired PR head must still pass independently.
 
+Pinned public image preparation retries only recognized rate-limit messages and
+HTTP 429, 500, 502, 503 or 504 delivery responses. It admits at most five attempts,
+with two-, five-, fifteen- and thirty-second waits, within one 180-second monotonic
+wall budget. Every attempt uses the same digest reference. Cancellation, command
+timeouts, authentication failures, unknown errors and exhausted attempts remain
+failures. CI prepares the selected images before Docker's implicit first pull;
+existing job matrices, conditions and native acceptance commands are preserved.
+
+This follows two hosted preparation failures with `toomanyrequests: Rate exceeded`.
+AWS documents a one-per-second anonymous pull quota in its
+[public ECR service quotas](https://docs.aws.amazon.com/AmazonECR/latest/public/public-service-quotas.html).
+The [bounded delivery receipt](measurements/ci-image-delivery-retries-2026-10-10.json)
+records the observed failures, unchanged source assertions, compiling controls and
+local check. Retries do not guarantee registry availability or completed hosted acceptance.
+
 ## Pinned infrastructure preparation
 
 Infrastructure runtime setup allows at most three download attempts per artifact,

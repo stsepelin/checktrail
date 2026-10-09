@@ -203,6 +203,11 @@ jobs:
         run: node scripts/verify-go-workspace-guards.mjs
       - name: Verify installed Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned review runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: docker build --file scripts/review-tools.Dockerfile --tag checktrail-review-tools:finish-first-v1 scripts
@@ -229,6 +234,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned PHP runtime
         run: docker build --file scripts/php-review-tools.Dockerfile --tag checktrail-php-review:synthetic-v1 scripts
       - name: Prepare locked native tools without project lifecycles
@@ -258,6 +267,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Clang fixture
         run: docker build --file scripts/clang-tools.Dockerfile --tag checktrail-clang-test:22.1.3 scripts
       - run: node scripts/verify-clang-container.mjs
@@ -275,6 +287,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Java fixture
         run: docker build --file scripts/java-tools.Dockerfile --tag checktrail-java-test:25.0.4 scripts
       - name: Prepare package-install cache with network access
@@ -296,6 +312,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned Checkstyle artifact
         run: node scripts/prepare-java-review-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Checkstyle runtime
         run: docker build --file scripts/java-review-tools.Dockerfile --tag checktrail-checkstyle-test:14.3.0 .checktrail/jvm-review-tools
       - name: Prepare package-install cache with network access
@@ -317,6 +337,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned SpotBugs artifact
         run: node scripts/prepare-spotbugs-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned SpotBugs runtime
         run: docker build --file scripts/spotbugs-tools.Dockerfile --tag checktrail-spotbugs-test:4.10.4 .checktrail/spotbugs-tools
       - name: Prepare package-install cache with network access
@@ -338,6 +362,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned detekt artifact
         run: node scripts/prepare-detekt-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned detekt runtime
         run: docker build --file scripts/detekt-tools.Dockerfile --tag checktrail-detekt-test:2.0.0-alpha.6 .checktrail/detekt-tools
       - name: Prepare package-install cache with network access
@@ -359,6 +387,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned kotlin artifact
         run: node scripts/prepare-kotlin-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned kotlin runtime
         run: docker build --file scripts/kotlin-tools.Dockerfile --tag checktrail-kotlin-test:2.4.10 .checktrail/kotlin-tools
       - name: Prepare package-install cache with network access
@@ -380,6 +412,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned scala artifact
         run: node scripts/prepare-scala-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned scala runtime
         run: docker build --file scripts/scala-tools.Dockerfile --tag checktrail-scala-test:3.9.0 .checktrail/scala-tools
       - name: Prepare package-install cache with network access
@@ -401,6 +437,10 @@ jobs:
       - run: npm run build
       - run: node scripts/verify-required-native-tests.mjs maven-preparation
       - run: node scripts/prepare-maven-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: docker build --file scripts/maven-tools.Dockerfile --tag checktrail-maven-test:3.10.0 .checktrail/maven-review-tools
       - run: node scripts/prepare-maven-dependencies.mjs
       - run: node scripts/prepare-package-cache.mjs
@@ -421,6 +461,10 @@ jobs:
       - run: npm run build
       - run: node scripts/verify-required-native-tests.mjs gradle-preparation
       - run: node scripts/prepare-gradle-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: docker build --file scripts/gradle-tools.Dockerfile --tag checktrail-gradle-test:9.8.0 .checktrail/gradle-review-tools
       - run: node scripts/prepare-gradle-dependencies.mjs
       - run: node scripts/prepare-package-cache.mjs
@@ -456,6 +500,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C# fixture
         run: docker build --file scripts/dotnet-tools.Dockerfile --tag checktrail-dotnet-test:10.0.401 scripts
       - name: Prepare package-install cache with network access
@@ -476,6 +523,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned workflow checker
         run: docker build --file scripts/actionlint-tools.Dockerfile --tag checktrail-actionlint-test:1.7.12 scripts
       - name: Prepare package-install cache with network access
@@ -495,6 +545,12 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
       - name: Prepare pinned external adapter runtimes
         run: docker build --file scripts/external-tools.Dockerfile --tag checktrail-external-test:1 scripts
       - name: Prepare package-install cache with network access
@@ -533,6 +589,9 @@ jobs:
           npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/verify-vue-router-container.mjs
 
   vue-router-assembly-arm64:
@@ -556,6 +615,9 @@ jobs:
           cp scripts/vue-router-tools/package.json scripts/vue-router-tools/package-lock.json .checktrail/vue-router-tools/
           npm ci --prefix .checktrail/vue-router-tools --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Verify original native navigation assembly, compiling controls and fresh package
         run: node scripts/verify-vue-router-assembly-container.mjs
 
@@ -575,6 +637,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/prepare-fastapi-assembly-tools.mjs
       - name: Build the pinned offline native test image
         run: docker build --network none --label checktrail.task=ci-fastapi-assembly --file scripts/fastapi-assembly-tools.Dockerfile --tag "$CHECKTRAIL_FASTAPI_ASSEMBLY_IMAGE" .
@@ -598,6 +663,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/prepare-fastapi-assembly-tools.mjs
       - name: Build the pinned offline native test image
         run: docker build --network none --label checktrail.task=ci-django-assembly --file scripts/fastapi-assembly-tools.Dockerfile --tag "$CHECKTRAIL_DJANGO_ASSEMBLY_IMAGE" .
@@ -645,6 +713,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare exact public JVM distributions and dependency inventories
         run: |
           node scripts/prepare-maven-tools.mjs
@@ -680,6 +752,10 @@ jobs:
         run: |
           node scripts/prepare-rust-extension-components.mjs
           python3 scripts/extract-rust-extension-components.py
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Build the pinned offline native test image
         run: docker build --network none --label checktrail.task=ci-rust-extensions --file scripts/rust-extension-tools.Dockerfile --tag "$CHECKTRAIL_RUST_EXTENSIONS_IMAGE" .
       - run: node scripts/prepare-package-cache.mjs
@@ -702,6 +778,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Build the pinned offline PHP native image
         run: docker build --network none --label checktrail.task=ci-php-extensions --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" .
       - name: Prepare existing locked public PHP toolchains
@@ -737,6 +817,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
       - name: Prepare exact public wheels and verify selected native APIs
         run: node scripts/prepare-python-extensions-tools.mjs
       - name: Build the pinned offline native test image
@@ -762,6 +846,9 @@ jobs:
       - run: npm run build
       - name: Derive exact locked native acceptance tools
         run: node scripts/prepare-javascript-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare the locked musl native dependency tree
         run: docker run --rm --mount "type=bind,src=$PWD/.checktrail/javascript-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
@@ -784,6 +871,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned public PHP and Node runtime
         run: docker build --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_LARAVEL_ASSEMBLY_IMAGE" .
       - name: Prepare locked public Laravel dependencies
@@ -814,6 +905,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare locked public native Nuxt tools
         run: |
           mkdir -p .checktrail/nuxt-tools
@@ -836,6 +930,9 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare locked Nuxt fixtures for the container runtime
         run: |
           mkdir -p .checktrail/nuxt-tools
@@ -860,8 +957,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned Ruby and Node runtimes
         run: |
-          docker pull public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
-          docker pull public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/verify-ruby-container.mjs
 
   ruby-tools:
@@ -1131,6 +1228,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned PHP context runtime
         run: docker build --file scripts/php-context-tools.Dockerfile --tag checktrail-php-context:synthetic-v1 scripts
       - name: Verify original selected PHP bindings and compiling guards
@@ -1150,6 +1251,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446
       - name: Prepare pinned Rust context runtime
         run: docker build --file scripts/rust-context-tools.Dockerfile --tag checktrail-rust-context:synthetic-v1 scripts
       - name: Verify original selected Rust bindings and compiling guards
@@ -1169,6 +1275,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Java context runtime
         run: docker build --file scripts/java-context-tools.Dockerfile --tag checktrail-java-context:synthetic-v1 scripts
       - name: Verify original selected Java bindings and compiling guards
@@ -1189,6 +1300,11 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/prepare-kotlin-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Kotlin context runtime
         run: docker build --file scripts/kotlin-context-tools.Dockerfile --tag checktrail-kotlin-context:synthetic-v1 .checktrail/kotlin-tools
       - name: Verify original selected Kotlin bindings and compiling guards
@@ -1210,6 +1326,11 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - run: node scripts/prepare-scala-tools.mjs
       - run: node scripts/prepare-scala-context-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Scala context runtime
         run: docker build --file scripts/scala-context-tools.Dockerfile --tag checktrail-scala-context:synthetic-v1 .checktrail/scala-tools
       - name: Verify original selected Scala bindings and compiling guards
@@ -1229,6 +1350,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C# context runtime
         run: docker build --file scripts/csharp-context-tools.Dockerfile --tag checktrail-csharp-context:synthetic-v1 scripts
       - name: Verify original selected C# bindings and compiling guards
@@ -1248,6 +1372,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned F# context runtime
         run: docker build --file scripts/fsharp-context-tools.Dockerfile --tag checktrail-fsharp-context:synthetic-v1 scripts
       - name: Verify original selected F# bindings and compiling guards
@@ -1267,6 +1394,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
       - name: Prepare pinned Ruby context runtime
         run: docker build --file scripts/ruby-context-tools.Dockerfile --tag checktrail-ruby-context:synthetic-v1 scripts
       - name: Verify original selected Ruby bindings and compiling guards
@@ -1286,6 +1417,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd
       - name: Prepare pinned Swift context runtime
         run: docker build --file scripts/swift-context-tools.Dockerfile --tag checktrail-swift-context:synthetic-v1 scripts
       - name: Verify original selected Swift bindings and compiling guards
@@ -1305,6 +1440,9 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Visual Basic context runtime
         run: docker build --file scripts/vb-context-tools.Dockerfile --tag checktrail-vb-context:synthetic-v1 scripts
       - name: Verify original selected Visual Basic bindings and compiling guards
@@ -1324,6 +1462,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C context runtime
         run: docker build --file scripts/c-context-tools.Dockerfile --tag checktrail-c-context:synthetic-v1 scripts
       - name: Verify original selected C bindings and compiling guards
@@ -1343,6 +1485,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C++ context runtime
         run: docker build --file scripts/cpp-context-tools.Dockerfile --tag checktrail-cpp-context:synthetic-v1 scripts
       - name: Verify original selected C++ bindings and compiling guards
@@ -1362,6 +1508,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned HCL witness runtime
         run: node scripts/prepare-hcl-context-runtime.mjs
       - name: Verify original selected HCL bindings and compiling guards
@@ -1384,6 +1534,10 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned YAML witness runtime
         run: node scripts/prepare-yaml-context-runtime.mjs
       - name: Verify original selected YAML bindings and compiling guards

@@ -82,6 +82,10 @@ async function preparationControl(
   const root = await fixture(t, {
     "scripts/prepare-infra-tools-runtime.mjs": await readFile(source, "utf8"),
     "scripts/request-pinned-artifact.mjs": await readFile(helper, "utf8"),
+    "scripts/pull-pinned-image.mjs": await readFile(
+      new URL("../../scripts/pull-pinned-image.mjs", import.meta.url),
+      "utf8",
+    ),
     "dist/src/maven.js": `export {mavenHash} from ${JSON.stringify(maven.href)};`,
     "control.mjs": `
  import assert from 'node:assert/strict';import {readFile,writeFile,readdir,access} from 'node:fs/promises';import {createHash} from 'node:crypto';import childProcess from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';import {setTimeout} from 'node:timers/promises';

@@ -1,3 +1,4 @@
+import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { access, mkdir } from "node:fs/promises";
@@ -21,7 +22,7 @@ const image =
 const task =
   process.env.CHECKTRAIL_TEST_TASK ?? `fastapi-prepare-${process.pid}`;
 assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
-execFileSync("docker", ["pull", image], { stdio: "inherit", timeout: 120000 });
+await pullPinnedImage(image);
 execFileSync(
   "docker",
   [
