@@ -1021,3 +1021,22 @@ jobs:
         run: docker build --file scripts/vb-context-tools.Dockerfile --tag checktrail-vb-context:synthetic-v1 scripts
       - name: Verify original selected Visual Basic bindings and compiling guards
         run: node scripts/verify-vb-context-container.mjs
+
+  c-context-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned C context runtime
+        run: docker build --file scripts/c-context-tools.Dockerfile --tag checktrail-c-context:synthetic-v1 scripts
+      - name: Verify original selected C bindings and compiling guards
+        run: node scripts/verify-c-context-container.mjs

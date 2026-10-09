@@ -36,6 +36,7 @@ assert.ok(
     "context-ruby",
     "context-swift",
     "context-vb",
+    "context-c",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -64,6 +65,7 @@ if (profile === "context-ruby")
 if (profile === "context-swift")
   process.env.CHECKTRAIL_CONTEXT_SWIFT_INSTALLED = "1";
 if (profile === "context-vb") process.env.CHECKTRAIL_CONTEXT_VB_INSTALLED = "1";
+if (profile === "context-c") process.env.CHECKTRAIL_CONTEXT_C_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -112,6 +114,8 @@ try {
     "gate-context-ruby.test.js",
     "gate-context-swift.test.js",
     "gate-context-vb.test.js",
+    "gate-context-c.test.js",
+    "review-c-boundaries-fixture.js",
     "review-vb-boundaries-fixture.js",
     "review-swift-boundaries-fixture.js",
     "review-ruby-boundaries-fixture.js",
@@ -243,6 +247,9 @@ try {
           ...(profile === "context-swift"
             ? ["--env", "CHECKTRAIL_CONTEXT_SWIFT_INSTALLED=1"]
             : []),
+          ...(profile === "context-c"
+            ? ["--env", "CHECKTRAIL_CONTEXT_C_INSTALLED=1"]
+            : []),
           ...(profile === "context-vb"
             ? [
                 "--env",
@@ -261,7 +268,9 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          ["context-go", "context-rust", "context-swift"].includes(profile)
+          ["context-go", "context-rust", "context-swift", "context-c"].includes(
+            profile,
+          )
             ? "/tmp:rw,exec,nosuid,nodev,size=256m"
             : [
                   "context-scala",
@@ -313,6 +322,7 @@ try {
               "context-go",
               "context-rust",
               "context-swift",
+              "context-c",
             ].includes(profile),
           }
         : {
