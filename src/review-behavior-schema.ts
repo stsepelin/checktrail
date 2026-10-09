@@ -838,6 +838,82 @@ export const reviewCppBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(32),
   }),
 });
+export const reviewHclBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("hcl-selected-bindings-v1"),
+  hclBindings: z.strictObject({
+    moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
+    scope: z.literal("selected-captured-hcl-source"),
+    state: z.enum(["collected", "partial"]),
+    dependencyDepthLimit: z.literal(8),
+    moduleCandidates: z
+      .array(
+        z.strictObject({ ...range, targetFiles: z.array(range.file).max(32) }),
+      )
+      .max(512),
+    dependencyEdges: z
+      .array(
+        z.strictObject({
+          fromDeclarationId: id,
+          targetDeclarationId: id,
+          depth: z.number().int().min(1).max(8),
+        }),
+      )
+      .max(4096),
+    references: z
+      .array(
+        z.strictObject({
+          ...range,
+          ownerDeclarationId: id.nullable(),
+          targetDeclarationId: id.nullable(),
+          resolution: z.enum([
+            "selected-declaration",
+            "no-selected-definition",
+            "ambiguous-definition",
+            "unsupported-expression",
+          ]),
+        }),
+      )
+      .max(8192),
+    counts: z.strictObject({
+      references: z.number().int().nonnegative(),
+      resolvedReferences: z.number().int().nonnegative(),
+      unresolvedReferences: z.number().int().nonnegative(),
+      imports: z.number().int().nonnegative(),
+      resolvedImports: z.number().int().nonnegative(),
+      unresolvedImports: z.number().int().nonnegative(),
+    }),
+    fullImpactFallback: z.literal(true),
+    nativeEvaluationVerified: z.literal(false),
+    moduleInputsVerified: z.literal(false),
+    moduleLoadingVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "application-semantics-unknown",
+          "native-evaluation-unknown",
+          "module-input-values-unknown",
+          "module-loading-unknown",
+          "build-selection-unknown",
+          "unsupported-expression",
+          "application-block-unknown",
+          "unsupported-import",
+          "unresolved-reference",
+          "unresolved-import",
+          "ambiguous-definition",
+          "outside-module-roots",
+          "partial-syntax",
+          "non-hcl-source",
+          "input-override-source-unknown",
+          "no-selected-declarations",
+          "depth-limit",
+          "dependency-cycle-unknown",
+        ]),
+      )
+      .max(24),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
@@ -855,5 +931,6 @@ export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewVbBehaviorSchema,
   reviewCBehaviorSchema,
   reviewCppBehaviorSchema,
+  reviewHclBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

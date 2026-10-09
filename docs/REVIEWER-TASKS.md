@@ -126,3 +126,5 @@ Opt-in context version 19 adds selected Visual Basic flat-module methods, litera
 Version 20 adds bounded C source and quoted-header candidates; [REVIEW-C-CONTEXT.md](REVIEW-C-CONTEXT.md) states its limits. Required source, installed, mutation and final gate receipts remain independently measured; capture does not execute a preprocessor or compiler.
 
 Version 21 adds bounded C++ source, namespace/default and selected-header candidates; [REVIEW-CPP-CONTEXT.md](REVIEW-CPP-CONTEXT.md) states its limits. Required source, installed, mutation and final gate receipts remain independently measured; capture executes no compiler or preprocessor.
+
+Version 22 adds bounded HCL configuration source candidates; [REVIEW-HCL-CONTEXT.md](REVIEW-HCL-CONTEXT.md) states its limits. Required source, installed, mutation and final gate receipts remain independently measured; capture invokes no evaluator, provider or project configuration.
