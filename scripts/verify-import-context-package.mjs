@@ -133,6 +133,7 @@ try {
     "gate-context-yaml.test.js",
     "review-yaml-boundaries-fixture.js",
     "review-hcl-boundaries-fixture.js",
+    "review-name-boundaries-fixture.js",
     "review-cpp-boundaries-fixture.js",
     "review-c-boundaries-fixture.js",
     "review-vb-boundaries-fixture.js",

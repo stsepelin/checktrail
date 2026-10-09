@@ -52,7 +52,9 @@ export type CppSyntaxUnit = {
 };
 const field = (node: Node, name: string) => node.childForFieldName(name);
 const ascii = (node: Node | null) =>
-  node?.type === "identifier" && /^[A-Za-z_][A-Za-z_0-9]*$/.test(node.text)
+  node?.type === "identifier" &&
+  node.text.length <= 256 &&
+  /^[A-Za-z_][A-Za-z_0-9]*$/.test(node.text)
     ? node.text
     : null;
 /** Follow declarators, never parameter lists, expression operands or arbitrary identifier descendants. */
@@ -525,6 +527,13 @@ export function captureCppBindings(
       });
     }
   }
+  for (const node of nodes)
+    if (
+      !ignored.has(node.id) &&
+      node.type === "identifier" &&
+      node.text.length > 256
+    )
+      omit(scopeFor(node), "unsupported-binding");
   for (const node of nodes)
     if (
       !ignored.has(node.id) &&

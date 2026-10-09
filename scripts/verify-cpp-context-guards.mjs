@@ -16,6 +16,11 @@ const boundaryFixture = new URL(
   ),
   originalBoundaryFixture = await readFile(boundaryFixture);
 
+const nameFixture = new URL(
+    "../dist/test/review-name-boundaries-fixture.js",
+    import.meta.url,
+  ),
+  originalNameFixture = await readFile(nameFixture);
 const guardCallback = new URL(
     "../dist/test/review-cpp-boundaries.test.js",
     import.meta.url,
@@ -32,6 +37,22 @@ const callbackBytes = (name) =>
 
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
+  {
+    id: "cpp-long-read-unknown",
+    file: "review-cpp-bindings.js",
+    name: "context-cpp selected bindings guard acceptance",
+    before: "node.text.length > 256",
+    after: "node.text.length > 257",
+  },
+
+  {
+    id: "cpp-identifier-name-bound",
+    file: "review-cpp-bindings.js",
+    name: "context-cpp selected bindings guard acceptance",
+    before: "node.text.length <= 256 &&",
+    after: "node.text.length <= 257 &&",
+  },
+
   {
     id: "cpp-identifier-case",
     file: "review-cpp-resolution.js",
@@ -438,11 +459,17 @@ for (const control of controls.filter(
       originalBoundaryFixture,
       "Original boundary assertions changed",
     );
+    assert.deepEqual(
+      await readFile(nameFixture),
+      originalNameFixture,
+      "Original name-boundary assertions changed",
+    );
     evidence.push({
       id: control.id,
       callback: control.name,
       callbackSha256: digest(callbackBytes(control.name)),
       fixtureSha256: digest(originalBoundaryFixture),
+      nameFixtureSha256: digest(originalNameFixture),
       sourceSha256: digest(original),
       mutantSha256: digest(mutant),
       originalPassed: true,

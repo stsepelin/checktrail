@@ -81,7 +81,7 @@ const guards = JSON.parse(
     "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-c-context-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-c-context-guards.mjs",
   ]),
 );
-assert.equal(guards.controls.length, 30);
+assert.equal(guards.controls.length, 32);
 assert.ok(
   guards.controls.every(
     (control) =>
