@@ -1,0 +1,1495 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-yaml-selected-bindings-v1",
+  "recordedAt": "2026-10-09T03:01:17.579041+00:00",
+  "scope": "Captured YAML anchors, exact preceding same-document alias source candidates, complete mapping decisions, initializer spans and bounded reverse declaration dependencies plus supplementary pinned YAML/Node deserialization witnesses and original trusted cleanup controls; no capture execution, native serialization/scalar/merge/application certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "7c02c20e9e3f39431d641ba20b28c6a7f762a06a",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 50747,
+        "sha256": "807ebe97b383f2a4150137bd420f6b80ee2ecc9d4b37c75a1b582bd45d44bad9"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-yaml.wasm",
+        "bytes": 192686,
+        "sha256": "a6493a7ec9533dc532e4c4db221439064aae4923612f8b0ced4d2eb88131bae3"
+      },
+      {
+        "file": "assets/context-vb-grammar/manifest.json",
+        "bytes": 351,
+        "sha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 26156,
+        "sha256": "e5a59391484d4ec7e08178299fdb65d47404aceefc88560dd21a3d8aefb0be1f"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 40755,
+        "sha256": "12493ecbea7a788e6c9c45dfe4ae45c2bb9d73e2f9ccb447c399f1133eeea62b"
+      },
+      {
+        "file": "docs/REVIEW-YAML-CONTEXT.md",
+        "bytes": 2625,
+        "sha256": "7017b756c730814ff4b5c9ebb5775e6a981b40d1197452132ae1dc918e705dc6"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 45876,
+        "sha256": "3986420aa10b734a970529ac00e4fe8dbbd8b9c1248635a42360ba51f4cd15ed"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146066,
+        "sha256": "d435b231cd009b5f7b3b56b599a970f9f019db32896a293a469af791cb05c7ca"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 2822056,
+        "sha256": "709d2725e1c6894c1c2c34b952879627edea08445597dfd945253b118fbe5471"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 1284805,
+        "sha256": "0057554dfc08aec138f92beda94eb0c51a1fecdcda50d11bb454f4334bc65dec"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 1436130,
+        "sha256": "36192c90856b24f3b0b63e4cacee6c63d1e0487c3b876c6c044c522fa0ff547d"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 1118449,
+        "sha256": "16c23dcfc4238aa6fafa64f2db2c6cd4b7ac0b9775af7b5e3e4588dae58dc4f6"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 1114001,
+        "sha256": "23359c78c479bf0d3611db23d1a8d5bd6a5342be07f62893074ad51371e775e3"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 1349934,
+        "sha256": "e2ef49c6a16bda4e111d2eebe4f71095259c3f86d29373e5d31eff96fe21473e"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 940602,
+        "sha256": "456120e62d8973fced4936d7f6aac4855d0e51417ce3d59b95958147aac9b8c5"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 76820,
+        "sha256": "f7c8827f6c7de7829e2d1dc61cd29c4e85d1db41b3723be7b0dd76f9c64f95eb"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 3040733,
+        "sha256": "171d81ed2095b4c80b5d0ee0b9903a909e6729a39781336ff52aa06e18eabc62"
+      },
+      {
+        "file": "scripts/cleanup-yaml-context-runtime.mjs",
+        "bytes": 1541,
+        "sha256": "65bd799942bb115d41a41982604418d925b840e356f3e4e56be6c1e8d11813e6"
+      },
+      {
+        "file": "scripts/prepare-yaml-context-runtime.mjs",
+        "bytes": 2914,
+        "sha256": "eb2a9fc5c86c6f9e8952303d21d3adfbaa52a5f0b50cf55a606aaa7157eed9b6"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 160643,
+        "sha256": "393d9e9570c328c4dafb7ce21fa87d290758466ff367b15e47db0428387e9071"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 12820,
+        "sha256": "d5500db419790550835fba3b002a4bca0cc4088da104115131c089d3491b405e"
+      },
+      {
+        "file": "scripts/verify-selected-syntax-guards.mjs",
+        "bytes": 4406,
+        "sha256": "7afec49cd2948042da3241046b21e2a1a3543d0e49d3508c604598334c8e0667"
+      },
+      {
+        "file": "scripts/verify-yaml-context-container.mjs",
+        "bytes": 4571,
+        "sha256": "e5643a310ccd9b754e9111c613af9681fc20136f87bd9536aa7ca49ed1ca437f"
+      },
+      {
+        "file": "scripts/verify-yaml-context-guards.mjs",
+        "bytes": 12805,
+        "sha256": "196363a16ab10080a07b4cd01ed1439451075ebb57105e88f49f75998021edaf"
+      },
+      {
+        "file": "scripts/yaml-context-tools.Dockerfile",
+        "bytes": 669,
+        "sha256": "29e81d7287b180eb8d9376f2fc5ce6899c8fc25bea0d647951f254339c2eafd8"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 33404,
+        "sha256": "fa1f7045aae3e20677a8ea10465c8d1d4d151ecf115cf50cec41c96c05426d0a"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 8788,
+        "sha256": "cdc9f5b76b1511abd3fd7ffa18c053070a9a70476d8dafe443dcac606e51ca80"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 14174,
+        "sha256": "d84e53549792ed82e1f8a2828002f8354efa3c5457c606bcde68a9d3eaea9a84"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 40825,
+        "sha256": "887a671b12b8f22392b318808895367b034b7bc257e57db341bfcd081eb56109"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32488,
+        "sha256": "db0c38105c7d645a218bb05d963143eedb0830987fbbfb1350c86ae289b8a7f7"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 34057,
+        "sha256": "6d9f3ddf89ad2bde1a11055ad5bd9d9aafa8db591bc8afe8eb45ab553816ed95"
+      },
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 20044,
+        "sha256": "ea9771caa2882a74b5635bdb7b4cc93cb558bdd1e7536a384362d8c270d5c181"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 32191,
+        "sha256": "13a61716a1a783a75bd07ce149948bc347b81e4889e8439f11f452e3c581e3d6"
+      },
+      {
+        "file": "src/review-yaml-bindings.ts",
+        "bytes": 5296,
+        "sha256": "188814b8bde6b5a26535f741cabb5a6ccf390ca029638b46c0fe334de795b1db"
+      },
+      {
+        "file": "src/review-yaml-resolution.ts",
+        "bytes": 10888,
+        "sha256": "fbb88df70e1b78d98839599d732dc4741c296e67756c11098c3164f7bb1db11d"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 96074,
+        "sha256": "bdd5a0ec12216aaa0fee08938158ba8cc8ab381a6ab0eaa96cb94ef27fc47d81"
+      },
+      {
+        "file": "test/gate-context-yaml.test.ts",
+        "bytes": 24455,
+        "sha256": "936c457d68e74c3bd077b3ecd63367346931de8f397ee6e1681ebee9a65fafca"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10875,
+        "sha256": "f4d296f4b3a3fae8e52091844f2fe67a50d088465d4d143075cfb13d38c530ae"
+      },
+      {
+        "file": "test/review-polyglot-fixture.ts",
+        "bytes": 2678,
+        "sha256": "65c8a9e7027d8ca5f8b2c190438286610eb1c3e6f1da0022f34a22ff09f6a25b"
+      },
+      {
+        "file": "test/review-polyglot.test.ts",
+        "bytes": 15976,
+        "sha256": "220abb598eb0a29635b694e4d30252309d63a651af6fe270f83b160e40abe490"
+      },
+      {
+        "file": "test/review-yaml-boundaries-fixture.ts",
+        "bytes": 8708,
+        "sha256": "d9338daf0cde383d332a7e1ab80e81918c742c97c253add870c2d3cef082046c"
+      },
+      {
+        "file": "test/review-yaml-boundaries.test.ts",
+        "bytes": 220,
+        "sha256": "18b9ddff759d2646f374f36ad20b09cc0eb1ff6788ed88c1e8c778ce695a3921"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 34985,
+        "sha256": "5ffdf5dbed480d82d93959e8333bee70326af24f0c55e194202636a609e72560"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 8610,
+        "sha256": "eebf32844368e260d0723108c6b629bb72a31e1e95a8e7c82412b1f00bdcc262"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14407,
+        "sha256": "1087442f8b1c0e5bf8865c51e32c15bcbf6a5633ca67dbd5471ad1ed043e5289"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 39755,
+        "sha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 34194,
+        "sha256": "c3339ae209f977dc0d42f6e064244275f7e9da14307532538cdabd2f741a0cbd"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 36069,
+        "sha256": "c1043a83a1b65f6158fe5e08da918fd67b8fb682db926f539e6418e6cc32e56c"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 20008,
+        "sha256": "d5ee3261fe1b691dee0d0394f5e13d16e9b6f69c6ece67bd146511d6b24fbd05"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 33135,
+        "sha256": "f91e4e3aff8836642262f64b6e1cad4e7c94ee936987731df615ac6675662ccd"
+      },
+      {
+        "file": "dist/src/review-yaml-bindings.js",
+        "bytes": 4589,
+        "sha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e"
+      },
+      {
+        "file": "dist/src/review-yaml-resolution.js",
+        "bytes": 10676,
+        "sha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 98835,
+        "sha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787"
+      },
+      {
+        "file": "dist/test/gate-context-yaml.test.js",
+        "bytes": 24200,
+        "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11277,
+        "sha256": "f0dac9f379b73c1a995308ea11ae62626db6c20e9b73e7466b8d2c33f6a2f716"
+      },
+      {
+        "file": "dist/test/review-polyglot-fixture.js",
+        "bytes": 2630,
+        "sha256": "d29923defd0eb84b791919f31b9d047c975c3a92848364101174c7a3cf931d42"
+      },
+      {
+        "file": "dist/test/review-polyglot.test.js",
+        "bytes": 15740,
+        "sha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00"
+      },
+      {
+        "file": "dist/test/review-yaml-boundaries-fixture.js",
+        "bytes": 8418,
+        "sha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470"
+      },
+      {
+        "file": "dist/test/review-yaml-boundaries.test.js",
+        "bytes": 222,
+        "sha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "yamlVersion": "2.9.1",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "toolBytes": [
+        {
+          "file": "/usr/local/bin/node",
+          "bytes": 126241888,
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        {
+          "file": "/usr/bin/git",
+          "bytes": 4081272,
+          "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+        }
+      ],
+      "yamlEntry": {
+        "file": "node_modules/yaml/dist/index.js",
+        "bytes": 1769,
+        "sha256": "2d58984e0ae80de4acbd8f009fab332f5ce77d9e1a5f138a3058a0ada6567fb9"
+      }
+    },
+    "image": "sha256:acede50a4e6d50c288eaffdbf15d9dafd53b914cdaf4be15cc842bcf2cf5c1e4",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-yaml",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-yaml broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 342.39858,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-yaml fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 59.780488,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-yaml near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 164.422457,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-yaml prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 199.378003,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-yaml stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 63.297676,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-yaml empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 161.718399,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-yaml privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2294.127138,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-yaml lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4280.862667,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-yaml installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12458.411054,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-yaml broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic YAML captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "yaml-anchor-name-size",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "624d7c9cbadc74ed96683fcf694aaeef09bdf151a2711d43b7b9d0495f77c66d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-plain-key-size",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "696e40b2b483ffed5ece28356f1a5f6237dc375f515cd28981177b13756f6231",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-quoted-key-size",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "04ccc88d4640766fcf1afede79fa7cd0835ce469ed0e7de87dd0f7e4788a432e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-identifier-case",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "055e14f7fea62e5e9ececf460acc57f28ebbbbff4733ba6c5c1cbe0ade3a9570",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-identifier-prefix",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "9b040d84cdc8e3a19b683e287da46abe604bf5fe59bd45d02e9546d222e8040c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-source-file",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "01d3e52e4a7807cfddf0cbef7f47dec4dfac9411bbd9ed0de07b1462b76e6113",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-revision",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "be9f09dfe802c580addd49c53b2c4095e064a4c95c2bea128fd14bdc929e6bc9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-document-boundary",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "3bcda796a7370a15f1faac52289d67f369d2b004d7aab5c836158843c1f5daa1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-preceding-anchor",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "0a8002b73deeffba0edc99b7883e272a6a15e066cc215d3dfa453949ba1daa71",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-latest-anchor",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "2225e4275534c71bfde41f43a501c2c7960e17dc9e3931f1ac144685db74a130",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-recursive-alias",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "f608c7c6e25fd7881d5a6c1d2509b7f3f75b3abf3a2c63915888ca43ac83905a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-target-tag",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "0420ff076d38fb9f84d6dba1ef8be626248969d839965833ba9218d134e20a98",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-source-tag",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "a3cc84dc5fde022cfb8ffd742f6005d87b422086de7fd92f6bc37f00ca4bfa1a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-merge-alias",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "e1f977a38030377a721834de275c1c612b7e71963ea5dd0a6e7d49bd6c56a7e3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-anchor-owner",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "ec13366141e8f8b1c877402daa7a3d7f65fd70803831b5700c05a3ff53193759",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-alias-range",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "ebefe9cc5b39eafa963d5b05a08d7721aecb73af2d6757e59f8d13e37815ba79",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-anchor-name-boundary",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "9a9716f5dfb5604d2b4c377fe7b23119966e885a2f50e0b11ee1a4bcbe45df2e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-anchor-initializer",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "ba676357a8d7f51a4bf810ad63a34dbc11a1ce94441e7792f768fe31025ddb4e",
+          "mutantSha256": "a32c8620ede423139b860deec1086804c2548c513a8df83acf38d88f7a301304",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-whole-block-decision",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+          "mutantSha256": "e4d3c8e03cbd31580de0132d5d6814438e261e64da6bf50bac58a11316bbce52",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-whole-flow-decision",
+          "callback": "context-yaml selected bindings guard acceptance",
+          "callbackSha256": "c114096535ed3f195626c49aaf2c085c1de609194907b633b15fa6b5703d5cbf",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+          "mutantSha256": "43e3409bdb2cc57d3e775cd4b19addc73dd0922fa49fdca82f34663120d2643b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-depth",
+          "callback": "context-yaml empty acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "478ef38a481638b3d9c13e4249fe7528ded22063460b84db547dbcc685d7e465",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-roots-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "8e2fae17c7a4c5506df7b8a6e21de8e46bcca5f220d781ccf471f9f51d1b24f3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-counts-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "ebc9e3a868ac832486c179eca6e9eebb184a0041327d929223992f3d562b5e2f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-aliases-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "4b4f80374ed80ce6067ecb8ce8a50472ecbf87a9160b1718dc95edacf7f038fc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-references-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "464835cf0b89463f7d77d7ba40cce56105a347c74e868e0bbe49eff1dee5c191",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-omissions-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "102d7df149e78be9fddbb99f8a93bb4c6882cc72ea12edda4121f5fb2a990bb8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-closure-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "e0c0b08f63e59982c6b295ef571b68c74397d008eadadb2c59dcf43e1a17fa2a",
+          "mutantSha256": "a59b73348ff9e9e97d0e610f8718f91dff0b17f47e40c36d1532c1119ba604bd",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "yaml-grammar-intake",
+          "callback": "context-yaml stale acceptance",
+          "callbackSha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5",
+          "fixtureSha256": "4ba20f01eef5f3eed3bd218995ff2c541f2e5cd62c6ac8f4b8ac6b4895c58470",
+          "sourceSha256": "eebf32844368e260d0723108c6b629bb72a31e1e95a8e7c82412b1f00bdcc262",
+          "mutantSha256": "b8d9013d3f0db529a33e39bc870cf40be12f70a526ddacd91bdf29ab90639853",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "a5d9688b0bcaad59dcda6d1bde177e50c9ef3a31d33e8a22fe89cb162a9c0736",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-yaml",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-yaml broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 329.109442,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-yaml fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52.632157,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-yaml near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 154.142532,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-yaml prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 170.194255,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-yaml stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 63.539182,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-yaml empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 152.44573,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-yaml privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2314.346407,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-yaml lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4287.993511,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-yaml installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.440461,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-yaml broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-yaml installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:acede50a4e6d50c288eaffdbf15d9dafd53b914cdaf4be15cc842bcf2cf5c1e4",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "runtimeToolBytePins": [
+    {
+      "file": "/usr/local/bin/node",
+      "bytes": 126241888,
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    {
+      "file": "/usr/bin/git",
+      "bytes": 4081272,
+      "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+    }
+  ],
+  "artifactPreparation": {
+    "image": "sha256:acede50a4e6d50c288eaffdbf15d9dafd53b914cdaf4be15cc842bcf2cf5c1e4",
+    "nodeBase": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "gitBase": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+    "dockerfile": {
+      "bytes": 669,
+      "sha256": "29e81d7287b180eb8d9376f2fc5ce6899c8fc25bea0d647951f254339c2eafd8"
+    },
+    "buildNetwork": "none",
+    "publisherAndLicenseClosureVerified": false
+  },
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "a5d9688b0bcaad59dcda6d1bde177e50c9ef3a31d33e8a22fe89cb162a9c0736",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-yaml",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5d929f72d48199555444edff5a5ca7befe06677332894dbba874a600a99ba4b5"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-yaml broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 329.109442,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-yaml fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 52.632157,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-yaml near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 154.142532,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-yaml prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 170.194255,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-yaml stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 63.539182,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-yaml empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 152.44573,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-yaml privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2314.346407,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-yaml lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4287.993511,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-yaml installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.440461,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-yaml broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-yaml installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:acede50a4e6d50c288eaffdbf15d9dafd53b914cdaf4be15cc842bcf2cf5c1e4",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "82e3860972bc2aa3abe0cf8cf5ff11717b6b1b3070dd3f5f7a050d5c28d51b45",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "294b917bebc7c0b7f94f59ed5548fe6ad6f53d52398ac11474eb6ab97dea08d2",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "cf6a3ab8d937a4f077887b567e0fb610d0bd287650e61ff09deab69a02d360bc",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "legacySelectedSyntaxGuards": {
+    "scope": "Original synthetic captured-syntax controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "whole-function-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "66d06cff43886c6f9c02952267e68b5d0be9810859937611fbe75baf921583c6",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "decision-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "1ad177aa36c016e7b73b83f56cb9df6b54896ae81ce4c3b4ac67aed1aaea74aa",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "default-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "56cd5e9e2d61cfa3fdbc32c84e47f31bdfce7a9937af58d1221712379b77a939",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "grammar-byte-binding",
+        "callback": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "93ddf5e142b18935345a06266daea7348b6bf540543f5a31d4f96d6b81c9dfeb",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "base-function-retention",
+        "callback": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "60a69621e89a03e872266bb0238d2c11b8cb7f5eb623bdd99b693fa3342c38f9",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1182,
+      "pass": 848,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 334,
+      "todo": 0
+    },
+    "durationMs": 187752.788,
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "pinnedSupplementaryYamlRuntimeNotSelectedOnHost": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "b34e33bfea6925a9af4e7d617cf61f5f585c9990bf385aab4d5475476020ccad"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

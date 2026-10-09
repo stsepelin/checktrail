@@ -305,3 +305,5 @@ Context version 20 adds the bounded selected C declaration and quoted-header can
 Context version 21 adds the bounded selected C++ declarations, defaults, flat namespaces and quoted-header candidates described in [REVIEW-CPP-CONTEXT.md](REVIEW-CPP-CONTEXT.md). Capture stays source-only, with unknown native resolution and full impact fallback.
 
 Context version 22 adds the selected HCL declaration, traversal and module-file candidates described in [REVIEW-HCL-CONTEXT.md](REVIEW-HCL-CONTEXT.md). Reverse declaration dependencies use source addresses without synthesized runtime callers; capture stays source-only with full impact fallback.
+
+Context version 23 adds the captured YAML anchors, aliases and dependency source candidates described in [REVIEW-YAML-CONTEXT.md](REVIEW-YAML-CONTEXT.md). Capture executes no deserializer or consumer and synthesizes no runtime callers; full impact fallback remains mandatory.

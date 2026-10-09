@@ -39,6 +39,7 @@ assert.ok(
     "context-c",
     "context-cpp",
     "context-hcl",
+    "context-yaml",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -73,6 +74,10 @@ if (profile === "context-cpp")
 if (profile === "context-hcl") {
   process.env.CHECKTRAIL_CONTEXT_HCL_INSTALLED = "1";
   process.env.CHECKTRAIL_CONTEXT_HCL_NATIVE = "1";
+}
+if (profile === "context-yaml") {
+  process.env.CHECKTRAIL_CONTEXT_YAML_INSTALLED = "1";
+  process.env.CHECKTRAIL_CONTEXT_YAML_NATIVE = "1";
 }
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
@@ -125,6 +130,8 @@ try {
     "gate-context-c.test.js",
     "gate-context-cpp.test.js",
     "gate-context-hcl.test.js",
+    "gate-context-yaml.test.js",
+    "review-yaml-boundaries-fixture.js",
     "review-hcl-boundaries-fixture.js",
     "review-cpp-boundaries-fixture.js",
     "review-c-boundaries-fixture.js",
@@ -265,6 +272,14 @@ try {
           ...(profile === "context-cpp"
             ? ["--env", "CHECKTRAIL_CONTEXT_CPP_INSTALLED=1"]
             : []),
+          ...(profile === "context-yaml"
+            ? [
+                "--env",
+                "CHECKTRAIL_CONTEXT_YAML_INSTALLED=1",
+                "--env",
+                "CHECKTRAIL_CONTEXT_YAML_NATIVE=1",
+              ]
+            : []),
           ...(profile === "context-hcl"
             ? [
                 "--env",
@@ -305,6 +320,7 @@ try {
                   "context-ruby",
                   "context-vb",
                   "context-hcl",
+                  "context-yaml",
                 ].includes(profile)
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",

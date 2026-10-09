@@ -914,6 +914,87 @@ export const reviewHclBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(24),
   }),
 });
+export const reviewYamlBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("yaml-selected-bindings-v1"),
+  yamlBindings: z.strictObject({
+    moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
+    scope: z.literal("selected-captured-yaml-source"),
+    state: z.enum(["collected", "partial"]),
+    dependencyDepthLimit: z.literal(8),
+    anchors: z
+      .array(
+        z.strictObject({
+          ...range,
+          name: z.string().min(1).max(512).nullable(),
+          declarationId: id,
+          documentStart: z.number().int().nonnegative(),
+          documentEnd: z.number().int().positive(),
+          tagged: z.boolean(),
+        }),
+      )
+      .max(2048),
+    aliases: z
+      .array(
+        z.strictObject({
+          ...range,
+          name: z.string().min(1).max(512).nullable(),
+          ownerDeclarationId: id.nullable(),
+          targetDeclarationId: id.nullable(),
+          documentStart: z.number().int().nonnegative(),
+          documentEnd: z.number().int().positive(),
+          resolution: z.enum([
+            "selected-anchor",
+            "no-prior-anchor",
+            "unsupported-alias",
+            "recursive-alias",
+          ]),
+        }),
+      )
+      .max(8192),
+    dependencyEdges: z
+      .array(
+        z.strictObject({
+          fromDeclarationId: id,
+          targetDeclarationId: id,
+          depth: z.number().int().min(1).max(8),
+        }),
+      )
+      .max(4096),
+    counts: z.strictObject({
+      anchors: z.number().int().nonnegative(),
+      aliases: z.number().int().nonnegative(),
+      resolvedAliases: z.number().int().nonnegative(),
+      unresolvedAliases: z.number().int().nonnegative(),
+    }),
+    fullImpactFallback: z.literal(true),
+    nativeSerializationVerified: z.literal(false),
+    consumerSemanticsVerified: z.literal(false),
+    mergeSemanticsVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "consumer-semantics-unknown",
+          "native-serialization-unknown",
+          "scalar-resolution-unknown",
+          "merge-semantics-unknown",
+          "build-selection-unknown",
+          "tag-semantics-unknown",
+          "unsupported-anchor-name",
+          "unsupported-alias",
+          "unresolved-alias",
+          "recursive-alias-unknown",
+          "outside-module-roots",
+          "partial-syntax",
+          "non-yaml-source",
+          "no-selected-declarations",
+          "depth-limit",
+        ]),
+      )
+      .max(24),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
@@ -932,5 +1013,6 @@ export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewCBehaviorSchema,
   reviewCppBehaviorSchema,
   reviewHclBehaviorSchema,
+  reviewYamlBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;
