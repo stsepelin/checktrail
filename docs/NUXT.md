@@ -121,3 +121,8 @@ subsequent container/package checks used the restored code.
 References: [Nuxt hooks](https://nuxt.com/docs/4.x/api/advanced/hooks),
 [Nuxt programmatic APIs](https://nuxt.com/docs/4.x/api/kit/programmatic).
 The pinned installed framework and native tests determine this profile's behavior.
+
+Opt-in schema version 2 adds the [selected assembly contract](NUXT-ASSEMBLY.md):
+native Nitro handlers, H3/app middleware invocations, runtime config boundaries,
+generated server API consumer types and controlled SSR/API responses. Version 1
+retains the route inventory described here. Complete closure and Gate A remain open.

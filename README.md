@@ -157,7 +157,10 @@ TypeScript 6.0.3 is exercised in integration tests; other versions are unverifie
 complete record participation in declared URL probes; see the
 [Vue Router profile](docs/VUE-ROUTER.md) for versions and projection limits.
 `javascript.nuxt-runtime` builds a fresh SSR testing assembly and checks native
-router capture after in-process requests; see the [Nuxt profile](docs/NUXT.md).
+router capture after in-process requests. Opt-in version 2 also verifies native
+server handlers, middleware invocations, runtime config boundaries, generated API
+consumer types and controlled responses. See the [Nuxt profile](docs/NUXT.md) and
+[assembly contracts](docs/NUXT-ASSEMBLY.md) for versions and scope limits.
 `python.fastapi-routes` captures a configured FastAPI application's native routes.
 Opt-in configuration version 2 also checks declared mounted/hosted assembly,
 security dependencies, response models, middleware/lifespan order and controlled

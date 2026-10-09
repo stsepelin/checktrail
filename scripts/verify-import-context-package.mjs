@@ -43,6 +43,7 @@ assert.ok(
     "assembly-vue-router",
     "assembly-fastapi",
     "assembly-django",
+    "assembly-nuxt",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -82,6 +83,8 @@ if (profile === "context-yaml") {
   process.env.CHECKTRAIL_CONTEXT_YAML_INSTALLED = "1";
   process.env.CHECKTRAIL_CONTEXT_YAML_NATIVE = "1";
 }
+if (profile === "assembly-nuxt")
+  process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-fastapi")
@@ -140,6 +143,8 @@ try {
     "gate-context-cpp.test.js",
     "gate-context-hcl.test.js",
     "gate-context-yaml.test.js",
+    "gate-assembly-nuxt.test.js",
+    "review-nuxt-assembly-fixture.js",
     "gate-assembly-django.test.js",
     "review-django-assembly-fixture.js",
     "gate-assembly-fastapi.test.js",
@@ -167,6 +172,20 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "assembly-nuxt") {
+    const prepared = path.join(consumer, ".checktrail/nuxt-tools/node_modules");
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      path.join(
+        repository,
+        ".checktrail",
+        process.platform === "darwin" ? "nuxt-linux-tools" : "nuxt-tools",
+        "node_modules",
+      ),
+      prepared,
+      { recursive: true },
+    );
+  }
   if (profile === "assembly-vue-router") {
     const prepared = path.join(
       consumer,
@@ -258,6 +277,9 @@ try {
           ...(profile === "assembly-fastapi"
             ? ["--env", "CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED=1"]
             : []),
+          ...(profile === "assembly-nuxt"
+            ? ["--env", "CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED=1"]
+            : []),
           ...(profile === "assembly-django"
             ? ["--env", "CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED=1"]
             : []),
@@ -343,27 +365,29 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          [
-            "context-go",
-            "context-rust",
-            "context-swift",
-            "context-c",
-            "context-cpp",
-          ].includes(profile)
-            ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+          profile === "assembly-nuxt"
+            ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
             : [
-                  "context-scala",
-                  "context-csharp",
-                  "context-ruby",
-                  "context-vb",
-                  "context-hcl",
-                  "context-yaml",
-                  "assembly-vue-router",
-                  "assembly-fastapi",
-                  "assembly-django",
+                  "context-go",
+                  "context-rust",
+                  "context-swift",
+                  "context-c",
+                  "context-cpp",
                 ].includes(profile)
-              ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
-              : "/tmp:rw,nosuid,nodev,size=256m",
+              ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+              : [
+                    "context-scala",
+                    "context-csharp",
+                    "context-ruby",
+                    "context-vb",
+                    "context-hcl",
+                    "context-yaml",
+                    "assembly-vue-router",
+                    "assembly-fastapi",
+                    "assembly-django",
+                  ].includes(profile)
+                ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
+                : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
             ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
             : []),
@@ -401,13 +425,14 @@ try {
             network: "none",
             consumerMount: "readonly",
             rootFilesystemReadonly: true,
-            temporaryFilesystemMiB: 256,
+            temporaryFilesystemMiB: profile === "assembly-nuxt" ? 1024 : 256,
             temporaryFilesystemExecutable: [
               "context-go",
               "context-rust",
               "context-swift",
               "context-c",
               "context-cpp",
+              "assembly-nuxt",
             ].includes(profile),
           }
         : {

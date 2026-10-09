@@ -641,7 +641,7 @@ test("required profile batches execute shared files once and preserve all obliga
   assert.equal(suite.status, 0, suite.stderr);
   assert.equal(JSON.parse(suite.stdout).optionalSkipped, 1);
   assert.equal(JSON.parse(suite.stdout).required, 2);
-  assert.equal(JSON.parse(suite.stdout).timeoutMs, 300000);
+  assert.equal(JSON.parse(suite.stdout).timeoutMs, 600000);
   for (const selection of [
     [],
     ["--full-suite"],

@@ -30,35 +30,36 @@ for (const profile of selection) {
   );
 }
 // node:test applies this timeout to the whole selected file, not each callback.
-const timeoutMs = selection.includes("dotnet-method")
-  ? 600000
-  : fullSuite ||
-      selection.some((profile) =>
-        [
-          "dotnet-build",
-          "gradle",
-          "detekt",
-          "kotlin",
-          "scala",
-          "maven",
-          "dotnet-test",
-          "dotnet-format",
-          "dotnet-generated",
-          "review-benchmark-multi",
-          "ruby-tools",
-          "ruby-tools-rubocop",
-          "ruby-tools-assertions",
-          "ruby-tools-evidence",
-          "ruby-tools-lifecycle",
-          "ruby-tools-defaults",
-          "ruby-tools-surfaces",
-          "ruby-tools-cancellation",
-          "swift-tools",
-          "go-extensions",
-        ].includes(profile),
-      )
-    ? 300000
-    : 120000;
+const timeoutMs =
+  fullSuite || selection.includes("dotnet-method")
+    ? 600000
+    : selection.some((profile) =>
+          [
+            "dotnet-build",
+            "gradle",
+            "detekt",
+            "kotlin",
+            "scala",
+            "maven",
+            "dotnet-test",
+            "dotnet-format",
+            "dotnet-generated",
+            "review-benchmark-multi",
+            "ruby-tools",
+            "ruby-tools-rubocop",
+            "ruby-tools-assertions",
+            "ruby-tools-evidence",
+            "ruby-tools-lifecycle",
+            "ruby-tools-defaults",
+            "ruby-tools-surfaces",
+            "ruby-tools-cancellation",
+            "swift-tools",
+            "go-extensions",
+            "assembly-nuxt",
+          ].includes(profile),
+        )
+      ? 300000
+      : 120000;
 // Retain the single-profile report used by installed acceptance harnesses.
 const additionalFiles = fullSuite
   ? (await readdir(new URL("../dist/test/", import.meta.url)))
