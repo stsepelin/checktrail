@@ -1,0 +1,582 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-09T21:02:59.713539+00:00",
+  "sourceBaseCommit": "2f1e6a29d5e39d4c62e9be6e9a4727b2879163de",
+  "sourceFiles": {
+    "scripts/verify-task-store-container.mjs": "d5958fe3adf025e88a38234418c816e5e45175c8f120d2ef5df811445ce469b5",
+    ".github/workflows/ci.yml": "a732d350f31fe88608e531940e07984e42b8df744efe5b538e7ff66483eab5b6"
+  },
+  "observedFailure": {
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/37982016155/job/113994745710",
+    "cause": "Docker Hub rejected the pinned Node Alpine pull at its unauthenticated rate limit, before native task acceptance began.",
+    "projectTestFailureObserved": false
+  },
+  "repair": {
+    "taskStorageImage": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "installedMcpTasksImage": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "originalImageIndexDigest": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "mirrorImageIndexDigest": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "samePinnedIndexVerifiedByActualPull": true,
+    "runtimeVersionChanged": false,
+    "node": "v22.23.2",
+    "platform": "linux",
+    "architecture": "arm64",
+    "mirrorDocumentation": "https://www.docker.com/blog/news-from-aws-reinvent-docker-official-images-on-amazon-ecr-public/"
+  },
+  "nativeTaskStorage": {
+    "timeoutMs": 120000,
+    "profile": "tasks",
+    "fileWorkerLimit": 1,
+    "passed": 17,
+    "required": 17,
+    "problems": [],
+    "complete": true,
+    "ledger": {
+      "schemaVersion": 1,
+      "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+      "maxTerminalEvents": 4096,
+      "terminalEventCount": 17,
+      "truncated": false,
+      "files": [
+        {
+          "id": "file-1",
+          "before": {
+            "state": "present",
+            "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+          },
+          "stable": true
+        },
+        {
+          "id": "file-2",
+          "before": {
+            "state": "present",
+            "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+          },
+          "after": {
+            "state": "present",
+            "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+          },
+          "stable": true
+        }
+      ],
+      "events": [
+        {
+          "sequence": 1,
+          "fileId": "file-1",
+          "name": "task store retains native validation results through reopening without retaining summary source",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 102.052696,
+          "required": true
+        },
+        {
+          "sequence": 2,
+          "fileId": "file-1",
+          "name": "task stores reject root and disclosure changes and retain detailed results only when configured",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 21.698213,
+          "required": true
+        },
+        {
+          "sequence": 3,
+          "fileId": "file-1",
+          "name": "task cancellation reserves the transition and cannot be overwritten by late completion",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 34.454165,
+          "required": true
+        },
+        {
+          "sequence": 4,
+          "fileId": "file-1",
+          "name": "task store rejects concurrent owners in this process and another process without disrupting work",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 212.434567,
+          "required": true
+        },
+        {
+          "sequence": 5,
+          "fileId": "file-1",
+          "name": "task store recovers after a real owner SIGKILL and never resumes or passes unfinished tasks",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 236.312293,
+          "required": true
+        },
+        {
+          "sequence": 6,
+          "fileId": "file-1",
+          "name": "SQLite rolls back an interrupted write before task-store recovery",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 47.162283,
+          "required": true
+        },
+        {
+          "sequence": 7,
+          "fileId": "file-1",
+          "name": "task retention enforces capacity, expiry, result bytes and source identity",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 183.187849,
+          "required": true
+        },
+        {
+          "sequence": 8,
+          "fileId": "file-1",
+          "name": "task store refuses unsafe directories, links, foreign databases and damaged results",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 63.286255,
+          "required": true
+        },
+        {
+          "sequence": 9,
+          "fileId": "file-1",
+          "name": "task store bounds UTF-8 results and total retained data with private file modes",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 559.263315,
+          "required": true
+        },
+        {
+          "sequence": 10,
+          "fileId": "file-2",
+          "name": "durable validation tasks preserve native passed, failed and incomplete outcomes through reopening",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 639.231962,
+          "required": true
+        },
+        {
+          "sequence": 11,
+          "fileId": "file-2",
+          "name": "durable task startup does not grant execution, load project code or inherit Node preloads",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 195.749008,
+          "required": true
+        },
+        {
+          "sequence": 12,
+          "fileId": "file-2",
+          "name": "durable task cancel stops a live process group before recording cancellation or releasing ownership",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2574.961081,
+          "required": true
+        },
+        {
+          "sequence": 13,
+          "fileId": "file-2",
+          "name": "durable task close stops a live process group before recording cancellation or releasing ownership",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2502.018477,
+          "required": true
+        },
+        {
+          "sequence": 14,
+          "fileId": "file-2",
+          "name": "durable task parent SIGKILL triggers worker cleanup and retains cancellation across restart",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 2375.472258,
+          "required": true
+        },
+        {
+          "sequence": 15,
+          "fileId": "file-2",
+          "name": "durable task timeout retains incomplete native evidence rather than a passing result",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 3011.291325,
+          "required": true
+        },
+        {
+          "sequence": 16,
+          "fileId": "file-2",
+          "name": "oversized durable detail becomes an explicit tool error while the same native run fits summary mode",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 606.229764,
+          "required": true
+        },
+        {
+          "sequence": 17,
+          "fileId": "file-2",
+          "name": "durable task close during planning rejects new work and releases the store",
+          "nameTruncated": false,
+          "kind": "test",
+          "outcome": "passed",
+          "durationMs": 196.161136,
+          "required": true
+        }
+      ],
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "task store retains native validation results through reopening without retaining summary source",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task stores reject root and disclosure changes and retain detailed results only when configured",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task cancellation reserves the transition and cannot be overwritten by late completion",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task store rejects concurrent owners in this process and another process without disrupting work",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task store recovers after a real owner SIGKILL and never resumes or passes unfinished tasks",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-1",
+          "name": "SQLite rolls back an interrupted write before task-store recovery",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task retention enforces capacity, expiry, result bytes and source identity",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task store refuses unsafe directories, links, foreign databases and damaged results",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-1",
+          "name": "task store bounds UTF-8 results and total retained data with private file modes",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable validation tasks preserve native passed, failed and incomplete outcomes through reopening",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task startup does not grant execution, load project code or inherit Node preloads",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task parent SIGKILL triggers worker cleanup and retains cancellation across restart",
+          "outcome": "passed",
+          "terminalSequences": [14]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task timeout retains incomplete native evidence rather than a passing result",
+          "outcome": "passed",
+          "terminalSequences": [15]
+        },
+        {
+          "fileId": "file-2",
+          "name": "oversized durable detail becomes an explicit tool error while the same native run fits summary mode",
+          "outcome": "passed",
+          "terminalSequences": [16]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task close during planning rejects new work and releases the store",
+          "outcome": "passed",
+          "terminalSequences": [17]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task cancel stops a live process group before recording cancellation or releasing ownership",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        },
+        {
+          "fileId": "file-2",
+          "name": "durable task close stops a live process group before recording cancellation or releasing ownership",
+          "outcome": "passed",
+          "terminalSequences": [13]
+        }
+      ]
+    }
+  },
+  "installedLibraryProbe": {
+    "durableWorker": "passed",
+    "installedLibrary": "passed",
+    "nativeValidation": "passed",
+    "reopen": "passed",
+    "interruption": "explicit-tool-error",
+    "mcpTasks": "not-evaluated-by-this-library-profile"
+  },
+  "installedMcpTasks": {
+    "tarballSha256": "0f5a919d0f0e9b66d8d935cb9745af85182afb2b25de0fb740e6f2afe665d9a4",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "mcp-tasks",
+      "fileWorkerLimit": 1,
+      "passed": 10,
+      "required": 10,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 10,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "685add167cacdc390ffe198c6390169d5d9e3cd75a00b60f549105205f658783"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 557.520301,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1133.021196,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1004.290818,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2775.203487,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3028.006758,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1132.690483,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 420.598636,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 458.199435,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2683.094685,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 549.365306,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks admission shares the ordinary native execution slot in both directions",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false,
+    "fullTasksConformanceClaimed": false
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1359,
+    "passed": 897,
+    "failed": 0,
+    "skipped": 462,
+    "cancelled": 0,
+    "diagnosticSha256": "0355ae1cb04d85bb3e99840286bd8e4704162e03da2f369db549761385afb614",
+    "skippedChecksClaimedPassing": false
+  },
+  "hostedCiAtRepairedHeadAccepted": false,
+  "wholeProvenanceAndLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

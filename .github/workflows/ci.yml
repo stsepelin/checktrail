@@ -214,7 +214,7 @@ jobs:
         run: node scripts/verify-task-store-container.mjs
       - name: Verify installed MCP Tasks lifecycle offline in Linux
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
-        run: CHECKTRAIL_TASKS_IMAGE=node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
+        run: CHECKTRAIL_TASKS_IMAGE=public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
 
   php-review:
     runs-on: ubuntu-latest
