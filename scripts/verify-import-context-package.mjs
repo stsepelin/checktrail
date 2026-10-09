@@ -29,6 +29,7 @@ assert.ok(
     "context-php",
     "context-rust",
     "context-java",
+    "context-kotlin",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -44,6 +45,8 @@ if (profile === "context-rust")
   process.env.CHECKTRAIL_CONTEXT_RUST_INSTALLED = "1";
 if (profile === "context-java")
   process.env.CHECKTRAIL_CONTEXT_JAVA_INSTALLED = "1";
+if (profile === "context-kotlin")
+  process.env.CHECKTRAIL_CONTEXT_KOTLIN_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -85,6 +88,8 @@ try {
     "gate-context-php.test.js",
     "gate-context-rust.test.js",
     "gate-context-java.test.js",
+    "gate-context-kotlin.test.js",
+    "review-kotlin-boundaries-fixture.js",
     "review-java-boundaries-fixture.js",
     "gate-host-session-readiness.test.js",
     "review-host-process-fixture.js",
@@ -190,6 +195,9 @@ try {
             : []),
           ...(profile === "context-java"
             ? ["--env", "CHECKTRAIL_CONTEXT_JAVA_INSTALLED=1"]
+            : []),
+          ...(profile === "context-kotlin"
+            ? ["--env", "CHECKTRAIL_CONTEXT_KOTLIN_INSTALLED=1"]
             : []),
           "--read-only",
           "--cpus",

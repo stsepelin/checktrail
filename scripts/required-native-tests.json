@@ -3476,5 +3476,43 @@
       "file": "dist/test/gate-context-java.test.js",
       "name": "context-java installed acceptance"
     }
+  ],
+  "context-kotlin": [
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-kotlin.test.js",
+      "name": "context-kotlin installed acceptance"
+    }
   ]
 }
