@@ -1,3 +1,4 @@
+import { fastapiAssemblyEvidence } from "./fastapi-assembly-evidence.js";
 import { z } from "zod";
 import { runtimeInventorySchema } from "./runtime-inventory.js";
 import type { Check, CheckResult, ProcessResult } from "./types.js";
@@ -26,7 +27,9 @@ const attributesSchema = z.strictObject({
 export function fastapiEvidence(
   check: Check,
   processes: ProcessResult[],
-): Pick<CheckResult, "status" | "reason" | "runtime"> {
+): Partial<CheckResult> {
+  if (check.commands[0]?.args[0] === "-I")
+    return fastapiAssemblyEvidence(check, processes);
   const incomplete = {
     status: "inconclusive" as const,
     reason:

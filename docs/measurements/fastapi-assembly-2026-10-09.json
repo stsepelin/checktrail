@@ -1,0 +1,1282 @@
+{
+  "schemaVersion": 1,
+  "profile": "assembly-fastapi",
+  "capturedAt": "2026-10-09T06:28:15.010452+00:00",
+  "sourceBaseCommit": "f43d6893e0f4df060993e270afb34d1e9be5aaf4",
+  "native": {
+    "runtime": {
+      "python": "3.12.13",
+      "packages": {
+        "fastapi": "0.141.1",
+        "starlette": "1.6.0",
+        "pydantic": "2.13.5"
+      },
+      "pythonBinary": {
+        "bytes": 67168,
+        "sha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b"
+      },
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "binary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      }
+    },
+    "legacy": {
+      "failed": 0,
+      "skipped": 0
+    },
+    "frameworks": {
+      "timeoutMs": 120000,
+      "profile": "frameworks",
+      "fileWorkerLimit": 1,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21.350165,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1489.643578,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2678.689459,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 33.431568,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1824.25489,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2256.145389,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 895.912184,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 932.250895,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          }
+        ]
+      }
+    },
+    "image": "checktrail-checktrail-gatea-fastapi-assembly-1009:public",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "assembly-fastapi",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "assembly-fastapi broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 570.71372,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "assembly-fastapi fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 544.964904,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "assembly-fastapi near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1085.815784,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "assembly-fastapi prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 326.11472,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "assembly-fastapi stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1098.106563,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "assembly-fastapi empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2600.691758,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "assembly-fastapi privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4270.840507,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "assembly-fastapi lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5975.624829,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "assembly-fastapi installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22909.999201,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-fastapi installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "cachePreparation": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "guards": {
+      "scope": "Original synthetic FastAPI assembly controls; selected byte-pinned native runtime; no inference or field evaluation",
+      "controls": [
+        {
+          "id": "request-server-port",
+          "callback": "assembly-fastapi request server port guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "e0005501418f1155282070aabbe87564ce24aea0f61d0d881857b9a3ec89e17d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-fingerprint",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "515dc1db69d318596af92c34fec4089b4157c6c28f11e2af9ef1796c6be9b58f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-name",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "bddbb480ffdafa841e353b9bc38cad167530784172317acc8f48722802cdb31d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-version",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "f7d735a0994345bbe6416fdf2bd3601b8423d03891c175a028af5d9cc8fe4766",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly-name",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "ca323e77597bb5bc0175bd67363cf861170562b312fca825544d9a5630b40d3a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly-environment",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "40ad9f36f5e6ca63da469c836cd5be84fee5d558b390568f7bdbae76e64fc0bf",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-request-count",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "556f2839c9277c46e52e94a194fd70a89cd875f97f1956f2a5f6eeffdf5d6aa2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-order",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "0fcf37db5f337afd6489542559766807c426c5b280e1811f65866a69252f4572",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-kind",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "a48e30f0666e5e499afcd7167d7476e81d0ab1b2ade1dc1c17f53156f948ff05",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-counters",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "b9b048127f3b30bdb45927a5e4eae5f4d62e1af4464090f8d8095f779598c10b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "entry-key",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "d3a11ba568bcc9c50673cfb463058e1823945d1266d1f68cfaa12f4703fbdd66",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "application-count",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "4aec2eeb07b3448e42539ce5ce96b8c2b58bc84ef3acd9105d3577439bfdd5e7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "route-counters",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "f65be4e8b828744f4f6c9b3550acd428ba281b99778bc36969c0a9596469cdb7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-completeness",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "99c6696cc6a6717d7b3ada31f2b201d41337393ed7aa1713f54e9d967bebf9dd",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "request-input-identity",
+          "callback": "assembly-fastapi stale acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "7f1bf9bdb7ff65d2185353260fcd433aaeacd4d79afe0e7c23c34b882f017037",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "routes-contract",
+          "callback": "assembly-fastapi declared registration guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "3f5b28fe7f82ef4abb9d7cf041bb0f7a53992a0e8b807d9dd2b3b2cf71cd6f2b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "middleware-contract",
+          "callback": "assembly-fastapi broken acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "19bd436d77a5176d99e283a2af39094c726f98aec2802b3156146df30ac0de24",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "lifespan-contract",
+          "callback": "assembly-fastapi declared registration guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "4de2c6afb86362d1e7cab89b4d62be8a8bd1b5fad0545611456e65b1b2a20086",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "bindings-contract",
+          "callback": "assembly-fastapi declared registration guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "b3b0b05ba942528c875a6745557bbf9c9a2a046ea34d303c92a3ed900956a26b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "request-contract",
+          "callback": "assembly-fastapi broken acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "7480cee20e2b1d6df0c7f3cc76f6dcbefd478644f5a195d9ef870ca849528fa0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "http-websocket-boundary",
+          "callback": "assembly-fastapi protocol method guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a",
+          "mutantSha256": "8d28f1699636d7f3ffb45bedfae54aa380229be86f773815380af046e3da9d0a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "version-before-project",
+          "callback": "assembly-fastapi prerequisite acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "413aa6e71e88fa81599f4db1780942aa7f338de5b0fe78e583fceb1def54dfff",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "bytes-before-project",
+          "callback": "assembly-fastapi prerequisite acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "d5396a2204bc5b845a3f6e949bc199f297d1bbbbe3fc1db565e60210e614ff38",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "bytecode-cache-prefix",
+          "callback": "assembly-fastapi isolated bootstrap guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "f0160f7c73caea834278bc6f87813745034a6b8c16028b392f74bc7e83ae6669",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "isolated-tool-probes",
+          "callback": "assembly-fastapi isolated bootstrap guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "c8fa82b16df67e994444fe7429bd408c0b1704d5fc0d8714830d578016171571",
+          "mutantSha256": "3dbd1e895bdb373ecb93c951358a87017b79ed02f7743c4c293f23ad0e4aba6e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "route-object-identity",
+          "callback": "assembly-fastapi route identity drift guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "71eb9d30f80694698ecb4f77e4dfa6199857300911e962dfb19b299c6e23d050",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "middleware-object-identity",
+          "callback": "assembly-fastapi middleware identity drift guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "a9ef3ec9d5d6e777c49d46c0582af7073624716f994a1b606592902568747322",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "merged-lifespan",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "8f3e162d886753be94f61b76f51b79a47aee468ec88a1e7f387784d72c4b196a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "security-scope-projection",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "16ffe7be10e5ad1db803e3b9243bbaaaa88f41ae61c741dd293ab4ba31315323",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "dependency-caching-projection",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "ecc746e0bc3f8b217a880b745cb9f5019af43b64aa3aa9f4b2493e0b91e065e2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "model-projection",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "6a63582c1a0a8eabb8d2122810e4ac97e6b59a9a037a8574a39df3410db79d0d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "override-projection",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "0b8714f88b0c7b9de1897f18cf38e3ea4c7f5a8a85948f95cc7fad4a99a8e2f2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "middleware-options-projection",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "8e8c13502f138ea70f9a558d9fb2886d87706dac9ffc590f5d377bbc7d4b7d2d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "lifespan-state",
+          "callback": "assembly-fastapi fixed acceptance",
+          "callbackSha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "2cc7bd52b6999f2f66e74a1fcb3a8540a9ede050af1227f56b50d4c63b82c676",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "complete-websocket-response",
+          "callback": "assembly-fastapi incomplete native response guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "bddd2546dd86a4329663c5222009ad14a19fe640d54301b6fbd0e0fda44f29b4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "duplicate-websocket-accept",
+          "callback": "assembly-fastapi incomplete native response guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "31f9d459830c51ec69846f0a2cb0545ada780ff8997634b302809195a6ce6a52",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "whole-hierarchy-preflight",
+          "callback": "assembly-fastapi hierarchy budget guard acceptance",
+          "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+          "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+          "sourceSha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6",
+          "mutantSha256": "8d5a1ac8d3c06ba0a17326ab597ab8c5d70e930ada7b61d7a051ad8a6d9c4598",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "supplemental": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "080ae2fd672ce067f730c4b25dafa49f44fefbb43ea2bab4663f5bd87ef0e133",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "assembly-fastapi",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "assembly-fastapi broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 557.580561,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "assembly-fastapi fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 538.474658,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "assembly-fastapi near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1071.593618,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "assembly-fastapi prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 318.302384,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "assembly-fastapi stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1081.909595,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "assembly-fastapi empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2561.748951,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "assembly-fastapi privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4261.483497,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "assembly-fastapi lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5958.05019,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "assembly-fastapi installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.540211,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-fastapi installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:e3eab6709eca4601a1fd0c7193ac0d0b444f9c622c741deb28810b3a6047ad39",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "sourceByteBindings": [
+    {
+      "file": "src/fastapi.ts",
+      "bytes": 4022,
+      "sha256": "ce02785270b180abdb5170212882a3ba5593e7889402a788d3f03a421f19c2df"
+    },
+    {
+      "file": "src/fastapi-evidence.ts",
+      "bytes": 5185,
+      "sha256": "47bbd0105e5ba4c9e6f72cc5e42f5c5f85b265265d25cc62c6d704fbf6d7bee0"
+    },
+    {
+      "file": "src/fastapi-assembly-runner.ts",
+      "bytes": 19062,
+      "sha256": "750089884e61d3f069654f0a484dbe4d747bc48f7dca1e37ca4d99900fe6b0e1"
+    },
+    {
+      "file": "src/fastapi-assembly-evidence.ts",
+      "bytes": 10987,
+      "sha256": "fb4f5af1fd6949c35e6c329ef2a9e3638d8e93a65d41d5238e3bd5ed68ef7f0d"
+    },
+    {
+      "file": "src/fastapi-assembly-runtime-pins.ts",
+      "bytes": 1622,
+      "sha256": "5ffdd6f8b4f25181e4a6648c1ced9f1fdbc2d4ff0e3decce170081c9f81ff024"
+    },
+    {
+      "file": "src/fastapi-assembly-schema.ts",
+      "bytes": 3342,
+      "sha256": "78bb799f707c568b78f063ca79715c4a7954970e08c0ceb4790bee3437abe405"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "bytes": 23629,
+      "sha256": "62ec5c62ec6e409430b01c71b32cd052d0e8e1a4f4bd39e8016c7078a8c32c55"
+    },
+    {
+      "file": "test/gate-assembly-fastapi.test.ts",
+      "bytes": 19614,
+      "sha256": "a0b2192fee00e242853bdffa912b48838f8cc02e69360031ab2e322d1600fa22"
+    },
+    {
+      "file": "test/review-fastapi-assembly-fixture.ts",
+      "bytes": 22006,
+      "sha256": "502e152092a18deda5d0fb42ecbe2dfbf953dc336599958345a8182d5496dc9f"
+    },
+    {
+      "file": "test/review-fastapi-assembly-guards.test.ts",
+      "bytes": 11335,
+      "sha256": "a4c63bc869d530dd0699b2373bf09480bf058edbecf3483c86692229d7e71765"
+    },
+    {
+      "file": "test/schemas.test.ts",
+      "bytes": 17615,
+      "sha256": "db9456b1c083daec8dcaf9aea05af8639b1875e528ec087969437863553eb580"
+    },
+    {
+      "file": "scripts/verify-fastapi-assembly-container.mjs",
+      "bytes": 5660,
+      "sha256": "a8add137397a0cce10483f0c7cb35d89460d8d04b17a040a71d9cf7b53535d59"
+    },
+    {
+      "file": "scripts/verify-fastapi-assembly-guards.mjs",
+      "bytes": 16107,
+      "sha256": "502ad09b7f2fe33632e27415b87dc82d8477f00a17a9874130fbb1cf6ce6865d"
+    },
+    {
+      "file": "scripts/prepare-fastapi-assembly-tools.mjs",
+      "bytes": 1699,
+      "sha256": "30978253f34df3f51e4ad36dedac98e2798076ed75f1622cedd993f24b5fb8dd"
+    },
+    {
+      "file": "scripts/fastapi-assembly-tools.Dockerfile",
+      "bytes": 903,
+      "sha256": "2b13335ba12abfdaf030f09db5eefd06ece133a39cb8fdf328e84a50c17048da"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 13964,
+      "sha256": "bf5303f2a636971629e72703b4c39401dd6442be5365ff3b2358c57c6e101f6e"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 162960,
+      "sha256": "f4cd60e9cebb4f67c749b27199da660faeb7ad467350bd58b08016288ba7e957"
+    },
+    {
+      "file": "schemas/fastapi-config.schema.json",
+      "bytes": 9607,
+      "sha256": "a68a653370d817edd56a70c6cd4fca7fec0c70ea1907581b6b2b81f463edc0a7"
+    },
+    {
+      "file": "package-lock.json",
+      "bytes": 258687,
+      "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+    },
+    {
+      "file": "dist/src/fastapi.js",
+      "bytes": 4070,
+      "sha256": "54de37702eada530359fcd9664da2c28367ef9e6f14f478631d563670d6db8f7"
+    },
+    {
+      "file": "dist/src/fastapi-evidence.js",
+      "bytes": 5502,
+      "sha256": "a258334fb7e1ad91355e3e15209377a41dc2bff2aa9ac28a697641f7d7026fab"
+    },
+    {
+      "file": "dist/src/fastapi-assembly-runner.js",
+      "bytes": 19063,
+      "sha256": "d1916b0881767b01635fb5d6ec81670fdc3dc3ae97675466560b50a0c21962c6"
+    },
+    {
+      "file": "dist/src/fastapi-assembly-evidence.js",
+      "bytes": 11828,
+      "sha256": "14f513adc63061ae9f3f96966ed50f0f1633e216fc1712a20bf4fa7e6114467a"
+    },
+    {
+      "file": "dist/src/fastapi-assembly-runtime-pins.js",
+      "bytes": 1773,
+      "sha256": "9c7a317f1eaaf475ade701d73e1987bc242620c890dd9d3edcdb40d18b51f4d1"
+    },
+    {
+      "file": "dist/src/fastapi-assembly-schema.js",
+      "bytes": 3558,
+      "sha256": "a2188ccebdfc0f8d8076fca9e0eea2bd46351de2979593b247b5edf6619ab2dd"
+    },
+    {
+      "file": "dist/src/tool-versions.js",
+      "bytes": 25263,
+      "sha256": "c8fa82b16df67e994444fe7429bd408c0b1704d5fc0d8714830d578016171571"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "bytes": 19546,
+      "sha256": "045fe4f962ccc3d535fc0d68220c4c93d4ff1050896f1d3dc8789bd722efad1e"
+    },
+    {
+      "file": "dist/test/review-fastapi-assembly-fixture.js",
+      "bytes": 24449,
+      "sha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2"
+    },
+    {
+      "file": "dist/test/review-fastapi-assembly-guards.test.js",
+      "bytes": 10758,
+      "sha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8"
+    },
+    {
+      "file": "dist/test/schemas.test.js",
+      "bytes": 18128,
+      "sha256": "90110e52f3a786d1cf62b79a7064027684eb42f693c071973dc9d8d5cbefa392"
+    }
+  ],
+  "fullCheck": {
+    "tests": 1224,
+    "pass": 855,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 369,
+    "todo": 0,
+    "durationMs": 190740.37175
+  },
+  "fullCheckOptionalSkipsAreNotPasses": true,
+  "fullCheckPrecedesFixtureCommentCorrection": true,
+  "correctedFixtureBytesRecheckedByNativeAcceptance": true,
+  "typecheckAndDirectLintPassed": true,
+  "strictPublishedSchemas": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "workflowActionlintVersion": "1.7.12",
+  "workflowActionlintPassed": true,
+  "gateA": {
+    "implementedExtensions": 20,
+    "selectedExtensions": 51,
+    "pendingExtensions": 31,
+    "frozen": false,
+    "complete": false,
+    "acceptanceAssessed": false
+  },
+  "acceptedPackagePrecedesThisMeasurementRecord": true,
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "hostModelIsolationAssessed": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "unacceptedDevelopmentAttempts": [
+    "Lifecycle fixture initially changed the inventoried directory set; preallocated excluded artifact directory repaired this without weakening freshness.",
+    "CLI/MCP comparison initially included tool probe elapsed time; only timestamp/duration fields are normalized.",
+    "Supplemental bootstrap fixture exposed project shadowing in metadata probes; v2 probes now use isolated Python mode.",
+    "First full suite rejected a nonstandard Zod starts_with format; standard prefix regex and runtime/schema agreement controls repaired it.",
+    "Original port control failed because the ASGI server tuple retained the port in the hostname and defaulted to 80; separate hostname/port data repaired the native response.",
+    "One hierarchy mutant first failed by parsing absent JSON; the original callback now asserts collector exit status before decoding.",
+    "A provisional driver control count included an unrelated AST object; the final declared list has 37 independently killed/restored controls."
+  ]
+}

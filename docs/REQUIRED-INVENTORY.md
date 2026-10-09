@@ -181,3 +181,13 @@ The receipt retains both final profiles and unaccepted development attempts; it
 does not promote broader Gate A capabilities or review quality.
 
 Required native acceptance retains at most 4,096 terminal events across a validated profile batch. Each individual profile and the selection list remain bounded to 256 entries. Every required callback needs a retained terminal event; an exhausted ledger remains incomplete, including when the omitted event would have passed. Manifests and event ceilings are validated before selected test code executes. The suite's exact-bound controls reconcile retained events, required cases and unique terminal sequence identities and reject the first extra entry. This ledger covers selected test-file byte identity and outcomes, not imported production/dependency identity, raw output or review quality.
+
+The opt-in [selected FastAPI assembly contract](FASTAPI-ASSEMBLY.md) extends the
+shared route adapter with configuration version 2. Native effective included,
+mounted and hosted routes, dependency/security metadata, response models,
+middleware/lifespan registration order, overrides and completed controlled ASGI
+responses are compared against explicit operator expectations. Isolated bootstrap,
+source byte gates, registration identity and reached lifecycle controls remain
+separate from complete dependency/license closure and final Gate A acceptance.
+Version 1 retains its flat inventory behavior; no inference or field evaluation
+is invoked.

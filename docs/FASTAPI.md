@@ -1,6 +1,6 @@
 # FastAPI route inventory profile
 
-The opt-in `python.fastapi-routes` check imports an explicitly configured local
+Configuration version 1 of the opt-in `python.fastapi-routes` check imports an explicitly configured local
 application, enters its native lifespan, captures the flat route table after
 startup, exits the lifespan, and checks exact duplicate protocol/method/path
 registrations. The verified profile is FastAPI 0.141.1 with Starlette 1.6.0 on
@@ -67,7 +67,9 @@ shutdown failure, a documentation-only app and unsupported mounts. Parser tests
 exercise source/assembly identity, native registration accounting and incomplete
 evidence. Reproduce prepared Linux tests with
 `node scripts/verify-framework-container.mjs`; the pinned preparation requirements
-are in `scripts/framework-tools.requirements.txt`. Hosted CI remains unexecuted.
+are in `scripts/framework-tools.requirements.txt`. Required native acceptance is exercised separately from optional host checks.
+
+Opt-in configuration version 2 adds [selected assembly contracts](FASTAPI-ASSEMBLY.md), including native mounted/hosted routes, dependencies/security scopes, response models, middleware/lifespan order and controlled ASGI requests. Version 1 retains the flat projection described above.
 
 References: [FastAPI lifespan events](https://fastapi.tiangolo.com/advanced/events/),
 [Starlette routing](https://www.starlette.io/routing/).

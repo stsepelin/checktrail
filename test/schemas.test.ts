@@ -11,6 +11,7 @@ import {
   importContextReportSchema,
   importContextSummarySchema,
 } from "../src/import-context.js";
+import { profile as fastapiAssemblyProfile } from "./review-fastapi-assembly-fixture.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -460,5 +461,55 @@ test("sealed multi-claim public schemas match runtime contracts and compile stri
     assert.deepEqual(disk, z.toJSONSchema(schema), name);
     const validate = ajv.compile(disk);
     assert.equal(validate({ unknown: true }), false, name);
+  }
+});
+
+test("FastAPI assembly public schema preserves prefix and bounded request contracts", async () => {
+  const ajv = new Ajv2020({ strict: true });
+  const standard = ajv.compile(
+    JSON.parse(
+      await readFile(
+        new URL("../../schemas/fastapi-config.schema.json", import.meta.url),
+        "utf8",
+      ),
+    ),
+  );
+  for (const [value, expected] of [
+    [fastapiAssemblyProfile, true],
+    [
+      {
+        schemaVersion: 1,
+        module: "app",
+        attribute: "app",
+        assembly: "original",
+        environment: "test",
+      },
+      true,
+    ],
+    [
+      {
+        ...fastapiAssemblyProfile,
+        expectedRoutes: fastapiAssemblyProfile.expectedRoutes.map(
+          (route, index) =>
+            index === 0 ? { ...route, path: "relative" } : route,
+        ),
+      },
+      false,
+    ],
+    [
+      {
+        ...fastapiAssemblyProfile,
+        requests: fastapiAssemblyProfile.requests.map((request, index) =>
+          index === 0 ? { ...request, path: "//foreign" } : request,
+        ),
+      },
+      false,
+    ],
+    [{ ...fastapiAssemblyProfile, requests: [] }, false],
+    [{ ...fastapiAssemblyProfile, expectedLifespan: [] }, false],
+    [{ ...fastapiAssemblyProfile, execute: true }, false],
+  ] as const) {
+    assert.equal(fastapiConfigSchema.safeParse(value).success, expected);
+    assert.equal(standard(value), expected, JSON.stringify(standard.errors));
   }
 });

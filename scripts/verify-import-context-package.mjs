@@ -41,6 +41,7 @@ assert.ok(
     "context-hcl",
     "context-yaml",
     "assembly-vue-router",
+    "assembly-fastapi",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -80,6 +81,8 @@ if (profile === "context-yaml") {
   process.env.CHECKTRAIL_CONTEXT_YAML_INSTALLED = "1";
   process.env.CHECKTRAIL_CONTEXT_YAML_NATIVE = "1";
 }
+if (profile === "assembly-fastapi")
+  process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-vue-router")
   process.env.CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -134,6 +137,8 @@ try {
     "gate-context-cpp.test.js",
     "gate-context-hcl.test.js",
     "gate-context-yaml.test.js",
+    "gate-assembly-fastapi.test.js",
+    "review-fastapi-assembly-fixture.js",
     "gate-assembly-vue-router.test.js",
     "review-vue-router-assembly-fixture.js",
     "review-yaml-boundaries-fixture.js",
@@ -245,6 +250,9 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "assembly-fastapi"
+            ? ["--env", "CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED=1"]
+            : []),
           ...(profile === "assembly-vue-router"
             ? ["--env", "CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED=1"]
             : []),
@@ -343,6 +351,7 @@ try {
                   "context-hcl",
                   "context-yaml",
                   "assembly-vue-router",
+                  "assembly-fastapi",
                 ].includes(profile)
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",
