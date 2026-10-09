@@ -32,6 +32,7 @@ assert.ok(
     "context-kotlin",
     "context-scala",
     "context-csharp",
+    "context-fsharp",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -53,6 +54,8 @@ if (profile === "context-scala")
   process.env.CHECKTRAIL_CONTEXT_SCALA_INSTALLED = "1";
 if (profile === "context-csharp")
   process.env.CHECKTRAIL_CONTEXT_CSHARP_INSTALLED = "1";
+if (profile === "context-fsharp")
+  process.env.CHECKTRAIL_CONTEXT_FSHARP_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -97,6 +100,8 @@ try {
     "gate-context-kotlin.test.js",
     "gate-context-scala.test.js",
     "gate-context-csharp.test.js",
+    "gate-context-fsharp.test.js",
+    "review-fsharp-boundaries-fixture.js",
     "review-csharp-boundaries-fixture.js",
     "review-scala-boundaries-fixture.js",
     "review-kotlin-boundaries-fixture.js",
@@ -214,6 +219,9 @@ try {
             : []),
           ...(profile === "context-csharp"
             ? ["--env", "CHECKTRAIL_CONTEXT_CSHARP_INSTALLED=1"]
+            : []),
+          ...(profile === "context-fsharp"
+            ? ["--env", "CHECKTRAIL_CONTEXT_FSHARP_INSTALLED=1"]
             : []),
           "--read-only",
           "--cpus",
