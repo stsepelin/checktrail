@@ -4164,5 +4164,43 @@
       "file": "dist/test/gate-python-extensions.test.js",
       "name": "python-extensions installed acceptance"
     }
+  ],
+  "php-extensions": [
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-php-extensions.test.js",
+      "name": "php-extensions installed acceptance"
+    }
   ]
 }

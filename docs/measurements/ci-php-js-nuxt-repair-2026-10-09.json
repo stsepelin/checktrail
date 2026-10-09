@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "profile": "ci-php-js-nuxt-repair",
+  "capturedAt": "2026-10-09T17:53:10.579263+00:00",
+  "sourceBaseCommit": "06c61db03acc186d07310f848257edfa16b79a11",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "8da224e70db0beac6ee422e8fd7ecf4896596231b09db054efbeef343a54c89c",
+    "scripts/verify-required-native-tests.mjs": "107291782e3bdb07157e0878b561955da2f700accf13cbb87b36eb5ea3095996",
+    "test/gate-assembly-nuxt.test.ts": "ed2300e53af7b0eb5c70adbe1953baae6ce4a8c0e5acde26f588f9e15282bbc7",
+    "test/gate-javascript-extensions.test.ts": "89796c2683da7dff2b6df01f6720c04597ee01b130d2a04fd59e2f6482df7711"
+  },
+  "builtFiles": {
+    "dist/test/gate-assembly-nuxt.test.js": "79c5164a579abea2024fc06e6084166ec2b2df4cec3838288ba0e0422bc0577e",
+    "dist/test/gate-javascript-extensions.test.js": "fba002741beffed694bc7cac25195861aea36969d2e57a261ab51f90484fa67f"
+  },
+  "repairs": [
+    "The locked explicitly allowed Pest plugin is enabled during PHP tool preparation, with a required nonempty freshly generated plugin registry; unrelated PHP review tools retain disabled plugins.",
+    "The source JavaScript profile includes packaging and uses a separate file budget. Its fresh installed profile retains a 300-second budget inside the 330-second packaging subprocess and 360-second callback. Original nine category assertions remain required.",
+    "The Nuxt lifecycle readiness window ends before the execution deadline, and all modes retain proof of reached native middleware and two live descendants, correct termination flags, reaping and owned output cleanup."
+  ],
+  "nativeChecks": {
+    "freshLockedPestPreparation": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "privateDiagnosticSha256": "21e8b5ecdb99a9c93c2376c423ae7a3c644d4eb6eff06fc7c7e51e915158febc"
+    },
+    "reachedNuxtLifecycle": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "privateDiagnosticSha256": "ad972ccf10a67e30b051e0a671b283dfa606ac50586fcdd539a69e51d524d0c5"
+    },
+    "freshInstalledJavaScriptAcceptance": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "privateDiagnosticSha256": "60586a64ae4a9e27f671ebaf6b055ad36b3a6407eb150d14e7959d4a7ae15c95",
+      "nestedRequiredCategories": 9
+    }
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1343,
+    "passed": 898,
+    "failed": 0,
+    "skipped": 445,
+    "cancelled": 0,
+    "todo": 0,
+    "privateDiagnosticSha256": "46599c6488ec5b072bea7d44c87bdfe831112b4325964324b9011690c258c598",
+    "skippedCasesArePassingEvidence": false
+  },
+  "workflowValidation": {
+    "actionlint": true,
+    "changedFileLint": true,
+    "changedFileFormat": true,
+    "inventoryCallbacksPassed": 4
+  },
+  "scope": "Targeted CI repair and selected native witnesses; prior full-profile receipts remain historical source bindings, and the final current-candidate matrix is separate.",
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

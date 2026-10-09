@@ -553,7 +553,7 @@ test(
 );
 test(
   "javascript-extensions installed acceptance",
-  { skip, timeout: 180000 },
+  { skip, timeout: 360000 },
   async () => {
     if (process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED === "1") {
       assert.ok(
@@ -582,9 +582,18 @@ test(
           ),
         ),
       ],
-      { env, encoding: "utf8", timeout: 180000, maxBuffer: 4 * 1048576 },
+      // The nested required profile has a 300-second file budget.
+      { env, encoding: "utf8", timeout: 330000, maxBuffer: 4 * 1048576 },
     );
-    assert.equal(result.status, 0, result.stderr.slice(0, 3000));
+    assert.equal(
+      result.status,
+      0,
+      JSON.stringify({
+        error: result.error?.message,
+        signal: result.signal,
+        stderr: result.stderr?.slice(0, 3000),
+      }),
+    );
     const receipt = JSON.parse(result.stdout.trim().split("\n").at(-1)!);
     assert.equal(receipt.offlineProductionInstall, true);
     assert.equal(receipt.profile.complete, true);

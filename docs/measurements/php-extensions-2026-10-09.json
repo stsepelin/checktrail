@@ -1,0 +1,1601 @@
+{
+  "schemaVersion": 1,
+  "profile": "php-extensions",
+  "capturedAt": "2026-10-09T16:53:20.517260+00:00",
+  "sourceBaseCommit": "442e75c1fac9adc340598ea1e22a9ca930d07657",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "699d358bfa93e3fad156b661d3a9bb7ff545fd2a4319b4a5df4a9a24a5d20c54",
+    "docs/LANGUAGES.md": "cb5b5f6ec09da0e15aea961330c36c26c97e50914651d605a578af54e5c04805",
+    "docs/PHP-EXTENSIONS.md": "648f6699bd1ad80455c66abf04587249d3cfee28cdc9d2c5fad79b344e6b965b",
+    "docs/STATUS.md": "5c7ab58fd3e9bc457864b645ac7305d9296db11bb2679438fb0fe69f35f72f87",
+    "docs/gate-a-profiles.v1.json": "c6a84f6d4c3cad3c7c82a77e92aa711ab6b49a6defd7256b3bc6c33f1d12d383",
+    "schemas/php-config.schema.json": "30e492a9a3b26fc9c1ff23b9b92133a7858962ef56b1a8176e28b6299eccb2e8",
+    "schemas/plan.schema.json": "1d7491ffe11bb4d809c48525d1ca6518d1ac542960eb5e474e58a6a67ead6e9e",
+    "scripts/generate-schemas.mjs": "1a041e8178c8d5f9975be776f4de827c3ba86b4b7ea4dc78198cf31c33a7f7cf",
+    "scripts/required-native-tests.json": "b7fed05a22b5d464202ce7c9317723656162578df8401f0dc16c1e73be3cc8de",
+    "scripts/verify-import-context-package.mjs": "7ad05f9bc3a93bf72320f64bf6459957d756e2b90352ec28142e88a367633ffc",
+    "scripts/verify-php-extensions-container.mjs": "328fb9a551bf178c84de15d640c74621a0b0b4b88ba733952333fc5614aa0026",
+    "scripts/verify-php-extensions-guards.mjs": "f7af268c820bb786a398433278226c43071e713f6ca1e0ebf9a94bd07230ccb4",
+    "scripts/verify-required-native-tests.mjs": "0030d3782afbc6db689fafe4ee8a330b6f2832a30dc2d614ff873edef5586d8e",
+    "src/adapters.ts": "d3a92d0c48846a0481af948e767bb4e064de3fb30f7ad476ca98c26ac9a99a4b",
+    "src/evidence.ts": "38a7e31d24a0b968735ad7f6f4bad8a61de62aa4252cb3c00640786d7144da81",
+    "src/php-extension-evidence.ts": "074580d0b6c3997dd3ab936833f20642de48e5274534d02c16d9878b4fa5a97e",
+    "src/php-extension-pins.ts": "25ea3e185f325d4216cc29ead8b3077c2dea741a63deba1165ccb54b7b8a95ed",
+    "src/php-extension-runner.ts": "e62616c277efd8e0cc83a18db5057b3bec6de4c246244d7ee6a40019e66ea48e",
+    "src/php-extensions.ts": "28c4446d9f2bcc05511dafbc2630d52591199cfaadf7c48cddf178fa50e0a7f5",
+    "src/schemas.ts": "7a86f48ce8d59cd86a43cfb4058a216855fcb2b0c81db412575a3da0c17822d3",
+    "src/tool-versions.ts": "ed167b188588b7240658786b48c840fdf7ac388c2290329905c7eb76087344b7",
+    "src/types.ts": "d2eb51150cab96d9f705692473d10c53d0d4676a01a053db60a531d4c3c439fe",
+    "test/gate-php-extensions.test.ts": "ae9a929071c636f48e5a36c86066c507823cda284d7a36fd78c3ce979889d86c",
+    "test/php-extension-planning.test.ts": "b896290aeabd2b0a0f56887d57bbb1e12b7d1e6852d922bf5fa9fb08d896eb36",
+    "test/php-extensions-fixture.ts": "f5c18696785e9819649833d41532d7b45533517e76bd54a42ffcd56a3feba51e",
+    "test/php-extensions.test.ts": "f44e1554a395262c5bdf52f4d900084bbbb4ea412102a3aabe89ffddd6832750",
+    "test/schemas.test.ts": "10868b6505eff4119537b5f57cded5d91155b8796f8103036a5dd54a59d58f6d"
+  },
+  "builtFiles": {
+    "dist/src/adapters.js": "976e7973a6ab7fad57277307706f653eb682ec73b27eadbbb2e2753886d916a0",
+    "dist/src/evidence.js": "27a83597281eae051ed7b8ddefd14cf2d5084e34b925c6ff9c6c162036741148",
+    "dist/src/php-extension-evidence.js": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+    "dist/src/php-extension-pins.js": "1242821272d82c8d181ba88f4a3b95099a611a33569aedd53a85e94ed6572534",
+    "dist/src/php-extension-runner.js": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+    "dist/src/php-extensions.js": "f6b6a24788826d6b3efb8e2509ca6d13bae3b23c4b4a14c64d5388316373fd74",
+    "dist/src/schemas.js": "5b73cb667133d4b00aade3a3b7bb07b677110ece82ae359c1586b2e50c4f6075",
+    "dist/src/tool-versions.js": "927b34b8b4f28a3bed0a28842a7b8517701f93513175e70a2411206999657f6f",
+    "dist/src/types.js": "c558eecf7603310dc229b93f01fe5aef7f93cddd92167d7c6deee6d74ee39fc3",
+    "dist/test/gate-php-extensions.test.js": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+    "dist/test/php-extension-planning.test.js": "3090e27fc7c8ac8050103c15743e5f87f6c7f502f821bdb350776cbca93fffa4",
+    "dist/test/php-extensions-fixture.js": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+    "dist/test/php-extensions.test.js": "ac47ea30c749f1247a510787976f32709673cd3525f0e58c3a7fe6875463fc8b",
+    "dist/test/schemas.test.js": "f6b6a13ed97dd26717d05a604c7a6e6eaa19af9aa0328702804a9e1e46179203"
+  },
+  "native": {
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "php": {
+        "php": "8.5.6",
+        "architecture": "aarch64",
+        "extensions": [
+          {
+            "name": "Core",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "PDO",
+            "version": "8.5.6",
+            "dependencies": {
+              "spl": "Required"
+            }
+          },
+          {
+            "name": "Phar",
+            "version": "8.5.6",
+            "dependencies": {
+              "apc": "Optional",
+              "bz2": "Optional",
+              "hash": "Required",
+              "openssl": "Optional",
+              "spl": "Required",
+              "standard": "Optional",
+              "zlib": "Optional"
+            }
+          },
+          {
+            "name": "Reflection",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "SPL",
+            "version": "8.5.6",
+            "dependencies": {
+              "json": "Required"
+            }
+          },
+          {
+            "name": "SimpleXML",
+            "version": "8.5.6",
+            "dependencies": {
+              "libxml": "Required",
+              "spl": "Required"
+            }
+          },
+          {
+            "name": "Zend OPcache",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "bz2",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "ctype",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "curl",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "date",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "dom",
+            "version": "20031129",
+            "dependencies": {
+              "domxml": "Conflicts",
+              "lexbor": "Required",
+              "libxml": "Required"
+            }
+          },
+          {
+            "name": "fileinfo",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "filter",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "hash",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "iconv",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "json",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "lexbor",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "libxml",
+            "version": "8.5.6",
+            "dependencies": {
+              "standard": "Required"
+            }
+          },
+          {
+            "name": "mbstring",
+            "version": "8.5.6",
+            "dependencies": {
+              "pcre": "Required"
+            }
+          },
+          {
+            "name": "mysqlnd",
+            "version": "mysqlnd 8.5.6",
+            "dependencies": {
+              "standard": "Required"
+            }
+          },
+          {
+            "name": "openssl",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "pcre",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "pdo_sqlite",
+            "version": "8.5.6",
+            "dependencies": {
+              "pdo": "Required"
+            }
+          },
+          {
+            "name": "posix",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "random",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "readline",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "session",
+            "version": "8.5.6",
+            "dependencies": {
+              "spl": "Optional"
+            }
+          },
+          {
+            "name": "sodium",
+            "version": "8.5.6",
+            "dependencies": {
+              "standard": "Required"
+            }
+          },
+          {
+            "name": "sqlite3",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "standard",
+            "version": "8.5.6",
+            "dependencies": {
+              "session": "Optional",
+              "uri": "Required"
+            }
+          },
+          {
+            "name": "tokenizer",
+            "version": "8.5.6",
+            "dependencies": {}
+          },
+          {
+            "name": "uri",
+            "version": "8.5.6",
+            "dependencies": {
+              "lexbor": "Required"
+            }
+          },
+          {
+            "name": "xml",
+            "version": "8.5.6",
+            "dependencies": {
+              "libxml": "Required"
+            }
+          },
+          {
+            "name": "xmlreader",
+            "version": "8.5.6",
+            "dependencies": {
+              "dom": "Required",
+              "libxml": "Required"
+            }
+          },
+          {
+            "name": "xmlwriter",
+            "version": "8.5.6",
+            "dependencies": {
+              "libxml": "Required"
+            }
+          },
+          {
+            "name": "zip",
+            "version": "1.22.8",
+            "dependencies": {
+              "pcre": "Required"
+            }
+          },
+          {
+            "name": "zlib",
+            "version": "8.5.6",
+            "dependencies": {}
+          }
+        ],
+        "artifacts": [
+          {
+            "kind": "interpreter",
+            "name": "php",
+            "bytes": 24333520,
+            "sha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234"
+          },
+          {
+            "kind": "extension",
+            "name": "bz2.so",
+            "bytes": 67416,
+            "sha256": "837beada0463d38a59ddab88765aade312e972392d253d960ca754f45404104e"
+          },
+          {
+            "kind": "extension",
+            "name": "sodium.so",
+            "bytes": 132952,
+            "sha256": "a813168d5522317c4ee6ed10382d73f03a4ac54c54c8c6f98e329fa0ab3b27d8"
+          },
+          {
+            "kind": "extension",
+            "name": "zip.so",
+            "bytes": 132952,
+            "sha256": "d778113f853b83ccd259411a83390ec3fe6c1ed551012a199a3233cfa273875c"
+          }
+        ]
+      },
+      "selectedNativeApis": [
+        {
+          "package": "phpstan/phpstan",
+          "version": "2.2.14",
+          "path": "phpstan/phpstan/phpstan.phar",
+          "bytes": 28934862,
+          "sha256": "a7d45c01d3bd5aceb2cb9e596a67e50ff9f12b8757a373b93c0761deb8cd77e1",
+          "observed": {
+            "bytes": 28934862,
+            "sha256": "a7d45c01d3bd5aceb2cb9e596a67e50ff9f12b8757a373b93c0761deb8cd77e1"
+          },
+          "matches": true
+        },
+        {
+          "package": "larastan/larastan",
+          "version": "v3.12.3",
+          "path": "larastan/larastan/extension.neon",
+          "bytes": 27238,
+          "sha256": "09cb1cb333744083c57e469ece986d9da549c768bf7eda518309a46caa83a779",
+          "observed": {
+            "bytes": 27238,
+            "sha256": "09cb1cb333744083c57e469ece986d9da549c768bf7eda518309a46caa83a779"
+          },
+          "matches": true
+        },
+        {
+          "package": "larastan/larastan",
+          "version": "v3.12.3",
+          "path": "larastan/larastan/bootstrap.php",
+          "bytes": 1608,
+          "sha256": "5a3eacbf63b3e41659adfee92facededf8e020a932800f93c9a8b0e67f235805",
+          "observed": {
+            "bytes": 1608,
+            "sha256": "5a3eacbf63b3e41659adfee92facededf8e020a932800f93c9a8b0e67f235805"
+          },
+          "matches": true
+        },
+        {
+          "package": "friendsofphp/php-cs-fixer",
+          "version": "v3.95.27",
+          "path": "friendsofphp/php-cs-fixer/src/Console/Application.php",
+          "bytes": 9186,
+          "sha256": "f95db7ae945c51d9bd629e6fcf8bade5bfc2e735212e0caa1027a9e66d027c9e",
+          "observed": {
+            "bytes": 9186,
+            "sha256": "f95db7ae945c51d9bd629e6fcf8bade5bfc2e735212e0caa1027a9e66d027c9e"
+          },
+          "matches": true
+        },
+        {
+          "package": "friendsofphp/php-cs-fixer",
+          "version": "v3.95.27",
+          "path": "friendsofphp/php-cs-fixer/src/Console/ConfigurationResolver.php",
+          "bytes": 35154,
+          "sha256": "467ae28993b5f9e6c310eabdfce01ffed50f0b503736162b602f18714488c99b",
+          "observed": {
+            "bytes": 35154,
+            "sha256": "467ae28993b5f9e6c310eabdfce01ffed50f0b503736162b602f18714488c99b"
+          },
+          "matches": true
+        },
+        {
+          "package": "friendsofphp/php-cs-fixer",
+          "version": "v3.95.27",
+          "path": "friendsofphp/php-cs-fixer/src/Runner/Runner.php",
+          "bytes": 30185,
+          "sha256": "948e47406aa06004275e72d8df39d07c542582ac85bad8b620458def8fc49e09",
+          "observed": {
+            "bytes": 30185,
+            "sha256": "948e47406aa06004275e72d8df39d07c542582ac85bad8b620458def8fc49e09"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Database/Eloquent/Model.php",
+          "bytes": 82120,
+          "sha256": "8186c638799dc3441a42e996a6af5ebe138eb67f6e7d0f88bfec98e498f6345b",
+          "observed": {
+            "bytes": 82120,
+            "sha256": "8186c638799dc3441a42e996a6af5ebe138eb67f6e7d0f88bfec98e498f6345b"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
+          "bytes": 76138,
+          "sha256": "1cabf1764355b8a8a6ac7c26c11d6826252e035c51cf77d678f0e16a1c4f06b5",
+          "observed": {
+            "bytes": 76138,
+            "sha256": "1cabf1764355b8a8a6ac7c26c11d6826252e035c51cf77d678f0e16a1c4f06b5"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Database/Eloquent/Casts/Attribute.php",
+          "bytes": 1954,
+          "sha256": "2047f8c2c5c82f7d4af0e395ee53b633203b5bda490bec4474361ab811d54916",
+          "observed": {
+            "bytes": 1954,
+            "sha256": "2047f8c2c5c82f7d4af0e395ee53b633203b5bda490bec4474361ab811d54916"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Foundation/Application.php",
+          "bytes": 47493,
+          "sha256": "dd6262f3b087af2ae102a791c32a0c4a2b5be60c915c2219cf2bdc76a8791f47",
+          "observed": {
+            "bytes": 47493,
+            "sha256": "dd6262f3b087af2ae102a791c32a0c4a2b5be60c915c2219cf2bdc76a8791f47"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php",
+          "bytes": 16158,
+          "sha256": "efa47f6eeb906833631fe643024036380e9b2c24b1c5ff4e7f3c4733da761830",
+          "observed": {
+            "bytes": 16158,
+            "sha256": "efa47f6eeb906833631fe643024036380e9b2c24b1c5ff4e7f3c4733da761830"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
+          "bytes": 18610,
+          "sha256": "f807ec6b1851030c4e5d4c3d83dc9021d8ac6b399d49f1300a068ea2f3c208ad",
+          "observed": {
+            "bytes": 18610,
+            "sha256": "f807ec6b1851030c4e5d4c3d83dc9021d8ac6b399d49f1300a068ea2f3c208ad"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Foundation/Console/Kernel.php",
+          "bytes": 17982,
+          "sha256": "ab889be0927d22f4222521cc7b695a0857ffa1a931f8f498075137da169e36d5",
+          "observed": {
+            "bytes": 17982,
+            "sha256": "ab889be0927d22f4222521cc7b695a0857ffa1a931f8f498075137da169e36d5"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Container/Container.php",
+          "bytes": 53736,
+          "sha256": "8bbfbc5955205f817106077355a493952e685bc376653236a7188f20ff634ea8",
+          "observed": {
+            "bytes": 53736,
+            "sha256": "8bbfbc5955205f817106077355a493952e685bc376653236a7188f20ff634ea8"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "version": "v13.32.0",
+          "path": "laravel/framework/src/Illuminate/Support/Str.php",
+          "bytes": 70870,
+          "sha256": "48e98fa91fd7ee8a2162f6843c63a74b9136d648188b85f4c29398e182262613",
+          "observed": {
+            "bytes": 70870,
+            "sha256": "48e98fa91fd7ee8a2162f6843c63a74b9136d648188b85f4c29398e182262613"
+          },
+          "matches": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.23.4\nPRETTY_NAME=\"Alpine Linux v3.23\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "image": "sha256:b16889b071644cec1d40b4ac6c57d710fecef79892d6c1a4f6500c99272cd948",
+    "baseline": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "php-tools",
+          "required": 8
+        },
+        {
+          "profile": "php-review",
+          "required": 6
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 14,
+      "required": 14,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 14,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "c2f278d75059f5ce7ab12b9cd041e556ef7852520d75f24eb475a3664ccdb148"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c2f278d75059f5ce7ab12b9cd041e556ef7852520d75f24eb475a3664ccdb148"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "ff94c4b4aaff2b9332ae613cbb66f2270e255c297b9f8fb4e003f2eae5a6ba83"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ff94c4b4aaff2b9332ae613cbb66f2270e255c297b9f8fb4e003f2eae5a6ba83"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "eb619d9545f8943e11b8365b36150e869ba24330b07b3f7bc477a42a038e800d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "eb619d9545f8943e11b8365b36150e869ba24330b07b3f7bc477a42a038e800d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "819ee72742196344087e283acf387af9375d2a181f15fc89faddd7853d117dfb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "819ee72742196344087e283acf387af9375d2a181f15fc89faddd7853d117dfb"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "ea2837322b6ea1198a2f77292460140ef1532ad3752c28b2d0999f439b9d66c8"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ea2837322b6ea1198a2f77292460140ef1532ad3752c28b2d0999f439b9d66c8"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "3e97893674225038623642823f0c1781a45d5dffb5a78ab18537d7b02fce3dec"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3e97893674225038623642823f0c1781a45d5dffb5a78ab18537d7b02fce3dec"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "a62cacb610ef606f40d3bcc33c001c04bfed344e845b7909bb151c14c18fe0fe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a62cacb610ef606f40d3bcc33c001c04bfed344e845b7909bb151c14c18fe0fe"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "native PHPStan accounts for analysed files and catches return-type and configuration failures",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2180.903119,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "PHPStan planning requires installed tools and config without executing PHP",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.809879,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native PHPUnit streams fresh evidence for assertions, failures, skips, empty and zero-assertion cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1537.175706,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-3",
+            "name": "Pest planning requires configuration without executing PHP",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16.255307,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-3",
+            "name": "native Pest runs focused siblings, datasets and fresh snapshots without replaying cached tests",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1835.219167,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-4",
+            "name": "Pint planning only resolves its installed path",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.249984,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-4",
+            "name": "native Pint proves file and rule scope, rejects errors and never fixes source or consumes configured cache",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1046.177252,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-4",
+            "name": "Pint evidence cannot pass empty rules, duplicate, omitted or unexpected files or incompatible versions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.865051,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-5",
+            "name": "PHP-CS-Fixer planning requires local config and tools and does not execute PHP",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.820302,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-5",
+            "name": "native PHP-CS-Fixer processes declared files and catches style syntax exclusions and skipped input without writing source or cache",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2561.199793,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-5",
+            "name": "PHP-CS-Fixer evidence requires exact native events rules totals exits and active coverage",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.804884,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-6",
+            "name": "Larastan project configuration remains execution-free during inspection and requires operator trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.527215,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-6",
+            "name": "native Larastan proves typed model accessors with missing-extension broken fixed near-miss exclusion and bootstrap controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7018.807021,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-7",
+            "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7034.809242,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native PHPStan accounts for analysed files and catches return-type and configuration failures",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "PHPStan planning requires installed tools and config without executing PHP",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native PHPUnit streams fresh evidence for assertions, failures, skips, empty and zero-assertion cases",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Pest planning requires configuration without executing PHP",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Pest runs focused siblings, datasets and fresh snapshots without replaying cached tests",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Pint planning only resolves its installed path",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Pint proves file and rule scope, rejects errors and never fixes source or consumes configured cache",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Pint evidence cannot pass empty rules, duplicate, omitted or unexpected files or incompatible versions",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-5",
+            "name": "PHP-CS-Fixer planning requires local config and tools and does not execute PHP",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native PHP-CS-Fixer processes declared files and catches style syntax exclusions and skipped input without writing source or cache",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-5",
+            "name": "PHP-CS-Fixer evidence requires exact native events rules totals exits and active coverage",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-6",
+            "name": "Larastan project configuration remains execution-free during inspection and requires operator trust",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Larastan proves typed model accessors with missing-extension broken fixed near-miss exclusion and bootstrap controls",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-7",
+            "name": "PHP review profiles share native CLI and MCP outcomes with startup-only trust environment and summary privacy",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "php-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "php-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3299.271887,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "php-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3236.266933,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "php-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4350.021975,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "php-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3847.32684,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "php-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2354.860429,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "php-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2975.21964,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "php-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10191.013613,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "php-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10328.590318,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "php-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 43992.313856,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "php-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "php-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic native PHP extension, generated proxy, defaults and accessor controls",
+      "controls": [
+        {
+          "id": "php-kind-binding",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "1f1250a8543861b94bc8a88f87249f4b51752fdbd0bd3750c495b83610e7cb15",
+          "mutantOutputSha256": "4fdec8c403a66934045ecfe59f9a6b29304689d4ca7b4147606f772e92c2f9c7",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-receipt-binding",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "6fd6a21a84ee9d0578f3d50b89dd9d01749c20d04829e206ff609e0897c560b4",
+          "mutantOutputSha256": "8cc2e34cabfb1b9cfbe0aafb1aa62943071627e458295ff695b6e149807f528b",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-selected-native-pins",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "4ec3439fc07340cafbcfa7b850d27909a6b5a87245fa98fb367653c9f82d99bd",
+          "mutantOutputSha256": "60b06e495b1e459c382e985abb483b762ffdb49bc3b00737bc5c863e6b57aa5e",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-extension-runtime",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "cdd5e592a6fffe483d7178c39abf89924a9a6742556d4f28df6fae363ee06fe9",
+          "mutantOutputSha256": "62c77eab6fae2ae01a305210d7f71ef5cbd542da5782ff50b610428518352812",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-input-stability",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "7f612b743132f239709370d2f0abd678d241d4b5cd007e146d10f3aec90074ea",
+          "mutantOutputSha256": "7e4f1c5e6cff183c2047293abb773ccb46decda6147c9801481e7778c230f147",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-class-source-binding",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "46647b1027786199cde3427d0558b202b0d09d286352bb0dd6baf53e0cf97c61",
+          "mutantOutputSha256": "e1b13025ecd508fdcedf8c37b9fc1d20dadb6e622b74cf7f2af77162e8184ceb",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-native-completion",
+          "callback": "php-extensions empty acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "de58d37967e0f5e0fae0ebfad6cc79484f177ff39759a591f829fb9408183ef3",
+          "mutantOutputSha256": "dab4699a9d1ed9df4a78dd5fca73816288a76c7525fee3d3271c2a953cb3f03a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-probe-count",
+          "callback": "php-extensions empty acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "650142ed6f7d527ddd48e1b855505aa7811256c9d78eb6a2d2ff9fab9e542937",
+          "mutantOutputSha256": "ee9fff080ed8a5201d811edc0bd456c489f8d651ed19f344c05ccb02f12880dc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-probe-source-input-binding",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "877a693899f6ae1be71414b5e78d4bd9f769d8a2164e8b2f215a437be766a63d",
+          "mutantOutputSha256": "86c0dd7b7e5e3aa40f6696014d29fbeb573d2ea4f7fb138237d1299a7e19bf1c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-native-default-comparison",
+          "callback": "php-extensions near-miss acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "83b5299ee68a076579d903723aeb727a112919d5977fa0dc898a36fe42eb842f",
+          "mutantOutputSha256": "a98e1e2c828c371ab592f57beddadce1143848896e358836a09d9d60e2bfb8da",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-native-accessor-comparison",
+          "callback": "php-extensions broken acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "1a0d354b53fb77942b531408f87efe3b3267e16f26858f9b56e96c180193eb91",
+          "mutantSha256": "a434920bfdced41919d2fdd6c37ee828fe6c5422da9826cc48b3d1ad2a5b42b7",
+          "mutantOutputSha256": "ea152f44d89c5946a61cff22920c3c3f1103c011fa7744055e2fa2cad1b2ea33",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-preimport-source-bytes",
+          "callback": "php-extensions stale acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "42731488ea37a77dc75ca12272a0554226e07d504ea90d659aa662f4ed91a355",
+          "mutantOutputSha256": "74aad45130af7fc1a9695aaf3a01b557c7d054e5cd3ec3d43a6de4d2b2a22b73",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-preimport-tool-bytes",
+          "callback": "php-extensions prerequisite acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "75c1fc86e66761aeb3baa8687ae2f1608d1e3f5fe50c74f0672548549df6cd50",
+          "mutantOutputSha256": "fcc15964b7a185f18661f727581e11237f7cb2f466f379153bc21163bd2d4774",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-preimport-extension-closure",
+          "callback": "php-extensions prerequisite acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "9de5f98c0daddb33ed5d477990847bd6753ada9d9eea6ff682671b52d22225bf",
+          "mutantOutputSha256": "b3f72f497657b901ed88fb54c88bdca5c64f5561088485bd500e06102f89e5da",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-post-witness-source-bytes",
+          "callback": "native PHP extension rechecks excluded generated source after successful accessor witnesses",
+          "callbackSha256": "ac47ea30c749f1247a510787976f32709673cd3525f0e58c3a7fe6875463fc8b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "6cd15706e30dc54b11b869188d8c234f1a1fb1b014855895fe9bd1749baf4e3b",
+          "mutantOutputSha256": "91579d853b7a221ccbad7af9a2874d8be04c34a4d0aa46f402344acc19475367",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-recursive-scalar-types",
+          "callback": "native PHP accessor array witnesses preserve nested scalar types instead of borrowing JSON number equality",
+          "callbackSha256": "ac47ea30c749f1247a510787976f32709673cd3525f0e58c3a7fe6875463fc8b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "037cb3bba75cdeba1ef11e47bd1bedb416f3712fbf68f6d176a4bb4032b765cf",
+          "mutantOutputSha256": "f1a089ec5714c716174eb92360182ab3287432b1ec7f08773f59c7516673c5d9",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-observed-accessor-values",
+          "callback": "php-extensions fixed acceptance",
+          "callbackSha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b",
+          "fixtureSha256": "ec75729af5abcda38207fb2beaf3a376191f588e2fde99bd67f50903b5925c6e",
+          "sourceSha256": "0fc46be225da67f93e2890cb1c99e70f487a263f5b11c44c2d9befe3dec947a4",
+          "mutantSha256": "a44954e9c0f2eb1a3cca2db75fa3e6f973a386642bc900251b9bef4ab0b55452",
+          "mutantOutputSha256": "3fc6ae25a6e3d5e8ea4275ac1f4b986975c104c608060a11819e6c359ec90a5a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "phpMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "7a69d94d36713fd06b3860fa888b42820ec5b45c4658ec19f952b09460fd88ac",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "php-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2879765e3f5503bae1d143a8c086dbf53f22ba2b2570fc12d854bac302481b0b"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "php-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3309.540816,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "php-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3131.71765,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "php-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4196.36109,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "php-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3730.858012,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "php-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2222.028511,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "php-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2830.730147,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "php-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9904.354367,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "php-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10092.679187,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "php-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.305002,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "php-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "php-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:b16889b071644cec1d40b4ac6c57d710fecef79892d6c1a4f6500c99272cd948",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "callbacks": [
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions broken acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions fixed acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions near-miss acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions prerequisite acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions stale acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions empty acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions privacy acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions lifecycle acceptance"
+      },
+      {
+        "file": "dist/test/gate-php-extensions.test.js",
+        "name": "php-extensions installed acceptance"
+      }
+    ],
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": false
+    },
+    "nativeExtensionScope": "Exact loaded PHP extension identities, mapped extension-directory artifacts and the interpreter binary; system shared libraries remain outside this selected closure.",
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "finalMatrixAccepted": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1343,
+    "passed": 892,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 451,
+    "todo": 0,
+    "durationMs": 225462.70475,
+    "logSha256": "91bb6022c4e33cf19c06dac1a270ca663079b4576824ccb31ff49bf023e0e33d",
+    "skippedCasesArePassingEvidence": false
+  },
+  "originalDefectRepairObservations": [
+    {
+      "description": "A source-bound data-only PHP plan rejected its four exact Composer package selectors in the public plan schema. The original planning callback failed with unrecognized package keys before the schema fix and passed with exact selector roundtrip accounting afterwards.",
+      "before": {
+        "namedCallbackFailed": true,
+        "privateDiagnosticSha256": "a0ddf804c54b23d3eea226970fdd51213ab81b456d37ec96ceb6773931b39d58"
+      },
+      "after": {
+        "planningAndPublicSchemaCallbacksPassed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "privateDiagnosticSha256": "72643dbb67fc5f8b9dbce99e6333050844cd63db231394963aee4dccc4186a1e"
+      }
+    }
+  ],
+  "physicalOutputsOmittedReason": "Host synthetic diagnostics contain workstation paths; only their immutable hashes and bounded outcome accounting are published.",
+  "installedArtifactScope": "The recorded tarball was evaluated before this measurement and status/inventory receipt declarations were emitted. Compiled engine and original callback bytes remain those evaluated; final Gate A package/matrix acceptance is separate.",
+  "inventoryProgress": {
+    "implemented": 26,
+    "selected": 51,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "structuralAuditCertifiesImplementation": false
+  },
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

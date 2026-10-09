@@ -39,6 +39,7 @@ import { djangoEvidence } from "./django-evidence.js";
 import path from "node:path";
 import { phpunitEvidence } from "./phpunit-evidence.js";
 import { phpstanEvidence } from "./phpstan-evidence.js";
+import { phpExtensionEvidence } from "./php-extension-evidence.js";
 import { pyrightEvidence } from "./pyright-evidence.js";
 import { mypyEvidence } from "./mypy-evidence.js";
 import { ruffEvidence } from "./ruff-evidence.js";
@@ -350,6 +351,8 @@ export function evaluate(
     return { ...result, ...pintEvidence(check, processes, root) };
   if (check.parser === "phpunit-junit")
     return { ...result, ...phpunitEvidence(check, processes, root) };
+  if (check.parser === "php-extension-json")
+    return { ...result, ...phpExtensionEvidence(check, processes, root) };
   if (check.parser === "phpstan-json")
     return { ...result, ...phpstanEvidence(check, processes, root) };
   if (check.parser === "pyright-json")

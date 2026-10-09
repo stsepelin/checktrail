@@ -45,6 +45,7 @@ import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
+import { phpExtensionsCheck } from "./php-extensions.js";
 import { pyrightCheck } from "./pyright.js";
 import { mypyCheck } from "./mypy.js";
 import { ruffCheck } from "./ruff.js";
@@ -118,6 +119,7 @@ export const adapters = [
       "php.pint",
       "php.php-cs-fixer",
       "php.laravel-runtime",
+      "php.extensions",
     ],
   },
   {
@@ -667,6 +669,9 @@ export async function checksFor(
           await phpunitCheck(source, project, true),
           await pintCheck(source, project),
           await phpCsFixerCheck(source, project),
+          ...(requested?.includes("php.extensions")
+            ? [await phpExtensionsCheck(source, project)]
+            : []),
           ...(requested?.includes("php.laravel-runtime")
             ? [await laravelCheck(source, project)]
             : []),

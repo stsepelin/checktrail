@@ -65,6 +65,7 @@ export const PARSERS = [
   "mypy-json",
   "pyright-json",
   "phpstan-json",
+  "php-extension-json",
   "phpunit-junit",
   "pint-json",
   "php-cs-fixer-json",
@@ -98,7 +99,12 @@ export interface Command {
 
 export type ToolSpec =
   | { name: "node"; source: "engine-runtime" }
-  | { name: string; source: "package-metadata"; path: string | null }
+  | {
+      name: string;
+      source: "package-metadata";
+      path: string | null;
+      package?: string;
+    }
   | { name: string; source: "version-command"; command: Command };
 
 export interface ToolEvidence {

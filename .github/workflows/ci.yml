@@ -605,6 +605,41 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  php-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    env:
+      CHECKTRAIL_TEST_TASK: ci-php-extensions
+      CHECKTRAIL_PHP_EXTENSIONS_IMAGE: checktrail-php-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Build the pinned offline PHP native image
+        run: docker build --network none --label checktrail.task=ci-php-extensions --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" .
+      - name: Prepare existing locked public PHP toolchains
+        run: |
+          for profile in php-tools php-review-tools; do
+            mkdir -p ".checktrail/$profile"
+            cp "scripts/$profile/composer.json" "scripts/$profile/composer.lock" ".checktrail/$profile/"
+            if [ "$profile" = php-tools ]; then
+              # The locked, explicitly allowed Pest plugin writes pest-plugins.json.
+              docker run --rm --mount "type=bind,src=$PWD/.checktrail/$profile,target=/tools" --workdir /tools "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" composer install --no-interaction --no-scripts --prefer-dist --no-progress
+              test -s ".checktrail/$profile/vendor/pest-plugins.json"
+            else
+              docker run --rm --mount "type=bind,src=$PWD/.checktrail/$profile,target=/tools" --workdir /tools "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+            fi
+          done
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native original callbacks, compiling controls and fresh package
+        run: node scripts/verify-php-extensions-container.mjs
+
   python-extensions-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
