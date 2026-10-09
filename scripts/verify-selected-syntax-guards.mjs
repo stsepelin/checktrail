@@ -29,8 +29,8 @@ const controls = [
   {
     id: "default-retention",
     name: "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
-    before: "initial = initializer(node, kind)",
-    after: "initial = undefined",
+    before: "initializer(node, kind);",
+    after: "undefined;",
   },
   {
     id: "grammar-byte-binding",
