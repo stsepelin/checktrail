@@ -4,7 +4,7 @@
   "capturedAt": "2026-10-09T20:59:04.411266+00:00",
   "sourceBaseCommit": "2f1e6a29d5e39d4c62e9be6e9a4727b2879163de",
   "sourceFiles": {
-    ".github/workflows/ci.yml": "602ac6f0f2d73435e8aa2140c15f953fb7476258ab36771871137e45107a2f87",
+    ".github/workflows/ci.yml": "b0031d25a11badef13e6dafc19cfed4f9d22f722c4a248ae09cb88433ef5253b",
     "docs/EXECUTION.md": "0f52b0ee9ed29927f7fa484b781292eaad3d312ad3234387c30aa689b8121cbd",
     "docs/GRADLE.md": "c79457183e5c37cd5389a02be2b3f67743daad149a03f7ab93d6d37740d7323b",
     "docs/JVM-WRAPPERS.md": "0738caf9fd06627279e4100c6a1b14362682288f9f1e0d2a1b6a929458f4f789",
@@ -17,7 +17,7 @@
     "schemas/maven-config.schema.json": "c174c9fdda2dd61e5711f89a0e9b54b9d14004fbb5b9e5771e9f716dd3f99865",
     "scripts/capture-jvm-wrapper-guards.mjs": "e76d7254dab78c5e7d14a87cf073bb8577d83f0c6c5f424be3260e2a248f4e76",
     "scripts/extract-jvm-wrapper-template.py": "16fd611aa5fcdc9ff67253c78f95e01a7cd7582a56406b3512be448eb5e96b76",
-    "scripts/jvm-extension-tools.Dockerfile": "c76f1a389061fadd586985284b8dc372aba8ae248c9143c38d268720eae11ca8",
+    "scripts/jvm-extension-tools.Dockerfile": "e8d8ca4224948085b240ea5f4785fd9c3eb81aed848df00f6268819044a362f1",
     "scripts/jvm-wrapper-artifacts.json": "694a5099f647a67f657ce2ce368e5398d90c84f5bf686cbc7da569ead67bd4dc",
     "scripts/prepare-jvm-wrappers.mjs": "d89441216023d46024fcfd6653bd31d536ff019839d00915e0dd0d2703a25033",
     "scripts/required-native-tests.json": "9a8a17758a1440f5305ddf10fa4488b0231788ebc6355713a22917e97b0f285c",
@@ -1600,5 +1600,441 @@
     "record": "docs/measurements/ci-node-image-mirror-2026-10-09.json",
     "commit": "5f9ca693514dabc12aff60ea0cc59bf69591656b",
     "scope": "The exact Node image index is selected from a verified public mirror for task-storage and MCP Tasks CI. The JVM production engine, schemas and native fixtures measured here are unchanged."
+  },
+  "ciImageDeliveryFollowUp": {
+    "baseRepairCommit": "473c24638c9ab28caa3aef0a3b08cbc9be3f1445",
+    "record": "docs/measurements/ci-image-mirrors-2026-10-09.json",
+    "scope": "The workflow and JVM validation Dockerfile select the byte-verified public mirrors of their original immutable image-index digests. This follows the observed registry failures before native execution.",
+    "previousFileHashes": {
+      ".github/workflows/ci.yml": "602ac6f0f2d73435e8aa2140c15f953fb7476258ab36771871137e45107a2f87",
+      "scripts/jvm-extension-tools.Dockerfile": "c76f1a389061fadd586985284b8dc372aba8ae248c9143c38d268720eae11ca8"
+    },
+    "currentFileHashes": {
+      ".github/workflows/ci.yml": "b0031d25a11badef13e6dafc19cfed4f9d22f722c4a248ae09cb88433ef5253b",
+      "scripts/jvm-extension-tools.Dockerfile": "e8d8ca4224948085b240ea5f4785fd9c3eb81aed848df00f6268819044a362f1"
+    },
+    "productionSourceAndSchemaBytesPreserved": true,
+    "nativeFixtureBytesPreserved": true,
+    "builtFilesPreserved": true,
+    "nativeDeliveryAcceptance": {
+      "scope": "The same nine native callbacks passed against current source and a fresh offline production install rebuilt from the mirrored exact bases. The previously captured 21 compiling controls and 29 preserved callbacks retain unchanged engine/schema/fixture byte bindings.",
+      "source": {
+        "timeoutMs": 600000,
+        "profile": "jvm-wrappers",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "6817b8e89787562315b27d20157257d8e8c4c50ddedef2c3ac9653fd92eb1278"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "6817b8e89787562315b27d20157257d8e8c4c50ddedef2c3ac9653fd92eb1278"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "jvm-wrappers fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15390.450614,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "jvm-wrappers broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14609.796981,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "jvm-wrappers near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13646.814474,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "jvm-wrappers prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1267.326922,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "jvm-wrappers stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15578.845195,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "jvm-wrappers empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29018.274762,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "jvm-wrappers privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77579.854131,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "jvm-wrappers installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 271554.936009,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "jvm-wrappers lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 62979.473504,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "733b8a1ac04a971b77929b65d6fb44f837c757d740233e6884fe6ccef56cd722",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 600000,
+          "profile": "jvm-wrappers",
+          "fileWorkerLimit": 1,
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "6817b8e89787562315b27d20157257d8e8c4c50ddedef2c3ac9653fd92eb1278"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "6817b8e89787562315b27d20157257d8e8c4c50ddedef2c3ac9653fd92eb1278"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "jvm-wrappers fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 19732.22925,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "jvm-wrappers broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 17579.798545,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "jvm-wrappers near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 16538.426465,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "jvm-wrappers prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1606.998556,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "jvm-wrappers stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 19689.231884,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "jvm-wrappers empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 35469.312191,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "jvm-wrappers privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 90376.567832,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "jvm-wrappers installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.420169,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "jvm-wrappers lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 62974.167858,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-1",
+                "name": "jvm-wrappers installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      },
+      "preparedCache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "physicalCaptureSha256": "f39a7d7e955d9001d208b3b10fd973d22ab966a14c200ebf158939304abaa5f7",
+      "captureDelimiterCorrection": "The temporary outer capture appended a literal newline escape after the exact JSON packet already parsed and checked by the installed acceptance callback. Only those two known delimiter bytes are excluded from the normalized capture; native packet bytes are unchanged.",
+      "environment": {
+        "network": "none",
+        "rootFilesystemReadonly": true,
+        "sourceMount": "readonly",
+        "cpus": 2,
+        "memoryMiB": 4096,
+        "pids": 256,
+        "temporaryFilesystemMiB": 2048,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    "mandatoryProjectCheck": {
+      "command": "npm run check",
+      "scope": "Managed isolated reproduction at the same implementation commit with both explicit CI follow-up files copied; no production source/schema/fixture changes.",
+      "tests": 1387,
+      "passed": 898,
+      "optionalSkipped": 489,
+      "failed": 0,
+      "durationMs": 248066.673542,
+      "outputSha256": "03627a510d8f61bbacb5c85dd2d79561a12fe5e9fa3a22fc3d07c738407c9358",
+      "optionalSkipsCountAsPass": false
+    },
+    "hostedCiAtUpdatedHeadAccepted": false,
+    "capturedAt": "2026-10-09T21:49:11.252288+00:00"
   }
 }
