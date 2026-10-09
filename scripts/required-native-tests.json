@@ -3742,5 +3742,43 @@
       "file": "dist/test/gate-context-vb.test.js",
       "name": "context-vb installed acceptance"
     }
+  ],
+  "context-c": [
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-c.test.js",
+      "name": "context-c installed acceptance"
+    }
   ]
 }

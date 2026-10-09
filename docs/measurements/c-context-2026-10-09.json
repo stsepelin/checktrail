@@ -1,0 +1,1449 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-c-selected-bindings-v1",
+  "recordedAt": "2026-10-09T01:05:41.940602+00:00",
+  "scope": "Captured C declarations, literal initializers and quoted-header source candidates plus supplementary pinned GCC witnesses and original trusted cleanup controls; no capture execution, native preprocessing/translation-unit/linkage certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "3bf66b077e23fe3de2bef66d6306304a9cb5ecde",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 48250,
+        "sha256": "424d573a9bb7bd55fe895868dc015bd174e634d3efd0923d356a5144eec641af"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-c.wasm",
+        "bytes": 625963,
+        "sha256": "2030a766fa6c6fe18039524008e52fd4a4995bdd9ed07fc4a73ec892450d2f4a"
+      },
+      {
+        "file": "assets/context-vb-grammar/manifest.json",
+        "bytes": 351,
+        "sha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 25318,
+        "sha256": "d9c088e27e9859fce20513cbfd1a7a9742f5704a129897617ce65e4078162ba1"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 39735,
+        "sha256": "88762862bee2d931da70c37988c76a1b3bbaa37ad3a239216ee93c7e605a214b"
+      },
+      {
+        "file": "docs/REVIEW-C-CONTEXT.md",
+        "bytes": 2331,
+        "sha256": "407a6102f1d0a302c993573bd1db541b053b20d2ef77bf42578e6d488f0eb0a6"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 45017,
+        "sha256": "6b495990deaf61a05acfa71702e3f825116d70c0435808e3c3778d4873ef11f0"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146039,
+        "sha256": "58549f9eceee5abacd046e7740abfd4d43a01ef0cdf022aaf1972b02a9041ea5"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 2389586,
+        "sha256": "bef962f6bfae58bc84bb4a7a4379cffeefc450092aea249e9714eec121db8b16"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 1090786,
+        "sha256": "506d8b3f4f059e4794ad404bf88813dfa31fac0f1ac4c186c7d8d6982dce4adb"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 1230507,
+        "sha256": "89675ac0fc3c01656c3a0e4e279aaafcb7e1cd023866f2bd32e125f3b5f6271e"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 946492,
+        "sha256": "e03ea012f0fafbff03595a0306ee4595bd53c772354542b710e840377b6064e1"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 942044,
+        "sha256": "cd65e6c7a02488e65e1dc79e35b2c6dedeba00155baa5c8f02fa31c8ad4861ea"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 1144311,
+        "sha256": "c8dbbb3069bd3d554c61646d0433e876c3c0d054506c6997db68e9173fe5f646"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 794995,
+        "sha256": "57d18a14cd24af2bca8c7b4017c405150fea3988104db0dd7816cb59ed6ec726"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 65735,
+        "sha256": "7919276e3f58f3cf74f6a86aca2d7e7c25fcb3dafde6e8844c4c6c0c453cd40b"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 2652695,
+        "sha256": "88dac3248232d67d744aff1377a32a306833c0d9a96067339699c050361d9921"
+      },
+      {
+        "file": "scripts/c-context-tools.Dockerfile",
+        "bytes": 778,
+        "sha256": "b4d9cdb331bf6d03eb4f748ca6a099b92a24c035e37af11dfd7fdbd453028587"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 157519,
+        "sha256": "12181533f4cdf12d77949d6e0e7caa7fb36c71a5438ac08ba0ce861bf4f85c97"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/verify-c-context-container.mjs",
+        "bytes": 4717,
+        "sha256": "e7efbb742efbc6f3efef1309afb978ae3a68a0c07d076ef5b1f19223cdb91e47"
+      },
+      {
+        "file": "scripts/verify-c-context-guards.mjs",
+        "bytes": 13411,
+        "sha256": "117fa07873fd2a37a1b424cd5b751ae345e2ef101c1e379074503b31dc0a43b0"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 11401,
+        "sha256": "56effe32660891e56732f7c202824d9add1066ef022ac49db13d36bfde26a349"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 26397,
+        "sha256": "da4ddec27b1d4a1ea4476e460663a96a8bc0026173c22319ddfe7fa08712ea95"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 8559,
+        "sha256": "a66abf197e54d49dac8052f506d11b6ece1a0de249f8f17eb3e0b5a8822664ed"
+      },
+      {
+        "file": "src/review-c-bindings.ts",
+        "bytes": 13228,
+        "sha256": "46fb32703f75a28f248453ef0058f7c2f9a703ddb55db7ec27102a8e2081003c"
+      },
+      {
+        "file": "src/review-c-resolution.ts",
+        "bytes": 14352,
+        "sha256": "44d5aef5f0d52c9d723697bc98a6cbc253a1edad2414cb75a9997ab1bc8e74f1"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 14054,
+        "sha256": "c15e9c04faeb8931303acb0b0bf9bf9ad74728463953de9be9333cb6f9d21db4"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 35837,
+        "sha256": "5769c200689ee2cf839582a4c3c77596431a7c8db827ec9aba0f27d74c0384b8"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32368,
+        "sha256": "7a423e0011bb27cadcb9dd2f4dae14c2261969319740044595f2604d028f3615"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33817,
+        "sha256": "7cfc865d7e6e7f4cc21b6f7cb20c2c1d2d8e122f1ccc5f7110146e4db44c7bf5"
+      },
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19924,
+        "sha256": "32227cab003732480101313ae12e52ec2fcc66fbbaae52d06b96a7ca94101c45"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 32071,
+        "sha256": "8da1f396cfc80c976badb3b48bd489705dceef628a83714ddb6f187509f3ddd7"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 85432,
+        "sha256": "a50353fb23bb2d06044d63d26555be4af59e95ec0da62a2883382b07f8da3883"
+      },
+      {
+        "file": "test/gate-context-c.test.ts",
+        "bytes": 27739,
+        "sha256": "17629c661c439897518e7cae7a0bc750ea51fcf6920cab4c20a156c1abe0a01a"
+      },
+      {
+        "file": "test/review-c-boundaries-fixture.ts",
+        "bytes": 11531,
+        "sha256": "1a493b70d56abcea1155ad7b5df6e98fdca9ec7ffda1687713ad0880816c1c30"
+      },
+      {
+        "file": "test/review-c-boundaries.test.ts",
+        "bytes": 208,
+        "sha256": "0d9e7fbd1e9fe0ad545caeeb0ff75f12f00fd1680bee7abc4bb61ca43a44c9c4"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10863,
+        "sha256": "e80b2c828eb819cb048f232e4677b00179a7bfe74beee2683d9e091c53862bd1"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 27567,
+        "sha256": "24dd42986542e494f7298aad742ab426025a131eeedd7d7d6a5666ffb623d8eb"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 8383,
+        "sha256": "1585b214f2ebbdb43828d276f9a16a580048c336255db0de6ea067a30151128a"
+      },
+      {
+        "file": "dist/src/review-c-bindings.js",
+        "bytes": 12853,
+        "sha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96"
+      },
+      {
+        "file": "dist/src/review-c-resolution.js",
+        "bytes": 13798,
+        "sha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14275,
+        "sha256": "df91c61ee593e672424780672cf673ffef699389e8ab7d2609fe4ac1e188a9c0"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 35139,
+        "sha256": "f525717d4290ea4bfdc67c2c81cb96792b01ebf34ac4fdc3d8ddbdda3f20ca4b"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 34062,
+        "sha256": "fc4f7663e16a26e6ab90d31aed344d9febbf86ececa20a1fb828b27151f916e6"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35805,
+        "sha256": "64b20e95cf9fd7195474854136c23b8a46f8c07a337f14768b7d815a6727f699"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19876,
+        "sha256": "d4654c6dca319a6633d3ea0f9fefd1ffc818ad440b11801f5ee16fa5ee6c2540"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32991,
+        "sha256": "99fdab4493c857a019c54665b0914afa1017aed8193da9f3664f94f726b86290"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 88005,
+        "sha256": "7cd36054a7b4c12b6c5321febeff6b197a670768ab7cfdc7fb8342ba34cc4d6f"
+      },
+      {
+        "file": "dist/test/gate-context-c.test.js",
+        "bytes": 27172,
+        "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+      },
+      {
+        "file": "dist/test/review-c-boundaries-fixture.js",
+        "bytes": 11225,
+        "sha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7"
+      },
+      {
+        "file": "dist/test/review-c-boundaries.test.js",
+        "bytes": 210,
+        "sha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11265,
+        "sha256": "403130d0073bf15ff729cb602d98d781db57287873dc8afcd5591ee8b4b63fde"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic C selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "compiler": "14.2.0",
+      "compilerTarget": "aarch64-linux-gnu",
+      "compilerIdentity": "gcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "toolBytes": [
+        {
+          "file": "/usr/bin/gcc",
+          "bytes": 1121152,
+          "sha256": "fb051a6c58961fb6aec758acf50d7d0375eecff740d0706388092829e3fb7a41"
+        },
+        {
+          "file": "/usr/bin/as",
+          "bytes": 465912,
+          "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+        },
+        {
+          "file": "/usr/bin/ld",
+          "bytes": 2499576,
+          "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+        },
+        {
+          "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1",
+          "bytes": 30564912,
+          "sha256": "8b4cebfca2ac1ac9edbdac9b335830d8ad27372e930e3c816ea3018b4fdb9fbc"
+        },
+        {
+          "file": "/usr/local/bin/node",
+          "bytes": 126241888,
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        {
+          "file": "/usr/bin/git",
+          "bytes": 4081272,
+          "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+        }
+      ]
+    },
+    "image": "sha256:59c3b35c6a6c55e551166476cd36ce943811e8144eb7be90c426c1212d2598a1",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-c",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-c broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 353.794342,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-c fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32.675235,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-c near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 248.300844,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-c prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 175.822914,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-c stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 88.202897,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-c empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 322.833451,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-c privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2359.589494,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-c lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1098.543205,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-c installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9484.109666,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-c broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic C captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "c-identifier-case",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "bfac21d0d2627a3bcca4f1cb11bf5ae4563a8a8085396e010150a0e91f8d6850",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-identifier-prefix",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "fe808e78fe4ec5254e8629e9c6488ae436e4b234e08a518e6062c154c3cfe342",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-point-of-declaration",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "5ede4a61fb767d64baeab9a665176c93a8eef73f84f133fb41640d1ef9178216",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-parameter-mask",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "a0f2c52d8e58d46219386e2cd168d389a03e0b92148a039499f7ae38c0ce87cc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-local-mask",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "7ac135da495e02fcd341f79ee7e9432df1f50d5ec8b18131415498a0e6913ebc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-literal-constant",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "16f1e469b409c5d2cf95d207aecc015954f9cb6b8b22c6059ee696d9bf502594",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-header-and-body-node-identity",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "410d9aa3b406578ced3e7e6b73a581bf68227b4b19858bcd0201ded0f3a88533",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-nested-block-scope",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "4a8a88ade140776aaeff5da84f0147ba03ff5ed73b79a3ef81e356afdd177ff2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-initializer-read-owner",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "8f48c420bdee8a15498dabe3a80de80b568c9642f08250ec9330ccf23e5522a5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-scope-uncertainty",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "a859ff3d4b70cead82e0990e1da3f838c3bf248ca2712b26a2b172b2afca2c19",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-exported-function-uncertainty",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "876de3f50eecc6b1c29458142a9a03ea7b16d7a8cdf4777741f1e28fe3a3f9ff",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-prototype-mask",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "eeaae491cd3c54596413b6920b02a21415d6ecaf5495c0e129f43e8b40eedfb0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-include-position",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "47c3559517c6096a9caf1e4ed1611844b585aa10558c34161a1300a3de406bcb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-unselected-header-uncertainty",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "21b060e633385f9144e5aef46a7737e4c21d578685771282aa0e2502b94b7f99",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-include-depth",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "218f1b764e5801df55757eb6dd1b840e221e1e211c838a127eb365adf772220a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-include-visit-budget",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "459b44859cef112e0ac4790c7abe7407c1855b12e6bb4fcf9f02d264ce046fff",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-definition-ambiguity",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "b4e918e3aa301fcd06effe0dfbdd5c1ad0ca746822618084323a289b20625b50",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-source-call-owner",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "c791a04aa478dc23743cd4438c78cf77878335e39da0997ac5963dd31b749f01",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-complete-call-range",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "b554c4890de506e2c31f7366291e2959d5126b4f0b12aab32ac23cfec89ef76a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-roots-intake",
+          "callback": "context-c stale acceptance",
+          "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "dcfc21dfa5e4d58ca35ea8152bec8eb092b9ff171ee018343fab467f99555e71",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-counts-intake",
+          "callback": "context-c stale acceptance",
+          "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "e6697e96e310a9bd61410c687430e246826d0aa7314321663a3bf9212a63f243",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-closure-intake",
+          "callback": "context-c stale acceptance",
+          "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "afabeafa9d5ac2e7f66e08453e2d5d4dc9ba5613884636f1e61c21b3a30c053b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-omissions-intake",
+          "callback": "context-c stale acceptance",
+          "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "90d9dba06d4872537fcf9e05d7ea3c0d3ad880b17871693d81b8100d4e6da75d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-grammar-manifest-intake",
+          "callback": "context-c stale acceptance",
+          "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "1585b214f2ebbdb43828d276f9a16a580048c336255db0de6ea067a30151128a",
+          "mutantSha256": "bc264005c1ca4285ab39ec89ded09e60c3a3e90cc2f264c414d6eeb7cb3cc19d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-absolute-include",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+          "mutantSha256": "195569bc2282a5eda224072d66f46b3c974dc1e1df2e285687100ca79252dc72",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-inert-directive-comment",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "b80b02cb0b4b244271671d729d6533b5e62d697e0cb9f309309156d339ce4982",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-unevaluated-size-read",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "c66989c02a506b93dc7fe37972dd48fcc147cbfb3681dc2ee828c5163ed48dce",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-address-is-not-a-read",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "2197132430737f948fa2f1c9970aaf0f0a5ee5feb3509ceeb6da2bf6a8ae2081",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-vla-scope",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "d752b82f92e915b6228beba5cc352cf2147a0b424d72919e78fd5ab6fbf5b8d3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "c-local-declarator-completion",
+          "callback": "context-c selected bindings guard acceptance",
+          "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+          "fixtureSha256": "744b0d8722441fc78d4506391246271d22ad74350dc443b7b73c96b2bf5fafd7",
+          "sourceSha256": "3a9c8f1c9a7d873dedc7d3bb239ffaedf7f325aaef49b652ca149faa9878aa96",
+          "mutantSha256": "378a9a99ac64ac21c70ebe4b57966855c22cfb8feaee03e7cd46bc47861cc8f0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "41f23ee13ac79b19a388027963baac8431a09d79e4ab46b759c519e1541c0993",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-c",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-c broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 337.368245,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-c fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31.987398,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-c near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 240.868633,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-c prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 180.059481,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-c stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84.364915,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-c empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 321.594694,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-c privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2411.194008,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-c lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1094.045428,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-c installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.739504,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-c broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-c installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:59c3b35c6a6c55e551166476cd36ce943811e8144eb7be90c426c1212d2598a1",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "runtimeToolBytePins": [
+    {
+      "file": "/usr/bin/gcc",
+      "bytes": 1121152,
+      "sha256": "fb051a6c58961fb6aec758acf50d7d0375eecff740d0706388092829e3fb7a41"
+    },
+    {
+      "file": "/usr/bin/as",
+      "bytes": 465912,
+      "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+    },
+    {
+      "file": "/usr/bin/ld",
+      "bytes": 2499576,
+      "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+    },
+    {
+      "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1",
+      "bytes": 30564912,
+      "sha256": "8b4cebfca2ac1ac9edbdac9b335830d8ad27372e930e3c816ea3018b4fdb9fbc"
+    },
+    {
+      "file": "/usr/local/bin/node",
+      "bytes": 126241888,
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    {
+      "file": "/usr/bin/git",
+      "bytes": 4081272,
+      "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+    }
+  ],
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "25de0e0b652f4fc95422f6f474a518a2b990899b5bc28e5b55d8fa1c350b1c71",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-c",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-c broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 369.3291,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-c fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.510751,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-c near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 241.874014,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-c prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 166.719694,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-c stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 85.263879,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-c empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 321.969695,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-c privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2367.492623,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-c lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1128.873675,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-c installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.697463,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-c broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-c installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:59c3b35c6a6c55e551166476cd36ce943811e8144eb7be90c426c1212d2598a1",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7cd36054a7b4c12b6c5321febeff6b197a670768ab7cfdc7fb8342ba34cc4d6f",
+        "mutantSha256": "ec6c9d05647ec9c585a9bab655a550dc0f75e157e4d5b4bd969458a08bfc7472",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7cd36054a7b4c12b6c5321febeff6b197a670768ab7cfdc7fb8342ba34cc4d6f",
+        "mutantSha256": "e2525a2dfbb4b5087731cad41bf01ded5fbbf461665fb20a4d77713563ad590b",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7cd36054a7b4c12b6c5321febeff6b197a670768ab7cfdc7fb8342ba34cc4d6f",
+        "mutantSha256": "29a091a8a9564cd35c2b63a467b1be4eadcadb1b74f9e926ac3d7002ed4bd299",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1152,
+      "pass": 833,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 319,
+      "todo": 0
+    },
+    "durationMs": 183242.919833,
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "pinnedSupplementaryGccUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "da0a7227eb69e30e5bf0ff96d3d5f80f66dfe3f8efecc06d19876942d52d7a45"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

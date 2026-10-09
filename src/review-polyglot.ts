@@ -1,3 +1,9 @@
+import {
+  captureCBindings,
+  cFunctionName,
+  type CSyntaxUnit,
+} from "./review-c-bindings.js";
+import { resolveCBindings } from "./review-c-resolution.js";
 import { captureVbBindings, type VbSyntaxUnit } from "./review-vb-bindings.js";
 import { resolveVbBindings } from "./review-vb-resolution.js";
 import {
@@ -407,6 +413,7 @@ async function collectReviewPolyglotCore(
   rubyRoots?: string[],
   swiftRoots?: SwiftModuleRoot[],
   vbRoots?: string[],
+  cRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -436,6 +443,7 @@ async function collectReviewPolyglotCore(
   const rubyUnits: RubySyntaxUnit[] = [];
   const swiftUnits: SwiftSyntaxUnit[] = [];
   const vbUnits: VbSyntaxUnit[] = [];
+  const cUnits: CSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -528,7 +536,12 @@ async function collectReviewPolyglotCore(
               address.end,
               kind,
             ]),
-            name: name(node),
+            name:
+              cRoots &&
+              asset.grammar === "c" &&
+              node.type === "function_definition"
+                ? cFunctionName(node)
+                : name(node),
             kind,
             initializer: initial
               ? { start: initial.startIndex, end: initial.endIndex }
@@ -574,7 +587,12 @@ async function collectReviewPolyglotCore(
           output.functions.push({
             ...address,
             id,
-            name: name(node),
+            name:
+              cRoots &&
+              asset.grammar === "c" &&
+              node.type === "function_definition"
+                ? cFunctionName(node)
+                : name(node),
             kind:
               node.type.includes("constructor") ||
               node.type === "init_declaration"
@@ -701,6 +719,10 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const cUnit =
+          cRoots && asset.grammar === "c"
+            ? captureCBindings(nodes, fnIds, decls, range)
+            : undefined;
         const vbUnit =
           vbRoots && asset.grammar === "vbnet"
             ? captureVbBindings(nodes, fnIds, decls, range)
@@ -756,6 +778,7 @@ async function collectReviewPolyglotCore(
         if (rubyUnit) rubyUnits.push(rubyUnit);
         if (swiftUnit) swiftUnits.push(swiftUnit);
         if (vbUnit) vbUnits.push(vbUnit);
+        if (cUnit) cUnits.push(cUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -801,6 +824,11 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (cRoots)
+    return resolveCBindings(result, cUnits, cRoots, primary, [
+      ...base,
+      ...current,
+    ]);
   if (vbRoots) return resolveVbBindings(result, vbUnits, vbRoots, primary);
   if (swiftRoots)
     return resolveSwiftBindings(result, swiftUnits, swiftRoots, primary);
@@ -1136,6 +1164,38 @@ export async function collectReviewVbBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewCBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "c-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewCBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,
