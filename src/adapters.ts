@@ -1,3 +1,4 @@
+import { pythonExtensionCheck } from "./python-extensions.js";
 import { viteLibraryCheck } from "./vite-library.js";
 import { nodeTestCheck } from "./node-test.js";
 import { applyRustBuildPolicy } from "./rust-build.js";
@@ -332,9 +333,11 @@ export async function checksFor(
     return explicit
       ? [
           check,
-          pytestCheck(project),
+          (await pythonExtensionCheck(source, project, "pytest")) ??
+            pytestCheck(project),
           ruffCheck(project),
-          mypyCheck(project),
+          (await pythonExtensionCheck(source, project, "mypy")) ??
+            mypyCheck(project),
           await pyrightCheck(source, project),
           ...(requested?.includes("python.fastapi-routes")
             ? [await fastapiCheck(source, project)]

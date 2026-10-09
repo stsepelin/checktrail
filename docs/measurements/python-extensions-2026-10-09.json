@@ -1,0 +1,1230 @@
+{
+  "schemaVersion": 1,
+  "profile": "python-extensions",
+  "capturedAt": "2026-10-09T15:44:32.555136+00:00",
+  "sourceBaseCommit": "d67d57b4ba2bd85e2029424976f210a0cbd75618",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "b08ea548e91634f535dc0722e04448895dbaf94952b847556f77c846b0d5e05e",
+    "docs/LANGUAGES.md": "025eae51905a0915d3f3b6366de65fea596044bd0fa1d58ae52621572115c319",
+    "docs/PYTHON-EXTENSIONS.md": "5ed1371cf7cb3414cb46a248a5d91aea5c6a778f7abe5e899a6d00b91e0f9488",
+    "docs/STATUS.md": "13829fd687106f15c562ac3c64f6d8fa3205d2bc99306b9b01708fc15ec33cc8",
+    "docs/gate-a-profiles.v1.json": "016694a2dbba47bd848fea63d3c1fb7741cae6c23636bd65fc290b0ad77558d8",
+    "schemas/plan.schema.json": "e37748a190595a5d3e8674217e939e9926322502310b983c3e5fe34624886439",
+    "schemas/python-config.schema.json": "0acf73450c7746440dfc846cd40bd6a737691d5282154619bec297a1517a50ba",
+    "scripts/generate-schemas.mjs": "703f558cb298e0e7a5477085eeb927efef862fc51d17febd56f8a4e209972621",
+    "scripts/prepare-python-extensions-tools.mjs": "e1e31a0dd49d902f87d6bd20f31114ad43c385c87fe3dfc70732f7f742ff60e7",
+    "scripts/python-extensions-tools.Dockerfile": "64f1062168730ea5255da429cc4b945c2cf7892d6232fcef53f7e7baadde7f4c",
+    "scripts/python-extensions-wheels.json": "71d078fd1a38670e92774a24ad01228686ff3e05e84525a7d199c91267f1b61a",
+    "scripts/required-native-tests.json": "eb26e72cde0bb6b926839c14695c5a9ec0fb2f5f0f635cd3b6c49ebf590d6bd3",
+    "scripts/verify-import-context-package.mjs": "770513dcb8f039d978f8e2d4ff2afdda0b6eee5ee05aee41982359941b39fa2f",
+    "scripts/verify-python-extensions-container.mjs": "58f7eb0a474727794eda64a6074404716dad5ce3e3466e790ba39fb6007e6650",
+    "scripts/verify-python-extensions-guards.mjs": "bf64c4242472b0cdcd7b9ebfabe6cb0ec94ddb0669e4b867455ad17ac4a08aa7",
+    "scripts/verify-required-native-tests.mjs": "5dba9e8c69b4f7b79ee26ede651c7e6684f4096cb41737b11d147db63a571613",
+    "src/adapters.ts": "3dfda57465fb8e5b34d44985b00ebd6a1235692b5ca0a520eabb53c5724f849a",
+    "src/evidence.ts": "b9d434b90099fcaabfba7fefc2695a5d6d76d07b762bd024d3002f49bba36fca",
+    "src/python-extension-evidence.ts": "79d3166721792e470111341032b4647df1a6e3fb6e99830935d58f5eede7c9b2",
+    "src/python-extension-pins.ts": "59ab6a66d27dda8fe42719b058f9dd299a8b722d115c8c3a8df5e89f3832a40b",
+    "src/python-extension-runner.ts": "75252b363101a2d54d281bc8f9a32e387fa7d609246c70537b7673a21f4e4fac",
+    "src/python-extensions.ts": "145d15c142ffbc1e1b3e27f6e81da82fbc14126d61673a5f94f4b62654c67651",
+    "src/schemas.ts": "d3a41e528e13c320e98c010a2c3976236e30a1859a8c798819ceb938dbd2b453",
+    "src/tool-versions.ts": "10d03f2d4ae4fed925c98fb7b8fadeacc2a1034fa4250645f1a7e2e974e2b2e7",
+    "src/types.ts": "8c4be756e2203b748c22799627f7c2387b5f83067c765071f7f49fd1d6eebf33",
+    "test/gate-python-extensions.test.ts": "d633fbbec4052f222f3a4019d098698a39f3c02a21f03a035688f53c14754a6c",
+    "test/python-extension-planning.test.ts": "d6aee0ad1a2e3366f20c7fa463a5766769e01c5317d5a9e8914f0b474ec814fe",
+    "test/python-extensions-fixture.ts": "690b0ae16707c530d980ca58a98ee3d310729a20c51e47ac1de98f8fe6885718",
+    "test/python-extensions.test.ts": "3583d7c36b86fa83bff4bbc6048df65a64439a2fb61c98c7889ff7b365ac5438",
+    "test/schemas.test.ts": "7dd9f2cb80357d82731b6add3508a798363fe7aaa5e1f3503311956d8cb8bada"
+  },
+  "builtFiles": {
+    "dist/src/adapters.js": "d10aa37fb5394ebf5b78144b5b5b1d0d001ee95dab348c47adf0c26895c270f1",
+    "dist/src/evidence.js": "66857dc642108cfce6ee48d7d4e68c5904ec4deebcad8c076a6b9a4f969b3268",
+    "dist/src/python-extension-evidence.js": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+    "dist/src/python-extension-pins.js": "4fd2cc7127276bf8e61602db898c11146cd19b6d977326d940bf9363d6438551",
+    "dist/src/python-extension-runner.js": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+    "dist/src/python-extensions.js": "8617dcb4447f11887475734e2991c701d7940ebe68f75ebb112db30474fa2e9a",
+    "dist/src/schemas.js": "64fa3972f0db61c46ae0beea3642e5340ccc7cc4efc32f820951f0075dc529e5",
+    "dist/src/tool-versions.js": "68fcfd54b3894e2cc92b512b71bebfd8281620cdb517fd9332c8e37dd27adc7e",
+    "dist/src/types.js": "71863c9399fb9aadd044a329a44817e89dbd1fc71c91539bff13398ad152b51c",
+    "dist/test/gate-python-extensions.test.js": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+    "dist/test/python-extension-planning.test.js": "b2f58d34d5ac1713da3d0596fcd2dd6bb47ac93c006b7e2918cc2566ad362936",
+    "dist/test/python-extensions-fixture.js": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+    "dist/test/python-extensions.test.js": "12b5b56b2a9ca1ad818d0dbd1da45892e2eef158cf466a61c88f36ee12f355d6",
+    "dist/test/schemas.test.js": "5881af710269babefc6dad07fcc4a6c4eb5d7d3b1a477a68461a5e01d9645dea"
+  },
+  "native": {
+    "runtime": {
+      "python": "3.12.13",
+      "architecture": "aarch64",
+      "platform": "linux",
+      "packages": {
+        "pytest": "9.1.1",
+        "mypy": "2.3.1",
+        "ruff": "0.16.8",
+        "pluggy": "1.6.0"
+      },
+      "pythonBinary": {
+        "bytes": 67168,
+        "sha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b"
+      },
+      "nodeBinary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+      "selectedNativeApis": [
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/__init__.py",
+          "bytes": 37,
+          "sha256": "e32a78dea340659d15881a559f9e8173b300e07d943177b459354f7643833fa9",
+          "observed": {
+            "bytes": 37,
+            "sha256": "e32a78dea340659d15881a559f9e8173b300e07d943177b459354f7643833fa9"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/main.py",
+          "bytes": 66134,
+          "sha256": "d54f0f70c6cefa36ec7f3db5dd6762c300a0acf86ba1a35365d11c34f3a8e1fe",
+          "observed": {
+            "bytes": 66134,
+            "sha256": "d54f0f70c6cefa36ec7f3db5dd6762c300a0acf86ba1a35365d11c34f3a8e1fe"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/build.py",
+          "bytes": 222837,
+          "sha256": "5b541814750a23982ccafc34202595de36d47153b8de11bfd7ee63f222fec107",
+          "observed": {
+            "bytes": 222837,
+            "sha256": "5b541814750a23982ccafc34202595de36d47153b8de11bfd7ee63f222fec107"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/plugin.py",
+          "bytes": 36250,
+          "sha256": "c80702ba42165b6cdf947a5e8a5b483bac0ac57ce826be6cfdc81f2dea79360c",
+          "observed": {
+            "bytes": 36250,
+            "sha256": "c80702ba42165b6cdf947a5e8a5b483bac0ac57ce826be6cfdc81f2dea79360c"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/find_sources.py",
+          "bytes": 9734,
+          "sha256": "e05a9ad47d63b34d3d5140d51a9696d41c13d129be866ec7cd452dc5e1208856",
+          "observed": {
+            "bytes": 9734,
+            "sha256": "e05a9ad47d63b34d3d5140d51a9696d41c13d129be866ec7cd452dc5e1208856"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/modulefinder.py",
+          "bytes": 43233,
+          "sha256": "09ff2266e5ac2b827c69066bbd2fef5471a30dc8d6dd48d1aa92925a4624549e",
+          "observed": {
+            "bytes": 43233,
+            "sha256": "09ff2266e5ac2b827c69066bbd2fef5471a30dc8d6dd48d1aa92925a4624549e"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "mypy",
+          "version": "2.3.1",
+          "file": "mypy/options.py",
+          "bytes": 28241,
+          "sha256": "7f42b92f04d796bd84524b45419f2cc761824c2113e5f02e6120d1f9f0ba3ad9",
+          "observed": {
+            "bytes": 28241,
+            "sha256": "7f42b92f04d796bd84524b45419f2cc761824c2113e5f02e6120d1f9f0ba3ad9"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "_pytest/config/__init__.py",
+          "bytes": 80947,
+          "sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1",
+          "observed": {
+            "bytes": 80947,
+            "sha256": "98b05c2c37d09e1d5c05975efc2d9af98d4aff6ea47de410a8e93956420873c1"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "_pytest/main.py",
+          "bytes": 42771,
+          "sha256": "8ee2725057ff1811e2ae9ebdf1befb7518195f8f333f9f8ca024d76a4b80780e",
+          "observed": {
+            "bytes": 42771,
+            "sha256": "8ee2725057ff1811e2ae9ebdf1befb7518195f8f333f9f8ca024d76a4b80780e"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "_pytest/python.py",
+          "bytes": 67758,
+          "sha256": "b04488f5e46bf1ffe2e8344f81756e10b970dbfaf2f7f2f4d312becd6404df76",
+          "observed": {
+            "bytes": 67758,
+            "sha256": "b04488f5e46bf1ffe2e8344f81756e10b970dbfaf2f7f2f4d312becd6404df76"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "_pytest/runner.py",
+          "bytes": 20346,
+          "sha256": "c8d7fd553c0516f7884502ee0e7954eb5a5b1542f21fcb5c4357500ed2fe1570",
+          "observed": {
+            "bytes": 20346,
+            "sha256": "c8d7fd553c0516f7884502ee0e7954eb5a5b1542f21fcb5c4357500ed2fe1570"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "pytest/__init__.py",
+          "bytes": 5644,
+          "sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d",
+          "observed": {
+            "bytes": 5644,
+            "sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pluggy",
+          "version": "1.6.0",
+          "file": "pluggy/_manager.py",
+          "bytes": 20219,
+          "sha256": "2b8229fe99048ef4f6a0e21f40fa7c0b0016a1756710d81045ccbdb651a28b4a",
+          "observed": {
+            "bytes": 20219,
+            "sha256": "2b8229fe99048ef4f6a0e21f40fa7c0b0016a1756710d81045ccbdb651a28b4a"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pluggy",
+          "version": "1.6.0",
+          "file": "pluggy/_callers.py",
+          "bytes": 5991,
+          "sha256": "804665946692615b2c676526a4d7e6602d1b755821da361b0057982afb913236",
+          "observed": {
+            "bytes": 5991,
+            "sha256": "804665946692615b2c676526a4d7e6602d1b755821da361b0057982afb913236"
+          },
+          "matches": true
+        },
+        {
+          "distribution": "pytest",
+          "version": "9.1.1",
+          "file": "_pytest/assertion/rewrite.py",
+          "bytes": 47740,
+          "sha256": "17f1eefbd1c2fe5326cb7592ff3af92a773582cf9d01727b09d3ab864906ee50",
+          "observed": {
+            "bytes": 47740,
+            "sha256": "17f1eefbd1c2fe5326cb7592ff3af92a773582cf9d01727b09d3ab864906ee50"
+          },
+          "matches": true
+        }
+      ]
+    },
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64"
+    },
+    "image": "sha256:c18a990dc0e6a12e3c28b6dfeb6d8b91e504ee090956f21bb3e5e1b8def1c833",
+    "baseline": {
+      "timeoutMs": 120000,
+      "profile": "python",
+      "fileWorkerLimit": 1,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "2fa43568bc1a0ce3cda5e665b1a4e952d444e49318fc322385ed093467a85794"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2fa43568bc1a0ce3cda5e665b1a4e952d444e49318fc322385ed093467a85794"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "b0dbd148c91fa61124a8bfc9a24ae2077b3787063e76dbd95aeda19c470d7c90"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b0dbd148c91fa61124a8bfc9a24ae2077b3787063e76dbd95aeda19c470d7c90"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "55389ad6069bb219c8d85af39d026097fc45d25d3a0474149c358906b341ff55"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "55389ad6069bb219c8d85af39d026097fc45d25d3a0474149c358906b341ff55"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "native pytest accounts for assertion and fixture lifecycle, empty files and deselection",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3723.170101,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "pytest planning does not import project conftest",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.810427,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native Ruff accounts for selected files and active rules and never fixes source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 163.298228,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "Ruff planning describes explicit source and stub files without running tools",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.712176,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-3",
+            "name": "native mypy checks explicit files and rejects broad suppression without writing caches or installing stubs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10300.357735,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native pytest accounts for assertion and fixture lifecycle, empty files and deselection",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "pytest planning does not import project conftest",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Ruff accounts for selected files and active rules and never fixes source",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Ruff planning describes explicit source and stub files without running tools",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native mypy checks explicit files and rejects broad suppression without writing caches or installing stubs",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "python-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "python-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2194.473835,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "python-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2146.88702,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "python-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2135.708789,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "python-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 470.459656,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "python-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2378.284555,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "python-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3032.525973,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "python-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12589.162603,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "python-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11346.962229,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "python-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 42882.723026,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "python-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "python-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic native Python namespace, virtualenv, plugin and source-participation controls",
+      "controls": [
+        {
+          "id": "python-bytecode-source-identity",
+          "callback": "native Python extension ignores stale timestamp bytecode and preserves existing caches",
+          "callbackSha256": "12b5b56b2a9ca1ad818d0dbd1da45892e2eef158cf466a61c88f36ee12f355d6",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+          "mutantSha256": "e080b805a171d1e2c8b598e4a9e8ae80f7aee0629d68cf69e3c03ef5ae565e66",
+          "mutantOutputSha256": "7510f1019faed18f418b5491f1e7a8c1b747dbc7f735fbf2b2249ed35c2838d0",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "pythonMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-receipt-binding",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "516cde41348c5c369edf360b1067be85d46d1deb8658534381f4ff3939d02ae3",
+          "mutantOutputSha256": "d01db20e359002a2f15450fb233a672c3b676c8aece0986b9ede29ca91f2def5",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-kind-binding",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "d245e4917f9aa780e1b25b33bfadb861d0f95d75efbd4c73a6eca624783e080d",
+          "mutantOutputSha256": "0409aa186900f8d7c139aab20a48c859e976396e4c9c4753d91d0f486a740197",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-selected-native-pins",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "21b6bd1eddb6919e6e9df7d9cad307f1935f1e00f7a85eaf3cf27827080b80cb",
+          "mutantOutputSha256": "9ee070258b446730be289c14835561aed98c311fd0c4f077ae29c4d587d56c23",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-input-stability",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "243e23bc85f21355b5fa8b0d8d07093bb20479767444e3f8cb54267cab5ed62e",
+          "mutantOutputSha256": "bf15003a4d72745af43d30b59f940e958f1d77241663cb761469f43406839cd4",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-environment-identities",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "898a6c2e929fc1c95c6206f5dd37e7df8668beef32939ff1d2dd289bcccc668b",
+          "mutantOutputSha256": "00098aa02b248438bde25f77578191c91adb224f2874741d6e5e26dc5910a705",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-plugin-participation",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "6caa82cf29a830ec1c972ffc2d4e8a8cb758bb144b5aa51ef244076afc9c8b31",
+          "mutantOutputSha256": "436dcf8fc7365029a6aa8a0bdfa58ac0ff3ae46364fe82bdb7bb84d5ac819cb2",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-native-completion",
+          "callback": "python-extensions empty acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "f1bd8497757e7b328d8564e2d731e0b9c414005e6f4c985e6900f51e81bff3ee",
+          "mutantOutputSha256": "1c5bfd3791cc5ea6c7cf93d66e954c14dedc8c5aec54f4d6ec2ccaff56fe076a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-module-participation",
+          "callback": "python-extensions empty acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "706e206d91abedc246e8ed499b3bb27295cda1a054526c5c7c8e2f4a02fef729",
+          "mutantOutputSha256": "716d0d0f6d088f3a74f1cded7655c3145d2937efd215ffb3bc765ef164dccbcc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-dependency-count",
+          "callback": "python-extensions empty acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "1c05428289b7af399efd067a7ae916990fa8f23efc9a69570329d1b12140fc02",
+          "mutantOutputSha256": "9efa6db0adb5ee8391d92a5062d136d6ffddf57b0a1f6b2724a70e6b808db873",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-dependency-origin",
+          "callback": "python-extensions empty acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "16c83118e4fbd2cc300305c0b0b9000e5263357832d2b8dd1e821acaf19586c1",
+          "mutantSha256": "7bd6c0bdda275be9d9a1c8e90ff8dd34bf3d377603d40dcf19ad9511cfe9863d",
+          "mutantOutputSha256": "bfdc2dc3474eca66dde3bf66bba1b02814b4ec94588d129aaf3b9e181df230df",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-preimport-input-bytes",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+          "mutantSha256": "f87949189e02658a97d0374c1c4ae0ee1dfd8afaee822c1623d7122753563eb3",
+          "mutantOutputSha256": "9db832bb7876a5592d5670012661fdfb14b5a7012978a4472eb4f29218d41f5f",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "pythonMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-native-api-bytes",
+          "callback": "python-extensions prerequisite acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+          "mutantSha256": "90166ccda76067e8825dc12d19f1218fc126d710aa57aeb59262b97b861b7936",
+          "mutantOutputSha256": "a9cb8a1d4f8f361a2942f0ba730c09575ed2feefae65710ce07c331a24d19f6c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "pythonMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-dependency-tree",
+          "callback": "python-extensions stale acceptance",
+          "callbackSha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+          "mutantSha256": "7335c28bb347495a7bfd9ca69b08909aeca8507d656e7113a66ea2b1a7137b77",
+          "mutantOutputSha256": "a58dc390516eaa73b8621d5f17d411568ee6a0e4fbbec24b3b43fb5994dbb0dd",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "pythonMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "python-postrun-input-bytes",
+          "callback": "native Python extension rechecks excluded virtualenv bytes after successful pytest",
+          "callbackSha256": "12b5b56b2a9ca1ad818d0dbd1da45892e2eef158cf466a61c88f36ee12f355d6",
+          "fixtureSha256": "18717044dc87e3fb7d45219e698aede0b3079e679a790fd299999e150976b0bd",
+          "sourceSha256": "6951fe7bd3a09a64989b98430a84f1b5049a0640e043afab65750abd92c14b08",
+          "mutantSha256": "e02abd4a97100632961e02812b50ec9da08e0e1ffe993e5f0c6d212793285235",
+          "mutantOutputSha256": "4d4d8e47516300aa28d003f5cccb20cd276506b8ad2c3ce343c9ab73748d7c9a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "pythonMutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "5b9be03e3318de1a12471b81c648f49dabaecfdd050b7460528c7074a35e4e26",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "python-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "097984b079afb7ae78410ae96c1ef8e0e19f5540b0762c255c983023878f6dea"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "python-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2229.11745,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "python-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2185.410703,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "python-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2159.993599,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "python-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 488.346875,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "python-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2410.091386,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "python-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2974.655326,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "python-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12780.080998,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "python-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11259.702855,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "python-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.856631,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "python-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "python-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c18a990dc0e6a12e3c28b6dfeb6d8b91e504ee090956f21bb3e5e1b8def1c833",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "callbacks": [
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions broken acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions fixed acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions near-miss acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions prerequisite acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions stale acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions empty acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions privacy acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions lifecycle acceptance"
+      },
+      {
+        "file": "dist/test/gate-python-extensions.test.js",
+        "name": "python-extensions installed acceptance"
+      }
+    ],
+    "wheelPins": [
+      {
+        "distribution": "ast_serialize",
+        "version": "0.11.2",
+        "wheel": "ast_serialize-0.11.2-cp39-abi3-musllinux_1_2_aarch64.whl",
+        "url": "https://files.pythonhosted.org/packages/42/3a/250643ffad02bda520c50a9a5f02a5d43259a06f34ce393c91761d134d7e/ast_serialize-0.11.2-cp39-abi3-musllinux_1_2_aarch64.whl",
+        "bytes": 1467653,
+        "sha256": "00bbf1f6669f813b48925b759f7ae4591067d456d443924055cab386e7e0a719",
+        "requiresPython": ">=3.7"
+      },
+      {
+        "distribution": "iniconfig",
+        "version": "2.3.0",
+        "wheel": "iniconfig-2.3.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl",
+        "bytes": 7484,
+        "sha256": "f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12",
+        "requiresPython": ">=3.10"
+      },
+      {
+        "distribution": "librt",
+        "version": "0.15.0",
+        "wheel": "librt-0.15.0-cp312-cp312-musllinux_1_2_aarch64.whl",
+        "url": "https://files.pythonhosted.org/packages/26/60/03b3abb82b41714671b907bf6989b228e31e6a8af52dec82b5b0728dc250/librt-0.15.0-cp312-cp312-musllinux_1_2_aarch64.whl",
+        "bytes": 543155,
+        "sha256": "cc30523e3f1a23fb7511cc659834a0d01a1042bb9de359bc1c131cc4ec6c9656",
+        "requiresPython": ">=3.9"
+      },
+      {
+        "distribution": "mypy",
+        "version": "2.3.1",
+        "wheel": "mypy-2.3.1-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/8e/41/9675c7a1e78edecfba0b79e587a52594c56e189368261dc7b3a7fffb9527/mypy-2.3.1-py3-none-any.whl",
+        "bytes": 2754338,
+        "sha256": "6ed5c7e3419083268e5c9258bd1c1ef91af44a9e89374dbcaf37b775716e72eb",
+        "requiresPython": ">=3.10"
+      },
+      {
+        "distribution": "mypy_extensions",
+        "version": "1.1.0",
+        "wheel": "mypy_extensions-1.1.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl",
+        "bytes": 4963,
+        "sha256": "1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505",
+        "requiresPython": ">=3.8"
+      },
+      {
+        "distribution": "packaging",
+        "version": "26.3",
+        "wheel": "packaging-26.3-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl",
+        "bytes": 129956,
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+        "requiresPython": ">=3.9"
+      },
+      {
+        "distribution": "pathspec",
+        "version": "1.1.1",
+        "wheel": "pathspec-1.1.1-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/f1/d9/7fb5aa316bc299258e68c73ba3bddbc499654a07f151cba08f6153988714/pathspec-1.1.1-py3-none-any.whl",
+        "bytes": 57328,
+        "sha256": "a00ce642f577bf7f473932318056212bc4f8bfdf53128c78bbd5af0b9b20b189",
+        "requiresPython": ">=3.9"
+      },
+      {
+        "distribution": "pluggy",
+        "version": "1.6.0",
+        "wheel": "pluggy-1.6.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl",
+        "bytes": 20538,
+        "sha256": "e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746",
+        "requiresPython": ">=3.9"
+      },
+      {
+        "distribution": "Pygments",
+        "version": "2.21.0",
+        "wheel": "pygments-2.21.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl",
+        "bytes": 1250147,
+        "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+        "requiresPython": ">=3.9"
+      },
+      {
+        "distribution": "pytest",
+        "version": "9.1.1",
+        "wheel": "pytest-9.1.1-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/24/25/1de2678b631f5a49215c6c96fff41ba892b0a34df68d6d80292b1b48aa7f/pytest-9.1.1-py3-none-any.whl",
+        "bytes": 386536,
+        "sha256": "37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c",
+        "requiresPython": ">=3.10"
+      },
+      {
+        "distribution": "ruff",
+        "version": "0.16.8",
+        "wheel": "ruff-0.16.8-py3-none-musllinux_1_2_aarch64.whl",
+        "url": "https://files.pythonhosted.org/packages/f3/9d/76a2e26c79a23be6e6e3664c57bec9e9fc8de155cfb9e4b67ea91b64f9d7/ruff-0.16.8-py3-none-musllinux_1_2_aarch64.whl",
+        "bytes": 10072582,
+        "sha256": "6ca111ba0849539165e9e59d2b442542f3c1e8060ebbdea82494f1ffbccb1e1f",
+        "requiresPython": ">=3.7"
+      },
+      {
+        "distribution": "typing_extensions",
+        "version": "4.16.0",
+        "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl",
+        "bytes": 45571,
+        "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+        "requiresPython": ">=3.9"
+      }
+    ],
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": true
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "finalMatrixAccepted": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1328,
+    "passed": 890,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 438,
+    "todo": 0,
+    "durationMs": 226426.301125,
+    "logSha256": "fbaec94cfd63049fa1df71d5e216deba5fa2b13c11addbf67c9fabec05089037",
+    "skippedCasesArePassingEvidence": false
+  },
+  "originalDefectRepairObservations": [
+    {
+      "description": "A stale timestamp bytecode cache previously supplied old dependency code despite different recorded source bytes. A direct native import demonstrates the stale code; validation now uses a fresh owned bytecode prefix and fails on the current source defect while preserving the existing cache.",
+      "before": {
+        "namedAssertionFailed": true,
+        "privateDiagnosticSha256": "3d55e2257cc18125133e03e18fa2febc3555132605ea573be20ea01f4e4c28ac"
+      },
+      "after": {
+        "nativeRegressionPassed": true,
+        "guardRemovalCompiled": true,
+        "guardRemovalFailedNamedAssertion": true
+      }
+    }
+  ],
+  "physicalOutputsOmittedReason": "Host synthetic diagnostics contain workstation paths; only their immutable hashes and bounded outcome accounting are published.",
+  "installedArtifactScope": "The recorded tarball was evaluated before this measurement and status/inventory receipt declarations were emitted. Compiled engine and original callback bytes remain those evaluated; final Gate A package/matrix acceptance is separate.",
+  "inventoryProgress": {
+    "implemented": 25,
+    "selected": 51,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "structuralAuditCertifiesImplementation": false
+  },
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

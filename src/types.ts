@@ -61,6 +61,7 @@ export const PARSERS = [
   "swift-tools-json",
   "silent-syntax",
   "ruff-json",
+  "python-extension-json",
   "mypy-json",
   "pyright-json",
   "phpstan-json",
