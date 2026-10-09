@@ -605,6 +605,33 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  laravel-assembly-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-laravel-assembly
+      CHECKTRAIL_LARAVEL_ASSEMBLY_IMAGE: checktrail-laravel-assembly:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned public PHP and Node runtime
+        run: docker build --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_LARAVEL_ASSEMBLY_IMAGE" .
+      - name: Prepare locked public Laravel dependencies
+        run: |
+          mkdir -p .checktrail/laravel-tools
+          cp scripts/laravel-tools/composer.json scripts/laravel-tools/composer.lock .checktrail/laravel-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/laravel-tools,target=/tools" --workdir /tools "$CHECKTRAIL_LARAVEL_ASSEMBLY_IMAGE" composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, compiling controls and offline installed acceptance
+        run: node scripts/verify-laravel-assembly-container.mjs
+
   nuxt-assembly-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20

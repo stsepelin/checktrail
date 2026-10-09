@@ -1,4 +1,4 @@
-export const laravelRunner = String.raw`
+export const laravelNativeHelpers = String.raw`
 function rv_property(object $object, string $property): mixed {
     return (new ReflectionProperty($object, $property))->getValue($object);
 }
@@ -57,51 +57,9 @@ function rv_add(array &$entries, string $key, array $attributes): void {
     if (++$GLOBALS['rv_count'] > 20000) throw new RuntimeException('Assembly entry limit exceeded');
     $entries[] = ['key' => $key, 'attributes' => (object) $attributes];
 }
-$rv_count = 0;
-$rv_temporary = null;
-$rv_autoload = $argv[1];
-ob_start(function ($text) { fwrite(STDERR, $text); return ''; }, 1);
-try {
-    // The shared runner owns this parent and removes it after forced termination.
-    $rv_owned = getenv('CHECKTRAIL_TEMP');
-    if (!is_string($rv_owned) || $rv_owned === '' || !is_dir($rv_owned) || is_link($rv_owned)) throw new RuntimeException('Missing owned temporary directory');
-    $rv_owned = realpath($rv_owned);
-    if (!is_string($rv_owned)) throw new RuntimeException('Cannot resolve owned temporary directory');
-    $rv_temporary = $rv_owned.'/laravel-cache';
-    if (!mkdir($rv_temporary, 0700)) throw new RuntimeException('Cannot create temporary cache directory');
-    require $rv_autoload;
-    if (!class_exists(Illuminate\Foundation\Application::class) || Illuminate\Foundation\Application::VERSION !== '13.32.0') {
-        fwrite(STDOUT, json_encode(['unavailable' => 'laravel-runtime', 'reason' => 'unsupported-version']));
-        exit(3);
-    }
-    $config = json_decode($argv[2], true, flags: JSON_THROW_ON_ERROR);
-    register_shutdown_function(function () use ($rv_temporary) {
-        foreach (glob($rv_temporary.'/*') as $file) if (is_file($file) || is_link($file)) @unlink($file);
-        @rmdir($rv_temporary);
-    });
-    $cachePaths = [];
-    foreach (['CONFIG', 'ROUTES', 'EVENTS', 'SERVICES', 'PACKAGES'] as $kind) {
-        $key = 'APP_'.$kind.'_CACHE';
-        $cachePaths[$kind] = $rv_temporary.'/'.strtolower($kind).'.php';
-        putenv($key.'='.$cachePaths[$kind]);
-        $_ENV[$key] = $_SERVER[$key] = $cachePaths[$kind];
-    }
-    $app = require getcwd().'/bootstrap/app.php';
-    if (!$app instanceof Illuminate\Foundation\Application || realpath($app->basePath()) !== getcwd() || $app->hasBeenBootstrapped()) throw new RuntimeException('Unsupported application bootstrap');
-    $app->useEnvironmentPath($rv_temporary)->loadEnvironmentFrom('.env');
-    $http = $app->make(Illuminate\Contracts\Http\Kernel::class);
-    $console = $app->make(Illuminate\Contracts\Console\Kernel::class);
-    $console->bootstrap();
-    $console->all();
-    $http->bootstrap();
-    if ($app->environment() !== 'testing') throw new RuntimeException('Expected isolated testing environment');
-    foreach (['CONFIG' => 'getCachedConfigPath', 'ROUTES' => 'getCachedRoutesPath', 'EVENTS' => 'getCachedEventsPath', 'SERVICES' => 'getCachedServicesPath', 'PACKAGES' => 'getCachedPackagesPath'] as $kind => $method) {
-        if ($app->$method() !== $cachePaths[$kind]) throw new RuntimeException('Application changed protected cache paths');
-    }
-    $router = $app->make('router');
-    $dispatcher = $app->make('events');
-    $schedule = $app->make(Illuminate\Console\Scheduling\Schedule::class);
-    $collections = [];
+`;
+
+export const laravelNativeCollections = String.raw`    $collections = [];
     $collections[] = rv_collect('routes', true, function (&$entries) use ($router) {
         if (get_class($router) !== Illuminate\Routing\Router::class || get_class($router->getRoutes()) !== Illuminate\Routing\RouteCollection::class) throw new RuntimeException('Unsupported router or cached route collection');
         foreach ($router->getRoutes() as $route) {
@@ -161,7 +119,57 @@ try {
         foreach ($app->contextual as $consumer => $bindings) foreach ($bindings as $abstract => $value) rv_add($entries, 'contextual:'.$consumer.':'.$abstract, ['type' => 'contextual', 'consumer' => $consumer, 'abstract' => $abstract, 'target' => rv_identity($value)]);
         foreach (rv_property($app, 'instances') as $abstract => $instance) rv_add($entries, 'instance:'.$abstract, ['type' => 'instance', 'abstract' => $abstract, 'target' => is_object($instance) ? get_class($instance) : 'scalar:'.rv_scalar_hash($instance)]);
     });
-    $result = ['version' => 1, 'laravelVersion' => Illuminate\Foundation\Application::VERSION, 'entryCount' => array_sum(array_map(fn ($collection) => count($collection['entries']), $collections)), 'runtime' => [
+`;
+
+export const laravelRunner =
+  laravelNativeHelpers +
+  String.raw`$rv_count = 0;
+$rv_temporary = null;
+$rv_autoload = $argv[1];
+ob_start(function ($text) { fwrite(STDERR, $text); return ''; }, 1);
+try {
+    // The shared runner owns this parent and removes it after forced termination.
+    $rv_owned = getenv('CHECKTRAIL_TEMP');
+    if (!is_string($rv_owned) || $rv_owned === '' || !is_dir($rv_owned) || is_link($rv_owned)) throw new RuntimeException('Missing owned temporary directory');
+    $rv_owned = realpath($rv_owned);
+    if (!is_string($rv_owned)) throw new RuntimeException('Cannot resolve owned temporary directory');
+    $rv_temporary = $rv_owned.'/laravel-cache';
+    if (!mkdir($rv_temporary, 0700)) throw new RuntimeException('Cannot create temporary cache directory');
+    require $rv_autoload;
+    if (!class_exists(Illuminate\Foundation\Application::class) || Illuminate\Foundation\Application::VERSION !== '13.32.0') {
+        fwrite(STDOUT, json_encode(['unavailable' => 'laravel-runtime', 'reason' => 'unsupported-version']));
+        exit(3);
+    }
+    $config = json_decode($argv[2], true, flags: JSON_THROW_ON_ERROR);
+    register_shutdown_function(function () use ($rv_temporary) {
+        foreach (glob($rv_temporary.'/*') as $file) if (is_file($file) || is_link($file)) @unlink($file);
+        @rmdir($rv_temporary);
+    });
+    $cachePaths = [];
+    foreach (['CONFIG', 'ROUTES', 'EVENTS', 'SERVICES', 'PACKAGES'] as $kind) {
+        $key = 'APP_'.$kind.'_CACHE';
+        $cachePaths[$kind] = $rv_temporary.'/'.strtolower($kind).'.php';
+        putenv($key.'='.$cachePaths[$kind]);
+        $_ENV[$key] = $_SERVER[$key] = $cachePaths[$kind];
+    }
+    $app = require getcwd().'/bootstrap/app.php';
+    if (!$app instanceof Illuminate\Foundation\Application || realpath($app->basePath()) !== getcwd() || $app->hasBeenBootstrapped()) throw new RuntimeException('Unsupported application bootstrap');
+    $app->useEnvironmentPath($rv_temporary)->loadEnvironmentFrom('.env');
+    $http = $app->make(Illuminate\Contracts\Http\Kernel::class);
+    $console = $app->make(Illuminate\Contracts\Console\Kernel::class);
+    $console->bootstrap();
+    $console->all();
+    $http->bootstrap();
+    if ($app->environment() !== 'testing') throw new RuntimeException('Expected isolated testing environment');
+    foreach (['CONFIG' => 'getCachedConfigPath', 'ROUTES' => 'getCachedRoutesPath', 'EVENTS' => 'getCachedEventsPath', 'SERVICES' => 'getCachedServicesPath', 'PACKAGES' => 'getCachedPackagesPath'] as $kind => $method) {
+        if ($app->$method() !== $cachePaths[$kind]) throw new RuntimeException('Application changed protected cache paths');
+    }
+    $router = $app->make('router');
+    $dispatcher = $app->make('events');
+    $schedule = $app->make(Illuminate\Console\Scheduling\Schedule::class);
+` +
+  laravelNativeCollections +
+  String.raw`    $result = ['version' => 1, 'laravelVersion' => Illuminate\Foundation\Application::VERSION, 'entryCount' => array_sum(array_map(fn ($collection) => count($collection['entries']), $collections)), 'runtime' => [
         'schemaVersion' => 1, 'format' => 'runtime-inventory', 'producer' => ['name' => 'checktrail.laravel-runtime', 'version' => '1.0.0'],
         'assembly' => ['name' => $config['assembly'], 'environment' => $config['environment']], 'sourceFingerprint' => $argv[3], 'capturedAt' => gmdate('Y-m-d\TH:i:s\Z'), 'collections' => $collections,
     ]];

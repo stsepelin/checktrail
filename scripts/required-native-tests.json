@@ -2807,6 +2807,10 @@
     {
       "file": "dist/test/process-tree.test.js",
       "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion"
+    },
+    {
+      "file": "dist/test/process-tree.test.js",
+      "name": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping"
     }
   ],
   "review-benchmark-multi": [
@@ -4045,6 +4049,44 @@
     {
       "file": "dist/test/gate-assembly-nuxt.test.js",
       "name": "assembly-nuxt installed acceptance"
+    }
+  ],
+  "assembly-laravel": [
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-laravel.test.js",
+      "name": "assembly-laravel installed acceptance"
     }
   ]
 }

@@ -88,7 +88,7 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. Observed descendants must exit before their waiting parents are stopped, under one bounded cleanup deadline; unavailable identity or surviving-process evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
+POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation; deeper children must disappear before their waiting descendant parents are stopped. Direct children are signalled before root termination, then their disappearance is required under the same bounded cleanup deadline; unavailable identity or surviving-process evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
 runner uses creation-time Job Object ownership and explicit completion/cleanup
 receipts; native acceptance and wider Windows profiles remain pending in
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md). No automatic dependency installation,

@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Laravel assembly contracts](LARAVEL-ASSEMBLY.md) compare all five native
+registration projections, selected inherited model defaults and controlled HTTP
+responses. Original multi-row hydration fixtures reach the real lazy-loading
+guard; middleware order, listener multiplicity, container and scheduler effects,
+request-time scope changes, trust/privacy and detached-worker cleanup have native
+controls. The [local record](measurements/laravel-assembly-2026-10-09.json) binds
+Linux source/fresh offline installed acceptance, compiling guard removals, legacy
+collector preservation and POSIX regressions. Selected native bytes are verified;
+complete dependency/license closures and the final runtime matrix remain open.
+Gate A remains open, and this work invokes no inference or field evaluation.
+
 Opt-in [Vue Router navigation assembly](VUE-ROUTER-ASSEMBLY.md) adds explicit
 final record, active hook and ordered native navigation contracts after readiness,
 with original guard-order defect/repair, callback/remover identity, field,

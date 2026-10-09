@@ -1,10 +1,13 @@
 # Observed POSIX descendant cleanup
 
-The shared process runner observes macOS or Linux descendants before stopping
-waiting parents. Cancellation, deadlines and output exhaustion use this path.
-A signal sent is distinct from the observed process exiting: each child identity
-must disappear before the next parent is killed. All depths share a two-second
-cleanup deadline. A surviving or unreadable observed identity, snapshot error or
+The shared process runner pauses its owned macOS or Linux root before observing
+and stopping descendants. Cancellation, deadlines and output exhaustion use this
+path. Deeper child identities must disappear before their waiting descendant
+parents are stopped. Direct children are signalled before the paused root is
+terminated, allowing the system reaper to finish them without resuming project
+work. A signal sent is distinct from an observed identity disappearing; all
+observed descendants must disappear under one two-second cleanup deadline. A
+surviving or unreadable observed identity, snapshot error or
 changed process group produces `PROCESS_TREE_CLEANUP_UNAVAILABLE`; the runner
 still attempts to terminate its original process group and never promotes that
 cleanup failure into a passing check.

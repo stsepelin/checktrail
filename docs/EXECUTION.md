@@ -118,8 +118,11 @@ an unavailable runtime or external service does not count as verification.
   protected test settings and Linux native regression evidence.
 - Implemented: Laravel testing assembly collection for routes, middleware, exact
   and wildcard listeners, schedules and a defined container binding projection.
-  Native PHP/Linux fixtures exercise actual Artisan initialization, framework-added
-  routes, mutation comparisons, cold caches, dotenv exclusion and incomplete assembly.
+  Version 2 compares operator-declared registrations and selected model defaults
+  and completes controlled native HTTP requests. PHP/Linux fixtures exercise
+  actual Artisan initialization, framework-added routes, inherited eager loads,
+  listener/container/schedule effects, cold caches, dotenv exclusion and incomplete
+  assembly; see `LARAVEL-ASSEMBLY.md` for the bounded compatibility profile.
 - Verified: public synthetic FastAPI, Django and Laravel examples through their
   native collectors; no private application code is needed for these regressions.
 - Implemented: explicit language-agnostic dependency graph policies, exact layer
