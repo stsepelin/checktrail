@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic host readiness CI regression; no inference or field review",
+  "observedFailure": {
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/37893800736/job/113700440833",
+    "assertion": "Reached SDK assignment before publication",
+    "rootMechanism": "The fixed three-second polling window was shorter than the already configured process budget. Exact observed startup duration is unknown."
+  },
+  "repair": {
+    "readinessDeadline": "Existing process deadline minus a 500 ms publication reserve",
+    "processBudgetsMs": {
+      "timeout": 5000,
+      "cancel": 10000,
+      "output": 10000
+    },
+    "productionTimeoutBudgetChanged": false
+  },
+  "sourceAcceptance": {
+    "required": 9,
+    "passed": 9,
+    "complete": true
+  },
+  "sameInstalledCallbacksExercisedBySourceInstalledCase": true,
+  "compilingOldWindowControl": {
+    "originalCompiledSha256": "2ee4909e697007199eb0412c9a8ec7f615c0352cc6f119e0be260846cbefd86b",
+    "mutantSha256": "72d6da30e7d3e72218e5efd5e11b3c3e039f13d958a8fd0eb5efa8536c0cc56f",
+    "fixtureSha256": "72d084ddd3dbc0d462e22aa520a2f6fbc41220e074d93f851478111496ca5ccf",
+    "oldPollWindowRejected": true,
+    "mutantCompiled": true,
+    "originalAssertionFailed": true,
+    "restoredPassed": true,
+    "productionTimeoutBudgetChanged": false,
+    "deliberateStartupDelayMs": 3100
+  },
+  "fullCheck": {
+    "tests": 1224,
+    "pass": 855,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 369,
+    "todo": 0,
+    "durationMs": 188317.2815
+  },
+  "pins": [
+    {
+      "file": "test/gate-host-session-readiness.test.ts",
+      "bytes": 22070,
+      "sha256": "c47f079ba2553982387641fece55470e9a837e5eaff16371f181e929376426d2"
+    },
+    {
+      "file": "test/review-host-process-fixture.ts",
+      "bytes": 8321,
+      "sha256": "ecedd9ef6428f94916d08928e97f0b042740c9e97e0faf6e54375e9f46b689e5"
+    },
+    {
+      "file": "dist/test/gate-host-session-readiness.test.js",
+      "bytes": 23219,
+      "sha256": "2ee4909e697007199eb0412c9a8ec7f615c0352cc6f119e0be260846cbefd86b"
+    },
+    {
+      "file": "dist/test/review-host-process-fixture.js",
+      "bytes": 9374,
+      "sha256": "72d084ddd3dbc0d462e22aa520a2f6fbc41220e074d93f851478111496ca5ccf"
+    }
+  ],
+  "modelSessionIsolationEstablished": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAClosed": false
+}

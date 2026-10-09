@@ -65,6 +65,15 @@ if (mode === "server") {
     }
   });
   try {
+    if (config.startupDelayMs !== undefined) {
+      if (
+        !Number.isInteger(config.startupDelayMs) ||
+        config.startupDelayMs < 0 ||
+        config.startupDelayMs > 3500
+      )
+        throw new Error("Original startup-delay control outside bounds");
+      await delay(config.startupDelayMs);
+    }
     await client.connect(transport);
     const observedServerPid = transport.pid;
     const tools = (await client.listTools()).tools
