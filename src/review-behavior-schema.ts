@@ -219,9 +219,61 @@ export const reviewPythonBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(16),
   }),
 });
+export const goModuleRootSchema = z.string().min(1).max(1024);
+export const goModuleManifestSchema = z.strictObject({
+  revision: range.revision,
+  root: goModuleRootSchema,
+  file: z.string().min(1).max(1024),
+  sha256: id.nullable(),
+  modulePath: z.string().min(1).max(1024).nullable(),
+  state: z.enum(["captured", "missing", "unsupported"]),
+});
+export const reviewGoBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("go-selected-bindings-v1"),
+  goBindings: z.strictObject({
+    moduleRoots: z.array(goModuleRootSchema).min(1).max(16),
+    moduleRootsProvenance: z.literal("operator-selected"),
+    moduleManifests: z.array(goModuleManifestSchema).min(1).max(32),
+    scope: z.literal("selected-captured-go-source"),
+    state: z.enum(["collected", "partial"]),
+    callerDepthLimit: z.literal(8),
+    callerEdges:
+      reviewPythonBehaviorSchema.shape.pythonBindings.shape.callerEdges,
+    counts: reviewPythonBehaviorSchema.shape.pythonBindings.shape.counts,
+    fullImpactFallback: z.literal(true),
+    runtimeReachabilityVerified: z.literal(false),
+    nativeModuleResolutionVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "runtime-rebinding",
+          "runtime-dispatch",
+          "build-selection-unknown",
+          "captured-module-directives",
+          "unsupported-binding",
+          "unsupported-scope-mutation",
+          "unsupported-import",
+          "unresolved-call",
+          "unresolved-import",
+          "ambiguous-package",
+          "outside-module-roots",
+          "partial-syntax",
+          "no-selected-functions",
+          "non-go-source",
+          "depth-limit",
+          "missing-module-manifest",
+          "unsupported-module-manifest",
+        ]),
+      )
+      .max(24),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
   reviewPythonBehaviorSchema,
+  reviewGoBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

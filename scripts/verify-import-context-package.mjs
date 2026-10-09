@@ -25,6 +25,7 @@ assert.ok(
     "review-context-limits",
     "host-session-readiness",
     "context-python",
+    "context-go",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -33,6 +34,7 @@ if (profile === "host-session-readiness")
   process.env.CHECKTRAIL_HOST_SESSION_INSTALLED = "1";
 if (profile === "context-python")
   process.env.CHECKTRAIL_CONTEXT_PYTHON_INSTALLED = "1";
+if (profile === "context-go") process.env.CHECKTRAIL_CONTEXT_GO_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -69,6 +71,7 @@ try {
     "git-fixture.js",
     "helpers.js",
     "gate-context-python.test.js",
+    "gate-context-go.test.js",
     "gate-host-session-readiness.test.js",
     "review-host-process-fixture.js",
     "review-workflow-fixture.js",
@@ -162,13 +165,18 @@ try {
           ...(profile === "context-python"
             ? ["--env", "CHECKTRAIL_CONTEXT_PYTHON_INSTALLED=1"]
             : []),
+          ...(profile === "context-go"
+            ? ["--env", "CHECKTRAIL_CONTEXT_GO_INSTALLED=1"]
+            : []),
           "--read-only",
           "--cpus",
           "2",
           "--memory",
           "2g",
           "--tmpfs",
-          "/tmp:rw,nosuid,nodev,size=256m",
+          profile === "context-go"
+            ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+            : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
             ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
             : []),
@@ -207,6 +215,7 @@ try {
             consumerMount: "readonly",
             rootFilesystemReadonly: true,
             temporaryFilesystemMiB: 256,
+            temporaryFilesystemExecutable: profile === "context-go",
           }
         : {
             node: process.version,

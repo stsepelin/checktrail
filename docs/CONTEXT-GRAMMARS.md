@@ -104,3 +104,5 @@ Revision-specific source, compiling mutation and fresh offline installation evid
 The component profile does not complete the wider finite context profiles.
 
 Opt-in version 8 layers selected Python lexical/import binding metadata over these fixed grammars and expanded source bounds. Versions 6–7 keep unresolved wider-language calls. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md).
+
+Version 9 retains this fixed syntax profile and adds selected Go lexical/import metadata before its captured tree is released. Explicitly selected go.mod directives bind literal module names separately from Go syntax collection. See [REVIEW-GO-CONTEXT.md](REVIEW-GO-CONTEXT.md).

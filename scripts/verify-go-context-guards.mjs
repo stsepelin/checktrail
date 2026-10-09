@@ -6,33 +6,80 @@ import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const callback = new URL(
-  "../dist/test/review-context-limits.test.js",
+  "../dist/test/gate-context-go.test.js",
   import.meta.url,
 );
 const originalCallback = await readFile(callback);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
   {
-    id: "combined-source-reconstruction-bound",
-    file: "review.js",
-    name: "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+    id: "go-module-block-rejection",
+    file: "go-workspace.js",
+    name: "context-go empty acceptance",
     before:
-      "bytes >\n        (parsed.schemaVersion === 7 ||\n            parsed.schemaVersion === 8 ||\n            parsed.schemaVersion === 9\n            ? 1048576\n            : 131072)",
+      'if (rows(text).some((row) => row[0] === "module" && row.includes("(")))',
+    after: "if (false)",
+  },
+  {
+    id: "go-unknown-implicit-import",
+    file: "review-go-resolution.js",
+    name: "context-go near-miss acceptance",
+    before:
+      "unit.imports.some((imported) => imported.alias === null &&\n            selected(unit, imported.specifier).group === null)",
     after: "false",
   },
   {
-    id: "per-file-utf8-reconstruction-bound",
-    file: "review.js",
-    name: "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
-    before: "content.length > 65536 || hash(content) !== file.sha256",
-    after: "hash(content) !== file.sha256",
+    id: "go-parameter-shadowing",
+    file: "review-go-bindings.js",
+    name: "context-go near-miss acceptance",
+    before: 'add(parameterName, id, 0, "other",',
+    after: 'add(parameterName, "file", 0, "other",',
   },
   {
-    id: "shared-selected-path-accounting",
-    file: "review.js",
-    name: "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
-    before: "selected: declaredScope.size",
-    after: "selected: 16",
+    id: "go-local-declaration-visibility",
+    file: "review-go-bindings.js",
+    name: "context-go near-miss acceptance",
+    before:
+      'add(name, scope, node.endIndex, "other", null, declarations.get(node.id)?.id ?? null)',
+    after:
+      'add(name, scope, 0, "other", null, declarations.get(node.id)?.id ?? null)',
+  },
+  {
+    id: "go-import-file-namespace",
+    file: "review-go-resolution.js",
+    name: "context-go near-miss acceptance",
+    before:
+      'unit.bindings.some((binding) => binding.scope === "file" && binding.name === name)',
+    after: '!("failure" in own && own.failure === "no-selected-definition")',
+  },
+  {
+    id: "go-duplicate-package-identity",
+    file: "review-go-resolution.js",
+    name: "context-go near-miss acceptance",
+    before: "if (previous && previous !== group)",
+    after: "if (false)",
+  },
+  {
+    id: "go-primary-caller-closure",
+    file: "review-python-resolution.js",
+    name: "context-go broken acceptance",
+    before: "analysis.functions.filter((fn) => primary.includes(fn.file))",
+    after: "analysis.functions.filter(() => false)",
+  },
+  {
+    id: "go-manifest-reconstruction-binding",
+    file: "review-go-resolution.js",
+    name: "context-go stale acceptance",
+    before:
+      "JSON.stringify(bindings.moduleManifests) !== JSON.stringify(manifests)",
+    after: "false",
+  },
+  {
+    id: "go-summary-count-reconciliation",
+    file: "review-go-resolution.js",
+    name: "context-go stale acceptance",
+    before: "JSON.stringify(counts) !== JSON.stringify(bindings.counts)",
+    after: "false",
   },
 ];
 const environment = { ...process.env };
@@ -121,7 +168,7 @@ for (const control of controls) {
 process.stdout.write(
   JSON.stringify({
     scope:
-      "Original synthetic expanded-context controls; no model inference or field evaluation",
+      "Original synthetic Go captured-binding controls; no model inference or field evaluation",
     controls: evidence,
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

@@ -121,7 +121,7 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
@@ -130,6 +130,7 @@ jobs:
       - run: node scripts/verify-review-workflow-multi-guards.mjs
       - run: node scripts/verify-selected-syntax-guards.mjs
       - run: node scripts/verify-host-session-guards.mjs
+      - run: node scripts/verify-go-context-guards.mjs
       - run: node scripts/verify-python-context-guards.mjs
       - run: node scripts/verify-acceptance-ledger-guards.mjs
       - name: Verify native Laravel owned-cache guards and fresh package
@@ -812,7 +813,7 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify required original Go and context controls
-        run: node scripts/verify-required-native-tests.mjs go-extensions review-context-limits host-session-readiness context-python
+        run: node scripts/verify-required-native-tests.mjs go-extensions review-context-limits host-session-readiness context-python context-go
       - name: Verify installed original Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
       - name: Verify installed original expanded context controls
@@ -821,6 +822,8 @@ jobs:
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=host-session-readiness node scripts/verify-import-context-package.mjs
       - name: Verify installed original Python context controls
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=context-python node scripts/verify-import-context-package.mjs
+      - name: Verify installed selected Go bindings
+        run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=context-go node scripts/verify-import-context-package.mjs
       - name: Retain exact runtime identity
         if: always()
         run: |

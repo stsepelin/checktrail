@@ -43,3 +43,5 @@ compiling mutations are recorded in
 [review-context-limits-2026-10-08.json](measurements/review-context-limits-2026-10-08.json).
 
 Version 8 keeps these expanded capture/context limits and adds bounded selected Python binding metadata with explicit module roots. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md); older versions retain their original semantics.
+
+Version 9 preserves these expanded limits and adds bounded selected Go bindings and captured module-manifest metadata. See [REVIEW-GO-CONTEXT.md](REVIEW-GO-CONTEXT.md).

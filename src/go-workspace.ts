@@ -157,6 +157,26 @@ function directives(text: string) {
   if (block) throw new Error("Unclosed Go manifest block");
   return result;
 }
+/** Read one literal module identity from captured text without consulting a Go host. */
+export function capturedGoModulePath(text: string): string | null {
+  try {
+    if (rows(text).some((row) => row[0] === "module" && row.includes("(")))
+      return null;
+    const values = directives(text).filter(
+      (entry) => entry.directive === "module",
+    );
+    if (values.length !== 1 || values[0]!.values.length !== 1) return null;
+    const value = values[0]!.values[0]!;
+    // Unsupported path spellings remain unknown; this is not native module validation.
+    return value.length <= 1024 &&
+      /^[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*$/.test(value) &&
+      !value.split("/").some((part) => part === "." || part === "..")
+      ? value
+      : null;
+  } catch {
+    return null;
+  }
+}
 function replacements(entries: ReturnType<typeof directives>): string[] {
   const targets: string[] = [];
   const identities = new Set<string>();
