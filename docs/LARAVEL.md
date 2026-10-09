@@ -1,6 +1,9 @@
 # Laravel runtime assembly profile
 
 `php.laravel-runtime` captures an explicitly selected Laravel testing assembly.
+This document describes configuration version 1. Opt-in version 2 adds declared
+assembly/model contracts and controlled native HTTP responses; see
+[LARAVEL-ASSEMBLY.md](LARAVEL-ASSEMBLY.md).
 A passed capture means its five declared projections were collected successfully.
 Use `compare-runtime` to detect changes against a reviewed inventory; capture alone
 does not decide whether a route, permission, schedule or binding is correct.

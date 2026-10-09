@@ -95,8 +95,18 @@ export async function runProcess(
         stopping = true;
         if (child.pid)
           termination = (async () => {
+            const stopRoot = () => {
+              try {
+                process.kill(-child.pid!, "SIGKILL");
+              } catch {
+                child.kill("SIGKILL");
+              }
+            };
             try {
-              await stopDescendants(child.pid!);
+              // Keep the owned root from starting more work when a waiting child
+              // is stopped. Descendant capture still precedes root termination.
+              child.kill("SIGSTOP");
+              await stopDescendants(child.pid!, undefined, stopRoot);
             } catch {
               result.errorCode = "PROCESS_TREE_CLEANUP_UNAVAILABLE";
             } finally {

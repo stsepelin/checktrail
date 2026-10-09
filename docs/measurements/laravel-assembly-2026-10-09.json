@@ -1,0 +1,2075 @@
+{
+  "schemaVersion": 1,
+  "profile": "assembly-laravel",
+  "capturedAt": "2026-10-09T12:12:36.421769+00:00",
+  "sourceBaseCommit": "b95d83726df72268109815bf6882f6637180ba0d",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "60f4c5adbc8af3cc1f694c94ef0b23d1860a48542ca009b9c464a7c231b614cd",
+    "README.md": "92acec7449a837cfee32c18652a2470fbe499262162bca4543001ab46c640f67",
+    "docs/ARCHITECTURE.md": "a172ff08f53daafed5fb7f39c3c622e3b1beb0c3b7d70b75a39ddf84122a8024",
+    "docs/EXECUTION.md": "6a6bc6cb52e93c5687e5ae621097f2d95d9c98e2d3130082d3929cbd5ea87d37",
+    "docs/LANGUAGES.md": "911149392eca17b5cf921339ba56ca7fb1690aeb2c5b844f7dbeed284d90a8ef",
+    "docs/LARAVEL-ASSEMBLY.md": "f19c704a1078fae422c7ba1a6e252d39343922fb933012985e3892eff6f1a95a",
+    "docs/LARAVEL.md": "9c15b07b59e49af215ea2ab046c1b08e335675856873549054539bbd55500d7b",
+    "docs/POSIX-CLEANUP.md": "c9d7ca0e6433cdb95a26881e8057703a6ecd913f35f1d77db3945afa66549b21",
+    "docs/STATUS.md": "1942f675aaf30ac221ee6721ad21508c5867bc4e40bdbb0829041366078bd65a",
+    "docs/gate-a-profiles.v1.json": "b3e2f208df6cd03966afe5f76cdfb8aac3f6c1211f3fd33ae9cc106ca9efbff5",
+    "schemas/laravel-config.schema.json": "926da9f3f0e25bff71dd5f02c6cf7b4ebad927001832b48e971b576117f670b9",
+    "scripts/required-native-tests.json": "227fe8a5a15d9328746e5713f7e301789a00d87da1506b251e4ac5e3a07ca2d1",
+    "scripts/verify-import-context-package.mjs": "21a7e52450f53212415afc518c6769f4436a9ddb73e4fe9c167e0540880b04da",
+    "scripts/verify-laravel-assembly-container.mjs": "0c2af720bb43fd35d7320fd36f8bae618b7f2e73d4a68d8025b65cccf641dcbb",
+    "scripts/verify-laravel-assembly-guards.mjs": "10ea9d7650e59e8f46c0bd33c1786194cf501383d9720d805b7031de1eef9f52",
+    "src/laravel-assembly-evidence.ts": "7721dc3a040234d83078d907c3a95fd4c8019ec4dce7f1889c9813aca02bf7be",
+    "src/laravel-assembly-runner.ts": "581305f7e749f89d189abc22b27b28eb4f51b7d6a22142642b10ebe8d2f05a33",
+    "src/laravel-assembly-runtime-pins.ts": "0cd482079680b1b0b9791c9d8ad064c19395c5cdcf8685f49cd739174e694048",
+    "src/laravel-assembly-schema.ts": "edd84e76ebb1d1b80ba8edede90b8a41f65f950af7bd7e93c363bee66e0466b3",
+    "src/laravel-evidence.ts": "fd45e9f66fe74e250e0dbed63370487b98f1d26ee53b811f3469c81bf578ee00",
+    "src/laravel-protocol.ts": "82e3cc34f806ffc9033b7f9bfe5b5191a961ea5748688894c5efa8ebd92ed528",
+    "src/laravel-runner.ts": "e48060cfb2ab583f25e6fe08196ad7d5e21cc0d5990e81d3ec13e3378aed8394",
+    "src/laravel.ts": "c1892ed467504de155dda96c5ae1bf1c9088e1e61088f5607a50d75ee5e94b1d",
+    "src/process-tree.ts": "38d6d9fd6d4f6de29d4a968bf9daf4563b584630bf2859d1180ab13050bba549",
+    "src/runner.ts": "21d9d4235908edce3228b343e74dc0e7a6d4a66704cfb60f8ebae63883d87562",
+    "src/tool-versions.ts": "de12b8a08bf68b347915b5d180d636b4b10fd429c79687b0e8220fca76d13de3",
+    "test/gate-assembly-laravel.test.ts": "ea7e5fa6ce9fb165f128c6c5a9a412e4c87246bab4350161225489d40e2d68a1",
+    "test/process-tree.test.ts": "3edf53a5534aedb04a37d02d7c2f02e8ee762b6b7e4c38532434e5d32be576c2",
+    "test/review-laravel-assembly-contract.ts": "b393973c82e999d633a1bbc3e9c02ae35dcde9d63e50c5b2a74cac120e633837",
+    "test/review-laravel-assembly-fixture.ts": "afdfdd33e0494f17ff1f54bdc112158071040462a719ee45b3eb9e4bd287b084",
+    "test/review-laravel-assembly-guards.test.ts": "a3572c5fc36cb9553023359db91d543b965e53d045127eb95fe75993e6783181"
+  },
+  "builtFiles": {
+    "dist/src/laravel-assembly-evidence.js": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+    "dist/src/laravel-assembly-runner.js": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+    "dist/src/laravel-assembly-runtime-pins.js": "4dcbc20231a529bd4e3b5762f3487c9ce509ea651e87a57565b70b0d8148bdd6",
+    "dist/src/laravel-assembly-schema.js": "a7740fdd3e2d1cb83e9df3a7df050759269d2d1fcbe56ae0a78d8db15a097a1b",
+    "dist/src/laravel-evidence.js": "ee420ec1ed714f64866a63368ff779d507b3b91b865e291e0035384656c4e237",
+    "dist/src/laravel-protocol.js": "8ac41c2798b8dc8730fcea058aa57132ba6ec456651f07e29845cb5bf6a08252",
+    "dist/src/laravel-runner.js": "80008b94b4a9d4e07a4946f008288e8ba23e151b4f9f90a511a897086a49168f",
+    "dist/src/laravel.js": "1ee4d96f710f66293edec22099cc05d8bd0b6a445a3b435ef3ca961056c5351e",
+    "dist/src/process-tree.js": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+    "dist/src/runner.js": "695f4e4574c7ca6781187eb2e46b603c1b862b10a135277e15f4e07ae2577981",
+    "dist/src/tool-versions.js": "2b6595619e59aa627fa718d511aec02bef1d0beb940ce0eba9ac42f901711d99",
+    "dist/test/gate-assembly-laravel.test.js": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+    "dist/test/process-tree.test.js": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+    "dist/test/review-laravel-assembly-contract.js": "c5e571bd5d590a7e9bf7888410be420ffbcd0411e6b91a746798a3bb0c7076e9",
+    "dist/test/review-laravel-assembly-fixture.js": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+    "dist/test/review-laravel-assembly-guards.test.js": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15"
+  },
+  "native": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "nodeBinary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "php": "8.5.6",
+      "sqlite": true,
+      "versions": {
+        "laravel/framework": "v13.32.0",
+        "nesbot/carbon": "3.14.0",
+        "symfony/http-foundation": "v8.1.7",
+        "symfony/routing": "v8.1.6"
+      },
+      "selectedRuntimeBytes": [
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Application.php",
+          "bytes": 47493,
+          "sha256": "dd6262f3b087af2ae102a791c32a0c4a2b5be60c915c2219cf2bdc76a8791f47",
+          "observed": {
+            "bytes": 47493,
+            "sha256": "dd6262f3b087af2ae102a791c32a0c4a2b5be60c915c2219cf2bdc76a8791f47"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Configuration/ApplicationBuilder.php",
+          "bytes": 16158,
+          "sha256": "efa47f6eeb906833631fe643024036380e9b2c24b1c5ff4e7f3c4733da761830",
+          "observed": {
+            "bytes": 16158,
+            "sha256": "efa47f6eeb906833631fe643024036380e9b2c24b1c5ff4e7f3c4733da761830"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Configuration/Middleware.php",
+          "bytes": 22610,
+          "sha256": "c168fce389f0fe88ff85f89c10f6d50fed3d85da6f34efe03a68772ca8290b48",
+          "observed": {
+            "bytes": 22610,
+            "sha256": "c168fce389f0fe88ff85f89c10f6d50fed3d85da6f34efe03a68772ca8290b48"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Http/Kernel.php",
+          "bytes": 18610,
+          "sha256": "f807ec6b1851030c4e5d4c3d83dc9021d8ac6b399d49f1300a068ea2f3c208ad",
+          "observed": {
+            "bytes": 18610,
+            "sha256": "f807ec6b1851030c4e5d4c3d83dc9021d8ac6b399d49f1300a068ea2f3c208ad"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Console/Kernel.php",
+          "bytes": 17982,
+          "sha256": "ab889be0927d22f4222521cc7b695a0857ffa1a931f8f498075137da169e36d5",
+          "observed": {
+            "bytes": 17982,
+            "sha256": "ab889be0927d22f4222521cc7b695a0857ffa1a931f8f498075137da169e36d5"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Container/Container.php",
+          "bytes": 53736,
+          "sha256": "8bbfbc5955205f817106077355a493952e685bc376653236a7188f20ff634ea8",
+          "observed": {
+            "bytes": 53736,
+            "sha256": "8bbfbc5955205f817106077355a493952e685bc376653236a7188f20ff634ea8"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Container/BoundMethod.php",
+          "bytes": 7748,
+          "sha256": "c724232bb1a549e29bab1c87baaf750b3f04df906e0978459df089d31b5b61d3",
+          "observed": {
+            "bytes": 7748,
+            "sha256": "c724232bb1a549e29bab1c87baaf750b3f04df906e0978459df089d31b5b61d3"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Routing/Router.php",
+          "bytes": 41367,
+          "sha256": "970ed3171dedb3f223d9b4f31d0358c27fdf36e300b78cac9ad9a3bd0c313316",
+          "observed": {
+            "bytes": 41367,
+            "sha256": "970ed3171dedb3f223d9b4f31d0358c27fdf36e300b78cac9ad9a3bd0c313316"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Routing/Route.php",
+          "bytes": 39190,
+          "sha256": "109d8cb2ccf98edcea7ab6d2637b27d4b969c2cf4a957caf757d958c80f4e83e",
+          "observed": {
+            "bytes": 39190,
+            "sha256": "109d8cb2ccf98edcea7ab6d2637b27d4b969c2cf4a957caf757d958c80f4e83e"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Routing/RouteCollection.php",
+          "bytes": 8722,
+          "sha256": "57c293d5fd13273593a8cb62990e365e9cdd7215c7ec56d73840f6033511735a",
+          "observed": {
+            "bytes": 8722,
+            "sha256": "57c293d5fd13273593a8cb62990e365e9cdd7215c7ec56d73840f6033511735a"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Routing/AbstractRouteCollection.php",
+          "bytes": 8861,
+          "sha256": "070b9cad9efe6b7104f9626e104ed9f2f86ca75352ae2ae6dd3c993631fbc943",
+          "observed": {
+            "bytes": 8861,
+            "sha256": "070b9cad9efe6b7104f9626e104ed9f2f86ca75352ae2ae6dd3c993631fbc943"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Events/Dispatcher.php",
+          "bytes": 28665,
+          "sha256": "4e6cfda694257cd70621ceb3bca7895b0e071fbdc1362437dc6b52ce8aeb5d60",
+          "observed": {
+            "bytes": 28665,
+            "sha256": "4e6cfda694257cd70621ceb3bca7895b0e071fbdc1362437dc6b52ce8aeb5d60"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Console/Scheduling/Schedule.php",
+          "bytes": 15046,
+          "sha256": "0015903a0794c051b6b51620fd2951c6df10de09eb4b492282b3aec4f7cef628",
+          "observed": {
+            "bytes": 15046,
+            "sha256": "0015903a0794c051b6b51620fd2951c6df10de09eb4b492282b3aec4f7cef628"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Console/Scheduling/Event.php",
+          "bytes": 24228,
+          "sha256": "5d416cd30f2a9c09997e80e0cc706ead68745a8bcb4c61094302a67d41d312d1",
+          "observed": {
+            "bytes": 24228,
+            "sha256": "5d416cd30f2a9c09997e80e0cc706ead68745a8bcb4c61094302a67d41d312d1"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Console/Scheduling/CallbackEvent.php",
+          "bytes": 4925,
+          "sha256": "8eae00070cd39faeeac7f9395bee0ccf6c37a61219342a485ec8c7841a33b488",
+          "observed": {
+            "bytes": 4925,
+            "sha256": "8eae00070cd39faeeac7f9395bee0ccf6c37a61219342a485ec8c7841a33b488"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Model.php",
+          "bytes": 82120,
+          "sha256": "8186c638799dc3441a42e996a6af5ebe138eb67f6e7d0f88bfec98e498f6345b",
+          "observed": {
+            "bytes": 82120,
+            "sha256": "8186c638799dc3441a42e996a6af5ebe138eb67f6e7d0f88bfec98e498f6345b"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Builder.php",
+          "bytes": 70153,
+          "sha256": "c4613c5480c40289af99647cd0c11ba8bc355e729e90bd18b9047c4b0c8cb9ac",
+          "observed": {
+            "bytes": 70153,
+            "sha256": "c4613c5480c40289af99647cd0c11ba8bc355e729e90bd18b9047c4b0c8cb9ac"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php",
+          "bytes": 76138,
+          "sha256": "1cabf1764355b8a8a6ac7c26c11d6826252e035c51cf77d678f0e16a1c4f06b5",
+          "observed": {
+            "bytes": 76138,
+            "sha256": "1cabf1764355b8a8a6ac7c26c11d6826252e035c51cf77d678f0e16a1c4f06b5"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Concerns/HasRelationships.php",
+          "bytes": 40155,
+          "sha256": "a7258ca67a51e13722a27ea62b9d3ed802a56c40d51920ffa23301acaf7b4059",
+          "observed": {
+            "bytes": 40155,
+            "sha256": "a7258ca67a51e13722a27ea62b9d3ed802a56c40d51920ffa23301acaf7b4059"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Connection.php",
+          "bytes": 48998,
+          "sha256": "e22da1882b790121772512bf6079de0aefe1a36bc2ef23d29a93043c7c4980bf",
+          "observed": {
+            "bytes": 48998,
+            "sha256": "e22da1882b790121772512bf6079de0aefe1a36bc2ef23d29a93043c7c4980bf"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Query/Builder.php",
+          "bytes": 151018,
+          "sha256": "71ad1b8f043d710ab17cef4cf1902311ec2c737df17b44d5dacb8a1fc97da5a7",
+          "observed": {
+            "bytes": 151018,
+            "sha256": "71ad1b8f043d710ab17cef4cf1902311ec2c737df17b44d5dacb8a1fc97da5a7"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Support/DateFactory.php",
+          "bytes": 10722,
+          "sha256": "a9da4819ec66bfcc528b2497d3fe39f665da01b132b35b6806ad27808cdab890",
+          "observed": {
+            "bytes": 10722,
+            "sha256": "a9da4819ec66bfcc528b2497d3fe39f665da01b132b35b6806ad27808cdab890"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Support/Facades/Date.php",
+          "bytes": 8379,
+          "sha256": "0fb55c088552255e2302f29a73e9761521d5353e064abe154626f0c8f0aaf93c",
+          "observed": {
+            "bytes": 8379,
+            "sha256": "0fb55c088552255e2302f29a73e9761521d5353e064abe154626f0c8f0aaf93c"
+          },
+          "matches": true
+        },
+        {
+          "package": "symfony/http-foundation",
+          "directory": "symfony/http-foundation",
+          "file": "Request.php",
+          "bytes": 79810,
+          "sha256": "32bf91127d257831f86002b5af7d3e390cb99dedf29eef91d09869b7fecd09a2",
+          "observed": {
+            "bytes": 79810,
+            "sha256": "32bf91127d257831f86002b5af7d3e390cb99dedf29eef91d09869b7fecd09a2"
+          },
+          "matches": true
+        },
+        {
+          "package": "symfony/http-foundation",
+          "directory": "symfony/http-foundation",
+          "file": "Response.php",
+          "bytes": 40773,
+          "sha256": "36c1f3823b8e940e684908d72853c3d10862269ca3e8277267daabcacd80d4b4",
+          "observed": {
+            "bytes": 40773,
+            "sha256": "36c1f3823b8e940e684908d72853c3d10862269ca3e8277267daabcacd80d4b4"
+          },
+          "matches": true
+        },
+        {
+          "package": "symfony/http-foundation",
+          "directory": "symfony/http-foundation",
+          "file": "JsonResponse.php",
+          "bytes": 6601,
+          "sha256": "a081fe94c31dc84f6fd1b3fff3e337bcbbbe53aed2bb9f233f006e7e5a196fca",
+          "observed": {
+            "bytes": 6601,
+            "sha256": "a081fe94c31dc84f6fd1b3fff3e337bcbbbe53aed2bb9f233f006e7e5a196fca"
+          },
+          "matches": true
+        },
+        {
+          "package": "nesbot/carbon",
+          "directory": "nesbot/carbon",
+          "file": "src/Carbon/Traits/Test.php",
+          "bytes": 6435,
+          "sha256": "e93708ed000bee95cca3d33a74faa743321ca0cc5cf990408d791f8e1072d854",
+          "observed": {
+            "bytes": 6435,
+            "sha256": "e93708ed000bee95cca3d33a74faa743321ca0cc5cf990408d791f8e1072d854"
+          },
+          "matches": true
+        },
+        {
+          "package": "nesbot/carbon",
+          "directory": "nesbot/carbon",
+          "file": "src/Carbon/Factory.php",
+          "bytes": 47146,
+          "sha256": "96980f289213b97e212689a8ffa54a91d6210219c02b88f656756ee59174a70f",
+          "observed": {
+            "bytes": 47146,
+            "sha256": "96980f289213b97e212689a8ffa54a91d6210219c02b88f656756ee59174a70f"
+          },
+          "matches": true
+        },
+        {
+          "package": "nesbot/carbon",
+          "directory": "nesbot/carbon",
+          "file": "src/Carbon/FactoryImmutable.php",
+          "bytes": 25335,
+          "sha256": "4cbbb4147bf537532638f87bbc277aca463c5176752a9ba9a445f7b9a7c6813b",
+          "observed": {
+            "bytes": 25335,
+            "sha256": "4cbbb4147bf537532638f87bbc277aca463c5176752a9ba9a445f7b9a7c6813b"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Http/Request.php",
+          "bytes": 20506,
+          "sha256": "5d648bec7cacdd711bdf9bdfb1ff9e6e44a09b032c2773638685639d6ccae21d",
+          "observed": {
+            "bytes": 20506,
+            "sha256": "5d648bec7cacdd711bdf9bdfb1ff9e6e44a09b032c2773638685639d6ccae21d"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Http/Response.php",
+          "bytes": 3475,
+          "sha256": "35af164242bff3aed00409a101fce5bf406548c164258bbbab8bf4452048708f",
+          "observed": {
+            "bytes": 3475,
+            "sha256": "35af164242bff3aed00409a101fce5bf406548c164258bbbab8bf4452048708f"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Http/JsonResponse.php",
+          "bytes": 3555,
+          "sha256": "7ef6a6e4103e03015bc002f7297f2d5b5a707780377758741f169a32e25ac6c2",
+          "observed": {
+            "bytes": 3555,
+            "sha256": "7ef6a6e4103e03015bc002f7297f2d5b5a707780377758741f169a32e25ac6c2"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Http/ResponseTrait.php",
+          "bytes": 4875,
+          "sha256": "7de67617648a40cce983080c7386562e5b4e9cc40e75b4935ec3bf9417d6912d",
+          "observed": {
+            "bytes": 4875,
+            "sha256": "7de67617648a40cce983080c7386562e5b4e9cc40e75b4935ec3bf9417d6912d"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Foundation/Exceptions/Handler.php",
+          "bytes": 35320,
+          "sha256": "cf00f71a0a212d0c998748375b530d7a31c7e036d48c817ef54d59334ca82b4e",
+          "observed": {
+            "bytes": 35320,
+            "sha256": "cf00f71a0a212d0c998748375b530d7a31c7e036d48c817ef54d59334ca82b4e"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Pipeline/Pipeline.php",
+          "bytes": 8308,
+          "sha256": "c9a4835e189aba69d39ca93f8616db96905aeb0d19d4f263974f0082c77ed974",
+          "observed": {
+            "bytes": 8308,
+            "sha256": "c9a4835e189aba69d39ca93f8616db96905aeb0d19d4f263974f0082c77ed974"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Routing/Pipeline.php",
+          "bytes": 1523,
+          "sha256": "766de2c81e882c5403b2a7d1954600b91b99e3e60f84709bf37cb5145db53ee7",
+          "observed": {
+            "bytes": 1523,
+            "sha256": "766de2c81e882c5403b2a7d1954600b91b99e3e60f84709bf37cb5145db53ee7"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Support/Carbon.php",
+          "bytes": 2162,
+          "sha256": "a44878edff37bd10149b73b4572b70d70f3565b9fe999908dfdf052cc10e7278",
+          "observed": {
+            "bytes": 2162,
+            "sha256": "a44878edff37bd10149b73b4572b70d70f3565b9fe999908dfdf052cc10e7278"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Concerns/HasGlobalScopes.php",
+          "bytes": 4863,
+          "sha256": "6fcea39ebf6836edd45e96a8d17a6a4cfca0add7a0287c2ea46f74a0d575073c",
+          "observed": {
+            "bytes": 4863,
+            "sha256": "6fcea39ebf6836edd45e96a8d17a6a4cfca0add7a0287c2ea46f74a0d575073c"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Concerns/GuardsAttributes.php",
+          "bytes": 7194,
+          "sha256": "2e1b77306a0fbc050e1ae3c78d2b5b53d3033c347b4d0a9a2ada5160e1fb6d61",
+          "observed": {
+            "bytes": 7194,
+            "sha256": "2e1b77306a0fbc050e1ae3c78d2b5b53d3033c347b4d0a9a2ada5160e1fb6d61"
+          },
+          "matches": true
+        },
+        {
+          "package": "laravel/framework",
+          "directory": "laravel/framework",
+          "file": "src/Illuminate/Database/Eloquent/Concerns/HasTimestamps.php",
+          "bytes": 6149,
+          "sha256": "25ec1bf4a0be4595f82064e534fd42fdaa62013ef6ce5a79d5a136304f44aa7a",
+          "observed": {
+            "bytes": 6149,
+            "sha256": "25ec1bf4a0be4595f82064e534fd42fdaa62013ef6ce5a79d5a136304f44aa7a"
+          },
+          "matches": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.23.4\nPRETTY_NAME=\"Alpine Linux v3.23\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "image": "checktrail-laravel-assembly-test:1009",
+    "legacy": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "laravel",
+          "required": 3
+        },
+        {
+          "profile": "laravel-cache",
+          "required": 6
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "91677022421210524230adc789d84f1e79b794d08573178bbe64a3d67e14cae6"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d3d6db31be19d3c3ef4f713e0a26ffc7b0c48479b1a1dac3163e9346e506dd18"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 37.112189,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1813.931961,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1632.181292,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.019999,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1461.498899,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9241.177825,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2812.68849,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1602.358773,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4800.247777,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Laravel planning is read-only, requires local prerequisites and protects the testing environment",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel captures all five assembly projections, including wildcard listeners and concrete bindings, without running application work",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Laravel ignores stale compiled caches and dotenv, but cannot pass empty, unsupported or failed assembly",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Laravel cache planning selects shared runner ownership without running project bootstrap or autoload",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel forced PHP termination after boot removes cache files and the shared owned parent",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel reached cancellation deadline and output exhaustion remove every owned cache without reporting pass",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel normal and reached bootstrap error paths preserve project caches and clean owned cache parents",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel owned cache accepts a canonical temporary-parent alias without loading dotenv or deleting link targets",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Laravel CLI and MCP reached forced termination share owned cache cleanup and startup-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "assembly-laravel",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "assembly-laravel broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4434.757802,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "assembly-laravel fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2896.005381,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "assembly-laravel near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4328.154807,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "assembly-laravel prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1433.994812,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "assembly-laravel stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1552.12317,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "assembly-laravel empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4295.107352,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "assembly-laravel privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3848.190787,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "assembly-laravel lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8598.913799,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "assembly-laravel installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 33681.19427,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-laravel installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic Laravel assembly controls; selected byte-pinned native runtime; no inference or field evaluation",
+      "controls": [
+        {
+          "id": "receipt-source",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "d00dfe807cb367202feb5f0bce39c170c4c324dc8d517048ce27f09ec37e19ec",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-name",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "5157988d4894ebcb0021130fb171b07d928d731bd9f76b7d87699195d7c7fe37",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-producer-version",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "f7f968e8a64ac47f5cabc3b97ad59de6f5c4b1980aa251296347e21061cfd0d5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-assembly",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "12915874e1023452b5cd9f48916fd9ad98f36960d052bf47ea20b88cb641bbe9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-environment",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "c59e450407270262078aeecc4e4644ba8a4dc340313fb6e87f526fe248a4d2f8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-versions",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "0b43a20012af40bd27de7f5b704a6357c1233f62a231b37cb64beb40f747a614",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-clock",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "71064385cc639ba526d8397be67212a4ab956581720c50f19cee55c255b29046",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-models",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "c24b9945f56a8c1f343c0ddd0c04e17efa922dbfbc73a0a8a4793b1e0170fa10",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-count-vector",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "1aa0c6a77c7aadfb46e22ed650fa478c42c94935fd2132bff3f3ca2606c4995f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-total-count",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "713a8dff1ee2405de75cf7cda8f82c9ca52112e94bf641d9bc16b8a7b418f221",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-request-count",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "d210328320f578c0dd3c5a56361737e19c79a945e5a605a33633e076eecb2a8d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-request-identity",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "763d53bbe10dcf62e5dd6c9441c5059cdfa04831d721f5868526817277fb7981",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-response-evidence-bound",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "c821bc20e2632d93dbc442bf1794cf4e893bb21936a7f57b45d8b63c2555cf14",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-complete",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "a7740fdd3e2d1cb83e9df3a7df050759269d2d1fcbe56ae0a78d8db15a097a1b",
+          "mutantSha256": "1e47e37593ed66b066740947bdebeafa981f201749e16231feefc2ec76ccddac",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-order",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "a7740fdd3e2d1cb83e9df3a7df050759269d2d1fcbe56ae0a78d8db15a097a1b",
+          "mutantSha256": "d77517e8810d831e2cd2a731bab1fddd2389369d3243b9af7f15ba473f74e8df",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receipt-key",
+          "callback": "assembly-laravel stale acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "a7740fdd3e2d1cb83e9df3a7df050759269d2d1fcbe56ae0a78d8db15a097a1b",
+          "mutantSha256": "ee6a9471068b41367a5e1097eac82245c19098c51fff52a67e78bed1035fe679",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "declared-collections",
+          "callback": "assembly-laravel broken acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "9096d4f3d7d43d2aadfdb004224d05ad69f563d76e4af9af423a4c849711ff38",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "declared-responses",
+          "callback": "assembly-laravel broken acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "6cffc6b4201af8f3861757494cd1acbcac36cb04d43b1736d2d6dcd899ed538a",
+          "mutantSha256": "a09d49b43185ada25f7ba92266c478ee74ad132c9b8fc46d7cd2936e74142df4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-versions",
+          "callback": "assembly-laravel prerequisite acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "d14679d1764092b32410b9395048070a9a2dee4b8bd216d354a2ed242e881bb4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-selected-byte-validation",
+          "callback": "assembly-laravel prerequisite acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "22237a830e66fa94a223325b880031c8013997605cd8cc7ec3d46593f323767d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-byte-digest",
+          "callback": "assembly-laravel prerequisite acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "196ebf9a453079e54bf3370981c8a5a20865ae644390740a24ecf5e0ac0f4c16",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-model-defaults",
+          "callback": "assembly-laravel fixed acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "5e52431e276f47711a514c2e6fff10ce2901922971345ff275d60d4d41d5c08d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-model-api",
+          "callback": "assembly-laravel empty acceptance",
+          "callbackSha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "91c29dc46cd66112362b590729cf98d5b478ff28c6453f6c9ae0bfafc4eadf08",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-registration-lifetime",
+          "callback": "assembly-laravel registration lifetime guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "b12798d962833f3cb976f49bc539a32e40fdb33932fe74a3ab344e55c9d5ee23",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-model-scope-lifetime",
+          "callback": "assembly-laravel model scope lifetime guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "14f8d8df72de2996070c0786f1845e62ff58661d7b59d822189c3568f346f87b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-callback-identity",
+          "callback": "assembly-laravel callback identity guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "1df9f05c1b93ad732580b38b17378ea60f6016c80a64269e23fe598ffdc4a1de",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-clock-value",
+          "callback": "assembly-laravel clock guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "023c719557ca801f4b218185a28f5090a503bf4a473b9c30cdcab41199dcb7f7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-clock-factory",
+          "callback": "assembly-laravel clock guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "ce4d93be4dba1d2df7998bfe453cea65b910a352aa5491489e8086a54ecaf1eb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-response-bound",
+          "callback": "assembly-laravel response byte budget guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "0b36db6213ef3312ff3ecc67397618cea6483af3c3f59e6bbef48bca0fd2c273",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-reserved-path",
+          "callback": "assembly-laravel reserved path binding guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "1b7f94f2545299f055ef02c63ad884b6585ab90f0a109df07cbd486069df4997",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-kernel-api",
+          "callback": "assembly-laravel native API guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "4de3551734782a60286a788d30cb08ea298c80671e5d79e027f63990c075f59c",
+          "mutantSha256": "2efb4f7719250c2812be04316f98cc987cb6d83c0065e7199d18e09420405d9a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "planner-request-bytes",
+          "callback": "assembly-laravel planning bounds guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "1ee4d96f710f66293edec22099cc05d8bd0b6a445a3b435ef3ca961056c5351e",
+          "mutantSha256": "133c137c73508d6f862c533a414cb9ec4da1507d63d3be1b36a00b84ffd996a6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "planner-reserved-headers",
+          "callback": "assembly-laravel planning bounds guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "1ee4d96f710f66293edec22099cc05d8bd0b6a445a3b435ef3ca961056c5351e",
+          "mutantSha256": "65ff9ec10d864e37d497109faaad6b661ca4086f89ca811b27500e1d7ad21c66",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "planner-duplicate-headers",
+          "callback": "assembly-laravel planning bounds guard acceptance",
+          "callbackSha256": "fab1a79b82cc7eab1207c0f209054b3bf258d174a18e7c8473820faf7f54ac15",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "1ee4d96f710f66293edec22099cc05d8bd0b6a445a3b435ef3ca961056c5351e",
+          "mutantSha256": "9696e58e34e66b8c676c0eab9aca1dc13f75c119594cd86fde49c9c5c0522d83",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "root-reaping-order",
+          "callback": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
+          "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+          "fixtureSha256": "fe4e2187ba7b94b90ad4a0f274fb9e5fafaef1c5cdb8f761965bfeeafb8b5c3a",
+          "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+          "mutantSha256": "25e90fc8e4f81d08e7948ad27717fff426962854278e80983055d3b30c0d5b50",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "supplemental": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "0f878215b2e3f5464ff10f817cef74fbeb19a4973ff50a13105d268d3b472a6c",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "assembly-laravel",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "c7c5e2b710952442f91767d784660e3ff7c4784802f40f22fb58a97ce1d76791"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "assembly-laravel broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4581.186215,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "assembly-laravel fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2888.468354,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "assembly-laravel near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4418.769055,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "assembly-laravel prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1439.95657,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "assembly-laravel stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1539.57117,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "assembly-laravel empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4413.279523,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "assembly-laravel privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3965.770349,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "assembly-laravel lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8605.517268,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "assembly-laravel installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.301002,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-laravel installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:48a0c0472501fdeee0e5d90c71eb2385bb181bedae9bab797d92e10f0545059b",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "nativeImage": {
+    "id": "sha256:48a0c0472501fdeee0e5d90c71eb2385bb181bedae9bab797d92e10f0545059b",
+    "bytes": 130588394,
+    "ownedTaskLabelVerified": true
+  },
+  "legacyPhpCollector": {
+    "legacyPhpBytes": 12972,
+    "legacyPhpSha256": "d152ce2feb12757b36699aa5460d20174051a08122352a35d2e2e28c9bc764f7",
+    "byteIdentical": true
+  },
+  "posixGuards": {
+    "profile": "posix-observed-cleanup-guards-v1",
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "guards": [
+      {
+        "id": "confirmed-exit-before-parent",
+        "callback": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+        "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+        "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+        "mutantSha256": "f155dab661645418419f7411711351ac77acb8e65c4dc8f39e79a8d7538ab86a",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "fa99c4c2f2e7e4482ba4a968c02d2fde36f6592db4349004ee2c9ef9837a1a72",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "reused-start-identity",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+        "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+        "mutantSha256": "5a5a3fc2f71ffaeccf5683e493ba55862925a5a69b0d427eeeacf7afe9c3f438",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "2cf89e055d064d9345e81d93f6afad3ef52d49599c6d4c3753974fa8ab9919cc",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "missing-row-is-not-absence",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+        "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+        "mutantSha256": "09ac85a6a8e587cd91f07efa5dee08382b05acd2922c13a246239a16f81c033f",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "5d230e28cfaa102207bd173700e3963dfd88e2860d7a966c1ecd7213488286a3",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "changed-group-refusal",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+        "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+        "mutantSha256": "7adac241f7d2c3ee7b7db873ab9d42b27fcee7f1205bb11e2e27283784580d63",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "3d1a5ccb7dc64c46f1bc082409e406d7b59009d1acbb90ad8618fc4aa7357888",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "aggregate-cleanup-bound",
+        "callback": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+        "callbackSha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d",
+        "sourceSha256": "52dc0395e69703ba9875921c6ee2df8a4a2582fd51f6ed22e1918f648367b9f4",
+        "mutantSha256": "dd343e9b3e1c82ae1860fa01862961de422782b6ebd6980c4a9b5d0794393e4d",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "639ad24f2ddf9c0e231f49feb6ec6731b32d18e8758099943a8b9ff286c8376b",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "physicalOutputsPublished": false,
+    "physicalOutputsOmittedReason": "Local synthetic test diagnostics include workstation paths; only immutable output hashes and assertion accounting are published."
+  },
+  "installedPosix": {
+    "tarballSha256": "0f878215b2e3f5464ff10f817cef74fbeb19a4973ff50a13105d268d3b472a6c",
+    "productionDependencyLockSha256": "7bdb7bd70c0418187010b8b578972d82ae59945d2ead6b5c71639ddd345ea65f",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "harnessOutsideInstalledPackage": true,
+    "installedRuntimeEvaluated": true,
+    "installedCliEvaluated": false,
+    "installedMcpEvaluated": false,
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "posix-cleanup",
+      "fileWorkerLimit": 1,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d9c24eb970f23ea57a0d1000549f372da53a0379f205a9b71c1deb26fc91615d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.663584,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 196.104083,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.236584,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.444542,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.104084,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "process ownership includes escaped descendants and orphaned group members but excludes sibling tasks",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native POSIX cancellation kills a detached descendant before its waiting parent and leaves no owned process",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup confirms every observed descendant disappeared before killing its waiting parent and never touches unrelated siblings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup refuses surviving unreadable or changed-group identities and preserves reused PIDs instead of inventing completion",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedFrameworks": {
+    "runtime": {
+      "image": "sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "version": "3.12.13 0.141.1 1.6.0 6.1.1",
+      "network": "none",
+      "mount": "read-only"
+    },
+    "acceptance": {
+      "timeoutMs": 120000,
+      "profile": "frameworks",
+      "fileWorkerLimit": 1,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 26.641,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5546.803708,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10842.193125,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 26.718333,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5457.800125,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6823.358542,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3674.00225,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2647.760583,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          }
+        ]
+      }
+    }
+  },
+  "repositoryCheck": {
+    "command": "npm run check",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "tests": 1284,
+    "passed": 860,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 424,
+    "todo": 0,
+    "durationMs": 185845.394625,
+    "skipsDoNotCertifyUnavailableProfiles": true
+  },
+  "requiredFullSuite": {
+    "timeoutMs": 600000,
+    "profiles": [
+      {
+        "profile": "gate-inventory",
+        "required": 4
+      },
+      {
+        "profile": "posix-cleanup",
+        "required": 5
+      }
+    ],
+    "fileWorkerLimit": 4,
+    "passed": 860,
+    "required": 9,
+    "problems": [],
+    "complete": true,
+    "files": 277,
+    "optionalSkipped": 424
+  },
+  "fullSuiteLedgerSha256": "78810e0c3bf91370164fdbb88b885974288c7973434b569f49b75ef6877366c9",
+  "checks": {
+    "directChangedFileLintPassed": true,
+    "typecheckPassed": true,
+    "generatedSchemas": 144,
+    "formatPassed": true,
+    "actionlintVersion": "1.7.12",
+    "actionlintPassed": true,
+    "compiledOriginalCallbacksUnchangedByFinalFormatting": true
+  },
+  "installedArtifactScope": "The recorded tarball was evaluated before this measurement and status/inventory receipt declarations were emitted. Compiled engine and original callback bytes remain those evaluated; final Gate A package/matrix acceptance is separate.",
+  "reproducedScopeRegression": {
+    "beforeOutcome": "passed",
+    "afterOutcome": "incomplete",
+    "originalSyntheticCase": "assembly-laravel model scope lifetime guard acceptance",
+    "inertScopeDoesNotChangeExpectedResponse": true
+  },
+  "scope": {
+    "selectedModelScopeTables": true,
+    "unselectedModelScopeTablesVerified": false,
+    "arbitraryObjectOrClosureStateVerified": false,
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "windowsTransportVerified": false,
+    "nodeOwnerLossVerified": false,
+    "hostileSpawningContained": false,
+    "hostModelSessionIsolationVerified": false
+  },
+  "gateAComplete": false,
+  "finalMatrixAccepted": false,
+  "hostedCiVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

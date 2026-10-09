@@ -169,8 +169,10 @@ ASGI responses. See the [FastAPI profile](docs/FASTAPI.md) and
 `python.django-routes` captures supported nested URL resolver chains after Django
 setup; see the [Django profile](docs/DJANGO.md).
 `php.laravel-runtime` captures the testing assembly's routes, middleware, listeners,
-schedules and container binding projection. Compare inventories to detect wiring
-changes; see the [Laravel profile](docs/LARAVEL.md) for bootstrap behavior and limits.
+schedules and container binding projection. Opt-in configuration version 2 compares
+all declared native collections, selected model defaults and controlled HTTP
+responses. See the [Laravel profile](docs/LARAVEL.md) and
+[assembly contracts](docs/LARAVEL-ASSEMBLY.md) for bootstrap behavior and limits.
 
 `javascript.eslint` uses an installed ESLint and a project-local JavaScript flat
 config. Ignored files, unmatched configuration and files with no enabled rules

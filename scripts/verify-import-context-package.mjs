@@ -44,6 +44,7 @@ assert.ok(
     "assembly-fastapi",
     "assembly-django",
     "assembly-nuxt",
+    "assembly-laravel",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -87,6 +88,8 @@ if (profile === "assembly-nuxt")
   process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
+if (profile === "assembly-laravel")
+  process.env.CHECKTRAIL_LARAVEL_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-fastapi")
   process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-vue-router")
@@ -145,6 +148,9 @@ try {
     "gate-context-yaml.test.js",
     "gate-assembly-nuxt.test.js",
     "review-nuxt-assembly-fixture.js",
+    "gate-assembly-laravel.test.js",
+    "review-laravel-assembly-fixture.js",
+    "review-laravel-assembly-contract.js",
     "gate-assembly-django.test.js",
     "review-django-assembly-fixture.js",
     "gate-assembly-fastapi.test.js",
@@ -182,6 +188,15 @@ try {
         process.platform === "darwin" ? "nuxt-linux-tools" : "nuxt-tools",
         "node_modules",
       ),
+      prepared,
+      { recursive: true },
+    );
+  }
+  if (profile === "assembly-laravel") {
+    const prepared = path.join(consumer, ".checktrail/laravel-tools/vendor");
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      path.join(repository, ".checktrail/laravel-tools/vendor"),
       prepared,
       { recursive: true },
     );
@@ -279,6 +294,9 @@ try {
             : []),
           ...(profile === "assembly-nuxt"
             ? ["--env", "CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED=1"]
+            : []),
+          ...(profile === "assembly-laravel"
+            ? ["--env", "CHECKTRAIL_LARAVEL_ASSEMBLY_INSTALLED=1"]
             : []),
           ...(profile === "assembly-django"
             ? ["--env", "CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED=1"]
@@ -385,6 +403,7 @@ try {
                     "assembly-vue-router",
                     "assembly-fastapi",
                     "assembly-django",
+                    "assembly-laravel",
                   ].includes(profile)
                 ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
                 : "/tmp:rw,nosuid,nodev,size=256m",

@@ -209,3 +209,48 @@ test("POSIX cleanup refuses surviving unreadable or changed-group identities and
     assert.ok(elapsed <= 2000, "all depths share the cleanup bound");
   }
 });
+
+test("POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping", async () => {
+  const root = { pid: 41, parent: 10, group: 41, identity: "root" },
+    child = { pid: 42, parent: 41, group: 42, identity: "child" };
+  const rows = new Map([root, child].map((p) => [p.pid, p]));
+  const events: string[] = [];
+  let signalled = false;
+  await stopDescendants(
+    41,
+    {
+      snapshot: async () => [...rows.values()],
+      kill: (pid) => {
+        assert.equal(pid, 42);
+        signalled = true;
+        events.push("child-signalled");
+      },
+      exists: (pid) => rows.has(pid),
+      now: () => 0,
+      wait: async () =>
+        assert.fail("Direct child must be reaped after root termination"),
+    },
+    () => {
+      assert.equal(signalled, true);
+      events.push("root-stopped");
+      rows.delete(41);
+      rows.delete(42);
+    },
+  );
+  assert.deepEqual(events, ["child-signalled", "root-stopped"]);
+  let noChildrenStopped = 0;
+  await stopDescendants(
+    41,
+    {
+      snapshot: async () => [root],
+      kill: () => assert.fail("No descendant"),
+      exists: () => false,
+      now: () => 0,
+      wait: async () => assert.fail("No waiting"),
+    },
+    () => {
+      noChildrenStopped++;
+    },
+  );
+  assert.equal(noChildrenStopped, 1);
+});

@@ -158,7 +158,18 @@ const nativeControl: StopDescendantIo = {
  * Confirm their observed identities disappeared before advancing; sending SIGKILL
  * is not proof of exit or reaping. All depths share a bounded cleanup deadline.
  */
-export async function stopDescendants(root: number, io = nativeControl) {
+export async function stopDescendants(
+  root: number,
+  io = nativeControl,
+  stopRoot?: () => void,
+) {
+  let rootStopped = false;
+  const finishRoot = () => {
+    if (!rootStopped) {
+      rootStopped = true;
+      stopRoot?.();
+    }
+  };
   const deadline = io.now() + 2000;
   const selected = ownedDescendants(await io.snapshot(), root);
   const sameProcess = (
@@ -193,6 +204,9 @@ export async function stopDescendants(root: number, io = nativeControl) {
         if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
       }
     }
+    // A quiesced root cannot reap direct children. Stop it after those children
+    // are signalled so the system reaper can finish them without resuming work.
+    if (depth <= 1) finishRoot();
     while (true) {
       const remaining = new Map((await io.snapshot()).map((p) => [p.pid, p]));
       if (!children.some((child) => sameProcess(child, remaining))) break;
@@ -201,4 +215,5 @@ export async function stopDescendants(root: number, io = nativeControl) {
       await io.wait(25);
     }
   }
+  finishRoot();
 }

@@ -1,11 +1,204 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
-    "environment": { "type": "string", "const": "testing" }
-  },
-  "required": ["schemaVersion", "assembly", "environment"],
-  "additionalProperties": false
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "environment": { "type": "string", "const": "testing" }
+      },
+      "required": ["schemaVersion", "assembly", "environment"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "environment": { "type": "string", "const": "testing" },
+        "clock": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+            },
+            {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?Z$"
+            }
+          ]
+        },
+        "models": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\\\[A-Za-z_][A-Za-z0-9_]*)*$"
+          }
+        },
+        "expectedCollections": {
+          "minItems": 1,
+          "maxItems": 5,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "routes",
+                  "listeners",
+                  "middleware",
+                  "schedules",
+                  "bindings"
+                ]
+              },
+              "complete": { "type": "boolean" },
+              "ordered": { "type": "boolean" },
+              "entries": {
+                "maxItems": 20000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    },
+                    "attributes": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4096
+                      },
+                      "additionalProperties": {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 4096 },
+                          { "type": "number" },
+                          { "type": "boolean" },
+                          { "type": "null" },
+                          {
+                            "maxItems": 1024,
+                            "type": "array",
+                            "items": { "type": "string", "maxLength": 4096 }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["key", "attributes"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["kind", "complete", "ordered", "entries"],
+            "additionalProperties": false
+          }
+        },
+        "requests": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 4096,
+                "pattern": "^\\/(?!\\/)[^\\r\\n#]*$"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "PATCH",
+                  "DELETE",
+                  "HEAD",
+                  "OPTIONS"
+                ]
+              },
+              "host": {
+                "type": "string",
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?$"
+              },
+              "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+              "headers": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "pattern": "^[A-Za-z0-9-]+$"
+                    },
+                    "value": {
+                      "type": "string",
+                      "maxLength": 4096,
+                      "pattern": "^[^\\r\\n\\0]*$"
+                    }
+                  },
+                  "required": ["name", "value"],
+                  "additionalProperties": false
+                }
+              },
+              "body": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 32768 },
+                  { "type": "null" }
+                ]
+              },
+              "expected": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 599
+                  },
+                  "body": { "type": "string", "maxLength": 65536 },
+                  "exceptionClass": {
+                    "anyOf": [
+                      { "type": "string", "minLength": 1, "maxLength": 4096 },
+                      { "type": "null" }
+                    ]
+                  }
+                },
+                "required": ["status", "body", "exceptionClass"],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "path",
+              "method",
+              "host",
+              "port",
+              "headers",
+              "body",
+              "expected"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "assembly",
+        "environment",
+        "clock",
+        "models",
+        "expectedCollections",
+        "requests"
+      ],
+      "additionalProperties": false
+    }
+  ]
 }

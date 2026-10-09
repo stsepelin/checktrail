@@ -1,3 +1,5 @@
+import { laravelAssemblyVersionRunner } from "./laravel-assembly-runner.js";
+import { laravelAssemblyPhpFlags } from "./laravel.js";
 import { cppToolNames, cppSupportedVersion } from "./cpp-native.js";
 import { externalInvocationSchema } from "./external-adapter.js";
 import { clangVersion } from "./clang-protocol.js";
@@ -390,14 +392,26 @@ export async function toolsFor(
     ];
   if (check.adapter === "php") {
     const tools = [command("php", "php", ["-n", "--version"])];
-    if (check.id === "php.laravel-runtime" && check.commands[0]?.args[2])
+    if (check.id === "php.laravel-runtime" && check.commands[0]?.args[2]) {
+      const assembly = check.commands[0].args[0] === "-d";
       tools.push(
-        command("laravel", "php", [
-          "-r",
-          "require $argv[1]; echo Illuminate\\Foundation\\Application::VERSION;",
-          check.commands[0].args[2],
-        ]),
+        command(
+          "laravel",
+          "php",
+          assembly
+            ? [
+                ...laravelAssemblyPhpFlags,
+                laravelAssemblyVersionRunner,
+                check.commands[0].args[laravelAssemblyPhpFlags.length + 1]!,
+              ]
+            : [
+                "-r",
+                "require $argv[1]; echo Illuminate\\Foundation\\Application::VERSION;",
+                check.commands[0].args[2],
+              ],
+        ),
       );
+    }
     if (check.id === "php.php-cs-fixer" && check.commands[0]?.args[3])
       tools.push(
         command("php-cs-fixer", "php", [
