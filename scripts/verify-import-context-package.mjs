@@ -49,6 +49,7 @@ assert.ok(
     "assembly-laravel",
     "javascript-extensions",
     "python-extensions",
+    "php-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -92,6 +93,8 @@ if (profile === "assembly-nuxt")
   process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
+if (profile === "php-extensions")
+  process.env.CHECKTRAIL_PHP_EXTENSIONS_INSTALLED = "1";
 if (profile === "python-extensions")
   process.env.CHECKTRAIL_PYTHON_EXTENSIONS_INSTALLED = "1";
 if (profile === "javascript-extensions")
@@ -157,6 +160,8 @@ try {
     "gate-assembly-nuxt.test.js",
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
+    "gate-php-extensions.test.js",
+    "php-extensions-fixture.js",
     "gate-python-extensions.test.js",
     "python-extensions-fixture.js",
     "javascript-extensions-fixture.js",
@@ -201,6 +206,15 @@ try {
         process.platform === "darwin" ? "nuxt-linux-tools" : "nuxt-tools",
         "node_modules",
       ),
+      prepared,
+      { recursive: true },
+    );
+  }
+  if (profile === "php-extensions") {
+    const prepared = path.join(consumer, ".checktrail/php-review-tools/vendor");
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      path.join(repository, ".checktrail/php-review-tools/vendor"),
       prepared,
       { recursive: true },
     );
@@ -378,6 +392,9 @@ try {
           ...(profile === "javascript-extensions"
             ? ["--env", "CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "php-extensions"
+            ? ["--env", "CHECKTRAIL_PHP_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "python-extensions"
             ? ["--env", "CHECKTRAIL_PYTHON_EXTENSIONS_INSTALLED=1"]
             : []),
@@ -469,35 +486,37 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          [
-            "assembly-nuxt",
-            "javascript-extensions",
-            "python-extensions",
-          ].includes(profile)
-            ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
+          profile === "php-extensions"
+            ? "/tmp:rw,nosuid,nodev,noexec,size=1024m"
             : [
-                  "context-go",
-                  "context-rust",
-                  "context-swift",
-                  "context-c",
-                  "context-cpp",
+                  "assembly-nuxt",
+                  "javascript-extensions",
+                  "python-extensions",
                 ].includes(profile)
-              ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+              ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
               : [
-                    "context-scala",
-                    "context-csharp",
-                    "context-ruby",
-                    "context-vb",
-                    "context-hcl",
-                    "context-yaml",
-                    "assembly-vue-router",
-                    "assembly-fastapi",
-                    "assembly-django",
-                    "assembly-laravel",
-                    "javascript-extensions",
+                    "context-go",
+                    "context-rust",
+                    "context-swift",
+                    "context-c",
+                    "context-cpp",
                   ].includes(profile)
-                ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
-                : "/tmp:rw,nosuid,nodev,size=256m",
+                ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+                : [
+                      "context-scala",
+                      "context-csharp",
+                      "context-ruby",
+                      "context-vb",
+                      "context-hcl",
+                      "context-yaml",
+                      "assembly-vue-router",
+                      "assembly-fastapi",
+                      "assembly-django",
+                      "assembly-laravel",
+                      "javascript-extensions",
+                    ].includes(profile)
+                  ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
+                  : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
             ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
             : []),
@@ -535,13 +554,16 @@ try {
             network: "none",
             consumerMount: "readonly",
             rootFilesystemReadonly: true,
-            temporaryFilesystemMiB: [
-              "assembly-nuxt",
-              "javascript-extensions",
-              "python-extensions",
-            ].includes(profile)
-              ? 1024
-              : 256,
+            temporaryFilesystemMiB:
+              profile === "php-extensions"
+                ? 1024
+                : [
+                      "assembly-nuxt",
+                      "javascript-extensions",
+                      "python-extensions",
+                    ].includes(profile)
+                  ? 1024
+                  : 256,
             temporaryFilesystemExecutable: [
               "context-go",
               "context-rust",

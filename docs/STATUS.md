@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [PHP extension contracts](PHP-EXTENSIONS.md) bind the measured loaded
+extension environment, selected native API bytes and declared generated proxies.
+Initialized native model defaults and typed accessor witnesses retain their actual
+class and getter source origins. The [local record](measurements/php-extensions-2026-10-09.json)
+binds source and fresh offline installation, preserved PHP callbacks, regressions
+and compiling JavaScript/PHP guard removals. The public plan schema also retains
+exact Composer package selectors. Wider dependency/license closures, other
+runtimes and the final Gate A matrix remain open. No inference or field evaluation
+was invoked.
+
 Opt-in [Python extension contracts](PYTHON-EXTENSIONS.md) account for namespace
 roots, selected virtualenv distributions and explicitly loaded pytest/mypy plugins.
 Native module phases, test events and dependency origins must match the bound

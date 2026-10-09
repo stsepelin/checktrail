@@ -58,6 +58,7 @@ const timeoutMs =
             "assembly-nuxt",
             "javascript-extensions",
             "python-extensions",
+            "php-extensions",
           ].includes(profile),
         )
       ? 300000

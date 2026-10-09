@@ -407,6 +407,25 @@ export async function toolsFor(
     ];
   if (check.adapter === "php") {
     const tools = [command("php", "php", ["-n", "--version"])];
+    if (check.id === "php.extensions") {
+      for (const [name, selected] of [
+        ["phpstan", "phpstan/phpstan"],
+        ["larastan", "larastan/larastan"],
+        ["php-cs-fixer", "friendsofphp/php-cs-fixer"],
+        ["laravel", "laravel/framework"],
+      ]) {
+        tools.push({
+          name: name!,
+          source: "package-metadata",
+          path: path.resolve(
+            root,
+            check.project,
+            "vendor/composer/installed.json",
+          ),
+          package: selected!,
+        });
+      }
+    }
     if (check.id === "php.laravel-runtime" && check.commands[0]?.args[2]) {
       const assembly = check.commands[0].args[0] === "-d";
       tools.push(
@@ -482,6 +501,28 @@ export async function identifyTool(
       const value: unknown = JSON.parse(
         await readProjectFile(root, path.relative(root, tool.path)),
       );
+      if (tool.package !== undefined) {
+        if (
+          typeof value !== "object" ||
+          value === null ||
+          !("packages" in value) ||
+          !Array.isArray(value.packages)
+        )
+          return result;
+        const matches = value.packages.filter(
+          (entry: unknown) =>
+            typeof entry === "object" &&
+            entry !== null &&
+            "name" in entry &&
+            entry.name === tool.package,
+        );
+        if (matches.length !== 1 || typeof matches[0].version !== "string")
+          return result;
+        const version = matches[0].version.replace(/^v/, "");
+        if (version.length <= 128 && versionPattern.test(version))
+          return { ...result, version, status: "identified" };
+        return result;
+      }
       if (
         typeof value === "object" &&
         value !== null &&

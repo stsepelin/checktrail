@@ -49,6 +49,7 @@ export {
   architectureSummarySchema,
 } from "./architecture.js";
 export { pythonConfigSchema } from "./python-extensions.js";
+export { phpExtensionsConfigSchema } from "./php-extensions.js";
 export { javascriptConfigSchema } from "./javascript-config.js";
 export { laravelConfigSchema } from "./laravel.js";
 import { z } from "zod";
@@ -105,6 +106,7 @@ const toolSpec = z.discriminatedUnion("source", [
     name: z.string(),
     source: z.literal("package-metadata"),
     path: z.string().nullable(),
+    package: z.string().min(1).max(128).optional(),
   }),
   z.strictObject({
     name: z.string(),

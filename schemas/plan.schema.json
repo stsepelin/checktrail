@@ -351,6 +351,7 @@
               "mypy-json",
               "pyright-json",
               "phpstan-json",
+              "php-extension-json",
               "phpunit-junit",
               "pint-json",
               "php-cs-fixer-json"
@@ -395,7 +396,12 @@
                   "properties": {
                     "name": { "type": "string" },
                     "source": { "type": "string", "const": "package-metadata" },
-                    "path": { "type": ["string", "null"] }
+                    "path": { "type": ["string", "null"] },
+                    "package": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    }
                   },
                   "required": ["name", "source", "path"],
                   "additionalProperties": false
