@@ -628,7 +628,13 @@ jobs:
           for profile in php-tools php-review-tools; do
             mkdir -p ".checktrail/$profile"
             cp "scripts/$profile/composer.json" "scripts/$profile/composer.lock" ".checktrail/$profile/"
-            docker run --rm --mount "type=bind,src=$PWD/.checktrail/$profile,target=/tools" --workdir /tools "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+            if [ "$profile" = php-tools ]; then
+              # The locked, explicitly allowed Pest plugin writes pest-plugins.json.
+              docker run --rm --mount "type=bind,src=$PWD/.checktrail/$profile,target=/tools" --workdir /tools "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" composer install --no-interaction --no-scripts --prefer-dist --no-progress
+              test -s ".checktrail/$profile/vendor/pest-plugins.json"
+            else
+              docker run --rm --mount "type=bind,src=$PWD/.checktrail/$profile,target=/tools" --workdir /tools "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-progress
+            fi
           done
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native original callbacks, compiling controls and fresh package

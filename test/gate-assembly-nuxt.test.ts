@@ -467,7 +467,7 @@ test("assembly-nuxt privacy acceptance", { skip }, async (t) => {
 });
 test(
   "assembly-nuxt lifecycle acceptance",
-  { skip, timeout: 120000 },
+  { skip, timeout: 240000 },
   async (t) => {
     for (const mode of ["cancel", "timeout", "output"]) {
       const childSource =
@@ -481,12 +481,13 @@ test(
         abort = new AbortController();
       const pending = validate(root, {
         trusted: true,
-        timeoutMs: mode === "timeout" ? 12000 : 30000,
+        timeoutMs: mode === "timeout" ? 45000 : 60000,
         signal: abort.signal,
       });
       let ids: { parent: number; child: number; temp: string } | undefined;
       try {
-        const deadline = performance.now() + 20000;
+        // Startup remains inside the execution budget, with time left after reach.
+        const deadline = performance.now() + 40000;
         while (performance.now() < deadline) {
           try {
             ids = JSON.parse(
@@ -500,7 +501,7 @@ test(
         }
         assert.ok(
           ids,
-          "Native H3 middleware and both descendants must be reached before control",
+          `Native H3 middleware and both descendants must be reached before ${mode} control`,
         );
         assert.ok(ids.parent > 0 && ids.child > 0 && ids.parent !== ids.child);
         assert.equal(

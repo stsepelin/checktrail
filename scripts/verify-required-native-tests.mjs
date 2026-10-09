@@ -33,36 +33,40 @@ for (const profile of selection) {
 const timeoutMs =
   fullSuite || selection.includes("dotnet-method")
     ? 600000
-    : selection.some((profile) =>
-          [
-            "dotnet-build",
-            "gradle",
-            "detekt",
-            "kotlin",
-            "scala",
-            "maven",
-            "dotnet-test",
-            "dotnet-format",
-            "dotnet-generated",
-            "review-benchmark-multi",
-            "ruby-tools",
-            "ruby-tools-rubocop",
-            "ruby-tools-assertions",
-            "ruby-tools-evidence",
-            "ruby-tools-lifecycle",
-            "ruby-tools-defaults",
-            "ruby-tools-surfaces",
-            "ruby-tools-cancellation",
-            "swift-tools",
-            "go-extensions",
-            "assembly-nuxt",
-            "javascript-extensions",
-            "python-extensions",
-            "php-extensions",
-          ].includes(profile),
-        )
-      ? 300000
-      : 120000;
+    : selection.includes("javascript-extensions")
+      ? process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED === "1"
+        ? 300000
+        : 480000
+      : selection.some((profile) =>
+            [
+              "dotnet-build",
+              "gradle",
+              "detekt",
+              "kotlin",
+              "scala",
+              "maven",
+              "dotnet-test",
+              "dotnet-format",
+              "dotnet-generated",
+              "review-benchmark-multi",
+              "ruby-tools",
+              "ruby-tools-rubocop",
+              "ruby-tools-assertions",
+              "ruby-tools-evidence",
+              "ruby-tools-lifecycle",
+              "ruby-tools-defaults",
+              "ruby-tools-surfaces",
+              "ruby-tools-cancellation",
+              "swift-tools",
+              "go-extensions",
+              "assembly-nuxt",
+              "javascript-extensions",
+              "python-extensions",
+              "php-extensions",
+            ].includes(profile),
+          )
+        ? 300000
+        : 120000;
 // Retain the single-profile report used by installed acceptance harnesses.
 const additionalFiles = fullSuite
   ? (await readdir(new URL("../dist/test/", import.meta.url)))
