@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "profile": "vb-selected-bindings-v1",
+  "runtime": "web-tree-sitter@0.27.0",
+  "asset": {
+    "grammar": "vbnet",
+    "file": "tree-sitter-vbnet.wasm",
+    "sha256": "2dbca366dc736f3274fe951f819618f794cd5366324b4f0251229d42b4b15444",
+    "bytes": 3302414,
+    "sourceCommit": "538b7087bf80e86004531b392fe1186379c0a2b5"
+  }
+}

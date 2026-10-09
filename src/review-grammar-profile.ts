@@ -1,5 +1,7 @@
+import { vbGrammarAsset } from "./review-vb-grammar-assets.js";
 import { grammarAssets } from "./review-grammar-assets.js";
-export function selectedGrammar(file: string) {
+export function selectedGrammar(file: string, vb = false) {
+  if (vb && file.endsWith(".vb")) return vbGrammarAsset;
   const extension = file.split(".").at(-1)!.toLowerCase();
   const grammar = (
     {

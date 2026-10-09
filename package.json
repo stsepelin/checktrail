@@ -15,6 +15,7 @@
   "files": [
     "dist/src",
     "assets/context-grammars",
+    "assets/context-vb-grammar",
     "schemas",
     "packs",
     "server.json",

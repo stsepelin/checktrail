@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "scope": "supplemental-vb-parser-artifact-preparation",
+  "sourceRepository": "https://github.com/govindbanura/tree-sitter-vbnet",
+  "sourceCommit": "538b7087bf80e86004531b392fe1186379c0a2b5",
+  "sourceArchive": {
+    "url": "https://codeload.github.com/govindbanura/tree-sitter-vbnet/tar.gz/538b7087bf80e86004531b392fe1186379c0a2b5",
+    "sha256": "9343fd4bf9a2857555921167d002e558f5024223ecc35209f0834a1539a13f60",
+    "bytes": 241760
+  },
+  "upstreamPackageLicenseField": "ISC",
+  "distributedSourceLicense": "MIT",
+  "notice": {
+    "file": "assets/context-vb-grammar/notices/vbnet-MIT.txt",
+    "sha256": "fa7ab39bcf92c216d429e8aa8be8a5a40db85bfbe4ff14a7bb0ecbbcca937454",
+    "bytes": 1070
+  },
+  "patch": {
+    "file": "assets/context-vb-grammar/patches/vbnet-newlines.patch",
+    "sha256": "f7f5e790aff11c2660ae2adbc424b374b1bf4064804b0ffc0636b37bc81d04bf",
+    "reason": "Original grammar ignores newlines as extras and rejects the original valid multiline If witness. Preserve explicit statement terminators."
+  },
+  "originalGrammarSha256": "1c36170132807918ac84aa934e857bd50a95d7e6867f0b49913e5b21d3afeb9d",
+  "preparedGrammarSha256": "269d88a9d04043b093375035ba08d5199479f5c4d3a340b880ebe168312c1b17",
+  "generatedFiles": {
+    "src/parser.c": "50a9261a9e46d23a55292a89edc53362093c5f6bf8b6f11508ca01ac1fa9a589",
+    "src/grammar.json": "b970a3d92de9a850bf1472f9ad31570d59cdbfb5e1161c9e3c1e16a9bea150db",
+    "src/node-types.json": "a57fca720d8f4945fe85407bdc3dfcb623590650b09c9b9c15f9dc9f8eee50c1",
+    "src/tree_sitter/parser.h": "180b893c8734778fd32f372dfbc27bd6ad1cd2221f26150b31256ff6716320d2",
+    "src/tree_sitter/alloc.h": "b29c1c9fb7cc82f58c84b376df1297d6e2737a1d655fd356db0859e3c29c2fea",
+    "src/tree_sitter/array.h": "20e6ba85abb9d5b7e2e6dedf675c9424a057a06feee03aa3e2dd48a1cb4bf8a2"
+  },
+  "grammarManifestSha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043",
+  "asset": {
+    "grammar": "vbnet",
+    "file": "tree-sitter-vbnet.wasm",
+    "sha256": "2dbca366dc736f3274fe951f819618f794cd5366324b4f0251229d42b4b15444",
+    "bytes": 3302414,
+    "sourceCommit": "538b7087bf80e86004531b392fe1186379c0a2b5"
+  },
+  "buildTools": {
+    "treeSitter": {
+      "version": "0.27.0",
+      "sha256": "f0e7b6b81e4faad74cd935c3536ea061d61b402f0ccaf3829300c70c8fe9fcb6"
+    },
+    "wasiSDK": {
+      "version": "34.0",
+      "archiveSha256": "9c59398106b417f8f14913380fdf0097a8cc0ff4af9eb3ce0065a859e88d49e9"
+    },
+    "binaryen": {
+      "version": "132",
+      "archiveSha256": "98aad827847af7ef990ed7098d885725c8e5b5aae75073403635617ae4e259aa"
+    }
+  },
+  "buildToolNoticeClosureVerified": false,
+  "unusedUpstreamBinaryArtifactsImported": false,
+  "grammarPreparedBeforeCapture": true,
+  "projectCodeExecutedDuringCapture": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

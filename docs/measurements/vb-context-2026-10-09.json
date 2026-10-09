@@ -1,0 +1,2236 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-vb-selected-bindings-v1",
+  "recordedAt": "2026-10-09T00:39:02.222434+00:00",
+  "scope": "Captured Visual Basic flat modules, literal constants/defaults/imports and case-folded lexical candidates plus trusted original native controls; no capture execution, native root/assembly certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "d4b42f81dd3deba9c64259b4b78f093d33a9a147",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 47474,
+        "sha256": "33a1175e129071c3377249e9132936e552d0374eba3e9b95620bd3a8e8b3f536"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-vb-grammar/manifest.json",
+        "bytes": 351,
+        "sha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043"
+      },
+      {
+        "file": "assets/context-vb-grammar/notices/vbnet-MIT.txt",
+        "bytes": 1070,
+        "sha256": "fa7ab39bcf92c216d429e8aa8be8a5a40db85bfbe4ff14a7bb0ecbbcca937454"
+      },
+      {
+        "file": "assets/context-vb-grammar/patches/vbnet-newlines.patch",
+        "bytes": 161,
+        "sha256": "f7f5e790aff11c2660ae2adbc424b374b1bf4064804b0ffc0636b37bc81d04bf"
+      },
+      {
+        "file": "assets/context-vb-grammar/tree-sitter-vbnet.wasm",
+        "bytes": 3302414,
+        "sha256": "2dbca366dc736f3274fe951f819618f794cd5366324b4f0251229d42b4b15444"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 25079,
+        "sha256": "0c4efb2629ad200e304862a4539082192ed0d9814adefb9e5bbf0a99c8cfa39e"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 39380,
+        "sha256": "495449e0b10fe9615d40c3471c8b03885ed9f60db5a522930d107fed854e9cac"
+      },
+      {
+        "file": "docs/REVIEW-VB-CONTEXT.md",
+        "bytes": 5410,
+        "sha256": "0b96d38b31a5d57fd0f7936a236c24e7257ce74d7b4974843de7655677225457"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 44746,
+        "sha256": "86f985b78cf5a44e6a8ada064398e9015706a1ccc2006b5cb374bbb3e451c17a"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146030,
+        "sha256": "95cf5cf03a120bd1f94649dbbc0cd81f2b55b8a60e6234ffc98fb5dcc27c4908"
+      },
+      {
+        "file": "docs/measurements/vb-grammar-build-2026-10-09.json",
+        "bytes": 2889,
+        "sha256": "d741de7a89ac65e9fbc85a4f4b72b7efc61715e1464689f748f733ad6b818133"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 2254546,
+        "sha256": "27d2607af20a12724835d6a224784f677f9bbf4209734c64fb93ec8e056c1a6f"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 1030346,
+        "sha256": "3538656d826ff8c66f121c2e81f188d2daf6332bb191d65fa302e3a0292c9d5d"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 1166391,
+        "sha256": "5ecabb8e667902fcda9940616a532cf519fe7ca8ce844bb0c9785dc4055ef52a"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 892854,
+        "sha256": "fd837520a4d7361831c2a71e8ed4e95a165e8ae1a28fe18cd39172cee1b70f6f"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 888406,
+        "sha256": "934b3570440b84349329f6c31134d2b00dfd5e7c16bcf6d7fc22c7e8fea57dc3"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 1080195,
+        "sha256": "920e49c10e8a654f622e2cae395ca0adf50843170303648f8bb62d950cd3eafe"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 749803,
+        "sha256": "ab8eacff7e63649aff8df5e31a868119b7070c77f1cd8306f4149f0e0de12c5d"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 62040,
+        "sha256": "9743030772042ed5b7e569923860e4ea4288898ef62c428944d8ac8d4b2cc49b"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 2531815,
+        "sha256": "993cb08347a959f5a2e0298495d3f45a4da88ce541e84fbe0bb9d222423705e5"
+      },
+      {
+        "file": "scripts/audit-context-vb-grammar.mjs",
+        "bytes": 4072,
+        "sha256": "828096175a2db7256d64b3e09d9accd2eb648fe670e6710edfab37c78636e108"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 156522,
+        "sha256": "2d8f09c01d4f2112faa526c2cbde2a8662c7065e0a20700e37ce35c7127aa246"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/vb-context-tools.Dockerfile",
+        "bytes": 550,
+        "sha256": "363a6639298325ba1d002c3877bda4cbe79dd8c534a37ff3859c910805e83516"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 11055,
+        "sha256": "de40e7e3fead1bdc365f859df05af46677f53ec7e935b721238204c23f72743f"
+      },
+      {
+        "file": "scripts/verify-swift-context-container.mjs",
+        "bytes": 4669,
+        "sha256": "33e79061cfe09456015de7233016419550e980faf41a4c48b95696ec52ec4ed2"
+      },
+      {
+        "file": "scripts/verify-swift-context-guards.mjs",
+        "bytes": 11740,
+        "sha256": "be130f4570b141619191720379f84bc69bc71314500452cb3fc54cbdb0eea8f5"
+      },
+      {
+        "file": "scripts/verify-vb-context-container.mjs",
+        "bytes": 4969,
+        "sha256": "e9c26dcc14aa75a09677526c82c171b5705bde53a3d1df55c8af8f82442788e4"
+      },
+      {
+        "file": "scripts/verify-vb-context-guards.mjs",
+        "bytes": 12286,
+        "sha256": "e8a751f5103d1cb769133346919a30735d7ce25717be275630cbd6792e2b5dbc"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 24682,
+        "sha256": "6788c7cdfb60ac6a6be7d43748a91d0ae41ef9db091350c9185eb34a6294d3b4"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 8506,
+        "sha256": "c6afce625907c8101bc56cf085b2720995429538688beb98ecedf14bc0fb5eba"
+      },
+      {
+        "file": "src/review-grammar-profile.ts",
+        "bytes": 988,
+        "sha256": "f5c6ce74c9a55bbae92d16fdbfcccb78fc51e4de22e4ddb0708a470d4887c9c7"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 14014,
+        "sha256": "5112600278225ed72c9e629c09b774fb2eb74ad9d1722624d21f202711cbdcc1"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 34343,
+        "sha256": "c79aaf0099ab20c80201d53957b9d0b60b67e7bd1f83858c94c56b5dd8e5140c"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32328,
+        "sha256": "b5df639e58958b6283b28d7e8215d207793d2c2262ae93a1f84807841a35d793"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33737,
+        "sha256": "6a8a245918fd0df07714f304255b679fc36e5cdd1e6b416e89436dd23b4ae694"
+      },
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-vb-bindings.ts",
+        "bytes": 14597,
+        "sha256": "d23c7f3b0be6e3638b70121e4698eefc4011aa96ddb2239d96ea3e5c0998024e"
+      },
+      {
+        "file": "src/review-vb-grammar-assets.ts",
+        "bytes": 363,
+        "sha256": "5a0cfb497bae9d6c64eb4fb33c5bf95db4577eb31c14b3c7b3ae5e43854bc276"
+      },
+      {
+        "file": "src/review-vb-resolution.ts",
+        "bytes": 18813,
+        "sha256": "5d11a7460d0e58b48c52989593a120496bf6bf3b51c62d33098a3ee1acfa2ba7"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19884,
+        "sha256": "5f3dd967660aa5196e7520fa8fe9a7446ecf04a7013d9b29890a8f866fa2e799"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 32031,
+        "sha256": "1340d6b4449105e80ae4cf1ce55ee1fffebe128cce45a2c6cf3fdd4610eec0dc"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 81975,
+        "sha256": "d4edee6cc70e688097ee1fddea755ab2df2bd270974f96b1a416012178d9a1d9"
+      },
+      {
+        "file": "test/gate-context-vb.test.ts",
+        "bytes": 33808,
+        "sha256": "80957eb5d59eed9a4828466f1b4a885afd3b764ceddad8578af6ea869a950fbf"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10859,
+        "sha256": "44c11a4cc733d0abce859978b24002158248c23a057d9ea77ecbd11be552b235"
+      },
+      {
+        "file": "test/review-vb-boundaries-fixture.ts",
+        "bytes": 10801,
+        "sha256": "f27251584b0c5985eb7ee959e55720d0d5f53106a9ac757c2e79dc3414b2e49a"
+      },
+      {
+        "file": "test/review-vb-boundaries.test.ts",
+        "bytes": 212,
+        "sha256": "caab9f087bb4949366897ff52c409e3cb6cd486f35ddda553c6a9aae9e5c74c4"
+      },
+      {
+        "file": "test/review-vb-grammar-artifacts.test.ts",
+        "bytes": 881,
+        "sha256": "0739d3def27dee81893f9d5bad1e669bf64dfe6ffa2d2712410b1f99a687ced4"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 25757,
+        "sha256": "7eae2fcc457ef684934336a7230d4518caa3b91f4e114dfb4cc74d2996808e3f"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 8326,
+        "sha256": "64fc5db925ba260e4df233c0ee8f176073cf3bbf545d1a7f22c7741071ec9a5d"
+      },
+      {
+        "file": "dist/src/review-grammar-profile.js",
+        "bytes": 1021,
+        "sha256": "73717d85ec8a1f019e65a78e38ad28fdde197e0154a57e17deb15b988aa28ff2"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14231,
+        "sha256": "0e9ff8f07fd6446aae64b2362d27b14ebf9ff01eaeb47df4761b23a97630c838"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 33815,
+        "sha256": "d6889f980e2d01285d87c7f4d970b46a0ab531d004a60600a609fef96d086403"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 34018,
+        "sha256": "d21dc8cb20edce16ba2404beb7acec575685b45f0010e98a14bd25cd1e04d905"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35717,
+        "sha256": "7f7e9ccb1e5c88ddc54c686270251788688fdf84a245ce92cfa19fc4d9f2c253"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-vb-bindings.js",
+        "bytes": 13962,
+        "sha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe"
+      },
+      {
+        "file": "dist/src/review-vb-grammar-assets.js",
+        "bytes": 362,
+        "sha256": "0305375f6fd623708153c7d04a09690ec56262cd495d822b44a8a66c91fc60fe"
+      },
+      {
+        "file": "dist/src/review-vb-resolution.js",
+        "bytes": 18314,
+        "sha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19832,
+        "sha256": "15b8cbb1665dad3e7c2911ad0622c9b575c4d44869eecfdf0c751fda14d6a761"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32943,
+        "sha256": "3c70d5cdca6e26a7b1005f40b01bf81ddc693911e33835b77c451f8a085d9381"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 84408,
+        "sha256": "f3c57b0b5bd74a2afab8b0dbd86af03c414eb2222a82320f96fe49818b6be01f"
+      },
+      {
+        "file": "dist/test/gate-context-vb.test.js",
+        "bytes": 33309,
+        "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11261,
+        "sha256": "2afba16bebb9987dfd1914aefa40b82bd50658d4748147d7db569d112086870f"
+      },
+      {
+        "file": "dist/test/review-vb-boundaries-fixture.js",
+        "bytes": 10135,
+        "sha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff"
+      },
+      {
+        "file": "dist/test/review-vb-boundaries.test.js",
+        "bytes": 214,
+        "sha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591"
+      },
+      {
+        "file": "dist/test/review-vb-grammar-artifacts.test.js",
+        "bytes": 882,
+        "sha256": "5ae608d0a84e7d9256c17931dd086427dd73e5d1a47a5efb8d586a3f3500edaf"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic Visual Basic selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "compiler": "5.9.0-1.26423.113 (e34a38d2ae1fc26406a317517196e55c68ff83ab)",
+      "dotnet": "10.0.401",
+      "runtimes": "Microsoft.AspNetCore.App 10.0.12 [/usr/share/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 10.0.12 [/usr/share/dotnet/shared/Microsoft.NETCore.App]",
+      "referenceLibraries": [
+        {
+          "name": "Microsoft.CSharp.dll",
+          "bytes": 18216,
+          "sha256": "ae0ecd8f42ea3efacc2612ade56f29feea9a123fce9faa455126ec9f4a4540cf"
+        },
+        {
+          "name": "Microsoft.VisualBasic.Core.dll",
+          "bytes": 59216,
+          "sha256": "7a7e44d7ac1f870e0b7d8f3f7598cca79e35cab12e77c58ed46e9b6b3c78bcfb"
+        },
+        {
+          "name": "Microsoft.VisualBasic.dll",
+          "bytes": 17192,
+          "sha256": "e192508adde6a758138a5a8e28998dccb64e7f45eaf30d8ab3564f87749028b1"
+        },
+        {
+          "name": "Microsoft.Win32.Primitives.dll",
+          "bytes": 16168,
+          "sha256": "ab197dec717c52f5a72c8f2366c33e2fc5149bfa7cf49acd59bbfb563defcd05"
+        },
+        {
+          "name": "Microsoft.Win32.Registry.dll",
+          "bytes": 21288,
+          "sha256": "e8eb7f780b9ceca6dae35e74a11fa85e26a1b8b4a7edd5237cccc6b63b4e4b7a"
+        },
+        {
+          "name": "System.AppContext.dll",
+          "bytes": 15144,
+          "sha256": "d9dd9fa44e019f27172d6b2662e2b6038f48c270912ac8aae53d4d909da7e9be"
+        },
+        {
+          "name": "System.Buffers.dll",
+          "bytes": 15144,
+          "sha256": "a1a35f5524e2f831d08ca55f702fbddcb8c6dfecd264f0f563d81a1c8b8280bd"
+        },
+        {
+          "name": "System.Collections.Concurrent.dll",
+          "bytes": 27432,
+          "sha256": "27b446a401163baa325f9cd82f787dfd32d0e205011093e0ab3057e5da609555"
+        },
+        {
+          "name": "System.Collections.Immutable.dll",
+          "bytes": 75048,
+          "sha256": "d4145735395753187965a6f0a8bf6bb6f301563c4d4080249614b8487b0604ac"
+        },
+        {
+          "name": "System.Collections.NonGeneric.dll",
+          "bytes": 22864,
+          "sha256": "99adf08652a16e5af30797b98742851b94604aa44bab677ddc38c7826bd529a5"
+        },
+        {
+          "name": "System.Collections.Specialized.dll",
+          "bytes": 25896,
+          "sha256": "17ef2b9433a1f1e9fc956786067f8d60672437d3feb76af84175f2b3bee4ded1"
+        },
+        {
+          "name": "System.Collections.dll",
+          "bytes": 55080,
+          "sha256": "130fcdd915c3ff8d8279fefd9a198b784d37693f4c1e96d1f2cff3edc96b638d"
+        },
+        {
+          "name": "System.ComponentModel.Annotations.dll",
+          "bytes": 31568,
+          "sha256": "43c467051feafaa27144cc672836f38108377439245833fc8d99de97d3667c37"
+        },
+        {
+          "name": "System.ComponentModel.DataAnnotations.dll",
+          "bytes": 16720,
+          "sha256": "d40e8c7062e6b9ce11ba83eab3d26be0eec8066b99970ea88b8e87fb75f411bd"
+        },
+        {
+          "name": "System.ComponentModel.EventBasedAsync.dll",
+          "bytes": 19240,
+          "sha256": "b96d6d2f159ee5e192b2406a0ec993c8ad470a847f2e7acd2aa92cbc0a4c6a58"
+        },
+        {
+          "name": "System.ComponentModel.Primitives.dll",
+          "bytes": 25936,
+          "sha256": "09a575c38bd010f3131704e9294941ff9740a0ba70be0fd6ab8fa54c44dbfca7"
+        },
+        {
+          "name": "System.ComponentModel.TypeConverter.dll",
+          "bytes": 104744,
+          "sha256": "98a3e34140052c828ab7bdb81040421616fa4e6356c27f7970df141ef5681b42"
+        },
+        {
+          "name": "System.ComponentModel.dll",
+          "bytes": 15656,
+          "sha256": "8811e7cc4288c435f54b0350afbffcbb13f77618cf9c0d3436cad89a83d29b23"
+        },
+        {
+          "name": "System.Configuration.dll",
+          "bytes": 19240,
+          "sha256": "3952a72e1f18774f16952b46c20e80ed2bc601a06eca01f33fa924c738022a9c"
+        },
+        {
+          "name": "System.Console.dll",
+          "bytes": 26408,
+          "sha256": "783e5ea6d049218ec30316598654e031415f0d1ec6ce6932c2d1a9cbd97a77e0"
+        },
+        {
+          "name": "System.Core.dll",
+          "bytes": 23336,
+          "sha256": "ac23faf1b37fa49f1b117baad951a65609e799a6e669a6df06d3552677e0c086"
+        },
+        {
+          "name": "System.Data.Common.dll",
+          "bytes": 154448,
+          "sha256": "e563226dce5e8d2f1ecf24b13a37d8948e42208d7b93bc9812475074382f2303"
+        },
+        {
+          "name": "System.Data.DataSetExtensions.dll",
+          "bytes": 15656,
+          "sha256": "aeeae0755c8c7f6747765cdf82fa43182e320e97f2035e3a0a19f21905e6c113"
+        },
+        {
+          "name": "System.Data.dll",
+          "bytes": 23848,
+          "sha256": "8bee1d4675fee975b5454e7407827aa3c6d4a2e53b9efb40be5409ac50900edb"
+        },
+        {
+          "name": "System.Diagnostics.Contracts.dll",
+          "bytes": 19752,
+          "sha256": "4366ccd79a875fb64e38813a81bdf2f61915b4c838cb74572d87919c2e7dee41"
+        },
+        {
+          "name": "System.Diagnostics.Debug.dll",
+          "bytes": 15656,
+          "sha256": "8b160ffe7518588bf64e13c01c6dcb2ef504d64f38bbf0f198d31e7b698db92c"
+        },
+        {
+          "name": "System.Diagnostics.DiagnosticSource.dll",
+          "bytes": 43304,
+          "sha256": "6caa24c3fe3819a6f78aedb0e8f718a6bd83eab4d9a786c609a228e330557bb0"
+        },
+        {
+          "name": "System.Diagnostics.FileVersionInfo.dll",
+          "bytes": 16720,
+          "sha256": "ae73589f3288fc3648a718797361f0ab37606cc18667c8aaebea2787f62736a3"
+        },
+        {
+          "name": "System.Diagnostics.Process.dll",
+          "bytes": 31568,
+          "sha256": "cd121308cb25b34ebc2549d72da361e56a093b29ef5ab0a85870d13fb91de052"
+        },
+        {
+          "name": "System.Diagnostics.StackTrace.dll",
+          "bytes": 22824,
+          "sha256": "e287630abe5753b658e64e947616c8bc8291bcd27bfcadc745a33818a43ad30d"
+        },
+        {
+          "name": "System.Diagnostics.TextWriterTraceListener.dll",
+          "bytes": 17704,
+          "sha256": "2c567ad9a2efe67d171e0ab06d0c7035383508588cae62b3c3d08f579a064595"
+        },
+        {
+          "name": "System.Diagnostics.Tools.dll",
+          "bytes": 15144,
+          "sha256": "841c5e2b6c171fa9aaff0fc6295f3fbc93dc5dcab44118b62f1c942bb674aff2"
+        },
+        {
+          "name": "System.Diagnostics.TraceSource.dll",
+          "bytes": 27984,
+          "sha256": "ecfe5b354ea6b7bf3736d8c4b02ae322c766f2bccf260182632a492f3309d883"
+        },
+        {
+          "name": "System.Diagnostics.Tracing.dll",
+          "bytes": 28968,
+          "sha256": "e0f72905eb1b1cfd6db130e6b2f18424788769d79fae486054a242615d713a50"
+        },
+        {
+          "name": "System.Drawing.Primitives.dll",
+          "bytes": 35616,
+          "sha256": "8ffda23fafb73bdac7b6c8dfcac1c06894c729f65157e218980db9a4b74c7427"
+        },
+        {
+          "name": "System.Drawing.dll",
+          "bytes": 20304,
+          "sha256": "585a8da9952d715f8de7a7b1879b59d68ff8608b92f6ed1c5f0e1d251180d3c6"
+        },
+        {
+          "name": "System.Dynamic.Runtime.dll",
+          "bytes": 16168,
+          "sha256": "c0eac30c791db8c1a2b50b61c50d029f4ddd0eadfdd35433745001688a3e7466"
+        },
+        {
+          "name": "System.Formats.Asn1.dll",
+          "bytes": 26408,
+          "sha256": "c6f8cb70a20321ac4c93219ccb5264f50d21d7f7cdd0bd61c02360ff87cd38f4"
+        },
+        {
+          "name": "System.Formats.Tar.dll",
+          "bytes": 20264,
+          "sha256": "c6d0aa4d2e3ed3ab6c1949669d79bfc763fc9e7b04830ab7174d4cc55569757c"
+        },
+        {
+          "name": "System.Globalization.Calendars.dll",
+          "bytes": 15656,
+          "sha256": "e0f3f3f6e4acc7b6755782fed5cb075ecf70beee4fc5d404579ae99bc0883ef2"
+        },
+        {
+          "name": "System.Globalization.Extensions.dll",
+          "bytes": 15144,
+          "sha256": "be0390557cc72078a7217cf94fd44b9ab66aa30838c00a92aa78c62469c44aa0"
+        },
+        {
+          "name": "System.Globalization.dll",
+          "bytes": 15696,
+          "sha256": "66902cffd057673b4b77aa68faf80d33ffa4c94510e61db2a067943cc53b7702"
+        },
+        {
+          "name": "System.IO.Compression.Brotli.dll",
+          "bytes": 18256,
+          "sha256": "1401375a39b7ba5e65e0b49274c0168b6c8b7e5455afefd269c1418fd019e997"
+        },
+        {
+          "name": "System.IO.Compression.FileSystem.dll",
+          "bytes": 15184,
+          "sha256": "4aeec2c0189f73ba8122f05c0d759008ddae1a8873b167cc8a558d53f2af80e1"
+        },
+        {
+          "name": "System.IO.Compression.ZipFile.dll",
+          "bytes": 18728,
+          "sha256": "c34ef5004f535f10adceb66b3f20f743b15656ed4c7dcf5946a8b83a6cdee329"
+        },
+        {
+          "name": "System.IO.Compression.dll",
+          "bytes": 21800,
+          "sha256": "ac573888ba94e958243674d82e51e88692e5bea6fd94bb68d87d30c28cdaecf5"
+        },
+        {
+          "name": "System.IO.FileSystem.AccessControl.dll",
+          "bytes": 20264,
+          "sha256": "38eb787fd20b30f36e207364387fd34a5c68207baffddf318986216f4b6cc6b1"
+        },
+        {
+          "name": "System.IO.FileSystem.DriveInfo.dll",
+          "bytes": 17192,
+          "sha256": "5ce6349a752189b3bcaa553fef38f9c0cdd1fb2e39e7caba67c966f52ef66391"
+        },
+        {
+          "name": "System.IO.FileSystem.Primitives.dll",
+          "bytes": 15144,
+          "sha256": "d3b21b8b38e48c6b4d1cb5cfe9adfe4abad7b3353601febd3c7e4027f9ef9c6b"
+        },
+        {
+          "name": "System.IO.FileSystem.Watcher.dll",
+          "bytes": 20776,
+          "sha256": "07fc2b07b7d53173c695e60e93f2da4325b68c797c4351fff571923f01f8054c"
+        },
+        {
+          "name": "System.IO.FileSystem.dll",
+          "bytes": 15656,
+          "sha256": "c251f33b29382c47b773d907463edd9fe978a06e39efd5670ef3b3b1d4f8c2b7"
+        },
+        {
+          "name": "System.IO.IsolatedStorage.dll",
+          "bytes": 22312,
+          "sha256": "6720027218d12697d30640fb97acdb02438649cccb038ffdb3ad80dc27f6f736"
+        },
+        {
+          "name": "System.IO.MemoryMappedFiles.dll",
+          "bytes": 18256,
+          "sha256": "028850f2cebbcc3ccb48fcef97751522ea6455c05ff9234686a16cc088fac5a4"
+        },
+        {
+          "name": "System.IO.Pipelines.dll",
+          "bytes": 20304,
+          "sha256": "08344a31693477a61b45dff21739bf576c7482b394fab2fa26d2d8ba87b2cb91"
+        },
+        {
+          "name": "System.IO.Pipes.AccessControl.dll",
+          "bytes": 18216,
+          "sha256": "80fda558926f7d7a085a6a210596000d281e4af2fb235e4c8dc9cbef8f1a87d0"
+        },
+        {
+          "name": "System.IO.Pipes.dll",
+          "bytes": 22312,
+          "sha256": "0b7aaa8fea2a9483857b2ac918814ad1d8ff3303c98d6ef71d4593b16adee9ba"
+        },
+        {
+          "name": "System.IO.UnmanagedMemoryStream.dll",
+          "bytes": 15696,
+          "sha256": "ad6a5f859589e1951103a00f45566da079cf87bd8b03f0c6ad985a6f39f19c5a"
+        },
+        {
+          "name": "System.IO.dll",
+          "bytes": 15656,
+          "sha256": "388400ccb189b819d6ec5f1ef70710a39641d93ed5b870fc9324866b75dfb78b"
+        },
+        {
+          "name": "System.Linq.AsyncEnumerable.dll",
+          "bytes": 36176,
+          "sha256": "3367b7d6d2be9d171e158b544979131e8b97328b293d6e77917234a2a7279507"
+        },
+        {
+          "name": "System.Linq.Expressions.dll",
+          "bytes": 63312,
+          "sha256": "772112c3f1c10fb713ccc3ad62cc313c2cad1cbaf122ef6d25120aa7b65b0447"
+        },
+        {
+          "name": "System.Linq.Parallel.dll",
+          "bytes": 31016,
+          "sha256": "b4b597374ffebccf8a46793f03d5e6d5e477dfc5047157217d79449f9729e761"
+        },
+        {
+          "name": "System.Linq.Queryable.dll",
+          "bytes": 32040,
+          "sha256": "5baf83b98f103d9304eac427c4296c9dd501d320b7b5495ed8ede892aaf1076d"
+        },
+        {
+          "name": "System.Linq.dll",
+          "bytes": 33616,
+          "sha256": "9cb73d57c035503bdc70fdc422dee5bf4f9de97b812cd0dcb379d652c6f91205"
+        },
+        {
+          "name": "System.Memory.dll",
+          "bytes": 57168,
+          "sha256": "d7e674a1feff0546c9932b0fcffa9d055976736342a4b1904f1f27894f3c0ed6"
+        },
+        {
+          "name": "System.Net.Http.Json.dll",
+          "bytes": 23336,
+          "sha256": "bf97fcfa0d20adb597878f902b761480fb02fa0f9f81521f16f2455ddc6a1ed2"
+        },
+        {
+          "name": "System.Net.Http.dll",
+          "bytes": 60200,
+          "sha256": "3ff081221d0adeb99b5cf40788e20dab1d0d706618044b34e68a47529c761601"
+        },
+        {
+          "name": "System.Net.HttpListener.dll",
+          "bytes": 25384,
+          "sha256": "03ca98abeb9ea2c7e372c31aa460d2a9e526617c22fa97c9d8750977167a9634"
+        },
+        {
+          "name": "System.Net.Mail.dll",
+          "bytes": 32040,
+          "sha256": "8193e3652b1ecb1aa46258087bb5f44becd72693552da120e1274ef1ad443e53"
+        },
+        {
+          "name": "System.Net.NameResolution.dll",
+          "bytes": 17704,
+          "sha256": "97e0cc175bf13e4861e1508820f08561b38f28e98ebc9c5addb28c58fa7c344d"
+        },
+        {
+          "name": "System.Net.NetworkInformation.dll",
+          "bytes": 33576,
+          "sha256": "b90b729446f4ed3fa470b5c96e9c5adecbf4e438eaa91d0548832c58673a4c18"
+        },
+        {
+          "name": "System.Net.Ping.dll",
+          "bytes": 20264,
+          "sha256": "f623594e3309d40d36a7dd63dcb5251f72eb94eb2e74246805b4a0d23fc8c6b0"
+        },
+        {
+          "name": "System.Net.Primitives.dll",
+          "bytes": 37160,
+          "sha256": "129e7b324fbc12f8c54b89e6d6706b08455532fb64a8913038add92be2924244"
+        },
+        {
+          "name": "System.Net.Quic.dll",
+          "bytes": 23848,
+          "sha256": "f9651dcde17f5823c7d42be080059fd9f88aed81d91c64e58f95afca44a2e24a"
+        },
+        {
+          "name": "System.Net.Requests.dll",
+          "bytes": 41256,
+          "sha256": "d45910c06d2c2fcd6039e8b4076b5878fd195d0fc09d27c4ceb4009ad9491672"
+        },
+        {
+          "name": "System.Net.Security.dll",
+          "bytes": 53544,
+          "sha256": "c4af7099d2077e34c7074e94efeb57ac5707af128ee6e5e0e75d398b8e5843ba"
+        },
+        {
+          "name": "System.Net.ServerSentEvents.dll",
+          "bytes": 17192,
+          "sha256": "87ba81cd8fd6ab3a9a3f4dce922849aea832928f52495788d371dda66e57da01"
+        },
+        {
+          "name": "System.Net.ServicePoint.dll",
+          "bytes": 15144,
+          "sha256": "84fa83cd96e62fda02991b8a8e99fa1c7b3ac08807b04f7486a896cfe6b4a760"
+        },
+        {
+          "name": "System.Net.Sockets.dll",
+          "bytes": 47440,
+          "sha256": "8b7cebafd550083a8d242dbcfb7501384d17142ad6c2bbb047dd37a524762179"
+        },
+        {
+          "name": "System.Net.WebClient.dll",
+          "bytes": 27944,
+          "sha256": "e4e6cc79e23892c8e67a4cb594bb304a26a0328507c45dc2d1998bc6836311a0"
+        },
+        {
+          "name": "System.Net.WebHeaderCollection.dll",
+          "bytes": 19240,
+          "sha256": "c4ee735a52b966f3805cfbd5c172f151ffe013bd70c080f15c2f68be628cd357"
+        },
+        {
+          "name": "System.Net.WebProxy.dll",
+          "bytes": 18216,
+          "sha256": "42c8eb8bf1563806069e1dd1c6c651159daa5589b7f69ff817cdeab3bd02915f"
+        },
+        {
+          "name": "System.Net.WebSockets.Client.dll",
+          "bytes": 19240,
+          "sha256": "5ac14d45c1b92e9c831b37591941ea01f3097a39d130bc292506dd099aeb7260"
+        },
+        {
+          "name": "System.Net.WebSockets.dll",
+          "bytes": 23848,
+          "sha256": "c16043d3ffa90a8fdaf193f0df91f99d6c23518d8432b4caa2d70a92d4c3cfa7"
+        },
+        {
+          "name": "System.Net.dll",
+          "bytes": 17192,
+          "sha256": "481b38c912f8779b3510cd00f079e45096ea22b6defdaab66780d5ac3ae6986a"
+        },
+        {
+          "name": "System.Numerics.Vectors.dll",
+          "bytes": 58152,
+          "sha256": "cc06324f279c581d8f76c0c8f6b011cf8d05efd0c95e998d68f9243da124eb52"
+        },
+        {
+          "name": "System.Numerics.dll",
+          "bytes": 15184,
+          "sha256": "35adc9360421b3b7a3d50399cb2c651c160158d7e8c302907acbce5f61f4a4f7"
+        },
+        {
+          "name": "System.ObjectModel.dll",
+          "bytes": 23336,
+          "sha256": "3a591e043cd443761537580084f714392bb3278176c9a19f1be8700a29ef6f56"
+        },
+        {
+          "name": "System.Reflection.DispatchProxy.dll",
+          "bytes": 15656,
+          "sha256": "0d46dfb9c4ffc27d05a1c089d8f60a1cb365855140a9b30972133208270dd08b"
+        },
+        {
+          "name": "System.Reflection.Emit.ILGeneration.dll",
+          "bytes": 20776,
+          "sha256": "0201069b706d397c573b9342902613a71879a2701994a48e2821c32d43101ae4"
+        },
+        {
+          "name": "System.Reflection.Emit.Lightweight.dll",
+          "bytes": 19240,
+          "sha256": "eef97e1049d8dd7ecc695080dd22c199ee8ca82b1cfcb3e33866cf7125dbd1a4"
+        },
+        {
+          "name": "System.Reflection.Emit.dll",
+          "bytes": 44368,
+          "sha256": "29021699e4128964365a86c22afb3b0a8368da7a3f7463c9c1a8fc0a1402a39f"
+        },
+        {
+          "name": "System.Reflection.Extensions.dll",
+          "bytes": 15144,
+          "sha256": "ceb1b81e1eb488d87bd43d16dc54450b2a78e0b653c44c988aae2a20abc162bc"
+        },
+        {
+          "name": "System.Reflection.Metadata.dll",
+          "bytes": 122152,
+          "sha256": "92ec811516b768220cc41fb6a7197f7ba735f97b694716dfd1bfdf274078a90a"
+        },
+        {
+          "name": "System.Reflection.Primitives.dll",
+          "bytes": 21840,
+          "sha256": "fa52402a7b4096ef109853f6bf03adef0e1de67e3652bb31f413d197f19f9b22"
+        },
+        {
+          "name": "System.Reflection.TypeExtensions.dll",
+          "bytes": 19752,
+          "sha256": "78178074bdb0f7714c634e4a1b425570264b13b2ca5b9ad6880622bff0bda58e"
+        },
+        {
+          "name": "System.Reflection.dll",
+          "bytes": 16168,
+          "sha256": "95059346d6271dd6d0322cc321e5fb8cceab662f550c67aee7615059e41739bb"
+        },
+        {
+          "name": "System.Resources.Reader.dll",
+          "bytes": 15144,
+          "sha256": "20bdb5d302b5e28f6042c9f281cfa3ae2f2358544cc40783052fe5abf6aa859b"
+        },
+        {
+          "name": "System.Resources.ResourceManager.dll",
+          "bytes": 15696,
+          "sha256": "f709eb5cf16e26679782784c428825019785fcc7085562092425d4999bece03d"
+        },
+        {
+          "name": "System.Resources.Writer.dll",
+          "bytes": 16208,
+          "sha256": "7e772363e799c78d8d1d37fe1d412723da9350496a6d7bacd37491f2bb777cc4"
+        },
+        {
+          "name": "System.Runtime.CompilerServices.Unsafe.dll",
+          "bytes": 15184,
+          "sha256": "6e685ec0477b21a688cd38bfcafc673888cdf186c99df3c96fab352e96d6fdc8"
+        },
+        {
+          "name": "System.Runtime.CompilerServices.VisualC.dll",
+          "bytes": 17192,
+          "sha256": "1e5eb23824055d6af5babb6a7ce47e314f78b0b464466db32b60f543304a9140"
+        },
+        {
+          "name": "System.Runtime.Extensions.dll",
+          "bytes": 17704,
+          "sha256": "3d7b517d4fd89ee58c53e0f642cc9be42e7a8669b51a85e861dafe118067cbfd"
+        },
+        {
+          "name": "System.Runtime.Handles.dll",
+          "bytes": 15656,
+          "sha256": "985457a3e6a67e96a445ee0fb69b2d58bcdadc4c964253fb63e2d5061a36b050"
+        },
+        {
+          "name": "System.Runtime.InteropServices.JavaScript.dll",
+          "bytes": 25896,
+          "sha256": "cb551cc19df1067dd8897d14bf02ecfa63d8ecf96067a21902406791d68ce226"
+        },
+        {
+          "name": "System.Runtime.InteropServices.RuntimeInformation.dll",
+          "bytes": 15656,
+          "sha256": "c26d9f94329422bd000f28f6c65fdc162bf9397a6d29e418a189d4ca49c5c3ec"
+        },
+        {
+          "name": "System.Runtime.InteropServices.dll",
+          "bytes": 101160,
+          "sha256": "8ced47e6a2a717c459c3fa13f76a521b35917e123a9b1ee7ed1b5de13db80709"
+        },
+        {
+          "name": "System.Runtime.Intrinsics.dll",
+          "bytes": 466216,
+          "sha256": "df8f497f64b6a3ac02941fae92e057faddf93f3f135f2f6444f725617c38b619"
+        },
+        {
+          "name": "System.Runtime.Loader.dll",
+          "bytes": 19752,
+          "sha256": "42884bcdc89ebd4ee509d5fcb4a679b1d7eebd6ddd9b66cb9e118063ddd30482"
+        },
+        {
+          "name": "System.Runtime.Numerics.dll",
+          "bytes": 36136,
+          "sha256": "4afc84f3e73b63ff6683941fcfda44e8a6aa5227b6afc128dcb979865e23d183"
+        },
+        {
+          "name": "System.Runtime.Serialization.Formatters.dll",
+          "bytes": 23848,
+          "sha256": "ef24bb5669b54b31da46eb13238fb2b7f880dd780dc9b34a224a69dd59d93af8"
+        },
+        {
+          "name": "System.Runtime.Serialization.Json.dll",
+          "bytes": 20776,
+          "sha256": "de7eeca7df9f6bb664383fbead141719bd08d88b6aef43c0605528719f607e62"
+        },
+        {
+          "name": "System.Runtime.Serialization.Primitives.dll",
+          "bytes": 19752,
+          "sha256": "a547b0d205cebe84508c2ddefd56d063c48cdfeae5b0c44bde6bae9f3d72f98a"
+        },
+        {
+          "name": "System.Runtime.Serialization.Xml.dll",
+          "bytes": 39760,
+          "sha256": "117bcb0dd828eaf6bfad06d8380ba32d32729b45879d907d7023fe73e9655bd9"
+        },
+        {
+          "name": "System.Runtime.Serialization.dll",
+          "bytes": 17192,
+          "sha256": "d565fc261ca98cbd14833821f777860291e8a0f775de7aee91778a9f6647f6f4"
+        },
+        {
+          "name": "System.Runtime.dll",
+          "bytes": 862504,
+          "sha256": "10ceaa9b398f512b46def6fd16fb5374c82ac03a7495859adbaaa70868fe70aa"
+        },
+        {
+          "name": "System.Security.AccessControl.dll",
+          "bytes": 37160,
+          "sha256": "2bd23d6aa92b920dafd374e1ab47ecb597ef3b1cf1652a4ec4944a0defb1a4ac"
+        },
+        {
+          "name": "System.Security.Claims.dll",
+          "bytes": 32552,
+          "sha256": "693a61dc317ab5a651ef598578a4b55912ac39342a0842fea003761f861b0caf"
+        },
+        {
+          "name": "System.Security.Cryptography.Algorithms.dll",
+          "bytes": 17232,
+          "sha256": "eb99ae7dbe058a1b015aba6769ce1f65155b7ff51ff9a7203fcf6d7cdea5fef7"
+        },
+        {
+          "name": "System.Security.Cryptography.Cng.dll",
+          "bytes": 16168,
+          "sha256": "7319f97896d92a7d0729cf28dc6c4d1f797c1520b656ee01a780eec726ec2c16"
+        },
+        {
+          "name": "System.Security.Cryptography.Csp.dll",
+          "bytes": 16208,
+          "sha256": "4002af141e9cb29875b677841adf64a9681e5672c2595492dcbc161460d4e121"
+        },
+        {
+          "name": "System.Security.Cryptography.Encoding.dll",
+          "bytes": 15656,
+          "sha256": "994494aec7760f40fade2264aa7c13eebae36360f0b1399a7134bb19c9d58fda"
+        },
+        {
+          "name": "System.Security.Cryptography.OpenSsl.dll",
+          "bytes": 15656,
+          "sha256": "1a8902bbad1b577a98bec62a8472105dc1e9a253e390f69fbe3d167e93206968"
+        },
+        {
+          "name": "System.Security.Cryptography.Primitives.dll",
+          "bytes": 15656,
+          "sha256": "194cccea9354bb248e44c954b5373f9069163f8f21524b3ee4b3185fe436bc15"
+        },
+        {
+          "name": "System.Security.Cryptography.X509Certificates.dll",
+          "bytes": 16680,
+          "sha256": "7439c3b90bc2ee49a9275b28ed29052b4d48b45999ac1b7d25593033b1bb8dd6"
+        },
+        {
+          "name": "System.Security.Cryptography.dll",
+          "bytes": 163112,
+          "sha256": "a700a7f6c32169e62be879088aa2218bdd5450c3945ed6c6d0acb3d25db0b1bf"
+        },
+        {
+          "name": "System.Security.Principal.Windows.dll",
+          "bytes": 26920,
+          "sha256": "4b8eab6e832e99e8c08db2b9649f95ae8298e1105deea45a62e7d3b68c6593b7"
+        },
+        {
+          "name": "System.Security.Principal.dll",
+          "bytes": 15144,
+          "sha256": "1d3e351058be3a33214b23b308fe57f78cd6fd4d8fad448fc84cbbe7376129f9"
+        },
+        {
+          "name": "System.Security.SecureString.dll",
+          "bytes": 15696,
+          "sha256": "73aac97072b7deefa4de9647bf822162224f1452ad467841b989ff89d4d94595"
+        },
+        {
+          "name": "System.Security.dll",
+          "bytes": 18256,
+          "sha256": "d8efd304765e859369698efef9b3ca707defa8e142721fe5605d7a2de7d38375"
+        },
+        {
+          "name": "System.ServiceModel.Web.dll",
+          "bytes": 16680,
+          "sha256": "ce91013ee3a9a9d69a85e258f7749e6ece488295d7cb66f7c1079f2e8678fc5e"
+        },
+        {
+          "name": "System.ServiceProcess.dll",
+          "bytes": 15696,
+          "sha256": "63fc498c9d04e3c4345dfdb8016ad0639d54562dd7d8c707c072792c854df944"
+        },
+        {
+          "name": "System.Text.Encoding.CodePages.dll",
+          "bytes": 15656,
+          "sha256": "2d66f9ae5e7439756eba063c0df86d6d3a0dc571f4bb07add18c59d6f10138ce"
+        },
+        {
+          "name": "System.Text.Encoding.Extensions.dll",
+          "bytes": 20776,
+          "sha256": "d6224360b0e91dfe544ec3baf0d5ded78a13349f6378493c96344a310c8caf08"
+        },
+        {
+          "name": "System.Text.Encoding.dll",
+          "bytes": 15696,
+          "sha256": "5e347db6b4f9b2746d50e1ac85be2d9cc7dc4038fde98ac4295bc7030c83cda9"
+        },
+        {
+          "name": "System.Text.Encodings.Web.dll",
+          "bytes": 26408,
+          "sha256": "f9f6120753fc9faeaa5b09e10ef309594dbd4c20c8cdf1717eb910455549793a"
+        },
+        {
+          "name": "System.Text.Json.dll",
+          "bytes": 82216,
+          "sha256": "4133a8597a10eeb99d56a962ff581db9fd3ac85506ee3a20a2d23119c73a4346"
+        },
+        {
+          "name": "System.Text.RegularExpressions.dll",
+          "bytes": 36648,
+          "sha256": "347c497cf2bd60a298efb59fe47156909ca854fdab4dabb944af7d6f8c270cef"
+        },
+        {
+          "name": "System.Threading.AccessControl.dll",
+          "bytes": 20776,
+          "sha256": "8449a1ee09edf8bdc69c61605bebec602c7b28a9ca401ca463512e4d369a3b7b"
+        },
+        {
+          "name": "System.Threading.Channels.dll",
+          "bytes": 19240,
+          "sha256": "c72028e4423fb04f3a644a76e1807e3651191aeb606b8f7b15b3650e4714cdca"
+        },
+        {
+          "name": "System.Threading.Overlapped.dll",
+          "bytes": 18768,
+          "sha256": "7837d3bd05e28f95749029c832fb1d0ce5bf403a17bef7bf95df522ba93dac3a"
+        },
+        {
+          "name": "System.Threading.Tasks.Dataflow.dll",
+          "bytes": 32040,
+          "sha256": "5d605d4c470c38bc37a04d58b4023a9c60179172790a29f4f7cb92aba6251648"
+        },
+        {
+          "name": "System.Threading.Tasks.Extensions.dll",
+          "bytes": 15696,
+          "sha256": "f148e3a1414b7c2763ae21529ad79ad759f7cfd3c885256b64b0d2209dec2613"
+        },
+        {
+          "name": "System.Threading.Tasks.Parallel.dll",
+          "bytes": 20264,
+          "sha256": "97f9ccb69d9f1d4d86df2869e1ef667c4c68285b04f336b1188e633c8f814d05"
+        },
+        {
+          "name": "System.Threading.Tasks.dll",
+          "bytes": 16680,
+          "sha256": "f80b21f7dae04377b73945456cabe25e2ab1f4b564095aed546c2aa571644567"
+        },
+        {
+          "name": "System.Threading.Thread.dll",
+          "bytes": 23888,
+          "sha256": "fff2281f039c07e564bcb198e041627082702beda24dccc8df39683701ea25a0"
+        },
+        {
+          "name": "System.Threading.ThreadPool.dll",
+          "bytes": 18216,
+          "sha256": "12fedf2de6449bfec4c1a08d762493bc0188e1b9b0a58028289105ed81b983f5"
+        },
+        {
+          "name": "System.Threading.Timer.dll",
+          "bytes": 15144,
+          "sha256": "9e4620846572f49aeb476aa99405071b4bbd0df4323e4e232787ed73642b1ee5"
+        },
+        {
+          "name": "System.Threading.dll",
+          "bytes": 33576,
+          "sha256": "0c2a3b4fddb2d732b8ebd0bca9ac57a8c66c9d4f5fbcb55fcd17e3cbcf678a4b"
+        },
+        {
+          "name": "System.Transactions.Local.dll",
+          "bytes": 25896,
+          "sha256": "c9faffc186d677de7800ff7d4d1b0d204ae7614e6b8518add582c840d7532a3b"
+        },
+        {
+          "name": "System.Transactions.dll",
+          "bytes": 16720,
+          "sha256": "56abfca0350c111d077b3d86a2469ea3da4fccc1871f7c51a8b4fdb664bb0ede"
+        },
+        {
+          "name": "System.ValueTuple.dll",
+          "bytes": 15696,
+          "sha256": "07a5347f6a597e5e0d72109efa1a525697e8c3f74fb0029005500f8ebbf9187a"
+        },
+        {
+          "name": "System.Web.HttpUtility.dll",
+          "bytes": 17192,
+          "sha256": "f26b0586048fdf472e0fb33ca9435b163c91325de4281fce8684251cacc304cc"
+        },
+        {
+          "name": "System.Web.dll",
+          "bytes": 15144,
+          "sha256": "bc260b3db247ad9a6e4a82a275da85c3691a41272cc745cb7eaefcf1f31cc817"
+        },
+        {
+          "name": "System.Windows.dll",
+          "bytes": 15696,
+          "sha256": "716eee98ceee87d38f0b301224462f8442aa793f4b1b9c3ffac315753320ab37"
+        },
+        {
+          "name": "System.Xml.Linq.dll",
+          "bytes": 15696,
+          "sha256": "ae04903b25717fa4695e7e63489091f0d461e791e0bd264c6c85250d668f540d"
+        },
+        {
+          "name": "System.Xml.ReaderWriter.dll",
+          "bytes": 116008,
+          "sha256": "942964d32f72ba10288593f212e3a52c4811b65ca4d5f1a3979c92d2d526aa4c"
+        },
+        {
+          "name": "System.Xml.Serialization.dll",
+          "bytes": 16208,
+          "sha256": "489694401c60905cb6dca8ef0bf738cb609cd45b337126a01c825b913086ba43"
+        },
+        {
+          "name": "System.Xml.XDocument.dll",
+          "bytes": 34088,
+          "sha256": "05f6380411a81245960714a9fd81f6134f7bd279cd70b248a1e1586977798f1a"
+        },
+        {
+          "name": "System.Xml.XPath.XDocument.dll",
+          "bytes": 16168,
+          "sha256": "b8f74e198c3c2cd00ccc90549579f1b69c6ae1655f8b348ace414fd9075c921f"
+        },
+        {
+          "name": "System.Xml.XPath.dll",
+          "bytes": 16680,
+          "sha256": "0e68260b4c36d00c9a77c30a270100461123c0e7e1a37402bb7f67174051b8f3"
+        },
+        {
+          "name": "System.Xml.XmlDocument.dll",
+          "bytes": 15656,
+          "sha256": "a50b9b3a03596e36e73e7a7d54f4d018e8dcfaa7fe79e8cf900af8838ef3ec36"
+        },
+        {
+          "name": "System.Xml.XmlSerializer.dll",
+          "bytes": 50984,
+          "sha256": "f957611b80e082a453264a13bf27b5b251faf598f377f948195123a374b2e8f6"
+        },
+        {
+          "name": "System.Xml.dll",
+          "bytes": 23376,
+          "sha256": "277a84ba155fe7808a514f32694a8157ec9f0eeeef00ef9643e5250004054ff0"
+        },
+        {
+          "name": "System.dll",
+          "bytes": 49448,
+          "sha256": "ff11e2ab9009ef141e315187254f8327dd1e2591e44b8bf158730869028f1f0e"
+        },
+        {
+          "name": "WindowsBase.dll",
+          "bytes": 16208,
+          "sha256": "0ec46a38f29a234b9a4d0ae9364c8322f661a47c831c5b948f2787b7ca12dbbd"
+        },
+        {
+          "name": "mscorlib.dll",
+          "bytes": 55592,
+          "sha256": "894d95d82126559637417b4f14c48ed20bb1168b13a0e65bd1337cdc2a981d1b"
+        },
+        {
+          "name": "netstandard.dll",
+          "bytes": 100648,
+          "sha256": "3dc81dbc9dacd28261632c94410859eda24c2db50cd6c14309cbb2a434b50c57"
+        }
+      ],
+      "git": "git version 2.54.0",
+      "npm": "10.9.8",
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "image": "sha256:aa1fc09d97901f49661eaa2880897904dd50a5d63090950e98bcd18a2151e8a2",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-vb",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-vb broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 660.362854,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-vb fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 332.134023,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-vb near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1665.97152,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-vb prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 192.432922,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-vb stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 129.136245,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-vb empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 259.246912,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-vb privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2488.598196,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-vb lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3510.150125,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-vb installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13982.78854,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-vb broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic Visual Basic captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "vb-case-folded-identifiers",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "59a7809fd41e70593013c108f4c11fdac259f27b067ad0dec92f017856a82bf7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-default-enclosing-scope",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "6743437e780c7fffde1619924a97429b64b61d6674ca57ee670e1d82b1347164",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-parameter-mask",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "28aa4c195f398c05e4b305fd3ad95add6c471fd778a9e54f156269a10eeb1327",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-local-mask",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "fe594c632f36abf71e3fb216020eff621c2b108cf8946a66863b666a8177150d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-literal-constant-provenance",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "6cc903441c900a2572ff548f88a2dc47b142c4b329c2b36ffc9c081106738bb0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-argument-reads",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "b1c28f28525771679cbfcb4c661914b1ce824acf6a414c14aa422b279f6285ab",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-default-read-owner",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "94ce3cccb21ecb9ee44cde101fdfc3c452dbc7655a3b204819ccf39ee48c7817",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-parameter-modes",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "b73e8d511b57c24c1b358c484313acdc3ea75d6afc031927c9b520a0a4012860",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-unknown-scope-propagation",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "7dd2d64d4c2221354febb9f30df7ebb2eeadae22a2bb7b032e1a8181b6490bfb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-exported-function-scope",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3d4dda01f3850c65b903c6bb3a22e4e78946561750b17dffae8bd7aa8d43dabe",
+          "mutantSha256": "ba9ba94de06fd0dd2e8fd0f1f275edac65ef1a0b02a05b9c207a04d77f535ace",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-qualified-receiver-mask",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "cebf1a315f2114d9f47aee5c3f9ffd3623b8d5719d5d784c01f4c4d1affadd4f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-module-ambiguity",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "e2a7bf423202548a38e0ba880ed3ced7b2d5b7797012a5013a0ca4128f56fc39",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-member-ambiguity",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "9428df4ad43242aaed78078c318b947ccc70135a4b1ba2c49cf5b70dd4bd989b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-alias-ambiguity",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "101526189030ab03ecd4ef87769c45781bfa30fc0f770b502dba21e446cbac05",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-private-module-member",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "cddbd9b7cb65051e673c192da5513998faec9fea92bf04293db77a46161c17b0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-implicit-namespace-members",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "ecd8a425dd370b1c9314cc245c65119ab0f5dcb308cb0a905ec2333bb8982f4c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-own-module-priority",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "fea3d2611e0eae304125e34ecfc03b3257a9c577f007e53eafbece8b8274bb8b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-roots-intake",
+          "callback": "context-vb stale acceptance",
+          "callbackSha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "a5764ea8b15d37cfd4915d294ee1d23ed9ecdcf046a0a30616b30a9dfaeb9830",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-count-reconciliation",
+          "callback": "context-vb stale acceptance",
+          "callbackSha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "d79177b9a6deaca69612840f8d8d92ada407ad7198f4a2f0586ca4afb6a41235",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-caller-closure-intake",
+          "callback": "context-vb stale acceptance",
+          "callbackSha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "0d83fdcbdce8c873725c070300b5a87631823130848c74739f42aaf7635e63b4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-omission-intake",
+          "callback": "context-vb stale acceptance",
+          "callbackSha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "aeec41825f378638aa7c2bd368e88e4c095d1e48081026f58f83392ccdbd1798",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-vb-parser-manifest-intake",
+          "callback": "context-vb stale acceptance",
+          "callbackSha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "64fc5db925ba260e4df233c0ee8f176073cf3bbf545d1a7f22c7741071ec9a5d",
+          "mutantSha256": "079abb5bc6d4b7011d4542184b97ba6227994f0e49b9ae584fd8191e564abf8f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "vb-complete-call-range",
+          "callback": "context-vb selected bindings guard acceptance",
+          "callbackSha256": "d3066efa5a85b21c779a872ad25c0381f6783e0fcc4bfedcae770d19cd5d1591",
+          "fixtureSha256": "71b66213fe640cf6ce251992119453fe4c5a5c2b65d256b9166c01187a64b1ff",
+          "sourceSha256": "3c1e4002a00a7a67cd6a0f099070ea0e16eb9216aece5107e96352647d830186",
+          "mutantSha256": "387feab127699b3d692dd9e234d29c1ce7c95e730d06c5417fa40deba39bd809",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "ae54b581cb9d9f33a8640191825784e3f04dd98e91beb89c7f2b213c5dc3e494",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-vb",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-vb broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 662.604038,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-vb fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 334.588405,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-vb near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1639.977289,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-vb prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 197.007947,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-vb stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 132.695108,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-vb empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 282.736691,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-vb privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2452.718825,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-vb lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3510.298635,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-vb installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.365335,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-vb broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-vb installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:aa1fc09d97901f49661eaa2880897904dd50a5d63090950e98bcd18a2151e8a2",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "runtimeToolBytePins": [
+    {
+      "file": "/usr/share/dotnet/dotnet",
+      "resolved": "/usr/share/dotnet/dotnet",
+      "bytes": 72680,
+      "sha256": "223e3218077f4c3a59c0763f5ae40708645738a1294c67a6d830fb1789994621"
+    },
+    {
+      "file": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/vbc.dll",
+      "resolved": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/vbc.dll",
+      "bytes": 152360,
+      "sha256": "ad4f737b0c72b489abc80d586d713d873932bc9d2139d6541b6620a1383ab178"
+    },
+    {
+      "file": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/Microsoft.CodeAnalysis.VisualBasic.dll",
+      "resolved": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/Microsoft.CodeAnalysis.VisualBasic.dll",
+      "bytes": 4860200,
+      "sha256": "3683c42b44a261185e6f2b0131cbc3d9a844e5cfe613da40e6ff6f22325d99a6"
+    },
+    {
+      "file": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/Microsoft.CodeAnalysis.dll",
+      "resolved": "/usr/share/dotnet/sdk/10.0.401/Roslyn/bincore/Microsoft.CodeAnalysis.dll",
+      "bytes": 9430864,
+      "sha256": "841b0eda2d97324ccd9d6e5b96176ed65221b4b2c4900809db9ba6d724d8b354"
+    },
+    {
+      "file": "/usr/local/bin/node",
+      "resolved": "/usr/local/bin/node",
+      "bytes": 126241888,
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    {
+      "file": "/usr/bin/git",
+      "resolved": "/usr/bin/git",
+      "bytes": 3213592,
+      "sha256": "bcbd198c0f82e788da87293cebffc5b0fa39784ad1b9e32c83dfe9b12b86b50e"
+    }
+  ],
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "ae54b581cb9d9f33a8640191825784e3f04dd98e91beb89c7f2b213c5dc3e494",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-vb",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "4b72d987ace24f9fd86e67f7f35ea6a3cb1dce4f691f0ced6c80d0fd81eaa868"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-vb broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 648.656824,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-vb fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 329.956556,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-vb near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1645.183056,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-vb prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 199.979499,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-vb stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 128.068635,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-vb empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 271.220318,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-vb privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2467.463541,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-vb lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3452.941194,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-vb installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.316876,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-vb broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-vb installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:aa1fc09d97901f49661eaa2880897904dd50a5d63090950e98bcd18a2151e8a2",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "f3c57b0b5bd74a2afab8b0dbd86af03c414eb2222a82320f96fe49818b6be01f",
+        "mutantSha256": "d0dd31d8d83c0ee3418b2a10d906b17cf3961a38ce4ed86641c3942377b0dd33",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "f3c57b0b5bd74a2afab8b0dbd86af03c414eb2222a82320f96fe49818b6be01f",
+        "mutantSha256": "c1ba4c555e388940a810f9d28fc4ef0b587d93101611e34e493fac7dbe41acc7",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "f3c57b0b5bd74a2afab8b0dbd86af03c414eb2222a82320f96fe49818b6be01f",
+        "mutantSha256": "a4f049c4fdec42963307a268c9d530aeb6b6edcb9b574c0c26b4f8b068b66778",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1142,
+      "pass": 828,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 314,
+      "todo": 0
+    },
+    "durationMs": 181766.784417,
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "pinnedNativeVbUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "bdf8d2fd880b417bf379b38a30aab23cad1ea17fc27c7ca309bb297763c77f0e"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
