@@ -1,3 +1,4 @@
+import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -189,7 +190,7 @@ try {
     }
   }
   if (process.env.CHECKTRAIL_INFRA_BASE_PREPARED !== "1")
-    docker(["pull", manifest.base]);
+    await pullPinnedImage(manifest.base);
   docker([
     "build",
     "--network",

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-09T23:38:26.697557+00:00",
+  "sourceBaseCommit": "5eb1eb868580624b8e4fe564ffa0f3d60dda6bae",
+  "scope": "Bounded delivery retries for already selected pinned public ECR Docker Official Images. Native engine behavior, runtime versions, job matrices and acceptance assertions are unchanged.",
+  "originalHostedFailures": {
+    "runId": 38000829571,
+    "headCommit": "5eb1eb868580624b8e4fe564ffa0f3d60dda6bae",
+    "jobs": [
+      {
+        "id": 114058504342,
+        "name": "ruby-tools (ruby-tools-lifecycle)",
+        "logSha256": "a1c180c3e938c2f264c3e8409c00d934deb7b2bca797ca3d2644613bd9beaddb"
+      },
+      {
+        "id": 114058504417,
+        "name": "nuxt-assembly-arm64 (guards-2)",
+        "logSha256": "624fe27489c20c66ee11c12b3c75be4016cc586eed09c9fcb31a4b43bff54067"
+      }
+    ],
+    "observedMessage": "toomanyrequests: Rate exceeded",
+    "allFailedBeforeNativeAcceptance": true
+  },
+  "deliveryPolicy": {
+    "maximumAttempts": 5,
+    "delaysMs": [2000, 5000, 15000, 30000],
+    "aggregateMonotonicLimitMs": 180000,
+    "maximumCommandTimeoutMs": 120000,
+    "retryHttpStatuses": [429, 500, 502, 503, 504],
+    "exactDigestRequiredOnEveryAttempt": true,
+    "permanentErrorsAndExhaustionFail": true
+  },
+  "workflowCoverage": {
+    "jobsWithExplicitPreparation": [
+      "checks",
+      "php-review",
+      "clang",
+      "java",
+      "checkstyle",
+      "spotbugs",
+      "detekt",
+      "kotlin",
+      "scala",
+      "maven",
+      "gradle",
+      "dotnet",
+      "actionlint",
+      "external-adapters",
+      "vue-router",
+      "vue-router-assembly-arm64",
+      "fastapi-assembly-arm64",
+      "django-assembly-arm64",
+      "jvm-wrappers-arm64",
+      "rust-extensions-arm64",
+      "php-extensions-arm64",
+      "python-extensions-arm64",
+      "javascript-extensions-arm64",
+      "laravel-assembly-arm64",
+      "nuxt-assembly-arm64",
+      "nuxt",
+      "php-context-arm64",
+      "rust-context-arm64",
+      "java-context-arm64",
+      "kotlin-context-arm64",
+      "scala-context-arm64",
+      "csharp-context-arm64",
+      "fsharp-context-arm64",
+      "ruby-context-arm64",
+      "swift-context-arm64",
+      "vb-context-arm64",
+      "c-context-arm64",
+      "cpp-context-arm64",
+      "hcl-context-arm64",
+      "yaml-context-arm64"
+    ],
+    "preparationSteps": 40,
+    "allOriginalStepsMatricesAndConditionsPreserved": true,
+    "newImageSelections": false,
+    "existingDigestSelectors": [
+      "public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "public.ecr.aws/docker/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "public.ecr.aws/docker/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd"
+    ],
+    "engineBehaviorChanged": false
+  },
+  "sourceIdentity": {
+    ".github/workflows/ci.yml": "00243b0724640fcd55f1b8fe058c897fbe782edd17c0e8b0fb7e2c2f41d4267e",
+    "scripts/pull-pinned-image.mjs": "89ee20f5bc8e549de3cd9d9b87f26aba51c49adb56cd1e0e22543081f2fd6979",
+    "scripts/prepare-cpp-tools-runtime.mjs": "d12240ff7995349d1a706f31965fc2be19cf51b51d680172274de40898b78859",
+    "scripts/prepare-fastapi-assembly-tools.mjs": "10f97c0bfb5ba0e0ba52824eee2fc82d796ee922d42de62fa8de66efdb00ff77",
+    "scripts/prepare-infra-tools-runtime.mjs": "41e69ac4f3da12c238e0b55c8cbafd8e4e60b592e9dd6075d27557c8201b62b3",
+    "scripts/prepare-ruby-tools-runtime.mjs": "63c39663d41b3832cbb43ef7749e13c23b5dfa3548c69783fd7b0e9c2ea3c633",
+    "scripts/prepare-swift-tools-runtime.mjs": "969c1016f0ab74604f78942a678bdac0d7465edd3499611fcb6edefedb74e62e",
+    "test/pinned-image-pull.test.ts": "1efc5e744d0b9ccaa408c3ab2d00128e09259a67188aad1c598dea955242e012",
+    "test/infra-preparation.test.ts": "69b4b1fb1225df0bcef7da04600a6bedf9306c9982a9247d3c2e1d807f3ed04d"
+  },
+  "regressions": {
+    "selectedCallbacks": 11,
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "testLogSha256": "6a06c837bff393c0f6fd182262a23e1a550a773a2beaefff74f72431c0d306eb",
+    "compilingControls": {
+      "controls": [
+        {
+          "id": "exact-reference-allowlist",
+          "sourceSha256": "89ee20f5bc8e549de3cd9d9b87f26aba51c49adb56cd1e0e22543081f2fd6979",
+          "mutantSha256": "64bcc9a433f2d853c07edcb7b4f150f5ca19a094cd182622033bb06f15d2738f",
+          "callbackSha256": "bf4fdd8cef3cfc56dca420803c1d8155a1f6c71c181a5509a4ddb70f24ab8f4a",
+          "mutantCompiled": true,
+          "unchangedCallbackFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "permanent-error-refusal",
+          "sourceSha256": "89ee20f5bc8e549de3cd9d9b87f26aba51c49adb56cd1e0e22543081f2fd6979",
+          "mutantSha256": "97096c14a68ad80612e9582ad7066646cc32ca35d536edba161bb9c31df8c3db",
+          "callbackSha256": "bf4fdd8cef3cfc56dca420803c1d8155a1f6c71c181a5509a4ddb70f24ab8f4a",
+          "mutantCompiled": true,
+          "unchangedCallbackFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "attempt-exhaustion-boundary",
+          "sourceSha256": "89ee20f5bc8e549de3cd9d9b87f26aba51c49adb56cd1e0e22543081f2fd6979",
+          "mutantSha256": "72bec3994ed6d269435768d4d4db0001709d932ed0715945525032317161a625",
+          "callbackSha256": "bf4fdd8cef3cfc56dca420803c1d8155a1f6c71c181a5509a4ddb70f24ab8f4a",
+          "mutantCompiled": true,
+          "unchangedCallbackFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "elapsed-success-refusal",
+          "sourceSha256": "89ee20f5bc8e549de3cd9d9b87f26aba51c49adb56cd1e0e22543081f2fd6979",
+          "mutantSha256": "89601222420c0ee13fd5b3710cfba7046c1dd2607f48cadefd47f9c083b0489b",
+          "callbackSha256": "bf4fdd8cef3cfc56dca420803c1d8155a1f6c71c181a5509a4ddb70f24ab8f4a",
+          "mutantCompiled": true,
+          "unchangedCallbackFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "complete": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "applicationExecuted": false,
+      "inferenceInvoked": false
+    }
+  },
+  "actualPinnedPull": {
+    "reference": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "attempts": 1,
+    "deliveryComplete": true
+  },
+  "mandatoryCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1391,
+    "pass": 902,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 489,
+    "todo": 0,
+    "durationMs": 235979.193542,
+    "optionalSkippedChecksAreNotPasses": true,
+    "logSha256": "fb4970c4593274bde83b8c90396a322db686f5d1863108b8515b5ba24a099255"
+  },
+  "directChangedFileLintPassed": true,
+  "changedFileFormattingPassed": true,
+  "pinnedActionlintVersion": "1.7.12",
+  "pinnedActionlintPassed": true,
+  "hostedRecheck": "pending at the follow-up commit",
+  "finalRuntimeMatrixComplete": false,
+  "gateAComplete": false,
+  "qualityGatePassed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false
+}

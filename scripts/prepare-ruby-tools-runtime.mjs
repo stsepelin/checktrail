@@ -1,3 +1,4 @@
+import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
@@ -78,8 +79,8 @@ try {
     );
   }
   await mkdir(artifacts);
-  docker(["pull", ruby]);
-  docker(["pull", node]);
+  await pullPinnedImage(ruby);
+  await pullPinnedImage(node);
   const raw = docker([
     "run",
     "--rm",
