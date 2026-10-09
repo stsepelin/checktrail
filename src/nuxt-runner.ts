@@ -38,6 +38,8 @@ async function main() {
   const [entry, encodedMetadata, encodedConfig, sourceFingerprint] =
     process.argv.slice(2);
   const config = nuxtConfigSchema.parse(JSON.parse(encodedConfig!));
+  if (config.schemaVersion !== 1)
+    throw Error("Legacy Nuxt runner requires version 1");
   const metadata = JSON.parse(encodedMetadata!) as Record<string, string>;
   const versions: Record<string, string> = {};
   for (const [name, expected] of Object.entries(nuxtVersions)) {

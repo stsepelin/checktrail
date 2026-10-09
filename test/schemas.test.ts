@@ -315,7 +315,7 @@ test("route schema prefixes and request boundaries agree in runtime and standard
     ],
     [
       "Nuxt probe",
-      nuxtConfigSchema.shape.probes.element.shape.path,
+      nuxtConfigSchema.options[0].shape.probes.element.shape.path,
       true,
       true,
     ],

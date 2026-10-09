@@ -7,11 +7,14 @@ import {
   vueRouteAttributesSchema,
   vueRouteKey,
 } from "./vue-router-protocol.js";
+import { nuxtAssemblyEvidence } from "./nuxt-assembly-evidence.js";
 import type { Check, CheckResult, ProcessResult } from "./types.js";
 export function nuxtEvidence(
   check: Check,
   processes: ProcessResult[],
 ): Partial<CheckResult> {
+  if (check.commands[0]?.args[0]?.endsWith("nuxt-assembly-runner.js"))
+    return nuxtAssemblyEvidence(check, processes);
   const incomplete = {
     status: "inconclusive" as const,
     reason:
@@ -46,6 +49,7 @@ export function nuxtEvidence(
     const config = nuxtConfigSchema.parse(
       JSON.parse(check.commands[0]!.args[3]!),
     );
+    if (config.schemaVersion !== 1) return incomplete;
     if (
       result.sourceFingerprint !== check.commands[0]!.args[4] ||
       result.probes.length !== config.probes.length ||

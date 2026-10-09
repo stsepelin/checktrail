@@ -204,3 +204,15 @@ compiling-control and offline installed acceptance recorded in
 Version 1 keeps its route-only behavior. Complete artifact/license closure, wider
 frameworks, final platforms and Gate A remain open; no inference or field evaluation
 is invoked.
+
+The opt-in [selected Nuxt assembly contract](NUXT-ASSEMBLY.md) adds strict version 2
+contracts to the shared SSR adapter. Actual generated Nitro handlers and served H3
+layers, app middleware invocations, runtime config serialization boundaries,
+resolved generated server API types and completed native requests are compared
+with explicit operator expectations. Source identity, native byte/version gates,
+registration/page identity and reached process controls have profile-specific
+source, compiling-control and fresh offline installed acceptance recorded in
+[nuxt-assembly-2026-10-09.json](measurements/nuxt-assembly-2026-10-09.json).
+Version 1 keeps its route inventory. Full artifact/license closure, broader
+framework semantics, final platforms and Gate A remain open; no inference or field
+evaluation is invoked.

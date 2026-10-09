@@ -1,51 +1,411 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
-    "environment": { "type": "string", "const": "test" },
-    "probes": {
-      "minItems": 1,
-      "maxItems": 16,
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "maxLength": 4096,
-            "pattern": "^\\/(?!\\/)[^\\r\\n#]*$"
-          },
-          "matched": {
-            "minItems": 1,
-            "maxItems": 32,
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "path": {
-                  "type": "string",
-                  "maxLength": 4096,
-                  "pattern": "^\\/"
-                },
-                "name": {
-                  "anyOf": [
-                    { "type": "string", "maxLength": 256 },
-                    { "type": "null" }
-                  ]
-                }
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "environment": { "type": "string", "const": "test" },
+        "probes": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 4096,
+                "pattern": "^\\/(?!\\/)[^\\r\\n#]*$"
               },
-              "required": ["path", "name"],
-              "additionalProperties": false
-            }
+              "matched": {
+                "minItems": 1,
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "maxLength": 4096,
+                      "pattern": "^\\/"
+                    },
+                    "name": {
+                      "anyOf": [
+                        { "type": "string", "maxLength": 256 },
+                        { "type": "null" }
+                      ]
+                    }
+                  },
+                  "required": ["path", "name"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["path", "matched"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["schemaVersion", "assembly", "environment", "probes"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "environment": { "type": "string", "const": "test" },
+        "expectedPages": {
+          "minItems": 1,
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 4096,
+                "pattern": "^\\/"
+              },
+              "name": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 256 },
+                  { "type": "null" }
+                ]
+              },
+              "aliasPath": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 4096 },
+                  { "type": "null" }
+                ]
+              },
+              "aliasName": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 256 },
+                  { "type": "null" }
+                ]
+              },
+              "views": {
+                "maxItems": 32,
+                "type": "array",
+                "items": { "type": "string", "maxLength": 256 }
+              },
+              "meta": { "type": "string", "maxLength": 4096 },
+              "redirect": { "type": "string", "maxLength": 4096 },
+              "beforeEnter": {
+                "maxItems": 32,
+                "type": "array",
+                "items": { "type": "string", "maxLength": 256 }
+              },
+              "children": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "globalStrict": { "type": "boolean" },
+              "globalSensitive": { "type": "boolean" }
+            },
+            "required": [
+              "path",
+              "name",
+              "aliasPath",
+              "aliasName",
+              "views",
+              "meta",
+              "redirect",
+              "beforeEnter",
+              "children",
+              "globalStrict",
+              "globalSensitive"
+            ],
+            "additionalProperties": false
           }
         },
-        "required": ["path", "matched"],
-        "additionalProperties": false
-      }
+        "expectedHandlers": {
+          "minItems": 1,
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "route": { "type": "string", "maxLength": 4096 },
+              "method": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "get",
+                      "post",
+                      "put",
+                      "patch",
+                      "delete",
+                      "head",
+                      "options",
+                      "all"
+                    ]
+                  },
+                  { "type": "null" }
+                ]
+              },
+              "source": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "lazy": { "type": "boolean" },
+              "middleware": { "type": "boolean" }
+            },
+            "required": [
+              "position",
+              "route",
+              "method",
+              "source",
+              "lazy",
+              "middleware"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expectedMiddleware": {
+          "minItems": 1,
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": { "type": "string", "enum": ["h3", "global", "named"] },
+              "position": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "route": { "type": "string", "maxLength": 4096 },
+              "source": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "name": { "type": "string", "maxLength": 256 }
+            },
+            "required": ["phase", "position", "route", "source", "name"],
+            "additionalProperties": false
+          }
+        },
+        "expectedRuntimeConfig": {
+          "maxItems": 128,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "visibility": {
+                "type": "string",
+                "enum": ["private", "public", "internal"]
+              },
+              "key": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["visibility", "key", "sha256"],
+            "additionalProperties": false
+          }
+        },
+        "consumers": {
+          "minItems": 1,
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[A-Za-z0-9_./-]+\\.[cm]?ts$"
+          }
+        },
+        "expectedApis": {
+          "minItems": 1,
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "method": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "type": { "type": "string", "minLength": 1, "maxLength": 4096 }
+            },
+            "required": ["route", "method", "type"],
+            "additionalProperties": false
+          }
+        },
+        "requests": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 4096,
+                "pattern": "^\\/(?!\\/)[^\\r\\n#]*$"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "PATCH",
+                  "DELETE",
+                  "HEAD",
+                  "OPTIONS"
+                ]
+              },
+              "expected": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 599
+                  },
+                  "serverRoute": {
+                    "anyOf": [
+                      { "type": "string", "maxLength": 4096 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "matched": {
+                    "anyOf": [
+                      {
+                        "maxItems": 32,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "type": "string",
+                              "maxLength": 4096,
+                              "pattern": "^\\/"
+                            },
+                            "name": {
+                              "anyOf": [
+                                { "type": "string", "maxLength": 256 },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["path", "name"],
+                          "additionalProperties": false
+                        }
+                      },
+                      { "type": "null" }
+                    ]
+                  },
+                  "body": {
+                    "anyOf": [
+                      { "type": "string", "maxLength": 65536 },
+                      { "type": "null" }
+                    ]
+                  },
+                  "includes": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "excludes": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "events": {
+                    "maxItems": 2048,
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "phase": { "type": "string", "const": "h3" },
+                            "position": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 2048
+                            },
+                            "path": { "type": "string", "maxLength": 4096 },
+                            "method": {
+                              "type": "string",
+                              "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE",
+                                "HEAD",
+                                "OPTIONS",
+                                "CONNECT",
+                                "TRACE"
+                              ]
+                            }
+                          },
+                          "required": ["phase", "position", "path", "method"],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "phase": { "type": "string", "const": "global" },
+                            "position": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 2048
+                            },
+                            "path": { "type": "string", "maxLength": 4096 },
+                            "method": { "type": "string", "const": "NAVIGATE" }
+                          },
+                          "required": ["phase", "position", "path", "method"],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "phase": { "type": "string", "const": "named" },
+                            "position": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 2048
+                            },
+                            "path": { "type": "string", "maxLength": 4096 },
+                            "method": { "type": "string", "const": "NAVIGATE" }
+                          },
+                          "required": ["phase", "position", "path", "method"],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "status",
+                  "serverRoute",
+                  "matched",
+                  "body",
+                  "includes",
+                  "excludes",
+                  "events"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": ["path", "method", "expected"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "assembly",
+        "environment",
+        "expectedPages",
+        "expectedHandlers",
+        "expectedMiddleware",
+        "expectedRuntimeConfig",
+        "consumers",
+        "expectedApis",
+        "requests"
+      ],
+      "additionalProperties": false
     }
-  },
-  "required": ["schemaVersion", "assembly", "environment", "probes"],
-  "additionalProperties": false
+  ]
 }

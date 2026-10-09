@@ -605,6 +605,30 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  nuxt-assembly-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-nuxt-assembly
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare locked public native Nuxt tools
+        run: |
+          mkdir -p .checktrail/nuxt-tools
+          cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, compiling controls and offline installed acceptance
+        run: node scripts/verify-nuxt-assembly-container.mjs
+
   nuxt:
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -55,6 +55,7 @@ const timeoutMs = selection.includes("dotnet-method")
           "ruby-tools-cancellation",
           "swift-tools",
           "go-extensions",
+          "assembly-nuxt",
         ].includes(profile),
       )
     ? 300000

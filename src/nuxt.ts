@@ -5,6 +5,7 @@ import { z } from "zod";
 import { localTool } from "./local-tool.js";
 import { readProjectFile, withinRoot } from "./inventory.js";
 import { vueRouteIdentitySchema } from "./vue-router.js";
+import { nuxtAssemblyConfigSchema } from "./nuxt-assembly-schema.js";
 import type { Check, Inventory, Project } from "./types.js";
 
 export const nuxtVersions = {
@@ -16,7 +17,7 @@ export const nuxtVersions = {
   vue: "3.5.43",
   "vue-router": "5.3.1",
 } as const;
-export const nuxtConfigSchema = z.strictObject({
+const nuxtLegacyConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
   assembly: z.string().min(1).max(256),
   environment: z.literal("test"),
@@ -33,6 +34,10 @@ export const nuxtConfigSchema = z.strictObject({
     .min(1)
     .max(16),
 });
+export const nuxtConfigSchema = z.discriminatedUnion("schemaVersion", [
+  nuxtLegacyConfigSchema,
+  nuxtAssemblyConfigSchema,
+]);
 export async function nuxtCheck(
   source: Inventory,
   project: Project,
@@ -61,11 +66,22 @@ export async function nuxtCheck(
       ),
     ),
   );
-  if (
-    new Set(config.probes.map((probe) => probe.path)).size !==
-    config.probes.length
-  )
-    throw new Error("Nuxt probes require unique request paths");
+  if (config.schemaVersion === 1) {
+    if (new Set(config.probes.map((p) => p.path)).size !== config.probes.length)
+      throw Error("Nuxt probes require unique request paths");
+  } else {
+    if (
+      new Set(config.requests.map((r) => JSON.stringify([r.path, r.method])))
+        .size !== config.requests.length ||
+      new Set(config.consumers).size !== config.consumers.length ||
+      new Set(
+        config.expectedApis.map((a) => JSON.stringify([a.route, a.method])),
+      ).size !== config.expectedApis.length
+    )
+      throw Error("Nuxt assembly inputs must be unique");
+    if (config.consumers.some((f) => !project.files.includes(f)))
+      throw Error("Every Nuxt type consumer must be inventoried");
+  }
   const encoded = JSON.stringify(config);
   if (Buffer.byteLength(encoded) > 64 * 1024)
     throw new Error("Nuxt profile exceeds 64 KiB");
@@ -111,7 +127,14 @@ export async function nuxtCheck(
     {
       executable: process.execPath,
       args: [
-        fileURLToPath(new URL("./nuxt-runner.js", import.meta.url)),
+        fileURLToPath(
+          new URL(
+            config.schemaVersion === 2
+              ? "./nuxt-assembly-runner.js"
+              : "./nuxt-runner.js",
+            import.meta.url,
+          ),
+        ),
         entry,
         JSON.stringify(metadata),
         encoded,

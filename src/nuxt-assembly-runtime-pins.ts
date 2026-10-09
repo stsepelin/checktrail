@@ -1,0 +1,111 @@
+/** Selected collector-facing native bytes; whole dependency and license closure is separate. */
+export const nuxtAssemblyRuntimePins = [
+  {
+    package: "nuxt",
+    file: "dist/index.mjs",
+    bytes: 341984,
+    sha256: "733fbc1ce8783ef57c4b55404156719fb09de0e7c14031cdcfa7b2ae32d0195e",
+  },
+  {
+    package: "nuxt",
+    file: "dist/pages/runtime/plugins/router.js",
+    bytes: 10770,
+    sha256: "4d06b08058c12555284470feff432f8c6a816758a3565364fd5d9bdd07bb760f",
+  },
+  {
+    package: "nuxt",
+    file: "dist/app/nuxt.js",
+    bytes: 10073,
+    sha256: "37e7b56eefeb6ce90431f383fe101ba03aee5f774a1efc4e6aa5f98791b059a5",
+  },
+  {
+    package: "nuxt",
+    file: "dist/app/config.js",
+    bytes: 1970,
+    sha256: "f22ff9930161cc87d06f307f80c8413c4ea1c0da88bc44a793474dad22d63784",
+  },
+  {
+    package: "@nuxt/kit",
+    file: "dist/index.mjs",
+    bytes: 122769,
+    sha256: "5220a88dad0153e8c5a3e61e4266d59dab395eb1184ef0e8f4698ec5bbec1e23",
+  },
+  {
+    package: "@nuxt/vite-builder",
+    file: "dist/index.mjs",
+    bytes: 104525,
+    sha256: "74e2f2cb221c5967f6ebe6ad1e7d329eb1d13b0a06b1fda891e3d99a4b39b3be",
+  },
+  {
+    package: "@nuxt/nitro-server",
+    file: "dist/index.mjs",
+    bytes: 49581,
+    sha256: "8e07bc28da3123fd8e22e84b5034f874259a02033d0f32393c1db7849fec125d",
+  },
+  {
+    package: "@nuxt/nitro-server",
+    file: "dist/runtime/handlers/renderer.mjs",
+    bytes: 26115,
+    sha256: "53118469901c86eba6f17f741f29b5b4058131c48697e47a8ddb1b20d140dd0c",
+  },
+  {
+    package: "nitropack",
+    file: "dist/rollup/index.mjs",
+    bytes: 65578,
+    sha256: "847ad3149fd532c8241293de7d8d08b1b181fe2ddc4793f1b1add59c4ad5a5ae",
+  },
+  {
+    package: "nitropack",
+    file: "dist/core/index.mjs",
+    bytes: 93322,
+    sha256: "b6b0bd3e12f18e2830016dc37cb6c6ad4c939d14a60458634fd329b23653993a",
+  },
+  {
+    package: "nitropack",
+    file: "dist/runtime/internal/app.mjs",
+    bytes: 5343,
+    sha256: "a3a32b064b6de2afe2fc5bfb7f25c9bd768abd0b31beb95944f7a465e117a9c3",
+  },
+  {
+    package: "nitropack",
+    file: "dist/runtime/internal/config.mjs",
+    bytes: 1857,
+    sha256: "1ed6f776c84b6f3cdcdf3d7e340189e6253bd1ffc1092faf8118e3c5f205dccb",
+  },
+  {
+    package: "h3",
+    file: "dist/index.mjs",
+    bytes: 71424,
+    sha256: "bc1b89b0627a9b32f8c78479fcf943adb105afdd89daaa269c08d1a467cd4369",
+  },
+  {
+    package: "vue-router",
+    file: "dist/vue-router.js",
+    bytes: 57788,
+    sha256: "274a8d36d942e3102a961c7be15bfb6dcc41a69b5e8a72f0f36f91eb8c8556cb",
+  },
+  {
+    package: "typescript",
+    file: "lib/typescript.js",
+    bytes: 9144216,
+    sha256: "569177652966bd528c319171c7dd22860dbf72bde116cbc4f644f1d02bb12e39",
+  },
+  {
+    package: "vite",
+    file: "dist/node/index.js",
+    bytes: 2670,
+    sha256: "f109fff88512ed5cf39503b7a4b2a1de1c95bff333cb1d3635454558e3bfefc7",
+  },
+  {
+    package: "nuxt",
+    file: "dist/pages/runtime/validate.js",
+    bytes: 655,
+    sha256: "0404232ae901e8e40b8415368ec6ffd5ef5f03386047f5767afcacf9866ecf73",
+  },
+  {
+    package: "nuxt",
+    file: "dist/app/middleware/route-rules.js",
+    bytes: 669,
+    sha256: "3707500c2cfab5daec756092a41dc85cd55b6c092a2c4a9a73ba352ed1a8f21d",
+  },
+] as const;

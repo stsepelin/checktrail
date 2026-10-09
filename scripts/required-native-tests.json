@@ -4008,5 +4008,43 @@
       "file": "dist/test/gate-assembly-django.test.js",
       "name": "assembly-django installed acceptance"
     }
+  ],
+  "assembly-nuxt": [
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-nuxt.test.js",
+      "name": "assembly-nuxt installed acceptance"
+    }
   ]
 }
