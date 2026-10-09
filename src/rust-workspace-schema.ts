@@ -30,6 +30,7 @@ export const rustWorkspaceMetadataSchema = z.object({
 });
 export const rustWorkspaceInputSchema = z.strictObject({
   version: z.literal(1),
+  sourceFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
   root: z.string(),
   project: z.string(),
   mode: z.enum(["check", "clippy", "test"]),
@@ -38,6 +39,9 @@ export const rustWorkspaceInputSchema = z.strictObject({
 });
 export const rustWorkspacePacketSchema = z.strictObject({
   version: z.literal(4),
+  sourceFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+  inputsStable: z.boolean(),
+  nativeToolchainVerified: z.boolean().nullable(),
   mode: z.enum(["check", "clippy", "test"]),
   selection: rustBuildSelectionSchema,
   cargoVersion: z.literal("1.98.1"),

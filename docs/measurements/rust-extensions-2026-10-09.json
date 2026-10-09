@@ -1,0 +1,1843 @@
+{
+  "schemaVersion": 1,
+  "profile": "rust-extensions",
+  "capturedAt": "2026-10-09T18:43:03.538216+00:00",
+  "sourceBaseCommit": "f6b1bde45a7e9bb905916488954441045d790244",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "edd61e7bddd0b448250751ce1dfb6b31abd974b02f5c85b711e85c9a4aa2043a",
+    "docs/LANGUAGES.md": "c5d08b9c1398164feab476ea3b4fbbb076997e5fd976a623ca5e1af4b932de26",
+    "docs/RUST-BUILD.md": "c9ff0bedce577610a7694dda54d31bd81987d1f6448a0e9f3ccf93f6a4dedd58",
+    "docs/RUST-EXTENSIONS.md": "053403a2ff95b65483d3488f156f79df852ac40fce2ab184f106fd63af478976",
+    "docs/STATUS.md": "ebde89a873c20eef3fa3f6dbaa475e54b596cf849e2b8832e14acbab2cd6298f",
+    "docs/gate-a-profiles.v1.json": "9df71ceb444a0ec3640a73a7b608995596f2dbc8fed30fa43fe9191b2d0ef065",
+    "schemas/plan.schema.json": "7786327a6d24de35c56e9862f3340fa1fc06a374d5c2c6612a238e6bfd1f86f3",
+    "schemas/report.schema.json": "9910bc3fbcd263caa471a426758fc6d0a7f412e446a5c50975ebf275246833e6",
+    "schemas/rust-build-policy.schema.json": "13a535a13d33215ddb5fb613c0d7c8528c882502f4e831072477286826f34831",
+    "scripts/extract-rust-extension-components.py": "200f078ac372011abd980f6da1a7190d38837f39a66d30f9dc94a718e41324eb",
+    "scripts/prepare-rust-extension-components.mjs": "9bbb25765825eb85f9be251f80f44c51b272390477ca6ee3a1d455b5dd9baeb4",
+    "scripts/required-native-tests.json": "93414a5aea9a999cbd5b050b3751d16c0e336963c47b54e9f25183a5f4ca854d",
+    "scripts/rust-extension-components.json": "1b9ca72127464a3386746a74cbd634cd59c57ee6a45b538fb1f743ea1d51179e",
+    "scripts/rust-extension-tools.Dockerfile": "aa2abccf2a90e1b991355d81d078bb956f671ab37223264de85905badf3890e4",
+    "scripts/verify-import-context-package.mjs": "ac371b7112bb89d97df92f6b0e7924b466332062766ec087ca08c5760bf8e216",
+    "scripts/verify-required-native-tests.mjs": "73b86142d517b846b5d0407f8387d24ab1bc15f6d7fc614a8b8bb69c9ba2e3d2",
+    "scripts/verify-rust-extensions-container.mjs": "83ffa4051e26b42e271764a372e55608f45741252f712201646cfc4a60350ada",
+    "scripts/verify-rust-extensions-guards.mjs": "13424cda783d33e20e353d9450b03eee4c0733729066b5671206b1a5256b3889",
+    "src/rust-build.ts": "9a73d97c3680b4c9ef54ae2502aefb00ca91ae752f17422ee6d766e60c76386e",
+    "src/rust-test-native.ts": "7a7de60d374ac15aea181de2fca596a1ca0f6ee89c6441f37a3a0f9b8bdfa948",
+    "src/rust-toolchain-native.ts": "a7587184806c8e2a8d1cd7b72fa3f827486a1569fc70c6a6fef25888e1804857",
+    "src/rust-toolchain-pins.ts": "e3e337a61f9d5880759a88801db934858563f8b4fd97f16f6e90a29302b3e6a6",
+    "src/rust-workspace-evidence.ts": "34cb6eb9562e4544d22ae7e66231a1db58336c59964e72899403daa883683f48",
+    "src/rust-workspace-runner.ts": "b849fbc51131a853d667aca7fed8f2624cbca6b393c0dec50024f06babb40796",
+    "src/rust-workspace-schema.ts": "08f76215175e6c5452afcfa02b0063a87444faaf275d42be32d78d1a20fe3a49",
+    "test/gate-rust-extensions.test.ts": "495a06a0b31ff32c3654661c1279a301fd3c6001bb221b585a2be740244ad9b8",
+    "test/rust-component-preflight.test.ts": "ca2423cbb52e2d69073f23d939bbf1b73bcc92f9dee7f6ef30c42ba53b5d2e45",
+    "test/rust-extensions-fixture.ts": "7e3af4bbde9076ce66411058d9c1fb7a83907b0cd63a6a5b9b748db88f91ef21",
+    "test/rust-extensions.test.ts": "2a7a6eb7ad4efa13de2d5a4219f82b419735f47de16c049ee112821868304c6e"
+  },
+  "builtFiles": {
+    "dist/src/rust-build.js": "f53c24ab915c8635dba908ae0c8e788514a3540accb5edab2cc3b28893710667",
+    "dist/src/rust-test-native.js": "f343dd3e0964151948c6c3b51874c8523b77f01f70d9ac82c9ca40fb7b42e248",
+    "dist/src/rust-toolchain-native.js": "49f91b4d2bcba8877ff56b389ae89e52ccd249cb08363b356e1c7d8723589c89",
+    "dist/src/rust-toolchain-pins.js": "dc181ff88c215c2cd897c8bf22d4bf6299f1054f4a1f3718de98f9211059a7fc",
+    "dist/src/rust-workspace-evidence.js": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+    "dist/src/rust-workspace-runner.js": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+    "dist/src/rust-workspace-schema.js": "3c389027b3fbd80accdf8ba05817061462ef9901413ff338815a4b5f7339499e",
+    "dist/test/gate-rust-extensions.test.js": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+    "dist/test/rust-component-preflight.test.js": "f2d79f34db4e3c24f99c5bd3a76d4bbc5e0b43aa73869c34d22dbdad6548b20d",
+    "dist/test/rust-extensions-fixture.js": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+    "dist/test/rust-extensions.test.js": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb"
+  },
+  "native": {
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "tools": {
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+        "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+        "cargo-clippy": "clippy 0.1.98 (48a229ceae 2026-09-01)",
+        "rustdoc": "rustdoc 1.98.1 (48a229cea 2026-09-01)",
+        "rustfmt": "rustfmt 1.9.0-stable (48a229ceae 2026-09-01)",
+        "cc": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+      },
+      "nativeArtifacts": [
+        {
+          "path": "bin/cargo",
+          "bytes": 39211776,
+          "sha256": "2101d7104b91a013912c94275dcd31c2b41061ef7f6e8530df11cdad55b8fbc5",
+          "link": null,
+          "observed": {
+            "bytes": 39211776,
+            "sha256": "2101d7104b91a013912c94275dcd31c2b41061ef7f6e8530df11cdad55b8fbc5",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "bin/cargo-clippy",
+          "bytes": 1391392,
+          "sha256": "44ad53b58a0fb84fc09c31c09799a1236f03160ea80549820c881a6e734df806",
+          "link": null,
+          "observed": {
+            "bytes": 1391392,
+            "sha256": "44ad53b58a0fb84fc09c31c09799a1236f03160ea80549820c881a6e734df806",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "bin/clippy-driver",
+          "bytes": 15452712,
+          "sha256": "3bb746414d10f2b96655d9dc36bf3acc9c914ae7ea882ffa74a2c841924aa282",
+          "link": null,
+          "observed": {
+            "bytes": 15452712,
+            "sha256": "3bb746414d10f2b96655d9dc36bf3acc9c914ae7ea882ffa74a2c841924aa282",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "bin/rustc",
+          "bytes": 1262352,
+          "sha256": "d4217a981a778bfe445c0a29c408f5a25a92e9bb5222701579ad5a35bd913e8f",
+          "link": null,
+          "observed": {
+            "bytes": 1262352,
+            "sha256": "d4217a981a778bfe445c0a29c408f5a25a92e9bb5222701579ad5a35bd913e8f",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "bin/rustdoc",
+          "bytes": 13699216,
+          "sha256": "712873f4c4e4371fc2cc7d92e9a78cc1fea7858bf6304a0ae24fd125c2ea8296",
+          "link": null,
+          "observed": {
+            "bytes": 13699216,
+            "sha256": "712873f4c4e4371fc2cc7d92e9a78cc1fea7858bf6304a0ae24fd125c2ea8296",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "bin/rustfmt",
+          "bytes": 5049216,
+          "sha256": "7aa230a4c704fb7b0e2fbccb90688b5b62d932cf9663805d26bbbe7a99ebae8b",
+          "link": null,
+          "observed": {
+            "bytes": 5049216,
+            "sha256": "7aa230a4c704fb7b0e2fbccb90688b5b62d932cf9663805d26bbbe7a99ebae8b",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/libLLVM-22-rust-1.98.1-stable.so",
+          "bytes": 42,
+          "sha256": "24d5732dea500078b4e235a69833ccb20d03bf71659a49d58828af8f13f6726c",
+          "link": null,
+          "observed": {
+            "bytes": 42,
+            "sha256": "24d5732dea500078b4e235a69833ccb20d03bf71659a49d58828af8f13f6726c",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/libLLVM.so.22.1-rust-1.98.1-stable",
+          "bytes": 160074120,
+          "sha256": "28d8fb033d00b5e23915039f7f18dfb1d5fd142956fcd565d43a1147af8ad241",
+          "link": null,
+          "observed": {
+            "bytes": 160074120,
+            "sha256": "28d8fb033d00b5e23915039f7f18dfb1d5fd142956fcd565d43a1147af8ad241",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/librustc_driver-36de65988ef2d886.so",
+          "bytes": 101423872,
+          "sha256": "0f3634e0348cd966e1c44ab210ad195c0733edef4ff032f1e119c0d26debed16",
+          "link": null,
+          "observed": {
+            "bytes": 101423872,
+            "sha256": "0f3634e0348cd966e1c44ab210ad195c0733edef4ff032f1e119c0d26debed16",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/aarch64-unknown-linux-gnu/lib/liballoc-5ed91a8779ad9241.rlib",
+          "bytes": 1016388,
+          "sha256": "f63e69a497069c0659a818b733ef9009121833c2939675aab98e7e206f9dd970",
+          "link": null,
+          "observed": {
+            "bytes": 1016388,
+            "sha256": "f63e69a497069c0659a818b733ef9009121833c2939675aab98e7e206f9dd970",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/aarch64-unknown-linux-gnu/lib/libcore-276de952897abe1c.rlib",
+          "bytes": 3198678,
+          "sha256": "4a7460dfc298b65f5e830df1624144a549152e317b45cef192f3d8a0dab485ac",
+          "link": null,
+          "observed": {
+            "bytes": 3198678,
+            "sha256": "4a7460dfc298b65f5e830df1624144a549152e317b45cef192f3d8a0dab485ac",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/aarch64-unknown-linux-gnu/lib/libstd-96c9fe7a07d47cf2.rlib",
+          "bytes": 12704848,
+          "sha256": "49c1714718f01b98278824f13292d161f3adf2c15dfdb5369c8983226d001d20",
+          "link": null,
+          "observed": {
+            "bytes": 12704848,
+            "sha256": "49c1714718f01b98278824f13292d161f3adf2c15dfdb5369c8983226d001d20",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/aarch64-unknown-linux-gnu/lib/libstd-96c9fe7a07d47cf2.so",
+          "bytes": 2968560,
+          "sha256": "4cb4392dc86dbacc27516a65a886045031873289b869df1222ea4b0d41684f68",
+          "link": null,
+          "observed": {
+            "bytes": 2968560,
+            "sha256": "4cb4392dc86dbacc27516a65a886045031873289b869df1222ea4b0d41684f68",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/wasm32-unknown-unknown/lib/liballoc-c862d99323eeeca9.rlib",
+          "bytes": 733598,
+          "sha256": "8b1ff866c80d54af6e54b611b84e039f1a51791afc6d08209e7f2b0b8085a750",
+          "link": null,
+          "observed": {
+            "bytes": 733598,
+            "sha256": "8b1ff866c80d54af6e54b611b84e039f1a51791afc6d08209e7f2b0b8085a750",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/wasm32-unknown-unknown/lib/libcore-95400077a9cf0cb3.rlib",
+          "bytes": 2545422,
+          "sha256": "715b1abb81fde1e4cdada47452511b2fe3947d93ffdb5195c8b4992649eb0e68",
+          "link": null,
+          "observed": {
+            "bytes": 2545422,
+            "sha256": "715b1abb81fde1e4cdada47452511b2fe3947d93ffdb5195c8b4992649eb0e68",
+            "link": null
+          },
+          "matches": true
+        },
+        {
+          "path": "lib/rustlib/wasm32-unknown-unknown/lib/libstd-41456b1043900b6a.rlib",
+          "bytes": 2699056,
+          "sha256": "6882c6a56d1f6aebeaa0a04cea790c83abec85e46228d448d0dc089413804501",
+          "link": null,
+          "observed": {
+            "bytes": 2699056,
+            "sha256": "6882c6a56d1f6aebeaa0a04cea790c83abec85e46228d448d0dc089413804501",
+            "link": null
+          },
+          "matches": true
+        }
+      ],
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+    },
+    "image": "sha256:afa51589edffd0c8b466c94b92d9da52695ad1595d5212fb9bce0b63ac13d1c3",
+    "baseline": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "rust",
+          "required": 5
+        },
+        {
+          "profile": "rust-format",
+          "required": 7
+        },
+        {
+          "profile": "clippy",
+          "required": 7
+        },
+        {
+          "profile": "rust-tests",
+          "required": 10
+        },
+        {
+          "profile": "rust-workspace",
+          "required": 10
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 39,
+      "required": 39,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 39,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "549e0f479edcefcfdc7dc62918538a346155fc8305acef1052a1c7e397c07283"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "549e0f479edcefcfdc7dc62918538a346155fc8305acef1052a1c7e397c07283"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "e174125d020b7e4c9034c9360e5fcafd8f7d7c9c2dd7ae084dd9609742905af4"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e174125d020b7e4c9034c9360e5fcafd8f7d7c9c2dd7ae084dd9609742905af4"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3a8dd4610e089dc6e0f7fb2db7881eae401595b67b1aafb89101eafcccbf4783"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3a8dd4610e089dc6e0f7fb2db7881eae401595b67b1aafb89101eafcccbf4783"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "20575b96d2e7119aee80d453321fb9bc65e37520b3e4e3690036c5ac3424d4dd"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "20575b96d2e7119aee80d453321fb9bc65e37520b3e4e3690036c5ac3424d4dd"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "eff28e54f8ec0e236d624f676ee222c15513b102d133b5663ab7d49acb6e8071"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "eff28e54f8ec0e236d624f676ee222c15513b102d133b5663ab7d49acb6e8071"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "cbc94794e5ad89b81034b44273d01c3f29c20b07ea35e525db645840bdb453a6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "cbc94794e5ad89b81034b44273d01c3f29c20b07ea35e525db645840bdb453a6"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "f08f9d3fa1d9bc3990ee5993d598f3d207be747f75bcf280bc6bb57de9b7aa20"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f08f9d3fa1d9bc3990ee5993d598f3d207be747f75bcf280bc6bb57de9b7aa20"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "a29f22b3d96426c9996093b37e99414043d4c7fcd8565db20eb36a0f3e8b1acf"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a29f22b3d96426c9996093b37e99414043d4c7fcd8565db20eb36a0f3e8b1acf"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "da33d9c0947697c10c1f140d691ae2a7495be8ea03a4f5eef62ee657c646bffa"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "da33d9c0947697c10c1f140d691ae2a7495be8ea03a4f5eef62ee657c646bffa"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-10",
+            "before": {
+              "state": "present",
+              "sha256": "95655139e70714e945c6222415379fcb9b713056149c59628a5de886078663b6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "95655139e70714e945c6222415379fcb9b713056149c59628a5de886078663b6"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Rust planning requires a lockfile and supported source paths without executing build scripts or fetching tools",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.517341,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Rust dep-info decodes spaces exactly and rejects unsupported escapes and empty rules",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.530503,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Cargo checks fresh targets and exact source membership, catches compiler errors, and never claims test execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 399.272274,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Cargo cannot reuse configured output, omit a required feature target, or turn invalid package configuration into code success",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 246.918999,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Cargo accounts for build-script source and rejects unsupported multi-package workspaces",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 205.978675,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "Rust formatting planning retains exact workspace source without evaluating manifests or installing components",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.737974,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.757796,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1448.099965,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Rust formatting selects all declared workspace members with per-package editions and generated source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 220.446093,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-2",
+            "name": "native Rust formatting rejects local dependencies outside selected workspace membership without rewriting either source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 73.878394,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-2",
+            "name": "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.749421,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-2",
+            "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 912.571012,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-3",
+            "name": "Clippy planning is explicit offline and never evaluates build scripts or installs tools",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.145018,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-3",
+            "name": "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 843.421646,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-3",
+            "name": "native Clippy distinguishes configuration failures from source defects and accepts fixed near-miss configuration while offline prerequisites remain errors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 394.725913,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-4",
+            "name": "Clippy evidence requires pinned activation exact source fresh artifacts and native completion",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.668569,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-4",
+            "name": "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.133048,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-4",
+            "name": "Clippy configuration classification requires the pinned native message and exact local configuration address",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.393211,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-5",
+            "name": "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 940.403509,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-6",
+            "name": "Rust test planning is explicit locked offline and cannot execute build scripts or test bodies or grant operator trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16.645181,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-6",
+            "name": "native Rust tests execute both guarded bodies and doctest suites catch broken fixed and valid near-miss source and retain panicking fake-output failures",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2371.546582,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-6",
+            "name": "native Rust tests retain mixed all-ignored empty excluded-target and incomplete-source evidence without passing zero cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2033.497462,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-6",
+            "name": "Rust test evidence rejects missing duplicate stale escaped filtered and truncated native result identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 529.551876,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-6",
+            "name": "native Rust doctests preserve compile-only expected-failure ignored and expected-panic modes without filtering out listed whitespace identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1064.673118,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-6",
+            "name": "native Rust test artifact identity survives an operator-granted temporary directory alias without touching retained project output",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 544.520548,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-7",
+            "name": "Rust native test events reconcile multiple doctest suites compile-only modes exact names and ignored bodies",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.597218,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-7",
+            "name": "Rust event parsing rejects empty interrupted duplicate benchmark and filtered evidence without treating captured failure text as success",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.227918,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-7",
+            "name": "Rust expected-panic labels preserve the exact listed unit identity while unsupported suffixes stay incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.078458,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-8",
+            "name": "Rust test CLI and MCP agree on native assertion failures retain counts preserve summary privacy and reject argument trust injection",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1183.479653,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-9",
+            "name": "Rust workspace planning retains complete profiles without executing project code and rejects late invalid profile expansion atomically",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 38.260934,
+            "required": true
+          },
+          {
+            "sequence": 31,
+            "fileId": "file-9",
+            "name": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27.835789,
+            "required": true
+          },
+          {
+            "sequence": 32,
+            "fileId": "file-9",
+            "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6853.459665,
+            "required": true
+          },
+          {
+            "sequence": 33,
+            "fileId": "file-9",
+            "name": "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3561.176106,
+            "required": true
+          },
+          {
+            "sequence": 34,
+            "fileId": "file-9",
+            "name": "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1258.302344,
+            "required": true
+          },
+          {
+            "sequence": 35,
+            "fileId": "file-9",
+            "name": "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1001.954373,
+            "required": true
+          },
+          {
+            "sequence": 36,
+            "fileId": "file-9",
+            "name": "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1052.023668,
+            "required": true
+          },
+          {
+            "sequence": 37,
+            "fileId": "file-9",
+            "name": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 985.252649,
+            "required": true
+          },
+          {
+            "sequence": 38,
+            "fileId": "file-9",
+            "name": "native Rust workspace root package and child doctests use the most specific manifest owner",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 895.023241,
+            "required": true
+          },
+          {
+            "sequence": 39,
+            "fileId": "file-10",
+            "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2783.635766,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Rust planning requires a lockfile and supported source paths without executing build scripts or fetching tools",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Rust dep-info decodes spaces exactly and rejects unsupported escapes and empty rules",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Cargo checks fresh targets and exact source membership, catches compiler errors, and never claims test execution",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Cargo cannot reuse configured output, omit a required feature target, or turn invalid package configuration into code success",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Cargo accounts for build-script source and rejects unsupported multi-package workspaces",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Rust formatting planning retains exact workspace source without evaluating manifests or installing components",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Rustfmt skip scanning respects exact attributes nested comments raw strings Unicode names and attribute boundaries",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Rust formatting catches broken style and preserves fixed near-miss source while disabled skipped empty and malformed profiles stay incomplete",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Rust formatting selects all declared workspace members with per-package editions and generated source",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Rust formatting rejects local dependencies outside selected workspace membership without rewriting either source",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Rust formatting evidence reconciles exact scope output digests active processing versions and native exits",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Rust formatting CLI and MCP agree on native failures preserve summary privacy and reject argument trust injection",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Clippy planning is explicit offline and never evaluates build scripts or installs tools",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Clippy catches declared lint defects despite allow and expect attributes with fixed near-miss source compiler errors and incomplete-scope controls",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Clippy evidence requires pinned activation exact source fresh artifacts and native completion",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Clippy findings fail on warnings deduplicate identical native targets and retain unknown addresses without complete claims",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-5",
+            "name": "Clippy CLI and MCP agree on native lint failures preserve summary privacy and reject argument trust injection",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Clippy distinguishes configuration failures from source defects and accepts fixed near-miss configuration while offline prerequisites remain errors",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Clippy configuration classification requires the pinned native message and exact local configuration address",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-6",
+            "name": "Rust test planning is explicit locked offline and cannot execute build scripts or test bodies or grant operator trust",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Rust tests execute both guarded bodies and doctest suites catch broken fixed and valid near-miss source and retain panicking fake-output failures",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Rust tests retain mixed all-ignored empty excluded-target and incomplete-source evidence without passing zero cases",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-6",
+            "name": "Rust test evidence rejects missing duplicate stale escaped filtered and truncated native result identities",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Rust doctests preserve compile-only expected-failure ignored and expected-panic modes without filtering out listed whitespace identities",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-7",
+            "name": "Rust native test events reconcile multiple doctest suites compile-only modes exact names and ignored bodies",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-7",
+            "name": "Rust event parsing rejects empty interrupted duplicate benchmark and filtered evidence without treating captured failure text as success",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-7",
+            "name": "Rust expected-panic labels preserve the exact listed unit identity while unsupported suffixes stay incomplete",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-8",
+            "name": "Rust test CLI and MCP agree on native assertion failures retain counts preserve summary privacy and reject argument trust injection",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Rust test artifact identity survives an operator-granted temporary directory alias without touching retained project output",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-9",
+            "name": "Rust workspace planning retains complete profiles without executing project code and rejects late invalid profile expansion atomically",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          },
+          {
+            "fileId": "file-9",
+            "name": "Rust workspace target identifiers preserve underscored architectures and reject paths options and empty components",
+            "outcome": "passed",
+            "terminalSequences": [31]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Rust workspace profiles cover siblings beyond default members and preserve lean extra broken fixed and valid near-miss source",
+            "outcome": "passed",
+            "terminalSequences": [32]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Rust workspace accounting keeps missing members targets features stale exclusions unlinked source and ignored empty member tests incomplete",
+            "outcome": "passed",
+            "terminalSequences": [33]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native workspace Clippy retains exact sibling finding addresses and rejects malformed member configuration without passing compiler-only evidence",
+            "outcome": "passed",
+            "terminalSequences": [34]
+          },
+          {
+            "fileId": "file-9",
+            "name": "Rust workspace evidence rejects altered selection feature coverage member identities stale artifacts filtered cases and omitted execution manifests",
+            "outcome": "passed",
+            "terminalSequences": [35]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Rust workspace compilation supports explicit installed foreign targets while foreign tests and missing target libraries remain unavailable",
+            "outcome": "passed",
+            "terminalSequences": [36]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Rust workspace build-script generated modules and proc macros execute only after operator trust with fresh compiler and test artifacts",
+            "outcome": "passed",
+            "terminalSequences": [37]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Rust workspace root package and child doctests use the most specific manifest owner",
+            "outcome": "passed",
+            "terminalSequences": [38]
+          },
+          {
+            "fileId": "file-10",
+            "name": "Rust workspace CLI and MCP agree on profile identities native failures counts privacy and startup trust",
+            "outcome": "passed",
+            "terminalSequences": [39]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 480000,
+      "profile": "rust-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "rust-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6266.568326,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "rust-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5023.66603,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "rust-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5236.675413,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "rust-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 718.412449,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "rust-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1330.425949,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "rust-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4924.362983,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "rust-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8376.971921,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "rust-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31578.664808,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "rust-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 69868.65399,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic native Rust workspace, feature, target, source, byte identity and reached lifecycle controls",
+      "controls": [
+        {
+          "id": "rust-selected-artifact-sha256",
+          "callback": "native Rust workspace rechecks selected executable bytes after successful test witnesses",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "49f91b4d2bcba8877ff56b389ae89e52ccd249cb08363b356e1c7d8723589c89",
+          "mutantSha256": "71e0cd66195dc44fc3fa1c76e0d9d05516b54ade767e7f6e9405eb4ce22db2e9",
+          "mutantOutputSha256": "289bd7ad171fe5cb03f84a82e39c4e0bfa57f62db5159091bef3d4ca942c8017",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-post-witness-native-bytes",
+          "callback": "native Rust workspace rechecks selected executable bytes after successful test witnesses",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+          "mutantSha256": "8ce4b73032d0988050fb332dff745dddac0cac22a6ad9aa61b4b5fd04ec8be18",
+          "mutantOutputSha256": "3ee6c4534f0eca60df406fb64c7f645d1394c1c98fa535f2612746001867ea36",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-check-kind",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "a26688a44da6decd9c70dc8ebd4f6e711f433ca82bc67baacc20775f1091ced9",
+          "mutantOutputSha256": "7cbd825c93cec86adf647500994b9598050a5cdaceaebfb325fd1495b0336094",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-receipt-source",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "1c4bd2e9c2560e14d4123a79c91ed931b07b352bcf359ec47a2662119d7ea95f",
+          "mutantOutputSha256": "7f573d5a26ad579f026efe1a67ef4219b4430628e3f62412ed45507d217d0504",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-input-stability",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "1793007af65ab8a1dc5b941d28a6697ff6b64b7077a3eb579f5fd6ee95d89f49",
+          "mutantOutputSha256": "707bc35de27b10762a8fb7cb0efa5444fc5da634c7fd397c1576cf602af14519",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-selected-native-proof",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "4ffa5aa92c20bfeb26bb8e0621fe514c0da7835e8d28b84863b19dfdd7059b89",
+          "mutantOutputSha256": "51872f39a539487b450b65013027124780e1ec491c5c06928d6c7983a2ae1dc3",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-artifact-features",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "545b4fb48e34b6b11fe7eab489ec94b5ce8320ef35f484d1af1a9dc889ae7f5a",
+          "mutantOutputSha256": "eb341a7c4a55c7e30af2ef97f4dfcf45027f15ab185092f12e81bfa09c09bd35",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-artifact-target",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "f4258a02838b87b8860e911024239129055c59ea0a71b34300901bac5fd95a18",
+          "mutantOutputSha256": "bb0aa58b03c49c34688b64d717d8698593d1378392e8e0539e2c2d4dac2fb923",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-fresh-artifacts",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "3f28dd3977c676dc584166fdea46f53ab3af4160a3c9c83a3ffeda5f0bb4f922",
+          "mutantSha256": "bdd363537fcf4ab5ec1c1c909834c891bc749ae5cd792a4600d20863045f44db",
+          "mutantOutputSha256": "321e6c11f793f4f240bc241da0326381a3ac0ed05730b4e5002ffdcbc6db733f",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-dep-info-count",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "3f28dd3977c676dc584166fdea46f53ab3af4160a3c9c83a3ffeda5f0bb4f922",
+          "mutantSha256": "e9930df440cccae0df5c4b84104a1a38754637207d581a069a0da7a907f6d3ac",
+          "mutantOutputSha256": "c1ae881be139463608906e927300430e462d98e247305012480d17d9c1429651",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-preexecution-source",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+          "mutantSha256": "4378d904dcb125b5acea94caad8ba510971ac49a9d4cb9ac7144cf76e42f8618",
+          "mutantOutputSha256": "509d3fec51e591e244a7bad77c6086036eb4e04f35a8ae70b234673e1386895e",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-postexecution-source",
+          "callback": "native Rust workspace rechecks source after successful runtime witnesses instead of certifying source changed by a test",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+          "mutantSha256": "5fd354fc36235c11034e6eba5f9975009c17be99c3b143694841e8cccb06afee",
+          "mutantOutputSha256": "fb0f79b19668661e528a16027028f8220f4c959f6839a6ab3f74d1016487c55a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-native-bytes-and-path",
+          "callback": "rust-extensions prerequisite acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "49f91b4d2bcba8877ff56b389ae89e52ccd249cb08363b356e1c7d8723589c89",
+          "mutantSha256": "525ae4e7d17f6f18ea0a24e6e441c2ccf15a64c1bab9a715f0a20a1dc63a122f",
+          "mutantOutputSha256": "b1e921abb2a60f316395c4a6aee4bbf9ddc60fdf14b19217de4df25ca1e256b2",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-live-native-output",
+          "callback": "rust-extensions lifecycle acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+          "mutantSha256": "b727273386df7450cc1a8a8e8577d2873a3ade1a7f07a52d3bd59f0d24e05666",
+          "mutantOutputSha256": "a70ac03903f8c8049bcf57f14b1a75366cebbed2490d075aa574df2c2cea1f31",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-owned-build-directory",
+          "callback": "rust-extensions lifecycle acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "e2e8c7c8f6f57ca77bd75c3411f31a1722a410ff9dbc7898c07be2da19dff561",
+          "mutantSha256": "7f7df8fc14028097c3b61f29ada4aefb65cdea02a3c8fc8b68b087f4954d1a46",
+          "mutantOutputSha256": "197f225af1eeb457fb88cebfd7a4f4ec08f1b1aecd186807636a59e9f5df7300",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "0e32629f5dc7a764c2e52ece4deb2c14d839bab816f38f721614f8587c6f5867",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "rust-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "rust-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6368.720897,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "rust-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5112.546896,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "rust-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5319.204075,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "rust-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 734.107043,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "rust-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1332.871828,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "rust-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5010.109083,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "rust-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8532.8063,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "rust-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31614.560495,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "rust-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.61092,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:afa51589edffd0c8b466c94b92d9da52695ad1595d5212fb9bce0b63ac13d1c3",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "callbacks": [
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions broken acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions fixed acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions near-miss acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions prerequisite acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions stale acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions empty acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions privacy acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions lifecycle acceptance"
+      },
+      {
+        "file": "dist/test/gate-rust-extensions.test.js",
+        "name": "rust-extensions installed acceptance"
+      }
+    ],
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": true
+    },
+    "archiveIdentity": [
+      {
+        "name": "rustc",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rustc-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustc-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 66438268,
+        "sha256": "89fb83041993b48816514815606f53a5264729b8b449671a6b291e6f0ae74f40",
+        "bytesVerified": true
+      },
+      {
+        "name": "cargo",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "cargo-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/cargo-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 11108572,
+        "sha256": "c09425a7f300af148c0bdfded0e7d5f1fe7c075b2b9674e8935afa769297b2f6",
+        "bytesVerified": true
+      },
+      {
+        "name": "rust-std",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rust-std-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 30815124,
+        "sha256": "9bf796a6ec5b004813ebd0b650775a7c6a4f3aae97ad362ae294798dca4f3b23",
+        "bytesVerified": true
+      },
+      {
+        "name": "clippy-preview",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "clippy-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/clippy-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 3915700,
+        "sha256": "396e17c0a669399823d0e59073686a4e5f50b2d41f062f1d3afc9210f9d3553d",
+        "bytesVerified": true
+      },
+      {
+        "name": "rustfmt-preview",
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "rustfmt-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rustfmt-1.98.1-aarch64-unknown-linux-gnu.tar.xz",
+        "bytes": 2288788,
+        "sha256": "7d4c136278b61096d46ef23019c29acb7ee5a2a1412cbfee5050316110c6fd8c",
+        "bytesVerified": true
+      },
+      {
+        "name": "rust-std",
+        "target": "wasm32-unknown-unknown",
+        "file": "rust-std-1.98.1-wasm32-unknown-unknown.tar.xz",
+        "url": "https://static.rust-lang.org/dist/2026-09-03/rust-std-1.98.1-wasm32-unknown-unknown.tar.xz",
+        "bytes": 22423420,
+        "sha256": "cf1fcf68880d8b2b90128cede7416cfb82ad3584357ce9fb668f2b6244c26e55",
+        "bytesVerified": true
+      }
+    ],
+    "archivePreflight": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "diagnosticSha256": "56a7bf6e80bf33a42d4a70d61278780e43f19788af98b1bce65a88047ad261c5",
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "python": "Python 3.9.6"
+      },
+      "executedOutsideNativeImage": true
+    },
+    "nativeExtensionScope": "Six exact official component archives and sixteen selected GNU ARM64 compiler, driver, host and foreign standard-library artifacts; system libraries, Cargo configuration, generated content, publisher and whole dependency closure remain outside this selection.",
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "finalMatrixAccepted": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1357,
+    "passed": 895,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 462,
+    "todo": 0,
+    "durationMs": 226259.781209,
+    "logSha256": "83bf3ec4525f95605cf8c7e696350ca3159c70a301b648e0c8743e29c84367d7",
+    "skippedCasesArePassingEvidence": false
+  },
+  "originalDefectRepairObservations": [
+    {
+      "description": "Reached native Rust build descendants were terminated but their actual build directory outlived the engine temporary directory. The original lifecycle callback failed its missing-directory assertion; the repaired commands place native build output inside engine-owned per-command storage and retain passing reached cancellation, timeout and output controls.",
+      "before": {
+        "namedCallbackFailed": true,
+        "privateDiagnosticSha256": "c324ea6526a8c002128e3bec9f2ce0445e81bec69721675197c01be0d6dfe778"
+      },
+      "after": {
+        "sourceCategoriesPassed": 9,
+        "freshInstalledCategoriesPassed": 9,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "description": "Successful native test witnesses change an owned selected executable copy both by appending a byte and by flipping one byte without changing its size. Stable project source cannot hide the post-witness tool change. Removing the actual SHA comparison or post-witness check produces a named assertion failure in the compiling-control harness.",
+      "sameSizeChecksumControlEstablished": true,
+      "controlCount": 15,
+      "allOriginalAndRestoredCallbacksPassed": true,
+      "allMutantsCompiledAndFailedNamedAssertions": true
+    }
+  ],
+  "physicalOutputsOmittedReason": "Synthetic diagnostics contain workstation paths; only immutable hashes and bounded outcome accounting are published.",
+  "installedArtifactScope": "The recorded tarball was evaluated before this measurement and status/inventory receipt declarations were emitted. Compiled engine and original callback bytes remain those evaluated; final Gate A package/matrix acceptance is separate.",
+  "inventoryProgress": {
+    "implemented": 27,
+    "selected": 51,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "structuralAuditCertifiesImplementation": false
+  },
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

@@ -88,10 +88,15 @@ source addresses remain attached to findings. A verified workspace/member Clippy
 configuration error is an execution error with incomplete analysis, rather than
 source-quality evidence.
 
-Native invocations have bounded output and inventories. The engine's wall,
-output and cancellation limits apply. Normal runner exit removes temporary
-output; forced-termination cleanup and a ledger of every internal subprocess are
-not established. Source snapshots detect changes to the final bounded inventory.
+Workspace invocations capture bounded native output and forward actual child
+stdout/stderr while alive so the engine's output, wall and cancellation limits
+can stop reached descendants. Cargo may buffer its own build-script output.
+Build/target output now belongs to the engine's per-command temporary directory;
+normal exit and reached forced termination remove it. Each command binds the
+planned bounded inventory and rechecks it before and after execution. A ledger
+of every internal subprocess and complete generated/configuration identity
+remain unestablished. See [RUST-EXTENSIONS.md](RUST-EXTENSIONS.md) for the optional
+selected GNU ARM64 native artifact identity and its limits.
 
 ## Acceptance
 

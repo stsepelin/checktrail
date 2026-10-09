@@ -35,7 +35,7 @@ suite, required profiles and fresh installed-package checks. The required-profil
 runner applies its timeout to each entire selected test file. Sequential controls
 therefore share that file budget even when each control has its own timeout.
 
-Full-suite runs allow five minutes per file, including additional files outside
+Full-suite runs allow ten minutes per file, including additional files outside
 the selected required profiles. The `dotnet-method` profile allows ten minutes
 per selected file. Existing per-control and engine execution limits remain in
 force. Standalone profiles retain their existing file budgets, including five
@@ -53,6 +53,22 @@ acceptance, compiling guard mutations with their original and restored callbacks
 and fresh installed-package acceptance. The verifier records phase progress on
 stderr and retains the final JSON evidence on stdout. Existing control and engine
 execution limits remain in force; a job cutoff is incomplete acceptance.
+
+## Pinned image delivery
+
+CI Dockerfiles, runtime preparation selectors and direct workflow pulls use the
+public ECR Docker Official Image mirror with the original immutable SHA-256
+image-index digests. The [mirror delivery receipt](measurements/ci-image-mirrors-2026-10-09.json)
+records byte-verified index manifests, successful image pulls and local validation.
+The change follows hosted failures during Docker Hub image preparation, before
+native acceptance could run. Microsoft Container Registry image selectors retain
+their existing registry and digest.
+
+A registry replacement supplies no cached test result. Native source, compiling
+controls and fresh installed-package checks remain required. Historical receipts
+retain the registry used when they were captured; identical image-index bytes do
+not establish broader license, publisher or whole-runtime provenance. Hosted CI
+at a repaired PR head must still pass independently.
 
 ## Pinned infrastructure preparation
 

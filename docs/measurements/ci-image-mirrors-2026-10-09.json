@@ -1,0 +1,2150 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-09T21:19:14.642Z",
+  "sourceBaseCommit": "5f9ca693514dabc12aff60ea0cc59bf69591656b",
+  "scope": "Pinned Docker Official Image CI delivery selectors; raw OCI image-index bytes and actual Linux ARM64 mirror pulls. Native implementation and dependency versions are unchanged.",
+  "originalHostedFailures": {
+    "runId": 37991357644,
+    "headCommit": "bb739e10a53035b817c2b7577848828b4340a4a0",
+    "failedNativeJobsWithAcquiredLogs": 61,
+    "dockerHubPullQuota": 60,
+    "dockerHubPullHttp500": 1,
+    "allFailedBeforeNativeAcceptance": true
+  },
+  "imageIdentityCount": 12,
+  "changedImageSelectorCount": 110,
+  "changedImageSelectorFiles": 59,
+  "images": [
+    {
+      "original": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "mirror": "public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "rawManifestBytes": 10093,
+      "rawManifestSha256": "sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v6"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "386",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "riscv64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "references": [
+        {
+          "file": "scripts/executable-bundle-tools.Dockerfile",
+          "line": 4,
+          "old": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+        },
+        {
+          "file": "scripts/php-context-tools.Dockerfile",
+          "line": 2,
+          "old": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+        },
+        {
+          "file": "scripts/php-review-tools.Dockerfile",
+          "line": 2,
+          "old": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+        },
+        {
+          "file": "scripts/verify-external-container.mjs",
+          "line": 96,
+          "old": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+        },
+        {
+          "file": "scripts/verify-impact-container.mjs",
+          "line": 12,
+          "old": "composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d"
+        }
+      ]
+    },
+    {
+      "original": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "mirror": "public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "rawManifestBytes": 2681,
+      "rawManifestSha256": "sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "references": [
+        {
+          "file": "scripts/detekt-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/gradle-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/java-context-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/java-review-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/java-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/kotlin-context-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/kotlin-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/maven-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/scala-context-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/scala-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        },
+        {
+          "file": "scripts/spotbugs-tools.Dockerfile",
+          "line": 1,
+          "old": "eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd"
+        }
+      ]
+    },
+    {
+      "original": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "mirror": "public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "rawManifestBytes": 9695,
+      "rawManifestSha256": "sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "386",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "riscv64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "amd64",
+          "os": "windows",
+          "os.version": "10.0.26100.33158"
+        },
+        {
+          "architecture": "amd64",
+          "os": "windows",
+          "os.version": "10.0.20348.5386"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "references": [
+        {
+          "file": "scripts/c-context-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/context-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/cpp-context-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/executable-bundle-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/external-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/go-workspace-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/hcl-context-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/java-context-tools.Dockerfile",
+          "line": 3,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/kotlin-context-tools.Dockerfile",
+          "line": 3,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/prepare-hcl-context-runtime.mjs",
+          "line": 138,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/prepare-yaml-context-runtime.mjs",
+          "line": 69,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/review-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/rust-context-tools.Dockerfile",
+          "line": 4,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/rust-extension-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/scala-context-tools.Dockerfile",
+          "line": 3,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        },
+        {
+          "file": "scripts/yaml-context-tools.Dockerfile",
+          "line": 2,
+          "old": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6"
+        }
+      ]
+    },
+    {
+      "original": "node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "mirror": "public.ecr.aws/docker/library/node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "rawManifestBytes": 5218,
+      "rawManifestSha256": "sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "references": [
+        {
+          "file": "scripts/prepare-swift-tools-runtime.mjs",
+          "line": 23,
+          "old": "node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84"
+        },
+        {
+          "file": "scripts/swift-tools.Dockerfile",
+          "line": 1,
+          "old": "node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84"
+        }
+      ]
+    },
+    {
+      "original": "node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "mirror": "public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "rawManifestBytes": 5218,
+      "rawManifestSha256": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "references": [
+        {
+          "file": "scripts/swift-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9"
+        }
+      ]
+    },
+    {
+      "original": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "mirror": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "rawManifestBytes": 6406,
+      "rawManifestSha256": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v6"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "references": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 711,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 766,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 788,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 809,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/actionlint-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/adoption-php.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/c-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/clang-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/cpp-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/cpp-tools.Dockerfile",
+          "line": 1,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/csharp-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/detekt-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/dotnet-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/executable-bundle-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/external-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/fastapi-assembly-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/fsharp-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/go-workspace-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/gradle-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/hcl-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/infra-tools-artifacts.json",
+          "line": 3,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/infra-tools.Dockerfile",
+          "line": 1,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/java-context-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/java-review-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/java-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/kotlin-context-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/kotlin-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/maven-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/php-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/php-review-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/prepare-cpp-tools-runtime.mjs",
+          "line": 21,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/prepare-hcl-context-runtime.mjs",
+          "line": 136,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/prepare-ruby-tools-runtime.mjs",
+          "line": 23,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/prepare-yaml-context-runtime.mjs",
+          "line": 67,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/pyright-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/python-extensions-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/review-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/ruby-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/ruby-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/rust-context-tools.Dockerfile",
+          "line": 3,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/rust-extension-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/rust-review-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/scala-context-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/scala-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/spotbugs-tools.Dockerfile",
+          "line": 2,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/vb-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-external-container.mjs",
+          "line": 94,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-external-evaluation-container.mjs",
+          "line": 15,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-impact-container.mjs",
+          "line": 10,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-javascript-extensions-container.mjs",
+          "line": 9,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-nuxt-assembly-container.mjs",
+          "line": 9,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-nuxt-container.mjs",
+          "line": 13,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-ruby-container.mjs",
+          "line": 22,
+          "old": "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-vue-router-assembly-container.mjs",
+          "line": 8,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/verify-vue-router-container.mjs",
+          "line": 13,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        },
+        {
+          "file": "scripts/yaml-context-tools.Dockerfile",
+          "line": 1,
+          "old": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+        }
+      ]
+    },
+    {
+      "original": "php@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "mirror": "public.ecr.aws/docker/library/php@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "rawManifestBytes": 10309,
+      "rawManifestSha256": "sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v6"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "386",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "riscv64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "references": [
+        {
+          "file": "scripts/adoption-php.Dockerfile",
+          "line": 2,
+          "old": "php@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4"
+        }
+      ]
+    },
+    {
+      "original": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "mirror": "public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "rawManifestBytes": 10301,
+      "rawManifestSha256": "sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v6"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "386",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "riscv64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "references": [
+        {
+          "file": "scripts/executable-bundle-tools.Dockerfile",
+          "line": 3,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/external-tools.Dockerfile",
+          "line": 3,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/fastapi-assembly-tools.Dockerfile",
+          "line": 2,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/prepare-fastapi-assembly-tools.mjs",
+          "line": 20,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/prepare-python-extensions-tools.mjs",
+          "line": 57,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/pyright-tools.Dockerfile",
+          "line": 2,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        },
+        {
+          "file": "scripts/python-extensions-tools.Dockerfile",
+          "line": 2,
+          "old": "python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df"
+        }
+      ]
+    },
+    {
+      "original": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "mirror": "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "rawManifestBytes": 8977,
+      "rawManifestSha256": "sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v6"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm",
+          "os": "linux",
+          "variant": "v7"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "386",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "s390x",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+      "references": [
+        {
+          "file": ".github/workflows/ci.yml",
+          "line": 808,
+          "old": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3"
+        },
+        {
+          "file": "scripts/prepare-ruby-tools-runtime.mjs",
+          "line": 21,
+          "old": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3"
+        },
+        {
+          "file": "scripts/ruby-context-tools.Dockerfile",
+          "line": 3,
+          "old": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3"
+        },
+        {
+          "file": "scripts/ruby-tools.Dockerfile",
+          "line": 2,
+          "old": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3"
+        },
+        {
+          "file": "scripts/verify-ruby-container.mjs",
+          "line": 19,
+          "old": "ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3"
+        }
+      ]
+    },
+    {
+      "original": "rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "mirror": "public.ecr.aws/docker/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "rawManifestBytes": 3902,
+      "rawManifestSha256": "sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "ppc64le",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "references": [
+        {
+          "file": "scripts/rust-context-tools.Dockerfile",
+          "line": 1,
+          "old": "rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446"
+        },
+        {
+          "file": "scripts/rust-review-tools.Dockerfile",
+          "line": 2,
+          "old": "rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446"
+        }
+      ]
+    },
+    {
+      "original": "swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "mirror": "public.ecr.aws/docker/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "rawManifestBytes": 2617,
+      "rawManifestSha256": "sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "references": [
+        {
+          "file": "scripts/swift-context-tools.Dockerfile",
+          "line": 2,
+          "old": "swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd"
+        }
+      ]
+    },
+    {
+      "original": "swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "mirror": "public.ecr.aws/docker/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "rawManifestBytes": 2617,
+      "rawManifestSha256": "sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "rawManifestMatchesOriginalPin": true,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "variant": "v8"
+        },
+        {
+          "architecture": "unknown",
+          "os": "unknown"
+        }
+      ],
+      "pullSucceeded": true,
+      "pulledPlatform": "linux/arm64",
+      "pulledImageId": "sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "references": [
+        {
+          "file": "scripts/prepare-swift-tools-runtime.mjs",
+          "line": 21,
+          "old": "swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803"
+        },
+        {
+          "file": "scripts/swift-tools.Dockerfile",
+          "line": 2,
+          "old": "swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803"
+        }
+      ]
+    }
+  ],
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "28ef389e994bf5f2590390ddc1db3d92c928733118fc5172fa69913fb338d0d1",
+    "scripts/actionlint-tools.Dockerfile": "946564ae3b9371a0d789325b40214657957614b1c72ef6673a908435685d021d",
+    "scripts/adoption-php.Dockerfile": "a7b0aec2c663ae8212ee449ccbcbe7680d00dda7a9fbc6e9b20048115beb30d9",
+    "scripts/c-context-tools.Dockerfile": "38d11565797cf7d3b1c1392cd3e65ec44b31e2e983d7477fdab01733ab01b0cb",
+    "scripts/clang-tools.Dockerfile": "5841bd5434d36a423ac37c93bbeb5e80cef3ba23b07e7a1942eb73df6982a647",
+    "scripts/context-tools.Dockerfile": "3e41a7487045f3479d32a47b546a18dc320bd98237ea520e7d83d2a3ed442fac",
+    "scripts/cpp-context-tools.Dockerfile": "f004e9b45c4b308ef558e75afbc5e5a2c2ce6c7c5c3074922db800eaca7f6364",
+    "scripts/cpp-tools.Dockerfile": "385eb190d33c6e6999e435f1766e840ea441b165e9b9d9a64b3c744a5ff58c47",
+    "scripts/csharp-context-tools.Dockerfile": "13d4e26e26d2703038d40ac323cf4044028731d8d1637d6cd54ef60267313af0",
+    "scripts/detekt-tools.Dockerfile": "4cb9822592c5261527e9036fb7615b96996896487d53b3288c76c33560788240",
+    "scripts/dotnet-tools.Dockerfile": "8146dcd996b207a74e592d63b2b0913e1307bcc999ac2f0659be30fe7115b1d6",
+    "scripts/executable-bundle-tools.Dockerfile": "b8f56360cc7a09d42af29200bc7eab85b4dbe28f859191c36661369db44feaa3",
+    "scripts/external-tools.Dockerfile": "221bc1548b31784daeb8f0234be212f010ee7648b6cc23fc122b73516bd7823a",
+    "scripts/fastapi-assembly-tools.Dockerfile": "0e6bcebac0c3f28e92a0f62ecc142c4f199e413c809e0ddab68e134e2ea62cc6",
+    "scripts/fsharp-context-tools.Dockerfile": "40d95a0b0a3d2a1311f5b8c61256d0e4a1d52d029d3f8f5da5bcb3733773fb68",
+    "scripts/go-workspace-tools.Dockerfile": "8ca5a6105bf3250a61a25f22b6fce31865088eb47239bd3e90232179dff6266f",
+    "scripts/gradle-tools.Dockerfile": "27a96e4c6aa307eaeccc7274d04b4077c53a30333eb3a295e4ec8502a93c78fe",
+    "scripts/hcl-context-tools.Dockerfile": "740fd45a125f036d68a17c909d666ae25c16e8103e26ad7da113d5368f51fa26",
+    "scripts/infra-tools-artifacts.json": "ead0ab6ffabe9738a1ab5da8dfb57920c7ea64c0ccd8e0ec6776d2ade0d0ff74",
+    "scripts/infra-tools.Dockerfile": "96c1a4f379cac36a7df2ceeba7101128853a64cde648afee38d57f2746c41c6d",
+    "scripts/java-context-tools.Dockerfile": "ec706c9d19ee6b2c9df4c1b0cfc108537577090686b17cab32f09fa523c0ffcf",
+    "scripts/java-review-tools.Dockerfile": "b45f1e6a68964246131c7336a37a8fa38b0b14e9b70817a7174629c593e058a6",
+    "scripts/java-tools.Dockerfile": "4cad4d80a330a4c6e4ee97814b4ffa8fd56689d602012beb95e491302f4cc04b",
+    "scripts/kotlin-context-tools.Dockerfile": "246eacd2a3a444c4b701de98735f708119bbf066f75cc80574298fd0756571e7",
+    "scripts/kotlin-tools.Dockerfile": "74c3b297e15b2d10e6237c75fd75bfe6d901f0ca3ad215c1a48d1a84e082531a",
+    "scripts/maven-tools.Dockerfile": "c4b4542a120dd0d6d9a44e09edbbf1919fa349f0d5418ef8b7ab3ddcf6627444",
+    "scripts/php-context-tools.Dockerfile": "7091d0a7e736ecfe44d8fa8ccf58008651031c8dfeaaf0bf182919d59ea49376",
+    "scripts/php-review-tools.Dockerfile": "5086bc0505ae4bff032eb83a1acc7282b713911a9454aaed0680b21da423b4c6",
+    "scripts/prepare-cpp-tools-runtime.mjs": "71bd1094d3953fb2e12e76a3c58e5bdfe40083384f47ea2c3676dcb49c2aae31",
+    "scripts/prepare-fastapi-assembly-tools.mjs": "fb1297f79fad61bd899a9c890aee5e0b1c3c59740d4f96e64285d55bed6c8122",
+    "scripts/prepare-hcl-context-runtime.mjs": "49f1e201aca6d022484853cc462ed6163d06e96335a19b0ba24667684c946a9d",
+    "scripts/prepare-python-extensions-tools.mjs": "ccf41456d82e5cd040446ebeca57d1b5412419bc555c828191c5e34e318ea8a5",
+    "scripts/prepare-ruby-tools-runtime.mjs": "49640b42d6a2f1e802bb6591b8c91f684da0b6f1a26af32019b65768055c25f5",
+    "scripts/prepare-swift-tools-runtime.mjs": "383d60e88ffca90614519cbeaa4f957dea8f36e27f4380971d4e77e22e9ab522",
+    "scripts/prepare-yaml-context-runtime.mjs": "0b75aebfc7dfdd0214ca0e3d4e8d6d187a48f444ca5bd7bba1d873b542be934c",
+    "scripts/pyright-tools.Dockerfile": "a006eadc186e1b64ecb8865a252c0d356ddefc44e1101e05f7aa63b2b6436e77",
+    "scripts/python-extensions-tools.Dockerfile": "6714dcea97dcab0e9c46997b304b371b35a880575fb858950e0b6d11a95d13ca",
+    "scripts/review-tools.Dockerfile": "26190ff37a00a35f42547d926e358f63fe4d65346e49e0e1604a4f488c797e82",
+    "scripts/ruby-context-tools.Dockerfile": "c461ffa03c037da79486fb371d6f286bcd197bf1849bfdecdd03fda9531db210",
+    "scripts/ruby-tools.Dockerfile": "683cb78704597ba9713bd6a31b6f1ff306d56c6966f82f17db73bd7b448c13b5",
+    "scripts/rust-context-tools.Dockerfile": "3ccdcb14582bafd24c6424f3a436c78941654523d70b5e9beabf429edc353528",
+    "scripts/rust-extension-tools.Dockerfile": "9308a0f7ebb9245ef3af1adc2cfb8a4686d4692ca82ba29947e24060924549c7",
+    "scripts/rust-review-tools.Dockerfile": "875c88ed06cb13106d06168c666dc52c34368a8cbf93a37c87ff6d1c2d8b0a8a",
+    "scripts/scala-context-tools.Dockerfile": "0f8d40b085ddc4f1d86c0ee5e42591f197f4733f62b3629ad046987c5caf3f60",
+    "scripts/scala-tools.Dockerfile": "3faf34e13724d467dcf6f776e99a140f498a5f7701174c1518bcc43311a6e6b9",
+    "scripts/spotbugs-tools.Dockerfile": "f68313f9da36765db7e47d6fa923e1b6b121b0c3ef93a6e7804eb16a57b37505",
+    "scripts/swift-context-tools.Dockerfile": "089264373fa35c594e90b4c316d961da9e3535efbfe31a57363da87f2226771b",
+    "scripts/swift-tools.Dockerfile": "513969aef01a9c72c6aceeb2dbd932617e11750748d9872831afb76b552c5970",
+    "scripts/vb-context-tools.Dockerfile": "6dae65072fe67340927c47a452f8dc294ba7c3450d73f787eaa347cb063e2127",
+    "scripts/verify-external-container.mjs": "5be0b1b377cd85b30c91b33b8c6735a98282576c39d9da1c7fdb1b34967f01fd",
+    "scripts/verify-external-evaluation-container.mjs": "91f59883de0356e119f5768b1b6a689848d204d894a1caa921dc3c57e1407950",
+    "scripts/verify-impact-container.mjs": "37a33964efe924f641b37a0f464fcf09b285e166de04110402cde27890c1e5f4",
+    "scripts/verify-javascript-extensions-container.mjs": "64d9744630d4dab547b47a07c3ce83eca3295f345cac29d256f2c8e343376cb8",
+    "scripts/verify-nuxt-assembly-container.mjs": "ad64fddf62d2eaf3b1ceb6a0562ae50f5269b08486b179150d95a49f227f5c21",
+    "scripts/verify-nuxt-container.mjs": "c507af85e7cc46a79297bf99205154df79d0ca8568d17902d166f245b8026a96",
+    "scripts/verify-ruby-container.mjs": "331b51cab165fab45554e88b1574f326d7acfd982a9317bf3f63248dc3c2699e",
+    "scripts/verify-vue-router-assembly-container.mjs": "16ba47a90300f72d1420308f92066fc49650f77f4fc08746f70b114bcf1abc33",
+    "scripts/verify-vue-router-container.mjs": "f73b59cc44b06b7a5dfbc0bafb8368c4dfb828b12ddf40fc1a781f2e664d684b",
+    "scripts/yaml-context-tools.Dockerfile": "b6fbc3016a5219603ffb05ae4c5a402acad7f03e7e1ae920bcc2b3d0af645cb9",
+    "scripts/prepare-infra-tools-runtime.mjs": "7f3bf9b40db764b6b9d7ee4609bb15f4d17e68effcb090f43563fc455f5580ce",
+    "test/infra-preparation.test.ts": "437ad3bf2be43994bf86049f06eafe874aa38fd3a417538662d0733abab31bf4",
+    "docs/NATIVE-CI.md": "4c9b564d9cf6ee6ec9ab5831a998016f7da91360ed4b44848611c3ad3a4ca4fc"
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "tests": 1360,
+    "passed": 898,
+    "optionalSkipped": 462,
+    "failed": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 229376.88225,
+    "optionalSkipsCountAsPass": false,
+    "outputSha256": "468c408f266c7fdbd148e5ab0366430ed8c07703f7e21c9342a745a118c488b0"
+  },
+  "guardControls": {
+    "command": "node --test dist/test/infra-preparation.test.js",
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "invalidRegistryIdentifiers": 5,
+    "scope": "Exact registry/repository/digest identifiers fail before any artifact download or directory publication; existing valid mirrored preparation still reaches transport and integrity controls.",
+    "compilingMutation": {
+      "test": "infra preparation rejects near-miss registry image identifiers before downloads",
+      "mutation": "Remove the end-of-input boundary so a digest with an undeclared trailing tag is admitted",
+      "originalExit": 0,
+      "mutantExit": 1,
+      "restoredExit": 0,
+      "expectedFailure": "Artifact downloads started for an invalid image identifier: 2 !== 0",
+      "temporaryOriginalSourceChanged": false,
+      "complete": true
+    }
+  },
+  "javaNative": {
+    "scope": "Preserved real Java native source callbacks in an owned image rebuilt from mirrored bases; no separate installed Java profile was rerun here.",
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "java",
+      "fileWorkerLimit": 1,
+      "passed": 5,
+      "required": 5,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 5,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 46.592069,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1942.174754,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 563.673318,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2843.177465,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3076.458521,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          }
+        ]
+      }
+    }
+  },
+  "rustNative": {
+    "scope": "Complete offline Rust source, preserved baseline, compiling guard controls and fresh production installation using the rebuilt image.",
+    "image": "sha256:10fb27aebf33ee501c6a2b6db559dab86ea281bd616d6d34bd6f3ec48b7ea526",
+    "preserved": {
+      "passed": 39,
+      "required": 39,
+      "complete": true
+    },
+    "source": {
+      "timeoutMs": 480000,
+      "profile": "rust-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "rust-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8226.005189,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "rust-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6487.663997,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "rust-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6374.783183,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "rust-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 898.323608,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "rust-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1636.924831,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "rust-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6390.429498,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "rust-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10202.088675,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "rust-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31833.749053,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "rust-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 75351.414172,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "rust-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guardControls": {
+      "scope": "Original synthetic native Rust workspace, feature, target, source, byte identity and reached lifecycle controls",
+      "controls": [
+        {
+          "id": "rust-selected-artifact-sha256",
+          "callback": "native Rust workspace rechecks selected executable bytes after successful test witnesses",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "49f91b4d2bcba8877ff56b389ae89e52ccd249cb08363b356e1c7d8723589c89",
+          "mutantSha256": "71e0cd66195dc44fc3fa1c76e0d9d05516b54ade767e7f6e9405eb4ce22db2e9",
+          "mutantOutputSha256": "4c53b79c432ab399ddf0762bb1374dcda8d97b00bf3507ee7497189816099589",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-post-witness-native-bytes",
+          "callback": "native Rust workspace rechecks selected executable bytes after successful test witnesses",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "1d2e46294d9d9410083f0a0e0c318503adcb40439f7abd64b0c3bef1c3915c03",
+          "mutantSha256": "224277f9a67499138d143e0a40ab3d468a8d974c231e49b6594ed4f1b4b457f3",
+          "mutantOutputSha256": "a8daafd888f5e1f7c21057ddd61bfd05548aa616d94afc34675eb597d8411207",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-check-kind",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "a26688a44da6decd9c70dc8ebd4f6e711f433ca82bc67baacc20775f1091ced9",
+          "mutantOutputSha256": "f6c0b8326d10c853d155f5edb90e97993f1aa8efa6edea5ba6fd5cb07c441af3",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-receipt-source",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "1c4bd2e9c2560e14d4123a79c91ed931b07b352bcf359ec47a2662119d7ea95f",
+          "mutantOutputSha256": "f1afc67d9aacfd4a58e94610e3cec1dc3524815574b382689ec8afcb3c61d5c6",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-input-stability",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "1793007af65ab8a1dc5b941d28a6697ff6b64b7077a3eb579f5fd6ee95d89f49",
+          "mutantOutputSha256": "e30bd9f86e6e4a22fe30b5aba762509a4646014108d1ce649a61aecea0bb73fe",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-selected-native-proof",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "4ffa5aa92c20bfeb26bb8e0621fe514c0da7835e8d28b84863b19dfdd7059b89",
+          "mutantOutputSha256": "4ff7d6b1e30158b603c07e074267d8f8d237cdd214f14a519e65408917312424",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-artifact-features",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "545b4fb48e34b6b11fe7eab489ec94b5ce8320ef35f484d1af1a9dc889ae7f5a",
+          "mutantOutputSha256": "17d52595595808454877fc3a8febca2522d06e691b9776be416fa544dd3c151a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-artifact-target",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "0ef21ae2b1b67169f6815fa97adefff51ab39e0d03fa69cb73bee81ffa677fae",
+          "mutantSha256": "f4258a02838b87b8860e911024239129055c59ea0a71b34300901bac5fd95a18",
+          "mutantOutputSha256": "bca9437fc48219f3f9ca79b7f26266edddbc22fa4f5c8e0ad934dd7119307dcc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-fresh-artifacts",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "3f28dd3977c676dc584166fdea46f53ab3af4160a3c9c83a3ffeda5f0bb4f922",
+          "mutantSha256": "bdd363537fcf4ab5ec1c1c909834c891bc749ae5cd792a4600d20863045f44db",
+          "mutantOutputSha256": "c9488fc03b9192f8419a5e63e46a4361afdce9001d4147098de20a553d7674d7",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-dep-info-count",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "3f28dd3977c676dc584166fdea46f53ab3af4160a3c9c83a3ffeda5f0bb4f922",
+          "mutantSha256": "e9930df440cccae0df5c4b84104a1a38754637207d581a069a0da7a907f6d3ac",
+          "mutantOutputSha256": "3b5d3c0eeb32562ae73b544637f7473f7912f1893cc64bf9e9a065b53d369d75",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-preexecution-source",
+          "callback": "rust-extensions stale acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "1d2e46294d9d9410083f0a0e0c318503adcb40439f7abd64b0c3bef1c3915c03",
+          "mutantSha256": "db154764aee7b2860f5047c7b9db9ea97a0981cb3f65d67a895f1a63a2b5a545",
+          "mutantOutputSha256": "bbf86e8a6ad29283699177b05c4b711fd455fdbcd597280a501ad9ab88fdf20d",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-postexecution-source",
+          "callback": "native Rust workspace rechecks source after successful runtime witnesses instead of certifying source changed by a test",
+          "callbackSha256": "556be913b9bf891a09ac107f2c935ac96b218dcdde816addf7494e336292b2bb",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "1d2e46294d9d9410083f0a0e0c318503adcb40439f7abd64b0c3bef1c3915c03",
+          "mutantSha256": "d5c6fe340568945a79f052e4dbf40fd69be08725cdf1371ca5ec92cc7b272225",
+          "mutantOutputSha256": "301021613194448f3aa7f087221f47ee3b132ad5d4eb2eca751432ffbcbe4308",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-native-bytes-and-path",
+          "callback": "rust-extensions prerequisite acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "49f91b4d2bcba8877ff56b389ae89e52ccd249cb08363b356e1c7d8723589c89",
+          "mutantSha256": "525ae4e7d17f6f18ea0a24e6e441c2ccf15a64c1bab9a715f0a20a1dc63a122f",
+          "mutantOutputSha256": "817ee5ec14c6b49598e2534e09e005cc976513d5fe8489b3f22be569f0605d92",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-live-native-output",
+          "callback": "rust-extensions lifecycle acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "1d2e46294d9d9410083f0a0e0c318503adcb40439f7abd64b0c3bef1c3915c03",
+          "mutantSha256": "d39001257f8fbfaaacf9df1828815ddbfcec9dc9e94aebeae4acdf066999b530",
+          "mutantOutputSha256": "41c7242e6712bca2885c61ef48e342e4b3645f909aa70befe0fad336cc505b0f",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-owned-build-directory",
+          "callback": "rust-extensions lifecycle acceptance",
+          "callbackSha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f",
+          "fixtureSha256": "1fc364a0cdbb3ad4a0d5e163cd619500b2c6d1250fde3eb9322d9d25619bdb6c",
+          "sourceSha256": "1d2e46294d9d9410083f0a0e0c318503adcb40439f7abd64b0c3bef1c3915c03",
+          "mutantSha256": "5ba24e91e1b92a3fce66e18cd69abd778b0248c1190efa48d11f543ae5a9a3ef",
+          "mutantOutputSha256": "7abf26e46e25caf24df07d97d2493dc807dd6de1fb36bf2243f0c60fe42a48a8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "f2c7298e5041208abef7fc6ed4c4c56c0d64090562b074327749afb730f77b8a",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "rust-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "fe260f1be9c17a2c160f772039a8e900e55630bc5d5a4df7b9dc6e44a3ac549f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "rust-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6487.248527,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "rust-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5178.561573,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "rust-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5434.796848,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "rust-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 740.838369,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "rust-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1348.190593,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "rust-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5104.216677,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "rust-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8732.778749,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "rust-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31581.829148,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "rust-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.709626,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "rust-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:10fb27aebf33ee501c6a2b6db559dab86ea281bd616d6d34bd6f3ec48b7ea526",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": true
+    },
+    "archivePreflight": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "diagnosticSha256": "7f951facba89a2d8ec06bb54445d6ab40765b0436c241fb641d429c357c8d751",
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "python": "Python 3.9.6"
+      },
+      "executedOutsideNativeImage": true
+    },
+    "captureSha256": "2e1fc962db45c469ea3358861e5923fb800830bed5f931bcda5a607dc68fb363",
+    "installedArtifactScope": "The tarball identifies the offline installation tested before this measurement record and final CI documentation were written. The production engine, schemas and native fixture bytes remained unchanged."
+  },
+  "hostedCiAtRepairedHeadAccepted": false,
+  "wholeRuntimeProvenanceVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "supersededLocalAttempts": [
+    {
+      "scope": "Initial host full-suite run omitted prepared Go analyzers from PATH; stopped after named failures.",
+      "accepted": false
+    },
+    {
+      "scope": "Initial ad-hoc Rust container check had no writable npm cache: eight source cases passed but installed acceptance failed. The complete configured controller was rerun successfully.",
+      "accepted": false
+    },
+    {
+      "scope": "An isolated guard mutation harness first failed fixture setup and then tried a redundant end-boundary mutation. Neither was credited. The trailing-tag mutation failed the intended no-download assertion and passed before and after restoration.",
+      "accepted": false
+    }
+  ],
+  "checks": {
+    "formatting": true,
+    "directChangedFileLint": true,
+    "pinnedActionlint": true,
+    "inventoryConsistencyAudit": true,
+    "imageSelectorsReconciled": true,
+    "allOriginalImageDigestsPreserved": true
+  },
+  "localDeliveryRepairAccepted": true
+}

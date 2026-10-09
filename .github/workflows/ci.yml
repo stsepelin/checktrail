@@ -214,7 +214,7 @@ jobs:
         run: node scripts/verify-task-store-container.mjs
       - name: Verify installed MCP Tasks lifecycle offline in Linux
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
-        run: CHECKTRAIL_TASKS_IMAGE=node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
+        run: CHECKTRAIL_TASKS_IMAGE=public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 node scripts/verify-mcp-tasks-package.mjs
 
   php-review:
     runs-on: ubuntu-latest
@@ -605,6 +605,32 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  rust-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-rust-extensions
+      CHECKTRAIL_RUST_EXTENSIONS_IMAGE: checktrail-rust-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare and preflight all six exact public compiler components
+        run: |
+          node scripts/prepare-rust-extension-components.mjs
+          python3 scripts/extract-rust-extension-components.py
+      - name: Build the pinned offline native test image
+        run: docker build --network none --label checktrail.task=ci-rust-extensions --file scripts/rust-extension-tools.Dockerfile --tag "$CHECKTRAIL_RUST_EXTENSIONS_IMAGE" .
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require original native callbacks, compiling controls and fresh package
+        run: node scripts/verify-rust-extensions-container.mjs
+
   php-extensions-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
@@ -682,7 +708,7 @@ jobs:
       - name: Derive exact locked native acceptance tools
         run: node scripts/prepare-javascript-tools.mjs
       - name: Prepare the locked musl native dependency tree
-        run: docker run --rm --mount "type=bind,src=$PWD/.checktrail/javascript-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+        run: docker run --rm --mount "type=bind,src=$PWD/.checktrail/javascript-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native source, compiling controls and fresh offline installed acceptance
         run: node scripts/verify-javascript-extensions-container.mjs
@@ -737,7 +763,7 @@ jobs:
         run: |
           mkdir -p .checktrail/nuxt-tools
           cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
-          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - run: node scripts/prepare-package-cache.mjs
       - name: Require native originals, compiling controls and offline installed acceptance
         run: node scripts/verify-nuxt-assembly-container.mjs ${{ matrix.phase }}
@@ -759,7 +785,7 @@ jobs:
         run: |
           mkdir -p .checktrail/nuxt-tools
           cp scripts/nuxt-tools/package.json scripts/nuxt-tools/package-lock.json .checktrail/nuxt-tools/
-          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/nuxt-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
       - run: node scripts/verify-nuxt-container.mjs
@@ -779,8 +805,8 @@ jobs:
       - run: npm run build
       - name: Prepare pinned Ruby and Node runtimes
         run: |
-          docker pull ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
-          docker pull node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          docker pull public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3
+          docker pull public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - run: node scripts/verify-ruby-container.mjs
 
   ruby-tools:

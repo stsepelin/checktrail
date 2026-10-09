@@ -64,7 +64,11 @@ test("pinned artifact preparation stops retries and results when the shared dead
 `,
   ));
 
-async function preparationControl(t: TestContext, badDigest: boolean) {
+async function preparationControl(
+  t: TestContext,
+  badDigest: boolean,
+  invalidBase?: string,
+) {
   const { readFile } = await import("node:fs/promises");
   const source = new URL(
     "../../scripts/prepare-infra-tools-runtime.mjs",
@@ -85,9 +89,10 @@ async function preparationControl(t: TestContext, badDigest: boolean) {
  childProcess.execFileSync=(command,args)=>{assert.equal(command,'docker');assert.deepEqual(args,['image','inspect','checktrail-original-infra-preparation:public']);throw Object.assign(new Error('synthetic absent image'),{status:1,stderr:'No such image'})};syncBuiltinESMExports();
  const digest=createHash('sha256').update('original').digest('hex');const badDigest=${badDigest};
  const schemas=badDigest?[{file:'original.json',asset:'https://get.helm.sh/original',bytes:8,sha256:'0'.repeat(64)}]:[{file:'failed.json',asset:'https://get.helm.sh/failed',bytes:8,sha256:digest},{file:'delayed.json',asset:'https://get.helm.sh/delayed',bytes:8,sha256:digest}];
- await writeFile(new URL('./scripts/infra-tools-artifacts.json',import.meta.url),JSON.stringify({schemaVersion:1,base:'node@sha256:'+'0'.repeat(64),tools:[],schemas}));
+ await writeFile(new URL('./scripts/infra-tools-artifacts.json',import.meta.url),JSON.stringify({schemaVersion:1,base:${JSON.stringify(invalidBase)} ?? 'public.ecr.aws/docker/library/node@sha256:'+'0'.repeat(64),tools:[],schemas}));
  let calls=0,finished=false;
  globalThis.fetch=async asset=>{calls++;if(badDigest)return new Response('original');if(asset.endsWith('/failed'))return new Response('not found',{status:404});return new Response(new ReadableStream({async start(c){await setTimeout(50);c.enqueue(new TextEncoder().encode('original'));c.close();finished=true}}))};
+ if (${JSON.stringify(invalidBase !== undefined)}) { let refusal; try { await import('./scripts/prepare-infra-tools-runtime.mjs'); } catch (error) { refusal=error; } assert.equal(calls,0,'Invalid image identifier must fail before artifact downloads'); assert.equal(refusal?.code,'ERR_ASSERTION'); await assert.rejects(access(new URL('./.checktrail/',import.meta.url)), {code:'ENOENT'}); process.exit(0); }
  await assert.rejects(import('./scripts/prepare-infra-tools-runtime.mjs'),error=>{const failures=error instanceof AggregateError?error.errors:[error];return failures.length===1 && failures[0].code==='ERR_ASSERTION' && (!badDigest || error instanceof AggregateError)});
  assert.equal(calls,badDigest?1:2);if(!badDigest)assert.equal(finished,true,'every in-flight download must settle before cleanup returns');
  assert.deepEqual(await readdir(new URL('./.checktrail/',import.meta.url)),[]);await assert.rejects(access(new URL('./.checktrail/infra-tools-runtime',import.meta.url)),{code:'ENOENT'});
@@ -126,3 +131,16 @@ test("pinned artifact preparation retries only transient server statuses without
  await assert.rejects(requestPinnedArtifactBytes(item,{signal:controller.signal,fetchImpl:async()=>{calls++;return new Response('original',{status:500})},delayImpl:async()=>controller.abort(deadline)}),error=>error===deadline);assert.equal(calls,1);
 `,
   ));
+
+test("infra preparation rejects near-miss registry image identifiers before downloads", async (t) => {
+  const digest = "0".repeat(64);
+  for (const invalid of [
+    `public.ecr.aws.attacker.invalid/docker/library/node@sha256:${digest}`,
+    `public.ecr.aws/docker/library/node-extra@sha256:${digest}`,
+    `public.ecr.aws/docker/library/node@sha256:${digest}:latest`,
+    `public.ecr.aws/docker/library/node@sha256:${digest}\n`,
+    `node@sha256:${digest}`,
+  ]) {
+    await preparationControl(t, false, invalid);
+  }
+});

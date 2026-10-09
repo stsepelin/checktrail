@@ -50,6 +50,7 @@ assert.ok(
     "javascript-extensions",
     "python-extensions",
     "php-extensions",
+    "rust-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -93,6 +94,8 @@ if (profile === "assembly-nuxt")
   process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
+if (profile === "rust-extensions")
+  process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED = "1";
 if (profile === "php-extensions")
   process.env.CHECKTRAIL_PHP_EXTENSIONS_INSTALLED = "1";
 if (profile === "python-extensions")
@@ -160,6 +163,9 @@ try {
     "gate-assembly-nuxt.test.js",
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
+    "gate-rust-extensions.test.js",
+    "rust-extensions-fixture.js",
+    "rust-workspace-fixture.js",
     "gate-php-extensions.test.js",
     "php-extensions-fixture.js",
     "gate-python-extensions.test.js",
@@ -392,6 +398,9 @@ try {
           ...(profile === "javascript-extensions"
             ? ["--env", "CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "rust-extensions"
+            ? ["--env", "CHECKTRAIL_RUST_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "php-extensions"
             ? ["--env", "CHECKTRAIL_PHP_EXTENSIONS_INSTALLED=1"]
             : []),
@@ -492,6 +501,7 @@ try {
                   "assembly-nuxt",
                   "javascript-extensions",
                   "python-extensions",
+                  "rust-extensions",
                 ].includes(profile)
               ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
               : [
@@ -561,6 +571,7 @@ try {
                       "assembly-nuxt",
                       "javascript-extensions",
                       "python-extensions",
+                      "rust-extensions",
                     ].includes(profile)
                   ? 1024
                   : 256,
@@ -573,6 +584,7 @@ try {
               "assembly-nuxt",
               "javascript-extensions",
               "python-extensions",
+              "rust-extensions",
             ].includes(profile),
           }
         : {

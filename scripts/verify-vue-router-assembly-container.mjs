@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from "node:url";
 import process from "node:process";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const image =
-  "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const task =
   process.env.CHECKTRAIL_TEST_TASK ?? `router-assembly-${process.pid}`;
 assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);

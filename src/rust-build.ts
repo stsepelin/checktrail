@@ -26,6 +26,7 @@ export function rustCompilerHost(stdout: string): string {
   return rustTargetSchema.parse(hosts[0]![1]!);
 }
 const selection = {
+  nativeToolchain: z.literal("linux-arm64-gnu-1.98.1").optional(),
   features: z
     .array(
       z
@@ -173,6 +174,9 @@ export async function applyRustBuildPolicy(
         check.scope = [...scope];
         check.rustBuild = {
           profile: profile.name,
+          ...(profile.nativeToolchain
+            ? { nativeToolchain: profile.nativeToolchain }
+            : {}),
           workspaceMembers: [...policy.workspaceMembers],
           features: [...profile.features],
           defaultFeatures: profile.defaultFeatures,
@@ -189,10 +193,13 @@ export async function applyRustBuildPolicy(
           )
         )
           check.unavailableReason = "Unsupported Rust dep-info source path";
+        check.commands[0]!.temporaryDirectory = true;
+        check.commands[0]!.env = { RUSTUP_AUTO_INSTALL: "0" };
         check.commands[0]!.args = [
           fileURLToPath(new URL("./rust-workspace-runner.js", import.meta.url)),
           JSON.stringify({
             version: 1,
+            sourceFingerprint: source.fingerprint,
             root: source.root,
             project: project.path,
             mode:

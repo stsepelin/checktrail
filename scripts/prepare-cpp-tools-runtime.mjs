@@ -18,7 +18,7 @@ import { mavenHash } from "../dist/src/maven.js";
 import { cppSupportedVersion, cppToolNames } from "../dist/src/cpp-native.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const base =
-  "node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const task = process.env.CHECKTRAIL_TEST_TASK || `cpp-tools-${process.pid}`;
 assert.equal(
   process.arch,

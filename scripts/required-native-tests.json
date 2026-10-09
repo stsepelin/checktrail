@@ -4202,5 +4202,43 @@
       "file": "dist/test/gate-php-extensions.test.js",
       "name": "php-extensions installed acceptance"
     }
+  ],
+  "rust-extensions": [
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-rust-extensions.test.js",
+      "name": "rust-extensions installed acceptance"
+    }
   ]
 }

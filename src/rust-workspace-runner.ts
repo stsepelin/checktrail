@@ -1,4 +1,7 @@
-import { spawnSync } from "node:child_process";
+import { rustNativeToolchainMatches } from "./rust-toolchain-native.js";
+import { rustWorkspaceTemporaryBase } from "./rust-workspace-directory.js";
+import { inventory } from "./inventory.js";
+import { spawn } from "node:child_process";
 import {
   mkdtemp,
   readdir,
@@ -7,7 +10,6 @@ import {
   rm,
   stat,
 } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import path from "node:path";
 import { rustDependencyPaths } from "./rust-dep-info.js";
 import { rustCargoSelection, rustCompilerHost } from "./rust-build.js";
@@ -16,19 +18,59 @@ import {
   rustWorkspaceInputSchema,
   rustWorkspaceMetadataSchema,
 } from "./rust-workspace-schema.js";
-function invoke(executable: string, args: string[], env?: NodeJS.ProcessEnv) {
-  const r = spawnSync(executable, args, {
-    encoding: "utf8",
-    ...(env ? { env } : {}),
-    maxBuffer: 1024 * 1024,
+function invoke(
+  executable: string,
+  args: string[],
+  env?: NodeJS.ProcessEnv,
+): Promise<{ status: number; stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(executable, args, {
+      ...(env ? { env } : {}),
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const stdout: Buffer[] = [],
+      stderr: Buffer[] = [];
+    let bytes = 0,
+      failure: Error | undefined;
+    const collect = (chunks: Buffer[], chunk: Buffer) => {
+      const available = Math.max(0, 1048576 - bytes);
+      if (available) chunks.push(chunk.subarray(0, available));
+      bytes += chunk.length;
+      // Mirror actual native bytes while the process is alive. The engine can
+      // enforce its aggregate output budget and stop reached descendants.
+      if (!process.stderr.write(chunk)) {
+        child.stdout.pause();
+        child.stderr.pause();
+        process.stderr.once("drain", () => {
+          child.stdout.resume();
+          child.stderr.resume();
+        });
+      }
+      if (bytes > 1048576) {
+        failure = Error("Native Rust output exceeds its capture bound");
+        child.kill("SIGKILL");
+      }
+    };
+    child.stdout.on("data", (chunk: Buffer) => collect(stdout, chunk));
+    child.stderr.on("data", (chunk: Buffer) => collect(stderr, chunk));
+    child.on("error", (error) => {
+      failure = error;
+    });
+    child.on("close", (status, signal) => {
+      if (failure || signal || status === null)
+        reject(failure ?? Error("Native Rust process did not complete"));
+      else
+        resolve({
+          status,
+          stdout: Buffer.concat(stdout).toString("utf8"),
+          stderr: Buffer.concat(stderr).toString("utf8"),
+        });
+    });
   });
-  if (r.error || r.signal || r.status === null)
-    throw Error("Native Rust process did not complete");
-  return r;
 }
-function native(executable: string, args: string[]) {
-  const r = invoke(executable, args);
-  return { exitCode: r.status!, stdout: r.stdout, stderr: r.stderr };
+async function native(executable: string, args: string[]) {
+  const r = await invoke(executable, args);
+  return { exitCode: r.status, stdout: r.stdout, stderr: r.stderr };
 }
 function unavailable(reason: string) {
   process.stdout.write(
@@ -41,12 +83,16 @@ async function main() {
   const cwd = await realpath(process.cwd());
   if (cwd !== (await realpath(path.resolve(input.root, input.project))))
     throw Error("Rust workspace working directory mismatch");
+  if ((await inventory(input.root)).fingerprint !== input.sourceFingerprint)
+    return unavailable("source-changed");
+  if (input.selection.nativeToolchain && !(await rustNativeToolchainMatches()))
+    return unavailable("native-toolchain");
   for (const tool of [
     "cargo",
     "rustc",
     ...(input.mode === "test" ? ["rustdoc"] : []),
   ]) {
-    const version = invoke(tool, ["--version"]);
+    const version = await invoke(tool, ["--version"]);
     if (
       version.status !== 0 ||
       version.stderr.trim() ||
@@ -57,7 +103,7 @@ async function main() {
       return unavailable("unsupported-version");
   }
   if (input.mode === "clippy") {
-    const version = invoke("cargo-clippy", ["--version"]);
+    const version = await invoke("cargo-clippy", ["--version"]);
     if (
       version.status !== 0 ||
       version.stderr.trim() ||
@@ -65,7 +111,7 @@ async function main() {
     )
       return unavailable("unsupported-version");
   }
-  const verbose = invoke("rustc", ["-vV"]);
+  const verbose = await invoke("rustc", ["-vV"]);
   if (verbose.status !== 0 || verbose.stderr.trim())
     throw Error("Unknown Rust host target");
   const hostTarget = rustCompilerHost(verbose.stdout);
@@ -73,7 +119,7 @@ async function main() {
   if (input.mode === "test" && target !== null && target !== hostTarget)
     return unavailable("cross-target-tests");
   if (target !== null) {
-    const lib = invoke("rustc", [
+    const lib = await invoke("rustc", [
       "--print",
       "target-libdir",
       "--target",
@@ -92,8 +138,11 @@ async function main() {
       return unavailable("target-prerequisite");
     }
   }
+  const temporaryBase = await rustWorkspaceTemporaryBase(
+    process.env.CHECKTRAIL_TEMP,
+  );
   const temporary = await realpath(
-    await mkdtemp(path.join(tmpdir(), "checktrail-rust-workspace-")),
+    await mkdtemp(path.join(temporaryBase, "checktrail-rust-workspace-")),
   );
   try {
     const config = [
@@ -106,7 +155,7 @@ async function main() {
       ...input.selection,
       target: target ?? hostTarget,
     });
-    const meta = native("cargo", [
+    const meta = await native("cargo", [
       "metadata",
       "--format-version=1",
       "--offline",
@@ -159,7 +208,7 @@ async function main() {
       )
         return unavailable("feature-prerequisite");
     }
-    const execution = native("cargo", [
+    const execution = await native("cargo", [
       input.mode === "clippy" ? "clippy" : "check",
       "--all-targets",
       "--offline",
@@ -243,14 +292,14 @@ async function main() {
           "--",
         ];
         documentation = {
-          listed: native("cargo", [...args, "--list", "--format=terse"]),
-          ignoredListed: native("cargo", [
+          listed: await native("cargo", [...args, "--list", "--format=terse"]),
+          ignoredListed: await native("cargo", [
             ...args,
             "--list",
             "--ignored",
             "--format=terse",
           ]),
-          execution: native("cargo", [
+          execution: await native("cargo", [
             ...args,
             "--test-threads=1",
             "--color=never",
@@ -262,6 +311,12 @@ async function main() {
     process.stdout.write(
       JSON.stringify({
         version: 4,
+        sourceFingerprint: input.sourceFingerprint,
+        nativeToolchainVerified: input.selection.nativeToolchain
+          ? await rustNativeToolchainMatches()
+          : null,
+        inputsStable:
+          (await inventory(input.root)).fingerprint === input.sourceFingerprint,
         mode: input.mode,
         selection: input.selection,
         cargoVersion: "1.98.1",

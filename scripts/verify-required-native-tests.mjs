@@ -29,12 +29,20 @@ for (const profile of selection) {
     "Unknown required native test profile",
   );
 }
+const installedExtensionProfile =
+  selection.length === 1 &&
+  ((selection[0] === "javascript-extensions" &&
+    process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED === "1") ||
+    (selection[0] === "rust-extensions" &&
+      process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
   fullSuite || selection.includes("dotnet-method")
     ? 600000
-    : selection.includes("javascript-extensions")
-      ? process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED === "1"
+    : selection.some((profile) =>
+          ["javascript-extensions", "rust-extensions"].includes(profile),
+        )
+      ? installedExtensionProfile
         ? 300000
         : 480000
       : selection.some((profile) =>

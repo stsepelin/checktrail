@@ -247,6 +247,12 @@ preflight and production compile/link checks. Foreign tests require a target
 executor that is not implemented; cross-compilation does not establish runtime
 support. See the explicit contracts in GO-BUILD.md.
 
+The unpublished [Rust extension contract](RUST-EXTENSIONS.md) adds optional
+selected GNU ARM64 compiler/host/wasm32 artifact identity, per-command bounded
+source binding and reached cleanup of engine-owned native build directories.
+Foreign compilation retains no runtime-test claim. Whole toolchain and license
+closure, generated content identity and the final runtime matrix remain open.
+
 [Descriptive reviewer scoring](REVIEW-SCORING.md) accepts declared numerical
 observations for the nine families; it does not add native language or calibrated
 confidence support. Unknown labels/probabilities and unreviewed cases stay visible.
