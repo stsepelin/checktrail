@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import type { TestContext } from "node:test";
 import { createReviewContext } from "../src/review.js";
 import { fixture } from "./helpers.js";
+import { nameBoundariesFixture } from "./review-name-boundaries-fixture.js";
 export async function hclBoundariesFixture(t: TestContext) {
+  await nameBoundariesFixture(t, 22);
   async function capture(source: string, extra: Record<string, string> = {}) {
     const root = await fixture(t, { "sample.tf": source, ...extra }),
       capturePromise = createReviewContext(root, {

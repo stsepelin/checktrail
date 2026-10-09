@@ -8,7 +8,9 @@ type Range = Pick<
   "revision" | "file" | "start" | "end" | "startLine" | "endLine"
 >;
 const identifier = (node: Node | undefined) =>
-  node?.type === "identifier" && /^[A-Za-z_][A-Za-z_0-9-]*$/.test(node.text)
+  node?.type === "identifier" &&
+  node.text.length <= 256 &&
+  /^[A-Za-z_][A-Za-z_0-9-]*$/.test(node.text)
     ? node.text
     : null;
 const child = (node: Node, type: string) =>
@@ -79,7 +81,7 @@ export function hclDeclaration(node: Node):
         : kind === "module"
           ? "import"
           : "property",
-    name,
+    name: name !== null && name.length <= 256 ? name : null,
     initializer: attribute ? child(attribute, "expression") : undefined,
   };
 }
@@ -166,6 +168,8 @@ export function captureHclBindings(
           kind: kind === "variable" ? "var" : "output",
           declarationId: decl.id,
         });
+      if ((kind === "variable" || kind === "output") && decl.name === null)
+        omit("unsupported-expression");
       if (kind === "module") {
         const attributes =
             child(node, "body")?.namedChildren.filter(
@@ -202,10 +206,12 @@ export function captureHclBindings(
         block &&
         top(block) &&
         identifier(block.namedChildren[0]) === "locals" &&
-        decl &&
-        name !== null
-      )
-        result.bindings.push({ name, kind: "local", declarationId: decl.id });
+        decl
+      ) {
+        if (name === null) omit("unsupported-expression");
+        else
+          result.bindings.push({ name, kind: "local", declarationId: decl.id });
+      }
     }
   }
   for (const node of nodes) {

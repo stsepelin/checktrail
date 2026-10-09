@@ -1,0 +1,1947 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-context-name-boundaries-v1",
+  "recordedAt": "2026-10-09T03:42:30.467360+00:00",
+  "scope": "C/C++ exact ASCII declaration and read names plus HCL decoded block labels and local attributes at the existing display-name bound; complete source spans and explicit unknown fallbacks remain intact. No inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "8674a0d0a805ec2358756ee57ede241fa7d0cd14",
+    "files": [
+      {
+        "file": "docs/REVIEW-C-CONTEXT.md",
+        "bytes": 2915,
+        "sha256": "4d132f96891cae6ee34506a75cde3e84af0ddc6b873bf3cddebd10b6b612e96c"
+      },
+      {
+        "file": "docs/REVIEW-CPP-CONTEXT.md",
+        "bytes": 3713,
+        "sha256": "cb84eff6844e2296bfb20a90cc19bf49f14b6981b2293b1c64c0863bcc6fd09b"
+      },
+      {
+        "file": "docs/REVIEW-HCL-CONTEXT.md",
+        "bytes": 3878,
+        "sha256": "3a6c68a0776c8e124079a9a677aa1808fbf2c2a59326ac070531d4fdfb924e8d"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "scripts/c-context-tools.Dockerfile",
+        "bytes": 778,
+        "sha256": "b4d9cdb331bf6d03eb4f748ca6a099b92a24c035e37af11dfd7fdbd453028587"
+      },
+      {
+        "file": "scripts/cpp-context-tools.Dockerfile",
+        "bytes": 778,
+        "sha256": "7ea2f71a8a23cd92bd22ba968414ef007e776ad8cc6165bc182f20fd10052fe1"
+      },
+      {
+        "file": "scripts/hcl-context-tools.Dockerfile",
+        "bytes": 868,
+        "sha256": "355ec247a7af3cef9704e85edd631878975ef86a3466578f10878456726ade8e"
+      },
+      {
+        "file": "scripts/install-acceptance-package.mjs",
+        "bytes": 5168,
+        "sha256": "8e0ec7163eaa7cfa431df7a8b3f064e90c008bc75a8da4ded2d909218914d678"
+      },
+      {
+        "file": "scripts/prepare-hcl-context-runtime.mjs",
+        "bytes": 4955,
+        "sha256": "4b4c5447e5622c0b0e62155afafc9a4f792f7230d52dcea35122dd6bc7cccf02"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 160643,
+        "sha256": "393d9e9570c328c4dafb7ce21fa87d290758466ff367b15e47db0428387e9071"
+      },
+      {
+        "file": "scripts/required-test-evidence.mjs",
+        "bytes": 9886,
+        "sha256": "9821d71b10a9ceb9e24a5b92db11319a6c83242834bf098b89815d6364e1af16"
+      },
+      {
+        "file": "scripts/verify-c-context-container.mjs",
+        "bytes": 4717,
+        "sha256": "a05097651298675e3805646a046d05083101825d6d751c15c281b66fa4209036"
+      },
+      {
+        "file": "scripts/verify-c-context-guards.mjs",
+        "bytes": 14197,
+        "sha256": "6dcdc04e3191b02171b0b6e47b9b2ec69f0aca8f6618777dcfc1b03186083b43"
+      },
+      {
+        "file": "scripts/verify-cpp-context-container.mjs",
+        "bytes": 4737,
+        "sha256": "14d8e697754bfa44242774ac9956108bbf0c0a72461f9e0072049579b1814705"
+      },
+      {
+        "file": "scripts/verify-cpp-context-guards.mjs",
+        "bytes": 17231,
+        "sha256": "7c2be17731b8c864002a7617b0c25c33ec8c0a0a3f1b6c25a92ceb9e8035249e"
+      },
+      {
+        "file": "scripts/verify-hcl-context-container.mjs",
+        "bytes": 4532,
+        "sha256": "8dd93155847e81de84f4ba0c3b2fd77afab5ed29eac67eaa369f0647ad757828"
+      },
+      {
+        "file": "scripts/verify-hcl-context-guards.mjs",
+        "bytes": 14538,
+        "sha256": "c17790ce309d6fc29c4590e9ac90c021ad0ba1c3545a8edc78696f69a5c461f3"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 12861,
+        "sha256": "e5221b0b258764280350ec471e74bc7126683fa9c300b9824121502a634c1ec1"
+      },
+      {
+        "file": "scripts/verify-required-native-tests.mjs",
+        "bytes": 2515,
+        "sha256": "da776e9323b06ddddb9eb764874c948d4d08ddf459e20d5b7200e76b7d3a7474"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 33404,
+        "sha256": "fa1f7045aae3e20677a8ea10465c8d1d4d151ecf115cf50cec41c96c05426d0a"
+      },
+      {
+        "file": "src/review-c-bindings.ts",
+        "bytes": 13449,
+        "sha256": "665b81cffec181cabd2dcd706e3ee9dcc2e69d655f8058b98ba3db568d543e37"
+      },
+      {
+        "file": "src/review-c-resolution.ts",
+        "bytes": 14352,
+        "sha256": "44d5aef5f0d52c9d723697bc98a6cbc253a1edad2414cb75a9997ab1bc8e74f1"
+      },
+      {
+        "file": "src/review-cpp-bindings.ts",
+        "bytes": 18514,
+        "sha256": "3a35d3cf9f21518dbeffbcfa9c51cf3ba7caefdd01fbff636f24131c7202b4f5"
+      },
+      {
+        "file": "src/review-cpp-resolution.ts",
+        "bytes": 16805,
+        "sha256": "53186c3611ae6ea5138e7025e449a0964a4750c0968d5e4aee98c6fad1bdf879"
+      },
+      {
+        "file": "src/review-hcl-bindings.ts",
+        "bytes": 8834,
+        "sha256": "7973ec742f7bf37d4ec551d53f6da3a56a37e9fa7195e120242fac1eaf49c8a5"
+      },
+      {
+        "file": "src/review-hcl-resolution.ts",
+        "bytes": 15367,
+        "sha256": "fea975c43d331c2990b194d2ec88d37c733f5331cf79d1468f7b31e69a6264a4"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 40825,
+        "sha256": "887a671b12b8f22392b318808895367b034b7bc257e57db341bfcd081eb56109"
+      },
+      {
+        "file": "test/gate-context-c.test.ts",
+        "bytes": 27739,
+        "sha256": "17629c661c439897518e7cae7a0bc750ea51fcf6920cab4c20a156c1abe0a01a"
+      },
+      {
+        "file": "test/gate-context-cpp.test.ts",
+        "bytes": 29559,
+        "sha256": "093e07fe3efd8fbd832eea36ce00a30512efccd50fc6da3ec7f03c5d2fb72ca1"
+      },
+      {
+        "file": "test/gate-context-hcl.test.ts",
+        "bytes": 26441,
+        "sha256": "ea6a5f7ae2ad0842a697a9c92df61aaf2ec35dc9f68061e5389dd0f694766ec8"
+      },
+      {
+        "file": "test/review-c-boundaries-fixture.ts",
+        "bytes": 11646,
+        "sha256": "75a18f3db886551167572cd78b6f0f04e11c72e66443bbdece4b6813719070a8"
+      },
+      {
+        "file": "test/review-cpp-boundaries-fixture.ts",
+        "bytes": 17990,
+        "sha256": "d914718a5ad9cda0a627ea0bf347a848792781e7290729c5929ccfdd0c27bbe2"
+      },
+      {
+        "file": "test/review-hcl-boundaries-fixture.ts",
+        "bytes": 9471,
+        "sha256": "60e8d992d0970facb3a3f2222b8002611269115f1c76e7e6b48a317220ed0e8a"
+      },
+      {
+        "file": "test/review-name-boundaries-fixture.ts",
+        "bytes": 4918,
+        "sha256": "00d09de2bbbaac71ba91193d4dc644624c7dfbd2a11cf212f8fea2fa7ce0712a"
+      },
+      {
+        "file": "test/review-name-boundaries.test.ts",
+        "bytes": 353,
+        "sha256": "b91547569e8edca6c00ccc8b49d8ad90ba6a77e8e54bd1f4ed49c6d8de96dda0"
+      }
+    ]
+  },
+  "profiles": {
+    "c": {
+      "image": "sha256:2d2de6427097eee7983a8dec4550045e61af84331dfe5d1321eb5430d870cca6",
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "compiler": "14.2.0",
+        "compilerTarget": "aarch64-linux-gnu",
+        "compilerIdentity": "gcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "toolBytes": [
+          {
+            "file": "/usr/bin/gcc",
+            "bytes": 1121152,
+            "sha256": "fb051a6c58961fb6aec758acf50d7d0375eecff740d0706388092829e3fb7a41"
+          },
+          {
+            "file": "/usr/bin/as",
+            "bytes": 465912,
+            "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+          },
+          {
+            "file": "/usr/bin/ld",
+            "bytes": 2499576,
+            "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+          },
+          {
+            "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1",
+            "bytes": 30564912,
+            "sha256": "8b4cebfca2ac1ac9edbdac9b335830d8ad27372e930e3c816ea3018b4fdb9fbc"
+          },
+          {
+            "file": "/usr/local/bin/node",
+            "bytes": 126241888,
+            "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+          },
+          {
+            "file": "/usr/bin/git",
+            "bytes": 4081272,
+            "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+          }
+        ]
+      },
+      "source": {
+        "profile": "context-c",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "installed": {
+        "profile": "context-c",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "guards": {
+        "scope": "Original synthetic C captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "c-long-read-unknown",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "2338cce03b5fd35bcaf4c4f74aaa868026616eab326b399b36aa253a68b2bb6b",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-identifier-name-bound",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "1e1a0e0e2938d9898f239f7ffb3264150b5987b180360a807e1f33b27baa1607",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-identifier-case",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "bfac21d0d2627a3bcca4f1cb11bf5ae4563a8a8085396e010150a0e91f8d6850",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-identifier-prefix",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "fe808e78fe4ec5254e8629e9c6488ae436e4b234e08a518e6062c154c3cfe342",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-point-of-declaration",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "59e1a6d0a795b90e344fd1464b288e9e0855f6d5df55c0141369b93a4d2db22f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-parameter-mask",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "8cf1c8ec63458115e2e2d546eef51cd955742842a6c0370ccefe80637568bc25",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-local-mask",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "daf61024f7b48520703665f2cc813a2678fb91d09e1bf38d85db876aaea3d4a0",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-literal-constant",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "9223f8557c1395c1ebaa432187a3e96aaaaf4259abd9e1a13deccfb77731fb49",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-header-and-body-node-identity",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "cc40cf48a0ff71a1b16d33869451fb240e162acb6bddfdaa865091da57fdf3a0",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-nested-block-scope",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "866262f8526b317c9f278a53e308558413d54ba05c0e59ebdc34704a91c48285",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-initializer-read-owner",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "222be6371e2364788930f82044008884681b0d0e5a43bcfa42a6c9bc7a2f0f26",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-scope-uncertainty",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "15df0624bee0be56fe9b1fecdd66c0ce269ba3eac040b0e4316849a54710713c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-exported-function-uncertainty",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "b44789fa3466efc5e7b2000f8c5c5929b1263a5f431c4dfcd8d9b227cb99069a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-prototype-mask",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "6fd76808e78a80276d9d308fc7ad53e456446a53d2e5ce22fdbc73bd6efcca8a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-include-position",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "47c3559517c6096a9caf1e4ed1611844b585aa10558c34161a1300a3de406bcb",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-unselected-header-uncertainty",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "21b060e633385f9144e5aef46a7737e4c21d578685771282aa0e2502b94b7f99",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-include-depth",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "218f1b764e5801df55757eb6dd1b840e221e1e211c838a127eb365adf772220a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-include-visit-budget",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "459b44859cef112e0ac4790c7abe7407c1855b12e6bb4fcf9f02d264ce046fff",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-definition-ambiguity",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "b4e918e3aa301fcd06effe0dfbdd5c1ad0ca746822618084323a289b20625b50",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-source-call-owner",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "c791a04aa478dc23743cd4438c78cf77878335e39da0997ac5963dd31b749f01",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-complete-call-range",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "b554c4890de506e2c31f7366291e2959d5126b4f0b12aab32ac23cfec89ef76a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-roots-intake",
+            "callback": "context-c stale acceptance",
+            "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "dcfc21dfa5e4d58ca35ea8152bec8eb092b9ff171ee018343fab467f99555e71",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-counts-intake",
+            "callback": "context-c stale acceptance",
+            "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "e6697e96e310a9bd61410c687430e246826d0aa7314321663a3bf9212a63f243",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-closure-intake",
+            "callback": "context-c stale acceptance",
+            "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "afabeafa9d5ac2e7f66e08453e2d5d4dc9ba5613884636f1e61c21b3a30c053b",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-omissions-intake",
+            "callback": "context-c stale acceptance",
+            "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "90d9dba06d4872537fcf9e05d7ea3c0d3ad880b17871693d81b8100d4e6da75d",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-grammar-manifest-intake",
+            "callback": "context-c stale acceptance",
+            "callbackSha256": "46b5facc18c7c76300b8f29a9445e14a3dacb3cafb0ca5d7b33de46aaf83c356",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eebf32844368e260d0723108c6b629bb72a31e1e95a8e7c82412b1f00bdcc262",
+            "mutantSha256": "b8d9013d3f0db529a33e39bc870cf40be12f70a526ddacd91bdf29ab90639853",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-absolute-include",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "78cbc82c002dff463f29a3f5e8537eafe3f807d5a7acdcfedb582e85a43fb672",
+            "mutantSha256": "195569bc2282a5eda224072d66f46b3c974dc1e1df2e285687100ca79252dc72",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-inert-directive-comment",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "e270dc414e53195cd93cc4bf987aed86a665c90a4f6766b148fb3374c183dbb1",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-unevaluated-size-read",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "0d67e3a1e17dae9b667ddab68d773774790f4a7d7f71bdada68d0aad4af7275a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-address-is-not-a-read",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "704b9897f7901c17a03b70b84e25a9c52113f5e4e8cfd05859f79ed30f03930f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-vla-scope",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "1b8e333ffefa7094ea248fd7734af5004c294460f492c6297ae8345b28c5046e",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "c-local-declarator-completion",
+            "callback": "context-c selected bindings guard acceptance",
+            "callbackSha256": "efdd9e1ac2ad2ab284151d069138bb8514e35c063f1b0087c9ea4d6e27b22c0e",
+            "fixtureSha256": "33928c1d02ad7e080794e74489f646cf597ffceb1fe6ce28524bb70cbd0af9e2",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eb1c0d983778efad1e7f3b1cf85f83ed3df8826a2fbf0a1c4e00d20802c63c04",
+            "mutantSha256": "73a3a4a826295c2e7a8b521fb85660971e039c35e3c0fcb313e5a1cef288958c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 512,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    "cpp": {
+      "image": "sha256:0de199e510d843af344a816c57752871dba12cf20b63debc10d152046c4eb301",
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "compiler": "14.2.0",
+        "compilerTarget": "aarch64-linux-gnu",
+        "compilerIdentity": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "toolBytes": [
+          {
+            "file": "/usr/bin/g++",
+            "bytes": 1121152,
+            "sha256": "ac4f48ec03aa3988b0c087fd8a0ae681c2922354b321065ff49911b8ab20db73"
+          },
+          {
+            "file": "/usr/bin/as",
+            "bytes": 465912,
+            "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+          },
+          {
+            "file": "/usr/bin/ld",
+            "bytes": 2499576,
+            "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+          },
+          {
+            "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1plus",
+            "bytes": 32731624,
+            "sha256": "83afb477da92b95eced28fc567f1f7f04edf367be37f99ddf32c4ea46cdaa2ed"
+          },
+          {
+            "file": "/usr/local/bin/node",
+            "bytes": 126241888,
+            "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+          },
+          {
+            "file": "/usr/bin/git",
+            "bytes": 4081272,
+            "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+          }
+        ]
+      },
+      "source": {
+        "profile": "context-cpp",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "installed": {
+        "profile": "context-cpp",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "guards": {
+        "scope": "Original synthetic C++ captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "cpp-long-read-unknown",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "9ddeb7ff6a89b8f4c5f2116ce3fcd51689ac4a63ee791c3e24f01c10178715a2",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-identifier-name-bound",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "e1993f43896ff0881b34306da5a10732fe71579852f76beee48710a969bd4c2b",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-identifier-case",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "3c0f34960f38f2d7974832d5bfd0b9796405e2fe52e93f5832a4d06d1bda1846",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-identifier-prefix",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "9125b7005b9fb852b87119c6ca4e256c3d41e7946e8e1bd26bcca4f6a96153b3",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-point-of-declaration",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "f6ab0a738cc8eec58855d2cfe6ac7de4320f2762941b2a1bf4e7513220a9364d",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-parameter-mask",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "eff83a2a98f21b939b77c4680ca9aa3be922ef9d7d9400c702acdeee627a770f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-local-mask",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "ddd1e2d8fdc8f4bf5c5492dc81387a91b0827ceadfd869e9f47c84675b304fc6",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-literal-constant",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "7223e5abd67dcdd54c9930df8bbafa6a1582458ccafc436f2de1f61b5a98b1b9",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-header-and-body-node-identity",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "1efec08c4422ec68a0c1b501697a43e344b84a46c118cac5ce17ac8ab2aee000",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-nested-block-scope",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "29ec5695f15d79c35cbf83150625f3c8852542936327bb5bb59b7b819c6cc3ea",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-initializer-read-owner",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "ae3d1c80085dc943f0962cd23a0d3b419a85577bf25750438fa26eadf99bac67",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-scope-uncertainty",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "4028d58e59c5c1aca61f8767fe5f90be68f1b397d6831b6ca14fd5ae8b1c318c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-exported-function-uncertainty",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "045502732b9be5cddf6d77d463924f81517a7a71cf5dba163f82312a9d67ff9d",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-prototype-mask",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "5811e7c54db21ea146dac9d91f01f4e89b2024f72cb3ea88013a7b72beb588f5",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-include-position",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "86c7f3c0775f68b3679d915371854d449a8f8bce4f1576a36783702f818f045c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-unselected-header-uncertainty",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "76a25e141ba3a8f7ed51771ea75b0ba0c5bb6273afea7286bababb6ae0d9ef5e",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-include-depth",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "a44ee9feb7efbafd81a597161b865e68367ec9d8301555ba83b6f573d0f9199c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-include-visit-budget",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "b150129966e9f472ca926ffd7294b2d908679793c2e5b10c9689a7c8fdac34cc",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-definition-ambiguity",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "56ab01632ce750ce8cdc06b0de6a30f813ca38624b88b22f21ddffd531352c2d",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-source-call-owner",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "6be78e3b870b856d78af7f592950a0be40066c1934f913ba0b98fd75fa151250",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-complete-call-range",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "6f67076a05182949bebe3acd2d3b86fe9e0e83f2827779db40b5d07fbe1c9bad",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-roots-intake",
+            "callback": "context-cpp stale acceptance",
+            "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "bb2228a1e4749a3088257c44848031fe538289f8e9d676b862a4efcfc275702c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-counts-intake",
+            "callback": "context-cpp stale acceptance",
+            "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "48bc173479dd748688e6675617f6aca24cda563281f8d5cd0f9b11320566c00f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-closure-intake",
+            "callback": "context-cpp stale acceptance",
+            "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "50d55d47cce7720e27faf198eb5efef3060b548995c66e2d4cafc86fdac29c2e",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-omissions-intake",
+            "callback": "context-cpp stale acceptance",
+            "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "82d03dfb70908a0cf62d450a5c4ce27c6a2acf69ba708b1b83fdefa2693de1f4",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-grammar-manifest-intake",
+            "callback": "context-cpp stale acceptance",
+            "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eebf32844368e260d0723108c6b629bb72a31e1e95a8e7c82412b1f00bdcc262",
+            "mutantSha256": "b8d9013d3f0db529a33e39bc870cf40be12f70a526ddacd91bdf29ab90639853",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-absolute-include",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "c9d0fd38e3e15b4752e2ee9cf91a46186b98f3dcc4d566a33294e0d4bb0b3592",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-inert-directive-comment",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "3900887dce8282e10a5779d2c87da83910188a14166dda35a2deb4f66ef633c2",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-unevaluated-size-read",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "1f2696045b88e076321e3b36358aaf64295b9348e556538ce5d2873aab108250",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-address-is-not-a-read",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "3766701149f72906709c79a99bf4cc6671669aa2ff4ed4b8991e2c97b99e027f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-vla-scope",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "89322b01d92dc95f6e4a4403261493dbde0b3f55aa188e7e888cb1ca39573715",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-local-declarator-completion",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "53ec39162742bbd57f4d3ab30f003d1d1c594abd58b42e6fa3e84989f4eb45e5",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-default-enclosing-scope",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "c5449c052e8be68c509366832691f5702f8f23375d28a269455686d45eae9a75",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-default-earlier-parameter-mask",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "8d7583dca0f974912c7b9958b8a00a7b0264feaf47cb28578e93988ecd6f3e19",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-default-current-parameter-scope",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "a16eefb06c7ebc9d2ff4c4efc2b849ae2d525a10716249b51700ddddf8d37037",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-default-expression-reads",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "e6786b98063185d02b2b342028651f781e3a6425d6702e95eec02fcbdf56f9bf",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-function-declarator-completion",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ffb699b4158fb9a7cbb1d92de46bb71174e5a7dfabea74bed87b2fb845627002",
+            "mutantSha256": "efcb79067b6029747c13e077964450b94974b5827b48686cebe81ef01fd2e597",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-selected-header-alias",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "d2f07da7c2134e1bcf008fd2b19230575fd8c3aa4c8bafcd3163dc0381940d07",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-alias-position",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "0341ac8268afef58acac4527e17e2e584b0f1b050969631961e22053f0d84844",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-alias-ambiguity",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "f76c54dc4647a79ea44fdc1f0d84fbfbea8525a4c5bb6cee49166bc7500e2630",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-alias-depth",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "b81bebcabcf0b7e94ff001c3e83f1a0097487baa3db778e1a3fc7ce8810a8aa4",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "cpp-namespace-own-priority",
+            "callback": "context-cpp selected bindings guard acceptance",
+            "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+            "fixtureSha256": "ef907c296161755b752bf0db5d7a2e0d14a22ffc6ad2cfcb1c02b031ef0f6071",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+            "mutantSha256": "4f45c39bb312e238946f7b0033592eacff4c63412307cedfdc1044cb16359a77",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 512,
+        "temporaryFilesystemExecutable": true
+      }
+    },
+    "hcl": {
+      "image": "sha256:725082222dfd359e990175306c7115f68437b3e12829de4e43d899f6eb0035f1",
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "terraform": {
+          "terraform_version": "1.16.5",
+          "platform": "linux_arm64",
+          "provider_selections": {},
+          "terraform_outdated": false
+        },
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "toolBytes": [
+          {
+            "file": "/usr/local/bin/terraform",
+            "bytes": 110821538,
+            "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
+          },
+          {
+            "file": "/usr/local/bin/node",
+            "bytes": 126241888,
+            "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+          },
+          {
+            "file": "/usr/bin/git",
+            "bytes": 4081272,
+            "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+          }
+        ]
+      },
+      "source": {
+        "profile": "context-hcl",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "installed": {
+        "profile": "context-hcl",
+        "required": 9,
+        "passed": 9,
+        "complete": true
+      },
+      "guards": {
+        "scope": "Original synthetic HCL captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "hcl-long-label-unknown",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "6ba47a389000cb20d222b3d45b8643de1cc82294692b7573c5c990919b309712",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-long-local-unknown",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "d48c2e4f7932574c1dc2c1bb604f0f8360baec7baf7c21ff862cfb930fe6ca72",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-identifier-name-bound",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "df96a8584a86d168c668abefe3351673586b4259fa1bda7323f9fc887ed85c38",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-label-name-bound",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "e4b53ff73ea108dbbb81531e88300d7d6f967a309818b66105ab8b5977e87785",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-identifier-case",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "61c40b8a9d4f31abf23b8deaf5d82c977c02b8927c22619b3c86b1bc27582335",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-identifier-prefix",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "988ac5acfcff16a585055482c7c856042fc6f0a8c1bf37633d64c21ad4e2a4d4",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-namespace",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "48f1fa9a15f3fdcc8b4c5274df262f0c9faa4ec270115938d9da1a08797a9ad8",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-directory",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "4b4ab8f7d23df5ba2ff0e4c4bfb8b650177d02b7027097abd8a05f7bd9306d70",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-revision",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "5c10ca7904a89f23b01ece19965a0054c910c7fe4417ccead8579c982769966a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-two-part-traversal",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "d447346e07d8e299a439c5fe795d856090c000adee396bf192f4b268c6d0d25f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-module-name",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "ed7154b2ef44e58c2d83530c290afe7cdf91ac7b134425e38492c2f8b9b38a34",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-output-case",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "0f9fca3738384e52423e5684d54faaba448a0121dc5f9ccf05dea9d16c6306d1",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-ambiguity",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "b182502647c81724fc1677bddeb30c05f0a6d2b7df9603accfe4c687325e0307",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-module-cardinality",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "3f3362805d8fa9229caaed96ce934c35d72cf2c83f4641d1948249c54cd55137",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-absolute-module",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "f8889ff5fdbec135a9709cf2f9a31cb4012d2777fb0fad7dd01688d8dc8b9ea1",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-escaping-module",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "8ef333f8faff0d6c8bd3715d6a25049086b9b43b3b545818e2d6199e02e918c9",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-remote-module",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "ec4b28b10927bd729f10953a14b3a8657cca986447c30aed8c2ed21b34fb7141",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-module-files",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "24e6153ac4801ab45992143e397be45e398bee1016c290f273345e83491e3ca4",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-complex-expression",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "43bb8bdd368dda287e30ffaf472f624aa9791f799880491f6cdb7c379f21e7d8",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-index-expression",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "b11a67d1401dc145f1d138f6f9747153569c80bbb651a23ba756556379b454fa",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-application-block",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "9647e634e89fda9196b9b7c14763d362f1dba42dadccefd8575ec6d807fc5914",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-type-expression",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "8d621210322abd43cdf2ff8bc92a99174c56637db103de9ceb4967afe562bc49",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-output-owner",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "220406ca817f6670374abd3266c10b29c38d70d56c03584fa4ac47d08944a75c",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-complete-traversal",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "8b68adcd3c87afde0c1727c144efa80ae72124596c293a78ea0d91e17e12a107",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-variable-default",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d73fab430128a36d409c6ae2325a4ad2f22c4e97a4752b8aa3d06ffcf280258f",
+            "mutantSha256": "8ab72c416ebf509efbec5a6086910240c6a8fcc2f4c72472c7b3c4f04fac296e",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-dependency-cycle",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "3b2c84aacfc02b44dfdd055e56d3d87d56599ac66ee8b5e845b049b5d4edec69",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-dependency-depth",
+            "callback": "context-hcl empty acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "2021ba94a74ac3231d9a880aaa4952cf7db380d3d502e61162c652dc383eee8f",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-roots-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "b85d4eef72a37473384dbede7435499c2e5e8441e3aa7cb16e0073583c936130",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-counts-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "31499b4e0dba05bbd23dff6a349c3507217a5ead43c43e3236baa8b97cf8e3b8",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-module-files-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "e08e7e21eb5dfebb8c4140951a9cb45a51e8153304a4f8eabe2c5aab01a20141",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-references-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "5e1559fee7667e991cfde3721414d5257a1a38626c1cfa66cfc7ab2a30d5978a",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-omissions-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "6f0373168dc6cf7d803139c3bfa48eb248316cdd57f69ff39497879a1741c113",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-closure-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+            "mutantSha256": "6723ecd26ecbda8a56b0d50cdc36a21a4ec746ec50057320dbc999c1130c8bde",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-grammar-intake",
+            "callback": "context-hcl stale acceptance",
+            "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "eebf32844368e260d0723108c6b629bb72a31e1e95a8e7c82412b1f00bdcc262",
+            "mutantSha256": "b8d9013d3f0db529a33e39bc870cf40be12f70a526ddacd91bdf29ab90639853",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          },
+          {
+            "id": "hcl-whole-conditional",
+            "callback": "context-hcl selected bindings guard acceptance",
+            "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+            "fixtureSha256": "864d65f19146179d849366ceafd06acd24340957666dbc8a495e9e7a7a43342a",
+            "nameFixtureSha256": "25545ed516a0ae5d8cc897133668784e5d314598d112ea2495952242afea9265",
+            "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+            "mutantSha256": "284e7c3258cafed74d4cf15dd10ab9dfc3597ed982e620186e76aa20a7af385e",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "environment": {
+        "network": "none",
+        "sourceMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 512,
+        "temporaryFilesystemExecutable": false
+      }
+    }
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1186,
+      "pass": 852,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 334,
+      "todo": 0
+    },
+    "durationMs": 188807.382083,
+    "logSha256": "fd69d412264a831402486933ee36daf3d46e5160b9c1580ab5ef45eadd1f1972",
+    "optionalNativeSkipsAreNotRequiredPasses": true
+  },
+  "preservedBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "82e3860972bc2aa3abe0cf8cf5ff11717b6b1b3070dd3f5f7a050d5c28d51b45",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "294b917bebc7c0b7f94f59ed5548fe6ad6f53d52398ac11474eb6ab97dea08d2",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "1e7b364c040e45d1acd42887a5fc2cb2381398e32e4b5f38d6972fc05942c787",
+        "mutantSha256": "cf6a3ab8d937a4f077887b567e0fb610d0bd287650e61ff09deab69a02d360bc",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "legacySyntaxControls": {
+    "scope": "Original synthetic captured-syntax controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "whole-function-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "66d06cff43886c6f9c02952267e68b5d0be9810859937611fbe75baf921583c6",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "decision-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "1ad177aa36c016e7b73b83f56cb9df6b54896ae81ce4c3b4ac67aed1aaea74aa",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "default-retention",
+        "callback": "selected syntax retains whole functions decisions and declaration defaults across every pinned grammar",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "56cd5e9e2d61cfa3fdbc32c84e47f31bdfce7a9937af58d1221712379b77a939",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "grammar-byte-binding",
+        "callback": "selected syntax reports missing or changed grammar prerequisites before parsing captured source",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "93ddf5e142b18935345a06266daea7348b6bf540543f5a31d4f96d6b81c9dfeb",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "base-function-retention",
+        "callback": "selected syntax keeps immutable base index and working views distinct across moves and deletions",
+        "callbackSha256": "acaddc602baee64f05cb65c067c27c61753dd41130c0372af2eed4f34d068c00",
+        "sourceSha256": "d35484ad58d2076218cd873200d6fd9d7da0bbcc0177ee32e927ddcf4819a3f0",
+        "mutantSha256": "60a69621e89a03e872266bb0238d2c11b8cb7f5eb623bdd99b693fa3342c38f9",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "nativePublisherAndLicenseClosureVerified": false,
+  "finalReleaseArtifactAccepted": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

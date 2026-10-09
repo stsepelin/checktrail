@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import type { TestContext } from "node:test";
 import { createReviewContext } from "../src/review.js";
 import { fixture } from "./helpers.js";
+import { nameBoundariesFixture } from "./review-name-boundaries-fixture.js";
 export async function cppBoundariesFixture(t: TestContext) {
+  await nameBoundariesFixture(t, 21);
   const input = (
     files: string[],
     supportFiles: string[] = [],

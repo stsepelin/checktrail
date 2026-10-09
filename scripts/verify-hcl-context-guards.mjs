@@ -16,6 +16,11 @@ const boundaryFixture = new URL(
   ),
   originalBoundaryFixture = await readFile(boundaryFixture);
 
+const nameFixture = new URL(
+    "../dist/test/review-name-boundaries-fixture.js",
+    import.meta.url,
+  ),
+  originalNameFixture = await readFile(nameFixture);
 const guardCallback = new URL(
     "../dist/test/review-hcl-boundaries.test.js",
     import.meta.url,
@@ -32,6 +37,37 @@ const callbackBytes = (name) =>
 
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
+  {
+    id: "hcl-long-label-unknown",
+    file: "review-hcl-bindings.js",
+    name: "context-hcl selected bindings guard acceptance",
+    before: "&& decl.name === null)",
+    after: '&& decl.name === "")',
+  },
+  {
+    id: "hcl-long-local-unknown",
+    file: "review-hcl-bindings.js",
+    name: "context-hcl selected bindings guard acceptance",
+    before:
+      'if (name === null)\n                    omit("unsupported-expression");',
+    after: "if (name === null)\n                    void 0;",
+  },
+
+  {
+    id: "hcl-identifier-name-bound",
+    file: "review-hcl-bindings.js",
+    name: "context-hcl selected bindings guard acceptance",
+    before: "node.text.length <= 256 &&",
+    after: "node.text.length <= 257 &&",
+  },
+  {
+    id: "hcl-label-name-bound",
+    file: "review-hcl-bindings.js",
+    name: "context-hcl selected bindings guard acceptance",
+    before: "name !== null && name.length <= 256 ? name : null",
+    after: "name !== null && name.length <= 257 ? name : null",
+  },
+
   {
     id: "hcl-identifier-case",
     file: "review-hcl-resolution.js",
@@ -357,11 +393,17 @@ for (const control of controls.filter(
       originalBoundaryFixture,
       "Original boundary assertions changed",
     );
+    assert.deepEqual(
+      await readFile(nameFixture),
+      originalNameFixture,
+      "Original name-boundary assertions changed",
+    );
     evidence.push({
       id: control.id,
       callback: control.name,
       callbackSha256: digest(callbackBytes(control.name)),
       fixtureSha256: digest(originalBoundaryFixture),
+      nameFixtureSha256: digest(originalNameFixture),
       sourceSha256: digest(original),
       mutantSha256: digest(mutant),
       originalPassed: true,
