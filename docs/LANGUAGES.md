@@ -434,3 +434,5 @@ Opt-in context version 19 adds selected Visual Basic flat-module methods, litera
 The opt-in version 20 [C context profile](REVIEW-C-CONTEXT.md) retains plain function/constant/initializer and selected quoted-header candidates with declaration-order lexical masks. Macros, unselected headers, prototypes, indirect calls and native translation-unit/build/linkage stay unknown; earlier profiles and native compiler support are unchanged.
 
 The opt-in version 21 [C++ context profile](REVIEW-CPP-CONTEXT.md) adds plain free-function/namespace/default and selected quoted-header candidates, including namespace aliases contributed by headers. Overloads, ADL, classes/templates, preprocessing and native translation-unit/build/linkage remain unknown; capture preserves full fallback and earlier profiles.
+
+The opt-in version 22 [HCL context profile](REVIEW-HCL-CONTEXT.md) adds exact captured variable/local/module-output source candidates and bounded reverse declaration dependencies. Application semantics, input values, native evaluation and module loading remain unknown; capture preserves full fallback and earlier profiles.

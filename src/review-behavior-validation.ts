@@ -203,7 +203,8 @@ export function validateReviewBehavior(
     analysis.profile === "swift-selected-bindings-v1" ||
     analysis.profile === "vb-selected-bindings-v1" ||
     analysis.profile === "c-selected-bindings-v1" ||
-    analysis.profile === "cpp-selected-bindings-v1"
+    analysis.profile === "cpp-selected-bindings-v1" ||
+    analysis.profile === "hcl-selected-bindings-v1"
   ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||

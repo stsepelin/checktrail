@@ -1,3 +1,5 @@
+import { validateHclModuleRoots } from "./review-hcl-bindings.js";
+import { validateHclReviewBindings } from "./review-hcl-resolution.js";
 import { validateCppModuleRoots } from "./review-cpp-bindings.js";
 import { validateCppReviewBindings } from "./review-cpp-resolution.js";
 import { validateCModuleRoots } from "./review-c-bindings.js";
@@ -50,6 +52,7 @@ import {
   reviewVbBehaviorSchema,
   reviewCBehaviorSchema,
   reviewCppBehaviorSchema,
+  reviewHclBehaviorSchema,
 } from "./review-behavior-schema.js";
 import { validateReviewBehavior } from "./review-behavior-validation.js";
 import {
@@ -251,6 +254,10 @@ const cppSelectionSchema = z.discriminatedUnion("track", [
   phpSelectionSchema.options[0].extend({ schemaVersion: z.literal(21) }),
   phpSelectionSchema.options[1].extend({ schemaVersion: z.literal(21) }),
 ]);
+const hclSelectionSchema = z.discriminatedUnion("track", [
+  phpSelectionSchema.options[0].extend({ schemaVersion: z.literal(22) }),
+  phpSelectionSchema.options[1].extend({ schemaVersion: z.literal(22) }),
+]);
 export const reviewSelectionSchema = z.union([
   legacySelectionSchema,
   assignmentSelectionSchema,
@@ -273,6 +280,7 @@ export const reviewSelectionSchema = z.union([
   vbSelectionSchema,
   cSelectionSchema,
   cppSelectionSchema,
+  hclSelectionSchema,
 ]);
 const sourceFileSchema = z.strictObject({
   path: filePath,
@@ -485,6 +493,11 @@ const cppContextSchema = expandedContextSchema.extend({
   selection: cppSelectionSchema,
   analysis: reviewCppBehaviorSchema,
 });
+const hclContextSchema = expandedContextSchema.extend({
+  schemaVersion: z.literal(22),
+  selection: hclSelectionSchema,
+  analysis: reviewHclBehaviorSchema,
+});
 export const reviewContextSchema = z.union([
   legacyContextSchema,
   assignmentContextSchema,
@@ -507,6 +520,7 @@ export const reviewContextSchema = z.union([
   vbContextSchema,
   cContextSchema,
   cppContextSchema,
+  hclContextSchema,
 ]);
 export type ReviewContext = z.infer<typeof reviewContextSchema>;
 const metadata = {
@@ -763,6 +777,9 @@ const cInstructions =
 const cppInstructions =
   completeInstructions +
   " Fixed packaged parsers retain bounded selected C++ free functions, flat namespaces, simple namespace aliases, literal const/constexpr initializers, defaults and quoted-header candidates under explicit roots. Capture executes no compiler, preprocessor, initializer, module or build configuration. Types, templates, overload/ADL selection, unsupported scopes, macros, include search, linkage and native build/reachability remain unknown; full impact fallback and unchanged validation planning remain mandatory.";
+const hclInstructions =
+  completeInstructions +
+  " Fixed parsers retain selected HCL declarations, defaults, whole conditional expressions, exact var/local traversals and explicit local module output candidates. Capture executes no configuration, evaluator, provider, initializer, plan, apply or build. Application semantics, input overrides, module loading, builtins and runtime impact remain unknown; full fallback and unchanged validation planning are mandatory.";
 const hash = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
 function selectedPaths(
@@ -786,7 +803,8 @@ function selectedPaths(
     selection.schemaVersion === 18 ||
     selection.schemaVersion === 19 ||
     selection.schemaVersion === 20 ||
-    selection.schemaVersion === 21
+    selection.schemaVersion === 21 ||
+    selection.schemaVersion === 22
     ? [...selection.files, ...selection.supportFiles].sort()
     : selection.files;
 }
@@ -863,7 +881,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
       (input as { schemaVersion?: unknown } | null)?.schemaVersion === 18 ||
       (input as { schemaVersion?: unknown } | null)?.schemaVersion === 19 ||
       (input as { schemaVersion?: unknown } | null)?.schemaVersion === 20 ||
-      (input as { schemaVersion?: unknown } | null)?.schemaVersion === 21
+      (input as { schemaVersion?: unknown } | null)?.schemaVersion === 21 ||
+      (input as { schemaVersion?: unknown } | null)?.schemaVersion === 22
       ? 8 * 1024 * 1024
       : 1024 * 1024,
   );
@@ -977,6 +996,16 @@ export function parseReviewContext(input: unknown): ReviewContext {
       parsed.selection.crateRoots,
       parsed.selection.files,
     );
+  if (parsed.schemaVersion === 22)
+    validateHclReviewBindings(
+      parsed.analysis,
+      parsed.selection.moduleRoots,
+      parsed.selection.files,
+      [
+        ...parsed.files,
+        ...(parsed.evidence.track === "diff" ? parsed.evidence.baseFiles : []),
+      ],
+    );
   if (parsed.schemaVersion === 21)
     validateCppReviewBindings(
       parsed.analysis,
@@ -1084,35 +1113,37 @@ export function parseReviewContext(input: unknown): ReviewContext {
               ? revisionInstructions
               : parsed.schemaVersion === 5
                 ? completeInstructions
-                : parsed.schemaVersion === 21
-                  ? cppInstructions
-                  : parsed.schemaVersion === 20
-                    ? cInstructions
-                    : parsed.schemaVersion === 19
-                      ? vbInstructions
-                      : parsed.schemaVersion === 18
-                        ? swiftInstructions
-                        : parsed.schemaVersion === 17
-                          ? rubyInstructions
-                          : parsed.schemaVersion === 16
-                            ? fsharpInstructions
-                            : parsed.schemaVersion === 15
-                              ? csharpInstructions
-                              : parsed.schemaVersion === 14
-                                ? scalaInstructions
-                                : parsed.schemaVersion === 13
-                                  ? kotlinInstructions
-                                  : parsed.schemaVersion === 12
-                                    ? javaInstructions
-                                    : parsed.schemaVersion === 11
-                                      ? rustInstructions
-                                      : parsed.schemaVersion === 10
-                                        ? phpInstructions
-                                        : parsed.schemaVersion === 9
-                                          ? goInstructions
-                                          : parsed.schemaVersion === 8
-                                            ? pythonInstructions
-                                            : polyglotInstructions) ||
+                : parsed.schemaVersion === 22
+                  ? hclInstructions
+                  : parsed.schemaVersion === 21
+                    ? cppInstructions
+                    : parsed.schemaVersion === 20
+                      ? cInstructions
+                      : parsed.schemaVersion === 19
+                        ? vbInstructions
+                        : parsed.schemaVersion === 18
+                          ? swiftInstructions
+                          : parsed.schemaVersion === 17
+                            ? rubyInstructions
+                            : parsed.schemaVersion === 16
+                              ? fsharpInstructions
+                              : parsed.schemaVersion === 15
+                                ? csharpInstructions
+                                : parsed.schemaVersion === 14
+                                  ? scalaInstructions
+                                  : parsed.schemaVersion === 13
+                                    ? kotlinInstructions
+                                    : parsed.schemaVersion === 12
+                                      ? javaInstructions
+                                      : parsed.schemaVersion === 11
+                                        ? rustInstructions
+                                        : parsed.schemaVersion === 10
+                                          ? phpInstructions
+                                          : parsed.schemaVersion === 9
+                                            ? goInstructions
+                                            : parsed.schemaVersion === 8
+                                              ? pythonInstructions
+                                              : polyglotInstructions) ||
     JSON.stringify(parsed.guidance) !==
       JSON.stringify(
         retrieveGuidance({
@@ -1151,7 +1182,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
       parsed.schemaVersion === 18 ||
       parsed.schemaVersion === 19 ||
       parsed.schemaVersion === 20 ||
-      parsed.schemaVersion === 21
+      parsed.schemaVersion === 21 ||
+      parsed.schemaVersion === 22
         ? 32
         : 16) ||
     JSON.stringify(paths) !== JSON.stringify(captured)
@@ -1186,7 +1218,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
     parsed.schemaVersion === 18 ||
     parsed.schemaVersion === 19 ||
     parsed.schemaVersion === 20 ||
-    parsed.schemaVersion === 21
+    parsed.schemaVersion === 21 ||
+    parsed.schemaVersion === 22
   ) {
     if (parsed.selection.currentSource !== parsed.evidence.currentSource)
       throw new Error("Review current source mismatch");
@@ -1232,7 +1265,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
     parsed.schemaVersion === 18 ||
     parsed.schemaVersion === 19 ||
     parsed.schemaVersion === 20 ||
-    parsed.schemaVersion === 21
+    parsed.schemaVersion === 21 ||
+    parsed.schemaVersion === 22
       ? 1048576
       : 131072)
   )
@@ -1256,7 +1290,8 @@ export function parseReviewContext(input: unknown): ReviewContext {
     parsed.schemaVersion === 18 ||
     parsed.schemaVersion === 19 ||
     parsed.schemaVersion === 20 ||
-    parsed.schemaVersion === 21
+    parsed.schemaVersion === 21 ||
+    parsed.schemaVersion === 22
   ) {
     validateReviewBehavior(
       parsed.analysis,
@@ -1276,6 +1311,10 @@ export async function createReviewContext(
 ): Promise<ReviewContext> {
   bounded(input, 32768);
   const selection = reviewSelectionSchema.parse(input);
+  if (selection.schemaVersion === 22) {
+    validateHclModuleRoots(selection.moduleRoots);
+    selection.moduleRoots.sort();
+  }
   if (selection.schemaVersion === 21) {
     validateCppModuleRoots(selection.moduleRoots);
     selection.moduleRoots.sort();
@@ -1365,7 +1404,8 @@ export async function createReviewContext(
     selection.schemaVersion === 18 ||
     selection.schemaVersion === 19 ||
     selection.schemaVersion === 20 ||
-    selection.schemaVersion === 21
+    selection.schemaVersion === 21 ||
+    selection.schemaVersion === 22
   )
     selection.supportFiles.sort();
   const paths = selectedPaths(selection);
@@ -1386,7 +1426,8 @@ export async function createReviewContext(
     selection.schemaVersion === 18 ||
     selection.schemaVersion === 19 ||
     selection.schemaVersion === 20 ||
-    selection.schemaVersion === 21
+    selection.schemaVersion === 21 ||
+    selection.schemaVersion === 22
       ? 32
       : 16)
   )
@@ -1414,7 +1455,8 @@ export async function createReviewContext(
             selection.schemaVersion === 18 ||
             selection.schemaVersion === 19 ||
             selection.schemaVersion === 20 ||
-            selection.schemaVersion === 21
+            selection.schemaVersion === 21 ||
+            selection.schemaVersion === 22
             ? selection.currentSource
             : "working-tree",
           selection.schemaVersion === 7 ||
@@ -1431,7 +1473,8 @@ export async function createReviewContext(
             selection.schemaVersion === 18 ||
             selection.schemaVersion === 19 ||
             selection.schemaVersion === 20 ||
-            selection.schemaVersion === 21
+            selection.schemaVersion === 21 ||
+            selection.schemaVersion === 22
             ? 1048576
             : 131072,
         )
@@ -1467,7 +1510,8 @@ export async function createReviewContext(
         selection.schemaVersion === 18 ||
         selection.schemaVersion === 19 ||
         selection.schemaVersion === 20 ||
-        selection.schemaVersion === 21) &&
+        selection.schemaVersion === 21 ||
+        selection.schemaVersion === 22) &&
       selection.currentSource === "index"
     ) {
       const source = git?.indexFiles.find((source) => source.path === file);
@@ -1500,7 +1544,8 @@ export async function createReviewContext(
       selection.schemaVersion === 18 ||
       selection.schemaVersion === 19 ||
       selection.schemaVersion === 20 ||
-      selection.schemaVersion === 21
+      selection.schemaVersion === 21 ||
+      selection.schemaVersion === 22
         ? 1048576
         : 131072)
     )
@@ -1514,165 +1559,177 @@ export async function createReviewContext(
     files.push({ path: file, sha256: hash(data), content });
   }
   const analysis =
-    selection.schemaVersion === 21
+    selection.schemaVersion === 22
       ? await (
           await import("./review-polyglot.js")
-        ).collectReviewCppBehavior(
+        ).collectReviewHclBehavior(
           files,
           git?.baseFiles ?? [],
           selection.files,
           selection.track === "diff",
           selection.moduleRoots,
         )
-      : selection.schemaVersion === 20
+      : selection.schemaVersion === 21
         ? await (
             await import("./review-polyglot.js")
-          ).collectReviewCBehavior(
+          ).collectReviewCppBehavior(
             files,
             git?.baseFiles ?? [],
             selection.files,
             selection.track === "diff",
             selection.moduleRoots,
           )
-        : selection.schemaVersion === 19
+        : selection.schemaVersion === 20
           ? await (
               await import("./review-polyglot.js")
-            ).collectReviewVbBehavior(
+            ).collectReviewCBehavior(
               files,
               git?.baseFiles ?? [],
               selection.files,
               selection.track === "diff",
               selection.moduleRoots,
             )
-          : selection.schemaVersion === 18
+          : selection.schemaVersion === 19
             ? await (
                 await import("./review-polyglot.js")
-              ).collectReviewSwiftBehavior(
+              ).collectReviewVbBehavior(
                 files,
                 git?.baseFiles ?? [],
                 selection.files,
                 selection.track === "diff",
                 selection.moduleRoots,
               )
-            : selection.schemaVersion === 17
+            : selection.schemaVersion === 18
               ? await (
                   await import("./review-polyglot.js")
-                ).collectReviewRubyBehavior(
+                ).collectReviewSwiftBehavior(
                   files,
                   git?.baseFiles ?? [],
                   selection.files,
                   selection.track === "diff",
                   selection.moduleRoots,
                 )
-              : selection.schemaVersion === 16
+              : selection.schemaVersion === 17
                 ? await (
                     await import("./review-polyglot.js")
-                  ).collectReviewFsharpBehavior(
+                  ).collectReviewRubyBehavior(
                     files,
                     git?.baseFiles ?? [],
                     selection.files,
                     selection.track === "diff",
                     selection.moduleRoots,
                   )
-                : selection.schemaVersion === 15
+                : selection.schemaVersion === 16
                   ? await (
                       await import("./review-polyglot.js")
-                    ).collectReviewCsharpBehavior(
+                    ).collectReviewFsharpBehavior(
                       files,
                       git?.baseFiles ?? [],
                       selection.files,
                       selection.track === "diff",
                       selection.moduleRoots,
                     )
-                  : selection.schemaVersion === 14
+                  : selection.schemaVersion === 15
                     ? await (
                         await import("./review-polyglot.js")
-                      ).collectReviewScalaBehavior(
+                      ).collectReviewCsharpBehavior(
                         files,
                         git?.baseFiles ?? [],
                         selection.files,
                         selection.track === "diff",
                         selection.moduleRoots,
                       )
-                    : selection.schemaVersion === 13
+                    : selection.schemaVersion === 14
                       ? await (
                           await import("./review-polyglot.js")
-                        ).collectReviewKotlinBehavior(
+                        ).collectReviewScalaBehavior(
                           files,
                           git?.baseFiles ?? [],
                           selection.files,
                           selection.track === "diff",
                           selection.moduleRoots,
                         )
-                      : selection.schemaVersion === 12
+                      : selection.schemaVersion === 13
                         ? await (
                             await import("./review-polyglot.js")
-                          ).collectReviewJavaBehavior(
+                          ).collectReviewKotlinBehavior(
                             files,
                             git?.baseFiles ?? [],
                             selection.files,
                             selection.track === "diff",
                             selection.moduleRoots,
                           )
-                        : selection.schemaVersion === 11
+                        : selection.schemaVersion === 12
                           ? await (
                               await import("./review-polyglot.js")
-                            ).collectReviewRustBehavior(
+                            ).collectReviewJavaBehavior(
                               files,
                               git?.baseFiles ?? [],
                               selection.files,
                               selection.track === "diff",
-                              selection.crateRoots,
+                              selection.moduleRoots,
                             )
-                          : selection.schemaVersion === 10
+                          : selection.schemaVersion === 11
                             ? await (
                                 await import("./review-polyglot.js")
-                              ).collectReviewPhpBehavior(
+                              ).collectReviewRustBehavior(
                                 files,
                                 git?.baseFiles ?? [],
                                 selection.files,
                                 selection.track === "diff",
-                                selection.moduleRoots,
+                                selection.crateRoots,
                               )
-                            : selection.schemaVersion === 9
+                            : selection.schemaVersion === 10
                               ? await (
                                   await import("./review-polyglot.js")
-                                ).collectReviewGoBehavior(
+                                ).collectReviewPhpBehavior(
                                   files,
                                   git?.baseFiles ?? [],
                                   selection.files,
                                   selection.track === "diff",
                                   selection.moduleRoots,
                                 )
-                              : selection.schemaVersion === 8
+                              : selection.schemaVersion === 9
                                 ? await (
                                     await import("./review-polyglot.js")
-                                  ).collectReviewPythonBehavior(
+                                  ).collectReviewGoBehavior(
                                     files,
                                     git?.baseFiles ?? [],
                                     selection.files,
                                     selection.track === "diff",
                                     selection.moduleRoots,
                                   )
-                                : selection.schemaVersion === 3 ||
-                                    selection.schemaVersion === 4 ||
-                                    selection.schemaVersion === 5 ||
-                                    selection.schemaVersion === 6 ||
-                                    selection.schemaVersion === 7
+                                : selection.schemaVersion === 8
                                   ? await (
-                                      selection.schemaVersion === 6 ||
-                                        selection.schemaVersion === 7
-                                        ? (await import("./review-polyglot.js"))
-                                            .collectReviewPolyglotBehavior
-                                        : (await import("./review-behavior.js"))
-                                            .collectReviewBehavior
-                                    )(
+                                      await import("./review-polyglot.js")
+                                    ).collectReviewPythonBehavior(
                                       files,
                                       git?.baseFiles ?? [],
                                       selection.files,
                                       selection.track === "diff",
+                                      selection.moduleRoots,
                                     )
-                                  : undefined;
+                                  : selection.schemaVersion === 3 ||
+                                      selection.schemaVersion === 4 ||
+                                      selection.schemaVersion === 5 ||
+                                      selection.schemaVersion === 6 ||
+                                      selection.schemaVersion === 7
+                                    ? await (
+                                        selection.schemaVersion === 6 ||
+                                          selection.schemaVersion === 7
+                                          ? (
+                                              await import("./review-polyglot.js")
+                                            ).collectReviewPolyglotBehavior
+                                          : (
+                                              await import("./review-behavior.js")
+                                            ).collectReviewBehavior
+                                      )(
+                                        files,
+                                        git?.baseFiles ?? [],
+                                        selection.files,
+                                        selection.track === "diff",
+                                      )
+                                    : undefined;
   const after = await inventory(before.root);
   if (before.fingerprint !== after.fingerprint)
     throw new Error("Source changed while preparing review context");
@@ -1694,7 +1751,8 @@ export async function createReviewContext(
       selection.schemaVersion === 18 ||
       selection.schemaVersion === 19 ||
       selection.schemaVersion === 20 ||
-      selection.schemaVersion === 21) &&
+      selection.schemaVersion === 21 ||
+      selection.schemaVersion === 22) &&
     selection.currentSource === "working-tree"
   ) {
     for (const file of files) {
@@ -1727,7 +1785,8 @@ export async function createReviewContext(
     selection.schemaVersion === 18 ||
     selection.schemaVersion === 19 ||
     selection.schemaVersion === 20 ||
-    selection.schemaVersion === 21
+    selection.schemaVersion === 21 ||
+    selection.schemaVersion === 22
       ? {
           currentSource: selection.currentSource,
           fileModes: paths.map((file) => ({
@@ -1760,35 +1819,37 @@ export async function createReviewContext(
               ? revisionInstructions
               : selection.schemaVersion === 5
                 ? completeInstructions
-                : selection.schemaVersion === 21
-                  ? cppInstructions
-                  : selection.schemaVersion === 20
-                    ? cInstructions
-                    : selection.schemaVersion === 19
-                      ? vbInstructions
-                      : selection.schemaVersion === 18
-                        ? swiftInstructions
-                        : selection.schemaVersion === 17
-                          ? rubyInstructions
-                          : selection.schemaVersion === 16
-                            ? fsharpInstructions
-                            : selection.schemaVersion === 15
-                              ? csharpInstructions
-                              : selection.schemaVersion === 14
-                                ? scalaInstructions
-                                : selection.schemaVersion === 13
-                                  ? kotlinInstructions
-                                  : selection.schemaVersion === 12
-                                    ? javaInstructions
-                                    : selection.schemaVersion === 11
-                                      ? rustInstructions
-                                      : selection.schemaVersion === 10
-                                        ? phpInstructions
-                                        : selection.schemaVersion === 9
-                                          ? goInstructions
-                                          : selection.schemaVersion === 8
-                                            ? pythonInstructions
-                                            : polyglotInstructions,
+                : selection.schemaVersion === 22
+                  ? hclInstructions
+                  : selection.schemaVersion === 21
+                    ? cppInstructions
+                    : selection.schemaVersion === 20
+                      ? cInstructions
+                      : selection.schemaVersion === 19
+                        ? vbInstructions
+                        : selection.schemaVersion === 18
+                          ? swiftInstructions
+                          : selection.schemaVersion === 17
+                            ? rubyInstructions
+                            : selection.schemaVersion === 16
+                              ? fsharpInstructions
+                              : selection.schemaVersion === 15
+                                ? csharpInstructions
+                                : selection.schemaVersion === 14
+                                  ? scalaInstructions
+                                  : selection.schemaVersion === 13
+                                    ? kotlinInstructions
+                                    : selection.schemaVersion === 12
+                                      ? javaInstructions
+                                      : selection.schemaVersion === 11
+                                        ? rustInstructions
+                                        : selection.schemaVersion === 10
+                                          ? phpInstructions
+                                          : selection.schemaVersion === 9
+                                            ? goInstructions
+                                            : selection.schemaVersion === 8
+                                              ? pythonInstructions
+                                              : polyglotInstructions,
     guidance: retrieveGuidance({
       schemaVersion: 1,
       checks: [],
@@ -1853,9 +1914,13 @@ export async function createReviewContext(
                                               ? cContextSchema.omit({
                                                   contextDigest: true,
                                                 })
-                                              : cppContextSchema.omit({
-                                                  contextDigest: true,
-                                                })
+                                              : selection.schemaVersion === 21
+                                                ? cppContextSchema.omit({
+                                                    contextDigest: true,
+                                                  })
+                                                : hclContextSchema.omit({
+                                                    contextDigest: true,
+                                                  })
         ).parse({
           ...common,
           evidence: git
@@ -1891,7 +1956,8 @@ export async function createReviewContext(
                     selection.schemaVersion === 18 ||
                     selection.schemaVersion === 19 ||
                     selection.schemaVersion === 20 ||
-                    selection.schemaVersion === 21
+                    selection.schemaVersion === 21 ||
+                    selection.schemaVersion === 22
                       ? "bounded-selected-syntax"
                       : "bounded-js-ts-syntax",
                   callers: "selected-context-only",
@@ -1912,7 +1978,8 @@ export async function createReviewContext(
                   selection.schemaVersion === 18 ||
                   selection.schemaVersion === 19 ||
                   selection.schemaVersion === 20 ||
-                  selection.schemaVersion === 21
+                  selection.schemaVersion === 21 ||
+                  selection.schemaVersion === 22
                     ? { fileModes: "selected-regular-files" }
                     : {}),
                 },
@@ -1971,7 +2038,8 @@ export async function receiveReview(
       context.schemaVersion === 18 ||
       context.schemaVersion === 19 ||
       context.schemaVersion === 20 ||
-      context.schemaVersion === 21) !==
+      context.schemaVersion === 21 ||
+      context.schemaVersion === 22) !==
     (assessment.schemaVersion === 2)
   )
     throw new Error("Review assessment and context version mismatch");
@@ -1994,7 +2062,8 @@ export async function receiveReview(
       context.schemaVersion === 18 ||
       context.schemaVersion === 19 ||
       context.schemaVersion === 20 ||
-      context.schemaVersion === 21) &&
+      context.schemaVersion === 21 ||
+      context.schemaVersion === 22) &&
     context.evidence.track === "snapshot" &&
     assessment.observations.some((item) => item.attribution !== "unknown")
   )
@@ -2085,7 +2154,8 @@ export async function receiveReview(
     context.schemaVersion === 18 ||
     context.schemaVersion === 19 ||
     context.schemaVersion === 20 ||
-    context.schemaVersion === 21) &&
+    context.schemaVersion === 21 ||
+    context.schemaVersion === 22) &&
   context.evidence.currentSource === "index"
     ? []
     : context.files) {
@@ -2119,6 +2189,7 @@ export async function receiveReview(
     context.schemaVersion === 19 ||
     context.schemaVersion === 20 ||
     context.schemaVersion === 21 ||
+    context.schemaVersion === 22 ||
     (context.schemaVersion === 2 && context.evidence.track === "diff")
   ) {
     try {

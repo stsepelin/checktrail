@@ -1059,3 +1059,25 @@ jobs:
         run: docker build --file scripts/cpp-context-tools.Dockerfile --tag checktrail-cpp-context:synthetic-v1 scripts
       - name: Verify original selected C++ bindings and compiling guards
         run: node scripts/verify-cpp-context-container.mjs
+
+  hcl-context-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Prepare pinned HCL witness runtime
+        run: node scripts/prepare-hcl-context-runtime.mjs
+      - name: Verify original selected HCL bindings and compiling guards
+        run: node scripts/verify-hcl-context-container.mjs
+      - name: Release owned HCL runtime image
+        if: always()
+        run: node scripts/cleanup-hcl-context-runtime.mjs

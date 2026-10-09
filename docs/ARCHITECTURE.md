@@ -303,3 +303,5 @@ Opt-in context version 19 adds selected Visual Basic flat-module methods, litera
 Context version 20 adds the bounded selected C declaration and quoted-header candidates described in [REVIEW-C-CONTEXT.md](REVIEW-C-CONTEXT.md). It preserves source-only capture, unknown translation-unit/linkage and full impact fallback.
 
 Context version 21 adds the bounded selected C++ declarations, defaults, flat namespaces and quoted-header candidates described in [REVIEW-CPP-CONTEXT.md](REVIEW-CPP-CONTEXT.md). Capture stays source-only, with unknown native resolution and full impact fallback.
+
+Context version 22 adds the selected HCL declaration, traversal and module-file candidates described in [REVIEW-HCL-CONTEXT.md](REVIEW-HCL-CONTEXT.md). Reverse declaration dependencies use source addresses without synthesized runtime callers; capture stays source-only with full impact fallback.

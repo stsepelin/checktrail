@@ -1,4 +1,10 @@
 import {
+  captureHclBindings,
+  hclDeclaration,
+  type HclSyntaxUnit,
+} from "./review-hcl-bindings.js";
+import { resolveHclBindings } from "./review-hcl-resolution.js";
+import {
   captureCppBindings,
   cppFunctionName,
   type CppSyntaxUnit,
@@ -421,6 +427,7 @@ async function collectReviewPolyglotCore(
   vbRoots?: string[],
   cRoots?: string[],
   cppRoots?: string[],
+  hclRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -452,6 +459,7 @@ async function collectReviewPolyglotCore(
   const vbUnits: VbSyntaxUnit[] = [];
   const cUnits: CSyntaxUnit[] = [];
   const cppUnits: CppSyntaxUnit[] = [];
+  const hclUnits: HclSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -514,10 +522,15 @@ async function collectReviewPolyglotCore(
         };
         const decls = new Map<number, ReviewBehavior["declarations"][number]>();
         for (const node of nodes) {
-          const kind =
-            vbRoots &&
-            asset.grammar === "vbnet" &&
-            node.type === "module_declaration"
+          const hclInfo =
+            hclRoots && asset.grammar === "hcl"
+              ? hclDeclaration(node)
+              : undefined;
+          const kind = hclInfo
+            ? hclInfo.kind
+            : vbRoots &&
+                asset.grammar === "vbnet" &&
+                node.type === "module_declaration"
               ? "class"
               : isFunction(node)
                 ? "function"
@@ -529,7 +542,7 @@ async function collectReviewPolyglotCore(
                     : undefined));
           if (!kind || node.startIndex >= node.endIndex) continue;
           const address = range(node),
-            initial = initializer(node, kind);
+            initial = hclInfo?.initializer ?? initializer(node, kind);
           if (
             kind === "parameter" &&
             initial &&
@@ -548,10 +561,11 @@ async function collectReviewPolyglotCore(
               address.end,
               kind,
             ]),
-            name:
-              cppRoots &&
-              asset.grammar === "cpp" &&
-              node.type === "function_definition"
+            name: hclInfo
+              ? hclInfo.name
+              : cppRoots &&
+                  asset.grammar === "cpp" &&
+                  node.type === "function_definition"
                 ? cppFunctionName(node)
                 : cRoots &&
                     asset.grammar === "c" &&
@@ -747,6 +761,10 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const hclUnit =
+          hclRoots && asset.grammar === "hcl"
+            ? captureHclBindings(nodes, decls, range)
+            : undefined;
         const cppUnit =
           cppRoots && asset.grammar === "cpp"
             ? captureCppBindings(nodes, fnIds, decls, range)
@@ -812,6 +830,7 @@ async function collectReviewPolyglotCore(
         if (vbUnit) vbUnits.push(vbUnit);
         if (cUnit) cUnits.push(cUnit);
         if (cppUnit) cppUnits.push(cppUnit);
+        if (hclUnit) hclUnits.push(hclUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -857,6 +876,11 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (hclRoots)
+    return resolveHclBindings(result, hclUnits, hclRoots, primary, [
+      ...base,
+      ...current,
+    ]);
   if (cppRoots)
     return resolveCppBindings(result, cppUnits, cppRoots, primary, [
       ...base,
@@ -1265,6 +1289,40 @@ export async function collectReviewCppBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewHclBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "hcl-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewHclBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

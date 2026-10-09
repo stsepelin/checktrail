@@ -1,0 +1,1485 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-hcl-selected-bindings-v1",
+  "recordedAt": "2026-10-09T02:23:20.607997+00:00",
+  "scope": "Captured HCL variable/local/module-output source candidates, whole decisions and bounded reverse declaration dependencies plus supplementary pinned Terraform witnesses and original trusted cleanup controls; no capture execution, native evaluation/application semantics/module input/loading certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "6ef7100a11cc7ab8028cdfccb6c4c2dcdaa69233",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 49889,
+        "sha256": "bf47bfa2c6d9d8c9f6d75bc1e372cd9885740e7a48563fe7c0917a1a20644be5"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-hcl.wasm",
+        "bytes": 94489,
+        "sha256": "3483fda1b5a6b2409454f66ec341f82a4041befeafcb81583712c072bd98da3f"
+      },
+      {
+        "file": "assets/context-vb-grammar/manifest.json",
+        "bytes": 351,
+        "sha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 25879,
+        "sha256": "2266e00b8780ccf1839419dffd58e1282b9334477eb78c1c144fe7796773525a"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 40423,
+        "sha256": "b8fb8479d2345acaee0120cf913808a90e48b03beda31bbf3784e9b59494f52d"
+      },
+      {
+        "file": "docs/REVIEW-HCL-CONTEXT.md",
+        "bytes": 3239,
+        "sha256": "19d5734c01d934e623b05fb8ea44b6825691f2a74fe08da7e80deb49fb7e86e7"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 45593,
+        "sha256": "4ae13e0e3b85f716708a3f3a88f98850103a6b3c94181e86698f903e9ac7f906"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146057,
+        "sha256": "ec0f3a68325b45c752806a541c5932938feaeeb2936632070b6d4fa028604f6a"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 2672290,
+        "sha256": "60628f9163aeec8029cae4b45af6814fd6831e31dff688f3ed35fa2c0d0fa035"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 1217538,
+        "sha256": "09f7a5721ded1e6f1b640b6603a9db7acc9913d337c61197039504f498988cc6"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 1364875,
+        "sha256": "4c01db741d77faeafd2af18e020409c4b11862014e357f8e311f75aa9e99553b"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 1058860,
+        "sha256": "a5f77b35d816c50641f234b46ca2b254dc3c3dd0bcaae0b164895fa83dd9f8f8"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 1054412,
+        "sha256": "a52164a7b49257cefd9011a2b54eec972782b9fe5da397690f71974e8806934b"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 1278679,
+        "sha256": "4d210ef3f061cba2335d14e7430a3aae0868404503c1ae9ae511e264d3c005b4"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 890007,
+        "sha256": "6fd59b560a22b7271d1e54190e20e2d7676f458ce84a5c1f29e86ad2a0d5c390"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 73125,
+        "sha256": "328f9c9c36fe69408514a4bcfc2d4cbc9cbcf981cc9dbb20b5b239c9ee564556"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 2906199,
+        "sha256": "47c34af18635b423061fb1759a9327871b4fcdc1fb67ae53662565b32103afff"
+      },
+      {
+        "file": "scripts/cleanup-hcl-context-runtime.mjs",
+        "bytes": 1540,
+        "sha256": "9f5934f4096ced61a71644cd350ac0511503272ae8ac18b4d7b70877fd0066e3"
+      },
+      {
+        "file": "scripts/hcl-context-tools.Dockerfile",
+        "bytes": 868,
+        "sha256": "355ec247a7af3cef9704e85edd631878975ef86a3466578f10878456726ade8e"
+      },
+      {
+        "file": "scripts/infra-tools-artifacts.json",
+        "bytes": 5160,
+        "sha256": "0b1c401a805449d0c4735d7ad9cae7d24e0b0b7f0e634e4e657d64c09bb3c208"
+      },
+      {
+        "file": "scripts/prepare-hcl-context-runtime.mjs",
+        "bytes": 4955,
+        "sha256": "4b4c5447e5622c0b0e62155afafc9a4f792f7230d52dcea35122dd6bc7cccf02"
+      },
+      {
+        "file": "scripts/request-pinned-artifact.mjs",
+        "bytes": 2539,
+        "sha256": "d207f86c1a9f9a374c837fdd2b3a183402e44b4f454b1f6b0a53c69ca3180317"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 159589,
+        "sha256": "d96d4074e16bd61536036305d21b9f33912f922752cce25dfd27bf35c10627f3"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/verify-hcl-context-container.mjs",
+        "bytes": 4532,
+        "sha256": "b1375b032dcc4627271210dd4286a380fb8a8ebb053568f7f7fb9a0a96ab8f0d"
+      },
+      {
+        "file": "scripts/verify-hcl-context-guards.mjs",
+        "bytes": 13181,
+        "sha256": "0d0052e51256b8e0e154a674ada8eaf94bc1ef17b41123d8e9b5702bf6e1f938"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 12300,
+        "sha256": "5a55224329e52fd6a60f8dedd710eca837bcd7532cc25e7f9a62772d5dc8844c"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 30793,
+        "sha256": "0a6c55df613856984f49eb00bbeae5509b291c816b90dc63d9594b37a01ae618"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 8732,
+        "sha256": "3aa0c12f472abc997cf391c8fd1e807c346df2f72728b8f1b0a42a15a9163779"
+      },
+      {
+        "file": "src/review-hcl-bindings.ts",
+        "bytes": 8577,
+        "sha256": "628dbd442e821d1d3defd4944f795fa87b22d0cc1eb12602817597f6ecd9f2c4"
+      },
+      {
+        "file": "src/review-hcl-resolution.ts",
+        "bytes": 15367,
+        "sha256": "fea975c43d331c2990b194d2ec88d37c733f5331cf79d1468f7b31e69a6264a4"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 14134,
+        "sha256": "6b47b0b2df92f55223d59d95f12c4aa9f0a882613839751c5e0289a0d72097e2"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 39196,
+        "sha256": "b071caa521d8de45bc16acd6392eb0164c16f41c3b2024fb7f4cd4bebf65e9fd"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32448,
+        "sha256": "687dcfeca8fd5d04b8299c6393aa3d07598eacb5be17f304e6e075b3e409b2f2"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33977,
+        "sha256": "d3e2ad5ff43255e1edfba466dbacca45ad958d3b637ed80112e579e34ae99e5d"
+      },
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 20004,
+        "sha256": "e9b574a2c451e8cf404da56c10594b22be7d70009c6b5841421e380ad36ef484"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 32151,
+        "sha256": "0e02dc07766fa5642e44cd22d66e388031edade31eced9f71ffaecd4657e1ef2"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 92544,
+        "sha256": "bef81b9b8660b3e733cb18b8e015a4ed327c91f2a78c6df6bd4f274b35374103"
+      },
+      {
+        "file": "test/gate-context-hcl.test.ts",
+        "bytes": 26441,
+        "sha256": "ea6a5f7ae2ad0842a697a9c92df61aaf2ec35dc9f68061e5389dd0f694766ec8"
+      },
+      {
+        "file": "test/review-hcl-boundaries-fixture.ts",
+        "bytes": 9356,
+        "sha256": "89326a784088ebc6330734404293deab290f3bfcb911744fc0f395455421e790"
+      },
+      {
+        "file": "test/review-hcl-boundaries.test.ts",
+        "bytes": 216,
+        "sha256": "96a891154e1284dbffe687df27f71e24918becfaea3b2d6b6a0b3cf174361c00"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10871,
+        "sha256": "039a1731e31936de10b66f69115a17643a841099a78b6fd733d10b2cbaa354ac"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 32220,
+        "sha256": "4b2850e6f13869c7ea8e94379c4d440440b8d4d253b2998945eb2bff62b5f6b7"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 8550,
+        "sha256": "98a44996d5c251a3f973f322f5d2556123ca1a9eac880f1d89455ad147733a49"
+      },
+      {
+        "file": "dist/src/review-hcl-bindings.js",
+        "bytes": 8022,
+        "sha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585"
+      },
+      {
+        "file": "dist/src/review-hcl-resolution.js",
+        "bytes": 15159,
+        "sha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14363,
+        "sha256": "85ceebf171f98c1c5ca8f712fa9bbf46c793d18e39e77e3560d64df389ea1f7b"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 38277,
+        "sha256": "17ebb77c7522cec38c5817bc915104e3a447b1aaf93ebfd58bf9aa1bcb23c613"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 34150,
+        "sha256": "3237d05ad8afc1fa4b4ffc4a89552ed3e60e32a2d3a4e09d9344bd2be9989ee1"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35981,
+        "sha256": "2489dcd96ae0a89cb9da1617653d2eb4ac63c3f78c2a827c3c8cbfa519ed0957"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19964,
+        "sha256": "8f40ffe705ef6bf0e8709c45eea761d108a57e5de8173a7293e7b234e4f4b484"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 33087,
+        "sha256": "0d6ea9989527a7ed8b7043f014e4c35d717360b31e7e7f450bfc27b2353b0fc3"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 95165,
+        "sha256": "b07ba704a933b42249edcefbff073dc8aba9dc93453b44be219f6f26c6d0e7ee"
+      },
+      {
+        "file": "dist/test/gate-context-hcl.test.js",
+        "bytes": 26368,
+        "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+      },
+      {
+        "file": "dist/test/review-hcl-boundaries-fixture.js",
+        "bytes": 9126,
+        "sha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8"
+      },
+      {
+        "file": "dist/test/review-hcl-boundaries.test.js",
+        "bytes": 218,
+        "sha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11273,
+        "sha256": "af1c6a334c883e5d2139fd95673566b2fad0b97059939f1c4f6d2cfe7c69429c"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "terraform": {
+        "terraform_version": "1.16.5",
+        "platform": "linux_arm64",
+        "provider_selections": {},
+        "terraform_outdated": false
+      },
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "toolBytes": [
+        {
+          "file": "/usr/local/bin/terraform",
+          "bytes": 110821538,
+          "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
+        },
+        {
+          "file": "/usr/local/bin/node",
+          "bytes": 126241888,
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        {
+          "file": "/usr/bin/git",
+          "bytes": 4081272,
+          "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+        }
+      ]
+    },
+    "image": "sha256:8fc56117d96f190b0e43701aaf75d456d9b6a9d8974c1f6caf1535ffec5cf44b",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-hcl",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-hcl broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 581.9617,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-hcl fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 267.300339,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-hcl near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 418.248971,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-hcl prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 209.398613,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-hcl stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 66.626708,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-hcl empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 195.012463,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-hcl privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2388.390502,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-hcl lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4331.264911,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-hcl installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13209.206768,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-hcl broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic HCL captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "hcl-identifier-case",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "61c40b8a9d4f31abf23b8deaf5d82c977c02b8927c22619b3c86b1bc27582335",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-identifier-prefix",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "988ac5acfcff16a585055482c7c856042fc6f0a8c1bf37633d64c21ad4e2a4d4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-namespace",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "48f1fa9a15f3fdcc8b4c5274df262f0c9faa4ec270115938d9da1a08797a9ad8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-directory",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "4b4ab8f7d23df5ba2ff0e4c4bfb8b650177d02b7027097abd8a05f7bd9306d70",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-revision",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "5c10ca7904a89f23b01ece19965a0054c910c7fe4417ccead8579c982769966a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-two-part-traversal",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "d447346e07d8e299a439c5fe795d856090c000adee396bf192f4b268c6d0d25f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-module-name",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "ed7154b2ef44e58c2d83530c290afe7cdf91ac7b134425e38492c2f8b9b38a34",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-output-case",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "0f9fca3738384e52423e5684d54faaba448a0121dc5f9ccf05dea9d16c6306d1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-ambiguity",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "b182502647c81724fc1677bddeb30c05f0a6d2b7df9603accfe4c687325e0307",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-module-cardinality",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "1b9245908da5dde3f24cf76fe6fd9643cfbcbc285390e5c7c56d12fc623cc2f4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-absolute-module",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "f8889ff5fdbec135a9709cf2f9a31cb4012d2777fb0fad7dd01688d8dc8b9ea1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-escaping-module",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "8ef333f8faff0d6c8bd3715d6a25049086b9b43b3b545818e2d6199e02e918c9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-remote-module",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "ec4b28b10927bd729f10953a14b3a8657cca986447c30aed8c2ed21b34fb7141",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-module-files",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "24e6153ac4801ab45992143e397be45e398bee1016c290f273345e83491e3ca4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-complex-expression",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "c2690c8e78d8f6ab7e41025fde15c1b2ccef6a1f11b628ff869a8b0399cd2536",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-index-expression",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "30927d5bfa75b2a313ece74c6c6a1c23456c94511c4a00ff9985d767d3e58fdc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-application-block",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "f51f0e5d817302421447b90f3f40665b2ab23aaa579b75ab76b929741d58eb7a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-type-expression",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "5b1e5ab14e893759ff6f91b0bced66729d53cf4222c9163a38f775d4160fafa5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-output-owner",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "b565310f4b452ae244e324599555c4d0974988f4c76e8ad82892886a98a86e1b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-complete-traversal",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "c8295b907ac80b5e204a97055fd5e3d5a24641d0c1998a0fcce9289a2ed82337",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-variable-default",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "897c64a38887bbaa34d7011029c3a154fceeec92f51f33016cff803c6b0a5585",
+          "mutantSha256": "9d633637c9809f253fcd9e55fd14ca3021a1c44d5dcd8617297323dba0c95702",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-dependency-cycle",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "3b2c84aacfc02b44dfdd055e56d3d87d56599ac66ee8b5e845b049b5d4edec69",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-dependency-depth",
+          "callback": "context-hcl empty acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "2021ba94a74ac3231d9a880aaa4952cf7db380d3d502e61162c652dc383eee8f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-roots-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "b85d4eef72a37473384dbede7435499c2e5e8441e3aa7cb16e0073583c936130",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-counts-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "31499b4e0dba05bbd23dff6a349c3507217a5ead43c43e3236baa8b97cf8e3b8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-module-files-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "e08e7e21eb5dfebb8c4140951a9cb45a51e8153304a4f8eabe2c5aab01a20141",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-references-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "5e1559fee7667e991cfde3721414d5257a1a38626c1cfa66cfc7ab2a30d5978a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-omissions-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "6f0373168dc6cf7d803139c3bfa48eb248316cdd57f69ff39497879a1741c113",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-closure-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "1f057f926cb488adb061c0978290bbbc0fe5df475709975d49c36177245c6c2c",
+          "mutantSha256": "6723ecd26ecbda8a56b0d50cdc36a21a4ec746ec50057320dbc999c1130c8bde",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-grammar-intake",
+          "callback": "context-hcl stale acceptance",
+          "callbackSha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "98a44996d5c251a3f973f322f5d2556123ca1a9eac880f1d89455ad147733a49",
+          "mutantSha256": "1387d68f31531fd2c7ff2d923c0c59104d39a4bf3bd087f8b57b54d6edb918b8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "hcl-whole-conditional",
+          "callback": "context-hcl selected bindings guard acceptance",
+          "callbackSha256": "aa2ec5b264bff8fc2cf1817de962dbd5576e9c34b4147be35d28439f7309ff2f",
+          "fixtureSha256": "0a7fd5a2485f4b620eaf63cca3fd456b7ab7de05b20ebe14443505ad86acb2c8",
+          "sourceSha256": "17ebb77c7522cec38c5817bc915104e3a447b1aaf93ebfd58bf9aa1bcb23c613",
+          "mutantSha256": "92c66b42871c9e0b44f9d6a0973ec03def6be5320fd8e0c5eb1311d3c39b161d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "ebd076a2385cdf1f3a31c719d545ee962761d9378094ca83afa00fda8a4f6f41",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-hcl",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-hcl broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 598.672324,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-hcl fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 239.132794,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-hcl near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 415.832661,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-hcl prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 185.330932,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-hcl stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 67.659591,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-hcl empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 203.546902,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-hcl privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2387.470246,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-hcl lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4307.40965,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-hcl installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.300919,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-hcl broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-hcl installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:8fc56117d96f190b0e43701aaf75d456d9b6a9d8974c1f6caf1535ffec5cf44b",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "runtimeToolBytePins": [
+    {
+      "file": "/usr/local/bin/terraform",
+      "bytes": 110821538,
+      "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c"
+    },
+    {
+      "file": "/usr/local/bin/node",
+      "bytes": 126241888,
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    {
+      "file": "/usr/bin/git",
+      "bytes": 4081272,
+      "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+    }
+  ],
+  "artifactPreparation": {
+    "image": "sha256:8fc56117d96f190b0e43701aaf75d456d9b6a9d8974c1f6caf1535ffec5cf44b",
+    "nodeBase": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "gitBase": "golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+    "archive": {
+      "file": "terraform_1.16.5_linux_arm64.zip",
+      "bytes": 32576164,
+      "sha256": "61a50b00485ee4810cf20581ef080fc54d34d666e175c58d9a10501c65c1ccde"
+    },
+    "members": [
+      {
+        "path": "LICENSE.txt",
+        "bytes": 4950,
+        "sha256": "dc4cb9f6140970b69110d82e8f25545135965ae50f6761ddfd6cd7cf9452bfa9",
+        "output": "notices/terraform-LICENSE.txt"
+      },
+      {
+        "path": "terraform",
+        "bytes": 110821538,
+        "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c",
+        "output": "bin/terraform"
+      }
+    ],
+    "nativeVersion": {
+      "terraform_version": "1.16.5",
+      "platform": "linux_arm64",
+      "provider_selections": {},
+      "terraform_outdated": false
+    },
+    "buildNetwork": "none",
+    "publisherAndLicenseClosureVerified": false
+  },
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "ebd076a2385cdf1f3a31c719d545ee962761d9378094ca83afa00fda8a4f6f41",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-hcl",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "377ad34115e209c07cce46cb77036700e4aa620bce850603a589cc99cbeef33d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-hcl broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 598.672324,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-hcl fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 239.132794,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-hcl near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 415.832661,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-hcl prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 185.330932,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-hcl stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 67.659591,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-hcl empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 203.546902,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-hcl privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2387.470246,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-hcl lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4307.40965,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-hcl installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.300919,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-hcl broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-hcl installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:8fc56117d96f190b0e43701aaf75d456d9b6a9d8974c1f6caf1535ffec5cf44b",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "b07ba704a933b42249edcefbff073dc8aba9dc93453b44be219f6f26c6d0e7ee",
+        "mutantSha256": "93afdb495ecdbdb280ef9a8bfd46387b7289217679e2da96b4591c021e003b43",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "b07ba704a933b42249edcefbff073dc8aba9dc93453b44be219f6f26c6d0e7ee",
+        "mutantSha256": "0214eac4c7759c2093eeabf2445de8f7812ed915112005a0de27b9381e2a96c2",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "b07ba704a933b42249edcefbff073dc8aba9dc93453b44be219f6f26c6d0e7ee",
+        "mutantSha256": "f1b0301519a2d510075ddf2373af88bafee68432b926299f313306b733e6b597",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1172,
+      "pass": 843,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 329,
+      "todo": 0
+    },
+    "durationMs": 186889.28575,
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "pinnedSupplementaryTerraformNotSelectedOnHost": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "fe612fddb6b0ff84c737eb0e36f0b77ddfeb27254f42cea38c40de06e0bb2b8e"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

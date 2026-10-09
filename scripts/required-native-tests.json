@@ -3818,5 +3818,43 @@
       "file": "dist/test/gate-context-cpp.test.js",
       "name": "context-cpp installed acceptance"
     }
+  ],
+  "context-hcl": [
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-hcl.test.js",
+      "name": "context-hcl installed acceptance"
+    }
   ]
 }
