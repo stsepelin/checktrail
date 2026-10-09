@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import path from "node:path";
 import { z } from "zod";
 import type {
@@ -8,7 +9,10 @@ import type {
   TestEvidence,
 } from "./types.js";
 import { rustEvidence } from "./rust-evidence.js";
-import { rustWorkspacePacketSchema } from "./rust-workspace-schema.js";
+import {
+  rustWorkspaceInputSchema,
+  rustWorkspacePacketSchema,
+} from "./rust-workspace-schema.js";
 import { rustTestArtifactSchema } from "./rust-test-native.js";
 import { rustTestList, rustTestRun } from "./rust-test-events.js";
 export function rustWorkspaceEvidence(
@@ -25,7 +29,16 @@ export function rustWorkspaceEvidence(
       "Rust workspace evidence does not reconcile declared members, feature/target scope or native source/test evidence.",
     findingsComplete: false,
   };
-  if (!root || !check.rustBuild || processes.length !== 1) return incomplete;
+  if (
+    !root ||
+    !check.rustBuild ||
+    processes.length !== 1 ||
+    check.commands.length !== 1 ||
+    !["rust.cargo-check", "rust.cargo-clippy", "rust.cargo-test"].includes(
+      check.id,
+    )
+  )
+    return incomplete;
   const process = processes[0]!;
   if (process.exitCode === 3) {
     try {
@@ -33,6 +46,8 @@ export function rustWorkspaceEvidence(
         unavailable: z.literal("rust-workspace"),
         reason: z.enum([
           "unsupported-version",
+          "source-changed",
+          "native-toolchain",
           "cross-target-tests",
           "target-prerequisite",
           "workspace-members",
@@ -58,6 +73,20 @@ export function rustWorkspaceEvidence(
     };
   try {
     const data = rustWorkspacePacketSchema.parse(JSON.parse(process.stdout));
+    const input = rustWorkspaceInputSchema.parse(
+      JSON.parse(check.commands[0]!.args[1]!),
+    );
+    if (
+      input.root !== root ||
+      input.project !== check.project ||
+      JSON.stringify(input.scope) !== JSON.stringify(check.scope) ||
+      data.sourceFingerprint !== input.sourceFingerprint ||
+      !data.inputsStable ||
+      (check.rustBuild.nativeToolchain
+        ? data.nativeToolchainVerified !== true
+        : data.nativeToolchainVerified !== null)
+    )
+      return incomplete;
     const mode =
       check.id === "rust.cargo-test"
         ? "test"
@@ -67,7 +96,7 @@ export function rustWorkspaceEvidence(
     if (
       data.project !== check.project ||
       data.mode !== mode ||
-      JSON.stringify(data.selection) !== JSON.stringify(check.rustBuild) ||
+      !isDeepStrictEqual(data.selection, check.rustBuild) ||
       data.clippyVersion !== (mode === "clippy" ? "0.1.98" : null) ||
       data.rustdocVersion !== (mode === "test" ? "1.98.1" : null) ||
       !data.hostTarget

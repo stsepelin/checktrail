@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Rust extension contracts](RUST-EXTENSIONS.md) bind selected GNU ARM64
+compiler, driver, host and wasm32 library bytes before and after native workspace
+witnesses. Lean/extra feature and target combinations retain native test accounting;
+engine-owned build directories and live output forwarding close reached lifecycle
+gaps. The [local record](measurements/rust-extensions-2026-10-09.json) binds preserved
+Rust callbacks, source and fresh offline installed acceptance, compiling controls
+including same-size checksum corruption, and whole-component extraction preflight.
+Wider dependency/license closures, other runtimes and the final Gate A matrix
+remain open. No inference or field evaluation was invoked.
+
 Opt-in [PHP extension contracts](PHP-EXTENSIONS.md) bind the measured loaded
 extension environment, selected native API bytes and declared generated proxies.
 Initialized native model defaults and typed accessor witnesses retain their actual

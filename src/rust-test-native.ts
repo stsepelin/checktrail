@@ -39,7 +39,9 @@ type Invoke = (
   executable: string,
   args: string[],
   env?: NodeJS.ProcessEnv,
-) => { status: number | null; stdout: string; stderr: string };
+) =>
+  | { status: number | null; stdout: string; stderr: string }
+  | Promise<{ status: number | null; stdout: string; stderr: string }>;
 export async function rustTestsNative(
   invoke: Invoke,
   config: string[],
@@ -54,7 +56,7 @@ export async function rustTestsNative(
 ): Promise<RustTestNative> {
   let libraryDirectory: string | undefined;
   if (process.platform === "darwin" || process.platform === "linux") {
-    const library = invoke("rustc", ["--print", "target-libdir"]);
+    const library = await invoke("rustc", ["--print", "target-libdir"]);
     const directory = library.stdout.trim();
     if (
       library.status !== 0 ||
@@ -68,7 +70,7 @@ export async function rustTestsNative(
       throw new Error("Native Rust runtime library directory is unavailable");
     libraryDirectory = directory;
   }
-  const native = (executable: string, args: string[]) => {
+  const native = async (executable: string, args: string[]) => {
     const env =
       libraryDirectory && path.isAbsolute(executable)
         ? {
@@ -82,7 +84,7 @@ export async function rustTestsNative(
             ].join(path.delimiter),
           }
         : undefined;
-    const result = invoke(executable, args, env);
+    const result = await invoke(executable, args, env);
     if (result.status === null)
       throw new Error("Native test process did not exit");
     return {
@@ -91,7 +93,7 @@ export async function rustTestsNative(
       stderr: result.stderr,
     };
   };
-  const build = native("cargo", [
+  const build = await native("cargo", [
     "test",
     "--no-run",
     "--all-targets",
@@ -225,8 +227,12 @@ export async function rustTestsNative(
             "--",
           ];
     try {
-      group.listed = native(command, [...args, "--list", "--format=terse"]);
-      group.ignoredListed = native(command, [
+      group.listed = await native(command, [
+        ...args,
+        "--list",
+        "--format=terse",
+      ]);
+      group.ignoredListed = await native(command, [
         ...args,
         "--list",
         "--ignored",
@@ -249,7 +255,7 @@ export async function rustTestsNative(
       return result;
     }
     try {
-      group.execution = native(command, [
+      group.execution = await native(command, [
         ...args,
         "--test-threads=1",
         "--color=never",

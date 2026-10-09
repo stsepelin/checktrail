@@ -38,6 +38,10 @@
               ]
             }
           },
+          "nativeToolchain": {
+            "type": "string",
+            "const": "linux-arm64-gnu-1.98.1"
+          },
           "features": {
             "maxItems": 64,
             "type": "array",
