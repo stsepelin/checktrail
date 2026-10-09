@@ -4126,5 +4126,43 @@
       "file": "dist/test/gate-javascript-extensions.test.js",
       "name": "javascript-extensions installed acceptance"
     }
+  ],
+  "python-extensions": [
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-python-extensions.test.js",
+      "name": "python-extensions installed acceptance"
+    }
   ]
 }

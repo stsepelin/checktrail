@@ -57,6 +57,7 @@ const timeoutMs =
             "go-extensions",
             "assembly-nuxt",
             "javascript-extensions",
+            "python-extensions",
           ].includes(profile),
         )
       ? 300000

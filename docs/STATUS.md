@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Python extension contracts](PYTHON-EXTENSIONS.md) account for namespace
+roots, selected virtualenv distributions and explicitly loaded pytest/mypy plugins.
+Native module phases, test events and dependency origins must match the bound
+inputs. A fresh owned bytecode prefix prevents timestamp caches from supplying
+older code. The [local record](measurements/python-extensions-2026-10-09.json) binds
+the selected Linux ARM64 source and fresh offline installation, native regressions
+and compiling guard removals using exact public wheel bytes. Whole dependency and
+license closures, other runtimes and the final Gate A matrix remain open. No
+inference or field evaluation was invoked.
+
 Opt-in [JavaScript extension contracts](JAVASCRIPT-EXTENSIONS.md) account for
 native ESLint language/parser/processor source participation, declared Node ESM/CJS
 loaders and Vite library builds with fresh downstream declarations. Effective

@@ -1,3 +1,4 @@
+import { pythonExtensionEvidence } from "./python-extension-evidence.js";
 import { viteLibraryEvidence } from "./vite-library-evidence.js";
 import { nodeLoaderEvidence } from "./node-loader-evidence.js";
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
@@ -353,6 +354,8 @@ export function evaluate(
     return { ...result, ...phpstanEvidence(check, processes, root) };
   if (check.parser === "pyright-json")
     return { ...result, ...pyrightEvidence(check, processes, root) };
+  if (check.parser === "python-extension-json")
+    return { ...result, ...pythonExtensionEvidence(check, processes, root) };
   if (check.parser === "mypy-json")
     return { ...result, ...mypyEvidence(check, processes, root) };
   if (check.parser === "ruff-json")

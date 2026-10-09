@@ -48,6 +48,7 @@ assert.ok(
     "assembly-nuxt",
     "assembly-laravel",
     "javascript-extensions",
+    "python-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -91,6 +92,8 @@ if (profile === "assembly-nuxt")
   process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
+if (profile === "python-extensions")
+  process.env.CHECKTRAIL_PYTHON_EXTENSIONS_INSTALLED = "1";
 if (profile === "javascript-extensions")
   process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED = "1";
 if (profile === "assembly-laravel")
@@ -154,6 +157,8 @@ try {
     "gate-assembly-nuxt.test.js",
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
+    "gate-python-extensions.test.js",
+    "python-extensions-fixture.js",
     "javascript-extensions-fixture.js",
     "tool-fixture.js",
     "gate-assembly-laravel.test.js",
@@ -373,6 +378,9 @@ try {
           ...(profile === "javascript-extensions"
             ? ["--env", "CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "python-extensions"
+            ? ["--env", "CHECKTRAIL_PYTHON_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "assembly-laravel"
             ? ["--env", "CHECKTRAIL_LARAVEL_ASSEMBLY_INSTALLED=1"]
             : []),
@@ -461,7 +469,11 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          ["assembly-nuxt", "javascript-extensions"].includes(profile)
+          [
+            "assembly-nuxt",
+            "javascript-extensions",
+            "python-extensions",
+          ].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
             : [
                   "context-go",
@@ -526,6 +538,7 @@ try {
             temporaryFilesystemMiB: [
               "assembly-nuxt",
               "javascript-extensions",
+              "python-extensions",
             ].includes(profile)
               ? 1024
               : 256,
@@ -537,6 +550,7 @@ try {
               "context-cpp",
               "assembly-nuxt",
               "javascript-extensions",
+              "python-extensions",
             ].includes(profile),
           }
         : {

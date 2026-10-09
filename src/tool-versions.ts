@@ -114,6 +114,20 @@ export async function toolsFor(
     return tools;
   }
   if (check.adapter === "python") {
+    if (check.parser === "python-extension-json" && check.commands[0]) {
+      const executable = check.commands[0].executable;
+      const name = check.id.slice("python.".length);
+      return [
+        command("python", executable, ["-I", "--version"]),
+        command(name, executable, [
+          "-I",
+          "-B",
+          "-c",
+          `from importlib.metadata import version; print(version('${name}'))`,
+        ]),
+      ];
+    }
+
     const tools = [command("python", "python3", ["--version"])];
     if (check.id === "python.pytest" || check.id === "python.mypy") {
       const name = check.id.slice("python.".length);
