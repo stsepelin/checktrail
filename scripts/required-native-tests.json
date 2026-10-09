@@ -3932,5 +3932,43 @@
       "file": "dist/test/gate-assembly-vue-router.test.js",
       "name": "assembly-vue-router installed acceptance"
     }
+  ],
+  "assembly-fastapi": [
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-fastapi.test.js",
+      "name": "assembly-fastapi installed acceptance"
+    }
   ]
 }

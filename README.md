@@ -158,9 +158,11 @@ complete record participation in declared URL probes; see the
 [Vue Router profile](docs/VUE-ROUTER.md) for versions and projection limits.
 `javascript.nuxt-runtime` builds a fresh SSR testing assembly and checks native
 router capture after in-process requests; see the [Nuxt profile](docs/NUXT.md).
-`python.fastapi-routes` captures a configured FastAPI application's supported flat
-route table after lifespan startup and detects exact duplicate registrations.
-See the [FastAPI profile](docs/FASTAPI.md) for native versions and scope limits.
+`python.fastapi-routes` captures a configured FastAPI application's native routes.
+Opt-in configuration version 2 also checks declared mounted/hosted assembly,
+security dependencies, response models, middleware/lifespan order and controlled
+ASGI responses. See the [FastAPI profile](docs/FASTAPI.md) and
+[assembly contracts](docs/FASTAPI-ASSEMBLY.md) for versions and scope limits.
 `python.django-routes` captures supported nested URL resolver chains after Django
 setup; see the [Django profile](docs/DJANGO.md).
 `php.laravel-runtime` captures the testing assembly's routes, middleware, listeners,

@@ -137,3 +137,13 @@ record, active hook and ordered navigation contracts are compared after native
 readiness; registration/route identities and reached cleanup are separately
 controlled. Native source and fresh offline acceptance do not close the remaining
 assembly profiles, complete provenance or final Gate A matrix.
+
+The opt-in [selected FastAPI assembly contract](FASTAPI-ASSEMBLY.md) extends the
+shared route adapter with configuration version 2. Native effective included,
+mounted and hosted routes, dependency/security metadata, response models,
+middleware/lifespan registration order, overrides and completed controlled ASGI
+responses are compared against explicit operator expectations. Isolated bootstrap,
+source byte gates, registration identity and reached lifecycle controls remain
+separate from complete dependency/license closure and final Gate A acceptance.
+Version 1 retains its flat inventory behavior; no inference or field evaluation
+is invoked.

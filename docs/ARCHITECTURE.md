@@ -312,3 +312,13 @@ Context version 21 adds the bounded selected C++ declarations, defaults, flat na
 Context version 22 adds the selected HCL declaration, traversal and module-file candidates described in [REVIEW-HCL-CONTEXT.md](REVIEW-HCL-CONTEXT.md). Reverse declaration dependencies use source addresses without synthesized runtime callers; capture stays source-only with full impact fallback.
 
 Context version 23 adds the captured YAML anchors, aliases and dependency source candidates described in [REVIEW-YAML-CONTEXT.md](REVIEW-YAML-CONTEXT.md). Capture executes no deserializer or consumer and synthesizes no runtime callers; full impact fallback remains mandatory.
+
+The opt-in [selected FastAPI assembly contract](FASTAPI-ASSEMBLY.md) extends the
+shared route adapter with configuration version 2. Native effective included,
+mounted and hosted routes, dependency/security metadata, response models,
+middleware/lifespan registration order, overrides and completed controlled ASGI
+responses are compared against explicit operator expectations. Isolated bootstrap,
+source byte gates, registration identity and reached lifecycle controls remain
+separate from complete dependency/license closure and final Gate A acceptance.
+Version 1 retains its flat inventory behavior; no inference or field evaluation
+is invoked.

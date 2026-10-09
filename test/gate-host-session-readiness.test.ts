@@ -514,8 +514,12 @@ test("host-session-readiness lifecycle acceptance", async (t) => {
         operation: termination === "output" ? "flood" : "hold",
         readyPath,
         publicationGate: readyPath + ".release",
+        // A valid SDK startup beyond the former three-second polling window.
+        startupDelayMs: termination === "cancel" ? 3100 : 0,
       });
       const controller = new AbortController();
+      const processBudget = termination === "timeout" ? 5000 : 10000;
+      const readinessDeadline = performance.now() + processBudget - 500;
       const pending = runProcess(
         root,
         {
@@ -524,14 +528,14 @@ test("host-session-readiness lifecycle acceptance", async (t) => {
           cwd: ".",
         },
         {
-          timeoutMs: termination === "timeout" ? 5000 : 10000,
+          timeoutMs: processBudget,
           signal: controller.signal,
           maxOutputBytes: termination === "output" ? 1024 : 65536,
         },
       );
       try {
         let pendingPublished = false;
-        for (let attempt = 0; attempt < 150; attempt++) {
+        while (performance.now() < readinessDeadline) {
           pendingPublished = await access(readyPath + ".pending")
             .then(() => true)
             .catch((error) => {
@@ -553,7 +557,7 @@ test("host-session-readiness lifecycle acceptance", async (t) => {
         );
         await writeFile(readyPath + ".release", "");
         let identities: { workerPid: number; serverPid: number } | undefined;
-        for (let attempt = 0; attempt < 150; attempt++) {
+        while (performance.now() < readinessDeadline) {
           identities = await readFile(readyPath, "utf8")
             .then(JSON.parse)
             .catch((e) => {

@@ -356,3 +356,13 @@ physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
 Original source, compiling guard and offline installed acceptance is
 profile-specific; wider Scala 2/script/mixed/inline/staging/compiler, JVM build
 wrappers, platforms and full provenance remain required. Gate A remains open.
+
+The opt-in [selected FastAPI assembly contract](FASTAPI-ASSEMBLY.md) extends the
+shared route adapter with configuration version 2. Native effective included,
+mounted and hosted routes, dependency/security metadata, response models,
+middleware/lifespan registration order, overrides and completed controlled ASGI
+responses are compared against explicit operator expectations. Isolated bootstrap,
+source byte gates, registration identity and reached lifecycle controls remain
+separate from complete dependency/license closure and final Gate A acceptance.
+Version 1 retains its flat inventory behavior; no inference or field evaluation
+is invoked.

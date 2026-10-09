@@ -135,9 +135,12 @@ export async function toolsFor(
     if (check.id === "python.ruff")
       tools.push(command("ruff", "ruff", ["--version"]));
     if (check.id === "python.fastapi-routes")
-      for (const name of ["fastapi", "starlette"])
+      for (const name of check.commands[0]?.args[0] === "-I"
+        ? ["fastapi", "starlette", "pydantic"]
+        : ["fastapi", "starlette"])
         tools.push(
           command(name, "python3", [
+            ...(check.commands[0]?.args[0] === "-I" ? ["-I"] : []),
             "-c",
             `from importlib.metadata import version; print(version(${JSON.stringify(name)}))`,
           ]),
