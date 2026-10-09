@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "profile": "original-synthetic-vb-selected-bindings-v1",
-  "recordedAt": "2026-10-09T00:36:28.173061+00:00",
+  "recordedAt": "2026-10-09T00:39:02.222434+00:00",
   "scope": "Captured Visual Basic flat modules, literal constants/defaults/imports and case-folded lexical candidates plus trusted original native controls; no capture execution, native root/assembly certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
   "sourceBinding": {
     "baseCommit": "d4b42f81dd3deba9c64259b4b78f093d33a9a147",
@@ -144,8 +144,8 @@
       },
       {
         "file": "scripts/verify-import-context-package.mjs",
-        "bytes": 11083,
-        "sha256": "fe57a95a22c6fd81c699ff44a34d35690c9f31a5ea88245aa53e811b55d018e0"
+        "bytes": 11055,
+        "sha256": "de40e7e3fead1bdc365f859df05af46677f53ec7e935b721238204c23f72743f"
       },
       {
         "file": "scripts/verify-swift-context-container.mjs",
@@ -1257,7 +1257,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 651.712135,
+            "durationMs": 660.362854,
             "required": true
           },
           {
@@ -1267,7 +1267,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 335.346583,
+            "durationMs": 332.134023,
             "required": true
           },
           {
@@ -1277,7 +1277,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 1590.1371,
+            "durationMs": 1665.97152,
             "required": true
           },
           {
@@ -1287,7 +1287,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 181.007519,
+            "durationMs": 192.432922,
             "required": true
           },
           {
@@ -1297,7 +1297,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 139.608725,
+            "durationMs": 129.136245,
             "required": true
           },
           {
@@ -1307,7 +1307,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 281.284546,
+            "durationMs": 259.246912,
             "required": true
           },
           {
@@ -1317,7 +1317,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 2389.322008,
+            "durationMs": 2488.598196,
             "required": true
           },
           {
@@ -1327,7 +1327,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 3484.448968,
+            "durationMs": 3510.150125,
             "required": true
           },
           {
@@ -1337,7 +1337,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 14084.446341,
+            "durationMs": 13982.78854,
             "required": true
           }
         ],
@@ -1683,7 +1683,7 @@
       "fieldEvaluationExecuted": false
     },
     "installed": {
-      "tarballSha256": "09e777017e1ec95e2439d71e58ca6d571cd6db03bc2f7e1effce4441d578ef98",
+      "tarballSha256": "ae54b581cb9d9f33a8640191825784e3f04dd98e91beb89c7f2b213c5dc3e494",
       "offlineProductionInstall": true,
       "lifecycleScriptsExecuted": false,
       "installedCliEvaluated": true,
@@ -1737,7 +1737,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 665.799429,
+              "durationMs": 662.604038,
               "required": true
             },
             {
@@ -1747,7 +1747,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 337.457096,
+              "durationMs": 334.588405,
               "required": true
             },
             {
@@ -1757,7 +1757,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 1648.879081,
+              "durationMs": 1639.977289,
               "required": true
             },
             {
@@ -1767,7 +1767,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 194.114223,
+              "durationMs": 197.007947,
               "required": true
             },
             {
@@ -1777,7 +1777,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 130.946422,
+              "durationMs": 132.695108,
               "required": true
             },
             {
@@ -1787,7 +1787,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 264.637028,
+              "durationMs": 282.736691,
               "required": true
             },
             {
@@ -1797,7 +1797,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 2479.340846,
+              "durationMs": 2452.718825,
               "required": true
             },
             {
@@ -1807,7 +1807,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 3508.716738,
+              "durationMs": 3510.298635,
               "required": true
             },
             {
@@ -1817,7 +1817,7 @@
               "nameTruncated": false,
               "kind": "test",
               "outcome": "passed",
-              "durationMs": 0.524378,
+              "durationMs": 0.365335,
               "required": true
             }
           ],
@@ -1885,7 +1885,7 @@
         "consumerMount": "readonly",
         "rootFilesystemReadonly": true,
         "temporaryFilesystemMiB": 256,
-        "temporaryFilesystemExecutable": true
+        "temporaryFilesystemExecutable": false
       },
       "inferenceInvoked": false,
       "fieldEvaluationExecuted": false,
@@ -1943,7 +1943,7 @@
     }
   ],
   "installedAfterSchemaGeneration": {
-    "tarballSha256": "6a4ae129c3defb38e96eaf689861be1d84affcba3e34d2743c0906095f7a98a7",
+    "tarballSha256": "ae54b581cb9d9f33a8640191825784e3f04dd98e91beb89c7f2b213c5dc3e494",
     "offlineProductionInstall": true,
     "lifecycleScriptsExecuted": false,
     "installedCliEvaluated": true,
@@ -1997,7 +1997,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 676.141159,
+            "durationMs": 648.656824,
             "required": true
           },
           {
@@ -2007,7 +2007,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 338.497894,
+            "durationMs": 329.956556,
             "required": true
           },
           {
@@ -2017,7 +2017,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 1667.120319,
+            "durationMs": 1645.183056,
             "required": true
           },
           {
@@ -2027,7 +2027,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 190.442659,
+            "durationMs": 199.979499,
             "required": true
           },
           {
@@ -2037,7 +2037,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 128.283406,
+            "durationMs": 128.068635,
             "required": true
           },
           {
@@ -2047,7 +2047,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 271.591695,
+            "durationMs": 271.220318,
             "required": true
           },
           {
@@ -2057,7 +2057,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 2425.484353,
+            "durationMs": 2467.463541,
             "required": true
           },
           {
@@ -2067,7 +2067,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 3537.88021,
+            "durationMs": 3452.941194,
             "required": true
           },
           {
@@ -2077,7 +2077,7 @@
             "nameTruncated": false,
             "kind": "test",
             "outcome": "passed",
-            "durationMs": 0.45192,
+            "durationMs": 0.316876,
             "required": true
           }
         ],
@@ -2145,7 +2145,7 @@
       "consumerMount": "readonly",
       "rootFilesystemReadonly": true,
       "temporaryFilesystemMiB": 256,
-      "temporaryFilesystemExecutable": true
+      "temporaryFilesystemExecutable": false
     },
     "inferenceInvoked": false,
     "fieldEvaluationExecuted": false,

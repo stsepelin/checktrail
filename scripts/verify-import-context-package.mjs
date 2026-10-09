@@ -313,7 +313,6 @@ try {
               "context-go",
               "context-rust",
               "context-swift",
-              "context-vb",
             ].includes(profile),
           }
         : {
