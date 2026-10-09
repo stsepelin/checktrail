@@ -1,5 +1,9 @@
 # Vue Router testing assembly profile
 
+This page describes version 1 native resolution. Opt-in
+[version 2 navigation assembly](VUE-ROUTER-ASSEMBLY.md) adds declared final record,
+active hook and native navigation contracts while preserving version 1 behavior.
+
 `javascript.vue-router` creates a native memory router, awaits an explicitly
 selected registration function, captures its final route records and checks
 declared URL probes using native resolution. A pass means every native record

@@ -142,7 +142,12 @@ automated check.
 Native framework capture is opt-in and uses version-gated collectors. The Vue Router
 profile constructs a selected testing router, awaits registration and verifies native
 URL resolution with complete route-record participation. Its assembly projection
-and limits are documented in `VUE-ROUTER.md`. The separate Nuxt profile builds
+and limits are documented in `VUE-ROUTER.md`. Opt-in configuration version 2
+observes native global hooks before trusted startup and compares complete final
+record, active hook and ordered navigation contracts after native readiness;
+see `VUE-ROUTER-ASSEMBLY.md`. Selected Node router bundle byte pins precede
+framework/project imports; they are not full dependency/publisher/license closure.
+The separate Nuxt profile builds
 a fresh SSR testing assembly and captures its native router after in-process
 requests complete, without a listening socket; see `NUXT.md`.
 

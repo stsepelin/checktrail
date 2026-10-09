@@ -130,3 +130,10 @@ Version 21 adds bounded C++ source, namespace/default and selected-header candid
 Version 22 adds bounded HCL configuration source candidates; [REVIEW-HCL-CONTEXT.md](REVIEW-HCL-CONTEXT.md) states its limits. Required source, installed, mutation and final gate receipts remain independently measured; capture invokes no evaluator, provider or project configuration.
 
 Version 23 adds bounded YAML anchor/alias source candidates; [REVIEW-YAML-CONTEXT.md](REVIEW-YAML-CONTEXT.md) states its limits. Required source, installed, mutation and final gate receipts remain independently measured; capture invokes no tag constructor, template or application.
+
+The selected [Vue Router navigation assembly](VUE-ROUTER-ASSEMBLY.md) extends the
+existing native resolution adapter with opt-in configuration version 2. Final
+record, active hook and ordered navigation contracts are compared after native
+readiness; registration/route identities and reached cleanup are separately
+controlled. Native source and fresh offline acceptance do not close the remaining
+assembly profiles, complete provenance or final Gate A matrix.
