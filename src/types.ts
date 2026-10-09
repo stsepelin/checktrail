@@ -14,6 +14,8 @@ export const PARSERS = [
   "exit",
   "empty",
   "node-events",
+  "node-loader-events",
+  "vite-library-json",
   "unittest",
   "go-scope-test",
   "go-scope-analysis",

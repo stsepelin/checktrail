@@ -48,6 +48,7 @@ export {
   architectureReportSchema,
   architectureSummarySchema,
 } from "./architecture.js";
+export { javascriptConfigSchema } from "./javascript-config.js";
 export { laravelConfigSchema } from "./laravel.js";
 import { z } from "zod";
 import { runtimeInventorySchema } from "./runtime-inventory.js";

@@ -4088,5 +4088,43 @@
       "file": "dist/test/gate-assembly-laravel.test.js",
       "name": "assembly-laravel installed acceptance"
     }
+  ],
+  "javascript-extensions": [
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-javascript-extensions.test.js",
+      "name": "javascript-extensions installed acceptance"
+    }
   ]
 }

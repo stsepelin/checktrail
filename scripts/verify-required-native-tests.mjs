@@ -56,6 +56,7 @@ const timeoutMs =
             "swift-tools",
             "go-extensions",
             "assembly-nuxt",
+            "javascript-extensions",
           ].includes(profile),
         )
       ? 300000

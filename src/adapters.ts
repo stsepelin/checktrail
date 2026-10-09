@@ -1,3 +1,5 @@
+import { viteLibraryCheck } from "./vite-library.js";
+import { nodeTestCheck } from "./node-test.js";
 import { applyRustBuildPolicy } from "./rust-build.js";
 import { applyGoBuildPolicy } from "./go-build.js";
 import { applyGoScopePolicy } from "./go-scope-policy.js";
@@ -47,7 +49,6 @@ import { mypyCheck } from "./mypy.js";
 import { ruffCheck } from "./ruff.js";
 import { pytestCheck } from "./pytest.js";
 import { fileURLToPath } from "node:url";
-import { readProjectFile } from "./inventory.js";
 import { typescriptBuildCheck } from "./typescript-build.js";
 import { typescriptCheck } from "./typescript.js";
 import { eslintCheck } from "./eslint.js";
@@ -64,6 +65,7 @@ export const adapters = [
       "javascript.node-test",
       "javascript.typescript",
       "javascript.typescript-build",
+      "javascript.vite-library",
       "javascript.vue-tsc",
       "javascript.vue-router",
       "javascript.nuxt-runtime",
@@ -275,56 +277,15 @@ export async function checksFor(
     parser: "exit" as const,
   };
   if (project.adapter === "javascript") {
-    const manifest: unknown = JSON.parse(
-      await readProjectFile(
-        source.root,
-        path.posix.join(project.path, "package.json"),
-      ),
-    );
-    const scripts =
-      typeof manifest === "object" && manifest !== null && "scripts" in manifest
-        ? manifest.scripts
-        : undefined;
-    const script =
-      typeof scripts === "object" && scripts !== null && "test" in scripts
-        ? scripts.test
-        : undefined;
-    const files = project.files.filter((file) =>
-      /\.(test|spec)\.[cm]?js$/.test(file),
-    );
-    const reason =
-      "Run JavaScript tests with the native Node runner; TypeScript and framework runners need separate adapters.";
-    const check: Check = {
-      ...base,
-      id: "javascript.node-test",
-      kind: "test",
-      parser: "node-events",
-      scope: files,
-      reason,
-      commands: [
-        {
-          executable: process.execPath,
-          args: [
-            "--test",
-            `--test-reporter=${new URL("./node-reporter.js", import.meta.url).href}`,
-            ...files.map((file) => `./${file}`),
-          ],
-          cwd: project.path,
-        },
-      ],
-    };
-    if (!explicit && script !== "node --test") {
-      check.unavailableReason =
-        "Node runner is not explicitly selected. Set scripts.test to node --test or select javascript.node-test in policy after verifying the runner.";
-    } else if (files.length === 0) {
-      check.unavailableReason =
-        "No .test.js/.spec.js (or .mjs/.cjs) files were discovered.";
-    }
+    const check = await nodeTestCheck(source, project, explicit);
     return explicit
       ? [
           check,
           await typescriptCheck(source, project),
           await typescriptBuildCheck(source, project),
+          ...(requested?.includes("javascript.vite-library")
+            ? [await viteLibraryCheck(source, project)]
+            : []),
           await typescriptCheck(source, project, true),
           ...(requested?.includes("javascript.nuxt-runtime")
             ? [await nuxtCheck(source, project)]

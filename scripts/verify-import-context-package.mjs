@@ -1,7 +1,9 @@
+import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import {
+  access,
   cp,
   mkdir,
   mkdtemp,
@@ -45,6 +47,7 @@ assert.ok(
     "assembly-django",
     "assembly-nuxt",
     "assembly-laravel",
+    "javascript-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -88,6 +91,8 @@ if (profile === "assembly-nuxt")
   process.env.CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-django")
   process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
+if (profile === "javascript-extensions")
+  process.env.CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED = "1";
 if (profile === "assembly-laravel")
   process.env.CHECKTRAIL_LARAVEL_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-fastapi")
@@ -148,6 +153,9 @@ try {
     "gate-context-yaml.test.js",
     "gate-assembly-nuxt.test.js",
     "review-nuxt-assembly-fixture.js",
+    "gate-javascript-extensions.test.js",
+    "javascript-extensions-fixture.js",
+    "tool-fixture.js",
     "gate-assembly-laravel.test.js",
     "review-laravel-assembly-fixture.js",
     "review-laravel-assembly-contract.js",
@@ -217,14 +225,30 @@ try {
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   const dependencies = {};
-  async function copyClientDependency(name) {
+  const dependencySource =
+    profile === "javascript-extensions"
+      ? await access(
+          path.join(repository, ".checktrail/javascript-tools/node_modules"),
+        ).then(
+          () =>
+            path.join(repository, ".checktrail/javascript-tools/node_modules"),
+          () => path.join(repository, "node_modules"),
+        )
+      : path.join(repository, "node_modules");
+  async function copyClientDependency(name, optional = false) {
     if (Object.hasOwn(dependencies, name)) return;
-    const manifest = JSON.parse(
-      await readFile(
-        path.join(repository, "node_modules", name, "package.json"),
-        "utf8",
-      ),
-    );
+    let manifest;
+    try {
+      manifest = JSON.parse(
+        await readFile(
+          path.join(dependencySource, name, "package.json"),
+          "utf8",
+        ),
+      );
+    } catch (error) {
+      if (optional && error.code === "ENOENT") return;
+      throw error;
+    }
     const entry = lock.packages["node_modules/" + name];
     assert.equal(manifest.version, entry.version);
     const destination = path.join(consumer, "node_modules", name);
@@ -243,13 +267,64 @@ try {
     }
     dependencies[name] = manifest.version;
     await mkdir(path.dirname(destination), { recursive: true });
-    await cp(path.join(repository, "node_modules", name), destination, {
+    await cp(path.join(dependencySource, name), destination, {
       recursive: true,
     });
     for (const dependency of Object.keys(manifest.dependencies ?? {}))
-      await copyClientDependency(dependency);
+      await copyClientDependency(
+        dependency,
+        Object.hasOwn(manifest.optionalDependencies ?? {}, dependency),
+      );
+    for (const dependency of Object.keys(manifest.optionalDependencies ?? {}))
+      await copyClientDependency(dependency, true);
   }
-  await copyClientDependency("@modelcontextprotocol/client");
+  if (profile === "javascript-extensions") {
+    const selected = selectJavaScriptToolsLock(
+      JSON.parse(await readFile(path.join(repository, "package.json"), "utf8")),
+      lock,
+    ).lock;
+    const copies = [];
+    for (const [key, entry] of Object.entries(selected.packages)) {
+      if (!key) continue;
+      assert.ok(
+        key.startsWith("node_modules/") &&
+          !key.split("/").includes("..") &&
+          !key.includes("\\"),
+      );
+      const source = path.join(
+        dependencySource,
+        key.slice("node_modules/".length),
+      );
+      let metadata;
+      try {
+        metadata = JSON.parse(
+          await readFile(path.join(source, "package.json"), "utf8"),
+        );
+      } catch (error) {
+        if (entry.optional && error.code === "ENOENT") continue;
+        throw error;
+      }
+      assert.equal(metadata.version, entry.version);
+      const target = path.join(consumer, key);
+      const existing = await readFile(path.join(target, "package.json"), "utf8")
+        .then(JSON.parse)
+        .catch((error) => {
+          if (error.code !== "ENOENT") throw error;
+          return null;
+        });
+      if (existing) {
+        assert.equal(existing.version, metadata.version);
+        continue;
+      }
+      copies.push({ key, source, target, version: metadata.version });
+    }
+    // Validate every selected native/JS dependency before copying any harness tool.
+    for (const copy of copies) {
+      await mkdir(path.dirname(copy.target), { recursive: true });
+      await cp(copy.source, copy.target, { recursive: true });
+      dependencies[copy.key] = copy.version;
+    }
+  } else await copyClientDependency("@modelcontextprotocol/client");
   await mkdir(path.join(consumer, "scripts"));
   for (const file of [
     "verify-required-native-tests.mjs",
@@ -294,6 +369,9 @@ try {
             : []),
           ...(profile === "assembly-nuxt"
             ? ["--env", "CHECKTRAIL_NUXT_ASSEMBLY_INSTALLED=1"]
+            : []),
+          ...(profile === "javascript-extensions"
+            ? ["--env", "CHECKTRAIL_JAVASCRIPT_EXTENSIONS_INSTALLED=1"]
             : []),
           ...(profile === "assembly-laravel"
             ? ["--env", "CHECKTRAIL_LARAVEL_ASSEMBLY_INSTALLED=1"]
@@ -383,7 +461,7 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          profile === "assembly-nuxt"
+          ["assembly-nuxt", "javascript-extensions"].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
             : [
                   "context-go",
@@ -404,6 +482,7 @@ try {
                     "assembly-fastapi",
                     "assembly-django",
                     "assembly-laravel",
+                    "javascript-extensions",
                   ].includes(profile)
                 ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
                 : "/tmp:rw,nosuid,nodev,size=256m",
@@ -444,7 +523,12 @@ try {
             network: "none",
             consumerMount: "readonly",
             rootFilesystemReadonly: true,
-            temporaryFilesystemMiB: profile === "assembly-nuxt" ? 1024 : 256,
+            temporaryFilesystemMiB: [
+              "assembly-nuxt",
+              "javascript-extensions",
+            ].includes(profile)
+              ? 1024
+              : 256,
             temporaryFilesystemExecutable: [
               "context-go",
               "context-rust",
@@ -452,6 +536,7 @@ try {
               "context-c",
               "context-cpp",
               "assembly-nuxt",
+              "javascript-extensions",
             ].includes(profile),
           }
         : {

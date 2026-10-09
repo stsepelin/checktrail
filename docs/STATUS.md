@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [JavaScript extension contracts](JAVASCRIPT-EXTENSIONS.md) account for
+native ESLint language/parser/processor source participation, declared Node ESM/CJS
+loaders and Vite library builds with fresh downstream declarations. Effective
+rules are checked at each parsed virtual leaf; transformed diagnostics retain
+unmapped native coordinates rather than an unverified physical line. The
+[local record](measurements/javascript-extensions-2026-10-09.json) binds Linux
+source and fresh offline installed acceptance, compiling guard removals and native
+regressions using the exact dependency tree prepared by CI. Selected native bytes
+are verified; whole dependency/license closures and the final runtime matrix remain
+open. Gate A remains open, with no inference or field evaluation invoked.
+
 Opt-in [Laravel assembly contracts](LARAVEL-ASSEMBLY.md) compare all five native
 registration projections, selected inherited model defaults and controlled HTTP
 responses. Original multi-row hydration fixtures reach the real lazy-loading

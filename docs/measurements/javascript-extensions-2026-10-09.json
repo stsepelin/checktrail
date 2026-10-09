@@ -1,0 +1,1001 @@
+{
+  "schemaVersion": 1,
+  "profile": "javascript-extensions",
+  "capturedAt": "2026-10-09T14:27:28.789576+00:00",
+  "sourceBaseCommit": "3e47f855a677489142741c796eedc2be0e2da51c",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "da698f35877fdd591cd0b77293f2befbe7a015d86060d925e7ec96d89e8e69bb",
+    "docs/ESLINT.md": "cef03a8d4cdc7e4cad479daa7afe8e45e0c1a22b5f3f7320fd46930cc3284cc0",
+    "docs/JAVASCRIPT-EXTENSIONS.md": "6df63aff861ca8e59cea6ae148da1f34bd1f552cf032c9a8db5d962c3323b3eb",
+    "docs/LANGUAGES.md": "4929d82cfa2bae7a23e18221cd6a1383e84dbbbf9b5be17f9469163f4ab30510",
+    "docs/STATUS.md": "73bf1ba3d5385c79c53d373138fcb5a1ac752e161c8007a1c5d78d68ec5d3681",
+    "docs/gate-a-profiles.v1.json": "6b7de068ba44939ca9e748931960e2c5301644a86083fb241494df8abd4363ea",
+    "schemas/javascript-config.schema.json": "e08997d0708f684adddbd7ef2cb39b17a714a3565c79feea14de9c954e74f4cb",
+    "schemas/plan.schema.json": "943c53d0dbc577de2f6b305118ef538b34cb4b6c5f0a16195e2d90d33ca001d0",
+    "scripts/generate-schemas.mjs": "ada4f0b7588a3aeaed417e464f94f3d3e2f00182a74ad2bdf870e0f009dc79ba",
+    "scripts/prepare-javascript-tools.mjs": "af718b954d702232a9d069f0e5cce7c885584df6e1f03e6bf404e3485027d047",
+    "scripts/required-native-tests.json": "f99b08a67ba825db56c51f72f3536b847c75231674bc7b934bce4ac84c7ff817",
+    "scripts/verify-import-context-package.mjs": "4e9fe9170e297941c3f0aab623971e70634321dc2ba4f4a0d8a553b60c94ec7c",
+    "scripts/verify-javascript-extensions-container.mjs": "b19eabb5a7ab2b5cceea8e7657e7532c3ad2b81d19c8629fd8913e6e2f9c707f",
+    "scripts/verify-javascript-extensions-guards.mjs": "76d21928002cb5d412a1d4cee9c35442554bfbb63a7a8c6bbdc7a2722329aa56",
+    "scripts/verify-required-native-tests.mjs": "ca4dbeda8682225ee86051cff2826cb0ccbfb846fd8fd3abf3cf9f655b186000",
+    "src/adapters.ts": "118ee179071493c9b48f6987a465419b84a51acf34888cf2dbe1f45a391229f9",
+    "src/eslint-evidence.ts": "c8e33cbea3e3c04bbe84165349d39eba0720734f39256f703ffdc697e19074de",
+    "src/eslint-participation-pins.ts": "17d770e412cd1473cab441e8633bae98b57f3e341a42e6f33a52e71f310cfd7a",
+    "src/eslint-participation-prerequisites.ts": "277a35a2be1ed739c0fe0ab20f3223e8fadad240a5f651f04beda44d2fd8a0e9",
+    "src/eslint-participation-runtime.ts": "ed48128ce762c4bab74e89c2a2964f9eac6345b8bb17c24f412970477b9d2ece",
+    "src/eslint-participation.ts": "b89b2762a42d68db47deac88f6baa11b3a98488cea740b06b9f2256e4c64d8d6",
+    "src/eslint-runner.ts": "7fd3a58a0ac148310906ea1a8f60c6ad5b25c663791c88d3f9ad9b98902f72ef",
+    "src/eslint.ts": "3c07b6b3f9ac6933881209e512de18452cb6f87bce96f2e8c1e87a3169456045",
+    "src/evidence.ts": "8be10703aa6bbe34358639f6eafb7d9e37db8b3689760e9c5d45e1c0128087f1",
+    "src/javascript-config.ts": "65d23e3d853d689b575b23e2f250897c782e37ac5a76b59df7add28a532778dc",
+    "src/javascript-source.ts": "02361754fdc9b2f4ea72a4e091a9423316a72ab90c9419f9d7e0892e59b84aa1",
+    "src/node-loader-contract.ts": "18889835055f99216c971e7375039f6abd46fecde41e180278bcfe604cb3660e",
+    "src/node-loader-evidence.ts": "261cbbf0afc0373f19d3a33acf63cadfd1b9c292af1b7ef64ffbba0943fa2f02",
+    "src/node-loader-runner.ts": "9387ec78ff3a31a73b8ae94a2deda7e1681893426cdbadcc8755d20ba8b8b9fb",
+    "src/node-test.ts": "866d24b981ef33203f5dea22fdfb921f5e54afa7bc9192a062f0fcf12d4dcf2f",
+    "src/schemas.ts": "0c85242dbba369c7bf2b55350388ce1a0082d547a42b9ef4535db07ae90d114c",
+    "src/tool-versions.ts": "3612bbcfa6522ca5aceb9eaff8f6f2b426e6f591618c2536c42ddbbc35a9b3d6",
+    "src/types.ts": "1b95ae51defc875c20843e491a10edac9908a98f3afd761141abb8a4b0fdc6cb",
+    "src/vite-library-contract.ts": "70460e1d595718867d86f2b1d55efb04da9d5ab16bd26e210cb24de92fee110d",
+    "src/vite-library-evidence.ts": "045a921c22ff83dd8262cfb07784437881e585fad0ceae14f3efc3e9d1644166",
+    "src/vite-library-pins.ts": "15f1a3845c229930811efcfc5a1f04978811c7fbc0e4c585e960439fbabd0cd0",
+    "src/vite-library-prerequisites.ts": "441316a620d961aa61c887a1571d5edaa82dc4ff292d13a81609ee24d086a84f",
+    "src/vite-library-runner.ts": "c78b6c7889f0100bdd24b3c28b2dc9d74670b5e5e26acaef9604e2da53e96daa",
+    "src/vite-library.ts": "b324479cc252f0abf13fdbcba730a1cf2d670ba2b20146a413d63adb5416975b",
+    "test/eslint-participation.test.ts": "b14e98336b9c175387616450232abe5bc2fe437059922dff5d9d1bb9a185d031",
+    "test/gate-javascript-extensions.test.ts": "c82f69f9c6378cc1c099dad1a48a1dbd6bb2ad18c3afedc4a43517cc5ba020c9",
+    "test/javascript-extensions-fixture.ts": "7a7890127b038e77e08c79b10d8610483395055d8b0b0599c1e8d169c82834ef",
+    "test/node-loaders.test.ts": "cb1e9414a2f68a623c65435f1e3c6253877aebb78830c87c2b2c6d89811db8cf",
+    "test/schemas.test.ts": "f6cb3cf0729268523029e8778fb7d5ec495d259c24469569c190864d7ced5766",
+    "test/vite-library.test.ts": "ef380c967a54f62fdf0cfcc7e4223b8629684f7fbdc6f2515592a840d85a2678"
+  },
+  "builtFiles": {
+    "dist/src/adapters.js": "7d0f0c86b144c23cd7c20e5f360eb7eb23c5b217f3561b4919b69f28659aed60",
+    "dist/src/eslint-evidence.js": "3d34768f39ce158c2195477469b743b392f2f078bbf135a2a22a618165c19387",
+    "dist/src/eslint-participation-pins.js": "2b55733424b0a25174ef8883b70b70a05d67a329f7064b3519c415db39066cab",
+    "dist/src/eslint-participation-prerequisites.js": "185b1ede629641d228a0d8455df02597ee4b65e57dabd3d17a93f5be14dc8fd0",
+    "dist/src/eslint-participation-runtime.js": "d31f6d48c0e3e07693e12f27cab15e95782586987bbb1c548a29837a5cf803aa",
+    "dist/src/eslint-participation.js": "ebcdf8ce0805a1b259677c95c864bfd3533055b96e650c6e9c13615556a953a3",
+    "dist/src/eslint-runner.js": "959ea920b877241727fb7b1b85e3dc0da831f52459115a393e0fb8ad5859463e",
+    "dist/src/eslint.js": "9ec92748e3f2dc95147e7fe6ef69b82b8e03c2e9ae363d741e362eb498cc7f41",
+    "dist/src/evidence.js": "cbd83f4437aecc6d1d621381e818175334e668e96f757ac8d19d0eba0d6df812",
+    "dist/src/javascript-config.js": "3aeea8fd44ad7c67fcf5335eb8a434dbf5bbe9003ed850e58e2097b5b8ba4f16",
+    "dist/src/javascript-source.js": "0c11959b2bce8ce5ed3c5d49ec6868a39376e272e3416ac1208236722dc0e2b5",
+    "dist/src/node-loader-contract.js": "5a9f8d842d3d3ef1d61798f73276cb59adce889f3749800dc9ed34b9b23e3498",
+    "dist/src/node-loader-evidence.js": "b0b4ec91547b0c97227a83e43600d877c18ce9bbfd745d1e24f1a53a51166f68",
+    "dist/src/node-loader-runner.js": "4276dec5f78f9e16d5e03e90c6b674c8c9009eda1fc6b0c963ee18005404e0c4",
+    "dist/src/node-test.js": "fa0914afae74c087ae3046af77eead4ee87ad8c1827fbe9287c7578730de1d66",
+    "dist/src/schemas.js": "aaa259d9aada03d89ea5c9e16c69adb5ef15d0bdd9c72a6258ec174cde2f799f",
+    "dist/src/tool-versions.js": "07ebeb06f38b0680d764d0c4a8870f1fa0d3f189eaca57627a4ea4e450e2dd69",
+    "dist/src/types.js": "786f47475a367ce5f36b8ce4d294a4d0ab1b1d02d433e4989722edc14634604a",
+    "dist/src/vite-library-contract.js": "020dcf14911362ec20fe0c600582a103d2d62d9970e06a76a7b06b18d1415124",
+    "dist/src/vite-library-evidence.js": "2042b4a9340d8047dd8cf3c96ca9678a6f89431f3b0055d1cce99d18b94d2016",
+    "dist/src/vite-library-pins.js": "a8be6f2daf18064db785fcd5d8bc791f285c0798dfc2e8953638c8d7e9f75ba5",
+    "dist/src/vite-library-prerequisites.js": "f145032284d70655aa81facb07b6fc8325c10e3b2a300a2d3eac077b2f0ae0bf",
+    "dist/src/vite-library-runner.js": "0994bf55a5a6768fa3e0d310bb502580da37377c73d4201c439ae5868246b3d6",
+    "dist/src/vite-library.js": "42944d9a7c58a6d981f99556e603d1c72b3914505407c96a9c620999f5cdfa3f",
+    "dist/test/eslint-participation.test.js": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+    "dist/test/gate-javascript-extensions.test.js": "1f5c4456c087f142d48381fe5afbac4c45d8574c25f301655d0d772f1da20739",
+    "dist/test/javascript-extensions-fixture.js": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+    "dist/test/node-loaders.test.js": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+    "dist/test/schemas.test.js": "b4595dbf84631169099bac822284a4b6a0cb71b01fbc94432772e9238075d231",
+    "dist/test/vite-library.test.js": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb"
+  },
+  "native": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "nodeBinary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+      "eslint": {
+        "available": true,
+        "arrayEntry": "/workspace/node_modules/@eslint/config-array/dist/cjs/index.cjs"
+      },
+      "library": {
+        "available": true,
+        "directories": {
+          "vite": "/workspace/node_modules/vite",
+          "typescript": "/workspace/node_modules/typescript",
+          "rolldown": "/workspace/node_modules/rolldown"
+        }
+      }
+    },
+    "image": "node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "javascript-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "1f5c4456c087f142d48381fe5afbac4c45d8574c25f301655d0d772f1da20739"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "1f5c4456c087f142d48381fe5afbac4c45d8574c25f301655d0d772f1da20739"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "javascript-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13549.267873,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "javascript-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2689.779797,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "javascript-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4881.158366,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "javascript-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2933.157526,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "javascript-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2928.107375,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "javascript-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7354.995994,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "javascript-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12721.55452,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "javascript-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16736.93924,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "javascript-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 67676.586167,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "javascript-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic native JavaScript source, loader, library and declaration controls",
+      "controls": [
+        {
+          "id": "eslint-processor-location",
+          "callback": "native processor diagnostics preserve messages without inventing physical source coordinates",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "3d34768f39ce158c2195477469b743b392f2f078bbf135a2a22a618165c19387",
+          "mutantSha256": "e5a36e0392659b5c746e4a90f136e15155467528a3f012a2345817587a16141e",
+          "mutantOutputSha256": "3e19adb00391742b113c07ec41a1675b40d10a4880ce7684931ac055c8feaf37",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-effective-leaf-rules",
+          "callback": "native ESLint virtual leaves require their effective rules and permit an unruled processor container",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "ebcdf8ce0805a1b259677c95c864bfd3533055b96e650c6e9c13615556a953a3",
+          "mutantSha256": "da1b6b0800b6c910ca6f3a8edbc2d61924688bff23744faca960fffef0b07d25",
+          "mutantOutputSha256": "8ee57df6678590ae6c7c7a74f20779c87fde5faa74135ccacfa6d912fda03441",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-source-binding",
+          "callback": "native ESLint participation reaches the TypeScript parser for named blocks and binds every planned source",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "3d34768f39ce158c2195477469b743b392f2f078bbf135a2a22a618165c19387",
+          "mutantSha256": "26eff1bd88be6eacf794ae2053ae4154b8657b37ecfe23f8b4e2f260872d417e",
+          "mutantOutputSha256": "72772db61a88ff8b514d824894c3ce25f90e9a3aa6e418b2636927b9fb584db8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-configuration-binding",
+          "callback": "native ESLint participation reaches the TypeScript parser for named blocks and binds every planned source",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "3d34768f39ce158c2195477469b743b392f2f078bbf135a2a22a618165c19387",
+          "mutantSha256": "3fec5cfd0b0c0db97c6f8200dae91414268ff649da4a5d8b18964f613d377a3d",
+          "mutantOutputSha256": "299bec0cd6dbf260a8def3b21ea3f5f00d64190e62b8754232f9294cf45745bc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-native-api-pins",
+          "callback": "native ESLint participation checks selected runtime bytes before importing configuration",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "185b1ede629641d228a0d8455df02597ee4b65e57dabd3d17a93f5be14dc8fd0",
+          "mutantSha256": "dec1f35a40c86d9ca597825f55fbc503c9f8dd45b692fe3ace5ec97ce71c1484",
+          "mutantOutputSha256": "f3b67af09cd8f1f721f2c2c818f29f135512db4f18124df19867296151dc2f5a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-complete-block-graph",
+          "callback": "native ESLint participation reconciles identity and repeated blocks and refuses an empty processor",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "ebcdf8ce0805a1b259677c95c864bfd3533055b96e650c6e9c13615556a953a3",
+          "mutantSha256": "fb1468882dc9cc88963994f2aa48424586c5608f4b6d66df11389390cece62da",
+          "mutantOutputSha256": "68826c3082d6b49f99710ebfb7eb5e564054a2f3ae418bc9557bcb231c383e4a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "eslint-language-receiver",
+          "callback": "native ESLint participation preserves private language receiver state and native rule callbacks",
+          "callbackSha256": "a33c472e8523896d01ed8aa342e6f916707175b893e81e3556611c3c487381a2",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "d31f6d48c0e3e07693e12f27cab15e95782586987bbb1c548a29837a5cf803aa",
+          "mutantSha256": "403a78827b8df8d4ed2ccebe09570cf386303ebcc188faaee31501ab9c9302c8",
+          "mutantOutputSha256": "6ba60d8739241f7182f00dfc45f61102ec5c25f518eb9f0b48082fac5647ce5b",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "loader-hook-bytes",
+          "callback": "native loader re-verifies planned hooks and tests before launching any selected test",
+          "callbackSha256": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "4276dec5f78f9e16d5e03e90c6b674c8c9009eda1fc6b0c963ee18005404e0c4",
+          "mutantSha256": "9cb4983300c7504d7bc8ed0da48526cd5be36f2be1d98a73e360e4124c986b0b",
+          "mutantOutputSha256": "881c10bffdbb5d3455b48def12da6ebd5d32b74bd77719749c20d14389b3df70",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "loader-test-bytes",
+          "callback": "native loader re-verifies planned hooks and tests before launching any selected test",
+          "callbackSha256": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "4276dec5f78f9e16d5e03e90c6b674c8c9009eda1fc6b0c963ee18005404e0c4",
+          "mutantSha256": "2340c7b792b10217885212614271722898b779029504b39d85d018f7a22ca6d4",
+          "mutantOutputSha256": "efe2c7e8aa00526219d31e9e92ab4c727d39b90cf8c0075996354d1dd1e8e546",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "loader-completion-boundary",
+          "callback": "declared ESM and CJS native loaders reach each typed test and preserve assertion failures",
+          "callbackSha256": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "b0b4ec91547b0c97227a83e43600d877c18ce9bbfd745d1e24f1a53a51166f68",
+          "mutantSha256": "80e0ac193e0b3f5230fc5e937e46ccca16ca7fc5dc452c4c0562e8a6a9344f60",
+          "mutantOutputSha256": "57e9d24a4f7cbead6e2a77a5b373bf3437da6caeef2b105a474108c64a7c2bb8",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "loader-receipt-binding",
+          "callback": "declared ESM and CJS native loaders reach each typed test and preserve assertion failures",
+          "callbackSha256": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "b0b4ec91547b0c97227a83e43600d877c18ce9bbfd745d1e24f1a53a51166f68",
+          "mutantSha256": "2d6ca4ddf2938e611088d7a3303c94acc9a9ca805d1aae285610a8c9b73b4e7f",
+          "mutantOutputSha256": "43803db51a19195d6a6e443a16e7c2d0147f58ddf9754b90430cd94f890472c5",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "loader-exact-file-summary",
+          "callback": "declared ESM and CJS native loaders reach each typed test and preserve assertion failures",
+          "callbackSha256": "a11780d7955a7fad5e90c46bdfffe1d67629db03e4a35f8e44109cfb202ccaa3",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "b0b4ec91547b0c97227a83e43600d877c18ce9bbfd745d1e24f1a53a51166f68",
+          "mutantSha256": "997b0f314cfb0df273497ca13b70d745b45e994df4bd089325e04a12f313fa75",
+          "mutantOutputSha256": "44906dba4d5009579309081470fa2f21370c5cfe86ac38f889252ee02832eb79",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-receipt-binding",
+          "callback": "native library refuses forged declaration, format, export, module and consumer accounting",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "2042b4a9340d8047dd8cf3c96ca9678a6f89431f3b0055d1cce99d18b94d2016",
+          "mutantSha256": "90bf91141586937e769bcfe29970670644ad3337e8d2c2c4193724a37f67db8a",
+          "mutantOutputSha256": "047ca97d884d11353e32293931505f1078ff60a467ed0a9f090ccf06b2fdfccc",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-completeness",
+          "callback": "native library emits both formats and fresh declarations and detects producer and downstream defects",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "2042b4a9340d8047dd8cf3c96ca9678a6f89431f3b0055d1cce99d18b94d2016",
+          "mutantSha256": "0a8523ab0986a1543555c751dd64c26e7fd72048039a6f7937d64c44f563f297",
+          "mutantOutputSha256": "c19029e545cbf7384454495a50f21db64947422f9ac0495c322e687a26ab1077",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-native-api-pins",
+          "callback": "native library planning imports no tool and changed selected API bytes remain unavailable",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "f145032284d70655aa81facb07b6fc8325c10e3b2a300a2d3eac077b2f0ae0bf",
+          "mutantSha256": "61010a4427ae449a20f09718614e39895b3050acc15bff52e995af63b9bd13f3",
+          "mutantOutputSha256": "3b86f9d34c8b0b2c7ef9370e7472f0c58acd2f3aabcaa247f8aaed71fac0a40a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-type-checking",
+          "callback": "native library emits both formats and fresh declarations and detects producer and downstream defects",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "0994bf55a5a6768fa3e0d310bb502580da37377c73d4201c439ae5868246b3d6",
+          "mutantSha256": "3c8bc6d473c523bbcbd533bc351a518a434bae8409592f33da0b94a3e767920b",
+          "mutantOutputSha256": "e15d077233806ad1957a17271d3f3704436c1348421086fbfbdbfd3cea6d9c6d",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-fresh-declaration-resolution",
+          "callback": "native library emits both formats and fresh declarations and detects producer and downstream defects",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "0994bf55a5a6768fa3e0d310bb502580da37377c73d4201c439ae5868246b3d6",
+          "mutantSha256": "0af23cc08d02f397b019cf47c13b099c5d6320610730bfc9b769ccb456c53395",
+          "mutantOutputSha256": "6b82e12a0ed8a1e2698e1bf57b3f62d5ab2a3b0651764adb56c0e39db925a67a",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "library-both-native-formats",
+          "callback": "native library emits both formats and fresh declarations and detects producer and downstream defects",
+          "callbackSha256": "c6ff2b4ac91e7267ab6fb4d4a88ddb64e1be3d130f7e675e4fb9d6615da6b0cb",
+          "fixtureSha256": "be9a5121c97b18e3cf832a095ed6fe082929f7fd28b66239fc8a92c07996cbf8",
+          "sourceSha256": "0994bf55a5a6768fa3e0d310bb502580da37377c73d4201c439ae5868246b3d6",
+          "mutantSha256": "c5f1d722c55579083b5ca6ab02939c3230c7afa76ab410eee8fcf8cf0fbdf372",
+          "mutantOutputSha256": "b470cbe0d45ba1244ac56e74e4737bd684f7a4e945a80099983a9ded52a0d6e2",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "b1cee94ddfb2ebe73c860740f48ce2060a6f647ccb66329495773258e1f2789d",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "node_modules/eslint": "10.11.0",
+        "node_modules/@eslint-community/eslint-utils": "4.10.1",
+        "node_modules/@eslint-community/eslint-utils/node_modules/eslint-visitor-keys": "3.4.3",
+        "node_modules/@eslint-community/regexpp": "4.12.2",
+        "node_modules/@eslint/config-array": "0.23.5",
+        "node_modules/@eslint/object-schema": "3.0.5",
+        "node_modules/debug": "4.4.3",
+        "node_modules/ms": "2.1.3",
+        "node_modules/minimatch": "10.2.6",
+        "node_modules/brace-expansion": "5.0.12",
+        "node_modules/balanced-match": "4.0.4",
+        "node_modules/@eslint/config-helpers": "0.7.0",
+        "node_modules/@eslint/core": "1.2.1",
+        "node_modules/@types/json-schema": "7.0.15",
+        "node_modules/@eslint/plugin-kit": "0.7.3",
+        "node_modules/levn": "0.4.1",
+        "node_modules/prelude-ls": "1.2.1",
+        "node_modules/type-check": "0.4.0",
+        "node_modules/@humanfs/node": "0.16.8",
+        "node_modules/@humanfs/core": "0.19.2",
+        "node_modules/@humanfs/types": "0.15.0",
+        "node_modules/@humanwhocodes/retry": "0.4.3",
+        "node_modules/@humanwhocodes/module-importer": "1.0.1",
+        "node_modules/@types/estree": "1.0.9",
+        "node_modules/eslint/node_modules/ajv": "6.15.0",
+        "node_modules/fast-json-stable-stringify": "2.1.0",
+        "node_modules/eslint/node_modules/json-schema-traverse": "0.4.1",
+        "node_modules/uri-js": "4.4.1",
+        "node_modules/punycode": "2.3.1",
+        "node_modules/cross-spawn": "7.0.6",
+        "node_modules/path-key": "3.1.1",
+        "node_modules/shebang-command": "2.0.0",
+        "node_modules/shebang-regex": "3.0.0",
+        "node_modules/which": "2.0.2",
+        "node_modules/isexe": "2.0.0",
+        "node_modules/escape-string-regexp": "4.0.0",
+        "node_modules/eslint-scope": "9.1.2",
+        "node_modules/@types/esrecurse": "4.3.1",
+        "node_modules/esrecurse": "4.3.0",
+        "node_modules/estraverse": "5.3.0",
+        "node_modules/eslint-visitor-keys": "5.0.1",
+        "node_modules/espree": "11.2.0",
+        "node_modules/acorn": "8.18.0",
+        "node_modules/acorn-jsx": "5.3.2",
+        "node_modules/esquery": "1.7.0",
+        "node_modules/esutils": "2.0.3",
+        "node_modules/file-entry-cache": "11.1.5",
+        "node_modules/flat-cache": "6.1.23",
+        "node_modules/cacheable": "2.5.0",
+        "node_modules/@cacheable/memory": "2.2.0",
+        "node_modules/@cacheable/utils": "2.5.0",
+        "node_modules/hashery": "1.5.1",
+        "node_modules/hookified": "1.15.1",
+        "node_modules/keyv": "5.6.0",
+        "node_modules/@keyv/serialize": "1.1.1",
+        "node_modules/@keyv/bigmap": "1.3.1",
+        "node_modules/qified": "0.10.1",
+        "node_modules/qified/node_modules/hookified": "2.2.0",
+        "node_modules/flatted": "3.4.4",
+        "node_modules/find-up": "5.0.0",
+        "node_modules/locate-path": "6.0.0",
+        "node_modules/p-locate": "5.0.0",
+        "node_modules/p-limit": "3.1.0",
+        "node_modules/yocto-queue": "0.1.0",
+        "node_modules/path-exists": "4.0.0",
+        "node_modules/glob-parent": "6.0.2",
+        "node_modules/is-glob": "4.0.3",
+        "node_modules/is-extglob": "2.1.1",
+        "node_modules/ignore": "5.3.2",
+        "node_modules/imurmurhash": "0.1.4",
+        "node_modules/json-stable-stringify-without-jsonify": "1.0.1",
+        "node_modules/natural-compare": "1.4.0",
+        "node_modules/optionator": "0.9.4",
+        "node_modules/deep-is": "0.1.4",
+        "node_modules/fast-levenshtein": "2.0.6",
+        "node_modules/word-wrap": "1.2.5",
+        "node_modules/@typescript-eslint/parser": "8.71.0",
+        "node_modules/@typescript-eslint/scope-manager": "8.71.0",
+        "node_modules/@typescript-eslint/types": "8.71.0",
+        "node_modules/@typescript-eslint/visitor-keys": "8.71.0",
+        "node_modules/@typescript-eslint/typescript-estree": "8.71.0",
+        "node_modules/@typescript-eslint/project-service": "8.71.0",
+        "node_modules/@typescript-eslint/tsconfig-utils": "8.71.0",
+        "node_modules/semver": "7.8.5",
+        "node_modules/tinyglobby": "0.2.17",
+        "node_modules/fdir": "6.5.0",
+        "node_modules/picomatch": "4.0.7",
+        "node_modules/ts-api-utils": "2.5.0",
+        "node_modules/vite": "8.3.0",
+        "node_modules/lightningcss": "1.33.0",
+        "node_modules/detect-libc": "2.1.2",
+        "node_modules/lightningcss-linux-arm64-musl": "1.33.0",
+        "node_modules/postcss": "8.5.28",
+        "node_modules/nanoid": "3.3.19",
+        "node_modules/picocolors": "1.1.1",
+        "node_modules/source-map-js": "1.2.1",
+        "node_modules/rolldown": "1.2.9",
+        "node_modules/@oxc-project/types": "0.150.0",
+        "node_modules/@rolldown/pluginutils": "1.0.1",
+        "node_modules/@rolldown/binding-linux-arm64-musl": "1.2.9",
+        "node_modules/@types/node": "26.6.4",
+        "node_modules/undici-types": "8.9.0",
+        "node_modules/@modelcontextprotocol/client": "2.3.0",
+        "node_modules/eventsource": "3.0.7",
+        "node_modules/eventsource-parser": "3.1.1",
+        "node_modules/jose": "6.2.12",
+        "node_modules/pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "javascript-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "1f5c4456c087f142d48381fe5afbac4c45d8574c25f301655d0d772f1da20739"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "1f5c4456c087f142d48381fe5afbac4c45d8574c25f301655d0d772f1da20739"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "javascript-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13621.18517,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "javascript-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2683.727766,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "javascript-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4778.112496,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "javascript-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2930.607785,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "javascript-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2922.92735,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "javascript-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7506.465453,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "javascript-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13019.995577,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "javascript-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 17048.982105,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "javascript-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.52942,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "javascript-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "callbacks": [
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions broken acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions fixed acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions near-miss acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions prerequisite acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions stale acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions empty acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions privacy acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions lifecycle acceptance"
+      },
+      {
+        "file": "dist/test/gate-javascript-extensions.test.js",
+        "name": "javascript-extensions installed acceptance"
+      }
+    ],
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": true
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "gateAComplete": false,
+    "finalMatrixAccepted": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "ciDependencyPreparation": {
+    "packages": 153,
+    "rootLockSha256": "30f1227db184be3def2673328db8521e38f03a6191332137c9082f48678643da",
+    "selectedLockSha256": "7d95406002df049f0dc2ff37bc6df97ce1f82d6066329f11a7057172c2fe203b",
+    "versions": {
+      "@modelcontextprotocol/server": "2.3.0",
+      "ajv": "8.20.0",
+      "ajv-formats": "3.0.1",
+      "fast-xml-parser": "5.11.1",
+      "smol-toml": "1.9.0",
+      "typescript": "6.0.3",
+      "web-tree-sitter": "0.27.0",
+      "yaml": "2.9.1",
+      "zod": "4.6.5",
+      "eslint": "10.11.0",
+      "@typescript-eslint/parser": "8.71.0",
+      "vite": "8.3.0",
+      "@modelcontextprotocol/client": "2.3.0"
+    },
+    "rangeResolutionPerformed": false,
+    "installedPackageCountReportedByNpm": 128,
+    "lifecycleScriptsExecuted": false,
+    "installationLogSha256": "5f907e6405ae63d3634ea7d88975ea84d3b4d10f98611bf0fbf2aa0fc17374e9"
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "tests": 1312,
+    "passed": 888,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 424,
+    "todo": 0,
+    "durationMs": 224974.624167,
+    "logSha256": "e3fca1fc3041c40494da3fbcb2c64373dfe2f2acead11bcbec9301f26e5d4980",
+    "skippedCasesArePassingEvidence": false
+  },
+  "originalDefectRepairObservations": [
+    {
+      "description": "A parsed generated leaf with zero effective rules previously borrowed the physical container rule count and passed; it now remains incomplete.",
+      "before": {
+        "outcome": "passed",
+        "status": "passed",
+        "privateDiagnosticSha256": "8be5df60e84b53ddd9a6236795f75a1769d00f1b4032664cc8a4364a8e2a4644"
+      },
+      "after": {
+        "outcome": "incomplete",
+        "status": "inconclusive",
+        "privateDiagnosticSha256": "004ae2cfe7db381adc3585d79d30ecd09429dfa14f4cef267c04b4605651281d"
+      }
+    },
+    {
+      "description": "A native processor line outside the physical file previously became a physical structured finding; the native diagnostic is retained without claiming a verified physical line.",
+      "before": {
+        "outcome": "failed",
+        "status": "failed",
+        "privateDiagnosticSha256": "2bd104824bdbf274a3baae8ac518ffe0c68f73942c1305497577bd378523a9f0",
+        "findingsComplete": true
+      },
+      "after": {
+        "outcome": "failed",
+        "status": "failed",
+        "privateDiagnosticSha256": "90297139b1a15e14bbddba6d3eb362e3834c83db6cdb5e39e9ddcf29d7a56fb2",
+        "findingsComplete": false
+      }
+    }
+  ],
+  "physicalOutputsOmittedReason": "Host synthetic diagnostics contain workstation paths; only their immutable hashes and bounded outcome accounting are published.",
+  "installedArtifactScope": "The recorded tarball was evaluated before this measurement and status/inventory receipt declarations were emitted. Compiled engine and original callback bytes remain those evaluated; final Gate A package/matrix acceptance is separate.",
+  "inventoryProgress": {
+    "implemented": 24,
+    "selected": 51,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "structuralAuditCertifiesImplementation": false
+  },
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

@@ -46,6 +46,14 @@ output, unexpected stderr, cancellation or output truncation cannot yield pass.
 Both errors and warnings fail a fully accounted check. Configuration/runtime
 exceptions are execution errors, not code findings.
 
+A configured processor can return no code blocks while ESLint still emits a
+zero-diagnostic final result. The legacy profile therefore keeps any processed
+file incomplete; it does not certify parser participation from that result.
+Native commands require explicit processor-use accounting for every planned
+file. The opt-in [source participation contract](JAVASCRIPT-EXTENSIONS.md) observes the
+actual selected native language/parser and every generated processor leaf. Its
+acceptance is tracked separately from final Gate A closure.
+
 CLI and MCP use the same engine and interpretation. Summary output omits paths,
 rule messages and source excerpts. Detailed mode includes the structured evidence
 in the process output. Native lint diagnostics may contain source identifiers.
