@@ -1,16 +1,351 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "settings": {
-      "type": "string",
-      "maxLength": 256,
-      "pattern": "^[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*$"
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "settings": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*$"
+        },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "environment": { "type": "string", "minLength": 1, "maxLength": 256 }
+      },
+      "required": ["schemaVersion", "settings", "assembly", "environment"],
+      "additionalProperties": false
     },
-    "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
-    "environment": { "type": "string", "minLength": 1, "maxLength": 256 }
-  },
-  "required": ["schemaVersion", "settings", "assembly", "environment"],
-  "additionalProperties": false
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 2 },
+        "settings": {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*$"
+        },
+        "assembly": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "environment": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "signals": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "type": "string",
+                "maxLength": 256,
+                "pattern": "^[A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*$"
+              },
+              "attribute": {
+                "type": "string",
+                "maxLength": 256,
+                "pattern": "^[A-Za-z_]\\w*$"
+              }
+            },
+            "required": ["module", "attribute"],
+            "additionalProperties": false
+          }
+        },
+        "expectedRoutes": {
+          "minItems": 1,
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ordinal": {
+                "type": "string",
+                "maxLength": 128,
+                "pattern": "^[0-9]+(?:\\.[0-9]+)*$"
+              },
+              "patterns": {
+                "minItems": 1,
+                "maxItems": 9,
+                "type": "array",
+                "items": { "type": "string", "maxLength": 4096 }
+              },
+              "namespaces": {
+                "maxItems": 8,
+                "type": "array",
+                "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+              },
+              "handler": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "name": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 256 },
+                  { "type": "null" }
+                ]
+              },
+              "defaultsHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": [
+              "ordinal",
+              "patterns",
+              "namespaces",
+              "handler",
+              "name",
+              "defaultsHash"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expectedMiddleware": {
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "type": "string",
+                "enum": ["registration", "view", "template", "exception"]
+              },
+              "position": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "declared": {
+                "anyOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 1024 },
+                  { "type": "null" }
+                ]
+              },
+              "callable": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "constructed": { "type": "boolean" }
+            },
+            "required": [
+              "phase",
+              "position",
+              "declared",
+              "callable",
+              "constructed"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expectedSignals": {
+          "maxItems": 2048,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "signal": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "position": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "receiver": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "sender": {
+                "anyOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 1024 },
+                  { "type": "null" }
+                ]
+              },
+              "dispatchUid": {
+                "anyOf": [
+                  { "type": "string", "maxLength": 4096 },
+                  { "type": "null" }
+                ]
+              },
+              "weak": { "type": "boolean" },
+              "async": { "type": "boolean" }
+            },
+            "required": [
+              "signal",
+              "position",
+              "receiver",
+              "sender",
+              "dispatchUid",
+              "weak",
+              "async"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expectedApps": {
+          "minItems": 1,
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position": { "type": "integer", "minimum": 0, "maximum": 2048 },
+              "declared": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "name": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "label": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "config": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "ready": { "type": "string", "minLength": 1, "maxLength": 1024 },
+              "defaultAutoField": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "models": { "type": "boolean" }
+            },
+            "required": [
+              "position",
+              "declared",
+              "name",
+              "label",
+              "config",
+              "ready",
+              "defaultAutoField",
+              "models"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "requests": {
+          "minItems": 1,
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 4096,
+                "pattern": "^\\/(?!\\/)[^?\\r\\n\\0]*$"
+              },
+              "host": {
+                "type": "string",
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9.-]*(?::[0-9]{1,5})?$"
+              },
+              "method": {
+                "type": "string",
+                "maxLength": 32,
+                "pattern": "^[A-Z]+$"
+              },
+              "headers": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "maxLength": 256,
+                      "pattern": "^[!#$%&'*+.^_`|~0-9A-Za-z-]+$"
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 4096,
+                      "pattern": "^[^\\r\\n\\0]*$"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "body": { "type": "string", "maxLength": 32768 },
+              "expected": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 599
+                  },
+                  "body": { "type": "string", "maxLength": 65536 },
+                  "events": {
+                    "maxItems": 2048,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "signal": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1024
+                        },
+                        "method": {
+                          "type": "string",
+                          "enum": [
+                            "send",
+                            "send_robust",
+                            "asend",
+                            "asend_robust"
+                          ]
+                        },
+                        "sender": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            { "type": "null" }
+                          ]
+                        },
+                        "receivers": {
+                          "maxItems": 2048,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1024
+                          }
+                        },
+                        "errors": {
+                          "maxItems": 2048,
+                          "type": "array",
+                          "items": { "type": "boolean" }
+                        }
+                      },
+                      "required": [
+                        "signal",
+                        "method",
+                        "sender",
+                        "receivers",
+                        "errors"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["status", "body", "events"],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "path",
+              "host",
+              "method",
+              "headers",
+              "body",
+              "expected"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "settings",
+        "assembly",
+        "environment",
+        "signals",
+        "expectedRoutes",
+        "expectedMiddleware",
+        "expectedSignals",
+        "expectedApps",
+        "requests"
+      ],
+      "additionalProperties": false
+    }
+  ]
 }

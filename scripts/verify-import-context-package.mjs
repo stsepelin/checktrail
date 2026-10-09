@@ -42,6 +42,7 @@ assert.ok(
     "context-yaml",
     "assembly-vue-router",
     "assembly-fastapi",
+    "assembly-django",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -81,6 +82,8 @@ if (profile === "context-yaml") {
   process.env.CHECKTRAIL_CONTEXT_YAML_INSTALLED = "1";
   process.env.CHECKTRAIL_CONTEXT_YAML_NATIVE = "1";
 }
+if (profile === "assembly-django")
+  process.env.CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-fastapi")
   process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-vue-router")
@@ -137,6 +140,8 @@ try {
     "gate-context-cpp.test.js",
     "gate-context-hcl.test.js",
     "gate-context-yaml.test.js",
+    "gate-assembly-django.test.js",
+    "review-django-assembly-fixture.js",
     "gate-assembly-fastapi.test.js",
     "review-fastapi-assembly-fixture.js",
     "gate-assembly-vue-router.test.js",
@@ -253,6 +258,9 @@ try {
           ...(profile === "assembly-fastapi"
             ? ["--env", "CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED=1"]
             : []),
+          ...(profile === "assembly-django"
+            ? ["--env", "CHECKTRAIL_DJANGO_ASSEMBLY_INSTALLED=1"]
+            : []),
           ...(profile === "assembly-vue-router"
             ? ["--env", "CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED=1"]
             : []),
@@ -352,6 +360,7 @@ try {
                   "context-yaml",
                   "assembly-vue-router",
                   "assembly-fastapi",
+                  "assembly-django",
                 ].includes(profile)
               ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
               : "/tmp:rw,nosuid,nodev,size=256m",

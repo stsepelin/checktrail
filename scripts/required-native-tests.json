@@ -3970,5 +3970,43 @@
       "file": "dist/test/gate-assembly-fastapi.test.js",
       "name": "assembly-fastapi installed acceptance"
     }
+  ],
+  "assembly-django": [
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "name": "assembly-django installed acceptance"
+    }
   ]
 }

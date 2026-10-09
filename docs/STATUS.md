@@ -855,3 +855,16 @@ Revision-pinned historical import acceptance is recorded in
 [historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
 The receipt retains both final profiles and unaccepted development attempts; it
 does not promote broader Gate A capabilities or review quality.
+
+The opt-in [selected Django assembly contract](DJANGO-ASSEMBLY.md) extends the shared
+route adapter with configuration version 2. Native installed-app selection/defaults,
+nested URLs/namespaces, middleware construction/hook orders and selected signal
+receiver multiplicity are compared with explicit operator contracts. Controlled
+native WSGI requests retain complete status/body/dispatch projections and response
+close behavior. Isolated bootstrap, selected source bytes, registration identity,
+weak/lazy/async receiver cases and reached process controls have original source,
+compiling-control and offline installed acceptance recorded in
+[django-assembly-2026-10-09.json](measurements/django-assembly-2026-10-09.json).
+Version 1 keeps its route-only behavior. Complete artifact/license closure, wider
+frameworks, final platforms and Gate A remain open; no inference or field evaluation
+is invoked.

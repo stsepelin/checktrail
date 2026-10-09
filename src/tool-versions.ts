@@ -145,9 +145,21 @@ export async function toolsFor(
             `from importlib.metadata import version; print(version(${JSON.stringify(name)}))`,
           ]),
         );
+    if (
+      check.id === "python.django-routes" &&
+      check.commands[0]?.args[0] === "-I"
+    )
+      tools.push(
+        command("asgiref", "python3", [
+          "-I",
+          "-c",
+          "from importlib.metadata import version; print(version('asgiref'))",
+        ]),
+      );
     if (check.id === "python.django-routes")
       tools.push(
         command("django", "python3", [
+          ...(check.commands[0]?.args[0] === "-I" ? ["-I"] : []),
           "-c",
           "from importlib.metadata import version; print(version('Django'))",
         ]),

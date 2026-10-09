@@ -232,8 +232,9 @@ const controls = [
     id: "isolated-tool-probes",
     file: "tool-versions.js",
     name: "assembly-fastapi isolated bootstrap guard acceptance",
-    before: '...(check.commands[0]?.args[0] === "-I" ? ["-I"] : []),',
-    after: "...[],",
+    before:
+      'command(name, "python3", [\n                    ...(check.commands[0]?.args[0] === "-I" ? ["-I"] : []),',
+    after: 'command(name, "python3", [\n                    ...[],',
     occurrences: 1,
   },
   {

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scope": "FastAPI compiling control address repair after Django isolated-probe addition",
+  "failedJob": {
+    "run": 37899066941,
+    "job": 113717115829,
+    "reason": "The old unscoped expression has two exact occurrences after Django v2 adds its isolated tool-version probe."
+  },
+  "change": "Select the unique command(name, python3) call including its isolation expression; preserve the Django probe and both runtime isolation policies.",
+  "control": {
+    "id": "isolated-tool-probes",
+    "callback": "assembly-fastapi isolated bootstrap guard acceptance",
+    "callbackSha256": "975614708f412a6128d4562f140504293c0ef70d373d27f171da649a7b75afb8",
+    "fixtureSha256": "23d25906cdb6b4029e7b60a6e31d2678e5e62f6d155a789392981f097f1f64c2",
+    "sourceSha256": "3f05e7f6c598442808469409fb735161dbf10265e41cddaffb920c8a9b688298",
+    "mutantSha256": "dbdad56422d6134c05c96d834eb4e27a140dd349a918e7a8200700c8387e69b3",
+    "originalPassed": true,
+    "mutantCompiled": true,
+    "mutantFailedAssertion": true,
+    "restoredPassed": true
+  },
+  "verification": {
+    "targetedNativeControl": true,
+    "driverEslint": true,
+    "driverPrettier": true,
+    "fullSuiteRerun": false,
+    "runtimeBehaviorChanged": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "gateAClosed": false
+  }
+}

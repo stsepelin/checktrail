@@ -1,4 +1,4 @@
-# Django URL inventory profile
+# Django URL inventory profile (schema version 1)
 
 Select `python.django-routes` and provide project-local
 `checktrail.django.json`:
@@ -62,9 +62,11 @@ registrations, empty tables, custom converters/routes and resolver failures. Tes
 also verify non-executing planning, protected settings environment, malformed
 evidence and skipped unused framework profiles. Reproduce prepared Linux tests
 with `node scripts/verify-framework-container.mjs`; preparation dependencies are
-pinned in `scripts/framework-tools.requirements.txt`. Hosted CI remains unexecuted.
+pinned in `scripts/framework-tools.requirements.txt`. The required framework job exercises the selected native profile; it is separate from the final Gate A matrix.
 
 References: [Django URL dispatcher](https://docs.djangoproject.com/en/6.0/topics/http/urls/),
 [Django setup and settings](https://docs.djangoproject.com/en/4.2/topics/settings/).
 Collector behavior is verified against installed Django 6.1.1 source and fixtures;
 these references describe the underlying public concepts.
+
+For installed apps, middleware hooks, selected signal receivers and actual controlled WSGI requests, select [schema version 2](DJANGO-ASSEMBLY.md). Version 1 keeps its original route-only behavior.
