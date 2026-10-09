@@ -1,3 +1,5 @@
+import { viteLibraryEvidence } from "./vite-library-evidence.js";
+import { nodeLoaderEvidence } from "./node-loader-evidence.js";
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
 import { cppToolsEvidence } from "./cpp-tools-evidence.js";
 import { terraformEvidence } from "./terraform-evidence.js";
@@ -279,10 +281,24 @@ export function evaluate(
     );
   if (processes.some((p) => p.errorCode || p.signal || p.exitCode === null))
     return set("error", "The process could not complete normally.");
+  if (check.parser === "node-loader-events") {
+    const loader = nodeLoaderEvidence(check, processes, root);
+    if (!("stdout" in loader)) return { ...result, ...loader };
+    return {
+      ...evaluate(
+        { ...check, parser: "node-events" },
+        [{ ...processes[0]!, stdout: loader.stdout }],
+        root,
+      ),
+      processes,
+    };
+  }
   if (check.rustBuild)
     return { ...result, ...rustWorkspaceEvidence(check, processes, root) };
   if (check.parser === "external-json")
     return { ...result, ...externalEvidence(check, processes) };
+  if (check.parser === "vite-library-json")
+    return { ...result, ...viteLibraryEvidence(check, processes, root) };
   if (check.parser === "typescript-build-json")
     return { ...result, ...typescriptBuildEvidence(check, processes, root) };
   if (check.parser === "go-build")

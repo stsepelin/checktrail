@@ -1,4 +1,8 @@
 import { fileURLToPath } from "node:url";
+import { javascriptSource } from "./javascript-source.js";
+import path from "node:path";
+import { javascriptConfiguration } from "./javascript-config.js";
+import { eslintParticipationManifestSchema } from "./eslint-participation.js";
 import { localTool } from "./local-tool.js";
 import type { Check, Inventory, Project } from "./types.js";
 
@@ -6,6 +10,9 @@ export async function eslintCheck(
   source: Inventory,
   project: Project,
 ): Promise<Check> {
+  const participation =
+    (await javascriptConfiguration(source, project))?.eslint
+      ?.sourceParticipation === true;
   const files = project.files.filter((file) =>
     /\.(?:[cm]?[jt]s|[jt]sx|vue)$/.test(file),
   );
@@ -32,6 +39,7 @@ export async function eslintCheck(
                 tool,
                 source.root,
                 configs[0]!,
+                "--processor-accounting-v1",
                 ...files,
               ],
               cwd: project.path,
@@ -47,5 +55,29 @@ export async function eslintCheck(
   else if (!tool)
     check.unavailableReason =
       "No project-local or root-hoisted ESLint installation is available within the configured root.";
+  if (participation && !check.unavailableReason) {
+    const identity = async (file: string) => ({
+      ...(
+        await javascriptSource(source.root, path.posix.join(project.path, file))
+      ).identity,
+      path: file,
+    });
+    const manifest = eslintParticipationManifestSchema.parse({
+      schemaVersion: 1,
+      sourceFingerprint: source.fingerprint,
+      configuration: await identity(configs[0]!),
+      files: await Promise.all(files.map(identity)),
+    });
+    const encoded = JSON.stringify(manifest);
+    if (Buffer.byteLength(encoded) > 65536)
+      throw new Error("ESLint participation manifest exceeds 64 KiB");
+    check.commands[0]!.args = [
+      ...check.commands[0]!.args.slice(0, 4),
+      "--source-participation-v2",
+      encoded,
+    ];
+    check.reason =
+      "Lint the complete planned source with pinned native language and processor participation; require every generated block to reach its native parser.";
+  }
   return check;
 }

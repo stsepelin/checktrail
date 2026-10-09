@@ -18,6 +18,7 @@ import type {
 const packages: Record<string, string> = {
   "javascript.typescript": "typescript",
   "javascript.typescript-build": "typescript",
+  "javascript.vite-library": "vite",
   "javascript.vue-tsc": "vue-tsc",
   "javascript.vue-router": "vue-router",
   "javascript.eslint": "eslint",

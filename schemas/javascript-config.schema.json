@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "eslint": {
+          "type": "object",
+          "properties": {
+            "sourceParticipation": { "type": "boolean", "const": true }
+          },
+          "required": ["sourceParticipation"],
+          "additionalProperties": false
+        },
+        "nodeTest": {
+          "type": "object",
+          "properties": {
+            "loaders": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": { "type": "string", "enum": ["import", "require"] },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["kind", "path", "sha256"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["loaders"],
+          "additionalProperties": false
+        },
+        "library": {
+          "type": "object",
+          "properties": {
+            "sourceDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "entry": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "consumers": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096,
+                "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+              }
+            }
+          },
+          "required": ["sourceDirectory", "entry", "consumers"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["schemaVersion", "eslint"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "eslint": {
+          "type": "object",
+          "properties": {
+            "sourceParticipation": { "type": "boolean", "const": true }
+          },
+          "required": ["sourceParticipation"],
+          "additionalProperties": false
+        },
+        "nodeTest": {
+          "type": "object",
+          "properties": {
+            "loaders": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": { "type": "string", "enum": ["import", "require"] },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["kind", "path", "sha256"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["loaders"],
+          "additionalProperties": false
+        },
+        "library": {
+          "type": "object",
+          "properties": {
+            "sourceDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "entry": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "consumers": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096,
+                "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+              }
+            }
+          },
+          "required": ["sourceDirectory", "entry", "consumers"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["schemaVersion", "nodeTest"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "eslint": {
+          "type": "object",
+          "properties": {
+            "sourceParticipation": { "type": "boolean", "const": true }
+          },
+          "required": ["sourceParticipation"],
+          "additionalProperties": false
+        },
+        "nodeTest": {
+          "type": "object",
+          "properties": {
+            "loaders": {
+              "minItems": 1,
+              "maxItems": 16,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": { "type": "string", "enum": ["import", "require"] },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["kind", "path", "sha256"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["loaders"],
+          "additionalProperties": false
+        },
+        "library": {
+          "type": "object",
+          "properties": {
+            "sourceDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "entry": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+            },
+            "consumers": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096,
+                "pattern": "^(?![A-Za-z]:)(?!\\/)(?!.*(?:^|\\/)\\.\\.?(?:\\/|$))[^\\\\\\0\\r\\n]+$"
+              }
+            }
+          },
+          "required": ["sourceDirectory", "entry", "consumers"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["schemaVersion", "library"],
+      "additionalProperties": false
+    }
+  ]
+}
