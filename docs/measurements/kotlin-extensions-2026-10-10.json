@@ -1176,7 +1176,7 @@
     "todo": 0,
     "durationMs": 248993.414667,
     "logSha256": "0a560db3938dbb4add830941b03ede9e6811abd4c7078069bba03df3a5a63060",
-    "scope": "Behavior changes and original acceptance/control callbacks; subsequent native-regression test and documentation additions are awaiting a final check."
+    "scope": "Final original Kotlin behavior, native-regression and unchanged acceptance/control callbacks were checked before the original measurement record was finalized. Later CI delivery revalidation is recorded separately."
   },
   "gateProgressSnapshot": {
     "selectedProfiles": 51,
@@ -1228,5 +1228,37 @@
       "original-plugin.jar"
     ],
     "complete": true
+  },
+  "ciDeliveryFollowUp": {
+    "capturedAt": "2026-10-09T23:54:20.881143+00:00",
+    "sourceBaseCommit": "11ce00c8247aac0cc6eb12f90352ca9dadaa65e8",
+    "parentRepairCommit": "ac1907e29b2d631222deac8689477897a072c756",
+    "record": "docs/measurements/ci-image-delivery-retries-2026-10-10.json",
+    "scope": "Carries the parent CI delivery repair and prepares the Kotlin extension job\u2019s unchanged Node and Temurin image digests with the same bounded helper.",
+    "originalNativeSourceTestAndControllerBindingsPreserved": true,
+    "verifiedOriginalBindingCount": 23,
+    "workflowSha256": "94f8972014f909bf6fff837148d067eb1b54da3d3431e45fa7103f64782af3d1",
+    "pinnedActionlintPassed": true,
+    "mandatoryCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "tests": 1420,
+      "pass": 904,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 516,
+      "todo": 0,
+      "durationMs": 272209.623083,
+      "logSha256": "e4b3b2e20bb676d87de2bdcff50c4fc92c2b98693ddc41635c4822f9a2e86e55",
+      "optionalSkippedChecksAreNotPasses": true,
+      "staleCompiledLocalFixturesIncluded": false
+    },
+    "nativeEngineBehaviorChanged": false,
+    "originalAcceptanceTarballCertifiesCurrentDocumentation": false,
+    "hostedRecheck": "pending at the follow-up head",
+    "gateAComplete": false,
+    "qualityAssessed": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
   }
 }
