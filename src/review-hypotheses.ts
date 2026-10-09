@@ -236,10 +236,11 @@ export function createHypothesisPlan(
     context.schemaVersion !== 7 &&
     context.schemaVersion !== 8 &&
     context.schemaVersion !== 9 &&
-    context.schemaVersion !== 10
+    context.schemaVersion !== 10 &&
+    context.schemaVersion !== 11
   )
     throw new Error(
-      "Hypothesis planning requires review context version 4, 5, 6, 7, 8, 9 or 10",
+      "Hypothesis planning requires review context version 4, 5, 6, 7, 8, 9, 10 or 11",
     );
   const selection = hypothesisSelectionSchema.parse(input);
   if (new Set(selection.families).size !== selection.families.length)

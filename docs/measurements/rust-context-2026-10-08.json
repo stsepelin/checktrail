@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-rust-selected-bindings-v1",
+  "recordedAt": "2026-10-08T18:07:06.474967+00:00",
+  "scope": "Captured selected Rust module/item and value/type namespace metadata plus trusted synthetic native controls; no capture execution, runtime impact narrowing, finding verification, AI inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "506741568863c5f0d33123675dd6d358e0cfa6f9",
+    "kind": "source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 40890,
+        "sha256": "f7e4120b0ff9b7b54a975bf5f20b9c67c55f7ae92e69077e87744eba710db20c"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-rust.wasm",
+        "bytes": 1115157,
+        "sha256": "158bd555055271ba754f52574fc12c8d5c6aa7316fefeddd3fa563297f50d5c8"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 147976,
+        "sha256": "8e8d50ccdd6e74691a72d2ae42d4962662ea98b5514fe9b90f00d677cff51b8c"
+      },
+      {
+        "file": "scripts/rust-context-tools.Dockerfile",
+        "bytes": 1197,
+        "sha256": "27afdda17c84793f88cc304fcd591282c288e81a85cb4d087ce8489853bdc51d"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4356,
+        "sha256": "a0f3d9104e0a26405c12987941ebbe42cdbc9d1642085a2e238684ffc358422c"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 8055,
+        "sha256": "1252dbcef1b3eae2745c597c27a423f00beb2b758e4e5b631f5ca6a013b07574"
+      },
+      {
+        "file": "scripts/verify-rust-context-container.mjs",
+        "bytes": 4124,
+        "sha256": "a23197917a17bb87f7896c3aeb25a60678c872bfda6da96bcfdc28c8c24193db"
+      },
+      {
+        "file": "scripts/verify-rust-context-guards.mjs",
+        "bytes": 7348,
+        "sha256": "7be61e3cb9eb2dd39c96903ac1b1bb1f9f74958d0d559f73fd2f79e75a15e945"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 11018,
+        "sha256": "a558fe98f3908464ccf45f22a0acfe5332d53c599eeb6ba1b93c4150db74bd87"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7599,
+        "sha256": "7e412fed01263fafeabaef82796f7df5bd46ec48e6831d14112d6fb3b4df8021"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13694,
+        "sha256": "3c192d2c9287a2be882f71c8f15696a518b859259d3e0098c502421e36c29cb2"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 22437,
+        "sha256": "93436c86ca5ff027d8cc4b82e77eea349741ad8e860bdc2d310311899ca77230"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32008,
+        "sha256": "e3ac95d13bb6087ba9a6e8458cec9505896f98d5a6367f52346bd074ac93a83a"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33097,
+        "sha256": "e3a6e4946f9a9425f2b6611510072998a3894fb5d5cca9a1317d895a041e6cbf"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13203,
+        "sha256": "582c91184c9a7e1b349bcf511bb8a47a6b22e01892fa66bf5572b9298788fceb"
+      },
+      {
+        "file": "src/review-rust-bindings.ts",
+        "bytes": 14195,
+        "sha256": "3a098f2a9f87e1166f1f420e2bf8322526de5069a0df50e475c69a2d061c27ef"
+      },
+      {
+        "file": "src/review-rust-resolution.ts",
+        "bytes": 21941,
+        "sha256": "395b07911763897029b978737665accbab84fe39aba52a183d9435dcf0aae154"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19564,
+        "sha256": "dc1b769f54636c334d0400bb8539d3970a92b78c76af80977d65b5ea225d9375"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31711,
+        "sha256": "fb9e3c4081a3364fd90c1db0e07e631a05e017e4631534c842df79db2c2d35f9"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 54825,
+        "sha256": "62545ec27d3ee2aeb8517eed1a5bb6a2ae8d9f7a46ea0edd09a34a655b2d17aa"
+      },
+      {
+        "file": "test/gate-context-rust.test.ts",
+        "bytes": 35589,
+        "sha256": "7286ad6ade5553894a52f8752f79579e0bed4b20a4c4425b536043488e2c795f"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10827,
+        "sha256": "4f8fa298ad6000e06ee6e385b5df81c8f16b63532332d72f03403662ac4e6963"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 11338,
+        "sha256": "4a3d88629d8d5467034e15751f35edfd8f15c690ca8df31b72a3d543264c28f1"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 7401,
+        "sha256": "65d92aefba675968bf18e476b647743b3c12257f3f47e4cb25fc715f6ceff355"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 13879,
+        "sha256": "ea29617dfe596832a8d5fb4236aa579827264a6171ea2eef349437284081a6ec"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 23112,
+        "sha256": "88303f25924a99b60a2fae5d202af0da874b7f0cc9590728e56afc4bcb328eb0"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 33666,
+        "sha256": "208b718ad8237f43f4208e7d6f195b6484a76fab667c2a6bc29a4fe1cd73f992"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35013,
+        "sha256": "d9e2abd18d1f0e250263eaa626acf3d4c090b6c61d6a7dbac61ceb6e5dbc0241"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13188,
+        "sha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04"
+      },
+      {
+        "file": "dist/src/review-rust-bindings.js",
+        "bytes": 13928,
+        "sha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8"
+      },
+      {
+        "file": "dist/src/review-rust-resolution.js",
+        "bytes": 21519,
+        "sha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19480,
+        "sha256": "27f975adbedd0b4188cf850765d384598ccc55572ccbbe86d8e68e501f5ab0c7"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32559,
+        "sha256": "92b8c3fe4d43cbc7fe1e721b4b7b5fb9920f08c05ca3b3052f36946921924826"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 56230,
+        "sha256": "0b8e79acc9abefdf148cefa82b67860362788659bc6d0b4efb3201c2def4578d"
+      },
+      {
+        "file": "dist/test/gate-context-rust.test.js",
+        "bytes": 34978,
+        "sha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic Rust selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "rust": "rustc 1.98.1 (48a229cea 2026-09-01)",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+    },
+    "image": "sha256:c97cdbbd2158f6e2db4e1b64d76177cb253b3a3dd3ceeb8b46f9ecb6a33ff9e7",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-rust",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-rust broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 371.330229,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-rust fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 92.684973,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-rust near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 358.018834,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-rust prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 164.692767,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-rust stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 83.033845,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-rust empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 163.321802,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-rust privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2201.120293,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-rust lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3210.866953,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-rust installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10984.333157,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-rust broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-rust installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic Rust captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "rust-grouped-self-alias",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "ac5f7b14884d0a15e7bb0781427105450f262ea69a571f5bb55bf0190695b9e8",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-constructor-value-namespace",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "62bd53cab048e9456655d5f1db9f9f789210bbf15eb0f0e265e7f7b5188313bc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-lexical-symbol-namespace",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "7f3e919e824418b326223cd8ed1356c576638cc11235d86fe8fa7bdc229ef39d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-parameter-binding",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "5176f368373926e209be9ba74f1c6d33b1dd604eeaa5267596dbdf81dbe9cb05",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-let-initializer-visibility",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "fa1baa60c0817b8b71373fb8ffc7382b719fce0c03be92265fc604209e1f7bb5",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-target-module-attributes",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "40943a1f404a594697a3e2fea07f35daee323916e321d9f2dbdb50300229f4ae",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-multi-root-ambiguity",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "84511a70853cbad500b03fe6523aaf25743b11172950ebf33940a3d98daac98f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-label-reference-namespace",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "2944133801a39f89a2bce374d6f72b52be6726965676bf5fefef9853f0861705",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-lifetime-reference-namespace",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "1d95af46559f9368e6d63ec11f8d82cec62fec81380574968d8968b32a60538a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-wildcard-no-binding",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "b5cd3d60f8a139b5e7ad74aedc2745a77e82a30bf379a6ef9cf710112d6f5eaf",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-literal-module-layout",
+          "callback": "context-rust broken acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "78038c01500ca6a2215c08f7d9d969b6eb8c6e3a49dfd25fe38ae140eafe9d70",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-duplicate-module-layout",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "99f1cbcc10a1a643d8faf5fb2754a399e64a9e836b5f5c9135733a16cff19088",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-module-revision",
+          "callback": "context-rust broken acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "5c52a4004f7f02914632fbb7761f5d9d166029223a0a8109c8968db71dc4b05c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-primary-caller-closure",
+          "callback": "context-rust broken acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+          "mutantSha256": "3e23c9b32fd7b555e22b1f45706d4021d17c47ec7486c1ad1db556f1be981161",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-root-reconstruction-binding",
+          "callback": "context-rust stale acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "82265165fb1d5ffe4a80a8531eea9ac0634d6bd1f486b05e874ba3a5c466a299",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-summary-count-reconciliation",
+          "callback": "context-rust stale acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "1fd6c3e60c141e720851daf719b9528439811d1c791d52f565fdb9c47ab387ea",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-missing-root-reconstruction",
+          "callback": "context-rust stale acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+          "mutantSha256": "1cf952d1c32636516b7b44a6d1c35deca5ec2cbbd1ae64bafda98f9fc50538d9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "rust-closure-parameter-binding",
+          "callback": "context-rust near-miss acceptance",
+          "callbackSha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb",
+          "sourceSha256": "e34c65de475d33bad067860e2949b4c42552da719e3bbb9d8de32b83c985a6c8",
+          "mutantSha256": "37830ec208aa6e36f0f8d798b0b6401236f1bbe4a9ded5fd6ef4aa29afdc2908",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "f753b82a4f18a99aa320049a1d5f4a7c7ca538a5115358bf3d9e157e908f3b2e",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-rust",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "16b51f05483dd1cec0f98c5f1ac55010bf6d8612be00ab576eb13a8963808afb"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-rust broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 370.37687,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-rust fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 98.946774,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-rust near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 344.73989,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-rust prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 171.334523,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-rust stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 91.433315,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-rust empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.304999,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-rust privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2254.498197,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-rust lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3183.601849,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-rust installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.255549,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-rust broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c97cdbbd2158f6e2db4e1b64d76177cb253b3a3dd3ceeb8b46f9ecb6a33ff9e7",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "0b8e79acc9abefdf148cefa82b67860362788659bc6d0b4efb3201c2def4578d",
+        "mutantSha256": "37b74402c1931aa44c93f5c50eb99fd2f107f939b8a757e166597e0a3725cf03",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "0b8e79acc9abefdf148cefa82b67860362788659bc6d0b4efb3201c2def4578d",
+        "mutantSha256": "f9cc14bcfe0388ebf529c0ee8342169e031fc05e962639c35d23a2f0b0332725",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "0b8e79acc9abefdf148cefa82b67860362788659bc6d0b4efb3201c2def4578d",
+        "mutantSha256": "d9524256d052dc6fa338281dcf22caa504fe64afc7fb0b13bfe2ea701eb51177",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1050,
+      "pass": 776,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 274,
+      "todo": 0
+    },
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "pinnedNativeRustUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "519b37278f78f838a79cee99000b4039534c36ba10dc27c89ce5fd95396d1505"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false,
+  "verification": {
+    "changedCodeFilesLinted": 17,
+    "schemasRegeneratedByteStable": true,
+    "grammarAuditComplete": true,
+    "finiteInventoryStructureConsistent": true
+  }
+}
