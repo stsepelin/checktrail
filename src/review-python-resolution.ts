@@ -243,11 +243,13 @@ export function resolvePythonBindings(
       });
       if (selected.state !== "selected") omissions.add("unresolved-import");
     }
-    const calls = new Map(unit.calls.map((call) => [call.start, call]));
+    const calls = new Map(
+      unit.calls.map((call) => [call.start + ":" + call.end, call]),
+    );
     for (const call of analysis.calls.filter(
       (call) => call.file === unit.file && call.revision === unit.revision,
     )) {
-      const captured = calls.get(call.start)!;
+      const captured = calls.get(call.start + ":" + call.end)!;
       call.callerFunctionId = captured.caller;
       let found: Found =
         captured.unsupported || captured.callee === null

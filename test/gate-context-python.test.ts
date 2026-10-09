@@ -27,6 +27,7 @@ import { createHypothesisPlan } from "../src/review-hypotheses.js";
 import { ReviewWorkflowEngine } from "../src/review-workflow.js";
 import { runProcess } from "../src/runner.js";
 import { fixture } from "./helpers.js";
+import { callIdentityFixture } from "./review-call-identity-fixture.js";
 import { fixtureGit, syntheticCommit } from "./git-fixture.js";
 const broken =
   'fallback = "grant"\ndef decision(value, prefix=fallback):\n    return value.startswith(prefix)\n';
@@ -259,6 +260,7 @@ test("context-python fixed acceptance", async (t) => {
   );
 });
 test("context-python near-miss acceptance", async (t) => {
+  await callIdentityFixture(t, "python", true);
   const { root, result } = await original(t, near);
   bindings(result);
   assert.deepEqual(

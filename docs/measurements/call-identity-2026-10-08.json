@@ -1,0 +1,1840 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-complete-call-ranges-v1",
+  "recordedAt": "2026-10-08T18:50:22.708120+00:00",
+  "scope": "Original synthetic nested-call identity regression and refreshed source/installed acceptance; no inference or field evaluation",
+  "sourceBinding": {
+    "baseCommit": "558d1ba9e9d4dd4802646307249d88a937da0b0a",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-go.wasm",
+        "bytes": 217764,
+        "sha256": "058a4f6c7cb7156c599c2ca07af9645f03b3f655b84bced9c72816e755c7030b"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-php.wasm",
+        "bytes": 1081285,
+        "sha256": "bd5e2bf8d42306b7aa32e6b7e39ae9fd9543c62a875ad8b2bc3d488242f72817"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-python.wasm",
+        "bytes": 457492,
+        "sha256": "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-rust.wasm",
+        "bytes": 1115157,
+        "sha256": "158bd555055271ba754f52574fc12c8d5c6aa7316fefeddd3fa563297f50d5c8"
+      },
+      {
+        "file": "docs/REVIEW-CALL-IDENTITY.md",
+        "bytes": 2212,
+        "sha256": "d7a3faf7283360e685adf044338d5aabf868714d97b08ee87037f2a92770cb5c"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 147976,
+        "sha256": "8e8d50ccdd6e74691a72d2ae42d4962662ea98b5514fe9b90f00d677cff51b8c"
+      },
+      {
+        "file": "scripts/verify-go-context-guards.mjs",
+        "bytes": 6085,
+        "sha256": "e06873ac69b0cd70f46cbabb642297daf85408f23838e8d0719ef4bd7bff5123"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 8094,
+        "sha256": "040b50508cd87ae1b9ed92173869c51baa0a7fb046d726c9d9f3093ebc29cf82"
+      },
+      {
+        "file": "scripts/verify-php-context-container.mjs",
+        "bytes": 4041,
+        "sha256": "7e9b86efdfb9bca420966fb60682278a8dca4e5e35ea42fe9a8dd584f8e0f427"
+      },
+      {
+        "file": "scripts/verify-php-context-guards.mjs",
+        "bytes": 6896,
+        "sha256": "8973b0db8f3b3c215f0272e316582349904d6f69b4730915d22e22630fb4a1c5"
+      },
+      {
+        "file": "scripts/verify-python-context-guards.mjs",
+        "bytes": 5406,
+        "sha256": "59efc3d04b317ee402aecb36d27034eeded85055f9fef603617e978367c2b593"
+      },
+      {
+        "file": "scripts/verify-rust-context-container.mjs",
+        "bytes": 4124,
+        "sha256": "91f93de6fda45d8e5c4cc39c3134115ac3575ad4d0ec29d977f4715634465afc"
+      },
+      {
+        "file": "scripts/verify-rust-context-guards.mjs",
+        "bytes": 7841,
+        "sha256": "5048ba24788a4c955b234cdcb6add825aa5792bd3f4c74adbaef89efcf7d0aff"
+      },
+      {
+        "file": "src/review-behavior.ts",
+        "bytes": 28421,
+        "sha256": "4b79e35048ae9c6fbddf8c58469be9a75f2d99af15dcdbba664c5a1c8a6ff529"
+      },
+      {
+        "file": "src/review-go-resolution.ts",
+        "bytes": 16628,
+        "sha256": "9d43bed873ad18f4d24521781941a120dbac03be71334ee66e230cb855ee369a"
+      },
+      {
+        "file": "src/review-php-resolution.ts",
+        "bytes": 15186,
+        "sha256": "a5659a1d7d596c17d311453206717638184b3d1e1ce622631a8509f47d596a52"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-rust-resolution.ts",
+        "bytes": 21988,
+        "sha256": "0e176cc4f5aa50158a1e1a9d9c126bff37c5e15daaa74a1c342fa0c0abbda575"
+      },
+      {
+        "file": "test/gate-context-go.test.ts",
+        "bytes": 33897,
+        "sha256": "6d1da4cb6db5a3e4ea2b669343415252dbccdf311f105d4228b4847e5bb1bc3c"
+      },
+      {
+        "file": "test/gate-context-php.test.ts",
+        "bytes": 34089,
+        "sha256": "6cd8af0e752627d136471ae22d6d86e61d4b99d76bc664710a03c0f8986d7a11"
+      },
+      {
+        "file": "test/gate-context-python.test.ts",
+        "bytes": 29008,
+        "sha256": "10d73de54679cfc8120e414587860ea498a5c31144d9325d362baac7b4a5cdfa"
+      },
+      {
+        "file": "test/gate-context-rust.test.ts",
+        "bytes": 35708,
+        "sha256": "7aa87e61033bacd5e16a6e5af2c05eddcb514deeb7e40e3b3737bdda27d9e271"
+      },
+      {
+        "file": "test/review-call-identity-fixture.ts",
+        "bytes": 5428,
+        "sha256": "e704588eb558d214239fbb82604a13b301a75d6ed013fac3106671781a8987c0"
+      },
+      {
+        "file": "test/review-call-identity.test.ts",
+        "bytes": 1743,
+        "sha256": "76f5c50a7f01b444482324fbb236da8fe8be32d5cfd642c6a612dedcc1be325a"
+      }
+    ]
+  },
+  "profiles": {
+    "python": {
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "native": "Python 3.13.5",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+      },
+      "image": "sha256:b8eca429d6bc91fb17e2facea54a8420b21cb51e3c664de81e30b09659d2d9c1",
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "context-python",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "0d16d25f3e829be9e04be20822380d6e02f174c33aaf78b539ba60dfa09eb496"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "0d16d25f3e829be9e04be20822380d6e02f174c33aaf78b539ba60dfa09eb496"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-python broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 325.869373,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-python fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 22.222422,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-python near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 92.049583,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-python prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 175.261072,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-python stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 70.003328,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-python empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 173.228101,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-python privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2260.380572,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-python lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3087.123848,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-python installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10489.4868,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-python broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "guards": {
+        "scope": "Original synthetic Python captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "python-complete-call-range",
+            "callback": "context-python near-miss acceptance",
+            "callbackSha256": "0d16d25f3e829be9e04be20822380d6e02f174c33aaf78b539ba60dfa09eb496",
+            "sourceSha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa",
+            "mutantSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "installed": {
+        "tarballSha256": "fb4040d1ecec73d77b7ab5b6104d12380995ae868bdabf659436e739eddf6828",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "context-python",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "0d16d25f3e829be9e04be20822380d6e02f174c33aaf78b539ba60dfa09eb496"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "0d16d25f3e829be9e04be20822380d6e02f174c33aaf78b539ba60dfa09eb496"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "context-python broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 298.600462,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "context-python fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 20.564163,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "context-python near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 89.456942,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "context-python prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 157.819719,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "context-python stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 76.561325,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "context-python empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 169.340078,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "context-python privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2287.077355,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "context-python lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3114.305673,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "context-python installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.57417,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "context-python broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-python installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:b8eca429d6bc91fb17e2facea54a8420b21cb51e3c664de81e30b09659d2d9c1",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256,
+          "temporaryFilesystemExecutable": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    "go": {
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "native": "go version go1.27.1 linux/arm64",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+      },
+      "image": "sha256:086a58d50f3ce1d9b9a586d411f69875bcf2790d64fc99e867070936c4d7cfef",
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "context-go",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "8c0122227a4cd960a8cdc305f2f05bd90b0ca184beeed4aba135148e2c8570a2"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "8c0122227a4cd960a8cdc305f2f05bd90b0ca184beeed4aba135148e2c8570a2"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-go broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2740.388435,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-go fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 85.949839,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-go near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 267.678197,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-go prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 175.137988,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-go stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 83.931535,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-go empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 235.718135,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-go privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2211.990456,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-go lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3253.900327,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-go installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13518.928725,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-go broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-go installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "guards": {
+        "scope": "Original synthetic Go captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "go-complete-call-range",
+            "callback": "context-go near-miss acceptance",
+            "callbackSha256": "8c0122227a4cd960a8cdc305f2f05bd90b0ca184beeed4aba135148e2c8570a2",
+            "sourceSha256": "d246b4604b472ba3479aa8e91b37274f3ee54998c717c617ee0e9c4cf7207ba4",
+            "mutantSha256": "57a0e32ad54390104b743b13b47f2ac659a45502cb26a7b3a515b64b42047339",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "installed": {
+        "tarballSha256": "fb4040d1ecec73d77b7ab5b6104d12380995ae868bdabf659436e739eddf6828",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "context-go",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "8c0122227a4cd960a8cdc305f2f05bd90b0ca184beeed4aba135148e2c8570a2"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "8c0122227a4cd960a8cdc305f2f05bd90b0ca184beeed4aba135148e2c8570a2"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "context-go broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2732.466334,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "context-go fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 85.437088,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "context-go near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 305.126717,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "context-go prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 159.880485,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "context-go stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 86.50626,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "context-go empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 226.303086,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "context-go privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2279.831912,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "context-go lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3316.041693,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "context-go installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.622962,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "context-go broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-go installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:086a58d50f3ce1d9b9a586d411f69875bcf2790d64fc99e867070936c4d7cfef",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256,
+          "temporaryFilesystemExecutable": true
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    "php": {
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "git": "git version 2.52.0",
+        "npm": "10.9.8",
+        "native": "PHP 8.5.6 (cli) (built: May  8 2026 16:43:53) (NTS)\nCopyright (c) The PHP Group\nBuilt by https://github.com/docker-library/php\nZend Engine v4.5.6, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.6, Copyright (c), by Zend Technologies",
+        "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.23.4\nPRETTY_NAME=\"Alpine Linux v3.23\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+      },
+      "image": "sha256:d1e58e9161c2a638c3f0b8c04d2f2abbd2a866e4080697bda6edd6db63810947",
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "context-php",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "29c9ac77fb03404db25fe14b58e1dca05a7e5e90e5a55d829041c9f1508d8a9a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "29c9ac77fb03404db25fe14b58e1dca05a7e5e90e5a55d829041c9f1508d8a9a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-php broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 328.24502,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-php fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.426222,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-php near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 192.507511,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-php prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.735448,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-php stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 72.820055,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-php empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 178.989431,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-php privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2247.49793,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-php lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3110.314979,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-php installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10687.782946,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-php broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "guards": {
+        "scope": "Original synthetic PHP captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "php-complete-call-range",
+            "callback": "context-php near-miss acceptance",
+            "callbackSha256": "29c9ac77fb03404db25fe14b58e1dca05a7e5e90e5a55d829041c9f1508d8a9a",
+            "sourceSha256": "b92650c36451f31acc04002c2605bcbc75ada2931cdc4fda450356d69522ac91",
+            "mutantSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "installed": {
+        "tarballSha256": "fb4040d1ecec73d77b7ab5b6104d12380995ae868bdabf659436e739eddf6828",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "context-php",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "29c9ac77fb03404db25fe14b58e1dca05a7e5e90e5a55d829041c9f1508d8a9a"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "29c9ac77fb03404db25fe14b58e1dca05a7e5e90e5a55d829041c9f1508d8a9a"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "context-php broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 326.298467,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "context-php fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 19.467198,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "context-php near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 177.362005,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "context-php prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 172.820103,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "context-php stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 70.524124,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "context-php empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 189.810829,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "context-php privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2254.276094,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "context-php lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3147.172489,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "context-php installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.639379,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "context-php broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-php installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:d1e58e9161c2a638c3f0b8c04d2f2abbd2a866e4080697bda6edd6db63810947",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256,
+          "temporaryFilesystemExecutable": false
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    "rust": {
+      "runtime": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "git": "git version 2.47.3",
+        "npm": "10.9.8",
+        "native": "rustc 1.98.1 (48a229cea 2026-09-01)",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+      },
+      "image": "sha256:b8eca429d6bc91fb17e2facea54a8420b21cb51e3c664de81e30b09659d2d9c1",
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "context-rust",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "bdd5dce4a1bc393cfdecf4f1f0eac20fe5a9dbaf10a1569f141e0bdd3510f199"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "bdd5dce4a1bc393cfdecf4f1f0eac20fe5a9dbaf10a1569f141e0bdd3510f199"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-rust broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 399.583858,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-rust fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 95.449271,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-rust near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 457.763743,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-rust prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 165.131599,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-rust stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 90.173532,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-rust empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 162.409583,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-rust privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2199.761898,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-rust lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3190.95583,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-rust installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10923.215335,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-rust broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-rust installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "guards": {
+        "scope": "Original synthetic Rust captured-binding controls; no model inference or field evaluation",
+        "controls": [
+          {
+            "id": "rust-complete-call-range",
+            "callback": "context-rust near-miss acceptance",
+            "callbackSha256": "bdd5dce4a1bc393cfdecf4f1f0eac20fe5a9dbaf10a1569f141e0bdd3510f199",
+            "sourceSha256": "259925fde61795c5bc0af0087c0ccfb428691f543d1e2e4de83ff4e3d9ff475e",
+            "mutantSha256": "4ab251298825cf39fe6886175dfe7108e28bbbdad8d39475de4ea7401919af36",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "restoredPassed": true
+          }
+        ],
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false
+      },
+      "installed": {
+        "tarballSha256": "fb4040d1ecec73d77b7ab5b6104d12380995ae868bdabf659436e739eddf6828",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "context-rust",
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "bdd5dce4a1bc393cfdecf4f1f0eac20fe5a9dbaf10a1569f141e0bdd3510f199"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "bdd5dce4a1bc393cfdecf4f1f0eac20fe5a9dbaf10a1569f141e0bdd3510f199"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "context-rust broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 379.440573,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "context-rust fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 90.526993,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "context-rust near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 424.352421,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "context-rust prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 174.308195,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "context-rust stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 89.963573,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "context-rust empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 169.296124,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "context-rust privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2258.811872,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "context-rust lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3197.70937,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-1",
+                "name": "context-rust installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 0.702713,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "context-rust broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-1",
+                "name": "context-rust installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "image": "sha256:b8eca429d6bc91fb17e2facea54a8420b21cb51e3c664de81e30b09659d2d9c1",
+          "network": "none",
+          "consumerMount": "readonly",
+          "rootFilesystemReadonly": true,
+          "temporaryFilesystemMiB": 256,
+          "temporaryFilesystemExecutable": true
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    }
+  },
+  "compilerPreparation": {
+    "goArchive": {
+      "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz",
+      "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
+      "bytes": 67009954
+    },
+    "goCompilerTreeSha256": "a455c33fc8b6e1ace55c645d7ddf6a6aac319d7c53b5314d1b80fff9aa281727",
+    "goCompilerFilesVerified": 15639
+  },
+  "environment": {
+    "network": "none",
+    "sourceMount": "readonly",
+    "consumerMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "cpus": 2,
+    "memoryMiB": 2048,
+    "pids": 256,
+    "sourceTemporaryFilesystemMiB": 512,
+    "installedTemporaryFilesystemMiB": 256
+  },
+  "acceptancePackagesPrecedeDocumentationRecord": true,
+  "supplementsEarlierProfileRecords": true,
+  "finalReleaseArtifactAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

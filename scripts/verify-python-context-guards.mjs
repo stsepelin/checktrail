@@ -13,6 +13,14 @@ const originalCallback = await readFile(callback);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const controls = [
   {
+    id: "python-complete-call-range",
+    file: "review-python-resolution.js",
+    name: "context-python near-miss acceptance",
+    before: 'call.start + ":" + call.end',
+    after: "call.start",
+    occurrences: 2,
+  },
+  {
     id: "python-default-enclosing-scope",
     file: "review-python-bindings.js",
     name: "context-python near-miss acceptance",
@@ -88,18 +96,25 @@ function run(name) {
   assert.equal(result.signal, null, result.stdout + result.stderr);
   return result;
 }
+const selected = new Set(process.argv.slice(2));
+assert.ok(
+  [...selected].every((id) => controls.some((control) => control.id === id)),
+  "Unknown guard control",
+);
 const evidence = [];
-for (const control of controls) {
+for (const control of controls.filter(
+  (control) => selected.size === 0 || selected.has(control.id),
+)) {
   const source = new URL("../dist/src/" + control.file, import.meta.url);
   const original = await readFile(source, "utf8");
   const baseline = run(control.name);
   assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
   assert.equal(
     original.split(control.before).length,
-    2,
+    (control.occurrences ?? 1) + 1,
     "Exact control address: " + control.id,
   );
-  const mutant = original.replace(control.before, control.after);
+  const mutant = original.replaceAll(control.before, control.after);
   try {
     await writeFile(source, mutant);
     const compile = spawnSync(

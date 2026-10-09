@@ -29,3 +29,5 @@ The original `context-go` acceptance callbacks use only synthetic public fixture
 These controls invoke no AI inference or field evaluation and establish no accuracy comparison. Wider language/assembly profiles, complete runtime acceptance, artifact/notice closure and independent evaluation remain Gate A obligations.
 
 Exact local and pinned Linux ARM64 source/fresh offline installation evidence and original compiling guard controls are recorded in [go-context-2026-10-08.json](measurements/go-context-2026-10-08.json). Gate A remains open.
+
+The shared [nested-call identity repair](REVIEW-CALL-IDENTITY.md) adds fresh original source and installed-package controls for calls that share a start offset. Its supplemental record binds the changed resolver and callback bytes.

@@ -1,0 +1,11 @@
+# Nested call identity repair
+
+Python, Go, PHP and Rust selected-binding contexts previously indexed captured calls by their start offset within each file and revision. A factory invocation such as `choose()()` contains two calls with the same start and different ends. The outer dynamic invocation could inherit the inner named function's target, adding a false caller edge.
+
+Each affected resolver now uses the complete start/end range. The named inner call retains its selected function target; the outer returned-function invocation remains unsupported with a null target. Counts and direct caller edges distinguish the two. JavaScript and TypeScript use direct AST identities and passed the corresponding original controls without a resolver change.
+
+The original factory fixtures are also exercised in each profile's required near-miss callback, with native execution proving that the fixture actually performs both calls. The original assertions fail before the repair. A compiling mutation that restores start-only insertion and lookup must fail those same assertions and pass after restoration. Guard scripts accept explicit control IDs for focused checks; no arguments continue to run every registered control, as used by CI. Unknown control IDs reject rather than silently running nothing.
+
+Fresh source and locked offline installed-package acceptance for all four affected profiles is recorded in [call-identity-2026-10-08.json](measurements/call-identity-2026-10-08.json). This record supplements the earlier profile-specific evidence for the changed resolvers and callbacks; it does not make those earlier source byte pins current. The installer copies the shared original fixture into its external harness and checks the installed engine. Native execution is restricted to trusted original synthetic fixtures; context capture executes no project code.
+
+The acceptance packages were created before this documentation and measurement record. Their retained tarball hashes identify those tested packages, not a final release artifact. Runtime matrix closure, wider profiles, independent evaluation and Gate A remain open. No AI inference, field review or comparative accuracy measurement is invoked.

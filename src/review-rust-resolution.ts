@@ -457,11 +457,13 @@ export function resolveRustBindings(
       });
       if (!target) omissions.add("unresolved-import");
     }
-    const captured = new Map(unit.calls.map((call) => [call.start, call]));
+    const captured = new Map(
+      unit.calls.map((call) => [call.start + ":" + call.end, call]),
+    );
     for (const call of analysis.calls.filter(
       (call) => call.revision === unit.revision && call.file === unit.file,
     )) {
-      const source = captured.get(call.start);
+      const source = captured.get(call.start + ":" + call.end);
       call.callerFunctionId = source?.caller ?? null;
       const found =
         !source || source.unsupported || source.name === null

@@ -253,11 +253,13 @@ export function resolvePhpBindings(
         omissions.add("unresolved-loading");
       }
     }
-    const calls = new Map(unit.calls.map((call) => [call.start, call]));
+    const calls = new Map(
+      unit.calls.map((call) => [call.start + ":" + call.end, call]),
+    );
     for (const call of analysis.calls.filter(
       (call) => call.revision === unit.revision && call.file === unit.file,
     )) {
-      const captured = calls.get(call.start);
+      const captured = calls.get(call.start + ":" + call.end);
       if (!captured) {
         call.targetFunctionId = null;
         call.resolution = "unsupported-dispatch";
