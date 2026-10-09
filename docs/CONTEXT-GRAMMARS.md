@@ -102,3 +102,5 @@ held-out evaluation or comparative quality claim is enabled. Gate A remains open
 Revision-specific source, compiling mutation and fresh offline installation evidence is recorded in
 [selected-syntax-context-2026-10-08.json](measurements/selected-syntax-context-2026-10-08.json).
 The component profile does not complete the wider finite context profiles.
+
+Opt-in version 8 layers selected Python lexical/import binding metadata over these fixed grammars and expanded source bounds. Versions 6–7 keep unresolved wider-language calls. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md).

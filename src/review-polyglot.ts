@@ -1,3 +1,8 @@
+import {
+  capturePythonBindings,
+  type PythonSyntaxUnit,
+} from "./review-python-bindings.js";
+import { resolvePythonBindings } from "./review-python-resolution.js";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { performance } from "node:perf_hooks";
@@ -326,11 +331,12 @@ function lineTable(content: string) {
 }
 
 /** Fixed bundled parsers receive captured strings; no project host, imports or code is executed. */
-export async function collectReviewPolyglotBehavior(
+async function collectReviewPolyglotCore(
   current: Source[],
   base: Source[],
   primary: string[],
   diff: boolean,
+  pythonRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -348,6 +354,7 @@ export async function collectReviewPolyglotBehavior(
         [...new Set([...base, ...current].map((source) => source.path))].sort(),
       )
     : [];
+  const pythonUnits: PythonSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -559,6 +566,8 @@ export async function collectReviewPolyglotBehavior(
         result.decisions.push(...output.decisions);
         result.modules.push(...output.modules);
         record.state = "collected";
+        if (pythonRoots && asset.grammar === "python")
+          pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (!bindings.has(asset.grammar)) {
           result.grammarBindings.push({
             grammar: asset.grammar,
@@ -583,5 +592,33 @@ export async function collectReviewPolyglotBehavior(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
-  return reviewPolyglotBehaviorSchema.parse(result);
+  return pythonRoots
+    ? resolvePythonBindings(result, pythonUnits, pythonRoots, primary)
+    : reviewPolyglotBehaviorSchema.parse(result);
+}
+
+export async function collectReviewPolyglotBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+): Promise<Extract<ReviewBehavior, { profile: "selected-syntax-v1" }>> {
+  return reviewPolyglotBehaviorSchema.parse(
+    await collectReviewPolyglotCore(current, base, primary, diff),
+  );
+}
+export async function collectReviewPythonBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<
+  Extract<ReviewBehavior, { profile: "python-selected-bindings-v1" }>
+> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewPythonBehaviorSchema.parse(
+    await collectReviewPolyglotCore(current, base, primary, diff, roots),
+  );
 }

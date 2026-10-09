@@ -405,3 +405,5 @@ MCP packet lease through the shared library. Original synthetic SDK host process
 exercise stage separation, source revocation and bounded cleanup. This is process
 and protocol readiness; arbitrary host filesystem isolation, model freshness and
 review quality remain unverified.
+
+The opt-in [Python context profile](REVIEW-PYTHON-CONTEXT.md) retains selected literal imports, lexical bindings and bounded callers from captured source in version 8. Unknown imports and runtime dispatch retain full impact fallback; discovery executes no Python. Native adapter support and broader context/runtime acceptance remain separate.

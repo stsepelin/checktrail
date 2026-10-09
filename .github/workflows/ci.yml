@@ -121,7 +121,7 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
@@ -130,6 +130,7 @@ jobs:
       - run: node scripts/verify-review-workflow-multi-guards.mjs
       - run: node scripts/verify-selected-syntax-guards.mjs
       - run: node scripts/verify-host-session-guards.mjs
+      - run: node scripts/verify-python-context-guards.mjs
       - name: Verify native Laravel owned-cache guards and fresh package
         run: |
           node scripts/verify-laravel-cache-guards.mjs
@@ -797,6 +798,9 @@ jobs:
         with:
           go-version: "1.27.1"
           cache: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13.5"
       - run: npm ci --ignore-scripts
       - name: Prepare pinned Go analyzers
         run: |
@@ -807,14 +811,16 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
       - name: Verify required original Go and context controls
-        run: node scripts/verify-required-native-tests.mjs go-extensions review-context-limits host-session-readiness
+        run: node scripts/verify-required-native-tests.mjs go-extensions review-context-limits host-session-readiness context-python
       - name: Verify installed original Go workspace controls
         run: node scripts/verify-go-workspace-package.mjs
       - name: Verify installed original expanded context controls
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=review-context-limits node scripts/verify-import-context-package.mjs
       - name: Verify installed original synthetic host controls
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=host-session-readiness node scripts/verify-import-context-package.mjs
+      - name: Verify installed original Python context controls
+        run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=context-python node scripts/verify-import-context-package.mjs
       - name: Retain exact runtime identity
         if: always()
         run: |
-          node --input-type=module -e 'import {execFileSync} from "node:child_process"; console.log(JSON.stringify({sourceCommit:process.env.GITHUB_SHA,node:process.version,platform:process.platform,arch:process.arch,imageOS:process.env.ImageOS,imageVersion:process.env.ImageVersion,go:execFileSync("go",["version"],{encoding:"utf8"}).trim(),staticcheck:execFileSync("staticcheck",["-version"],{encoding:"utf8"}).trim(),golangciLint:execFileSync("golangci-lint",["version","--short"],{encoding:"utf8"}).trim(),inferenceInvoked:false},null,2))'
+          node --input-type=module -e 'import {execFileSync} from "node:child_process"; console.log(JSON.stringify({sourceCommit:process.env.GITHUB_SHA,node:process.version,platform:process.platform,arch:process.arch,imageOS:process.env.ImageOS,imageVersion:process.env.ImageVersion,go:execFileSync("go",["version"],{encoding:"utf8"}).trim(),staticcheck:execFileSync("staticcheck",["-version"],{encoding:"utf8"}).trim(),golangciLint:execFileSync("golangci-lint",["version","--short"],{encoding:"utf8"}).trim(),python:execFileSync("python3",["--version"],{encoding:"utf8"}).trim(),inferenceInvoked:false},null,2))'

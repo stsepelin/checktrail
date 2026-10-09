@@ -6854,6 +6854,1479 @@
                   "analysis"
                 ],
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "schemaVersion": { "type": "number", "const": 8 },
+                  "format": { "type": "string", "const": "review-context" },
+                  "channel": { "type": "string", "const": "advisory" },
+                  "automatedCoverage": { "type": "boolean", "const": false },
+                  "sourceFingerprint": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "sourceTrust": {
+                    "type": "string",
+                    "const": "untrusted-source-text"
+                  },
+                  "selection": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 8 },
+                          "files": {
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            }
+                          },
+                          "topics": {
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "test-lifecycle",
+                                "analysis-scope",
+                                "package-consumers",
+                                "python-imports",
+                                "framework-assembly",
+                                "execution-depth"
+                              ]
+                            }
+                          },
+                          "supportFiles": {
+                            "maxItems": 31,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            }
+                          },
+                          "track": { "type": "string", "const": "snapshot" },
+                          "currentSource": {
+                            "type": "string",
+                            "const": "working-tree"
+                          },
+                          "moduleRoots": {
+                            "minItems": 1,
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                { "type": "string", "const": "." },
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "files",
+                          "topics",
+                          "supportFiles",
+                          "track",
+                          "currentSource",
+                          "moduleRoots"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 8 },
+                          "files": {
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            }
+                          },
+                          "topics": {
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "test-lifecycle",
+                                "analysis-scope",
+                                "package-consumers",
+                                "python-imports",
+                                "framework-assembly",
+                                "execution-depth"
+                              ]
+                            }
+                          },
+                          "supportFiles": {
+                            "maxItems": 31,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            }
+                          },
+                          "track": { "type": "string", "const": "diff" },
+                          "currentSource": {
+                            "type": "string",
+                            "enum": ["working-tree", "index"]
+                          },
+                          "baseCommit": {
+                            "type": "string",
+                            "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                          },
+                          "moduleRoots": {
+                            "minItems": 1,
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                { "type": "string", "const": "." },
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "files",
+                          "topics",
+                          "supportFiles",
+                          "track",
+                          "currentSource",
+                          "baseCommit",
+                          "moduleRoots"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "instructions": { "type": "string" },
+                  "guidance": {
+                    "type": "object",
+                    "properties": {
+                      "schemaVersion": { "type": "number", "const": 1 },
+                      "engineVersion": { "type": "string" },
+                      "channel": { "type": "string", "const": "advisory" },
+                      "provenance": {
+                        "type": "string",
+                        "const": "builtin-guidance-selection"
+                      },
+                      "catalogueDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "automatedCoverage": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "selectionBasis": {
+                        "type": "string",
+                        "const": "exact-check-or-topic"
+                      },
+                      "context": {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 1 },
+                          "checks": {
+                            "maxItems": 100,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                            }
+                          },
+                          "topics": {
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "test-lifecycle",
+                                "analysis-scope",
+                                "package-consumers",
+                                "python-imports",
+                                "framework-assembly",
+                                "execution-depth"
+                              ]
+                            }
+                          }
+                        },
+                        "required": ["schemaVersion", "checks", "topics"],
+                        "additionalProperties": false
+                      },
+                      "items": {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                            },
+                            "version": { "type": "string", "const": "1.0.0" },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "triggers": {
+                              "type": "object",
+                              "properties": {
+                                "checks": {
+                                  "maxItems": 32,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                                  }
+                                },
+                                "topics": {
+                                  "minItems": 1,
+                                  "maxItems": 16,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "test-lifecycle",
+                                      "analysis-scope",
+                                      "package-consumers",
+                                      "python-imports",
+                                      "framework-assembly",
+                                      "execution-depth"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": ["checks", "topics"],
+                              "additionalProperties": false
+                            },
+                            "questions": {
+                              "minItems": 1,
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 600
+                              }
+                            },
+                            "references": {
+                              "minItems": 1,
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 160
+                                  },
+                                  "url": {
+                                    "type": "string",
+                                    "maxLength": 512,
+                                    "pattern": "^https:\\/\\/",
+                                    "format": "uri"
+                                  }
+                                },
+                                "required": ["title", "url"],
+                                "additionalProperties": false
+                              }
+                            },
+                            "matched": {
+                              "type": "object",
+                              "properties": {
+                                "schemaVersion": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "checks": {
+                                  "maxItems": 100,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                                  }
+                                },
+                                "topics": {
+                                  "maxItems": 16,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "test-lifecycle",
+                                      "analysis-scope",
+                                      "package-consumers",
+                                      "python-imports",
+                                      "framework-assembly",
+                                      "execution-depth"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": ["schemaVersion", "checks", "topics"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "version",
+                            "title",
+                            "triggers",
+                            "questions",
+                            "references",
+                            "matched"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "schemaVersion",
+                      "engineVersion",
+                      "channel",
+                      "provenance",
+                      "catalogueDigest",
+                      "automatedCoverage",
+                      "selectionBasis",
+                      "context",
+                      "items"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "files": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1024
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "content": { "type": "string", "maxLength": 65536 }
+                      },
+                      "required": ["path", "sha256", "content"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "evidence": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "track": { "type": "string", "const": "snapshot" },
+                          "currentSource": {
+                            "type": "string",
+                            "const": "working-tree"
+                          },
+                          "fileModes": {
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "path": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                },
+                                "before": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": ["100644", "100755"]
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "after": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": ["100644", "100755"]
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                }
+                              },
+                              "required": ["path", "before", "after"],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": ["track", "currentSource", "fileModes"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "track": { "type": "string", "const": "diff" },
+                          "baseCommit": {
+                            "type": "string",
+                            "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                          },
+                          "headCommit": {
+                            "type": "string",
+                            "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                          },
+                          "indexFingerprint": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "baseFiles": {
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "path": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                },
+                                "sha256": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "content": {
+                                  "type": "string",
+                                  "maxLength": 65536
+                                }
+                              },
+                              "required": ["path", "sha256", "content"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "changes": {
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "path": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "added",
+                                    "deleted",
+                                    "modified",
+                                    "unchanged"
+                                  ]
+                                },
+                                "beforeSha256": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "afterSha256": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "hunks": {
+                                  "maxItems": 1,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "beforeStartLine": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 65537
+                                      },
+                                      "beforeLineCount": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 65537
+                                      },
+                                      "afterStartLine": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 65537
+                                      },
+                                      "afterLineCount": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 65537
+                                      },
+                                      "removed": {
+                                        "maxItems": 65537,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "maxLength": 65536
+                                        }
+                                      },
+                                      "added": {
+                                        "maxItems": 65537,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "maxLength": 65536
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "beforeStartLine",
+                                      "beforeLineCount",
+                                      "afterStartLine",
+                                      "afterLineCount",
+                                      "removed",
+                                      "added"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "path",
+                                "kind",
+                                "beforeSha256",
+                                "afterSha256",
+                                "hunks"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "currentSource": {
+                            "type": "string",
+                            "enum": ["working-tree", "index"]
+                          },
+                          "fileModes": {
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "path": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                },
+                                "before": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": ["100644", "100755"]
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                },
+                                "after": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": ["100644", "100755"]
+                                    },
+                                    { "type": "null" }
+                                  ]
+                                }
+                              },
+                              "required": ["path", "before", "after"],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "track",
+                          "baseCommit",
+                          "headCommit",
+                          "indexFingerprint",
+                          "baseFiles",
+                          "changes",
+                          "currentSource",
+                          "fileModes"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "completeness": {
+                    "type": "object",
+                    "properties": {
+                      "selection": {
+                        "type": "string",
+                        "const": "operator-selected-primary-and-support-files"
+                      },
+                      "repositoryComplete": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "behavior": {
+                        "type": "string",
+                        "const": "bounded-selected-syntax"
+                      },
+                      "callers": {
+                        "type": "string",
+                        "const": "selected-context-only"
+                      },
+                      "declarations": {
+                        "type": "string",
+                        "const": "selected-context-only"
+                      },
+                      "renames": { "type": "string", "const": "not-inferred" },
+                      "fileModes": {
+                        "type": "string",
+                        "const": "selected-regular-files"
+                      }
+                    },
+                    "required": [
+                      "selection",
+                      "repositoryComplete",
+                      "behavior",
+                      "callers",
+                      "declarations",
+                      "renames",
+                      "fileModes"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "contextDigest": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "analysis": {
+                    "type": "object",
+                    "properties": {
+                      "profile": {
+                        "type": "string",
+                        "const": "python-selected-bindings-v1"
+                      },
+                      "parser": {
+                        "type": "string",
+                        "const": "typescript-and-tree-sitter-wasm"
+                      },
+                      "parserVersion": {
+                        "type": "string",
+                        "const": "6.0.3/0.27.0"
+                      },
+                      "state": {
+                        "type": "string",
+                        "enum": ["collected", "partial"]
+                      },
+                      "reachabilityVerified": {
+                        "type": "boolean",
+                        "const": false
+                      },
+                      "files": {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "sha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": ["primary", "support"]
+                            },
+                            "state": {
+                              "type": "string",
+                              "enum": [
+                                "collected",
+                                "unsupported",
+                                "malformed",
+                                "budget-exhausted",
+                                "error"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "sha256",
+                            "role",
+                            "state"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "functions": {
+                        "maxItems": 1024,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "name": {
+                              "anyOf": [
+                                { "type": "string", "maxLength": 256 },
+                                { "type": "null" }
+                              ]
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "function",
+                                "arrow",
+                                "method",
+                                "constructor",
+                                "getter",
+                                "setter"
+                              ]
+                            },
+                            "declarationId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "enclosingDeclarations": {
+                              "maxItems": 128,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "overlapsChange": { "type": ["boolean", "null"] }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "id",
+                            "name",
+                            "kind",
+                            "declarationId",
+                            "enclosingDeclarations",
+                            "overlapsChange"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "declarations": {
+                        "maxItems": 4096,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "name": {
+                              "anyOf": [
+                                { "type": "string", "maxLength": 256 },
+                                { "type": "null" }
+                              ]
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "function",
+                                "variable",
+                                "class",
+                                "interface",
+                                "type",
+                                "enum",
+                                "property",
+                                "parameter",
+                                "import"
+                              ]
+                            },
+                            "initializer": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 65536
+                                    },
+                                    "end": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 65536
+                                    }
+                                  },
+                                  "required": ["start", "end"],
+                                  "additionalProperties": false
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "id",
+                            "name",
+                            "kind",
+                            "initializer"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "calls": {
+                        "maxItems": 4096,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "callerFunctionId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "targetFunctionId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": ["call", "construct"]
+                            },
+                            "optional": { "type": "boolean" },
+                            "resolution": {
+                              "type": "string",
+                              "enum": [
+                                "lexical-binding",
+                                "unsupported-dispatch",
+                                "no-selected-definition",
+                                "ambiguous-definition",
+                                "mutated-binding",
+                                "type-only-import"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "callerFunctionId",
+                            "targetFunctionId",
+                            "kind",
+                            "optional",
+                            "resolution"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "references": {
+                        "maxItems": 8192,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "fromFunctionId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "ownerDeclarationId": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "targetDeclarationId": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "fromFunctionId",
+                            "ownerDeclarationId",
+                            "targetDeclarationId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "modules": {
+                        "maxItems": 512,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "import",
+                                "re-export",
+                                "dynamic-import",
+                                "require"
+                              ]
+                            },
+                            "specifier": {
+                              "anyOf": [
+                                { "type": "string", "maxLength": 1024 },
+                                { "type": "null" }
+                              ]
+                            },
+                            "targetFile": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 1024
+                                },
+                                { "type": "null" }
+                              ]
+                            },
+                            "resolution": {
+                              "type": "string",
+                              "enum": [
+                                "selected",
+                                "external",
+                                "outside-root",
+                                "missing",
+                                "ambiguous",
+                                "unparsed",
+                                "dynamic"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "kind",
+                            "specifier",
+                            "targetFile",
+                            "resolution"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "omissions": {
+                        "maxItems": 16,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "unselected-files",
+                            "runtime-dispatch",
+                            "runtime-rebinding",
+                            "project-module-resolution",
+                            "framework-assembly",
+                            "non-js-ts-semantics"
+                          ]
+                        }
+                      },
+                      "grammarManifestDigest": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "grammarBindings": {
+                        "maxItems": 16,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "grammar": {
+                              "type": "string",
+                              "maxLength": 64,
+                              "pattern": "^[a-z_]+$"
+                            },
+                            "sourceCommit": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{40}$"
+                            },
+                            "wasmSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            }
+                          },
+                          "required": ["grammar", "sourceCommit", "wasmSha256"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "decisions": {
+                        "maxItems": 4096,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "revision": {
+                              "type": "string",
+                              "enum": ["base", "current"]
+                            },
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            },
+                            "start": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "end": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 65536
+                            },
+                            "startLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "endLine": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65537
+                            },
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "nodeType": {
+                              "type": "string",
+                              "maxLength": 128,
+                              "pattern": "^[a-z_]+$"
+                            }
+                          },
+                          "required": [
+                            "revision",
+                            "file",
+                            "start",
+                            "end",
+                            "startLine",
+                            "endLine",
+                            "id",
+                            "nodeType"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "pythonBindings": {
+                        "type": "object",
+                        "properties": {
+                          "moduleRoots": {
+                            "minItems": 1,
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1024
+                            }
+                          },
+                          "scope": {
+                            "type": "string",
+                            "const": "selected-captured-python-source"
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": ["collected", "partial"]
+                          },
+                          "callerDepthLimit": { "type": "number", "const": 8 },
+                          "callerEdges": {
+                            "maxItems": 4096,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "revision": {
+                                  "type": "string",
+                                  "enum": ["base", "current"]
+                                },
+                                "targetFunctionId": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "callerFunctionId": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "depth": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 8
+                                }
+                              },
+                              "required": [
+                                "revision",
+                                "targetFunctionId",
+                                "callerFunctionId",
+                                "depth"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "counts": {
+                            "type": "object",
+                            "properties": {
+                              "calls": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4096
+                              },
+                              "resolvedCalls": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4096
+                              },
+                              "unresolvedCalls": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4096
+                              },
+                              "imports": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "resolvedImports": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              },
+                              "unresolvedImports": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 512
+                              }
+                            },
+                            "required": [
+                              "calls",
+                              "resolvedCalls",
+                              "unresolvedCalls",
+                              "imports",
+                              "resolvedImports",
+                              "unresolvedImports"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "fullImpactFallback": {
+                            "type": "boolean",
+                            "const": true
+                          },
+                          "runtimeReachabilityVerified": {
+                            "type": "boolean",
+                            "const": false
+                          },
+                          "validationPlanUnchanged": {
+                            "type": "boolean",
+                            "const": true
+                          },
+                          "omissions": {
+                            "maxItems": 16,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "unselected-source",
+                                "runtime-rebinding",
+                                "runtime-dispatch",
+                                "unsupported-binding",
+                                "unsupported-scope-mutation",
+                                "wildcard-import",
+                                "unsupported-import",
+                                "unresolved-call",
+                                "unresolved-import",
+                                "binding-cycle",
+                                "depth-limit",
+                                "budget-exhausted",
+                                "partial-syntax",
+                                "no-selected-functions",
+                                "outside-module-roots",
+                                "non-python-source"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "moduleRoots",
+                          "scope",
+                          "state",
+                          "callerDepthLimit",
+                          "callerEdges",
+                          "counts",
+                          "fullImpactFallback",
+                          "runtimeReachabilityVerified",
+                          "validationPlanUnchanged",
+                          "omissions"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "profile",
+                      "parser",
+                      "parserVersion",
+                      "state",
+                      "reachabilityVerified",
+                      "files",
+                      "functions",
+                      "declarations",
+                      "calls",
+                      "references",
+                      "modules",
+                      "omissions",
+                      "grammarManifestDigest",
+                      "grammarBindings",
+                      "decisions",
+                      "pythonBindings"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "schemaVersion",
+                  "format",
+                  "channel",
+                  "automatedCoverage",
+                  "sourceFingerprint",
+                  "sourceTrust",
+                  "selection",
+                  "instructions",
+                  "guidance",
+                  "files",
+                  "evidence",
+                  "completeness",
+                  "contextDigest",
+                  "analysis"
+                ],
+                "additionalProperties": false
               }
             ]
           },

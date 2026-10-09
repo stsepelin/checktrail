@@ -334,8 +334,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "context-go",

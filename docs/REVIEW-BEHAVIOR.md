@@ -169,3 +169,5 @@ Opt-in version 7 retains version 6 syntax behavior with the planned finite
 [REVIEW-CONTEXT-LIMITS.md](REVIEW-CONTEXT-LIMITS.md). Older version bounds remain
 unchanged. Syntax, serialization and operator workflow quotas remain separately
 bounded.
+
+Opt-in context version 8 adds bounded selected Python bindings and caller metadata with explicit module roots. See [REVIEW-PYTHON-CONTEXT.md](REVIEW-PYTHON-CONTEXT.md) for exact binding support, omissions, source/metadata ceilings and unchanged full-plan fallback.

@@ -24,12 +24,15 @@ assert.ok(
     "selected-syntax-context",
     "review-context-limits",
     "host-session-readiness",
+    "context-python",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
   process.env.CHECKTRAIL_CONTEXT_LIMITS_INSTALLED = "1";
 if (profile === "host-session-readiness")
   process.env.CHECKTRAIL_HOST_SESSION_INSTALLED = "1";
+if (profile === "context-python")
+  process.env.CHECKTRAIL_CONTEXT_PYTHON_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -65,6 +68,7 @@ try {
     "import-history.test.js",
     "git-fixture.js",
     "helpers.js",
+    "gate-context-python.test.js",
     "gate-host-session-readiness.test.js",
     "review-host-process-fixture.js",
     "review-workflow-fixture.js",
@@ -154,6 +158,9 @@ try {
             : []),
           ...(profile === "host-session-readiness"
             ? ["--env", "CHECKTRAIL_HOST_SESSION_INSTALLED=1"]
+            : []),
+          ...(profile === "context-python"
+            ? ["--env", "CHECKTRAIL_CONTEXT_PYTHON_INSTALLED=1"]
             : []),
           "--read-only",
           "--cpus",

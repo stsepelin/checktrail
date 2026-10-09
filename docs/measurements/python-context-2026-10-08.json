@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-python-selected-bindings-v1",
+  "recordedAt": "2026-10-08T14:39:11.012346+00:00",
+  "scope": "Captured selected Python binding and caller metadata plus trusted synthetic native controls; no discovery execution, runtime impact narrowing, finding verification, AI inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "7118e18bdfb38af375946e4b0c14b7cf784a0908",
+    "kind": "source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13203,
+        "sha256": "582c91184c9a7e1b349bcf511bb8a47a6b22e01892fa66bf5572b9298788fceb"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 6135,
+        "sha256": "56f84823a9bf1eadeff7e49b3664de2ac63d9d801757d0fa2136e941491097d3"
+      },
+      {
+        "file": "src/review-behavior.ts",
+        "bytes": 28421,
+        "sha256": "4b79e35048ae9c6fbddf8c58469be9a75f2d99af15dcdbba664c5a1c8a6ff529"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 19662,
+        "sha256": "1f422c1a0e1effa5e96413b0191e2a6313407c1ecde346f1744df03495312660"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 45794,
+        "sha256": "857659bbab1dffe1794dac9354b2a04882a1869a4557cfd1c61571189fdeed7d"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7434,
+        "sha256": "7d8f2cf5f2d76595006b22e8b710b3140f6aefbe187d6bac5d1c27e0a5e353ba"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13576,
+        "sha256": "b8cfae981f6d485736d3eeee69577daa5452d51d21d83b5a8ef531e0c72abae6"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 32835,
+        "sha256": "d25183df962dc303c32935ddb9959b97c54f253aa72b3e14666a9b0ea8be0df5"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31592,
+        "sha256": "5f9c2c5aaf8b4f08284f9f6e51ed747be1d96ef531f2d08fa7c206d87972110b"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 31877,
+        "sha256": "0a661072222ee167d592a64983c0b3bf628ba3389d5efdc7ece6bd4fc05348a1"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19433,
+        "sha256": "955ccd74db56136b14ef4a6cc4559d7c4c6073e7f4042f085f60262e365bfd72"
+      },
+      {
+        "file": "test/gate-context-python.test.ts",
+        "bytes": 28887,
+        "sha256": "19a002fa9b0105bc88af8234d157bee0f94016d8d19b7c5c82c3383fef950d1d"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10803,
+        "sha256": "46ace82cc29701fa04168edd8e4622f10bd19a3001ba47509e6d1ac2f43ae118"
+      },
+      {
+        "file": "scripts/verify-python-context-guards.mjs",
+        "bytes": 4907,
+        "sha256": "e2d40ac190c48a655744e59c288b2bece999a1df859164b30824b09b846ec955"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4212,
+        "sha256": "12f00b2d9f92eb3383fbf41890d9607ab3a20383dcee6144efbe92dcca4ec3f6"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 6992,
+        "sha256": "e02b250b11e7b410fc7af4659089e9d97f96efea8ed594f1ba4edeca6d823b7e"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 144871,
+        "sha256": "f2e9b4ec98e528f3755edbe090961402e074273f23ab928f073c3159e1affa49"
+      },
+      {
+        "file": "scripts/context-tools.Dockerfile",
+        "bytes": 749,
+        "sha256": "acbb8799d015781964d03678584e0ce688c93b9fae4954cce05aca892e54f418"
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 38987,
+        "sha256": "1ab31647e57b7f211279464bb4222b93d836c291a0df132dfc0bc06f16d50c16"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-python.wasm",
+        "bytes": 457492,
+        "sha256": "4d4d110d8c8c948fdebf926958d9b65138ad533fa665da1c7f14b35c6080148d"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 250509,
+        "sha256": "69d74576868951332f566d964fe950cd52f0bd9907e30b3a60a5159251654608"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 20949,
+        "sha256": "f2c89068326c4a60a619390a91ecfed4c1c459455bbded87427795ea7937d68b"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13188,
+        "sha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 46963,
+        "sha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0"
+      },
+      {
+        "file": "dist/test/gate-context-python.test.js",
+        "bytes": 28583,
+        "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+      }
+    ]
+  },
+  "bounds": {
+    "contextVersion": 8,
+    "selectedPaths": 32,
+    "utf8BytesPerFile": 65536,
+    "combinedSourceBytes": 1048576,
+    "revisionViews": 64,
+    "moduleRoots": 16,
+    "callerDepth": 8,
+    "callerEdges": 4096,
+    "syntaxMetadataBytes": 262144,
+    "serializedContextBytes": 8388608,
+    "fullImpactFallback": true,
+    "runtimeReachabilityVerified": false,
+    "validationPlanUnchanged": true
+  },
+  "local": {
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "python": "Python 3.9.6"
+    },
+    "requiredAcceptance": {
+      "timeoutMs": 120000,
+      "profile": "context-python",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-python broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 310.485708,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-python fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 61.124916,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-python near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 90.962625,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-python prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 136.880917,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-python stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 378.443708,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-python empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 104.966,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-python privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1774.46575,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-python lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3630.009875,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-python installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12113.338959,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-python broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "fullCheck": {
+      "command": "npm run check",
+      "counts": {
+        "tests": 1023,
+        "suites": 0,
+        "pass": 759,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 264,
+        "todo": 0
+      },
+      "preparedPinnedGoAnalyzersOnPath": true,
+      "unselectedOptionalNativeProfilesReportedSkipped": true,
+      "requiredPythonContextControlsSkipped": false,
+      "logSha256": "2fde02176690cd87bfd2dbc8fcf39ed76cf73690b42daf7b9b0fab652c8aa072"
+    }
+  },
+  "nativeLinuxArm64": {
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "python": "Python 3.13.5",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+    },
+    "image": "sha256:ac5ecf7a061ffe4265c27e0c30bea6e033801cec435c6ed71b650bdd3d240126",
+    "network": "none",
+    "sourceMount": "readonly",
+    "rootFilesystemReadonly": true,
+    "limits": {
+      "cpus": 2,
+      "memory": "2g",
+      "pids": 256,
+      "sourceTemporaryFilesystemMiB": 512
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-python",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 1024,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-python broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 314.964891,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-python fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20.754046,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-python near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 74.156964,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-python prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 144.420364,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-python stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 71.158112,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-python empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 175.049889,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-python privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2240.423916,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-python lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3106.634345,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-python installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10320.113718,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-python broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-python installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "45ee55b7cd997e1b3b10d02f01166dad594f72ad5e9b101161410e33cd3e38d0",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-python",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 1024,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-python broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 294.010593,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-python fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18.15553,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-python near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 86.691585,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-python prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 145.319453,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-python stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 78.600742,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-python empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 180.955551,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-python privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2208.009254,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-python lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3073.031426,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-python installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.577795,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-python broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-python installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:ac5ecf7a061ffe4265c27e0c30bea6e033801cec435c6ed71b650bdd3d240126",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "compilingBindingGuardControls": {
+    "scope": "Original synthetic Python captured-binding controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "python-default-enclosing-scope",
+        "callback": "context-python near-miss acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8",
+        "mutantSha256": "316f93f0037fe0b2e9dee01142153ff405402b00fc716cb5dfd1526b8039349f",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-unsupported-scope-mutation",
+        "callback": "context-python near-miss acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+        "mutantSha256": "f3841f0d46cec2f0d33f4aca4d4c29ed0e1b96d9b3d5bef982030a2cea4862f7",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-reassignment-ambiguity",
+        "callback": "context-python near-miss acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+        "mutantSha256": "6e0f32cc5530945553976d2798467b8156d1372fc040f0d9f5e0385adbc8bf12",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-class-namespace-boundary",
+        "callback": "context-python near-miss acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+        "mutantSha256": "68924de95a9b5ebf2ea16c2a13e178361293bc97a39196fe4d79d5ea7cefc91c",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-primary-caller-closure",
+        "callback": "context-python broken acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+        "mutantSha256": "3e23c9b32fd7b555e22b1f45706d4021d17c47ec7486c1ad1db556f1be981161",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-summary-count-reconciliation",
+        "callback": "context-python stale acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0",
+        "mutantSha256": "152950f8473b4266222ee6516852fb070f5ad3e6b4c9ffacacee85924dbbb87e",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "python-root-reconstruction-binding",
+        "callback": "context-python stale acceptance",
+        "callbackSha256": "d26c5c64ad528cba3c4318a88227136925dc78e11c67c88392de104326925f3d",
+        "sourceSha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0",
+        "mutantSha256": "6b14a0715bc9e9e0c3d362e426982838126d32987b1b4b4b1bf4ec99ed5f2c13",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "preservedExpandedContextGuardControls": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0",
+        "mutantSha256": "5c982ed7d323c0fdec3f9ba93b93340b946031909b7e6c76b80e2866f9e61e09",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0",
+        "mutantSha256": "89bd8e59a3e8a0b1b7bc158744e30413cd9440910b09f97a032946930270ca5a",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "4514c165b444d4297e8c38a7e0033c615451267525715a951c64935a9f1d43d0",
+        "mutantSha256": "b5e6ab645eae90a488cbede604f9170b667f78164ce62968d7b2abb9f5a58375",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "hostIsolationVerified": false,
+  "modelFreshnessVerified": false,
+  "claimsVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
