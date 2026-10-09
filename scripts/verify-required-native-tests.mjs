@@ -37,7 +37,9 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  fullSuite || selection.includes("dotnet-method")
+  fullSuite ||
+  selection.includes("dotnet-method") ||
+  selection.includes("jvm-wrappers")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),

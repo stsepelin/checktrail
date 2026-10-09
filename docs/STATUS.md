@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [JVM wrapper extensions](JVM-WRAPPERS.md) select exact offline Maven/Gradle
+artifacts, native Java generators and conventional JPMS producer/consumer builds.
+Selected JDK and unpacked distribution bytes, generated source and primary class
+origins, descriptor contracts and native compiler inputs remain bound through
+executed tests. Wider builds/languages/platforms, complete provenance and final
+Gate A acceptance remain open. The
+[local record](measurements/jvm-wrappers-2026-10-09.json) binds preserved native
+callbacks, all required source and fresh installed cases, compiling guard
+controls, native regressions and the mandatory project check. No inference or
+field evaluation is invoked.
+
 Opt-in [Rust extension contracts](RUST-EXTENSIONS.md) bind selected GNU ARM64
 compiler, driver, host and wasm32 library bytes before and after native workspace
 witnesses. Lean/extra feature and target combinations retain native test accounting;
@@ -139,7 +150,7 @@ display names. Matching client JVM settings and protected Java-home selection
 prevent the observed ordinary single-use daemon cancellation escape. The
 [local record](measurements/gradle-native-2026-10-05.json) binds required native
 and installed CLI/MCP controls, compiling guard mutations and public preparers.
-Wrappers, wider analyzer and mixed/generated/script Kotlin/Scala profiles, generated/JPMS scope and wider profiles
+Wider wrappers, analyzers, mixed/generated/script Kotlin/Scala and build profiles
 remain required under E11; Gate A remains open.
 
 Opt-in [Maven tests](MAVEN.md) now run a declared Java reactor from fresh source,
@@ -148,7 +159,7 @@ source-declaration and JUnit events reconcile with fresh reports; skipped,
 filtered, empty, foreign and incomplete participation cannot pass. The
 [local record](measurements/maven-native-2026-10-05.json) binds original controls,
 installed CLI/MCP acceptance and compiling guard mutations. E11 remains partial
-for wrappers, wider Gradle profiles, generated/JPMS scope, mixed/generated/script Kotlin, Scala and wider analyzer profiles.
+for wider build profiles, mixed/generated/script Kotlin, Scala and wider analyzer profiles.
 Hosted CI, wider profiles and the remaining reviewer gates are unverified; Gate A
 remains open.
 

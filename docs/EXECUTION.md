@@ -35,7 +35,7 @@ an unavailable runtime or external service does not count as verification.
 
 - Implemented: Maven packet version 2 binds raw pinned repository manifests, exact native JAR closure and observed native client/distribution identities. The original synthetic forgery, compiling guard checks and required source/installed controls are recorded in MAVEN.md; wider E11 and Gate A obligations remain open.
 
-- Implemented: opt-in pinned Gradle Java module tests with fresh source/output, native task/JUnit/XML reconciliation, declared source binding, Kotlin DSL build controls, independent module failures, protected client-JVM launch and reached-test cancellation cleanup. Required source/installed acceptance and compiling guard controls are in GRADLE.md; wrappers, analyzers, wider JVM source/target profiles and E11 remain open.
+- Implemented: opt-in pinned Gradle Java module tests with fresh source/output, native task/JUnit/XML reconciliation, declared source binding, Kotlin DSL build controls, independent module failures, protected client-JVM launch and reached-test cancellation cleanup. Required source/installed acceptance and compiling guard controls are in GRADLE.md; JVM-WRAPPERS.md adds selected offline wrappers, generated Java and JPMS. Wider builds, analyzers, JVM source/target profiles and E11 remain open.
 
 - Published in alpha.5: named per-check Go build-tag profiles with independent
   exclusions, matching listing/execution settings, unchanged formatting scope,

@@ -51,6 +51,7 @@ assert.ok(
     "python-extensions",
     "php-extensions",
     "rust-extensions",
+    "jvm-wrappers",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -108,6 +109,8 @@ if (profile === "assembly-fastapi")
   process.env.CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED = "1";
 if (profile === "assembly-vue-router")
   process.env.CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED = "1";
+if (profile === "jvm-wrappers")
+  process.env.CHECKTRAIL_JVM_WRAPPERS_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -164,6 +167,10 @@ try {
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
     "gate-rust-extensions.test.js",
+    "gate-jvm-wrappers.test.js",
+    "jvm-wrappers-fixture.js",
+    "maven-fixture.js",
+    "gradle-fixture.js",
     "rust-extensions-fixture.js",
     "rust-workspace-fixture.js",
     "gate-php-extensions.test.js",
@@ -214,6 +221,28 @@ try {
       ),
       prepared,
       { recursive: true },
+    );
+  }
+  if (profile === "jvm-wrappers") {
+    const source =
+      process.env.CHECKTRAIL_JVM_WRAPPERS_CACHE ??
+      path.join(repository, ".checktrail");
+    await mkdir(path.join(consumer, ".checktrail"), { recursive: true });
+    for (const name of [
+      "maven-review-tools",
+      "maven-dependencies",
+      "gradle-review-tools",
+      "gradle-dependencies",
+      "jvm-wrapper-tools",
+    ])
+      await cp(
+        path.join(source, name),
+        path.join(consumer, ".checktrail", name),
+        { recursive: true },
+      );
+    process.env.CHECKTRAIL_JVM_WRAPPERS_CACHE = path.join(
+      consumer,
+      ".checktrail",
     );
   }
   if (profile === "php-extensions") {
@@ -401,6 +430,14 @@ try {
           ...(profile === "rust-extensions"
             ? ["--env", "CHECKTRAIL_RUST_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "jvm-wrappers"
+            ? [
+                "--env",
+                "CHECKTRAIL_JVM_WRAPPERS_INSTALLED=1",
+                "--env",
+                "CHECKTRAIL_JVM_WRAPPERS_CACHE=/consumer/.checktrail",
+              ]
+            : []),
           ...(profile === "php-extensions"
             ? ["--env", "CHECKTRAIL_PHP_EXTENSIONS_INSTALLED=1"]
             : []),
@@ -491,42 +528,44 @@ try {
           "--cpus",
           "2",
           "--memory",
-          "2g",
+          profile === "jvm-wrappers" ? "4g" : "2g",
           "--pids-limit",
           "256",
           "--tmpfs",
-          profile === "php-extensions"
-            ? "/tmp:rw,nosuid,nodev,noexec,size=1024m"
-            : [
-                  "assembly-nuxt",
-                  "javascript-extensions",
-                  "python-extensions",
-                  "rust-extensions",
-                ].includes(profile)
-              ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
+          profile === "jvm-wrappers"
+            ? "/tmp:rw,nosuid,nodev,exec,size=2048m"
+            : profile === "php-extensions"
+              ? "/tmp:rw,nosuid,nodev,noexec,size=1024m"
               : [
-                    "context-go",
-                    "context-rust",
-                    "context-swift",
-                    "context-c",
-                    "context-cpp",
+                    "assembly-nuxt",
+                    "javascript-extensions",
+                    "python-extensions",
+                    "rust-extensions",
                   ].includes(profile)
-                ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+                ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
                 : [
-                      "context-scala",
-                      "context-csharp",
-                      "context-ruby",
-                      "context-vb",
-                      "context-hcl",
-                      "context-yaml",
-                      "assembly-vue-router",
-                      "assembly-fastapi",
-                      "assembly-django",
-                      "assembly-laravel",
-                      "javascript-extensions",
+                      "context-go",
+                      "context-rust",
+                      "context-swift",
+                      "context-c",
+                      "context-cpp",
                     ].includes(profile)
-                  ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
-                  : "/tmp:rw,nosuid,nodev,size=256m",
+                  ? "/tmp:rw,exec,nosuid,nodev,size=256m"
+                  : [
+                        "context-scala",
+                        "context-csharp",
+                        "context-ruby",
+                        "context-vb",
+                        "context-hcl",
+                        "context-yaml",
+                        "assembly-vue-router",
+                        "assembly-fastapi",
+                        "assembly-django",
+                        "assembly-laravel",
+                        "javascript-extensions",
+                      ].includes(profile)
+                    ? "/tmp:rw,nosuid,nodev,noexec,size=256m"
+                    : "/tmp:rw,nosuid,nodev,size=256m",
           ...(process.env.CHECKTRAIL_TEST_TASK
             ? ["--label", "checktrail.task=" + process.env.CHECKTRAIL_TEST_TASK]
             : []),
@@ -565,17 +604,20 @@ try {
             consumerMount: "readonly",
             rootFilesystemReadonly: true,
             temporaryFilesystemMiB:
-              profile === "php-extensions"
-                ? 1024
-                : [
-                      "assembly-nuxt",
-                      "javascript-extensions",
-                      "python-extensions",
-                      "rust-extensions",
-                    ].includes(profile)
+              profile === "jvm-wrappers"
+                ? 2048
+                : profile === "php-extensions"
                   ? 1024
-                  : 256,
+                  : [
+                        "assembly-nuxt",
+                        "javascript-extensions",
+                        "python-extensions",
+                        "rust-extensions",
+                      ].includes(profile)
+                    ? 1024
+                    : 256,
             temporaryFilesystemExecutable: [
+              "jvm-wrappers",
               "context-go",
               "context-rust",
               "context-swift",

@@ -1,4 +1,13 @@
-import { spawnSync } from "node:child_process";
+import { jvmInvoker } from "./jvm-invoke.js";
+import { verifyJvmWrapper, verifyJvmToolchain } from "./jvm-extensions.js";
+import {
+  stageJvmWrapper,
+  findJvmWrapperDistribution,
+  generateJvmSources,
+  captureJvmModules,
+  captureJvmGeneratedClasses,
+} from "./jvm-workspace-extensions.js";
+import { gradleDistributionFiles } from "./gradle-distribution.js";
 import {
   cp,
   lstat,
@@ -17,7 +26,7 @@ import {
   gradleTools,
   gradleProtectedEnvironment,
 } from "./gradle.js";
-import { mavenHash, mavenLocal } from "./maven.js";
+import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
 import {
   gradleDeclarationSource,
   gradleJUnitSource,
@@ -26,13 +35,7 @@ import {
 } from "./gradle-native.js";
 const env = { ...process.env };
 for (const name of gradleProtectedEnvironment) delete env[name];
-const invoke = (tool: string, args: string[], cwd?: string) =>
-  spawnSync(tool, args, {
-    env,
-    encoding: "utf8",
-    maxBuffer: 2 * 1024 * 1024,
-    ...(cwd ? { cwd } : {}),
-  });
+const invoke = jvmInvoker(env, process.argv[4] !== "--version");
 async function jsonLines(file: string) {
   const bytes = await readFile(file);
   if (bytes.length > 2 * 1024 * 1024) throw Error("Native event byte bound");
@@ -49,7 +52,12 @@ async function main() {
   const root = await realpath(process.argv[2]!),
     project = path.relative(root, await realpath(process.cwd())) || ".",
     invocation = gradleInvocationSchema.parse(JSON.parse(process.argv[3]!));
-  const version = invoke("java", ["--version"]);
+  const extensions = invocation.config.extensions;
+  if (extensions) {
+    env.JAVA_HOME = await verifyJvmToolchain();
+    await verifyJvmWrapper(root, project, "gradle", extensions);
+  }
+  const version = await invoke("java", ["--version"]);
   if (
     version.status !== 0 ||
     version.stderr ||
@@ -75,34 +83,6 @@ async function main() {
       junit = path.join(temporary, "junit.jsonl");
     for (const directory of [workspace, home, classes]) await mkdir(directory);
     env.HOME = home;
-    const invokeGradle = (args: string[], cwd: string) =>
-      invoke(
-        "java",
-        [
-          ...gradleJvmArguments,
-          `-javaagent:${path.join(tools.distribution, "lib/agents/gradle-instrumentation-agent-9.8.0.jar")}`,
-          "-Dorg.gradle.appname=gradle",
-          `-Dorg.gradle.jvmargs=${gradleJvmArguments.join(" ")}`,
-          "-jar",
-          path.join(tools.distribution, "lib/gradle-gradle-cli-main-9.8.0.jar"),
-          ...args,
-        ],
-        cwd,
-      );
-    const nativeVersion = invokeGradle(
-      ["--version", "--no-daemon", "--gradle-user-home", home],
-      home,
-    );
-    if (
-      nativeVersion.status !== 0 ||
-      nativeVersion.stderr ||
-      !nativeVersion.stdout.includes("Gradle 9.8.0\n")
-    )
-      throw Error("Gradle version mismatch");
-    if (process.argv[4] === "--version") {
-      process.stdout.write(nativeVersion.stdout);
-      return;
-    }
     for (const item of invocation.inputs) {
       const bytes = await readFile(await mavenLocal(root, project, item.path));
       if (bytes.length > 4 * 1024 * 1024 || mavenHash(bytes) !== item.sha256)
@@ -113,6 +93,80 @@ async function main() {
       await mkdir(path.dirname(destination), { recursive: true });
       await writeFile(destination, bytes, { flag: "wx" });
     }
+    const wrapper = extensions
+      ? await stageJvmWrapper(
+          workspace,
+          "gradle",
+          await verifyJvmWrapper(root, project, "gradle", extensions),
+        )
+      : null;
+    if (extensions) {
+      env.GRADLE_USER_HOME = home;
+      env.JAVA_OPTS = gradleJvmArguments.join(" ");
+      env.GRADLE_OPTS =
+        "'-Dorg.gradle.jvmargs=" + gradleJvmArguments.join(" ") + "'";
+    }
+    const invokeGradle = async (args: string[], cwd: string) =>
+      extensions
+        ? await invoke(
+            "/bin/sh",
+            [path.join(workspace, "gradlew"), ...args],
+            cwd,
+          )
+        : await invoke(
+            "java",
+            [
+              ...gradleJvmArguments,
+              `-javaagent:${path.join(tools.distribution, "lib/agents/gradle-instrumentation-agent-9.8.0.jar")}`,
+              "-Dorg.gradle.appname=gradle",
+              `-Dorg.gradle.jvmargs=${gradleJvmArguments.join(" ")}`,
+              "-jar",
+              path.join(
+                tools.distribution,
+                "lib/gradle-gradle-cli-main-9.8.0.jar",
+              ),
+              ...args,
+            ],
+            cwd,
+          );
+    const nativeVersion = await invokeGradle(
+      ["--version", "--no-daemon", "--gradle-user-home", home],
+      home,
+    );
+    if (
+      nativeVersion.status !== 0 ||
+      nativeVersion.stderr ||
+      !nativeVersion.stdout.includes("Gradle 9.8.0\n")
+    )
+      throw Error("Gradle version mismatch");
+    const distribution = extensions
+      ? await findJvmWrapperDistribution(home, "gradle")
+      : tools.distribution;
+    if (extensions)
+      await verifyMavenTree(distribution, gradleDistributionFiles);
+    if (process.argv[4] === "--version") {
+      const marker =
+        "------------------------------------------------------------\nGradle 9.8.0\n------------------------------------------------------------\n";
+      if (extensions && nativeVersion.stdout.split(marker).length !== 2)
+        throw Error(
+          "Selected wrapper must emit one native Gradle version block",
+        );
+      process.stdout.write(
+        extensions
+          ? nativeVersion.stdout.slice(nativeVersion.stdout.indexOf(marker))
+          : nativeVersion.stdout,
+      );
+      return;
+    }
+    const generated = extensions
+      ? await generateJvmSources(
+          extensions,
+          invocation.inputs,
+          workspace,
+          temporary,
+          invoke,
+        )
+      : [];
     await cp(tools.repository, repository, {
       recursive: true,
       errorOnExist: true,
@@ -124,7 +178,7 @@ async function main() {
     const jars = tools.pins.files
       .filter((file) => file.path.endsWith(".jar"))
       .map((file) => path.join(repository, file.path));
-    const compiled = invoke("javac", [
+    const compiled = await invoke("javac", [
       "-proc:none",
       "-encoding",
       "UTF-8",
@@ -145,7 +199,7 @@ async function main() {
       ),
       "VerifierGradleTests\n",
     );
-    const packed = invoke("jar", [
+    const packed = await invoke("jar", [
       "--create",
       "--file",
       observer,
@@ -158,9 +212,10 @@ async function main() {
     const observerPin = mavenHash(await readFile(observer)),
       script = path.join(temporary, "observer.gradle");
     await writeFile(script, gradleNativeSource);
-    const result = invokeGradle(
+    const result = await invokeGradle(
       [
         "-Dorg.gradle.java.home=/opt/java/openjdk",
+        ...(extensions ? ["-Dchecktrail.wrapper=1"] : []),
         "--offline",
         "--no-daemon",
         "--no-configuration-cache",
@@ -235,7 +290,7 @@ async function main() {
         )
         .map((input) => path.join(workspace, input.path));
       if (sources.length) {
-        const parsed = invoke("java", [
+        const parsed = await invoke("java", [
           "-cp",
           [classes, ...jars].join(path.delimiter),
           "VerifierGradleSources",
@@ -251,10 +306,42 @@ async function main() {
         const file = path.resolve(base, item.path);
         if (
           (await realpath(file)) !== file ||
-          mavenHash(await readFile(file)) !== item.sha256
+          mavenHash(await readFile(file)) !==
+            (base === workspace && wrapper?.file === item.path
+              ? wrapper.stagedSha256
+              : item.sha256)
         )
           throw Error("Gradle input changed during execution");
       }
+    }
+    const moduleWitnesses = extensions
+      ? await captureJvmModules(
+          extensions,
+          workspace,
+          temporary,
+          "gradle",
+          invoke,
+        )
+      : [];
+    const generatedClasses = extensions
+      ? await captureJvmGeneratedClasses(
+          extensions,
+          workspace,
+          temporary,
+          "gradle",
+          invoke,
+        )
+      : [];
+    if (extensions) {
+      await verifyJvmWrapper(root, project, "gradle", extensions);
+      await verifyJvmToolchain();
+      await verifyMavenTree(distribution, gradleDistributionFiles);
+      for (const output of generated.flatMap((g) => g.outputs))
+        if (
+          mavenHash(await readFile(path.join(workspace, output.path))) !==
+          output.sha256
+        )
+          throw Error("Generated Java source changed after native witnesses");
     }
     await gradleTools(root, project, invocation.config);
     for (const item of tools.pins.files.filter((file) =>
@@ -280,7 +367,19 @@ async function main() {
         gradle: "9.8.0",
         launcherPid: result.pid,
         workspace,
-        distribution: tools.distribution,
+        distribution,
+        ...(extensions && wrapper
+          ? {
+              extensions: {
+                schemaVersion: 1,
+                nativeToolchainVerified: true,
+                wrapper: { ...wrapper, installedDistributionVerified: true },
+                generated,
+                modules: moduleWitnesses,
+                generatedClasses,
+              },
+            }
+          : {}),
         repositoryManifest: tools.manifestText,
         artifacts: tools.pins.files.map((file) => file.path),
         exitCode: result.status,
@@ -288,10 +387,10 @@ async function main() {
         tests,
         modules,
         console: {
-          stdoutBytes: Buffer.byteLength(result.stdout),
-          stderrBytes: Buffer.byteLength(result.stderr),
-          stdoutSha256: mavenHash(result.stdout),
-          stderrSha256: mavenHash(result.stderr),
+          stdoutBytes: result.stdoutBytes,
+          stderrBytes: result.stderrBytes,
+          stdoutSha256: result.stdoutSha256,
+          stderrSha256: result.stderrSha256,
         },
       }),
     );

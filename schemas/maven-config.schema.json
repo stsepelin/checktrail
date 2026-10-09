@@ -3,6 +3,95 @@
   "type": "object",
   "properties": {
     "schemaVersion": { "type": "number", "const": 1 },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "profile": { "type": "string", "const": "linux-arm64-wrappers-v1" },
+        "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "generators": {
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 4096 }
+                ]
+              },
+              "source": { "type": "string", "minLength": 1, "maxLength": 4096 },
+              "className": {
+                "type": "string",
+                "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+              },
+              "outputs": {
+                "minItems": 1,
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    },
+                    "className": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                    }
+                  },
+                  "required": ["file", "className"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["module", "source", "className", "outputs"],
+            "additionalProperties": false
+          }
+        },
+        "jpms": {
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "anyOf": [
+                  { "type": "string", "const": "." },
+                  { "type": "string", "minLength": 1, "maxLength": 4096 }
+                ]
+              },
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+              },
+              "requires": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                }
+              },
+              "exports": {
+                "maxItems": 32,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                }
+              }
+            },
+            "required": ["module", "name", "requires", "exports"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["profile", "archive", "generators", "jpms"],
+      "additionalProperties": false
+    },
     "distribution": { "type": "string", "minLength": 1, "maxLength": 4096 },
     "repository": { "type": "string", "minLength": 1, "maxLength": 4096 },
     "repositoryManifest": {

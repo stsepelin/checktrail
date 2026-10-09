@@ -605,6 +605,38 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  jvm-wrappers-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 40
+    env:
+      CHECKTRAIL_TEST_TASK: ci-jvm-wrappers
+      CHECKTRAIL_JVM_WRAPPERS_IMAGE: checktrail-jvm-wrappers:ci
+      CHECKTRAIL_MAVEN_IMAGE: checktrail-jvm-maven-preparation:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare exact public JVM distributions and dependency inventories
+        run: |
+          node scripts/prepare-maven-tools.mjs
+          docker build --network none --label checktrail.task=ci-jvm-wrappers --file scripts/maven-tools.Dockerfile --tag "$CHECKTRAIL_MAVEN_IMAGE" .checktrail/maven-review-tools
+          node scripts/prepare-maven-dependencies.mjs
+          node scripts/prepare-gradle-tools.mjs
+          node scripts/prepare-gradle-dependencies.mjs
+      - name: Build the pinned native JVM image
+        run: docker build --network none --label checktrail.task=ci-jvm-wrappers --file scripts/jvm-extension-tools.Dockerfile --tag "$CHECKTRAIL_JVM_WRAPPERS_IMAGE" .
+      - name: Verify signed wrapper artifacts and generate pinned templates
+        run: node scripts/prepare-jvm-wrappers.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native baseline, source and installed callbacks, compiling controls and regressions
+        run: node scripts/verify-jvm-wrappers-container.mjs
+
   rust-extensions-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
