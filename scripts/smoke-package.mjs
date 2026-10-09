@@ -41,17 +41,38 @@ try {
     createHash("sha256").update(initialTarball).digest("hex"),
     "Repeated packing of the same checkout must produce identical bytes",
   );
-  for (const file of packed.files)
-    assert.match(
-      file.path,
-      /^(?:dist\/src\/|assets\/context-grammars\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
+  const supplementalGrammarFiles = new Set([
+    "assets/context-vb-grammar/manifest.json",
+    "assets/context-vb-grammar/tree-sitter-vbnet.wasm",
+    "assets/context-vb-grammar/notices/vbnet-MIT.txt",
+    "assets/context-vb-grammar/patches/vbnet-newlines.patch",
+  ]);
+  const packedPaths = new Set(packed.files.map((file) => file.path));
+  for (const file of supplementalGrammarFiles)
+    assert.ok(
+      packedPaths.has(file),
+      `Missing supplemental grammar asset: ${file}`,
     );
+  for (const file of packed.files)
+    if (!supplementalGrammarFiles.has(file.path))
+      assert.match(
+        file.path,
+        /^(?:dist\/src\/|assets\/context-grammars\/|schemas\/|packs\/|docs\/|package\.json$|server\.json$|README\.md$|LICENSE$|SECURITY\.md$|CONTRIBUTING\.md$)/,
+      );
   const consumer = path.join(temporary, "consumer");
   await installAcceptancePackage(
     repository,
     path.join(temporary, packed.filename),
     consumer,
   );
+  for (const file of supplementalGrammarFiles)
+    assert.deepEqual(
+      await readFile(
+        path.join(consumer, "node_modules/@stsepelin/checktrail", file),
+      ),
+      await readFile(path.join(repository, file)),
+      `Installed supplemental grammar bytes differ: ${file}`,
+    );
   const scoringSmoke = JSON.parse(
     execFileSync(
       process.execPath,
