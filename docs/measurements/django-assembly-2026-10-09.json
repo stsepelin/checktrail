@@ -1,0 +1,1237 @@
+{
+  "schemaVersion": 1,
+  "profile": "assembly-django",
+  "capturedAt": "2026-10-09T07:25:35.958504+00:00",
+  "sourceBaseCommit": "7376bbaf1629b532fcd01ffac6bb784da46b9669",
+  "native": {
+    "runtime": {
+      "python": "3.12.13",
+      "packages": {
+        "Django": "6.1.1",
+        "asgiref": "3.12.1"
+      },
+      "pythonBinary": {
+        "bytes": 67168,
+        "sha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b"
+      },
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "binary": {
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      }
+    },
+    "legacy": {
+      "failed": 0,
+      "skipped": 0
+    },
+    "frameworks": {
+      "timeoutMs": 120000,
+      "profile": "frameworks",
+      "fileWorkerLimit": 1,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dd6b32d0077ba2b930511ee7fc50493a502aaf2460e79cf77d96bb6305b4d536"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b80a0e77267ee9d25c54f802988f746fdcb65458d7c3f934b0048c513f49507d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3e7c5493d6273f1a2aaccaf1f2353ad49724cb55ac7f193b687b31e3f3a5df34"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.277527,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1487.352607,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2672.305488,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.992215,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1823.148366,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2260.371566,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 891.62196,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 925.141701,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "FastAPI planning requires an explicit local import profile and never loads the application",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI captures framework defaults, HTTP/WebSocket boundaries and exact duplicate registrations",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native FastAPI inventories after lifespan startup, completes cleanup and rejects unsupported assembly",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Django planning validates a local settings module without executing setup and protects the settings environment",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures nested URL resolvers and exact duplicate pattern chains while preserving namespaces and matching mode",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Django captures setup-time URL wiring and keeps empty, custom or failing assembly incomplete",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public fastapi example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "public django example passes and its duplicate-registration counterpart fails",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          }
+        ]
+      }
+    },
+    "image": "checktrail-checktrail-gatea-django-assembly-1009:public",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "assembly-django",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "assembly-django broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1031.441296,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "assembly-django fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 502.990843,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "assembly-django near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 997.903887,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "assembly-django prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 122.352232,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "assembly-django stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1010.504379,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "assembly-django empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2022.453517,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "assembly-django privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4091.221978,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "assembly-django lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5949.557055,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "assembly-django installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 22085.834764,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "assembly-django broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "assembly-django installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "cachePreparation": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "guards": {
+      "scope": "Original synthetic Django assembly controls; selected byte-pinned native runtime; no inference or field evaluation",
+      "controls": [
+        {
+          "id": "fingerprint",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "2dedeba4c2a209ef89adb97ac7adf1180bce425ca9d1a03a1cbca131a06c9f2d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "producer",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "3e2b7d1802b8f844bd77e673876b08b7e0bd87b4c9c976b9e94b8f5aa20bae2f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "producer-version",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "4648c38c3575d06d3aba250cf9cb142d055084ce53c9a1153d4b121796b08b3d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "assembly",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "80fe112acf5ae6750f4d77056059a950f3f06ee387dd1d20df23299faa30fbf3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "environment",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "7933bdc16b82bffc8b885e146f03bda20d6f359b9336920087630c32ac27c127",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-total",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "9f482651018f69cf3b4934fec8d8e597205236a5439c285caa453be042ed0cf3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "request-total",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "2ac04730c50cf4b4f905355c1eab405f401701c7f232960cc284f6fef23a72d1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-kind",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "6d0b35be47b8bd3cfc62ed6d799639160d3f22df614ad8169b3003ed05fad4cf",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-order",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "edc9d90fe1f2071fe913c1f87b1094aea2b47c2d56869c1d94e989e5050d7dee",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-completeness",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "32517aad29e24a6995e226da406609aed547938dc775c6f116cf2b7101feb811",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "collection-counts",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "e1eb192fd2122b20abbc7d20a824aeed20255300d4f3caffd68cf56492de239b",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "entry-key",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "1fbcca45513a1f1729ef3415c836b2ccec1b0840d5c805b81c50799d2dd04248",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "visited-count",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "8397174822d73af534986829e32730e7aaa264930959ab8c01d75c993c8a303e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "request-input",
+          "callback": "assembly-django stale acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "ba2fa7288ea42e0f0bd56a9a7b7b9988ccb5dab9fc03c9187973a0d9e8d42a01",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "route-contract",
+          "callback": "assembly-django broken acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "8e8030babad8a48461ddf21083bedb4ad139574586ab0c5aa02d021cd56a4916",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "response-contract",
+          "callback": "assembly-django broken acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "13ccc6c8d769bf6f50d4c6bd75e21e016841eadaa92309f2829ef212153e68a7",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-namespace-identity",
+          "callback": "assembly-django namespace guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2",
+          "mutantSha256": "e74a9185b185a2b59f2465e3419fd7dbfe7d73863432d650433774a0468616df",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "isolated-command",
+          "callback": "assembly-django isolated bootstrap guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "a2b7296b11428cba5b4da699a245b456df4962956b03bad6eb9a60b76e490565",
+          "mutantSha256": "d03c0cbd78ce1cf5e4d424807b781d1fdf836f6f047ee6829b624eef57ed4c09",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "exclude-unchecked-pyc",
+          "callback": "assembly-django isolated bootstrap guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "9b4bcd4b3125e78d98caafc8a4cda00fbced000bdcea1b67bfce684972c36c82",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "preload-asgiref",
+          "callback": "assembly-django isolated bootstrap guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "f2f574e6c566bc3d80a5e6c3ce59ea533fa45591f10852dc19e5c1025cfc9c82",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-app-defaults",
+          "callback": "assembly-django fixed acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "7a39f44276147ec496a355494d4c3d96d06c5adb621d118d84498908772c7417",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "inherited-route-defaults",
+          "callback": "assembly-django fixed acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "e65d91b6a04b13047b9bc0beb309ae2a578eb2185acdb8f85d07a6a98ae1dc06",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "omitted-middleware",
+          "callback": "assembly-django fixed acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "0881a2edb67a7e7a87773abc19fe491363fd2b413156da101f0e647d36044494",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-hook-orders",
+          "callback": "assembly-django fixed acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "d9857889a4b5dff348a618646a50786f82ac99a76e6ce8c3f67ed81a2e1a3d01",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "native-async-dispatch",
+          "callback": "assembly-django native asynchronous dispatch guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "5803b348b280bf43f6f9d913df660a727ab2c3aad165eb78a41b98bbf0754b74",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receiver-error-accounting",
+          "callback": "assembly-django native asynchronous dispatch guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "fa291c9344ce174175390122b06cec42249d3e15781599519e35ea8dbdb62e0d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "weak-receiver-metadata",
+          "callback": "assembly-django weak bound receiver guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "2e7af1f20429fecf1ccf77b43ded3a81e6b8d93d8d0eca0a1f1793c080e4f8c0",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "receiver-multiplicity",
+          "callback": "assembly-django broken acceptance",
+          "callbackSha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "fa485155a3ec11b16b691fc6b2e132530ea217b0bd60d6c8f153a8992f821f8c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "registration-drift",
+          "callback": "assembly-django registration drift guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "ce9ac6e73e3d220d2605c01dca7c5fb65f43a7167319bc494abc3ed60eaaf642",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "signal-observer-identity",
+          "callback": "assembly-django native observer replacement guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "c604b08afff20360aaf3287d74a569b5b296682821593b1dd2cc8f068c0bdd8a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "whole-url-budget",
+          "callback": "assembly-django limits and opaque metadata guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "8afa0298ad6a8310ee920a7d27edfe1c07f0b2031bc15b9f2eafbc044e4afb66",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "signal-operation-budget",
+          "callback": "assembly-django limits and opaque metadata guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "92bf20de7a240d76532bfd2e493cf79b3522c83fa772d697b5b61873cf4667f9",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "server-port",
+          "callback": "assembly-django WSGI request boundary guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "6da0cadb31aa22d97585d4952966f7a4cb5a4742cc3ff07b08a6b1efe6adfe9a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "model-signal-sender",
+          "callback": "assembly-django native model signal guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "a653e7759ea21018fdcf80029af5487389ea91d33adf6eb5fc66c74bed3ff759",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "response-byte-and-chunk-budget",
+          "callback": "assembly-django native response limits guard acceptance",
+          "callbackSha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d",
+          "fixtureSha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db",
+          "sourceSha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8",
+          "mutantSha256": "afe87c0ce85887ca90acbacca0160a91ad6b1bdbdc34483db806a3ca546fde2a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "supplemental": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "installed": {
+      "tarballSha256": "c412f960112c44ed87ec97d27007d513cc508b69dcd22ffea091b230114d27bf",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "assembly-django",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "assembly-django broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1032.729787,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "assembly-django fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 515.046449,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "assembly-django near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1025.507328,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "assembly-django prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 125.597114,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "assembly-django stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1009.646902,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "assembly-django empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2031.143206,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "assembly-django privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4133.280039,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "assembly-django lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5919.673095,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "assembly-django installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.488836,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "assembly-django broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "assembly-django installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:c497171e19a707d36f9c4a04b503cf0599bc94229b0e46b2382e7ea59d221834",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": false
+    },
+    "wholeDependencyClosureVerified": false,
+    "publisherLicenseClosureVerified": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "tests": 1245,
+    "pass": 856,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 389,
+    "todo": 0,
+    "durationMs": 189694.794417
+  },
+  "fullCheckIncludesOptionalNativeSkips": true,
+  "fullCheckPrecedesReceiptAndSupportMetadata": true,
+  "acceptedPackagePrecedesReceiptAndSupportMetadata": true,
+  "sourcePins": [
+    {
+      "file": "src/django.ts",
+      "bytes": 3383,
+      "sha256": "62bfae6923c0a33c6741eae0f16587ed792fd8d190b8b6a42d2d5ada0b1f9e4d"
+    },
+    {
+      "file": "src/django-evidence.ts",
+      "bytes": 3750,
+      "sha256": "2207062eba6d8110b62481b257597735a54574d0f804868fa3ffa9b246281beb"
+    },
+    {
+      "file": "src/django-assembly-runner.ts",
+      "bytes": 20984,
+      "sha256": "6bf2ee0dffc815e9388d6064948f21328b116ce50cb8f9b2864e4414d18e9b73"
+    },
+    {
+      "file": "src/django-assembly-evidence.ts",
+      "bytes": 8086,
+      "sha256": "59c0720531751e4db7cc7e39fd90b9067e5300b359bc73cce168acfff84c761e"
+    },
+    {
+      "file": "src/django-assembly-schema.ts",
+      "bytes": 3649,
+      "sha256": "e87b972272cbcfe83a2c3add4dadddf65065874b29aa05c74c40178ae254f3ac"
+    },
+    {
+      "file": "src/django-assembly-runtime-pins.ts",
+      "bytes": 1909,
+      "sha256": "f0c4147484afacf15acbcde4ba41ac03acdeb1638b43da6cd5700017774b9bed"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "bytes": 23987,
+      "sha256": "162a7d7c479b7ad2fd0b607174744243b4580577e8917abc6b8122c04e53e4d4"
+    },
+    {
+      "file": "test/gate-assembly-django.test.ts",
+      "bytes": 20058,
+      "sha256": "b70157e4859395a6b3b46691b09fb659b31d65fb314f4bcf0febf4a75590eb6d"
+    },
+    {
+      "file": "test/review-django-assembly-fixture.ts",
+      "bytes": 12709,
+      "sha256": "b50eb317940fe770388635df60bfc14f72f42321ecbb089d65b800eac47df142"
+    },
+    {
+      "file": "test/review-django-assembly-guards.test.ts",
+      "bytes": 16176,
+      "sha256": "61b3f24bf05e9dfc383066f04505b73cae7a4d9c4b9c708b4f28c428a24fe363"
+    },
+    {
+      "file": "scripts/verify-django-assembly-container.mjs",
+      "bytes": 5610,
+      "sha256": "f20b0a7365ab4d739c1f156b4ac1d5e11e7636c90549403d4341dd65ccdbf063"
+    },
+    {
+      "file": "scripts/verify-django-assembly-guards.mjs",
+      "bytes": 15667,
+      "sha256": "73aa4b1d13ac359949a1d68b5a8c48f2a3d63e6f2ca4f1d56e553d3d4899b52c"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 14323,
+      "sha256": "c6e4f62255ad12b13af718f642e47379d3d8b7c56b5df34bd0a110db4d59a7fa"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 164071,
+      "sha256": "85deaa3b6c93f6abd02a5d157a5ab100463ae37837eecdbc56a6effb5fc4ffb3"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 53956,
+      "sha256": "a0123571f26207d49967ef937bda0f58962423e93349dd01f20d9ead0dd088d5"
+    },
+    {
+      "file": "schemas/django-config.schema.json",
+      "bytes": 11156,
+      "sha256": "441e15be4873b88194cf7ae6ffbb1f472e5c09fc3887721c52f142e45e320c64"
+    }
+  ],
+  "compiledPins": [
+    {
+      "file": "dist/src/django.js",
+      "bytes": 3495,
+      "sha256": "a2b7296b11428cba5b4da699a245b456df4962956b03bad6eb9a60b76e490565"
+    },
+    {
+      "file": "dist/src/django-evidence.js",
+      "bytes": 4082,
+      "sha256": "6d37684a0b30e845c406f23b2e88700f4f40a71567a3e427851345121b25fcfa"
+    },
+    {
+      "file": "dist/src/django-assembly-runner.js",
+      "bytes": 20985,
+      "sha256": "dbbaaa117bf9f1f002068bcc92e57173848e4a301d12661e105440ee5002a1e8"
+    },
+    {
+      "file": "dist/src/django-assembly-evidence.js",
+      "bytes": 8549,
+      "sha256": "d1dda6e617fb9332620f775887dc20695fea101e6f71c55c5326844bef2473c2"
+    },
+    {
+      "file": "dist/src/django-assembly-schema.js",
+      "bytes": 3824,
+      "sha256": "1660453733f632f27b6cc86ff9e75a0a88d5aa9e5b003560d462addedd870d6c"
+    },
+    {
+      "file": "dist/src/django-assembly-runtime-pins.js",
+      "bytes": 2092,
+      "sha256": "e81ef8880f7a4757f0156f9d369bd3b384113dde018db53213c6f0236ddc2421"
+    },
+    {
+      "file": "dist/src/tool-versions.js",
+      "bytes": 25636,
+      "sha256": "3f05e7f6c598442808469409fb735161dbf10265e41cddaffb920c8a9b688298"
+    },
+    {
+      "file": "dist/test/gate-assembly-django.test.js",
+      "bytes": 20201,
+      "sha256": "512028a4bad077f706f272a5b0bfd5c6bcb98b87680e1b249646596c90132160"
+    },
+    {
+      "file": "dist/test/review-django-assembly-fixture.js",
+      "bytes": 13975,
+      "sha256": "458f53b58d13ef7618a7ca6d7b3872a03eaff5894879d94414292f7bf2dc84db"
+    },
+    {
+      "file": "dist/test/review-django-assembly-guards.test.js",
+      "bytes": 15674,
+      "sha256": "87225ce5cf4221848d867e22657664459a7498a434dc9f33509e316d89fb165d"
+    }
+  ],
+  "gateA": {
+    "implemented": 21,
+    "selected": 51,
+    "pending": 30,
+    "gateAComplete": false,
+    "freezesUnresolved": 3
+  },
+  "developmentAttempts": [
+    {
+      "accepted": false,
+      "issue": "Near-miss expectation formatting changed a colon inside a route identifier.",
+      "repair": "Replace the explicit notification field only."
+    },
+    {
+      "accepted": false,
+      "issue": "The isolated framework bootstrap initially allowed a project asgiref module to shadow the native adapter.",
+      "repair": "Preload pinned asgiref before adding the project path."
+    },
+    {
+      "accepted": false,
+      "issue": "One mutation lacked whitespace before a comprehension; another redundant collection-length guard survived in isolation.",
+      "repair": "Compile all mutations before writes and weaken the complete extra-collection accounting family for that control."
+    }
+  ],
+  "wholeDependencyClosureVerified": false,
+  "publisherLicenseClosureVerified": false,
+  "modelSessionIsolationEstablished": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

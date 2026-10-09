@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { djangoAssemblyEvidence } from "./django-assembly-evidence.js";
 import { runtimeInventorySchema } from "./runtime-inventory.js";
 import type { Check, CheckResult, ProcessResult } from "./types.js";
 const count = z.number().int().nonnegative().max(20_000);
@@ -19,7 +20,9 @@ const attributesSchema = z.strictObject({
 export function djangoEvidence(
   check: Check,
   processes: ProcessResult[],
-): Pick<CheckResult, "status" | "reason" | "runtime"> {
+): Partial<CheckResult> {
+  if (check.commands[0]?.args[0] === "-I")
+    return djangoAssemblyEvidence(check, processes);
   const incomplete = {
     status: "inconclusive" as const,
     reason:
