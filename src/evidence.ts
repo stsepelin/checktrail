@@ -16,7 +16,7 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
-import { kotlinEvidence } from "./kotlin-evidence.js";
+import { selectedKotlinEvidence } from "./kotlin-extension-evidence.js";
 import { scalaEvidence } from "./scala-evidence.js";
 import { detektEvidence } from "./detekt-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
@@ -390,7 +390,7 @@ export function evaluate(
   if (check.parser === "scala-json")
     return { ...result, ...scalaEvidence(check, processes, root) };
   if (check.parser === "kotlin-json")
-    return { ...result, ...kotlinEvidence(check, processes, root) };
+    return { ...result, ...selectedKotlinEvidence(check, processes, root) };
   if (check.parser === "detekt-json")
     return { ...result, ...detektEvidence(check, processes, root) };
   if (check.parser === "spotbugs-json")

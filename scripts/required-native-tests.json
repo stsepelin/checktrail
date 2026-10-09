@@ -4278,5 +4278,43 @@
       "file": "dist/test/gate-jvm-wrappers.test.js",
       "name": "jvm-wrappers installed acceptance"
     }
+  ],
+  "kotlin-extensions": [
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions installed acceptance"
+    }
   ]
 }

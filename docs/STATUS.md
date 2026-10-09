@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Kotlin extensions](KOTLIN-EXTENSIONS.md) compile declared mixed Java/Kotlin,
+fresh generated primary Kotlin classes and application scripts. Native Java body
+compilation supplements Kotlin symbol resolution; scripts remain compile-only.
+Source roles, generated/class origins, current artifacts, raw native streams and
+reached process cleanup are reconciled through the shared engine. The
+[local record](measurements/kotlin-extensions-2026-10-10.json) records source and
+fresh offline installed acceptance, preserved compilation, compiling controls,
+native regressions and the project check. Wider Kotlin/Gradle semantics, full
+provenance, final platforms and Gate A remain open. No inference or field
+evaluation is invoked.
+
 Opt-in [JVM wrapper extensions](JVM-WRAPPERS.md) select exact offline Maven/Gradle
 artifacts, native Java generators and conventional JPMS producer/consumer builds.
 Selected JDK and unpacked distribution bytes, generated source and primary class

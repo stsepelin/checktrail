@@ -8,6 +8,12 @@ import { kotlinArtifacts } from "./kotlin-artifacts.js";
 import { kotlinHash, kotlinLibraries } from "./kotlin-archive.js";
 import { kotlinRead } from "./kotlin-io.js";
 import { kotlinJar } from "./kotlin-jar.js";
+import { kotlinScriptingArtifacts } from "./kotlin-extension-artifacts.js";
+import {
+  kotlinExtensionsSchema,
+  validateKotlinExtensionScope,
+} from "./kotlin-extensions.js";
+import { verifyJvmToolchain } from "./jvm-extensions.js";
 import type { Check, Inventory, Project } from "./types.js";
 const dependency = z.strictObject({
   path: externalPathSchema,
@@ -21,6 +27,7 @@ export const kotlinConfigSchema = z.strictObject({
   jvmTarget: z.enum(["17", "21", "25"]),
   warningsAsErrors: z.boolean(),
   classPath: z.array(dependency).max(128),
+  extensions: kotlinExtensionsSchema.optional(),
 });
 export const kotlinInvocationSchema = z.strictObject({
   config: kotlinConfigSchema,
@@ -43,10 +50,13 @@ export async function kotlinInputs(
       "Prepare the pinned Kotlin compiler archive without symbolic links",
     );
   const bytes = await kotlinRead(archive, kotlinArtifacts.archiveBytes),
-    libraries = kotlinLibraries(bytes);
+    libraries = kotlinLibraries(bytes, config.extensions !== undefined);
   if (kotlinHash(bytes) !== config.sha256)
     throw Error("Pinned Kotlin compiler archive identity disagrees");
-  for (const library of kotlinArtifacts.runtimeLibraries) {
+  for (const library of [
+    ...kotlinArtifacts.runtimeLibraries,
+    ...(config.extensions ? kotlinScriptingArtifacts : []),
+  ]) {
     const actual = kotlinJar(libraries.get(library.name)!);
     const expected =
       library.name === "kotlin-compiler.jar"
@@ -107,26 +117,6 @@ export async function kotlinCheck(
       throw Error(
         "Prepare an inventoried checktrail.kotlin.json and local pinned compiler archive",
       );
-    if (!check.scope.length) throw Error("No Kotlin source was inventoried");
-    if (
-      project.files.some(
-        (file) =>
-          file.endsWith(".kts") &&
-          !["build.gradle.kts", "settings.gradle.kts"].includes(
-            path.posix.basename(file),
-          ),
-      )
-    )
-      throw Error(
-        "Kotlin scripts require a separately declared compiler profile",
-      );
-    if (project.files.some((file) => /\.(?:java|scala)$/.test(file)))
-      throw Error("Mixed JVM source compilation requires a separate profile");
-    if (
-      check.scope.length > 2000 ||
-      new Set(check.scope).size !== check.scope.length
-    )
-      throw Error("Kotlin source inventory exceeds the declared profile");
     const config = kotlinConfigSchema.parse(
       JSON.parse(
         await readProjectFile(
@@ -135,6 +125,42 @@ export async function kotlinCheck(
         ),
       ),
     );
+    const scripts = project.files.filter(
+      (file) =>
+        file.endsWith(".kts") &&
+        !["build.gradle.kts", "settings.gradle.kts"].includes(
+          path.posix.basename(file),
+        ),
+    );
+    if (config.extensions) {
+      check.scope = project.files.filter(
+        (file) =>
+          file.endsWith(".kt") ||
+          file.endsWith(".java") ||
+          scripts.includes(file),
+      );
+      validateKotlinExtensionScope(config.extensions, check.scope);
+      await verifyJvmToolchain();
+      check.reason =
+        "Compile declared mixed Java/Kotlin, fresh generated Kotlin and compile-only scripts with native source, class origin and diagnostic accounting.";
+    } else {
+      if (scripts.length)
+        throw Error(
+          "Kotlin scripts require a separately declared compiler profile",
+        );
+      if (project.files.some((file) => /\.(?:java|scala)$/.test(file)))
+        throw Error("Mixed JVM source compilation requires a separate profile");
+    }
+    if (project.files.some((file) => file.endsWith(".scala")))
+      throw Error("Mixed Scala compilation is outside this Kotlin profile");
+    if (
+      !check.scope.length ||
+      check.scope.length > 2000 ||
+      new Set(check.scope).size !== check.scope.length
+    )
+      throw Error(
+        "Kotlin source inventory exceeds the declared nonempty profile",
+      );
     await kotlinInputs(source.root, project.path, config);
     const invocation = JSON.stringify(
       kotlinInvocationSchema.parse({ config, scope: check.scope }),
@@ -144,7 +170,14 @@ export async function kotlinCheck(
     check.commands.push({
       executable: process.execPath,
       args: [
-        fileURLToPath(new URL("./kotlin-runner.js", import.meta.url)),
+        fileURLToPath(
+          new URL(
+            config.extensions
+              ? "./kotlin-extensions-runner.js"
+              : "./kotlin-runner.js",
+            import.meta.url,
+          ),
+        ),
         source.root,
         invocation,
       ],
@@ -156,6 +189,7 @@ export async function kotlinCheck(
         JDK_JAVA_OPTIONS: "",
         _JAVA_OPTIONS: "",
         CLASSPATH: "",
+        ...(config.extensions ? { KOTLIN_HOME: "", KOTLIN_RUNNER: "" } : {}),
       },
     });
   } catch (error) {

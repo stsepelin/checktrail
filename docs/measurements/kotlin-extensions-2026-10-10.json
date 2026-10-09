@@ -1,0 +1,1232 @@
+{
+  "schemaVersion": 1,
+  "profile": "linux-arm64-mixed-generated-script-v1",
+  "measurementDateLocal": "2026-10-10",
+  "provenance": "Original public synthetic compiler, generator, script and lifecycle fixtures; no private project source or real-project trial.",
+  "sourceBaseCommit": "5eb1eb868580624b8e4fe564ffa0f3d60dda6bae",
+  "sourceFiles": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "c94990371fdb95b9641e80935698a72815a9758ecc2a7a2d0e2bb1e778e7ad11"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "sha256": "5ca95c89e4749b1a6840d9e7f1aa738ad152a7fef4b2d46cbfb90965461da22e"
+    },
+    {
+      "file": "docs/KOTLIN-EXTENSIONS.md",
+      "sha256": "d5ef98b0030e8768028df344a351030c8d12e7531533c97b978aa58a2ef59c93"
+    },
+    {
+      "file": "docs/KOTLIN.md",
+      "sha256": "e831235d2770423695d07d67e71378b68bee0785b9c0567086e8a0385a5a7052"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "sha256": "733218867792562dca4907c694af63a04837c9f621d8125cea60772869638300"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "sha256": "ecc1d80be5f5b014e49189851bdc6bdbce8d0bab1b97859015d9e74bdd05ad64"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "sha256": "64f539d66750792451ccd7d072575b8566f9daf4375acf0cef1263d195e0c3e3"
+    },
+    {
+      "file": "docs/gate-a-profiles.v1.json",
+      "sha256": "2b25ffae59a655d211bbd1dec5387ee9f6619a34a52bb2ccdc8ab57b8a5dcb8c"
+    },
+    {
+      "file": "schemas/kotlin-config.schema.json",
+      "sha256": "2e842556788734a9bc0419252291cbe315ea2de9a5106f9edf8eb663407f57b9"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "48caad9925e90f3ae9aa22d05eb1f2e8a123ba104afa68c21379a00fa461dbcc"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "sha256": "61cecba9773b6f21af0c90d060c745f9b68f2f07e1d7340c91614a05303fc943"
+    },
+    {
+      "file": "scripts/verify-kotlin-extensions-container.mjs",
+      "sha256": "e834fb84d97e293eb6549d207af9769f87123d356f9247c3078d409ce66745cc"
+    },
+    {
+      "file": "scripts/verify-kotlin-extensions-guards.mjs",
+      "sha256": "16fd39c7e67f5f3f2b3a29bd71bea5487fbd7519dae52e784a767c5557dd737f"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "sha256": "44b7aa8f0980b718ba01ae577c57efa99af7711a8fdb9cca848fa105688f3802"
+    },
+    {
+      "file": "src/evidence.ts",
+      "sha256": "3aa1c73ca1296ca9d53d305408e3f5fc4b71bdf93814baeac820b65fd4d1efb8"
+    },
+    {
+      "file": "src/jvm-invoke.ts",
+      "sha256": "62ebd696d7f886c296c719811958834a7957dd799ece3cb46c2a8f814d9a4de7"
+    },
+    {
+      "file": "src/jvm-workspace-extensions.ts",
+      "sha256": "c2710a0ff5953a92d57e63e57cadafe54873017069e3cd64314de9e401075b5e"
+    },
+    {
+      "file": "src/kotlin-archive.ts",
+      "sha256": "e459927ededff6f7c4b5fba15a98cdb1a9e1a16699d44091392efc4f93dd17d6"
+    },
+    {
+      "file": "src/kotlin-evidence.ts",
+      "sha256": "d5252206c523fffaf9e8a7bd0ac8bb4952eabde8afa7cee7ab7eb5555151fb5f"
+    },
+    {
+      "file": "src/kotlin-extension-artifacts.ts",
+      "sha256": "670c1fb4632f94d96ab306c384266c611e215c78449b07eafcba8a437eb88c3a"
+    },
+    {
+      "file": "src/kotlin-extension-evidence.ts",
+      "sha256": "e10f2fdc6d983ce8dbc3a83015671ef44511f197c567bf7d6c54963daaeb8dc8"
+    },
+    {
+      "file": "src/kotlin-extensions-native.ts",
+      "sha256": "363d57710fba018bbbe63b9ac62570035f4ab6ede38e927bb4fb51a22d48ac89"
+    },
+    {
+      "file": "src/kotlin-extensions-runner.ts",
+      "sha256": "b9d5af7c2dfefac282fd74ffd0cef8e679e051965323e4f2251e8e43a2515d09"
+    },
+    {
+      "file": "src/kotlin-extensions.ts",
+      "sha256": "7bd171d353b4827d04d498cc304d601bbe8a9610ef428e1d219843723d3ebdbb"
+    },
+    {
+      "file": "src/kotlin-java-native.ts",
+      "sha256": "2d22e4c6311d541066a78713ff1dd844c1bbec5ae13c57d7b76b0503fe5814df"
+    },
+    {
+      "file": "src/kotlin.ts",
+      "sha256": "754a3f1af22fbf6e5fc89fbe13d9ea26b3aa39c8016ac68276eafb1ce4423851"
+    },
+    {
+      "file": "test/gate-kotlin-extensions.test.ts",
+      "sha256": "d6c8d369ceb53cd2b913509fa1ecee1a8b2a0375da081545dc9edebc761883b4"
+    },
+    {
+      "file": "test/kotlin-extension-artifacts.test.ts",
+      "sha256": "674c36acce3812e51f67dd867d9d0de28203856a1f1a1872f2029e4724a1794f"
+    },
+    {
+      "file": "test/kotlin-extension-evidence-controls.test.ts",
+      "sha256": "af7553dcaf7de3b43e9eaf67b7802c72fe46839f4b84b273e3becddc5f3fecf2"
+    },
+    {
+      "file": "test/kotlin-extension-regressions.test.ts",
+      "sha256": "5096a089d0c77785499d6c1f31e1a6d27a44d416f4d9dc55e118331e9592d0dd"
+    },
+    {
+      "file": "test/kotlin-extensions-fixture.ts",
+      "sha256": "a7f6e53fcba58d3e8869dff225c4eaa6478ebfd1ea7f5352fb92bf4586c9ecc5"
+    },
+    {
+      "file": "test/kotlin-extensions-scope.test.ts",
+      "sha256": "72158b5c58ac98ec1454eea6aac9d7458adc819cf1a2ad15ce7a7e0e9ae7be10"
+    }
+  ],
+  "nativeController": {
+    "schemaVersion": 1,
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "javaHome": "/opt/java/openjdk",
+      "selectedNativeArtifacts": [
+        {
+          "path": "bin/java",
+          "bytes": 12672,
+          "sha256": "bf14eecd544fe58970e7349aa1e7edf4b446927a731670b4d824d180f2622c0a",
+          "byteVerified": true
+        },
+        {
+          "path": "bin/javac",
+          "bytes": 12768,
+          "sha256": "1c8860f38047e666c25a9bfa74537d0e79f65f55bf50808e20b4b63e6c73283f",
+          "byteVerified": true
+        },
+        {
+          "path": "bin/jar",
+          "bytes": 12752,
+          "sha256": "20b171e5ea1f56e67380b23fc56347541988a08ad35b1c8cf8c132835639534c",
+          "byteVerified": true
+        },
+        {
+          "path": "lib/modules",
+          "bytes": 145699541,
+          "sha256": "8ef38b5ace821f5d0439b7961e35805677d94089ed3c82eff429a0f6b7b4f425",
+          "byteVerified": true
+        }
+      ],
+      "compilerArchive": {
+        "bytes": 87077443,
+        "sha256": "473dd66c7a3ef4b182065b3da670466c1bf2773a9dbb0ed8b33a39fe9d4f876d"
+      },
+      "selectedLibraries": [
+        {
+          "name": "kotlin-compiler.jar",
+          "bytes": 61903538,
+          "sha256": "db12b1af0db0e10eeedfc15d5dac0316604e5c556321f60e3bcd73075a66f0a3",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-stdlib.jar",
+          "bytes": 1841933,
+          "sha256": "4ec0293bc3751423b203f1d8493251c57c42e73eb6377a6b8560d0974ff0a6df",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-reflect.jar",
+          "bytes": 3750100,
+          "sha256": "25a1aef7454d46548ecaaf51021b0e52e38141a62ed75af124da109b7324c4e5",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlinx-coroutines-core-jvm.jar",
+          "bytes": 1548360,
+          "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5",
+          "byteVerified": true
+        },
+        {
+          "name": "annotations-13.0.jar",
+          "bytes": 17536,
+          "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-script-runtime.jar",
+          "bytes": 46565,
+          "sha256": "f4a5b30c2fdfbe386b097101b7989dbeea3743c06396136664784e08e15c6899",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-scripting-common.jar",
+          "bytes": 203069,
+          "sha256": "d5399982cdbf5994f7f3a731afacfbc5c21b797d97ffd7328b62cea670103076",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-scripting-compiler-impl.jar",
+          "bytes": 195510,
+          "sha256": "b0b7370f5f16a2f0449f6555f8015ec8901f85d71ab766408c8d71042af0bac5",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-scripting-compiler.jar",
+          "bytes": 704580,
+          "sha256": "9915088dfe301d40e5d3795d8ee3293e9b2deaa79cfa429312995d789d79fd12",
+          "byteVerified": true
+        },
+        {
+          "name": "kotlin-scripting-jvm.jar",
+          "bytes": 136266,
+          "sha256": "0b7518219da69b427e0b3f840f13e280db9e61a839c7d3ff094de4630ddbc9f5",
+          "byteVerified": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "environment": {
+      "image": "sha256:d3d514cd925bfa2874175cefc8a15a54e8aecf3b45ddddbc6dfb443384184a3f",
+      "network": "none",
+      "rootFilesystemReadonly": true,
+      "sourceMountReadonly": true,
+      "preparedCacheReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 1024,
+      "temporaryFilesystemExecutable": true
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "baseline": {
+      "timeoutMs": 300000,
+      "profiles": [
+        {
+          "profile": "kotlin",
+          "required": 13
+        },
+        {
+          "profile": "java",
+          "required": 5
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 18,
+      "required": 18,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 18,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f248a1470884db15e5c640ff770c7bf27a66355e856c23d5f2095e2fe0f85d98"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "48a9e68a9372b8c98b2e0f15e582906d0a520825fbfd84a29370020abf5349e9"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5d56def87875ac2fe419e84ee9b13d89010cde1a7f979b4e05a6da9c24a8edcb"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7603626fa25f7540eda5e8704b6269a70590e1aafbc31910490c119159aa7ce1"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16.216141,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.262492,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20645.510001,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4740.962328,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-2",
+            "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 27495.290668,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9036.306352,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1482.623138,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.397676,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-3",
+            "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.465194,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-3",
+            "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9354.498129,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-3",
+            "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8665.394588,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-3",
+            "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13526.80361,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-4",
+            "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18414.0153,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-5",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31.970071,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-5",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1985.645201,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-5",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 707.375692,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-5",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3660.162628,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-5",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3013.618891,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Kotlin planning remains inert explicit and unavailable without pinned prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "Kotlin configuration rejects unpinned versions plugins scripting mixed profiles and unsafe paths",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Kotlin catches nullable defects and accepts repairs exact near misses CRLF and BOM with complete source output bindings",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Kotlin rejects coherent stale source missing frontend IR output diagnostics and raw evidence",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin observes exact resolved file function expression type import alias and typealias suppressions",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin retains partial syntax failures empty files and unexecuted initializers without inventing complete diagnostics",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kotlin rejects changed artifacts bounded source escapes and unsupported mixed source scope",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Kotlin dependency data rejects source entries duplicate manifests and undeclared folded classpath without loading code",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "Kotlin physical reads enforce zero exact and over byte limits for both planner and evidence",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin resolves pinned dependency classes without initializing them and rejects missing changed source bearing or manifest dependencies",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin applies the declared warning policy and preserves compiler partial failure",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kotlin binds every generated class to the declared JVM 17 21 and 25 target",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kotlin CLI and negotiated MCP share failures privacy and operator-only execution trust",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-5",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 600000,
+      "profile": "kotlin-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "d77afe5e844d034d585dc5d89ebec2172e69bb1203904ed4ff10a71bb6abd9b6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d77afe5e844d034d585dc5d89ebec2172e69bb1203904ed4ff10a71bb6abd9b6"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "kotlin-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6553.915705,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "kotlin-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6227.628629,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "kotlin-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6274.079538,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "kotlin-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 242.893232,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "kotlin-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5903.139566,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "kotlin-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11672.731151,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "kotlin-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20458.615768,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "kotlin-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17338.94998,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "kotlin-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 79007.963997,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kotlin-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "e80a02275c1acd66e90ac7d8b28be9f49f2119449a460906ca80f9f4e322c35e",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 600000,
+        "profile": "kotlin-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "d77afe5e844d034d585dc5d89ebec2172e69bb1203904ed4ff10a71bb6abd9b6"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "d77afe5e844d034d585dc5d89ebec2172e69bb1203904ed4ff10a71bb6abd9b6"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "kotlin-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6176.712194,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "kotlin-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5712.815363,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "kotlin-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5963.486851,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "kotlin-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 230.187072,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "kotlin-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6355.146741,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "kotlin-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13600.701193,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "kotlin-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18002.029661,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "kotlin-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15945.565698,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "kotlin-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.748422,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kotlin-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "nativeCapture": {
+        "compilerActuallyExecuted": true,
+        "generatedClasses": 2,
+        "originalFixtureRetainedThroughControls": true
+      },
+      "controls": [
+        {
+          "id": "current-java-source",
+          "name": "mixed Kotlin guard checks current original Java bytes",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "578d1369056d76f4bbdcfcf440b2aff9c4d2245bc2aabcd5476b68e1bb62981e",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "current-declaration",
+          "name": "mixed Kotlin guard checks current compiler declaration",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "9d313be161937ce3045ae880e60fdc5e4b1fdbcf1a933dd60e24955939e47846",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "current-archive",
+          "name": "mixed Kotlin guard checks current archive bytes",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "e74e70a3e1dfbcff27c6964c1660eab0f48021f34dd49a1dcb71fbc322f12bb4",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "generator-input",
+          "name": "mixed Kotlin guard checks generator input",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "9ed99fd3dc4ab163ba212cab8e03d8853e15b2ce79d44fe4c2698f9e0e542b57",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-class-name",
+          "name": "mixed Kotlin guard checks generated class name",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "827b0982c39c2cb292d999b6a67a47c4f0cf87f0127de12a4585fa36ac8f6db0",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-source-origin",
+          "name": "mixed Kotlin guard checks generated class source origin",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "6ce5cf69f7abe9b2a3e3a2796f7a2086de627f710e38ac96baaa637308e2a584",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-class-hash",
+          "name": "mixed Kotlin guard checks generated physical class hash",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "e2eee043d3b09614baeb88f2bdba3bb22160c3c827860751c9a521278cbfd9b2",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "java-parse",
+          "name": "mixed Kotlin guard checks Java parse participation",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "8b157fc77de611d4221c131b9219d758360a2993a61bdf86119997442718faea",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "java-target",
+          "name": "mixed Kotlin guard checks Java class target",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "3ed1d726176dfbf8afa5bc52326782b428593d1ef4e2807c0aa6b5b95b9d35b5",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "java-class-hash",
+          "name": "mixed Kotlin guard checks Java physical class hash",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "94b490f036b9c5d689b7177ac1ccb8f1907d9dabafbe0ace518726c8a685258f",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "java-suppression",
+          "name": "mixed Kotlin guard checks resolved Java suppression",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "mutantSha256": "3c9c6a22cda5fe5b78c02fd31490bddf247cfb590b9db390b5cdcc577fc45c7a",
+          "originalSha256": "ac6e9e288be486bb4e2255556611037ce848ef4548137fdf7afac9b24db12403",
+          "restoredPassed": true
+        },
+        {
+          "id": "staged-runtime-family",
+          "name": "mixed Kotlin rejects generator changes to staged libraries and original observer classes",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "actualFalsePassWithoutGuard": true,
+          "originalSha256": "f351a2a9c09d7936b9e3136588cde77508dd7c1e38576d8624156f015d501297",
+          "mutantSha256": "181266102fffcf36406540aab9eb49e135741217ffbc08e2c8b1c60a1b130133",
+          "restoredPassed": true
+        }
+      ],
+      "allComplete": true
+    },
+    "regressions": {
+      "tests": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "outputSha256": "bcd167158c213c5208d2fc2aadd38943d6e919914fcc16836cc01868d6c0fb61"
+    },
+    "complete": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "mandatoryProjectCheck": {
+    "command": "npm run check",
+    "environment": "Isolated macOS ARM64 reproduction with prepared Go analyzers and offline npm acceptance cache.",
+    "total": 1416,
+    "passed": 900,
+    "failed": 0,
+    "cancelled": 0,
+    "optionalSkipped": 516,
+    "todo": 0,
+    "durationMs": 248993.414667,
+    "logSha256": "0a560db3938dbb4add830941b03ede9e6811abd4c7078069bba03df3a5a63060",
+    "scope": "Behavior changes and original acceptance/control callbacks; subsequent native-regression test and documentation additions are awaiting a final check."
+  },
+  "gateProgressSnapshot": {
+    "selectedProfiles": 51,
+    "implementedProfiles": 29,
+    "pendingProfiles": 22,
+    "unresolvedFreezeDecisions": 3,
+    "inventoryScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794"
+  },
+  "supersededAttempts": [
+    {
+      "complete": false,
+      "stage": "Initial combined native fixed case",
+      "reason": "Raw Java JSON comparison used key order instead of validated structural order; fixed before required source and installed acceptance."
+    },
+    {
+      "complete": false,
+      "stage": "First compiling-control script",
+      "reason": "An exact compiled mutation address crossed a formatted newline; corrected unique whitespace-aware addresses and reran every control."
+    },
+    {
+      "complete": false,
+      "stage": "First host project check",
+      "reason": "New controller script lacked an explicit node:process import; fixed before the passing check."
+    }
+  ],
+  "selectedNativeArtifactClosureOnly": true,
+  "wholeCompilerDistributionClosureVerified": false,
+  "wholeJdkAndSystemClosureVerified": false,
+  "publisherAndLicenseClosureVerified": false,
+  "acceptanceTarballPredatesFinalMeasurementRecord": true,
+  "currentFinalPackageBindingAccepted": false,
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "qualityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "recordedAtUtc": "2026-10-09T22:55:23.952380+00:00",
+  "stagedRuntimeIntegrity": {
+    "checkedAfterGeneration": true,
+    "checkedAfterCompilation": true,
+    "selectedCompilerAndDependencyBytesChecked": true,
+    "completeObserverClassInventoryChecked": true,
+    "originalPluginBytesChecked": true,
+    "actualNativeMutationControl": "staged-runtime-family",
+    "unchangedRegressionDetectsActualFalsePassWithoutGuard": true,
+    "nativeRegressionMutations": [
+      "kotlin-script-runtime.jar",
+      "VerifierKotlin.class",
+      "original-plugin.jar"
+    ],
+    "complete": true
+  }
+}

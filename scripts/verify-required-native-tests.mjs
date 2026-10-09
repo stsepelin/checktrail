@@ -39,7 +39,8 @@ const installedExtensionProfile =
 const timeoutMs =
   fullSuite ||
   selection.includes("dotnet-method") ||
-  selection.includes("jvm-wrappers")
+  selection.includes("jvm-wrappers") ||
+  selection.includes("kotlin-extensions")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),

@@ -1,9 +1,17 @@
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
 import { kotlinArtifacts } from "./kotlin-artifacts.js";
+import { kotlinScriptingArtifacts } from "./kotlin-extension-artifacts.js";
 export const kotlinHash = (bytes: Buffer | string) =>
   createHash("sha256").update(bytes).digest("hex");
-export function kotlinLibraries(archive: Buffer): Map<string, Buffer> {
+export function kotlinLibraries(
+  archive: Buffer,
+  includeScripting = false,
+): Map<string, Buffer> {
+  const selected = [
+    ...kotlinArtifacts.runtimeLibraries,
+    ...(includeScripting ? kotlinScriptingArtifacts : []),
+  ];
   if (
     archive.length !== kotlinArtifacts.archiveBytes ||
     kotlinHash(archive) !== kotlinArtifacts.archiveSha256
@@ -44,7 +52,7 @@ export function kotlinLibraries(archive: Buffer): Map<string, Buffer> {
       next = cursor + 46 + nameSize + extra + comment;
     if (next > end) throw Error("Kotlin archive entry bounds disagree");
     const name = archive.subarray(cursor + 46, cursor + 46 + nameSize);
-    const library = kotlinArtifacts.runtimeLibraries.find((item) =>
+    const library = selected.find((item) =>
       name.equals(Buffer.from("kotlinc/lib/" + item.name)),
     );
     if (library) {
@@ -87,7 +95,7 @@ export function kotlinLibraries(archive: Buffer): Map<string, Buffer> {
     }
     cursor = next;
   }
-  if (cursor !== end || result.size !== kotlinArtifacts.runtimeLibraries.length)
+  if (cursor !== end || result.size !== selected.length)
     throw Error("Kotlin runtime library inventory is incomplete");
   return result;
 }

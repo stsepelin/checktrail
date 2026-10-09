@@ -17,7 +17,11 @@ export type JvmInvoke = (
   args: string[],
   cwd?: string,
 ) => Promise<JvmInvocationResult>;
-export function jvmInvoker(env: NodeJS.ProcessEnv, mirror = true): JvmInvoke {
+export function jvmInvoker(
+  env: NodeJS.ProcessEnv,
+  mirror = true,
+  observe?: (chunk: Buffer) => void,
+): JvmInvoke {
   return (tool, args, cwd) =>
     new Promise((resolve, reject) => {
       const child = spawn(tool, args, {
@@ -37,6 +41,7 @@ export function jvmInvoker(env: NodeJS.ProcessEnv, mirror = true): JvmInvoke {
           return;
         }
         target.push(Buffer.from(chunk));
+        observe?.(chunk);
         if (mirror && !process.stderr.write(chunk)) {
           child.stdout.pause();
           child.stderr.pause();

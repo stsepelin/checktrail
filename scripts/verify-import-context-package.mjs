@@ -52,6 +52,7 @@ assert.ok(
     "php-extensions",
     "rust-extensions",
     "jvm-wrappers",
+    "kotlin-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -111,6 +112,8 @@ if (profile === "assembly-vue-router")
   process.env.CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED = "1";
 if (profile === "jvm-wrappers")
   process.env.CHECKTRAIL_JVM_WRAPPERS_INSTALLED = "1";
+if (profile === "kotlin-extensions")
+  process.env.CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -167,6 +170,9 @@ try {
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
     "gate-rust-extensions.test.js",
+    "gate-kotlin-extensions.test.js",
+    "kotlin-extensions-fixture.js",
+    "kotlin-fixture.js",
     "gate-jvm-wrappers.test.js",
     "jvm-wrappers-fixture.js",
     "maven-fixture.js",
@@ -430,6 +436,9 @@ try {
           ...(profile === "rust-extensions"
             ? ["--env", "CHECKTRAIL_RUST_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "kotlin-extensions"
+            ? ["--env", "CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "jvm-wrappers"
             ? [
                 "--env",
@@ -541,6 +550,7 @@ try {
                     "javascript-extensions",
                     "python-extensions",
                     "rust-extensions",
+                    "kotlin-extensions",
                   ].includes(profile)
                 ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
                 : [
@@ -613,11 +623,13 @@ try {
                         "javascript-extensions",
                         "python-extensions",
                         "rust-extensions",
+                        "kotlin-extensions",
                       ].includes(profile)
                     ? 1024
                     : 256,
             temporaryFilesystemExecutable: [
               "jvm-wrappers",
+              "kotlin-extensions",
               "context-go",
               "context-rust",
               "context-swift",

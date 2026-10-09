@@ -605,6 +605,29 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  kotlin-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kotlin-extensions
+      CHECKTRAIL_KOTLIN_EXTENSIONS_IMAGE: checktrail-kotlin-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-kotlin-tools.mjs
+      - name: Prepare pinned native Kotlin extension runtime
+        run: docker build --network none --label checktrail.task=ci-kotlin-extensions --file scripts/kotlin-tools.Dockerfile --tag "$CHECKTRAIL_KOTLIN_EXTENSIONS_IMAGE" .checktrail/kotlin-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
+        run: node scripts/verify-kotlin-extensions-container.mjs
+
   jvm-wrappers-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 40

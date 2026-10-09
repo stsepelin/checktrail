@@ -394,3 +394,11 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The opt-in [Kotlin extension cohort](KOTLIN-EXTENSIONS.md) adds mixed Java/Kotlin,
+fresh generated primary Kotlin classes and compile-only scripts. Native Java task
+participation and physical classes supplement Kotlin symbol resolution. The
+profile preserves baseline behavior and records source, fresh offline installed,
+compiling-control and reached lifecycle acceptance through the shared engine.
+Broader compiler/build semantics, complete provenance, final platforms and Gate A
+remain required; no inference or real-project field evaluation is invoked.
