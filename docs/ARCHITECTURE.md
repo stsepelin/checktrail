@@ -301,3 +301,5 @@ Opt-in review context version 18 adds selected Swift plain-function/literal-let 
 Opt-in context version 19 adds selected Visual Basic flat-module methods, literal constants/imports, defaults and case-folded lexical candidates under declared source roots. Parenthesized call/index forms remain source candidates; root namespaces, project imports, assembly visibility, dynamic dispatch and unsupported scopes stay unknown with full fallback and unchanged planning. Capture executes no compiler or project configuration. The supplemental grammar has separate source/notice/patch and runtime byte bindings. See [REVIEW-VB-CONTEXT.md](REVIEW-VB-CONTEXT.md).
 
 Context version 20 adds the bounded selected C declaration and quoted-header candidates described in [REVIEW-C-CONTEXT.md](REVIEW-C-CONTEXT.md). It preserves source-only capture, unknown translation-unit/linkage and full impact fallback.
+
+Context version 21 adds the bounded selected C++ declarations, defaults, flat namespaces and quoted-header candidates described in [REVIEW-CPP-CONTEXT.md](REVIEW-CPP-CONTEXT.md). Capture stays source-only, with unknown native resolution and full impact fallback.

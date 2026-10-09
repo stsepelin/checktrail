@@ -3780,5 +3780,43 @@
       "file": "dist/test/gate-context-c.test.js",
       "name": "context-c installed acceptance"
     }
+  ],
+  "context-cpp": [
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-cpp.test.js",
+      "name": "context-cpp installed acceptance"
+    }
   ]
 }
