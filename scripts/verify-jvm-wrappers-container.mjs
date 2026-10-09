@@ -82,6 +82,12 @@ const requirements = JSON.parse(
     "utf8",
   ),
 );
+stage("native-preparation-ownership");
+const preparationOwnership = JSON.parse(
+  run(["node", "scripts/verify-jvm-preparation-ownership.mjs"]),
+);
+assert.equal(preparationOwnership.positiveComplete, true);
+assert.equal(preparationOwnership.rootOwnedNegativeReproduced, true);
 stage("preserved-baseline");
 const baselineProfiles = ["java", "maven", "gradle"],
   baseline = JSON.parse(
@@ -155,6 +161,7 @@ process.stdout.write(
   JSON.stringify({
     image,
     runtime,
+    preparationOwnership,
     baseline,
     source,
     guardCapture,

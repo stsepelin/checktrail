@@ -2036,5 +2036,87 @@
     },
     "hostedCiAtUpdatedHeadAccepted": false,
     "capturedAt": "2026-10-09T21:49:11.252288+00:00"
+  },
+  "ciPreparationOwnershipFollowUp": {
+    "failedHeadCommit": "49f9ade17fa88c7b0397ee51202ebe483e86280c",
+    "failedJob": "https://github.com/stsepelin/checktrail/actions/runs/37995779128/job/114041810270",
+    "observedFailure": "Native Gradle wrapper generation wrote root-owned cache directories to the host seed; the unprivileged runner could not remove them (EACCES).",
+    "hostedJobFailedBeforeNativeAcceptance": true,
+    "fix": "Run native preparation using the invoking POSIX UID/GID.",
+    "sourceFiles": [
+      {
+        "file": "scripts/prepare-jvm-wrappers.mjs",
+        "sha256": "1781ef6f774a85cc8e6e5b9109728765e8c4b0c8f39c1f27df2c97e3edf9b554"
+      },
+      {
+        "file": "scripts/verify-jvm-preparation-ownership.mjs",
+        "sha256": "a16781aa8a9afeac41c211ef27c5dac72e401ff953ee83e65ad1974ec69b13f0"
+      },
+      {
+        "file": "scripts/verify-jvm-wrappers-container.mjs",
+        "sha256": "8e5a8547fbaa9279c8320d4dd2175893657b73a665860a9e584286dd11671e8b"
+      }
+    ],
+    "freshOfflineNativePreparation": {
+      "cacheHit": false,
+      "archivesVerified": 4,
+      "wrapperArtifactsVerified": 8,
+      "nativeGradleGenerationExecuted": true,
+      "cryptographicMavenSignaturesVerified": true,
+      "keyOwnerTrustEstablished": false,
+      "wholeLicenseClosureVerified": false,
+      "nativeUserMatchesInvoker": true,
+      "preparedCachePublished": true,
+      "stagingCleaned": true
+    },
+    "linuxOwnershipControls": {
+      "schemaVersion": 1,
+      "controls": [
+        {
+          "parentUid": 1001,
+          "nativeUid": 0,
+          "nativeGradleWrapperGenerationExecuted": true,
+          "wrapperArtifactsByteVerified": 4,
+          "gradleCacheOwnerUid": 0,
+          "parentCleanupSucceeded": false,
+          "cleanupError": "EACCES"
+        },
+        {
+          "parentUid": 1001,
+          "nativeUid": 1001,
+          "nativeGradleWrapperGenerationExecuted": true,
+          "wrapperArtifactsByteVerified": 4,
+          "gradleCacheOwnerUid": 1001,
+          "parentCleanupSucceeded": true
+        }
+      ],
+      "positiveComplete": true,
+      "rootOwnedNegativeReproduced": true,
+      "applicationSourceExecuted": false,
+      "syntheticGradleConfigurationExecuted": true
+    },
+    "toolAndWrapperPinsChanged": false,
+    "productionEngineBehaviorChanged": false,
+    "mandatoryProjectCheck": {
+      "command": "npm run check",
+      "total": 1387,
+      "passed": 898,
+      "failed": 0,
+      "cancelled": 0,
+      "optionalSkipped": 489,
+      "todo": 0,
+      "durationMs": 273148.536458,
+      "logSha256": "a188846aa529fea2facbbb7eb0e2829a997a1e0ade387ae9d003b9b7dd40a21f"
+    },
+    "hostedCIRecheck": "pending",
+    "wholeLicenseClosureVerified": false,
+    "finalMatrixAccepted": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "supersededControlAttempt": {
+      "complete": false,
+      "reason": "The image supplies BusyBox setpriv without credential-switching flags; the corrected control uses Node child-process UID/GID options."
+    }
   }
 }

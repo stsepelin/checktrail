@@ -222,6 +222,12 @@ if (exists) {
       { flag: "wx" },
     );
     await writeFile(path.join(templates, "build.gradle"), "\n", { flag: "wx" });
+    assert.ok(
+      typeof process.getuid === "function" &&
+        typeof process.getgid === "function",
+      "Native wrapper preparation requires POSIX ownership",
+    );
+    const nativeUser = `${process.getuid()}:${process.getgid()}`;
     const nativeBase = [
       "run",
       "--rm",
@@ -229,6 +235,8 @@ if (exists) {
       "--network",
       "none",
       "--read-only",
+      "--user",
+      nativeUser,
       "--cpus",
       "2",
       "--memory",
@@ -322,6 +330,7 @@ if (exists) {
       JSON.stringify({
         schemaVersion: 1,
         nativeGradleGenerationExecuted: true,
+        nativeUser,
         image,
         archivePins: archives.map(({ file, bytes, sha256 }) => ({
           file,
