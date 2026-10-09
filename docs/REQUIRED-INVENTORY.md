@@ -179,3 +179,5 @@ Revision-pinned historical import acceptance is recorded in
 [historical-import-context-2026-10-07.json](measurements/historical-import-context-2026-10-07.json).
 The receipt retains both final profiles and unaccepted development attempts; it
 does not promote broader Gate A capabilities or review quality.
+
+Required native acceptance retains at most 4,096 terminal events across a validated profile batch. Each individual profile and the selection list remain bounded to 256 entries. Every required callback needs a retained terminal event; an exhausted ledger remains incomplete, including when the omitted event would have passed. Manifests and event ceilings are validated before selected test code executes. The suite's exact-bound controls reconcile retained events, required cases and unique terminal sequence identities and reject the first extra entry. This ledger covers selected test-file byte identity and outcomes, not imported production/dependency identity, raw output or review quality.

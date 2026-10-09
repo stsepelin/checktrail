@@ -131,6 +131,7 @@ jobs:
       - run: node scripts/verify-selected-syntax-guards.mjs
       - run: node scripts/verify-host-session-guards.mjs
       - run: node scripts/verify-python-context-guards.mjs
+      - run: node scripts/verify-acceptance-ledger-guards.mjs
       - name: Verify native Laravel owned-cache guards and fresh package
         run: |
           node scripts/verify-laravel-cache-guards.mjs

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { access, mkdir, writeFile } from "node:fs/promises";
@@ -657,12 +658,12 @@ test("required profile batches execute shared files once and preserve all obliga
 test("required profile union exceeds a single manifest while retaining bounded acceptance", async (t) => {
   const root = await fixture(t, {
     "batch.mjs":
-      "const {runRequiredProfiles}=await import(process.argv[2]);console.log(JSON.stringify(await runRequiredProfiles(JSON.parse(process.argv[3]),JSON.parse(process.argv[4]))));",
+      "import {readFileSync} from 'node:fs';const {runRequiredProfiles}=await import(process.argv[2]);const {profiles,options}=JSON.parse(readFileSync(process.argv[3],'utf8'));console.log(JSON.stringify(await runRequiredProfiles(profiles,Object.keys(profiles),options)));",
     "many.mjs":
-      "import {test} from 'node:test';import {writeFileSync} from 'node:fs';writeFileSync(new URL('executed',import.meta.url),'yes');for(let i=0;i<260;i++)test('case-'+i,()=>{});",
+      "import {test} from 'node:test';import {writeFileSync} from 'node:fs';writeFileSync(new URL('executed',import.meta.url),'yes');for(let i=0;i<4096;i++)test('case-'+i,()=>{});",
   });
   const file = path.join(root, "many.mjs");
-  const requirements = Array.from({ length: 1025 }, (_, i) => ({
+  const requirements = Array.from({ length: 4097 }, (_, i) => ({
     file,
     name: "case-" + i,
   }));
@@ -672,45 +673,68 @@ test("required profile union exceeds a single manifest while retaining bounded a
   );
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
-  const invoke = (profiles: Record<string, unknown>) =>
-    spawnSync(
+  const invoke = (profiles: Record<string, unknown>, options = {}) => {
+    const manifest = path.join(root, "invocation.json");
+    writeFileSync(manifest, JSON.stringify({ profiles, options }));
+    return spawnSync(
       process.execPath,
-      [
-        path.join(root, "batch.mjs"),
-        helper.href,
-        JSON.stringify(profiles),
-        JSON.stringify(Object.keys(profiles)),
-      ],
-      { encoding: "utf8", env, timeout: 10000 },
+      [path.join(root, "batch.mjs"), helper.href, manifest],
+      { encoding: "utf8", env, timeout: 30000, maxBuffer: 8 * 1024 * 1024 },
     );
-  const valid = invoke({
-    first: requirements.slice(0, 130),
-    second: requirements.slice(130, 260),
-  });
+  };
+  const profiles = Object.fromEntries(
+    Array.from({ length: 16 }, (_, i) => [
+      "profile-" + i,
+      requirements.slice(i * 256, (i + 1) * 256),
+    ]),
+  );
+  const valid = invoke(profiles);
+  assert.equal(valid.error, undefined, valid.error?.message ?? "");
   assert.equal(valid.status, 0, valid.stderr);
   const report = JSON.parse(valid.stdout);
   assert.equal(report.complete, true);
-  assert.equal(report.required, 260);
-  assert.equal(report.passed, 260);
-  assert.equal(report.ledger.terminalEventCount, 260);
-  assert.equal(report.ledger.cases.length, 260);
+  assert.equal(report.required, 4096);
+  assert.equal(report.passed, 4096);
+  assert.equal(report.ledger.terminalEventCount, 4096);
+  assert.equal(report.ledger.cases.length, 4096);
   assert.equal(
     new Set(
       report.ledger.cases.flatMap(
         (item: { terminalSequences: number[] }) => item.terminalSequences,
       ),
     ).size,
-    260,
+    4096,
   );
   assert.equal(report.ledger.truncated, false);
+  assert.equal(report.ledger.maxTerminalEvents, 4096);
+  const capped = invoke(profiles, { maxTerminalEvents: 4095 });
+  assert.equal(capped.status, 0, capped.stderr);
+  const incomplete = JSON.parse(capped.stdout);
+  assert.equal(incomplete.complete, false);
+  assert.equal(incomplete.ledger.terminalEventCount, 4096);
+  assert.equal(incomplete.ledger.events.length, 4095);
+  assert.equal(incomplete.ledger.truncated, true);
+  assert.ok(
+    incomplete.problems.some(
+      (problem: { reason: string }) =>
+        problem.reason === "terminal-ledger-limit",
+    ),
+  );
   const { unlink } = await import("node:fs/promises");
   await unlink(path.join(root, "executed"));
+  const oversized = invoke(
+    { one: requirements.slice(0, 1) },
+    { maxTerminalEvents: 4097 },
+  );
+  assert.notEqual(oversized.status, 0);
+  assert.match(oversized.stderr, /Required terminal ledger must be bounded/);
+  await assert.rejects(access(path.join(root, "executed")), { code: "ENOENT" });
   assert.notEqual(invoke({ tooLarge: requirements.slice(0, 257) }).status, 0);
   await assert.rejects(access(path.join(root, "executed")), { code: "ENOENT" });
   assert.notEqual(
     invoke(
       Object.fromEntries(
-        Array.from({ length: 5 }, (_, i) => [
+        Array.from({ length: 17 }, (_, i) => [
           "profile-" + i,
           requirements.slice(i * 256, (i + 1) * 256),
         ]),

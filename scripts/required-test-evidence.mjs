@@ -7,7 +7,7 @@ import { constants } from "node:fs";
 import { run } from "node:test";
 
 const MAX_REQUIREMENTS = 256;
-const MAX_EVENTS = 1024;
+const MAX_EVENTS = 4096;
 const MAX_NAME_CHARACTERS = 512;
 const key = ({ file, name }) => JSON.stringify([file, name]);
 const fingerprint = async (file) => {
