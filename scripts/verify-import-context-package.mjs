@@ -37,6 +37,7 @@ assert.ok(
     "context-swift",
     "context-vb",
     "context-c",
+    "context-cpp",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -66,6 +67,8 @@ if (profile === "context-swift")
   process.env.CHECKTRAIL_CONTEXT_SWIFT_INSTALLED = "1";
 if (profile === "context-vb") process.env.CHECKTRAIL_CONTEXT_VB_INSTALLED = "1";
 if (profile === "context-c") process.env.CHECKTRAIL_CONTEXT_C_INSTALLED = "1";
+if (profile === "context-cpp")
+  process.env.CHECKTRAIL_CONTEXT_CPP_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -115,6 +118,8 @@ try {
     "gate-context-swift.test.js",
     "gate-context-vb.test.js",
     "gate-context-c.test.js",
+    "gate-context-cpp.test.js",
+    "review-cpp-boundaries-fixture.js",
     "review-c-boundaries-fixture.js",
     "review-vb-boundaries-fixture.js",
     "review-swift-boundaries-fixture.js",
@@ -250,6 +255,9 @@ try {
           ...(profile === "context-c"
             ? ["--env", "CHECKTRAIL_CONTEXT_C_INSTALLED=1"]
             : []),
+          ...(profile === "context-cpp"
+            ? ["--env", "CHECKTRAIL_CONTEXT_CPP_INSTALLED=1"]
+            : []),
           ...(profile === "context-vb"
             ? [
                 "--env",
@@ -268,9 +276,13 @@ try {
           "--pids-limit",
           "256",
           "--tmpfs",
-          ["context-go", "context-rust", "context-swift", "context-c"].includes(
-            profile,
-          )
+          [
+            "context-go",
+            "context-rust",
+            "context-swift",
+            "context-c",
+            "context-cpp",
+          ].includes(profile)
             ? "/tmp:rw,exec,nosuid,nodev,size=256m"
             : [
                   "context-scala",
@@ -323,6 +335,7 @@ try {
               "context-rust",
               "context-swift",
               "context-c",
+              "context-cpp",
             ].includes(profile),
           }
         : {

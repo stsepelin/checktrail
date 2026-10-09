@@ -1,6 +1,8 @@
 import { vbGrammarAsset } from "./review-vb-grammar-assets.js";
 import { grammarAssets } from "./review-grammar-assets.js";
-export function selectedGrammar(file: string, vb = false) {
+export function selectedGrammar(file: string, vb = false, cpp = false) {
+  if (cpp && file.endsWith(".h"))
+    return grammarAssets.find((asset) => asset.grammar === "cpp");
   if (vb && file.endsWith(".vb")) return vbGrammarAsset;
   const extension = file.split(".").at(-1)!.toLowerCase();
   const grammar = (

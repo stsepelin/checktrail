@@ -1,4 +1,10 @@
 import {
+  captureCppBindings,
+  cppFunctionName,
+  type CppSyntaxUnit,
+} from "./review-cpp-bindings.js";
+import { resolveCppBindings } from "./review-cpp-resolution.js";
+import {
   captureCBindings,
   cFunctionName,
   type CSyntaxUnit,
@@ -414,6 +420,7 @@ async function collectReviewPolyglotCore(
   swiftRoots?: SwiftModuleRoot[],
   vbRoots?: string[],
   cRoots?: string[],
+  cppRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -444,6 +451,7 @@ async function collectReviewPolyglotCore(
   const swiftUnits: SwiftSyntaxUnit[] = [];
   const vbUnits: VbSyntaxUnit[] = [];
   const cUnits: CSyntaxUnit[] = [];
+  const cppUnits: CppSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -451,7 +459,11 @@ async function collectReviewPolyglotCore(
     ["current", current],
   ] as const)
     for (const source of sources) {
-      const asset = selectedGrammar(source.path, vbRoots !== undefined);
+      const asset = selectedGrammar(
+        source.path,
+        vbRoots !== undefined,
+        cppRoots !== undefined,
+      );
       if (!asset) continue;
       const record = result.files.find(
         (record) => record.revision === revision && record.file === source.path,
@@ -537,11 +549,15 @@ async function collectReviewPolyglotCore(
               kind,
             ]),
             name:
-              cRoots &&
-              asset.grammar === "c" &&
+              cppRoots &&
+              asset.grammar === "cpp" &&
               node.type === "function_definition"
-                ? cFunctionName(node)
-                : name(node),
+                ? cppFunctionName(node)
+                : cRoots &&
+                    asset.grammar === "c" &&
+                    node.type === "function_definition"
+                  ? cFunctionName(node)
+                  : name(node),
             kind,
             initializer: initial
               ? { start: initial.startIndex, end: initial.endIndex }
@@ -588,11 +604,15 @@ async function collectReviewPolyglotCore(
             ...address,
             id,
             name:
-              cRoots &&
-              asset.grammar === "c" &&
+              cppRoots &&
+              asset.grammar === "cpp" &&
               node.type === "function_definition"
-                ? cFunctionName(node)
-                : name(node),
+                ? cppFunctionName(node)
+                : cRoots &&
+                    asset.grammar === "c" &&
+                    node.type === "function_definition"
+                  ? cFunctionName(node)
+                  : name(node),
             kind:
               node.type.includes("constructor") ||
               node.type === "init_declaration"
@@ -678,6 +698,10 @@ async function collectReviewPolyglotCore(
             scalaRoots !== undefined &&
             asset.grammar === "scala" &&
             node.type === "instance_expression";
+          const cppConstructor =
+            cppRoots !== undefined &&
+            asset.grammar === "cpp" &&
+            node.type === "new_expression";
           const csharpConstructor =
             csharpRoots !== undefined &&
             asset.grammar === "c_sharp" &&
@@ -697,7 +721,8 @@ async function collectReviewPolyglotCore(
               ) &&
               !javaConstructor &&
               !scalaConstructor &&
-              !csharpConstructor) ||
+              !csharpConstructor &&
+              !cppConstructor) ||
             node.startIndex >= node.endIndex
           )
             continue;
@@ -712,13 +737,20 @@ async function collectReviewPolyglotCore(
             callerFunctionId,
             targetFunctionId: null,
             kind:
-              javaConstructor || scalaConstructor || csharpConstructor
+              javaConstructor ||
+              scalaConstructor ||
+              csharpConstructor ||
+              cppConstructor
                 ? "construct"
                 : "call",
             optional: node.type === "nullsafe_member_call_expression",
             resolution: "unsupported-dispatch",
           });
         }
+        const cppUnit =
+          cppRoots && asset.grammar === "cpp"
+            ? captureCppBindings(nodes, fnIds, decls, range)
+            : undefined;
         const cUnit =
           cRoots && asset.grammar === "c"
             ? captureCBindings(nodes, fnIds, decls, range)
@@ -779,6 +811,7 @@ async function collectReviewPolyglotCore(
         if (swiftUnit) swiftUnits.push(swiftUnit);
         if (vbUnit) vbUnits.push(vbUnit);
         if (cUnit) cUnits.push(cUnit);
+        if (cppUnit) cppUnits.push(cppUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -824,6 +857,11 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (cppRoots)
+    return resolveCppBindings(result, cppUnits, cppRoots, primary, [
+      ...base,
+      ...current,
+    ]);
   if (cRoots)
     return resolveCBindings(result, cUnits, cRoots, primary, [
       ...base,
@@ -1195,6 +1233,39 @@ export async function collectReviewCBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewCppBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "cpp-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewCppBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

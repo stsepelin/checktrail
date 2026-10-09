@@ -1,0 +1,1579 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-cpp-selected-bindings-v1",
+  "recordedAt": "2026-10-09T01:44:06.102808+00:00",
+  "scope": "Captured C++ free-function declarations, literal initializers, parameter defaults, flat namespaces and selected quoted-header source candidates plus supplementary pinned G++ witnesses and original trusted cleanup controls; no capture execution, native preprocessing/translation-unit/linkage certainty, runtime impact narrowing, finding verification, inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "aaffada006e964e5b79be3e322f49290ea21827e",
+    "kind": "selected-source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 49038,
+        "sha256": "ebe828187ab3761955e1e5a79ccd2262d99496e1a7dba46a03d1f49a7f206a29"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-cpp.wasm",
+        "bytes": 5585559,
+        "sha256": "ab9e891709f5dc88fd6b1b4d33f110fb23e5ddc5e64296caf4a41d0a3e585ebe"
+      },
+      {
+        "file": "assets/context-vb-grammar/manifest.json",
+        "bytes": 351,
+        "sha256": "300e74e4e4518cd4530f2b7c70e860d9be5e03f7d1474af9f098d5d570776043"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 25582,
+        "sha256": "76820637ef0514a35c1ece5bfba613d859d8d29e34ff9d3999e24cc864d68c30"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 40098,
+        "sha256": "b6f2600d7bdd5b37de08212d4397e055ddf094a71bc065c1eb4cfe3e076a5950"
+      },
+      {
+        "file": "docs/REVIEW-CPP-CONTEXT.md",
+        "bytes": 3129,
+        "sha256": "8ee17a4afc719c9c7f7436c7be4b8c8ab0704ede536af726f0581a5f9393bbbf"
+      },
+      {
+        "file": "docs/REVIEWER-TASKS.md",
+        "bytes": 45308,
+        "sha256": "f53d591251c6560272edf7cd7b286b5bfd50b999f75cb3158f3477016d06e13d"
+      },
+      {
+        "file": "docs/gate-a-profiles.v1.json",
+        "bytes": 146048,
+        "sha256": "b7e495590a078e947f98fa0616ff4879226dfd74ce881c0b85f603df87aa3c69"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2028,
+        "sha256": "448a5eceddf86ea9bf50912a044b50aecbd27fee9d564c93a2900a82add0a38e"
+      },
+      {
+        "file": "schemas/import-context-report.schema.json",
+        "bytes": 2525170,
+        "sha256": "c932d3fd7711170d3f829319cef54f0a57af067d35c026423e1ab9ec347ff0ba"
+      },
+      {
+        "file": "schemas/review-benchmark-judge-packet.schema.json",
+        "bytes": 1151482,
+        "sha256": "af8b241e502432e2274ce57ae316addc816a86a724aff3163b5400022333c75a"
+      },
+      {
+        "file": "schemas/review-benchmark-judging.schema.json",
+        "bytes": 1294887,
+        "sha256": "5fd1cda3b7e38c9c9ae455d07e1f0fefff24b78f7da17dd37789ef6b5869ab3d"
+      },
+      {
+        "file": "schemas/review-benchmark-matching-packet.schema.json",
+        "bytes": 1000370,
+        "sha256": "e9108989b8a6fd5f5048c5a9051ba27d5ae9498949a680e7788cbec4e15fb77d"
+      },
+      {
+        "file": "schemas/review-benchmark-packet.schema.json",
+        "bytes": 995922,
+        "sha256": "f3ef27139ab1c2fd4560682982168edfca1c9a490bd6165d7e6b1c77c2567af6"
+      },
+      {
+        "file": "schemas/review-benchmark-plan.schema.json",
+        "bytes": 1208691,
+        "sha256": "92e018d07501314c35e4d0a8930faa47591bcdc762680725786d5645ef195810"
+      },
+      {
+        "file": "schemas/review-context.schema.json",
+        "bytes": 840451,
+        "sha256": "678051a254918b18be6fd704fe8981a04733967ec066559a3c9fc5777d476b41"
+      },
+      {
+        "file": "schemas/review-selection.schema.json",
+        "bytes": 69430,
+        "sha256": "3335d8e3de16b3146cda7b50f7bb076c7f5b3e102acf9bbdb742d1139bf29b87"
+      },
+      {
+        "file": "schemas/review-verification-run.schema.json",
+        "bytes": 2774087,
+        "sha256": "59ef9120874f3ff1774f5418a25440b17d13b0981dc809d6a3fd94bd8b7a8244"
+      },
+      {
+        "file": "scripts/cpp-context-tools.Dockerfile",
+        "bytes": 778,
+        "sha256": "7ea2f71a8a23cd92bd22ba968414ef007e776ad8cc6165bc182f20fd10052fe1"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 158554,
+        "sha256": "a7947fb554c371a945f039e90bcee81dbcbfab058341f3a23eb0cc6aaf0df236"
+      },
+      {
+        "file": "scripts/run-test-suite.mjs",
+        "bytes": 1027,
+        "sha256": "0e312591e74fdb2295cc47943caa466238ce2d372836217360e72032e2ae92ab"
+      },
+      {
+        "file": "scripts/verify-cpp-context-container.mjs",
+        "bytes": 4737,
+        "sha256": "7a2c1e8030e9d680b64182244b2e7cb0c9583531924cb246059eda48d56a66f8"
+      },
+      {
+        "file": "scripts/verify-cpp-context-guards.mjs",
+        "bytes": 16433,
+        "sha256": "de854e9fdc5bb445b6cbbf1d459509378ac0deef60265e716acbfaf1452adee3"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 11790,
+        "sha256": "b93df80bf2415a49bd85481ff80332aafbd2be0772cc5330990f1791701b5f68"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 28290,
+        "sha256": "ce997f86a74509f422bb073a82adf9cb95608880f7261f8b54dd300f23f7c5fc"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 8677,
+        "sha256": "2daaba1eb3273db4c9186d1bdc40078f857dba16c65ce375b33642d0c23d8865"
+      },
+      {
+        "file": "src/review-cpp-bindings.ts",
+        "bytes": 18293,
+        "sha256": "c660073ceb1e8e686bdd1dc27f14bd1a4e6b88560a1d9640aaafd28d73b2b743"
+      },
+      {
+        "file": "src/review-cpp-resolution.ts",
+        "bytes": 16805,
+        "sha256": "53186c3611ae6ea5138e7025e449a0964a4750c0968d5e4aee98c6fad1bdf879"
+      },
+      {
+        "file": "src/review-grammar-profile.ts",
+        "bytes": 1102,
+        "sha256": "67de646bd2272bfa378dd827278827724703f0328d3380d40e5a50c23e9e91fb"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 14094,
+        "sha256": "d35d44a6e0162fe4598c4dfed9ff93e531cb87b238546bd211e96a2e4a76cb1a"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 37714,
+        "sha256": "9300dd987c42f0e5b6e7cd7150c4afa7c187f09309217b087008eda562b4561e"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 32408,
+        "sha256": "5067215d37fcd9d04a3eb8bd7fa0371648217abab627e53e98ac456cec3c6c7a"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33897,
+        "sha256": "f0aeb9cd215b7b930d11fc4591872b29daf524e14ae588dae5065cd48cab84b2"
+      },
+      {
+        "file": "src/review-python-bindings.ts",
+        "bytes": 13858,
+        "sha256": "9f9d888314191baa27f7ebfaf8902e76dfe2182df71ee761cab9ff2c74f4cc79"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13250,
+        "sha256": "bc4b390050547b9812d2204b511c9bb1a2125861bcccb5c2ee260c404e048685"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19964,
+        "sha256": "8aa32b72ce7fe1b901bd251459fbf435e2cf23c9925f61415e1ccd87a972043b"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 32111,
+        "sha256": "ea8a4da307b398848781fde0cae839423e859bc5a868d465ad8fe0231a54a7e8"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 88972,
+        "sha256": "efd3026f84d202795b8133a60d6d59bc0d94b9a7c827067725041227420e3ec5"
+      },
+      {
+        "file": "test/gate-context-cpp.test.ts",
+        "bytes": 29559,
+        "sha256": "093e07fe3efd8fbd832eea36ce00a30512efccd50fc6da3ec7f03c5d2fb72ca1"
+      },
+      {
+        "file": "test/review-cpp-boundaries-fixture.ts",
+        "bytes": 17875,
+        "sha256": "d92508f95b754868390194e236873ebe2f3a71f3f40cffaaa20481404ad375f4"
+      },
+      {
+        "file": "test/review-cpp-boundaries.test.ts",
+        "bytes": 216,
+        "sha256": "53086da7bc61ccfc220aa54ed723bc0b9274a294b4f97557d7fcca7eeaadb560"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10867,
+        "sha256": "93238a77b0a26828680b859655f1ca136791841d97ed1bc98e22aab09213b97d"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 29563,
+        "sha256": "31d1caf64e25b4a8a344567611e3fe9a1964d2b10d94c970d413c80148c783e4"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 8491,
+        "sha256": "970383f9cd327c964cc321b16eba30a4ce049be9b04647b8af44c4dbb3fbb86e"
+      },
+      {
+        "file": "dist/src/review-cpp-bindings.js",
+        "bytes": 18131,
+        "sha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a"
+      },
+      {
+        "file": "dist/src/review-cpp-resolution.js",
+        "bytes": 16042,
+        "sha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4"
+      },
+      {
+        "file": "dist/src/review-grammar-profile.js",
+        "bytes": 1141,
+        "sha256": "bff1ac300ad60929456808ef74da3e2e58f14ef4f51fae81b883cdc8646c5678"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 14319,
+        "sha256": "c302390a382b74478d8cb61f7ad5e331168c16ee36716fd0b8714f9a39510806"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 36903,
+        "sha256": "752696915d01cff6746b5caa2db8f950a60bb17173dea71f629f24a80813dabe"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 34106,
+        "sha256": "e645722a2a439f0ba638a00338f9a204a4303a0dfde200fafab9602be3595cf8"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 35893,
+        "sha256": "c4adb5d0466213f09f71b6eac229443e1c12594da8dda37e887e7adf0d442e60"
+      },
+      {
+        "file": "dist/src/review-python-bindings.js",
+        "bytes": 13566,
+        "sha256": "54ccf6f0928c210f8f77d963d7b92740c61c12d91ae914443d2bd3a28a1be8c8"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13222,
+        "sha256": "c8a9e9f69f412c94c532a5f35efab0d183f68e8fa0e1b11b3f92e7917a0e92fa"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19920,
+        "sha256": "2d8a5aa709c6fd4f4cb5f3b394f43ee1d4f9fc9cd7142a63f72b92b603b2a85e"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 33039,
+        "sha256": "ca8849f13f2f006d04c50842d24f779e8351ef9afc3ec8a21ba919307454dedc"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 91689,
+        "sha256": "d3c8c685164797061ef9e10bcf2b2407d48b99c879ad056985d55c82d2b9737a"
+      },
+      {
+        "file": "dist/test/gate-context-cpp.test.js",
+        "bytes": 29082,
+        "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+      },
+      {
+        "file": "dist/test/review-cpp-boundaries-fixture.js",
+        "bytes": 17372,
+        "sha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220"
+      },
+      {
+        "file": "dist/test/review-cpp-boundaries.test.js",
+        "bytes": 218,
+        "sha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02"
+      },
+      {
+        "file": "dist/test/review-hypotheses.test.js",
+        "bytes": 11269,
+        "sha256": "0e10c6be7309cc1efd073c5b5e07f53b1291a242e0aa8b709f03b81c2366ef8d"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic C++ selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "compiler": "14.2.0",
+      "compilerTarget": "aarch64-linux-gnu",
+      "compilerIdentity": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+      "git": "git version 2.47.3",
+      "npm": "10.9.8",
+      "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+      "toolBytes": [
+        {
+          "file": "/usr/bin/g++",
+          "bytes": 1121152,
+          "sha256": "ac4f48ec03aa3988b0c087fd8a0ae681c2922354b321065ff49911b8ab20db73"
+        },
+        {
+          "file": "/usr/bin/as",
+          "bytes": 465912,
+          "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+        },
+        {
+          "file": "/usr/bin/ld",
+          "bytes": 2499576,
+          "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+        },
+        {
+          "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1plus",
+          "bytes": 32731624,
+          "sha256": "83afb477da92b95eced28fc567f1f7f04edf367be37f99ddf32c4ea46cdaa2ed"
+        },
+        {
+          "file": "/usr/local/bin/node",
+          "bytes": 126241888,
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        {
+          "file": "/usr/bin/git",
+          "bytes": 4081272,
+          "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+        }
+      ]
+    },
+    "image": "sha256:17d26d974067531c910db0b3acba57668ba7d549fc7c542fc14048e8b554f69d",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-cpp",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-cpp broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 445.452886,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-cpp fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.565846,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-cpp near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 369.88096,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-cpp prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 217.7276,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-cpp stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 92.697117,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-cpp empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 349.430999,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-cpp privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2753.55861,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-cpp lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1084.886184,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-cpp installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10205.19245,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-cpp broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic C++ captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "cpp-identifier-case",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "3c0f34960f38f2d7974832d5bfd0b9796405e2fe52e93f5832a4d06d1bda1846",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-identifier-prefix",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "9125b7005b9fb852b87119c6ca4e256c3d41e7946e8e1bd26bcca4f6a96153b3",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-point-of-declaration",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "9946148825be704cf4ee0a0ae610105137564a389a2709e985ee449c2f2468dd",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-parameter-mask",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "29cb77c1f2082326c4cffa88d56a3b47a9c1b46958d0a2b9907dc18e31189451",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-local-mask",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "b7babf9010683a1a7c8d138bd7915e6a4acf08a61015880c0e8d6cded4b730f1",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-literal-constant",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "d16c51cad8f258d727aefce7eb74fe741f1dcdc08ed1c140abda6ec41b27eb1f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-header-and-body-node-identity",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "dc302bbcd247ae0b76c61086500ac96d3ad2f99f2b884b648f972dc21545875a",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-nested-block-scope",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "66d0c854ce9bb8f0bfe938603574d5c710675267c9006857500752ef4925a90d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-initializer-read-owner",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "25ade10ab23ac2e84689e4cba443ad9a2d3899ecc099e8cb0d4d60a95b8138af",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-scope-uncertainty",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "6fe0302e8c94315a6bdbc755901021041f57d0733dffc4a3a84e8f6667c667eb",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-exported-function-uncertainty",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "d02fd5823caf77e1e13b6553d02975596ca411c109c00749187ed0b80d335938",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-prototype-mask",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "fe05c3347955d899fb48da8f2ba1968b4d7a77c63571d0d0ffd5b7f62bf5fddc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-include-position",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "86c7f3c0775f68b3679d915371854d449a8f8bce4f1576a36783702f818f045c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-unselected-header-uncertainty",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "76a25e141ba3a8f7ed51771ea75b0ba0c5bb6273afea7286bababb6ae0d9ef5e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-include-depth",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "a44ee9feb7efbafd81a597161b865e68367ec9d8301555ba83b6f573d0f9199c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-include-visit-budget",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "b150129966e9f472ca926ffd7294b2d908679793c2e5b10c9689a7c8fdac34cc",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-definition-ambiguity",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "56ab01632ce750ce8cdc06b0de6a30f813ca38624b88b22f21ddffd531352c2d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-source-call-owner",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "6be78e3b870b856d78af7f592950a0be40066c1934f913ba0b98fd75fa151250",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-complete-call-range",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "6f67076a05182949bebe3acd2d3b86fe9e0e83f2827779db40b5d07fbe1c9bad",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-roots-intake",
+          "callback": "context-cpp stale acceptance",
+          "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "bb2228a1e4749a3088257c44848031fe538289f8e9d676b862a4efcfc275702c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-counts-intake",
+          "callback": "context-cpp stale acceptance",
+          "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "48bc173479dd748688e6675617f6aca24cda563281f8d5cd0f9b11320566c00f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-closure-intake",
+          "callback": "context-cpp stale acceptance",
+          "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "50d55d47cce7720e27faf198eb5efef3060b548995c66e2d4cafc86fdac29c2e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-omissions-intake",
+          "callback": "context-cpp stale acceptance",
+          "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "82d03dfb70908a0cf62d450a5c4ce27c6a2acf69ba708b1b83fdefa2693de1f4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-grammar-manifest-intake",
+          "callback": "context-cpp stale acceptance",
+          "callbackSha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "970383f9cd327c964cc321b16eba30a4ce049be9b04647b8af44c4dbb3fbb86e",
+          "mutantSha256": "4cf70079d4c1abd9c21399cb66cf71a9cc357d56dafafdef5cdd185c3b27888f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-absolute-include",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "c9d0fd38e3e15b4752e2ee9cf91a46186b98f3dcc4d566a33294e0d4bb0b3592",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-inert-directive-comment",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "4fab6ef765a8c0c5ee1b9959b6a00838903dc50bcb6b658a16c03cced0281bea",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-unevaluated-size-read",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "e6c269bd70f73dd1bb6be94e558f1537f6454a6db85f4057d14342590fec4c86",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-address-is-not-a-read",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "e9fffa0a6ddf80f86439ace82b1191e581fcf4a8733b4c69ebb6b284e49b72aa",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-vla-scope",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "9dd27634aefc31c04503a1bcad6150786b37841895a07b891ca1044090e3af18",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-local-declarator-completion",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "d1783534bea4719fc4cc08f4146db599cb39c4c2a8ba3c5a5f66727137e7c349",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-default-enclosing-scope",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "0f04c6f94c0a1e1e0059def2f648fc4fca84791c31fc1862f774074c25bea595",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-default-earlier-parameter-mask",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "2f2a714987161bee19991982df97ce6458e0ea66be97c16a86d416566e2fcb80",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-default-current-parameter-scope",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "0cdd343d43eee44d83073c37a4311cc6f8833e061eef8852aa6ba720ea10e668",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-default-expression-reads",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "d73f60437c8dd76f26a14a584d3b11419c6b40ed55a503a3cdfd0d507acae8fa",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-function-declarator-completion",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "95aa35ad813ed35bf0abc6c9bc93da198f8d08afee51f0c24e50f4349e30761a",
+          "mutantSha256": "214f44318094fdfc3a07e5f19a5855147f23e43ad9340f3e46938c17573e5e5c",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-selected-header-alias",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "d2f07da7c2134e1bcf008fd2b19230575fd8c3aa4c8bafcd3163dc0381940d07",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-alias-position",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "0341ac8268afef58acac4527e17e2e584b0f1b050969631961e22053f0d84844",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-alias-ambiguity",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "f76c54dc4647a79ea44fdc1f0d84fbfbea8525a4c5bb6cee49166bc7500e2630",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-alias-depth",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "b81bebcabcf0b7e94ff001c3e83f1a0097487baa3db778e1a3fc7ce8810a8aa4",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "cpp-namespace-own-priority",
+          "callback": "context-cpp selected bindings guard acceptance",
+          "callbackSha256": "24e98f15e0ac5c438f8146e590c6a74a49b8248098e75868cea4d4eaf304ed02",
+          "fixtureSha256": "7063cb0d4554d2b21f2aa847f9c606522d7a518feb5594dd0d0bcd127b788220",
+          "sourceSha256": "ec6459f49e0cdae00a9e2daed7c2dd8d5c195baccc0086fd14609e4f1ae2cbe4",
+          "mutantSha256": "4f45c39bb312e238946f7b0033592eacff4c63412307cedfdc1044cb16359a77",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "2d5fdfd3e505d3e31f7f50017aa58285df0b3449f8a3d8188eccf7085333aac1",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-cpp",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-cpp broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 446.304191,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-cpp fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 36.218433,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-cpp near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 329.214129,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-cpp prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 201.33946,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-cpp stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 92.712493,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-cpp empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 330.158885,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-cpp privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2750.395094,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-cpp lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1100.381589,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-cpp installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.524801,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-cpp broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-cpp installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:17d26d974067531c910db0b3acba57668ba7d549fc7c542fc14048e8b554f69d",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": true
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512,
+      "temporaryFilesystemExecutable": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "runtimeToolBytePins": [
+    {
+      "file": "/usr/bin/g++",
+      "bytes": 1121152,
+      "sha256": "ac4f48ec03aa3988b0c087fd8a0ae681c2922354b321065ff49911b8ab20db73"
+    },
+    {
+      "file": "/usr/bin/as",
+      "bytes": 465912,
+      "sha256": "6d47317c37bd8596c9dcf0e3dd03185065dc6dd58cdc61e861fda7b9150e720a"
+    },
+    {
+      "file": "/usr/bin/ld",
+      "bytes": 2499576,
+      "sha256": "5a284e435cdf41bc05d93f0683da12b8a42608b93c79e187e7d03fab6a22ddf4"
+    },
+    {
+      "file": "/usr/libexec/gcc/aarch64-linux-gnu/14/cc1plus",
+      "bytes": 32731624,
+      "sha256": "83afb477da92b95eced28fc567f1f7f04edf367be37f99ddf32c4ea46cdaa2ed"
+    },
+    {
+      "file": "/usr/local/bin/node",
+      "bytes": 126241888,
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    {
+      "file": "/usr/bin/git",
+      "bytes": 4081272,
+      "sha256": "a0e562e4bd3c4c79379e91d8c07a10104b2cefe8fac966dc6bd4874a57a807f3"
+    }
+  ],
+  "installedAfterSchemaGeneration": {
+    "tarballSha256": "2d5fdfd3e505d3e31f7f50017aa58285df0b3449f8a3d8188eccf7085333aac1",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "profile": {
+      "timeoutMs": 120000,
+      "profile": "context-cpp",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "47995dc08fcd13efcd48b63fa1bfca7ba376d9067e55eb2139f84a9089d7980a"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-cpp broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 446.304191,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-cpp fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 36.218433,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-cpp near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 329.214129,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-cpp prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 201.33946,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-cpp stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 92.712493,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-cpp empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 330.158885,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-cpp privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2750.395094,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-cpp lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1100.381589,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-cpp installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.524801,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-cpp broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-cpp installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "environment": {
+      "image": "sha256:17d26d974067531c910db0b3acba57668ba7d549fc7c542fc14048e8b554f69d",
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "temporaryFilesystemMiB": 256,
+      "temporaryFilesystemExecutable": true
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityGate": "not-assessed"
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d3c8c685164797061ef9e10bcf2b2407d48b99c879ad056985d55c82d2b9737a",
+        "mutantSha256": "cf794853a9f7884959444cc2307a90df6dc8e15222f05c4169fc1e385ff95475",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d3c8c685164797061ef9e10bcf2b2407d48b99c879ad056985d55c82d2b9737a",
+        "mutantSha256": "3b39af82c3dc1558f1ffc365adb943b8cbb97f7eab014f401ad4c3f24cd03e5f",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "d3c8c685164797061ef9e10bcf2b2407d48b99c879ad056985d55c82d2b9737a",
+        "mutantSha256": "bfccfab7ebb70d62e7848401d03d5c2d70a80f59071c90cd86f3de480f671581",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1162,
+      "pass": 838,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 324,
+      "todo": 0
+    },
+    "durationMs": 184804.40075,
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "fileWorkerMaximum": 4,
+    "pinnedSupplementaryGppUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "7bc598913ab00d4bd4d9529352baee0f71f0f58b89d7c36d6d5dd4b16470458e"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "acceptancePackagesPrecedeMeasurementRecord": true,
+  "generatedSchemaBytesStable": true,
+  "finalReleaseArtifactAccepted": false,
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

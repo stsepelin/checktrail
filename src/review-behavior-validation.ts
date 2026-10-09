@@ -202,7 +202,8 @@ export function validateReviewBehavior(
     analysis.profile === "ruby-selected-bindings-v1" ||
     analysis.profile === "swift-selected-bindings-v1" ||
     analysis.profile === "vb-selected-bindings-v1" ||
-    analysis.profile === "c-selected-bindings-v1"
+    analysis.profile === "c-selected-bindings-v1" ||
+    analysis.profile === "cpp-selected-bindings-v1"
   ) {
     if (
       analysis.grammarManifestDigest !== grammarManifestDigest ||
@@ -223,6 +224,7 @@ export function validateReviewBehavior(
             const asset = selectedGrammar(
               file.file,
               analysis.profile === "vb-selected-bindings-v1",
+              analysis.profile === "cpp-selected-bindings-v1",
             );
             return asset ? [asset.grammar] : [];
           }),
