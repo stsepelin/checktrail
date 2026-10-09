@@ -302,10 +302,11 @@ export async function runProviderRefutationAssignment(
     context.schemaVersion !== 14 &&
     context.schemaVersion !== 15 &&
     context.schemaVersion !== 16 &&
-    context.schemaVersion !== 17
+    context.schemaVersion !== 17 &&
+    context.schemaVersion !== 18
   )
     throw new Error(
-      "Refutation requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 or 17",
+      "Refutation requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 or 18",
     );
   const target = reviewCandidateSchema.parse(candidateInput);
   const binding = await receiveReview(root, context, {
@@ -366,10 +367,11 @@ async function runProviderAssignment(
     context.schemaVersion !== 14 &&
     context.schemaVersion !== 15 &&
     context.schemaVersion !== 16 &&
-    context.schemaVersion !== 17
+    context.schemaVersion !== 17 &&
+    context.schemaVersion !== 18
   )
     throw new Error(
-      "Provider review requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 or 17",
+      "Provider review requires context version 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 or 18",
     );
   const hypotheses = createHypothesisPlan(context);
   const packet = adjudication

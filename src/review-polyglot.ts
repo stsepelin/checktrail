@@ -1,4 +1,10 @@
 import {
+  captureSwiftBindings,
+  type SwiftSyntaxUnit,
+  type SwiftModuleRoot,
+} from "./review-swift-bindings.js";
+import { resolveSwiftBindings } from "./review-swift-resolution.js";
+import {
   captureRubyBindings,
   type RubySyntaxUnit,
 } from "./review-ruby-bindings.js";
@@ -392,6 +398,7 @@ async function collectReviewPolyglotCore(
   csharpRoots?: string[],
   fsharpRoots?: string[],
   rubyRoots?: string[],
+  swiftRoots?: SwiftModuleRoot[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -419,6 +426,7 @@ async function collectReviewPolyglotCore(
   const csharpUnits: CsharpSyntaxUnit[] = [];
   const fsharpUnits: FsharpSyntaxUnit[] = [];
   const rubyUnits: RubySyntaxUnit[] = [];
+  const swiftUnits: SwiftSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -671,6 +679,10 @@ async function collectReviewPolyglotCore(
             resolution: "unsupported-dispatch",
           });
         }
+        const swiftUnit =
+          swiftRoots && asset.grammar === "swift"
+            ? captureSwiftBindings(nodes, fnIds, decls, range)
+            : undefined;
         const rubyUnit =
           rubyRoots && asset.grammar === "ruby"
             ? captureRubyBindings(nodes, fnIds, decls, range)
@@ -716,6 +728,7 @@ async function collectReviewPolyglotCore(
         result.modules.push(...output.modules);
         record.state = "collected";
         if (rubyUnit) rubyUnits.push(rubyUnit);
+        if (swiftUnit) swiftUnits.push(swiftUnit);
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
         if (
@@ -761,6 +774,8 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (swiftRoots)
+    return resolveSwiftBindings(result, swiftUnits, swiftRoots, primary);
   if (rubyRoots)
     return resolveRubyBindings(result, rubyUnits, rubyRoots, primary);
   if (fsharpRoots)
@@ -1034,6 +1049,36 @@ export async function collectReviewRubyBehavior(
       base,
       primary,
       diff,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewSwiftBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: SwiftModuleRoot[],
+): Promise<Extract<ReviewBehavior, { profile: "swift-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewSwiftBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       undefined,
       undefined,

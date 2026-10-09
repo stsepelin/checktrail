@@ -3666,5 +3666,43 @@
       "file": "dist/test/gate-context-ruby.test.js",
       "name": "context-ruby installed acceptance"
     }
+  ],
+  "context-swift": [
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-swift.test.js",
+      "name": "context-swift installed acceptance"
+    }
   ]
 }
