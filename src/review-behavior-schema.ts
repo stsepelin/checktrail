@@ -270,10 +270,50 @@ export const reviewGoBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
       .max(24),
   }),
 });
+export const reviewPhpBehaviorSchema = reviewPolyglotBehaviorSchema.extend({
+  profile: z.literal("php-selected-bindings-v1"),
+  phpBindings: z.strictObject({
+    moduleRoots: z.array(z.string().min(1).max(1024)).min(1).max(16),
+    scope: z.literal("selected-captured-php-source"),
+    state: z.enum(["collected", "partial"]),
+    callerDepthLimit: z.literal(8),
+    callerEdges:
+      reviewPythonBehaviorSchema.shape.pythonBindings.shape.callerEdges,
+    counts: reviewPythonBehaviorSchema.shape.pythonBindings.shape.counts,
+    fullImpactFallback: z.literal(true),
+    runtimeReachabilityVerified: z.literal(false),
+    nativeNameResolutionVerified: z.literal(false),
+    moduleLoadingVerified: z.literal(false),
+    validationPlanUnchanged: z.literal(true),
+    omissions: z
+      .array(
+        z.enum([
+          "unselected-source",
+          "runtime-rebinding",
+          "runtime-dispatch",
+          "module-loading-unknown",
+          "unsupported-binding",
+          "conditional-declaration",
+          "unsupported-import",
+          "unresolved-call",
+          "unresolved-import",
+          "unresolved-loading",
+          "ambiguous-definition",
+          "outside-module-roots",
+          "partial-syntax",
+          "non-php-source",
+          "no-selected-functions",
+          "depth-limit",
+        ]),
+      )
+      .max(24),
+  }),
+});
 export const reviewBehaviorSchema = z.discriminatedUnion("profile", [
   reviewJavascriptBehaviorSchema,
   reviewPolyglotBehaviorSchema,
   reviewPythonBehaviorSchema,
   reviewGoBehaviorSchema,
+  reviewPhpBehaviorSchema,
 ]);
 export type ReviewBehavior = z.infer<typeof reviewBehaviorSchema>;

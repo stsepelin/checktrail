@@ -1,4 +1,9 @@
 import {
+  capturePhpBindings,
+  type PhpSyntaxUnit,
+} from "./review-php-bindings.js";
+import { resolvePhpBindings } from "./review-php-resolution.js";
+import {
   captureGoBindings,
   type GoSyntaxUnit,
   type GoModuleRoot,
@@ -344,6 +349,7 @@ async function collectReviewPolyglotCore(
   diff: boolean,
   pythonRoots?: string[],
   goRoots?: GoModuleRoot[],
+  phpRoots?: string[],
 ): Promise<ReviewBehavior> {
   const result = reviewPolyglotBehaviorSchema.parse({
     ...(await collectReviewBehavior(current, base, primary, diff, 64)),
@@ -363,6 +369,7 @@ async function collectReviewPolyglotCore(
     : [];
   const pythonUnits: PythonSyntaxUnit[] = [];
   const goUnits: GoSyntaxUnit[] = [];
+  const phpUnits: PhpSyntaxUnit[] = [];
   const bindings = new Set<string>();
   let nodesVisited = 0;
   for (const [revision, sources] of [
@@ -576,6 +583,8 @@ async function collectReviewPolyglotCore(
         record.state = "collected";
         if (pythonRoots && asset.grammar === "python")
           pythonUnits.push(capturePythonBindings(nodes, fnIds, decls, range));
+        if (phpRoots && asset.grammar === "php")
+          phpUnits.push(capturePhpBindings(nodes, fnIds, decls, range));
         if (goRoots && asset.grammar === "go")
           goUnits.push(captureGoBindings(nodes, fnIds, decls, range));
         if (!bindings.has(asset.grammar)) {
@@ -602,6 +611,7 @@ async function collectReviewPolyglotCore(
   result.grammarBindings.sort((a, b) =>
     a.grammar.localeCompare(b.grammar, "en"),
   );
+  if (phpRoots) return resolvePhpBindings(result, phpUnits, phpRoots, primary);
   if (goRoots)
     return resolveGoBindings(
       result,
@@ -658,6 +668,28 @@ export async function collectReviewGoBehavior(
       base,
       primary,
       diff,
+      undefined,
+      roots,
+    ),
+  );
+}
+
+export async function collectReviewPhpBehavior(
+  current: Source[],
+  base: Source[],
+  primary: string[],
+  diff: boolean,
+  roots: string[],
+): Promise<Extract<ReviewBehavior, { profile: "php-selected-bindings-v1" }>> {
+  return (
+    await import("./review-behavior-schema.js")
+  ).reviewPhpBehaviorSchema.parse(
+    await collectReviewPolyglotCore(
+      current,
+      base,
+      primary,
+      diff,
+      undefined,
       undefined,
       roots,
     ),

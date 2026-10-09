@@ -3362,5 +3362,43 @@
       "file": "dist/test/gate-context-go.test.js",
       "name": "context-go installed acceptance"
     }
+  ],
+  "context-php": [
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-context-php.test.js",
+      "name": "context-php installed acceptance"
+    }
   ]
 }

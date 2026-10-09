@@ -26,6 +26,7 @@ assert.ok(
     "host-session-readiness",
     "context-python",
     "context-go",
+    "context-php",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -35,6 +36,8 @@ if (profile === "host-session-readiness")
 if (profile === "context-python")
   process.env.CHECKTRAIL_CONTEXT_PYTHON_INSTALLED = "1";
 if (profile === "context-go") process.env.CHECKTRAIL_CONTEXT_GO_INSTALLED = "1";
+if (profile === "context-php")
+  process.env.CHECKTRAIL_CONTEXT_PHP_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -72,6 +75,7 @@ try {
     "helpers.js",
     "gate-context-python.test.js",
     "gate-context-go.test.js",
+    "gate-context-php.test.js",
     "gate-host-session-readiness.test.js",
     "review-host-process-fixture.js",
     "review-workflow-fixture.js",
@@ -167,6 +171,9 @@ try {
             : []),
           ...(profile === "context-go"
             ? ["--env", "CHECKTRAIL_CONTEXT_GO_INSTALLED=1"]
+            : []),
+          ...(profile === "context-php"
+            ? ["--env", "CHECKTRAIL_CONTEXT_PHP_INSTALLED=1"]
             : []),
           "--read-only",
           "--cpus",

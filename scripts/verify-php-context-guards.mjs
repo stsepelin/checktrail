@@ -1,0 +1,213 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
+import { readFile, writeFile } from "node:fs/promises";
+import { fileURLToPath, URL } from "node:url";
+import process from "node:process";
+const repository = fileURLToPath(new URL("../", import.meta.url));
+const callback = new URL(
+  "../dist/test/gate-context-php.test.js",
+  import.meta.url,
+);
+const originalCallback = await readFile(callback);
+const digest = (value) => createHash("sha256").update(value).digest("hex");
+const controls = [
+  {
+    id: "php-double-quoted-literal",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before: '!["string", "encapsed_string"].includes(node.type)',
+    after: 'node.type !== "string"',
+  },
+  {
+    id: "php-literal-escape-language",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before: 'text[++index] ?? ""',
+    after: '"n"',
+  },
+  {
+    id: "php-label-reference-kind",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before:
+      '["goto_statement", "named_label_statement"].includes(node.parent.type)',
+    after: "false",
+  },
+  {
+    id: "php-named-argument-reference-kind",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before: 'node.parent.type === "argument"',
+    after: "false",
+  },
+  {
+    id: "php-import-order",
+    file: "review-php-resolution.js",
+    name: "context-php near-miss acceptance",
+    before: "value.visibleFrom <= offset",
+    after: "true",
+  },
+  {
+    id: "php-import-symbol-table",
+    file: "review-php-resolution.js",
+    name: "context-php broken acceptance",
+    before: 'qualified ? "namespace" : kind',
+    after: "kind",
+  },
+  {
+    id: "php-constant-alias-case",
+    file: "review-php-resolution.js",
+    name: "context-php near-miss acceptance",
+    before: "value.alias === alias",
+    after: "value.alias.toLowerCase() === alias.toLowerCase()",
+  },
+  {
+    id: "php-conditional-declaration",
+    file: "review-php-resolution.js",
+    name: "context-php near-miss acceptance",
+    before: "values[0].binding.conditional",
+    after: "false",
+  },
+  {
+    id: "php-duplicate-definition",
+    file: "review-php-resolution.js",
+    name: "context-php near-miss acceptance",
+    before: "values.length !== 1",
+    after: "values.length === 0",
+  },
+  {
+    id: "php-expression-call-dispatch",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before: "original !== fn",
+    after: "false",
+  },
+  {
+    id: "php-class-constant-scope",
+    file: "review-php-bindings.js",
+    name: "context-php near-miss acceptance",
+    before: "if (member)",
+    after: "if (false)",
+  },
+  {
+    id: "php-namespace-address-ambiguity",
+    file: "review-php-resolution.js",
+    name: "context-php near-miss acceptance",
+    before: "targets.length === 1",
+    after: "targets.length > 0",
+  },
+  {
+    id: "php-primary-caller-closure",
+    file: "review-python-resolution.js",
+    name: "context-php broken acceptance",
+    before: "analysis.functions.filter((fn) => primary.includes(fn.file))",
+    after: "analysis.functions.filter(() => false)",
+  },
+  {
+    id: "php-root-reconstruction-binding",
+    file: "review-php-resolution.js",
+    name: "context-php stale acceptance",
+    before: "JSON.stringify(bindings.moduleRoots) !== JSON.stringify(roots)",
+    after: "false",
+  },
+  {
+    id: "php-summary-count-reconciliation",
+    file: "review-php-resolution.js",
+    name: "context-php stale acceptance",
+    before: "JSON.stringify(counts) !== JSON.stringify(bindings.counts)",
+    after: "false",
+  },
+];
+const environment = { ...process.env };
+delete environment.NODE_TEST_CONTEXT;
+function run(name) {
+  const pattern = "^" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$";
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--test",
+      "--test-reporter=tap",
+      "--test-name-pattern",
+      pattern,
+      fileURLToPath(callback),
+    ],
+    {
+      cwd: repository,
+      env: environment,
+      encoding: "utf8",
+      timeout: 45000,
+      maxBuffer: 1024 * 1024,
+    },
+  );
+  assert.equal(result.error, undefined, result.error?.message);
+  assert.equal(result.signal, null, result.stdout + result.stderr);
+  return result;
+}
+const evidence = [];
+for (const control of controls) {
+  const source = new URL("../dist/src/" + control.file, import.meta.url);
+  const original = await readFile(source, "utf8");
+  const baseline = run(control.name);
+  assert.equal(baseline.status, 0, baseline.stdout + baseline.stderr);
+  assert.equal(
+    original.split(control.before).length,
+    2,
+    "Exact control address: " + control.id,
+  );
+  const mutant = original.replace(control.before, control.after);
+  try {
+    await writeFile(source, mutant);
+    const compile = spawnSync(
+      process.execPath,
+      ["--check", fileURLToPath(source)],
+      { encoding: "utf8" },
+    );
+    assert.equal(compile.status, 0, compile.stdout + compile.stderr);
+    const result = run(control.name);
+    assert.equal(
+      result.status,
+      1,
+      "Original assertion must kill " +
+        control.id +
+        "\n" +
+        result.stdout +
+        result.stderr,
+    );
+    assert.match(result.stdout, /ERR_ASSERTION/);
+    assert.doesNotMatch(
+      result.stdout + result.stderr,
+      /SyntaxError|TypeError|ReferenceError/,
+    );
+    assert.ok(result.stdout.includes("not ok 1 - " + control.name));
+    assert.deepEqual(
+      await readFile(callback),
+      originalCallback,
+      "Original callback changed",
+    );
+    evidence.push({
+      id: control.id,
+      callback: control.name,
+      callbackSha256: digest(originalCallback),
+      sourceSha256: digest(original),
+      mutantSha256: digest(mutant),
+      originalPassed: true,
+      mutantCompiled: true,
+      mutantFailedAssertion: true,
+    });
+  } finally {
+    await writeFile(source, original);
+  }
+  const restored = run(control.name);
+  assert.equal(restored.status, 0, restored.stdout + restored.stderr);
+  evidence.at(-1).restoredPassed = true;
+}
+process.stdout.write(
+  JSON.stringify({
+    scope:
+      "Original synthetic PHP captured-binding controls; no model inference or field evaluation",
+    controls: evidence,
+    inferenceInvoked: false,
+    fieldEvaluationExecuted: false,
+  }) + "\n",
+);

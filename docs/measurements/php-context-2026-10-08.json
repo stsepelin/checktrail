@@ -1,0 +1,863 @@
+{
+  "schemaVersion": 1,
+  "profile": "original-synthetic-php-selected-bindings-v1",
+  "recordedAt": "2026-10-08T17:08:14.058110+00:00",
+  "scope": "Captured selected PHP namespace, function and constant binding metadata plus trusted synthetic native controls; no capture execution, runtime impact narrowing, finding verification, AI inference or field evaluation.",
+  "sourceBinding": {
+    "baseCommit": "2200a3944f596a7fd96c413d8fc4ef0909d262b1",
+    "kind": "source-runtime-and-original-acceptance-byte-pins",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 40083,
+        "sha256": "2e693b617b9dc9ffe887f0578a0c4f1925714aca840d5afc817fdcf1f09fc83c"
+      },
+      {
+        "file": "assets/context-grammars/manifest.json",
+        "bytes": 4657,
+        "sha256": "cec7264af5532ad1474f11f2d25761ec21f6f73c318d5566584e67ec0747a9eb"
+      },
+      {
+        "file": "assets/context-grammars/tree-sitter-php.wasm",
+        "bytes": 1081285,
+        "sha256": "bd5e2bf8d42306b7aa32e6b7e39ae9fd9543c62a875ad8b2bc3d488242f72817"
+      },
+      {
+        "file": "package-lock.json",
+        "bytes": 258687,
+        "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1995,
+        "sha256": "d2a78d9239fc078ccd0ce3ca6585885987d2501cf8525aca665a6c1b9e5be171"
+      },
+      {
+        "file": "scripts/php-context-tools.Dockerfile",
+        "bytes": 609,
+        "sha256": "5e79a01814e77a30904d0908618c4e0eb95d6e0452d23d05913262ec56715b23"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 146922,
+        "sha256": "9adc6e7ffff8a00e15a32c20c7a709be4218cf6fdee74732d87f3679a73294c7"
+      },
+      {
+        "file": "scripts/verify-context-limits-guards.mjs",
+        "bytes": 4312,
+        "sha256": "5f6d339bfbc257e990de634bdb0693bf4dd71837b8d24260c23d9fc7ed401392"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 7658,
+        "sha256": "11dd28bca3e048f41b6de89cf537a56c185d5a7cb9aa5c525c7d48b8e330d386"
+      },
+      {
+        "file": "scripts/verify-php-context-container.mjs",
+        "bytes": 4041,
+        "sha256": "1b0447a86e2e0e2adfa65b8f8fcb54779fe3a900405a1e89af5bbb924e85a0d3"
+      },
+      {
+        "file": "scripts/verify-php-context-guards.mjs",
+        "bytes": 6406,
+        "sha256": "f3af9e8688bc461eb70f46cf428a3e4734f08415c2ce196402548e0275369033"
+      },
+      {
+        "file": "src/review-behavior-schema.ts",
+        "bytes": 9423,
+        "sha256": "4735ebc4a7f2aa7dc2e3f72374b588aa2cc675d7dde5c3b0190caad75c8f3ef0"
+      },
+      {
+        "file": "src/review-behavior-validation.ts",
+        "bytes": 7543,
+        "sha256": "9928e337bdf4e1d5abfa62c43a5d0dd200eb1e8580f7f35b80df7679b0ddfaef"
+      },
+      {
+        "file": "src/review-hypotheses.ts",
+        "bytes": 13654,
+        "sha256": "9ab3beb426c429edd8f052200ec4c0c03b17d1cecb27372ee9c1462611558163"
+      },
+      {
+        "file": "src/review-php-bindings.ts",
+        "bytes": 12048,
+        "sha256": "d2b5eb4fd097e2b9dae5c73fdac0adf68a907fbc91eaf975030736dcbab89e2e"
+      },
+      {
+        "file": "src/review-php-resolution.ts",
+        "bytes": 15139,
+        "sha256": "b4f71635ef1519266df1bdb82c813d1954f78a6d37459705fd40f42c6c5926ab"
+      },
+      {
+        "file": "src/review-polyglot.ts",
+        "bytes": 21509,
+        "sha256": "f40501d745ffa725ccc931f48378dcb9d7a152c98390f5fdfa775d8d71ba0bd4"
+      },
+      {
+        "file": "src/review-probe.ts",
+        "bytes": 31968,
+        "sha256": "1ad548b46e2e460d3b2394a888497a3c2132a3b48dd6210a7739533ea2ff4ff5"
+      },
+      {
+        "file": "src/review-provider.ts",
+        "bytes": 33017,
+        "sha256": "65a8098747722801d429f00f89fc555eccd53f7905e2f435ffa624b733ee49ea"
+      },
+      {
+        "file": "src/review-python-resolution.ts",
+        "bytes": 13203,
+        "sha256": "582c91184c9a7e1b349bcf511bb8a47a6b22e01892fa66bf5572b9298788fceb"
+      },
+      {
+        "file": "src/review-verification.ts",
+        "bytes": 19524,
+        "sha256": "70ca87e71aeeb43cca6917b27b42842db5435b74bd039cd7406dd7f5a85bbd1e"
+      },
+      {
+        "file": "src/review-workflow.ts",
+        "bytes": 31671,
+        "sha256": "47b4a3bd10832453423e38f9d48d7a098ea523c9045f544e942105cb66e67cdb"
+      },
+      {
+        "file": "src/review.ts",
+        "bytes": 51678,
+        "sha256": "a4e0a08f23893715a1a39ff2b56327abfb742d8a9b836227a4b8b4db46d281a8"
+      },
+      {
+        "file": "test/gate-context-php.test.ts",
+        "bytes": 33971,
+        "sha256": "e32d9d28af8ca1d408f6a95b7781629ff873e226033ec38f635c2dc105f9fac2"
+      },
+      {
+        "file": "test/review-hypotheses.test.ts",
+        "bytes": 10823,
+        "sha256": "6453cf9d1867ffe2366c23bc0b4a7c7cec19cc84ae5c84dab4431126f2ff2960"
+      }
+    ],
+    "compiled": [
+      {
+        "file": "dist/src/review-behavior-schema.js",
+        "bytes": 9654,
+        "sha256": "10b887e9149004e9dfbac52fd1ee480195cb6e2e27be1898033dd72740d5118f"
+      },
+      {
+        "file": "dist/src/review-behavior-validation.js",
+        "bytes": 7341,
+        "sha256": "466e873f46b5e9084cfc1532196a56e864c11e2eb581cd53e0bbf0c515681d6e"
+      },
+      {
+        "file": "dist/src/review-hypotheses.js",
+        "bytes": 13835,
+        "sha256": "ae93072338d6f769304532a05502d804cbaca051581c4465c5daa28960a3a11e"
+      },
+      {
+        "file": "dist/src/review-php-bindings.js",
+        "bytes": 11731,
+        "sha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7"
+      },
+      {
+        "file": "dist/src/review-php-resolution.js",
+        "bytes": 14673,
+        "sha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397"
+      },
+      {
+        "file": "dist/src/review-polyglot.js",
+        "bytes": 22423,
+        "sha256": "248e10e8612191b7fd82e50421995c027a4bd812c6f8e8d55b433604e6c9b504"
+      },
+      {
+        "file": "dist/src/review-probe.js",
+        "bytes": 33622,
+        "sha256": "b46aa4e2008e3e1315ad3ae459818319eabf006fd7353dbf2662b032339956c7"
+      },
+      {
+        "file": "dist/src/review-provider.js",
+        "bytes": 34925,
+        "sha256": "36134822f002892e02d78e2367b5dd5ecfcffe668af0c924a1c6b2063bf28065"
+      },
+      {
+        "file": "dist/src/review-python-resolution.js",
+        "bytes": 13188,
+        "sha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04"
+      },
+      {
+        "file": "dist/src/review-verification.js",
+        "bytes": 19436,
+        "sha256": "4631efab509d217803d8d62ac5ebb769f2d7a703b886938d524287a7af10446a"
+      },
+      {
+        "file": "dist/src/review-workflow.js",
+        "bytes": 32511,
+        "sha256": "812e65a78cac13a4cb0019c703e03287e326091b0c9ff5d707183f29f5b7064c"
+      },
+      {
+        "file": "dist/src/review.js",
+        "bytes": 52997,
+        "sha256": "7d9efc4010e7138330c1ea3f1c6215e7abecb4a08bb3a837b30b8722b9a7cfaf"
+      },
+      {
+        "file": "dist/test/gate-context-php.test.js",
+        "bytes": 33361,
+        "sha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66"
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "scope": "Original synthetic PHP selected-binding controls; no AI inference or field evaluation",
+    "runtime": {
+      "node": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "php": "8.5.6",
+      "git": "git version 2.52.0",
+      "npm": "10.9.8",
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.23.4\nPRETTY_NAME=\"Alpine Linux v3.23\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "image": "sha256:d33fc9a7fcc99cca689c57d34314600a14e90c6b8ab88f3b2dc5be73c36f93cd",
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "context-php",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "context-php broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 311.752243,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "context-php fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23.617061,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "context-php near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 180.739232,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "context-php prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 176.267787,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "context-php stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 71.525605,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "context-php empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 186.772019,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "context-php privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2285.301453,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "context-php lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3190.53158,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "context-php installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10591.603736,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "context-php broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "context-php installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guards": {
+      "scope": "Original synthetic PHP captured-binding controls; no model inference or field evaluation",
+      "controls": [
+        {
+          "id": "php-double-quoted-literal",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "6f76b8c3073bdeb6e469ce2eba5cd85aab12041b3db7e1b5f5cde2f5918a95aa",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-literal-escape-language",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "f3a3527407606ace88628484985ab964b56146bd1cb1ba39c3120788feb1cd7d",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-label-reference-kind",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "b02d7938339223bbc80caea714d086f406f52e691509f64c61ea62c63c382fee",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-named-argument-reference-kind",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "fc529793dbd0252678b76f5381dd1b0fa1dbcca410ab52f578d4381c7b6885e6",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-import-order",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "5b023b6b813f0cb349cfd20418c3f09fb2f62b76293ae1d40dfbfab3d4cf3179",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-import-symbol-table",
+          "callback": "context-php broken acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "405b169afe9c82f6ad2ccca5e8b7d46c5c559be67c5a3aa20fc1bffc42c6f58f",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-constant-alias-case",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "fb9148f5c5f030bc1609db4a5c19bc2789a7ece87ee374c7680bb2eb1578b322",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-conditional-declaration",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "95220315a8127d7504892b40f0674f19fb602cdb1573e42b6e3a29995252b3e2",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-duplicate-definition",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "f332f39efd19416ad1dc7c636e8529274c96640073aad0f589080a2749e56a56",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-expression-call-dispatch",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "dcf82ff6590d0e9fc3665cea1c429fca4fc6d600be02b29764fd26407e66801e",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-class-constant-scope",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "14bce6124015e2b56aba3398a9cd38b32c043118301fbe417902e67704e8f5a7",
+          "mutantSha256": "edad8179adba4076bdf3e8b66ca2d0a8ee37a3343f9783d729de3c84f3611141",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-namespace-address-ambiguity",
+          "callback": "context-php near-miss acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "26789f6fa1eb763f46845330c6c4f040d638b1554c6c8cc88f88466ac0e20809",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-primary-caller-closure",
+          "callback": "context-php broken acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "ed13efe19a3981eb130247bfeefba3f34ecddbce50ff347605475a4f15282c04",
+          "mutantSha256": "3e23c9b32fd7b555e22b1f45706d4021d17c47ec7486c1ad1db556f1be981161",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-root-reconstruction-binding",
+          "callback": "context-php stale acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "4a50ba1993a965456ac852760a19cd0caae4cf619399bd07d1d9dfc88a3be866",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "php-summary-count-reconciliation",
+          "callback": "context-php stale acceptance",
+          "callbackSha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66",
+          "sourceSha256": "d151b776a2b431b470d3bb6fee051dd45a8e34e72a08b3e3cf66a0ead0b2a397",
+          "mutantSha256": "f3842b2abfd85c9550aca055073dcdea6da94121930f550bcdcaf3b822523375",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "installed": {
+      "tarballSha256": "7c2c9b85d23ceed85f55c8a66af3ae134a40c84740087f8397c521df11259be4",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "context-php",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "19eff4298026e980718e857e0d5433c49fe649abae460b8037e2513fad548d66"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "context-php broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 305.504246,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "context-php fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 19.42591,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "context-php near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.768819,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "context-php prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 170.85088,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "context-php stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.303224,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "context-php empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 169.47533,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "context-php privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2292.212329,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "context-php lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3147.174897,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "context-php installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.83588,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "context-php broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "context-php installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "image": "sha256:d33fc9a7fcc99cca689c57d34314600a14e90c6b8ab88f3b2dc5be73c36f93cd",
+        "network": "none",
+        "consumerMount": "readonly",
+        "rootFilesystemReadonly": true,
+        "temporaryFilesystemMiB": 256,
+        "temporaryFilesystemExecutable": false
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 2048,
+      "pids": 256,
+      "temporaryFilesystemMiB": 512
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "preservedContextBounds": {
+    "scope": "Original synthetic expanded-context controls; no model inference or field evaluation",
+    "controls": [
+      {
+        "id": "combined-source-reconstruction-bound",
+        "callback": "expanded context rejects the first combined source byte beyond one MiB during capture and reconstruction",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7d9efc4010e7138330c1ea3f1c6215e7abecb4a08bb3a837b30b8722b9a7cfaf",
+        "mutantSha256": "4cf309bcfb5d1b29d1f262a6d7e601e9e2df0b21f78506a97ecc598f8c808a0a",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "per-file-utf8-reconstruction-bound",
+        "callback": "expanded context keeps per-file UTF-8 byte limits exact while admitting valid multibyte source",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7d9efc4010e7138330c1ea3f1c6215e7abecb4a08bb3a837b30b8722b9a7cfaf",
+        "mutantSha256": "f43b9b60f42347841916901e04be475af75ebfc566a0bff12981132b413a495a",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      },
+      {
+        "id": "shared-selected-path-accounting",
+        "callback": "expanded context accepts exactly 32 selected paths and one MiB of source with complete syntax and disposition accounting",
+        "callbackSha256": "90fb2fcc7c35b237c05fe6c495f5612a4f96735efd914cfa0342e8d8d0eee7f3",
+        "sourceSha256": "7d9efc4010e7138330c1ea3f1c6215e7abecb4a08bb3a837b30b8722b9a7cfaf",
+        "mutantSha256": "4b95bc15fe5b025a1085b743be66a4144cd250ee5fa3dbf78e0e2fe35d43e1a4",
+        "originalPassed": true,
+        "mutantCompiled": true,
+        "mutantFailedAssertion": true,
+        "restoredPassed": true
+      }
+    ],
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullCheck": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1041,
+      "pass": 772,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 269,
+      "todo": 0
+    },
+    "preparedPinnedGoAnalyzersOnPath": true,
+    "nativePhpUnavailableOnHostPath": true,
+    "unselectedOptionalNativeProfilesReportedSkipped": true,
+    "logSha256": "e5d85e978ef89bbe324049c6c2498714b1d9a8378a4a019c4f2b4a6c9b8c70ec"
+  },
+  "finiteInventory": {
+    "schemaVersion": 1,
+    "inventoryConsistent": true,
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "preservedProfiles": 89,
+    "preservedCases": 716,
+    "preservedCaseCounting": "profile/file/name entries",
+    "uniquePreservedCallbacks": 689,
+    "repeatedProfileEntries": 27,
+    "selectedExtensionProfiles": 51,
+    "plannedExtensionCases": 459,
+    "unresolvedFreezeDecisions": 3,
+    "frozen": false,
+    "implementationAcceptanceAssessed": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "installedProductCapabilityAssessed": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
