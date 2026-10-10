@@ -475,3 +475,5 @@ separates current source-address checks, unverified host probabilities/operator
 labels, unattested native imports and descriptive scoring. The local measurement
 is scoped to its observed host; it does not close the wider runtime matrix or
 independent evaluation. No inference or field evaluation is invoked.
+
+The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.

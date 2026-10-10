@@ -1656,3 +1656,37 @@ jobs:
       - name: Release owned YAML runtime image
         if: always()
         run: node scripts/cleanup-yaml-context-runtime.mjs
+
+  fsharp-format-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-fsharp-format
+      CHECKTRAIL_FSHARP_FORMAT_IMAGE: checktrail-fsharp-format:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare exact selected formatter components
+        run: |
+          mkdir -p .checktrail
+          curl --fail --location --connect-timeout 20 --max-time 120 --output .checktrail/fantomas.8.0.7.nupkg https://api.nuget.org/v3-flatcontainer/fantomas/8.0.7/fantomas.8.0.7.nupkg
+          node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg"
+      - name: Prepare pinned public runtime images
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256
+      - name: Build selected native runtime without build network
+        run: docker build --network none --label checktrail.task=ci-fsharp-format --file scripts/fsharp-format-tools.Dockerfile --tag "$CHECKTRAIL_FSHARP_FORMAT_IMAGE" scripts
+      - name: Prepare public dependencies and offline package cache
+        run: |
+          CHECKTRAIL_DOTNET_BUILD_IMAGE="$CHECKTRAIL_FSHARP_FORMAT_IMAGE" node scripts/prepare-dotnet-build-dependencies.mjs
+          node scripts/prepare-package-cache.mjs
+      - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
+        run: node scripts/verify-fsharp-format-container.mjs

@@ -58,6 +58,7 @@ assert.ok(
     "kubernetes-extensions",
     "kustomize-extensions",
     "confidence-provenance",
+    "dotnet-fsharp-format",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -127,6 +128,8 @@ if (profile === "kubernetes-extensions")
   process.env.CHECKTRAIL_KUBERNETES_EXTENSIONS_INSTALLED = "1";
 if (profile === "kustomize-extensions")
   process.env.CHECKTRAIL_KUSTOMIZE_EXTENSIONS_INSTALLED = "1";
+if (profile === "dotnet-fsharp-format")
+  process.env.CHECKTRAIL_FSHARP_FORMAT_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -194,6 +197,8 @@ try {
     "gate-kustomize-extensions.test.js",
     "kustomize-extensions-fixture.js",
     "kustomize-fixture.js",
+    "gate-dotnet-fsharp-format.test.js",
+    "fsharp-format-fixture.js",
     "gate-confidence-provenance.test.js",
     "confidence-provenance-fixture.js",
     "native-process-observer.js",
@@ -248,6 +253,17 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "dotnet-fsharp-format") {
+    const prepared = path.join(consumer, ".checktrail/fsharp-format-tools");
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      process.env.CHECKTRAIL_FSHARP_FORMAT_CACHE ??
+        path.join(repository, ".checktrail/fsharp-format-tools"),
+      prepared,
+      { recursive: true },
+    );
+    process.env.CHECKTRAIL_FSHARP_FORMAT_CACHE = prepared;
+  }
   if (profile === "assembly-nuxt") {
     const prepared = path.join(consumer, ".checktrail/nuxt-tools/node_modules");
     await mkdir(path.dirname(prepared), { recursive: true });

@@ -358,3 +358,5 @@ addresses and receipt structure. Strict derived projections retain partial and
 unknown states without quality or session-independence claims. Inspection reads
 source but executes no project code or inference. Stored projections validate
 recorded accounting; current freshness requires reinspection.
+
+The opt-in `dotnet.format-fsharp` check uses the shared engine with a strict native packet parser. It compiles an original source-string observer, verifies selected SDK/formatter bytes, stages fresh source, retains both native phases and rechecks every document/diagnostic/text binding. FSHARP-FORMAT.md records parser API limits and first-document lifecycle witnesses; source-string formatting does not establish compilation or whole runtime closure.

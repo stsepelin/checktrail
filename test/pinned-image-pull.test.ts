@@ -4,6 +4,46 @@ const { pullPinnedImage } = await import(
   new URL("../../scripts/pull-pinned-image.mjs", import.meta.url).href
 );
 const reference = "public.ecr.aws/docker/library/node@sha256:" + "a".repeat(64);
+test("pinned image delivery admits only the frozen Microsoft SDK reference and rejects adjacent Microsoft images", async () => {
+  const sdk =
+    "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256";
+  const calls: string[] = [];
+  const result = await pullPinnedImage(sdk, {
+    runImpl: async (image: string) => {
+      calls.push(image);
+    },
+    onRetry: async () => {},
+  });
+  assert.deepEqual(calls, [sdk]);
+  assert.deepEqual(result, {
+    reference: sdk,
+    attempts: 1,
+    deliveryComplete: true,
+  });
+  for (const image of [
+    sdk + "\n",
+    sdk + "x",
+    " " + sdk,
+    sdk.replace("mcr.microsoft.com", "mcr.microsoft.com.attacker.invalid"),
+    sdk.replace("/dotnet/sdk@", "/dotnet/runtime@"),
+    sdk.replace("@sha256:", ":sha256:"),
+    sdk.slice(0, -1) + "0",
+    "mcr.microsoft.com/dotnet/sdk:10.0.401",
+    sdk.toUpperCase(),
+  ]) {
+    calls.length = 0;
+    await assert.rejects(
+      pullPinnedImage(image, {
+        runImpl: async (actual: string) => {
+          calls.push(actual);
+        },
+        onRetry: async () => {},
+      }),
+      /exact pinned/,
+    );
+    assert.deepEqual(calls, []);
+  }
+});
 const failure = (stderr: string) =>
   Object.assign(new Error("Synthetic pinned image failure"), {
     status: 1,

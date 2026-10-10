@@ -60,6 +60,7 @@ const timeoutMs =
               "maven",
               "dotnet-test",
               "dotnet-format",
+              "dotnet-fsharp-format",
               "dotnet-generated",
               "review-benchmark-multi",
               "ruby-tools",

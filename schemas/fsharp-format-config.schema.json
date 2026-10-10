@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": { "type": "string", "const": "fantomas-core-default-v1" },
+    "formatterDirectory": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "files": {
+      "minItems": 1,
+      "maxItems": 128,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+    }
+  },
+  "required": ["schemaVersion", "profile", "formatterDirectory", "files"],
+  "additionalProperties": false
+}

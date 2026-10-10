@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": { "type": "number", "const": 1 },
+    "profile": { "type": "string", "const": "fantomas-core-default-v1" },
+    "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sdkRoot": { "type": "string", "minLength": 1, "maxLength": 8192 },
+    "sdkPinsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "temporary": { "type": "string", "minLength": 1, "maxLength": 8192 },
+    "helperSourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "helperSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "runtimeConfigSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "requestFileSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "marker": {
+      "type": "object",
+      "properties": {
+        "processId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "phase": { "type": "string", "const": "formatter-observer-body" },
+        "runtime": { "type": "string", "const": "10.0.12" },
+        "fantomas": { "type": "string", "const": "8.0.7.0" }
+      },
+      "required": ["processId", "phase", "runtime", "fantomas"],
+      "additionalProperties": false
+    },
+    "firstDocument": {
+      "type": "object",
+      "properties": {
+        "processId": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "phase": {
+          "type": "string",
+          "const": "formatter-first-document-completed"
+        },
+        "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "sourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "formatterReturned": { "type": "boolean" }
+      },
+      "required": [
+        "processId",
+        "phase",
+        "file",
+        "sourceSha256",
+        "formatterReturned"
+      ],
+      "additionalProperties": false
+    },
+    "phases": {
+      "minItems": 2,
+      "maxItems": 2,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phase": {
+            "type": "string",
+            "enum": ["compile-observer", "format-documents"]
+          },
+          "tool": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "args": {
+            "maxItems": 512,
+            "type": "array",
+            "items": { "type": "string", "maxLength": 8192 }
+          },
+          "cwd": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "status": { "type": "number", "const": 0 },
+          "signal": { "type": "null" },
+          "pid": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "stdoutBytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2097152
+          },
+          "stderrBytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2097152
+          },
+          "stdoutSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "stderrSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "stdout": { "type": "string", "maxLength": 2097152 },
+          "stderr": { "type": "string", "maxLength": 2097152 },
+          "capturedOutput": {
+            "type": "object",
+            "properties": {
+              "profile": {
+                "type": "string",
+                "const": "bounded-physical-process-output-v1"
+              },
+              "stdout": {
+                "type": "object",
+                "properties": {
+                  "base64": {
+                    "type": "string",
+                    "maxLength": 22369624,
+                    "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 16777216
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["base64", "bytes", "sha256"],
+                "additionalProperties": false
+              },
+              "stderr": {
+                "type": "object",
+                "properties": {
+                  "base64": {
+                    "type": "string",
+                    "maxLength": 22369624,
+                    "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 16777216
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                },
+                "required": ["base64", "bytes", "sha256"],
+                "additionalProperties": false
+              },
+              "observedBytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "completeForObservedStreams": { "type": "boolean" }
+            },
+            "required": [
+              "profile",
+              "stdout",
+              "stderr",
+              "observedBytes",
+              "completeForObservedStreams"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "phase",
+          "tool",
+          "args",
+          "cwd",
+          "status",
+          "signal",
+          "pid",
+          "stdoutBytes",
+          "stderrBytes",
+          "stdoutSha256",
+          "stderrSha256",
+          "stdout",
+          "stderr",
+          "capturedOutput"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "mirroredBytes": { "type": "integer", "minimum": 0, "maximum": 2097152 },
+    "mirroredSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "complete": { "type": "boolean", "const": true }
+  },
+  "required": [
+    "version",
+    "profile",
+    "requestSha256",
+    "sdkRoot",
+    "sdkPinsSha256",
+    "temporary",
+    "helperSourceSha256",
+    "helperSha256",
+    "runtimeConfigSha256",
+    "requestFileSha256",
+    "marker",
+    "firstDocument",
+    "phases",
+    "mirroredBytes",
+    "mirroredSha256",
+    "complete"
+  ],
+  "additionalProperties": false
+}
