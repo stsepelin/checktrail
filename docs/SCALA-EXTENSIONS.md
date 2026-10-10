@@ -129,3 +129,9 @@ Source-bound acceptance is recorded in
 This closes the selected implementation profile only. The record separates
 current native source/installed acceptance from optional host skips and from
 unfinished hosted CI, final runtime matrix, provenance and Gate A obligations.
+
+The [baseline identity-guard repair](measurements/scala-identity-guard-fixtures-2026-10-10.json)
+keeps physical original bytes and staged compiler bytes distinct in coherent
+negative fixtures. It verifies that removing each corresponding digest comparison
+makes the original callback fail. The native source and fresh installed baseline
+inventories remain required alongside extension acceptance.
