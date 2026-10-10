@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "profile": "ruby-extensions-ci-baseline-shards",
+  "date": "2026-10-10",
+  "problem": {
+    "hostedRun": 38072107300,
+    "hostedJob": "ruby-extensions (acceptance)",
+    "observedResult": "Three preserved baseline test files exhausted the five-minute file deadline. The source and fresh-install acceptance group completed; the baseline group did not.",
+    "priorBaselinePassed": 5,
+    "priorBaselineRequired": 8
+  },
+  "change": {
+    "ciPhases": [
+      "acceptance",
+      "baseline-1",
+      "baseline-2",
+      "baseline-3",
+      "guards-1",
+      "guards-2",
+      "guards-3"
+    ],
+    "baselinePartition": "Inventory index modulo three; three, three and two cases.",
+    "perBaselineShardNativeContainers": 1,
+    "isolatedCaseWorkers": 1,
+    "baselineCaseTimeoutMs": 1200000,
+    "containerStageTimeoutMs": 2400000,
+    "jobTimeoutMinutes": 60,
+    "productionEngineLimitsChanged": false,
+    "requiredCallbackNamesOrAssertionsChanged": false,
+    "requiredControlInventoryChanged": false,
+    "intentionalLifecycleDeadlinesChanged": false
+  },
+  "inputs": [
+    {
+      "file": "scripts/verify-ruby-tools-baseline.mjs",
+      "bytes": 1077,
+      "sha256": "72166077734386c34dda17ef0197a809294bf4d33f5ea8fa0c885f5ebb0ce972"
+    },
+    {
+      "file": "scripts/verify-ruby-extensions-container.mjs",
+      "bytes": 9267,
+      "sha256": "f48b030a52f8b603ec156df512dcefeb6e059c256339b6a36310713dc66401b6"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 184616,
+      "sha256": "bfa37d8d6e6e0762fd57e5aee058f237c0eeb84c1ed14a70f6c542f7061083ba"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "bytes": 12424,
+      "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    },
+    {
+      "file": "test/ruby-tools-tests.test.ts",
+      "bytes": 2154,
+      "sha256": "5f3059f28be00edb5bfacbddd71a9aecd5b173bf8c120382c7dae06974ff6dec"
+    },
+    {
+      "file": "test/ruby-tools-lifecycle.test.ts",
+      "bytes": 619,
+      "sha256": "8deba11ba45bb115c46beb554253e819450a9e833ca7423ca811b816d26dbf1c"
+    },
+    {
+      "file": "test/ruby-tools-minitest-lifecycle.test.ts",
+      "bytes": 634,
+      "sha256": "3092ba9f21426464b581b4b2d1be7ed838a11039d808ef155914fbfd9bbbfc02"
+    }
+  ],
+  "finalInputsUnchanged": true,
+  "nativeValidation": {
+    "complete": true,
+    "preservedRequired": 8,
+    "preservedPassed": 8,
+    "shards": [
+      {
+        "phase": "baseline-1",
+        "required": 3,
+        "passed": 3,
+        "durationMs": 289365,
+        "cases": [
+          {
+            "file": "dist/test/ruby-tools.test.js",
+            "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean",
+            "outcome": "passed",
+            "terminalEvents": 1
+          },
+          {
+            "file": "dist/test/ruby-tools-lifecycle.test.js",
+            "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+            "outcome": "passed",
+            "terminalEvents": 1
+          },
+          {
+            "file": "dist/test/ruby-tools-surfaces.test.js",
+            "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalEvents": 1
+          }
+        ]
+      },
+      {
+        "phase": "baseline-2",
+        "required": 3,
+        "passed": 3,
+        "durationMs": 306132,
+        "cases": [
+          {
+            "file": "dist/test/ruby-tools-tests.test.js",
+            "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair",
+            "outcome": "passed",
+            "terminalEvents": 1
+          },
+          {
+            "file": "dist/test/ruby-tools-minitest-lifecycle.test.js",
+            "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+            "outcome": "passed",
+            "terminalEvents": 1
+          },
+          {
+            "file": "dist/test/ruby-tools-cancellation.test.js",
+            "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs",
+            "outcome": "passed",
+            "terminalEvents": 1
+          }
+        ]
+      },
+      {
+        "phase": "baseline-3",
+        "required": 2,
+        "passed": 2,
+        "durationMs": 170934,
+        "cases": [
+          {
+            "file": "dist/test/ruby-tools-evidence.test.js",
+            "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+            "outcome": "passed",
+            "terminalEvents": 1
+          },
+          {
+            "file": "dist/test/ruby-tools-guards.test.js",
+            "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives",
+            "outcome": "passed",
+            "terminalEvents": 1
+          }
+        ]
+      }
+    ],
+    "allCasesOnePassedTerminalEvent": true,
+    "maxConcurrentNativeContainersDuringLocalValidation": 2,
+    "thirdShardMeasuredAfterFinalExplicitUrlImport": true
+  },
+  "projectValidation": {
+    "command": "npm run check",
+    "tests": 1639,
+    "passed": 942,
+    "failed": 0,
+    "skippedOptionalNative": 697,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 259345.395167
+  },
+  "sourceAndFreshInstallProfileRerunForThisRepair": false,
+  "pairedControlsRerunForThisRepair": false,
+  "priorCompleteNativeProfileReceipt": "ruby-extensions-2026-10-10.json",
+  "priorReceiptBindingsRemainHistorical": true,
+  "hostedRepairAcceptancePending": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

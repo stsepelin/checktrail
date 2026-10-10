@@ -1066,7 +1066,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        phase: [acceptance, guards-1, guards-2, guards-3]
+        phase:
+          [
+            acceptance,
+            baseline-1,
+            baseline-2,
+            baseline-3,
+            guards-1,
+            guards-2,
+            guards-3,
+          ]
     env:
       CHECKTRAIL_TEST_TASK: ci-ruby-extensions-${{ matrix.phase }}
     steps:
