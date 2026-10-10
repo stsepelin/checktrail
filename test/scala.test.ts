@@ -219,12 +219,14 @@ test(
       if (name === "physical") {
         d.sources[0].sha256 = "0".repeat(64);
         d.after[0].sha256 = d.sources[0].sha256;
-        d.snapshotAfter[0].sha256 = d.sources[0].sha256;
+        // Physical originals and staged compiler inputs have separate bindings.
+        // Leave the genuinely compiled snapshot intact to isolate this guard.
       } else {
         d.sources[0].nativeSha256 = "0".repeat(64);
         d.native.sources.find(
           (s: { file: string }) => s.file === d.sources[0].nativeFile,
         ).sha256 = d.sources[0].nativeSha256;
+        d.snapshotAfter[0].sha256 = d.sources[0].nativeSha256;
       }
       d.nativeOutput = captureProcessOutput(
         Buffer.from(JSON.stringify(d.native) + "\n"),

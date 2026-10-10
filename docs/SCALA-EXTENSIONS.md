@@ -140,3 +140,8 @@ escalation is disabled. Unknown, duplicate, mispositioned or foreign-source
 summaries remain inconclusive. The [repair record](measurements/mixed-jvm-java-warning-policy-2026-10-10.json)
 binds native and fresh installed warning regressions and the preserved acceptance
 cases for both Kotlin and Scala.
+The [baseline identity-guard repair](measurements/scala-identity-guard-fixtures-2026-10-10.json)
+keeps physical original bytes and staged compiler bytes distinct in coherent
+negative fixtures. It verifies that removing each corresponding digest comparison
+makes the original callback fail. The native source and fresh installed baseline
+inventories remain required alongside extension acceptance.
