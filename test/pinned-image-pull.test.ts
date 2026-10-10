@@ -213,3 +213,55 @@ test("pinned image delivery checks monotonic elapsed time even when a synchronou
     assert.equal(calls, 0);
   }
 });
+
+test("pinned image delivery retries the exact daemon public ECR header timeout and rejects adjacent errors", async () => {
+  const observed =
+    'Error response from daemon: Get "https://public.ecr.aws/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)';
+  const calls: string[] = [],
+    waits: number[] = [];
+  const result = await pullPinnedImage(reference, {
+    runImpl: async (image: string) => {
+      calls.push(image);
+      if (calls.length === 1) throw failure(observed + "\n");
+    },
+    delayImpl: async (ms: number) => {
+      waits.push(ms);
+    },
+    onRetry: async () => {},
+  });
+  assert.deepEqual(calls, [reference, reference]);
+  assert.deepEqual(waits, [2000]);
+  assert.deepEqual(result, { reference, attempts: 2, deliveryComplete: true });
+  for (const error of [
+    failure(
+      observed.replace(
+        "public.ecr.aws/v2/",
+        "public.ecr.aws.attacker.invalid/v2/",
+      ),
+    ),
+    failure(observed.replace("/v2/", "/v2/not-the-registry/")),
+    failure(observed + " authentication token expired"),
+    failure("manifest unknown\n" + observed),
+    Object.assign(failure(observed), { signal: "SIGTERM" }),
+    Object.assign(failure(observed), { code: "ETIMEDOUT" }),
+    Object.assign(failure(observed), { code: "ABORT_ERR" }),
+  ]) {
+    let attempts = 0,
+      delays = 0;
+    await assert.rejects(
+      pullPinnedImage(reference, {
+        runImpl: async () => {
+          attempts++;
+          throw error;
+        },
+        delayImpl: async () => {
+          delays++;
+        },
+        onRetry: async () => {},
+      }),
+      (actual: unknown) => actual === error,
+    );
+    assert.equal(attempts, 1);
+    assert.equal(delays, 0);
+  }
+});

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "scope": "Operator pinned public image delivery retry for one observed Docker daemon header-timeout error; native validation and product inference are unchanged.",
+  "sourceBaseCommit": "e4deed77a15e761e583a32dc45a713c22f84856b",
+  "changedFileBindings": [
+    {
+      "file": "docs/NATIVE-CI.md",
+      "bytes": 28654,
+      "sha256": "873d54abb1f3543e29e42ca300db0e27f7891fc28219116d9ce3b20dd2198309"
+    },
+    {
+      "file": "scripts/pull-pinned-image.mjs",
+      "bytes": 3362,
+      "sha256": "e5035d2124b6feb7afb3e64324800470b957309e93abf93ccb8a867ee406f1a3"
+    },
+    {
+      "file": "test/pinned-image-pull.test.ts",
+      "bytes": 7957,
+      "sha256": "d5c452fa217bb0f710a77545a1a6f00d370d26ab38c640b6c7a405717002c5b1"
+    }
+  ],
+  "observedFailure": {
+    "hostedJob": "https://github.com/stsepelin/checktrail/actions/runs/38026028635/job/114136992370",
+    "stage": "pinned public image preparation before native tests",
+    "stderr": "Error response from daemon: Get \"https://public.ecr.aws/v2/\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)"
+  },
+  "regressionBeforeRepair": {
+    "selectedTests": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "expectedRetryMissing": true
+  },
+  "syntheticControlsAfterRepair": {
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "exactReferencePreserved": true,
+    "observedTimeoutThenSuccessCalls": 2,
+    "backoffMs": [2000],
+    "adjacentHostPathExtraTextAndPermanentErrorsRejected": true,
+    "childSignalAndTimeoutAbortCodesRejected": true,
+    "originalAttemptWallAndCancellationControlsPreserved": true,
+    "realRegistryFailureSimulated": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1456,
+    "passed": 913,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 543,
+    "todo": 0,
+    "durationMs": 228475.479041,
+    "optionalSkipsCreditedAsPassing": false
+  },
+  "limits": {
+    "maxAttempts": 5,
+    "maxWallMs": 180000,
+    "maxChildCommandMs": 120000,
+    "digestPinsChanged": false,
+    "cancellationPolicyChanged": false
+  },
+  "limitations": [
+    "Synthetic retry controls do not establish hosted registry delivery.",
+    "Current PR heads still require hosted CI acceptance."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
