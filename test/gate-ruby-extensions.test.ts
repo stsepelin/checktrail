@@ -39,7 +39,7 @@ const native = {
   skip: available
     ? false
     : "Pinned Ruby extension runtime and cache not selected",
-  timeout: 300000,
+  timeout: 1200000,
 };
 const brief = (report: Pick<Awaited<ReturnType<typeof validate>>, "checks">) =>
   JSON.stringify(
@@ -58,7 +58,10 @@ const brief = (report: Pick<Awaited<ReturnType<typeof validate>>, "checks">) =>
   );
 const run = (root: string) =>
   validate(root, { trusted: true, timeoutMs: 120000 });
-function witnesses(report: Awaited<ReturnType<typeof run>>, id: string) {
+function witnesses(
+  report: Pick<Awaited<ReturnType<typeof run>>, "checks">,
+  id: string,
+) {
   const check = report.checks.find((c) => c.id === id)!;
   const packet = rubyToolsPacketSchema.parse(
     JSON.parse(check.processes[0]!.stdout),
@@ -67,10 +70,23 @@ function witnesses(report: Awaited<ReturnType<typeof run>>, id: string) {
   return rubyExtensionsRuntimeWitnessSchema.parse(metadata.extensions);
 }
 test("ruby-extensions broken acceptance", native, async (t) => {
-  const { root } = await rubyExtensionsFixture(t);
-  await breakRubyQuantity(root);
-  const report = await run(root);
-  assert.equal(report.outcome, "failed", brief(report));
+  // Each native restore/check gets the engine's unchanged aggregate run budget.
+  const reports = [];
+  for (const id of [
+    "ruby.rubocop-extensions",
+    "ruby.rspec-extensions",
+    "ruby.minitest-extensions",
+  ]) {
+    const { root } = await rubyExtensionsFixture(t, [id]);
+    await breakRubyQuantity(root);
+    reports.push(await run(root));
+  }
+  assert.deepEqual(
+    reports.map((r) => r.outcome),
+    ["passed", "failed", "failed"],
+    JSON.stringify(reports.map(brief)),
+  );
+  const report = { checks: reports.flatMap((r) => r.checks) };
   assert.equal(
     report.checks.find((c) => c.id === "ruby.rubocop-extensions")?.status,
     "passed",
@@ -117,20 +133,21 @@ test("ruby-extensions broken acceptance", native, async (t) => {
   );
 });
 test("ruby-extensions fixed acceptance", native, async (t) => {
-  const { root } = await rubyExtensionsFixture(t, [
-    "ruby.rspec-extensions",
-    "ruby.minitest-extensions",
-  ]);
-  const { file, original } = await breakRubyQuantity(root);
-  try {
-    assert.equal((await run(root)).outcome, "failed");
-  } finally {
-    await writeFile(file, original);
+  const reports = [];
+  for (const id of ["ruby.rspec-extensions", "ruby.minitest-extensions"]) {
+    const { root } = await rubyExtensionsFixture(t, [id]);
+    const { file, original } = await breakRubyQuantity(root);
+    try {
+      assert.equal((await run(root)).outcome, "failed");
+    } finally {
+      await writeFile(file, original);
+    }
+    const report = await run(root);
+    assert.equal(report.outcome, "passed", brief(report));
+    reports.push(report);
   }
-  const report = await run(root);
-  assert.equal(report.outcome, "passed", brief(report));
   assert.deepEqual(
-    report.checks.map((c) => c.tests),
+    reports.flatMap((r) => r.checks).map((c) => c.tests),
     [
       { total: 4, passed: 4, failed: 0, skipped: 0 },
       { total: 3, passed: 3, failed: 0, skipped: 0 },
@@ -138,7 +155,7 @@ test("ruby-extensions fixed acceptance", native, async (t) => {
   );
 });
 test("ruby-extensions near-miss acceptance", native, async (t) => {
-  const { root } = await rubyExtensionsFixture(t);
+  const { root } = await rubyExtensionsFixture(t, ["ruby.rspec-extensions"]);
   const report = await run(root);
   assert.equal(report.outcome, "passed", brief(report));
   const shared = witnesses(report, "ruby.rspec-extensions");
@@ -159,7 +176,18 @@ test("ruby-extensions near-miss acceptance", native, async (t) => {
       shared.hooks.some((h) => h.caseId.startsWith("group:")),
   );
   assert.ok(shared.hooks.every((h) => h.entered && h.returned));
-  const inherited = witnesses(report, "ruby.minitest-extensions");
+  const { root: minitestRoot } = await rubyExtensionsFixture(t, [
+    "ruby.minitest-extensions",
+  ]);
+  const minitestReport = await run(minitestRoot);
+  assert.equal(minitestReport.outcome, "passed", brief(minitestReport));
+  const { root: lintRoot } = await rubyExtensionsFixture(t, [
+    "ruby.rubocop-extensions",
+  ]);
+  const lintReport = await run(lintRoot);
+  assert.equal(lintReport.outcome, "passed", brief(lintReport));
+  assert.equal(lintReport.checks[0]!.status, "passed");
+  const inherited = witnesses(minitestReport, "ruby.minitest-extensions");
   assert.equal(inherited.cases.length, 3);
   assert.equal(
     inherited.cases.filter(

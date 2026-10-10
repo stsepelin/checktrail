@@ -63,6 +63,14 @@ CI runs acceptance and three distinct guard groups in parallel. Required callbac
 use fresh processes and finite budgets; these are native test processes, not
 independent AI host sessions.
 
+The multi-tool broken, fixed and near-miss callbacks validate each selected tool
+with a separate engine request and original fixture. This retains every tool and
+assertion while giving each restore/check the engine's unchanged 120-second
+aggregate request budget. The callback and guard-process envelopes allow up to
+20 minutes for those sequential requests; deliberate lifecycle deadlines remain
+unchanged. The original measurement binds its earlier tested callback bytes;
+subsequent [CI repair evidence](measurements/ruby-extensions-ci-request-isolation-2026-10-10.json) is tracked separately.
+
 The prepared runtime uses pinned MRI 4.0.7, Bundler 4.0.20, RuboCop 1.91.0,
 RSpec Core 3.13.6 and Minitest 6.0.6, with signed/checksummed compiler archives.
 Native package restoration compiles selected source gems in an owned directory.

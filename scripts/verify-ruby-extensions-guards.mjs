@@ -137,7 +137,7 @@ const invoke = (args) =>
     cwd: repository,
     env,
     encoding: "utf8",
-    timeout: 240000,
+    timeout: 1170000,
     maxBuffer: 4 * 1048576,
   });
 const run = (name) =>
