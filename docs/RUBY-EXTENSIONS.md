@@ -59,9 +59,12 @@ packages offline, with lifecycle scripts disabled, and executes the same nine
 callbacks outside the installed package against shipped engine/CLI bytes. Thirteen
 paired controls mutate importer or native observer behavior; native mutations
 must reach real test bodies, fail assertions and pass again after byte restoration.
-CI runs acceptance and three distinct guard groups in parallel. Required callbacks
-use fresh processes and finite budgets; these are native test processes, not
-independent AI host sessions.
+CI separates source/fresh-install acceptance, three preserved-baseline shards and
+three guard shards. The baseline partitions the complete required inventory and
+runs one exact named callback per fresh process within each shard; a missing or
+failed case fails its shard. The [baseline CI repair](measurements/ruby-extensions-ci-baseline-shards-2026-10-10.json)
+records all preserved callbacks and the unchanged production execution limits.
+These are native test processes, not independent AI host sessions.
 
 The multi-tool broken, fixed and near-miss callbacks validate each selected tool
 with a separate engine request and original fixture. This retains every tool and

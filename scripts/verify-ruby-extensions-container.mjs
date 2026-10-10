@@ -10,7 +10,16 @@ import { performance } from "node:perf_hooks";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const phase = process.argv[2] ?? "all";
 assert.ok(
-  ["all", "acceptance", "guards-1", "guards-2", "guards-3"].includes(phase),
+  [
+    "all",
+    "acceptance",
+    "baseline-1",
+    "baseline-2",
+    "baseline-3",
+    "guards-1",
+    "guards-2",
+    "guards-3",
+  ].includes(phase),
 );
 const prepared = JSON.parse(
   await readFile(
@@ -112,16 +121,19 @@ const requirements = JSON.parse(
   await readFile(path.join(root, "scripts/required-native-tests.json"), "utf8"),
 );
 const baselineProfiles = ["ruby-tools"];
-const baseline = () =>
-  measured("preserved-ruby-tools-baseline", async () => {
+const baseline = (shard = "all") =>
+  measured("preserved-ruby-tools-baseline-" + shard, async () => {
     const result = JSON.parse(
-      await run([
-        "node",
-        "scripts/verify-required-native-tests.mjs",
-        ...baselineProfiles,
-      ]),
+      await run(["node", "scripts/verify-ruby-tools-baseline.mjs", shard]),
     );
-    assert.equal(result.required, requirements["ruby-tools"].length);
+    assert.equal(
+      result.required,
+      requirements["ruby-tools"].filter(
+        (_, i) => shard === "all" || i % 3 === Number(shard) - 1,
+      ).length,
+    );
+    assert.deepEqual(result.fullRequiredInventory, requirements["ruby-tools"]);
+    assert.equal(result.baselineShard, shard);
     assert.equal(result.complete, true);
     assert.equal(result.ledger.cases.length, result.required);
     assert.ok(
@@ -206,16 +218,10 @@ if (phase === "all") {
       "Required Ruby native groups failed",
     );
   result = { ...groups[0].value, guards: groups[1].value };
-} else if (phase === "acceptance") {
-  const groups = await Promise.allSettled([baseline(), acceptance()]);
-  const failures = groups.filter((g) => g.status === "rejected");
-  if (failures.length)
-    throw new AggregateError(
-      failures.map((g) => g.reason),
-      "Required Ruby native groups failed",
-    );
-  result = { baseline: groups[0].value, ...groups[1].value };
-} else result = { guards: await guards(phase.slice(-1)) };
+} else if (phase === "acceptance") result = await acceptance();
+else if (phase.startsWith("baseline-"))
+  result = { baseline: await baseline(phase.slice(-1)) };
+else result = { guards: await guards(phase.slice(-1)) };
 console.log(
   JSON.stringify({
     schemaVersion: 1,
@@ -224,6 +230,7 @@ console.log(
     image: prepared.image,
     runtime,
     baselineProfiles,
+    baselineMeasured: phase === "all" || phase.startsWith("baseline-"),
     ...result,
     environment: {
       network: "none",
@@ -235,10 +242,9 @@ console.log(
       tmpfsBytes: 2 * 1024 * 1024 * 1024,
     },
     concurrency: {
-      maxNativeContainers: phase.startsWith("guards-") ? 1 : 2,
-      aggregateCpuLimit: phase.startsWith("guards-") ? 2 : 4,
-      aggregateMemoryBytes:
-        (phase.startsWith("guards-") ? 3 : 6) * 1024 * 1024 * 1024,
+      maxNativeContainers: phase === "all" ? 2 : 1,
+      aggregateCpuLimit: phase === "all" ? 4 : 2,
+      aggregateMemoryBytes: (phase === "all" ? 6 : 3) * 1024 * 1024 * 1024,
       sharedWritableFixtures: false,
     },
     stageDurationMs: timings,
