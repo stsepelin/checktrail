@@ -19,7 +19,7 @@ const rule = z.strictObject({
   active: z.boolean(),
   severity,
 });
-const nativeSchema = z.strictObject({
+export const detektNativeSchema = z.strictObject({
   version: z.literal(1),
   events: z
     .array(
@@ -82,7 +82,7 @@ const binding = z.strictObject({
     .nonnegative()
     .max(1024 * 1024),
 });
-const evidenceSchema = z.strictObject({
+export const detektEvidenceSchema = z.strictObject({
   version: z.literal(1),
   requestDigest: digest,
   detekt: z.literal(detektArtifacts.version),
@@ -97,7 +97,7 @@ const evidenceSchema = z.strictObject({
     .min(1)
     .max(2000),
   after: z.array(binding).min(1).max(2000),
-  native: nativeSchema.nullable(),
+  native: detektNativeSchema.nullable(),
   nativeExit: z.number().int().nullable(),
   nativeSignal: z.string().nullable(),
   nativeError: z.string().nullable(),
@@ -146,7 +146,7 @@ export function detektEvidence(
       findingsComplete: false,
     };
   try {
-    const data = evidenceSchema.parse(JSON.parse(process.stdout));
+    const data = detektEvidenceSchema.parse(JSON.parse(process.stdout));
     const serialized = check.commands[0]!.args[2]!;
     const planned = detektInvocationSchema.parse(JSON.parse(serialized));
     if (

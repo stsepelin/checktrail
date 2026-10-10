@@ -1,5 +1,8 @@
 # Kotlin detekt light profile
 
+The opt-in [full type profile](JVM-ANALYZER-EXTENSIONS.md) separately supplies explicit
+compiler prerequisites, native typed source accounting and compiler diagnostics.
+
 The opt-in `jvm.detekt` check analyzes every selected `.kt` and `.kts` file using
 pinned detekt 2.0.0-alpha.6 built-in light rules. This is a source analyzer profile:
 Kotlin compilation, compiler diagnostics, type-dependent rules, classpaths, mixed
@@ -96,9 +99,8 @@ node scripts/verify-detekt-container.mjs
 ```
 
 Agents use the shared managed environment for these commands. Exact revisions and
-native measurements establish their own acceptance only. Wider Kotlin/Scala,
-compiler/type, wrapper, generated/JPMS, analyzer and platform requirements remain
-open; this profile does not close E11 or Gate A. These controls perform no AI
+native measurements establish their own acceptance only. Broader JVM and platform requirements remain
+open; this light profile does not close E11 or Gate A. These controls perform no AI
 inference or real-project field evaluation.
 
 The original Linux ARM64 source/compiling-guard/fresh-package acceptance is recorded

@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [JVM analyzer extensions](JVM-ANALYZER-EXTENSIONS.md) compile explicit fresh
+Java application/library cohorts, nested and generated classes and conventional
+JPMS descriptors, with native SpotBugs plugin and rule provenance. Full detekt
+analysis binds typed source participation, SDK roots, resolved annotations and
+source-bound compiler diagnostics. The [local record](measurements/jvm-analyzer-extensions-2026-10-10.json)
+records preserved callbacks, source and fresh installed acceptance, compiling
+controls and the project check. Wider JVM layouts, platforms and whole artifact
+provenance remain open. Gate A remains open; no inference or field evaluation is
+invoked.
+
 Opt-in [Kotlin extensions](KOTLIN-EXTENSIONS.md) compile declared mixed Java/Kotlin,
 fresh generated primary Kotlin classes and application scripts. Native Java body
 compilation supplements Kotlin symbol resolution; scripts remain compile-only.

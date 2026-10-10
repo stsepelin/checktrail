@@ -1,5 +1,8 @@
 # SpotBugs native profile
 
+The opt-in [class-cohort and plugin profile](JVM-ANALYZER-EXTENSIONS.md) separately
+supplies generated/library/JPMS scope and declared custom detector provenance.
+
 The opt-in `jvm.spotbugs` check compiles selected current Java sources and runs
 SpotBugs 4.10.4 using its built-in default defect detectors at maximum effort. The native annotation
 suppression collector is excluded from the fixed detector assembly. The shared
@@ -108,6 +111,6 @@ node scripts/verify-spotbugs-container.mjs
 
 Agents run these commands through the shared managed environment. Named acceptance
 and measurements describe their exact revision and platform; broader OS/runtime,
-Kotlin/Scala, generated/JPMS, custom plugin and build-wrapper profiles remain open.
+Kotlin/Scala and build layouts remain open.
 This integration does not close E11, Gate A or any reviewer-quality gate. No AI
 inference or field evaluation is part of these synthetic controls.

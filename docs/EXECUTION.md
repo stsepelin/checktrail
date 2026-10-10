@@ -402,3 +402,14 @@ profile preserves baseline behavior and records source, fresh offline installed,
 compiling-control and reached lifecycle acceptance through the shared engine.
 Broader compiler/build semantics, complete provenance, final platforms and Gate A
 remain required; no inference or real-project field evaluation is invoked.
+
+## Selected JVM analyzer extensions
+
+The shared engine supports [fresh SpotBugs class cohorts and full detekt analysis](JVM-ANALYZER-EXTENSIONS.md)
+through explicit declarations. Planning validates source roles and artifact bytes
+without running project code. Operator-trusted execution binds native class,
+module, plugin, type and source identities to current bytes; empty or partial
+analysis cannot pass. Declared generators and detector plugins execute project
+code. Reached cancellation, timeout and output exhaustion remove owned processes
+and temporary artifacts. Required native acceptance and fresh offline installed
+acceptance cover this selected Linux ARM64 profile; wider platforms remain open.

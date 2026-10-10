@@ -1,15 +1,247 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schemaVersion": { "type": "number", "const": 1 },
-    "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
-    "sha256": {
-      "type": "string",
-      "const": "72bc0d4edd686e462c0f71f42a049b27bf4da6708797ff7b2b56dd202714b4e5"
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "72bc0d4edd686e462c0f71f42a049b27bf4da6708797ff7b2b56dd202714b4e5"
+        },
+        "profile": { "type": "string", "const": "core-default-max-v1" }
+      },
+      "required": ["schemaVersion", "archive", "sha256", "profile"],
+      "additionalProperties": false
     },
-    "profile": { "type": "string", "const": "core-default-max-v1" }
-  },
-  "required": ["schemaVersion", "archive", "sha256", "profile"],
-  "additionalProperties": false
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "type": "number", "const": 1 },
+        "archive": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "sha256": {
+          "type": "string",
+          "const": "72bc0d4edd686e462c0f71f42a049b27bf4da6708797ff7b2b56dd202714b4e5"
+        },
+        "profile": {
+          "type": "string",
+          "const": "core-default-max-class-scopes-plugins-v1"
+        },
+        "extensions": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "const": "linux-arm64-class-scopes-plugins-v1"
+            },
+            "stages": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "path": {
+                    "anyOf": [
+                      { "type": "string", "const": "." },
+                      { "type": "string", "minLength": 1, "maxLength": 4096 }
+                    ]
+                  },
+                  "analyze": { "type": "boolean" },
+                  "sources": {
+                    "maxItems": 2000,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "dependsOn": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                    }
+                  }
+                },
+                "required": ["id", "path", "analyze", "sources", "dependsOn"],
+                "additionalProperties": false
+              }
+            },
+            "generators": {
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "module": {
+                    "anyOf": [
+                      { "type": "string", "const": "." },
+                      { "type": "string", "minLength": 1, "maxLength": 4096 }
+                    ]
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "className": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                  },
+                  "outputs": {
+                    "minItems": 1,
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "file": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4096
+                        },
+                        "className": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                        }
+                      },
+                      "required": ["file", "className"],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["module", "source", "className", "outputs"],
+                "additionalProperties": false
+              }
+            },
+            "jpms": {
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "module": {
+                    "anyOf": [
+                      { "type": "string", "const": "." },
+                      { "type": "string", "minLength": 1, "maxLength": 4096 }
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                  },
+                  "requires": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                    }
+                  },
+                  "exports": {
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                    }
+                  }
+                },
+                "required": ["module", "name", "requires", "exports"],
+                "additionalProperties": false
+              }
+            },
+            "plugins": {
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+                  },
+                  "detectors": {
+                    "minItems": 1,
+                    "maxItems": 32,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "className": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*$"
+                        },
+                        "reports": {
+                          "minItems": 1,
+                          "maxItems": 128,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
+                          }
+                        }
+                      },
+                      "required": ["className", "reports"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "patterns": {
+                    "minItems": 1,
+                    "maxItems": 128,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
+                        },
+                        "abbreviation": {
+                          "type": "string",
+                          "pattern": "^[A-Z][A-Z0-9]{0,31}$"
+                        },
+                        "category": {
+                          "type": "string",
+                          "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
+                        }
+                      },
+                      "required": ["type", "abbreviation", "category"],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["path", "sha256", "id", "detectors", "patterns"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["profile", "stages", "generators", "jpms", "plugins"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "archive",
+        "sha256",
+        "profile",
+        "extensions"
+      ],
+      "additionalProperties": false
+    }
+  ]
 }

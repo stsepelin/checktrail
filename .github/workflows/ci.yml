@@ -673,6 +673,36 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  jvm-analyzer-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-jvm-analyzer-extensions
+      CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_IMAGE: checktrail-jvm-analyzer-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-detekt-tools.mjs
+      - run: node scripts/prepare-spotbugs-tools.mjs
+      - run: node scripts/prepare-kotlin-tools.mjs
+      - run: node scripts/prepare-jvm-analyzer-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Build the pinned offline analyzer runtime
+        run: docker build --network none --label checktrail.task=ci-jvm-analyzer-extensions --file scripts/jvm-analyzer-tools.Dockerfile --tag "$CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_IMAGE" .checktrail/jvm-analyzer-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved profiles, source and fresh installation, native regressions and compiling guards
+        run: node scripts/verify-jvm-analyzer-extensions-container.mjs
+
   kotlin-extensions-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30

@@ -216,3 +216,14 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+## Selected JVM analyzer extension receipts
+
+The `jvm-analyzer-extensions` candidate has declared source and fresh installed
+receipts for explicit nested/generated/library/JPMS class scopes, SpotBugs plugin
+and rule provenance, and full detekt type prerequisites and source-bound compiler
+diagnostics. The [profile contract](JVM-ANALYZER-EXTENSIONS.md) and
+[local measurement](measurements/jvm-analyzer-extensions-2026-10-10.json) retain
+preserved callbacks, compiling guard controls and reached lifecycle evidence.
+This declaration leaves every other profile and unresolved freeze decision in
+place. The structural inventory audit does not independently certify acceptance.

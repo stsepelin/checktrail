@@ -4362,5 +4362,43 @@
       "file": "dist/test/gate-scala-extensions.test.js",
       "name": "scala-extensions installed acceptance"
     }
+  ],
+  "jvm-analyzer-extensions": [
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions installed acceptance"
+    }
   ]
 }

@@ -18,8 +18,9 @@ import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
 import { selectedKotlinEvidence } from "./kotlin-extension-evidence.js";
 import { selectedScalaEvidence } from "./scala-selected-evidence.js";
-import { detektEvidence } from "./detekt-evidence.js";
+import { selectedDetektEvidence } from "./detekt-extensions-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
+import { spotbugsExtensionsEvidence } from "./spotbugs-extensions-evidence.js";
 import { checkstyleEvidence } from "./checkstyle-evidence.js";
 import { mavenEvidence } from "./maven-evidence.js";
 import { gradleEvidence } from "./gradle-evidence.js";
@@ -392,9 +393,14 @@ export function evaluate(
   if (check.parser === "kotlin-json")
     return { ...result, ...selectedKotlinEvidence(check, processes, root) };
   if (check.parser === "detekt-json")
-    return { ...result, ...detektEvidence(check, processes, root) };
+    return { ...result, ...selectedDetektEvidence(check, processes, root) };
   if (check.parser === "spotbugs-json")
-    return { ...result, ...spotbugsEvidence(check, processes, root) };
+    return {
+      ...result,
+      ...(check.commands[0]?.args[0]?.endsWith("/spotbugs-extensions-runner.js")
+        ? spotbugsExtensionsEvidence(check, processes, root)
+        : spotbugsEvidence(check, processes, root)),
+    };
   if (check.parser === "checkstyle-json")
     return { ...result, ...checkstyleEvidence(check, processes, root) };
   if (check.parser === "java-json")

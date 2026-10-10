@@ -76,6 +76,25 @@ and fresh installed-package acceptance. The verifier records phase progress on
 stderr and retains the final JSON evidence on stdout. Existing control and engine
 execution limits remain in force; a job cutoff is incomplete acceptance.
 
+## JVM analyzer extension acceptance
+
+The `jvm-analyzer-extensions-arm64` job prepares pinned detekt, SpotBugs and Kotlin
+artifacts before atomically publishing a verified combined build context. The
+Dockerfile explicitly makes those public artifacts readable by the controller's
+non-root user, including when freshly prepared inputs have owner-only permissions.
+The controller runs preserved Java/SpotBugs/light-detekt callbacks, nine required
+source cases and the same nine fresh offline installed cases, native regressions
+and compiling guard controls. A required skip, timeout, surviving guard or failed
+restoration prevents acceptance. The selected-file budget is ten minutes; the job
+limit is thirty minutes. These are upper bounds, not passing evidence.
+
+The [local measurement](measurements/jvm-analyzer-extensions-2026-10-10.json) records
+its exact selected Linux ARM64 runtime and outcomes. Fresh installation uses a
+verified subset of the prepared lockfile cache with no network and no lifecycle
+scripts. Source/cache mounts and the root filesystem are read-only. Resource
+limits, operator trust and source-detail boundaries remain enforced. This
+profile does not close the remaining native matrix or Gate A.
+
 ## Pinned image delivery
 
 CI Dockerfiles, runtime preparation selectors and direct workflow pulls use the

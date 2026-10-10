@@ -4,16 +4,30 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { externalPathSchema } from "./external-schema.js";
 import { readProjectFile, withinRoot } from "./inventory.js";
+import {
+  detektFullPrerequisitesSchema,
+  validateDetektFullScope,
+} from "./detekt-extensions.js";
+import { verifyJvmToolchain } from "./jvm-extensions.js";
+import { kotlinInputs } from "./kotlin.js";
+import { detektFullCompilerConfig } from "./detekt-extensions.js";
 import { detektArtifacts } from "./detekt-artifacts.js";
 import { detektConfiguration, detektHash } from "./detekt-configuration.js";
 import type { Check, Inventory, Project } from "./types.js";
 
-export const detektConfigSchema = z.strictObject({
+const baselineConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
   jar: externalPathSchema,
   sha256: z.literal(detektArtifacts.jarSha256),
   profile: z.literal("core-default-light-all-selected-v1"),
 });
+export const detektConfigSchema = z.discriminatedUnion("profile", [
+  baselineConfigSchema,
+  baselineConfigSchema.omit({ profile: true }).extend({
+    profile: z.literal("core-default-full-all-selected-v1"),
+    types: detektFullPrerequisitesSchema,
+  }),
+]);
 export const detektInvocationSchema = z.strictObject({
   config: detektConfigSchema,
   configurationSha256: z.literal(detektArtifacts.configurationSha256),
@@ -74,6 +88,15 @@ export async function detektCheck(
       ),
     );
     await detektInputs(source.root, project.path, config);
+    if (config.profile === "core-default-full-all-selected-v1") {
+      validateDetektFullScope(check.scope);
+      const compiler = detektFullCompilerConfig(config.types);
+      await kotlinInputs(source.root, project.path, compiler);
+      await verifyJvmToolchain();
+      check.reason =
+        "Analyze selected Kotlin sources with byte-pinned full rules, resolved native types, explicit classpath and source-bound compiler diagnostics";
+    }
+
     const invocation = JSON.stringify(
       detektInvocationSchema.parse({
         config,
@@ -86,7 +109,14 @@ export async function detektCheck(
     check.commands.push({
       executable: process.execPath,
       args: [
-        fileURLToPath(new URL("./detekt-runner.js", import.meta.url)),
+        fileURLToPath(
+          new URL(
+            config.profile === "core-default-full-all-selected-v1"
+              ? "./detekt-extensions-runner.js"
+              : "./detekt-runner.js",
+            import.meta.url,
+          ),
+        ),
         source.root,
         invocation,
       ],
