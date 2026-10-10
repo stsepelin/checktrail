@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "profile": "maven-distribution-ci-retry",
+  "date": "2026-10-10",
+  "problem": {
+    "hostedRun": 38076814786,
+    "hostedJob": "jvm-wrappers-arm64",
+    "observedResult": "The original Apache Maven distribution request failed with a nested ETIMEDOUT/ENETUNREACH connection error during operator setup."
+  },
+  "change": {
+    "mavenVersion": "3.10.0",
+    "artifactBytes": 9979885,
+    "sha256": "a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e",
+    "maxAttempts": 3,
+    "retryWaitMs": [1000, 3000],
+    "sharedRequestDeadlineMs": 120000,
+    "redirectMode": "error",
+    "archiveAndExtractedTreeVerificationPreserved": true,
+    "packageVersionOrDigestChanged": false,
+    "signatureChecksDisabled": false
+  },
+  "inputs": [
+    {
+      "file": "scripts/request-maven-distribution.mjs",
+      "bytes": 710,
+      "sha256": "ef89ab262708084b5ebb2f901b2713ddb8d2d0a00a932dd996ea98ffd48c0535"
+    },
+    {
+      "file": "scripts/request-pinned-artifact.mjs",
+      "bytes": 2539,
+      "sha256": "d207f86c1a9f9a374c837fdd2b3a183402e44b4f454b1f6b0a53c69ca3180317"
+    },
+    {
+      "file": "scripts/prepare-maven-tools.mjs",
+      "bytes": 2430,
+      "sha256": "66c3527b2457ed966ba916f2375b069392fb32b7e008b563a8d460c37a493ded"
+    },
+    {
+      "file": "test/maven-preparation.test.ts",
+      "bytes": 6512,
+      "sha256": "fb017f357af8fd9032d1045e69527a8e8d604ad1301ea7b08bf4d207f8d324d4"
+    }
+  ],
+  "validation": {
+    "focusedPreparationControls": {
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "livePinnedArtifactRequest": {
+      "bytes": 9979885,
+      "sha256": "a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e",
+      "exactPinnedDistribution": true,
+      "redirectMode": "error",
+      "publisherSignatureVerified": false
+    },
+    "integratedProjectCheck": {
+      "command": "npm run check",
+      "tests": 1663,
+      "passed": 957,
+      "failed": 0,
+      "skippedOptionalNative": 706,
+      "cancelled": 0,
+      "todo": 0,
+      "durationMs": 245561.905208,
+      "rubyBaselineCiRepairIncluded": true
+    }
+  },
+  "fullNativeJvmProfileRerunForThisRepair": false,
+  "hostedRepairAcceptancePending": true,
+  "publisherSignatureVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}
