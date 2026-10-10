@@ -32,8 +32,9 @@ test execution or supply cached test results.
 
 The main OS/Node matrix has a 75-minute job limit, including preparation, the full
 suite, required profiles and fresh installed-package checks. The required-profile
-runner applies its timeout to each entire selected test file. Sequential controls
-therefore share that file budget even when each control has its own timeout.
+runner normally applies its timeout to each entire selected test file. Sequential
+controls therefore share that file budget even when each control has its own
+timeout.
 
 Full-suite runs allow ten minutes per file, including additional files outside
 the selected required profiles. The `dotnet-method` profile allows ten minutes
@@ -41,6 +42,27 @@ per selected file. Existing per-control and engine execution limits remain in
 force. Standalone profiles retain their existing file budgets, including five
 minutes for `review-benchmark-multi`; any timeout still fails acceptance and
 leaves unobserved required cases visible.
+
+Standalone `jvm-wrappers` source and installed acceptance instead select each of
+the nine exact named top-level callbacks in a fresh process. One such
+process runs at a time. Concurrent Gradle pipelines exhausted native threads
+under the required 256-PID container limit and prevented a test JVM from starting;
+that incomplete outcome remains a failure. Each
+gets a separate owned temporary namespace, removed after its stream completes,
+so lifecycle checks cannot observe another case's directories. Each process has a ten-minute file budget, and the callback's own existing deadline
+still applies. The installed callback runs the same required inventory against a
+fresh offline production installation; its nested worker ceiling is also one.
+Full-suite execution continues to select every compiled file and test.
+
+The [case-isolation record](measurements/jvm-native-case-budgets-2026-10-10.json)
+binds native source and installed execution, unchanged required names, compiling
+controls and the project check. It also records the cleanup fixture repair: the
+fixture waits for a physical native-start marker before cancellation or timeout
+can establish removal of an owned temporary directory. JVM lifecycle checks use
+their owned temporary namespace, and the CLI/MCP fixture supplies that namespace
+through the server startup environment. Required names and lifecycle assertions
+are preserved; the affected fixture bodies changed. Expiry before creation
+remains a valid incomplete engine outcome.
 
 The sealed multi-claim guard runner allows at most two minutes for each selected
 original, mutant and restored callback. Those callbacks cover several paired
@@ -107,8 +129,10 @@ establish that a native adapter ran. CI's prepared profiles additionally use
 
 The [profile manifest](../scripts/required-native-tests.json) lists exact test
 names and files. The runner requires each listed test to pass exactly once,
-rejects any failure, skip or TODO in the selected files, and distinguishes a
-passing suite from a passing test. A similarly named test, a test in another
+rejects any observed failure, skip or TODO, and distinguishes a passing suite
+from a passing test. Default file execution covers every callback in the selected
+files. Named case isolation covers only the selected callbacks and their hooks;
+unselected callbacks cannot supply acceptance. A similarly named test, a test in another
 file, or a passing unit test cannot stand in for a missing native regression.
 Expected names are fixed inputs; the runner does not discover its requirements
 from whichever tests happen to remain in the source tree.
@@ -121,8 +145,8 @@ The batch lists each selected profile and its requirement count, while `required
 is the number of unique obligations. A failed batch establishes none of its
 selected profiles as complete. The single-profile JSON format remains available
 for fresh installed-package harnesses. Each profile retains its 256-obligation
-limit; a batch may contain at most 1,024 unique obligations, subject to the
-1,024-event terminal ledger. Every selected file, including additional full-suite
+limit; a batch cannot exceed the bounded terminal-ledger ceiling. The runner
+validates these bounds before executing any file. Every selected file, including additional full-suite
 files, is fingerprinted before and after execution. Unavailable or changed bytes,
 truncated names and truncated ledgers fail acceptance even when observed tests pass.
 
