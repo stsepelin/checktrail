@@ -165,7 +165,12 @@ async function ledgerFixture(t: import("node:test").TestContext) {
   delete env.NODE_TEST_CONTEXT;
   const execute = (
     requirements: { file: string; name: string }[],
-    options: { timeoutMs?: number; maxTerminalEvents?: number } = {},
+    options: {
+      timeoutMs?: number;
+      maxTerminalEvents?: number;
+      isolatedCaseWorkers?: number;
+      additionalFiles?: string[];
+    } = {},
   ) => {
     const result = spawnSync(
       process.execPath,
@@ -872,4 +877,152 @@ test("required full-suite files run in parallel within the shared worker ceiling
   if (availableParallelism() >= 2)
     assert.ok(counts.maximum >= 2, "Full-suite files were serialized");
   else assert.equal(counts.maximum, 1);
+});
+
+test("named native acceptance gives each exact callback a fresh bounded process budget", async (t) => {
+  const { root, execute } = await ledgerFixture(t);
+  const file = path.join(root, "independent.test.mjs");
+  await writeFile(
+    file,
+    `import {test} from 'node:test';import assert from 'node:assert/strict';import {setTimeout} from 'node:timers/promises';import {writeFileSync} from 'node:fs';let calls=0;for(let i=0;i<3;i++)test('original ['+i+']',async()=>{assert.equal(++calls,1);writeFileSync(new URL('pid-'+i,import.meta.url),JSON.stringify({pid:process.pid,temporary:process.getBuiltinModule('node:os').tmpdir()}));await setTimeout(600)});test('original [0] suffix',()=>{throw Error('Unexpected prefix match')});test('original 0',()=>{throw Error('Unescaped selector')});`,
+  );
+  const expected = Array.from({ length: 3 }, (_, i) => ({
+    file,
+    name: "original [" + i + "]",
+  }));
+  const receipt = execute(expected, {
+    timeoutMs: 1200,
+    isolatedCaseWorkers: 2,
+  });
+  assert.equal(receipt.complete, true, JSON.stringify(receipt));
+  assert.equal(receipt.passed, 3);
+  assert.equal(receipt.required, 3);
+  assert.equal(receipt.ledger.terminalEventCount, 3);
+  assert.deepEqual(
+    receipt.ledger.cases.map((item) => item.outcome),
+    ["passed", "passed", "passed"],
+  );
+  assert.ok(receipt.ledger.files.every((file) => file.stable));
+  const { readFile } = await import("node:fs/promises");
+  const pids = await Promise.all(
+    Array.from({ length: 3 }, (_, i) =>
+      readFile(path.join(root, "pid-" + i), "utf8"),
+    ),
+  );
+  const witnesses = pids.map(
+    (value) => JSON.parse(value) as { pid: number; temporary: string },
+  );
+  assert.equal(
+    new Set(witnesses.map((value) => value.temporary)).size,
+    3,
+    "Each native case needs its own temporary namespace",
+  );
+  for (const value of witnesses)
+    await assert.rejects(access(value.temporary), { code: "ENOENT" });
+  assert.equal(
+    new Set(witnesses.map((value) => value.pid)).size,
+    3,
+    "Every selected callback must run in a different process",
+  );
+  assert.ok(witnesses.every((value) => value.pid !== process.pid));
+});
+
+test("named native acceptance still rejects skipped missing duplicate changed and timed-out cases", async (t) => {
+  const { execute, required } = await ledgerFixture(t);
+  for (const file of [
+    "skip.test.mjs",
+    "todo.test.mjs",
+    "fail.test.mjs",
+    "duplicate.test.mjs",
+    "other.test.mjs",
+    "changed.test.mjs",
+    "removed.test.mjs",
+    "missing.test.mjs",
+    "timeout.test.mjs",
+  ]) {
+    const result = execute([required(file)], {
+      isolatedCaseWorkers: 2,
+      timeoutMs: 500,
+    });
+    assert.equal(result.complete, false, file);
+    assert.ok(result.problems.length > 0, file);
+  }
+  const capped = execute(
+    [required("pass.test.mjs"), required("other.test.mjs")],
+    { isolatedCaseWorkers: 2, maxTerminalEvents: 1 },
+  );
+  assert.equal(capped.complete, false);
+  assert.equal(capped.ledger.cases[1]!.outcome, "not-observed");
+});
+
+test("named native acceptance executes overlapping callbacks within two worker slots", async (t) => {
+  const { root, execute } = await ledgerFixture(t);
+  const { availableParallelism } = await import("node:os");
+  const { readFile } = await import("node:fs/promises");
+  const file = path.join(root, "workers.test.mjs");
+  await writeFile(
+    file,
+    `import {test} from 'node:test';import {appendFileSync,readFileSync} from 'node:fs';import {setTimeout as delay} from 'node:timers/promises';const log=new URL('workers.log',import.meta.url);for(let i=0;i<4;i++)test('original-worker-'+i,async()=>{appendFileSync(log,'start '+i+'\\n');try{if(${availableParallelism() >= 2}){const deadline=Date.now()+2000;while(readFileSync(log,'utf8').split('start ').length<3){if(Date.now()>deadline)throw Error('Workers were serialized');await delay(5)}}await delay(100)}finally{appendFileSync(log,'end '+i+'\\n')}});`,
+  );
+  await writeFile(path.join(root, "workers.log"), "");
+  const expected = Array.from({ length: 4 }, (_, i) => ({
+    file,
+    name: "original-worker-" + i,
+  }));
+  const report = execute(expected, { isolatedCaseWorkers: 2, timeoutMs: 5000 });
+  assert.equal(report.complete, true, JSON.stringify(report));
+  assert.equal(report.ledger.terminalEventCount, 4);
+  let active = 0,
+    maximum = 0,
+    completed = 0;
+  for (const line of (await readFile(path.join(root, "workers.log"), "utf8"))
+    .trim()
+    .split("\n")) {
+    if (line.startsWith("start ")) {
+      active++;
+      maximum = Math.max(active, maximum);
+    } else {
+      assert.match(line, /^end [0-3]$/);
+      active--;
+      completed++;
+    }
+    assert.ok(active >= 0 && active <= 2, "Worker ceiling exceeded");
+  }
+  assert.equal(active, 0);
+  assert.equal(completed, 4);
+  assert.equal(maximum, Math.min(2, availableParallelism()));
+});
+
+test("named native acceptance validates worker bounds before executing any callback", async (t) => {
+  const { root } = await ledgerFixture(t);
+  const file = path.join(root, "bounded-workers.mjs");
+  await writeFile(
+    file,
+    "import{test}from'node:test';import{writeFileSync}from'node:fs';test('original-required',()=>writeFileSync(new URL('executed',import.meta.url),'yes'));",
+  );
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  for (const options of [
+    { isolatedCaseWorkers: -1 },
+    { isolatedCaseWorkers: 3 },
+    { isolatedCaseWorkers: 1.5 },
+    { isolatedCaseWorkers: 2, additionalFiles: [file] },
+  ]) {
+    const result = spawnSync(
+      process.execPath,
+      [
+        path.join(root, "ledger-runner.mjs"),
+        new URL("../../scripts/required-test-evidence.mjs", import.meta.url)
+          .href,
+        JSON.stringify([{ file, name: "original-required" }]),
+        JSON.stringify(options),
+      ],
+      { env, encoding: "utf8", timeout: 5000 },
+    );
+    assert.notEqual(result.status, 0);
+    assert.equal(result.stdout, "");
+    await assert.rejects(access(path.join(root, "executed")), {
+      code: "ENOENT",
+    });
+  }
 });

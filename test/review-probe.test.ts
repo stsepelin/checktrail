@@ -352,20 +352,43 @@ test("native probes reset module state and source bytes per case and preserve un
   assert.equal(run.temporaryArtifacts, "not-created");
   const slow = await assignment(
     t,
-    "export async function decision(){await new Promise(resolve=>setTimeout(resolve,10000));return true;}\n",
+    "export async function decision(target){const fs=process.getBuiltinModule('node:fs');fs.writeFileSync(target+'.prepared','ready');fs.renameSync(target+'.prepared',target);await new Promise(()=>{setInterval(()=>{},1000)});return true;}\n",
   );
   for (const cancel of [true, false]) {
+    const marker = path.join(slow.root, ".checktrail/entered-" + cancel);
+    const selected = structuredClone(recipe);
+    for (const item of selected.cases) item.args = [marker];
     const signal = new AbortController();
-    if (cancel) setTimeout(() => signal.abort(), 100);
-    run = await runReviewProbe(slow.root, slow.context, slow.candidate, {
+    const pending = runReviewProbe(slow.root, slow.context, slow.candidate, {
       ...runOptions,
-      timeoutMs: cancel ? 3000 : 100,
-      recipe: pin(recipe),
+      timeoutMs: cancel ? 10000 : 5000,
+      recipe: pin(selected),
       signal: signal.signal,
     });
-    assert.equal(run.status, cancel ? "cancelled" : "timed-out");
-    assert.equal(run.behavior, "unresolved");
-    assert.equal(run.temporaryArtifacts, "removed");
+    try {
+      const deadline = Date.now() + 4500;
+      while (true) {
+        try {
+          if ((await readFile(marker, "utf8")) === "ready") break;
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        }
+        assert.ok(
+          Date.now() < deadline,
+          "Source must start before testing native cleanup",
+        );
+        await delay(10);
+      }
+      if (cancel) signal.abort();
+      run = await pending;
+      assert.equal(run.status, cancel ? "cancelled" : "timed-out");
+      assert.equal(run.behavior, "unresolved");
+      assert.equal(run.nativeExecution, true);
+      assert.equal(run.temporaryArtifacts, "removed");
+    } finally {
+      signal.abort();
+      await pending;
+    }
   }
   const ts = await fixture(t, {
     "subject.ts": "export function decision(name:string){return true;}\n",
