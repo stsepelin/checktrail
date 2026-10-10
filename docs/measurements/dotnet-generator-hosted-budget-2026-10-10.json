@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "profile": "dotnet-generator-extensions-hosted-budget",
+  "recordedDate": "2026-10-10",
+  "sourceBaseCommit": "5e84bc066004158efb371a25aec4528ede17f912",
+  "reason": "Carry the formatting hosted-budget repair into the stacked PR and give the generator baseline/source/install/controller matching finite stage and job limits.",
+  "stageBudgetMs": 2400000,
+  "jobBudgetMinutes": 60,
+  "individualCallbackDeadlinesChanged": false,
+  "callbacksAndCompilingControlsChanged": false,
+  "nativeResourcesChanged": false,
+  "unchangedControlFileBindings": [
+    {
+      "file": "src/dotnet-generator-extensions-native.ts",
+      "bytes": 14243,
+      "sha256": "88f50d44ca64312c9475603216fee6e2924d30b7d588ce3f029986925eac6b28"
+    },
+    {
+      "file": "src/dotnet-generator-extensions-evidence.ts",
+      "bytes": 24383,
+      "sha256": "44454dae83627ca09f7ddac89d40ebbbd192f01b470b8672d3c90e434235d5f7"
+    },
+    {
+      "file": "scripts/verify-dotnet-generator-extensions-guards.mjs",
+      "bytes": 8734,
+      "sha256": "9b72930ff29afb8b72cdf57217a453f8c7f41ac55aa4a8eae3578e318e5edb0d"
+    },
+    {
+      "file": "test/gate-dotnet-generator-extensions.test.ts",
+      "bytes": 30494,
+      "sha256": "c855d07cf670ef1ab0a4932d76e10e1e09ee837fe1badf3cb825031e9cd3c268"
+    },
+    {
+      "file": "test/dotnet-generator-extensions-fixture.ts",
+      "bytes": 11415,
+      "sha256": "4e506c1751b1e552967afbcd05a3fbcbfd3a9c38c6b6a66e73bc21c4aa8212c9"
+    }
+  ],
+  "priorCompleteLocalNativeAcceptance": "docs/measurements/dotnet-generator-extensions-2026-10-10.json",
+  "nativeAcceptanceRepeatedForBudgetOnlyChange": false,
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1625,
+    "pass": 937,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 688,
+    "todo": 0,
+    "durationMs": 245769.863834,
+    "logSha256": "fb23015ff64c39e23490100a3a6b2a48cdeaea691b1d8bdfa333fa4a42f0b413",
+    "optionalNativeSkipsAreAcceptance": false,
+    "frozenMatrixAcceptance": false
+  },
+  "changedWorkflowActionlintPassed": true,
+  "changedControllerEslintPassed": true,
+  "hostedAcceptanceAfterThisRepairMeasured": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}

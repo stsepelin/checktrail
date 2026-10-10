@@ -1721,7 +1721,7 @@ jobs:
         run: node scripts/verify-dotnet-format-extensions-container.mjs
   dotnet-generator-extensions-arm64:
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       CHECKTRAIL_TEST_TASK: ci-dotnet-generator-extensions
       CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE: checktrail-dotnet-generator-extensions:ci
