@@ -66,7 +66,7 @@ const run = async (args) => {
     return (
       await invoke("docker", [...base, ...args], {
         encoding: "utf8",
-        timeout: 1800000,
+        timeout: 2400000,
         maxBuffer: 16 * 1048576,
       })
     ).stdout;
