@@ -76,6 +76,7 @@ const timeoutMs =
               "javascript-extensions",
               "python-extensions",
               "php-extensions",
+              "kubernetes-extensions",
             ].includes(profile),
           )
         ? 300000
