@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 import {
+  inspectReviewProvenance,
+  projectReviewProvenance,
+} from "./review-provenance.js";
+import {
   scoreMultiClaimReviewTrials,
   projectMultiClaimReviewScoring,
 } from "./review-multi-scoring.js";
@@ -161,7 +165,7 @@ async function main(): Promise<void> {
   }
   if (values.help || positionals.length === 0) {
     process.stdout.write(
-      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|collect-imports|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-benchmark-judge-setup|review-benchmark-judge-packet|review-benchmark-seal-judgments|review-benchmark-score|review-benchmark-match|review-benchmark-matcher-setup|review-benchmark-matcher-packet|review-benchmark-seal-mappings|review-benchmark-multi-score|review-run|review-refute|review-probe|review-verify|review-score|review-paired-score|review-multi-score|review-calibration-fit|review-calibration-apply|mutate|fetch-pack|fetch-adapter> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...] [--task-store PRIVATE_DIRECTORY --timeout-ms 30000]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-candidates selected|all] [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nReview-benchmark-judge-setup/judge-packet: --benchmark REFERENCE --judge UUID; judge-packet requires --detailed --allow-review-source; seal-judgments closes all frozen judge slots\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/sealing remain operator commands; alternatively --judge UUID exposes one anonymous judge packet, or --matcher UUID exposes one prepared common-inventory curation packet; match/seal-mappings/multi-score remain operator commands\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nFetch-adapter: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_BUNDLE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
+      "checktrail <init|doctor|mcp-config|inspect|plan|run|serve|adapters|import-junit|export-sarif|create-baseline|compare-findings|compare-runtime|check-contracts|check-architecture|collect-imports|guidance|review-context|review-receipt|review-hypotheses|review-session|review-audit|review-benchmark-freeze|review-benchmark-status|review-benchmark-packet|review-benchmark-setup|review-benchmark-collect|review-benchmark-judge|review-benchmark-judge-setup|review-benchmark-judge-packet|review-benchmark-seal-judgments|review-benchmark-score|review-benchmark-match|review-benchmark-matcher-setup|review-benchmark-matcher-packet|review-benchmark-seal-mappings|review-benchmark-multi-score|review-run|review-refute|review-probe|review-verify|review-provenance|review-score|review-paired-score|review-multi-score|review-calibration-fit|review-calibration-apply|mutate|fetch-pack|fetch-adapter> [--root PATH] [--detailed] [--base REVISION] [--policy-overlay PATH] [--adapter PATH#sha256=DIGEST ...]\nInit: [--write] [--check PATH#CHECK_ID ...] (preview by default; preserves existing config)\nDoctor: [--detailed] [--policy-overlay PATH] [--allow-env NAME ...] [--adapter PATH#sha256=DIGEST ...] (no execution)\nMcp-config: --client codex|claude-code|claude-desktop|cursor|vscode (prints configuration only)\nRun: --trust-project [--timeout-ms 30000] [--allow-env NAME ...]\nServe: --allow-execution (optional; disabled by default) [--allow-env NAME ...] [--task-store PRIVATE_DIRECTORY --timeout-ms 30000]\nReview-session: foreground JSON-lines commands on stdin; [--detailed --allow-review-source] [--trust-project --probe PATH#sha256=DIGEST]\nReview-session/serve: [--workflow-candidates selected|all] [--workflow-limits OPERATOR_JSON] [--workflow-audit PRIVATE_FILE --workflow-audit-max-bytes 67108864 --workflow-audit-max-events 1024]\nReview-audit: --input PRIVATE_FILE (read-only metadata, no resume)\nReview-benchmark-freeze: --input PRIVATE_PLAN --output PRIVATE_NEW_DIRECTORY (synthetic readiness only)\nReview-benchmark-status/packet/setup/collect/judge: --benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST; packet/setup require --trial UUID; packet requires --detailed --allow-review-source\nReview-benchmark-judge-setup/judge-packet: --benchmark REFERENCE --judge UUID; judge-packet requires --detailed --allow-review-source; seal-judgments closes all frozen judge slots\nServe: [--benchmark ABSOLUTE_DIRECTORY#sha256=DIGEST --trial UUID] exposes read-only anonymous benchmark packets; collection/sealing remain operator commands; alternatively --judge UUID exposes one anonymous judge packet, or --matcher UUID exposes one prepared common-inventory curation packet; match/seal-mappings/multi-score remain operator commands\nReview-session/serve: [--workflow-audit-binding PRIVATE_JSON] binds a journal to a frozen trial\nReview-probe/review-verify/review-session/serve: [--native-max-calls 16] [--native-max-output-bytes 65536] (per run; operator only)\nFetch-pack: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_JSON_PATH\nFetch-adapter: --url HTTPS_URL --sha256 DIGEST --output RELATIVE_BUNDLE_JSON_PATH\nExit: 0 passed/read-only success/completed advisory experiment, 1 failed checks, 2 incomplete/error\n",
     );
     return;
   }
@@ -196,6 +200,7 @@ async function main(): Promise<void> {
         "collect-imports",
         "review-context",
         "review-receipt",
+        "review-provenance",
         "review-run",
         "review-refute",
         "review-probe",
@@ -710,6 +715,31 @@ async function main(): Promise<void> {
         values.detailed,
       ),
     );
+    return;
+  }
+  if (command === "review-provenance") {
+    if (!values.input)
+      throw new Error(
+        "review-provenance requires --input provenance-input.json",
+      );
+    const controller = new AbortController(),
+      cancel = () => controller.abort();
+    process.once("SIGINT", cancel);
+    process.once("SIGTERM", cancel);
+    try {
+      const report = await inspectReviewProvenance(
+        root,
+        await readProjectFile(root, values.input),
+        { signal: controller.signal, wallMs: Number(values["timeout-ms"]) },
+      );
+      print(
+        projectReviewProvenance(report, Boolean(values["allow-review-source"])),
+      );
+      process.exitCode = report.status === "completed" ? 0 : 2;
+    } finally {
+      process.removeListener("SIGINT", cancel);
+      process.removeListener("SIGTERM", cancel);
+    }
     return;
   }
   if (command === "review-score") {

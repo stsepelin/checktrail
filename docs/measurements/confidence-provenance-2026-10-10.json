@@ -1,0 +1,1645 @@
+{
+  "schemaVersion": 1,
+  "profile": "confidence-provenance",
+  "recordedDate": "2026-10-10",
+  "provenance": "original-synthetic-local-source-and-offline-production-install-acceptance",
+  "scope": {
+    "inventoryScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "observedHost": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeBytes": 132848,
+      "nodeSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "os": "Darwin 27.0.0"
+    },
+    "requiredRuntimeMatrixComplete": false,
+    "osImageIdentityBoundToFrozenMatrix": false,
+    "runtimeExecutableHashIsWholeRuntimeClosure": false,
+    "limits": "Finite source/claim/native/trial inspection and original POSIX native-probe lifecycle fixtures; no authoritative labels, native import attestation, claim truth, calibration or host-session independence."
+  },
+  "testedSource": {
+    "schemaVersion": 1,
+    "baseCommit": "da9d7b39c9f28d4c834f99762dfa963e8da97238",
+    "files": [
+      {
+        "file": ".github/workflows/ci.yml",
+        "bytes": 85729,
+        "sha256": "0e8f96e422f5aa25c9eb7190379bf8552866ce90fa871f6aab9a794cbfef163d"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "bytes": 29697,
+        "sha256": "62a43e6ccd040f57dd99a359f8a5896f8eae3e1f0424bc45b7bf0d58dbfadcb1"
+      },
+      {
+        "file": "docs/EXECUTION.md",
+        "bytes": 32067,
+        "sha256": "aaae507cff6c65fecfc0ad7dea7fc9be1f21ce46c9c8d6d1d106079d2547cba7"
+      },
+      {
+        "file": "docs/LANGUAGES.md",
+        "bytes": 45475,
+        "sha256": "9b71a29f505ee9346ba10494faa641d808724089ba1d8ad25bad74d7d6cf7efb"
+      },
+      {
+        "file": "docs/NATIVE-CI.md",
+        "bytes": 32257,
+        "sha256": "2ac834d18aaca62211e19a0e05b21a33e27ef1c56cebd643d3e7d13d69a862a2"
+      },
+      {
+        "file": "docs/REQUIRED-INVENTORY.md",
+        "bytes": 45050,
+        "sha256": "05ea248aef263a4043089a88c6450adf7231ca5b82cb0b02cde82d0135f7bd19"
+      },
+      {
+        "file": "docs/REVIEW-PROVENANCE.md",
+        "bytes": 6701,
+        "sha256": "2b76b45526ea530dcb26af17d974698a3ba4369c7d12c1238250c0084380dafd"
+      },
+      {
+        "file": "docs/STATUS.md",
+        "bytes": 66625,
+        "sha256": "23f3c9a8c3cb8ad3b0c6ad7443a1cdc9b457e341897940ef91c593f793067294"
+      },
+      {
+        "file": "schemas/review-provenance-input.schema.json",
+        "bytes": 1211858,
+        "sha256": "6689dca882b91e7dc7859cba059f549f3b92a6d3f41114087e31fc70414ffd5a"
+      },
+      {
+        "file": "schemas/review-provenance-report.schema.json",
+        "bytes": 1449583,
+        "sha256": "84c7a59408d6723508840638fc0cdda8f06dc36414569e5eaafcb5e8d8d7f281"
+      },
+      {
+        "file": "schemas/review-provenance-summary.schema.json",
+        "bytes": 45507,
+        "sha256": "8b73fe1ce6fa754471ac11549211f815a0197296d62bbed17617a0c001e2d8e1"
+      },
+      {
+        "file": "scripts/generate-schemas.mjs",
+        "bytes": 13673,
+        "sha256": "e87eed16840e17b00ea7910f61dec5825a7cc8dc54c8e298dff723101089711f"
+      },
+      {
+        "file": "scripts/required-native-tests.json",
+        "bytes": 179678,
+        "sha256": "6fb15c8367d19a0c1768c45ffda4725181f00051844a59c94ea96d2feb89c189"
+      },
+      {
+        "file": "scripts/verify-confidence-provenance-guards.mjs",
+        "bytes": 5567,
+        "sha256": "17a72fe79d83c41a5a280ce31e7be2e7d67fc4dee129707b7d7e94e0643df830"
+      },
+      {
+        "file": "scripts/verify-confidence-provenance.mjs",
+        "bytes": 4499,
+        "sha256": "4bc830641b94e709bde8271820c9fec76d58440000de11da02fb0817de635613"
+      },
+      {
+        "file": "scripts/verify-import-context-package.mjs",
+        "bytes": 24383,
+        "sha256": "a0e05bcbcfc04c0278d437ac4cee0e7241ee15310a5110093ee2f18bdc55eab1"
+      },
+      {
+        "file": "src/cli.ts",
+        "bytes": 45306,
+        "sha256": "4e0509350f6bd41762facf9d443a1012d8dc65f0fa54c887a308105ac0fe86fa"
+      },
+      {
+        "file": "src/index.ts",
+        "bytes": 7814,
+        "sha256": "2aabca422524d17557c2377adef1aace22c41633100dab1f6c6013083e376461"
+      },
+      {
+        "file": "src/mcp.ts",
+        "bytes": 56135,
+        "sha256": "ece88974a192f2ff436b0de9ab30dcdcda478e189aa00b08e088c4a71b598255"
+      },
+      {
+        "file": "src/review-provenance.ts",
+        "bytes": 16651,
+        "sha256": "5957cc672b8b8f6965b250f9f65fada50c1126cced9ddee0c07265c5f22fc473"
+      },
+      {
+        "file": "test/confidence-provenance-fixture.ts",
+        "bytes": 3355,
+        "sha256": "3a828067cccc5b8aa8ac461139a82f062f9bd1aaf47ce38f943bde9ab44efe76"
+      },
+      {
+        "file": "test/gate-confidence-provenance.test.ts",
+        "bytes": 24683,
+        "sha256": "64eb1affd0caeaff6c326ad8743023fcdf7c3ab0bc85d0ae87563463553f5a09"
+      },
+      {
+        "file": "test/mcp.test.ts",
+        "bytes": 22142,
+        "sha256": "2f897245d300aaf32809fb6dbcfde1365823c6ccd6408ca8941d7cb29f3383c9"
+      }
+    ]
+  },
+  "acceptance": {
+    "schemaVersion": 1,
+    "profile": "confidence-provenance",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeBytes": 132848,
+      "nodeSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "os": "Darwin 27.0.0"
+    },
+    "environment": {
+      "execution": "managed-host",
+      "projectNetworkInvoked": false,
+      "containerIsolation": false
+    },
+    "baseline": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "review",
+          "required": 23
+        },
+        {
+          "profile": "review-probe",
+          "required": 9
+        },
+        {
+          "profile": "review-scoring",
+          "required": 6
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 55,
+      "required": 38,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 55,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a1869fb7f8d8f8283b48653f9816fff3420e180221dd922718d143d6794a70fe"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fd0d76f42a4be7fc7f98c3ef04b7bd434ffb159dab27bb9c293a3aa5a9ee9b92"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6d5d0182a9df3cb8146064c4abfdf25d90507d47cad876904a3d4014a7cbf578"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "de200eb9b1fb2ea0ed3a59dddedf83d46e6d07621ed989d5c55cbb46b52a8adc"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "de200eb9b1fb2ea0ed3a59dddedf83d46e6d07621ed989d5c55cbb46b52a8adc"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "d6aac4befdc79a160b201966e682a17065eec9911d4c812fc4fc3e92440201ef"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d6aac4befdc79a160b201966e682a17065eec9911d4c812fc4fc3e92440201ef"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 14.648583,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "snapshot assignments exclude Git history and disclose context omissions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 41.455042,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "diff assignments retain committed, staged, working, added and deleted evidence without filters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 548.963875,
+            "required": false
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "diff context rejects excluded historical source, binary data, symlinks, oversized pairs and forged hunks",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 674.300167,
+            "required": false
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "review replacement ranges reconstruct exact line endings, additions and deletions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.213542,
+            "required": false
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "diff collection rejects HEAD and index races before returning evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1996.1895,
+            "required": false
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "versioned diff contexts share CLI and MCP source gates and exact engine evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6371.918416,
+            "required": false
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.505583,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 332.174666,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.115334,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1109.212417,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1502.832334,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 133.142,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.688416,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11.588791,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.0765,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8.048958,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 19.493625,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2834.724166,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5.471292,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-2",
+            "name": "diff behavior retains moved helper behavior, unchanged decisions and deleted cross-project callers",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 132.506459,
+            "required": false
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16.442167,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 494.45325,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 343.09325,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 132.795833,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10.463042,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.936416,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 505.11175,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3296.15875,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 422.680583,
+            "required": true
+          },
+          {
+            "sequence": 31,
+            "fileId": "file-4",
+            "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1160.943334,
+            "required": true
+          },
+          {
+            "sequence": 32,
+            "fileId": "file-4",
+            "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1058.927458,
+            "required": true
+          },
+          {
+            "sequence": 33,
+            "fileId": "file-4",
+            "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1293.817333,
+            "required": true
+          },
+          {
+            "sequence": 34,
+            "fileId": "file-4",
+            "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.900667,
+            "required": true
+          },
+          {
+            "sequence": 35,
+            "fileId": "file-4",
+            "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5567.636083,
+            "required": true
+          },
+          {
+            "sequence": 36,
+            "fileId": "file-4",
+            "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 320.559417,
+            "required": true
+          },
+          {
+            "sequence": 37,
+            "fileId": "file-4",
+            "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8977.119833,
+            "required": true
+          },
+          {
+            "sequence": 38,
+            "fileId": "file-4",
+            "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 482.407458,
+            "required": true
+          },
+          {
+            "sequence": 39,
+            "fileId": "file-4",
+            "name": "native probe source changes during execution stay stale despite complete observed controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 326.082375,
+            "required": true
+          },
+          {
+            "sequence": 40,
+            "fileId": "file-4",
+            "name": "native probe run budgets admit exact call and output boundaries without resetting between cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1398.438458,
+            "required": false
+          },
+          {
+            "sequence": 41,
+            "fileId": "file-4",
+            "name": "native probe zero and invalid run budgets prevent all project execution and temporary case creation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.905709,
+            "required": false
+          },
+          {
+            "sequence": 42,
+            "fileId": "file-4",
+            "name": "native probe output overrun counts delivered stdout and stderr and stops every later case",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 155.911458,
+            "required": false
+          },
+          {
+            "sequence": 43,
+            "fileId": "file-4",
+            "name": "retained native probe budgets reject erased accounting forged totals reordered calls and unfunded observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 318.494167,
+            "required": false
+          },
+          {
+            "sequence": 44,
+            "fileId": "file-4",
+            "name": "native run budgets retain partial cancelled bytes and spend one wall allowance across fresh cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2732.925625,
+            "required": false
+          },
+          {
+            "sequence": 45,
+            "fileId": "file-4",
+            "name": "native cleanup failures retain spent budgets and stop later cases without losing reached observations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 604.421125,
+            "required": false
+          },
+          {
+            "sequence": 46,
+            "fileId": "file-4",
+            "name": "native probe preparation that spends the wall allowance cannot start a project process",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1215.619625,
+            "required": false
+          },
+          {
+            "sequence": 47,
+            "fileId": "file-4",
+            "name": "native probe version 3 retains every reached physical attempt replays observations and withholds raw output from summaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 356.371958,
+            "required": false
+          },
+          {
+            "sequence": 48,
+            "fileId": "file-4",
+            "name": "native probe retains malformed binary stdout stderr and output overruns without crediting a claim",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 830.554333,
+            "required": false
+          },
+          {
+            "sequence": 49,
+            "fileId": "file-4",
+            "name": "native probe cancellation retains the reached attempt and never creates evidence for later cases",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 216.138,
+            "required": false
+          },
+          {
+            "sequence": 50,
+            "fileId": "file-5",
+            "name": "review scoring separates actionable correctness proper probability losses reliability and risk from complete selected-case accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.992541,
+            "required": true
+          },
+          {
+            "sequence": 51,
+            "fileId": "file-5",
+            "name": "scoring retains unresolved findings missing probabilities endpoint infinite loss and absence of any review without reporting a clean cohort",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.649084,
+            "required": true
+          },
+          {
+            "sequence": 52,
+            "fileId": "file-5",
+            "name": "one-sided exact binomial limits need sufficient independent evidence and repeated clusters cannot inherit a finding-level interval",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.369333,
+            "required": true
+          },
+          {
+            "sequence": 53,
+            "fileId": "file-5",
+            "name": "scoring rejects empty or duplicate assignments out-of-cohort observations contradictory terminal labels and unfrozen thresholds",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1.473292,
+            "required": true
+          },
+          {
+            "sequence": 54,
+            "fileId": "file-5",
+            "name": "retained scoring projections reconstruct every numerator denominator family bin and confidence bound and hide trial identifiers",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4.382208,
+            "required": true
+          },
+          {
+            "sequence": 55,
+            "fileId": "file-5",
+            "name": "review scoring CLI and MCP return the shared truthful report without inference source grants or project execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 750.10075,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "review context captures exact bounded source, stable identity and guidance without execution",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review boundaries reject excluded, linked, binary, invalid UTF-8, oversized and ambiguous inputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipt checks quotations and declared accounting without promoting claims or changing native outcomes",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review receipts reject cross-context claims and mark changed or forged source stale",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-1",
+            "name": "review CLI requires explicit source disclosure and never returns a validation pass for imported claims",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-1",
+            "name": "MCP review source disclosure is operator controlled and imported prose stays out of summaries",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-2",
+            "name": "lexical links account for namespaces, constructors, overloads and the whole rebinding family",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected modules support cycles and reexports while ambiguous, missing, external and dynamic links stay unknown",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-2",
+            "name": "unsupported, malformed and exhausted syntax collections remain partial with intact captured source",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-2",
+            "name": "analysis address and pointer forgery is rejected before projection, including UTF-16 and CRLF anchors",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior source and declaration metadata share exact library CLI MCP evidence and operator disclosure gates",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior context retains whole functions, defaults, aliases and shadowed-call near misses without execution",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-2",
+            "name": "behavior packet rejects support escapes, overlap and exclusions, and forged analysis cannot remain fresh",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-2",
+            "name": "nested bodies, accessors and declaration defaults retain context without reading ambient or configured files",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-2",
+            "name": "selected extension families and anonymous default exports keep bodies while declarations remain non-runtime context",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipts anchor deleted base source and expose attribution without verifying claims",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citations reject digest swaps even when the complete quote occurs in both revisions",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision citation scope never substitutes an absent revision and remains strict",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-3",
+            "name": "snapshot attribution cannot claim observed history and legacy exchange contracts stay separate",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision quotes preserve UTF-8 and CRLF bytes and do not accept partial lines",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision receipt freshness reconstructs base evidence and distinguishes stale anchors",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-3",
+            "name": "revision CLI and MCP receipts share anchors and keep source and attribution prose behind the operator gate",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-3",
+            "name": "deleted-only receipts keep base accounting and replacement overlap remains conservative",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native source-bound probes distinguish broken fixed and near-miss Boolean behavior with executed current functions",
+            "outcome": "passed",
+            "terminalSequences": [31]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probe requirements stay unresolved when controls fail a function throws or the return type is not Boolean",
+            "outcome": "passed",
+            "terminalSequences": [32]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native scale guards require measured branch coverage and cannot count an inert N=1 trigger as exercised",
+            "outcome": "passed",
+            "terminalSequences": [33]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probe grants pins family addresses current-source digests and exact quotations fail before project execution",
+            "outcome": "passed",
+            "terminalSequences": [34]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probes reset module state and source bytes per case and preserve unsupported cancelled timeout and cleanup states",
+            "outcome": "passed",
+            "terminalSequences": [35]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probes give every case fresh source bytes even when a prior case rewrites its temporary module",
+            "outcome": "passed",
+            "terminalSequences": [36]
+          },
+          {
+            "fileId": "file-4",
+            "name": "CLI and MCP native probes share evidence while execution trust and recipe registration stay operator controlled",
+            "outcome": "passed",
+            "terminalSequences": [37]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probe compiled-source identity rejects altered debugger evidence and bounded runtime output remains unresolved",
+            "outcome": "passed",
+            "terminalSequences": [38]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native probe source changes during execution stay stale despite complete observed controls",
+            "outcome": "passed",
+            "terminalSequences": [39]
+          },
+          {
+            "fileId": "file-5",
+            "name": "review scoring separates actionable correctness proper probability losses reliability and risk from complete selected-case accounting",
+            "outcome": "passed",
+            "terminalSequences": [50]
+          },
+          {
+            "fileId": "file-5",
+            "name": "scoring retains unresolved findings missing probabilities endpoint infinite loss and absence of any review without reporting a clean cohort",
+            "outcome": "passed",
+            "terminalSequences": [51]
+          },
+          {
+            "fileId": "file-5",
+            "name": "one-sided exact binomial limits need sufficient independent evidence and repeated clusters cannot inherit a finding-level interval",
+            "outcome": "passed",
+            "terminalSequences": [52]
+          },
+          {
+            "fileId": "file-5",
+            "name": "scoring rejects empty or duplicate assignments out-of-cohort observations contradictory terminal labels and unfrozen thresholds",
+            "outcome": "passed",
+            "terminalSequences": [53]
+          },
+          {
+            "fileId": "file-5",
+            "name": "retained scoring projections reconstruct every numerator denominator family bin and confidence bound and hide trial identifiers",
+            "outcome": "passed",
+            "terminalSequences": [54]
+          },
+          {
+            "fileId": "file-5",
+            "name": "review scoring CLI and MCP return the shared truthful report without inference source grants or project execution",
+            "outcome": "passed",
+            "terminalSequences": [55]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 120000,
+      "profile": "confidence-provenance",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "3b3ff38b4b6b1d3d1d229d01bd29b48e240235f34d562af16d0692a554503961"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3b3ff38b4b6b1d3d1d229d01bd29b48e240235f34d562af16d0692a554503961"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "confidence-provenance broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 513.013667,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "confidence-provenance fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 362.94025,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "confidence-provenance near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 39.87325,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "confidence-provenance prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 429.941459,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "confidence-provenance stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 415.772542,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "confidence-provenance empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25.730542,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "confidence-provenance privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2489.051542,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "confidence-provenance lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4899.027375,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "confidence-provenance installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15552.554958,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "confidence-provenance installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "acf34e2ba4d8d78b3bf45f38c89c8d0a0c067053eb090702f8b6476a5af528c2",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 120000,
+        "profile": "confidence-provenance",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "3b3ff38b4b6b1d3d1d229d01bd29b48e240235f34d562af16d0692a554503961"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "3b3ff38b4b6b1d3d1d229d01bd29b48e240235f34d562af16d0692a554503961"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "confidence-provenance broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 470.185792,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "confidence-provenance fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 351.097917,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "confidence-provenance near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 53.624167,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "confidence-provenance prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 366.649458,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "confidence-provenance stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 351.476333,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "confidence-provenance empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16.931833,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "confidence-provenance privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2628.451167,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "confidence-provenance lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4980.361208,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "confidence-provenance installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.24125,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "confidence-provenance installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "confidence-provenance",
+      "controls": [
+        {
+          "id": "inspection-cancellation",
+          "callback": "confidence-provenance lifecycle acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "d7896d0376bbb55b71949a801a82a178d91dae6d8183509d541913de0740d448"
+        },
+        {
+          "id": "inspection-deadline",
+          "callback": "confidence-provenance lifecycle acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "48bae1717d7ab65bb6dd6ded260a3a09011e1ca5f752ba1d3cf803e86bf8ed31"
+        },
+        {
+          "id": "native-function-address",
+          "callback": "confidence-provenance prerequisite acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "0f5a679a59a503724160329adb0d66e7ec507583f7361b226db181c96fdb89e6"
+        },
+        {
+          "id": "assessment-claim-binding",
+          "callback": "confidence-provenance prerequisite acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "01e6b7dd70c9aab95660489c1dd1249683f36f7ab511555d645c17ba16316a46"
+        },
+        {
+          "id": "native-candidate-binding",
+          "callback": "confidence-provenance broken acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "4dc160ae43e1f8b7b98bcf89b45054180f4ee4b8b77ee7b92f310885eb5be2f8"
+        },
+        {
+          "id": "native-context-binding",
+          "callback": "confidence-provenance prerequisite acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "bab103eeee87841d1748515eb1aefb8e7ca6fd4d19dee8a0d6a4e7f3c998696b"
+        },
+        {
+          "id": "physical-source-address-match",
+          "callback": "confidence-provenance empty acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "14ede0cc789a0c0a87035ed62efa8796d82629c78d3f917de7e04b8b6df5d5e0"
+        },
+        {
+          "id": "host-probability-score-binding",
+          "callback": "confidence-provenance near-miss acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "931e83042e3b71824ca5c2d9805a101302864c7071951fdaa28445d521f5cb2f"
+        },
+        {
+          "id": "unique-scoring-source-binding",
+          "callback": "confidence-provenance prerequisite acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "5aab605f0b9edae0a9c139644edf0496fe9f4e5a03278c06ceec63fcb5d5719a"
+        },
+        {
+          "id": "every-scoring-source-byte-binding",
+          "callback": "confidence-provenance prerequisite acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "1db5b8e3fb29a06c162a332b41ee12195f8ca7e7b75bcc980e6c84f55799ee8a"
+        },
+        {
+          "id": "stale-scoring-admission",
+          "callback": "confidence-provenance stale acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "11c76e79276dba0b44c60a0faa91cb48baeb825a9f91635f469af64c00db06cd"
+        },
+        {
+          "id": "derived-report-projection-binding",
+          "callback": "confidence-provenance empty acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "9573002fc42ac4b8713ce52bb5487d4b24284dac949df639be76e1035803f06a"
+        },
+        {
+          "id": "operator-source-disclosure",
+          "callback": "confidence-provenance privacy acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "9ed5641ad5acc0a53233c62915c9a4b795abe03dc200e7234e047ed19220b815"
+        },
+        {
+          "id": "serialized-input-byte-bound",
+          "callback": "confidence-provenance empty acceptance",
+          "guardExpressionsRemoved": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "8c937619f1585d83f9abc1ae624a87d2059e161e6f5ef58ccef99eb9177a20a2",
+          "mutantSha256": "9103f41cbaea8fd6a7db784442db3c7239b3730ebec2524f4f10ca1843261617"
+        }
+      ],
+      "callbacks": [
+        {
+          "file": "gate-confidence-provenance.test.js",
+          "sha256": "3b3ff38b4b6b1d3d1d229d01bd29b48e240235f34d562af16d0692a554503961"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeProbesExecuted": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "durationMs": 133567,
+    "nativeProbesExecuted": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "qualityAssessed": false,
+    "gateAComplete": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "inputsIdenticalToTestedSource": true,
+    "summary": {
+      "tests": 1590,
+      "suites": 0,
+      "pass": 929,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 661,
+      "todo": 0,
+      "durationMs": 242890.200541,
+      "outputSha256": "604f97f3c8422d055816b3f97cca523a1d8c9ea30d5165608d1c57d15288ba15",
+      "optionalNativeSkipsCountAsAcceptance": false
+    }
+  },
+  "changedFileChecks": {
+    "typeScriptCompilation": true,
+    "eslintOnEveryChangedCodeFile": true,
+    "prettierOnEveryChangedFile": true,
+    "offlineActionlintWorkflow": true
+  },
+  "initialDiagnostics": [
+    {
+      "stage": "acceptance-controller",
+      "reason": "The selected baseline files ran extra callbacks; all-pass count was incorrectly compared to required-case count. The final controller verifies every required ledger case and the complete selected run."
+    },
+    {
+      "stage": "fresh-installed-test-worker",
+      "reason": "The test subprocess inherited NODE_TEST_CONTEXT, so Node refused recursive test execution. The final external acceptance subprocess removes that marker and all nine installed callbacks actually run."
+    },
+    {
+      "stage": "temporary-fixture-scope",
+      "reason": "An owned temporary namespace inside the ESM repository made extensionless CommonJS Git wrappers inherit module scope. A paired executable reproduction verified this; final runs use separate task-owned directories outside the package tree."
+    }
+  ],
+  "postAcceptanceMetadata": {
+    "onlyProfileStateFieldsPromoted": [
+      "implementationState",
+      "acceptanceState"
+    ],
+    "measurementAndInventoryPromotionAddedAfterAcceptance": true,
+    "acceptedTarballIncludesFinalMeasurement": false,
+    "productImplementationAndAcceptanceCallbacksChangedAfterAcceptance": false
+  },
+  "nativeProbesExecuted": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

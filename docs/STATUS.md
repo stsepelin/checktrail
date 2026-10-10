@@ -15,6 +15,17 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+[Review provenance](REVIEW-PROVENANCE.md) now joins current source/citation
+checks, exact host claims, imported native receipt accounting and bound
+descriptive scores through library, CLI and MCP. Evidence tiers and complete
+candidate/trial counts retain unknown confidence, unsupported, abstained,
+unreviewed and stale states. Confidence, labels, claim truth, native import
+attestation and session independence remain unverified. Source disclosure stays
+operator-controlled. Synthetic source/installed and compiling guard acceptance
+are recorded in the [local measurement](measurements/confidence-provenance-2026-10-10.json).
+The wider runtime matrix, authoritative judgments and Gate A remain open; no
+inference or field evaluation is invoked.
+
 Opt-in [Kubernetes extensions](KUBERNETES-EXTENSIONS.md) add ten strict pinned
 kinds to the original three-kind contract. Current physical source, policy,
 schema and tool bytes, whole kind/API identifiers and complete native document

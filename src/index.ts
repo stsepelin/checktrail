@@ -272,3 +272,12 @@ export {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "./review-host-lease.js";
+
+export {
+  inspectReviewProvenance,
+  projectReviewProvenance,
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "./review-provenance.js";
+export type { ReviewProvenanceReport } from "./review-provenance.js";

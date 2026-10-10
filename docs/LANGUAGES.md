@@ -451,3 +451,10 @@ selected JDK artifacts, generated source and primary class origins are verified.
 Native compiler inputs and producer/consumer test participation must reconcile.
 Other wrappers, layouts, languages, platforms and whole dependency/license closure
 remain open, alongside the final Gate A matrix.
+
+[Review confidence and evidence provenance](REVIEW-PROVENANCE.md) is a shared
+advisory inspection surface, separate from native language support. It rechecks
+current source addresses and reconciles imported native receipts and bound
+host-declared probabilities/labels without executing project code or inference.
+Unknown, stale, unsupported, abstained and unreviewed states remain visible.
+This adds no language compiler, Windows lifecycle or held-out quality acceptance.

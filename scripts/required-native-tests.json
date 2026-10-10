@@ -4476,5 +4476,43 @@
       "file": "dist/test/gate-kustomize-extensions.test.js",
       "name": "kustomize-extensions installed acceptance"
     }
+  ],
+  "confidence-provenance": [
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance installed acceptance"
+    }
   ]
 }
