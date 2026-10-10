@@ -1068,7 +1068,9 @@ jobs:
       matrix:
         phase:
           [
-            acceptance,
+            acceptance-1,
+            acceptance-2,
+            acceptance-3,
             baseline-1,
             baseline-2,
             baseline-3,
