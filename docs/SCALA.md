@@ -43,9 +43,11 @@ cannot execute code.
 
 Only the selected `.scala` files participate. Java/Kotlin source mixtures and
 `.sc` scripts are unavailable. Build definitions are not executed. Scala 2,
-sbt/wrappers, generated sources, mixed builds, compile-time staging, macros and
-inline compilation use the separate explicit declarations in [SCALA-EXTENSIONS.md](SCALA-EXTENSIONS.md).
-Their full platform and provenance obligations remain required inventory work.
+generated sources, mixed builds, compile-time staging, macros and inline
+compilation use the separate explicit declarations in
+[SCALA-EXTENSIONS.md](SCALA-EXTENSIONS.md). Those declarations do not run sbt or
+build wrappers. Their full platform and provenance obligations remain required
+inventory work.
 Observed native inline/staging/macro/suspension flags prevent a pass in this
 profile. They do not provide a pre-execution security boundary.
 

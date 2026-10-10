@@ -393,7 +393,8 @@ audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md
 and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
 native test evidence. The opt-in [SpotBugs profile](docs/SPOTBUGS.md) analyzes freshly
 compiled Java bytecode. The [Kotlin detekt profile](docs/DETEKT.md) analyzes selected
-Kotlin sources with pinned light rules. The [Kotlin compiler profiles](docs/KOTLIN.md) and [Scala compiler profiles](docs/SCALA-EXTENSIONS.md)
+Kotlin sources with pinned light rules. The [Kotlin compiler profiles](docs/KOTLIN.md)
+and [Scala compiler profiles](docs/SCALA-EXTENSIONS.md)
 provide separately selected native compilation evidence. Wider analyzer/platform
 profiles and generated/JPMS analyzer scopes remain required.
 
