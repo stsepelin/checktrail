@@ -79,12 +79,14 @@ const timeoutMs =
           )
         ? 300000
         : 120000;
-// The JVM wrapper inventory contains independent top-level callbacks. Each
+// JVM wrapper and Scala extension inventories contain independent top-level callbacks. Each
 // selected callback gets a fresh process and file budget; unchanged callback
 // deadlines still apply. One heavy case runs at a time: two Gradle pipelines
 // exhausted native threads under the required 256-PID container limit. A full-suite run keeps every file/test in scope.
 const isolatedCaseWorkers =
-  !fullSuite && selection.length === 1 && selection[0] === "jvm-wrappers"
+  !fullSuite &&
+  selection.length === 1 &&
+  ["jvm-wrappers", "scala-extensions"].includes(selection[0])
     ? 1
     : 0;
 // Retain the single-profile report used by installed acceptance harnesses.
