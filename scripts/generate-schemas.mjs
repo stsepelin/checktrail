@@ -15,6 +15,9 @@ import {
 } from "../dist/src/review-multi-scoring.js";
 import { fsharpFormatConfigSchema } from "../dist/src/fsharp-format.js";
 import { dotnetFormatExtensionsConfigSchema } from "../dist/src/dotnet-format-extensions.js";
+import { dotnetGeneratorExtensionsConfigSchema } from "../dist/src/dotnet-generator-extensions.js";
+import { dotnetGeneratorIdentityNativeSchema } from "../dist/src/dotnet-generator-extensions-contract.js";
+import { dotnetGeneratorExtensionsPacketSchema } from "../dist/src/dotnet-generator-extensions-evidence.js";
 import {
   dotnetFormatExtensionsNativeSchema,
   dotnetFormatExtensionsPacketSchema,
@@ -192,6 +195,9 @@ for (const [name, schema] of Object.entries({
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
   "fsharp-format-config": fsharpFormatConfigSchema,
+  "dotnet-generator-extensions-config": dotnetGeneratorExtensionsConfigSchema,
+  "dotnet-generator-extensions-native": dotnetGeneratorIdentityNativeSchema,
+  "dotnet-generator-extensions-packet": dotnetGeneratorExtensionsPacketSchema,
   "dotnet-format-extensions-config": dotnetFormatExtensionsConfigSchema,
   "dotnet-format-extensions-native": dotnetFormatExtensionsNativeSchema,
   "dotnet-format-extensions-packet": dotnetFormatExtensionsPacketSchema,

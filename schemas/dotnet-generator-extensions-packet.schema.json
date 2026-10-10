@@ -1,0 +1,2319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": { "type": "number", "const": 1 },
+    "build": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "number", "const": 1 },
+        "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "repositoryManifest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "sdkVersion": { "type": "string", "const": "10.0.401" },
+        "runtimeVersion": { "type": "string", "const": "10.0.12" },
+        "sdk": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "workspace": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "launcherPid": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "restoreExitCode": { "type": "number", "const": 0 },
+        "buildExitCode": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "restoreEvents": {
+          "minItems": 1,
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "init",
+                  "evaluation",
+                  "projectStarted",
+                  "projectFinished",
+                  "compilerStarted",
+                  "compilerFinished",
+                  "compilerCommand",
+                  "parameter",
+                  "diagnostic",
+                  "finished",
+                  "close"
+                ]
+              }
+            },
+            "required": ["type"],
+            "additionalProperties": {}
+          }
+        },
+        "events": {
+          "minItems": 1,
+          "maxItems": 20000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "init",
+                  "evaluation",
+                  "projectStarted",
+                  "projectFinished",
+                  "compilerStarted",
+                  "compilerFinished",
+                  "compilerCommand",
+                  "parameter",
+                  "diagnostic",
+                  "finished",
+                  "close"
+                ]
+              }
+            },
+            "required": ["type"],
+            "additionalProperties": {}
+          }
+        },
+        "modules": {
+          "minItems": 1,
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "assembly": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "pdb": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "assemblyName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                      },
+                      "documents": {
+                        "maxItems": 4096,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "file": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            },
+                            "algorithm": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            },
+                            "hash": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                                },
+                                { "type": "string", "const": "" }
+                              ]
+                            }
+                          },
+                          "required": ["file", "algorithm", "hash"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "types": {
+                        "maxItems": 4096,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "className": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            },
+                            "interfaces": {
+                              "default": [],
+                              "maxItems": 256,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              }
+                            },
+                            "methods": {
+                              "maxItems": 20000,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 8192
+                                  },
+                                  "files": {
+                                    "maxItems": 4096,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    }
+                                  }
+                                },
+                                "required": ["name", "files"],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": ["className", "interfaces", "methods"],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": ["assemblyName", "documents", "types"],
+                    "additionalProperties": false
+                  },
+                  { "type": "null" }
+                ]
+              }
+            },
+            "required": ["file", "assembly", "pdb", "metadata"],
+            "additionalProperties": false
+          }
+        },
+        "nativeReceipts": {
+          "minItems": 5,
+          "maxItems": 80,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "stdoutBytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1048576
+              },
+              "stderrBytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1048576
+              },
+              "stdoutSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "stderrSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "phase",
+              "exitCode",
+              "stdoutBytes",
+              "stderrBytes",
+              "stdoutSha256",
+              "stderrSha256",
+              "durationMs"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "observedArtifacts": {
+          "minItems": 1,
+          "maxItems": 4096,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "bytes": { "type": "integer", "minimum": 0, "maximum": 67108864 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["file", "bytes", "sha256"],
+            "additionalProperties": false
+          }
+        },
+        "observerSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "generatedSources": {
+          "default": [],
+          "maxItems": 4096,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "generatorProject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "generatorClass": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "producerAssembly": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "producerAssemblySha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "bytes": { "type": "integer", "minimum": 0, "maximum": 4194304 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "sha1": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+            },
+            "required": [
+              "project",
+              "file",
+              "generatorProject",
+              "generatorClass",
+              "producerAssembly",
+              "producerAssemblySha256",
+              "bytes",
+              "sha256",
+              "sha1"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "compiledSources": {
+          "maxItems": 4096,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+              "bytes": { "type": "integer", "minimum": 0, "maximum": 4194304 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "sha1": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+            },
+            "required": ["file", "bytes", "sha256", "sha1"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "version",
+        "inputSha256",
+        "repositoryManifest",
+        "sdkVersion",
+        "runtimeVersion",
+        "sdk",
+        "workspace",
+        "launcherPid",
+        "restoreExitCode",
+        "buildExitCode",
+        "restoreEvents",
+        "events",
+        "modules",
+        "nativeReceipts",
+        "observedArtifacts",
+        "observerSha256",
+        "generatedSources",
+        "compiledSources"
+      ],
+      "additionalProperties": false
+    },
+    "testObserverSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "testObserverSourceSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runs": {
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "assembly": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "artifacts": {
+            "minItems": 4,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": { "type": "string", "minLength": 1, "maxLength": 8192 },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 67108864
+                },
+                "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+              },
+              "required": ["file", "bytes", "sha256"],
+              "additionalProperties": false
+            }
+          },
+          "discoveryExitCode": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "executionExitCode": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "discoveryLauncherPid": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "executionLauncherPid": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "discoveryEvents": {
+            "minItems": 1,
+            "maxItems": 20000,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "init",
+                    "discoveryStarted",
+                    "discovered",
+                    "discoveryFinished",
+                    "runStarted",
+                    "result",
+                    "runFinished",
+                    "close",
+                    "message"
+                  ]
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": {}
+            }
+          },
+          "executionEvents": {
+            "minItems": 1,
+            "maxItems": 20000,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "init",
+                    "discoveryStarted",
+                    "discovered",
+                    "discoveryFinished",
+                    "runStarted",
+                    "result",
+                    "runFinished",
+                    "close",
+                    "message"
+                  ]
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": {}
+            }
+          },
+          "trx": { "type": "string", "maxLength": 1048576 },
+          "nunit": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "settingsFile": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "settingsSha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "discovery": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "file": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "text": { "type": "string", "maxLength": 1048576 },
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": ["file", "text", "sha256"],
+                        "additionalProperties": false
+                      },
+                      { "type": "null" }
+                    ]
+                  },
+                  "execution": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "file": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "text": { "type": "string", "maxLength": 1048576 },
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": ["file", "text", "sha256"],
+                        "additionalProperties": false
+                      },
+                      { "type": "null" }
+                    ]
+                  }
+                },
+                "required": [
+                  "settingsFile",
+                  "settingsSha256",
+                  "discovery",
+                  "execution"
+                ],
+                "additionalProperties": false
+              },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": [
+          "file",
+          "assembly",
+          "artifacts",
+          "discoveryExitCode",
+          "executionExitCode",
+          "discoveryLauncherPid",
+          "executionLauncherPid",
+          "discoveryEvents",
+          "executionEvents",
+          "trx",
+          "nunit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "nativeReceipts": {
+      "minItems": 5,
+      "maxItems": 80,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phase": { "type": "string", "minLength": 1, "maxLength": 8192 },
+          "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 },
+          "stdoutBytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          },
+          "stderrBytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          },
+          "stdoutSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "stderrSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "phase",
+          "exitCode",
+          "stdoutBytes",
+          "stderrBytes",
+          "stdoutSha256",
+          "stderrSha256",
+          "durationMs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "generatorIdentity": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "observerSourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "observerSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "runtimeconfigSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "metadata": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "native": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 1 },
+                          "processId": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "runtime": { "type": "string", "const": "10.0.12" },
+                          "arguments": {
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            }
+                          },
+                          "workingDirectory": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "helper": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "framework": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "assembly": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "pdb": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "modules": {
+                            "minItems": 1,
+                            "maxItems": 512,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 65536
+                                },
+                                "mvid": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                },
+                                "artifact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "bytes": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 67108864
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": ["file", "bytes", "sha256"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["name", "mvid", "artifact"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "mode": { "type": "string", "const": "metadata" },
+                          "observation": {
+                            "type": "object",
+                            "properties": {
+                              "assemblyName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 65536
+                              },
+                              "mvid": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                              },
+                              "documents": {
+                                "maxItems": 4096,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "algorithm": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "hash": {
+                                      "type": "string",
+                                      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                                    }
+                                  },
+                                  "required": ["file", "algorithm", "hash"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "types": {
+                                "maxItems": 4096,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "token": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "className": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "baseTypeToken": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 2147483647
+                                    },
+                                    "baseTypeClass": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "baseTypeAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methods": {
+                                      "maxItems": 20000,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "token": {
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 2147483647
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "parameterSignatures": {
+                                            "maxItems": 256,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 65536
+                                            }
+                                          },
+                                          "returnSignature": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "parameterCount": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 256
+                                          },
+                                          "genericParameters": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 64
+                                          },
+                                          "signature": {
+                                            "type": "string",
+                                            "maxLength": 65536,
+                                            "pattern": "^(?:[a-f0-9]{2})+$"
+                                          },
+                                          "files": {
+                                            "maxItems": 4096,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 8192
+                                            }
+                                          },
+                                          "points": {
+                                            "maxItems": 100000,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "file": {
+                                                  "anyOf": [
+                                                    {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "maxLength": 8192
+                                                    },
+                                                    { "type": "null" }
+                                                  ]
+                                                },
+                                                "offset": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "hidden": { "type": "boolean" },
+                                                "startLine": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "startColumn": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "endLine": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "endColumn": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                }
+                                              },
+                                              "required": [
+                                                "file",
+                                                "offset",
+                                                "hidden",
+                                                "startLine",
+                                                "startColumn",
+                                                "endLine",
+                                                "endColumn"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "token",
+                                          "name",
+                                          "parameterSignatures",
+                                          "returnSignature",
+                                          "parameterCount",
+                                          "genericParameters",
+                                          "signature",
+                                          "files",
+                                          "points"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "token",
+                                    "className",
+                                    "baseTypeToken",
+                                    "baseTypeClass",
+                                    "baseTypeAssembly",
+                                    "methods"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "references": {
+                                "maxItems": 512,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "token": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "culture": {
+                                      "type": "string",
+                                      "maxLength": 256
+                                    },
+                                    "flags": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "publicKeyOrToken": {
+                                      "type": "string",
+                                      "maxLength": 1024,
+                                      "pattern": "^(?:[a-f0-9]{2})*$"
+                                    }
+                                  },
+                                  "required": [
+                                    "token",
+                                    "name",
+                                    "version",
+                                    "culture",
+                                    "flags",
+                                    "publicKeyOrToken"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": [
+                              "assemblyName",
+                              "mvid",
+                              "documents",
+                              "types",
+                              "references"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "processId",
+                          "runtime",
+                          "arguments",
+                          "workingDirectory",
+                          "helper",
+                          "framework",
+                          "assembly",
+                          "pdb",
+                          "modules",
+                          "mode",
+                          "observation"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 1 },
+                          "processId": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "runtime": { "type": "string", "const": "10.0.12" },
+                          "arguments": {
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            }
+                          },
+                          "workingDirectory": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "helper": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "framework": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "assembly": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "pdb": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "modules": {
+                            "minItems": 1,
+                            "maxItems": 512,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 65536
+                                },
+                                "mvid": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                },
+                                "artifact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "bytes": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 67108864
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": ["file", "bytes", "sha256"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["name", "mvid", "artifact"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "mode": { "type": "string", "const": "discovery" },
+                          "observation": {
+                            "type": "object",
+                            "properties": {
+                              "count": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 20000
+                              },
+                              "nodeCount": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 20000
+                              },
+                              "cases": {
+                                "minItems": 1,
+                                "maxItems": 20000,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "fullName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "className": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methodName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "runState": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Runnable",
+                                        "NotRunnable",
+                                        "Explicit",
+                                        "Skipped",
+                                        "Ignored"
+                                      ]
+                                    },
+                                    "fixtureType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "fixtureToken": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "fixtureMvid": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "fixtureAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "declaringType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methodToken": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "methodMvid": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "methodAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "methodSignature": {
+                                      "type": "string",
+                                      "maxLength": 65536,
+                                      "pattern": "^(?:[a-f0-9]{2})+$"
+                                    },
+                                    "parameterSignatures": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "returnSignature": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "parameterTypes": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "returnType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "genericArguments": {
+                                      "maxItems": 64,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "arguments": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "value": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string",
+                                                "maxLength": 4096
+                                              },
+                                              { "type": "null" }
+                                            ]
+                                          }
+                                        },
+                                        "required": ["type", "value"],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "baseChain": {
+                                      "minItems": 1,
+                                      "maxItems": 64,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "className": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "token": {
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 2147483647
+                                          },
+                                          "mvid": {
+                                            "type": "string",
+                                            "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                          },
+                                          "assembly": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 8192
+                                          }
+                                        },
+                                        "required": [
+                                          "className",
+                                          "token",
+                                          "mvid",
+                                          "assembly"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "fullName",
+                                    "className",
+                                    "methodName",
+                                    "runState",
+                                    "fixtureType",
+                                    "fixtureToken",
+                                    "fixtureMvid",
+                                    "fixtureAssembly",
+                                    "declaringType",
+                                    "methodToken",
+                                    "methodMvid",
+                                    "methodAssembly",
+                                    "methodSignature",
+                                    "parameterSignatures",
+                                    "returnSignature",
+                                    "parameterTypes",
+                                    "returnType",
+                                    "genericArguments",
+                                    "arguments",
+                                    "baseChain"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": ["count", "nodeCount", "cases"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "processId",
+                          "runtime",
+                          "arguments",
+                          "workingDirectory",
+                          "helper",
+                          "framework",
+                          "assembly",
+                          "pdb",
+                          "modules",
+                          "mode",
+                          "observation"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "stdout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1048576
+                  },
+                  "stderr": { "type": "string", "const": "" },
+                  "launcherPid": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": ["native", "stdout", "stderr", "launcherPid"],
+                "additionalProperties": false
+              }
+            },
+            "discovery": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "native": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 1 },
+                          "processId": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "runtime": { "type": "string", "const": "10.0.12" },
+                          "arguments": {
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            }
+                          },
+                          "workingDirectory": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "helper": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "framework": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "assembly": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "pdb": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "modules": {
+                            "minItems": 1,
+                            "maxItems": 512,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 65536
+                                },
+                                "mvid": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                },
+                                "artifact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "bytes": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 67108864
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": ["file", "bytes", "sha256"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["name", "mvid", "artifact"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "mode": { "type": "string", "const": "metadata" },
+                          "observation": {
+                            "type": "object",
+                            "properties": {
+                              "assemblyName": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 65536
+                              },
+                              "mvid": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                              },
+                              "documents": {
+                                "maxItems": 4096,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "algorithm": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "hash": {
+                                      "type": "string",
+                                      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                                    }
+                                  },
+                                  "required": ["file", "algorithm", "hash"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "types": {
+                                "maxItems": 4096,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "token": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "className": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "baseTypeToken": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 2147483647
+                                    },
+                                    "baseTypeClass": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "baseTypeAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methods": {
+                                      "maxItems": 20000,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "token": {
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 2147483647
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "parameterSignatures": {
+                                            "maxItems": 256,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 65536
+                                            }
+                                          },
+                                          "returnSignature": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "parameterCount": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 256
+                                          },
+                                          "genericParameters": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 64
+                                          },
+                                          "signature": {
+                                            "type": "string",
+                                            "maxLength": 65536,
+                                            "pattern": "^(?:[a-f0-9]{2})+$"
+                                          },
+                                          "files": {
+                                            "maxItems": 4096,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 8192
+                                            }
+                                          },
+                                          "points": {
+                                            "maxItems": 100000,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "file": {
+                                                  "anyOf": [
+                                                    {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "maxLength": 8192
+                                                    },
+                                                    { "type": "null" }
+                                                  ]
+                                                },
+                                                "offset": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "hidden": { "type": "boolean" },
+                                                "startLine": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "startColumn": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "endLine": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                },
+                                                "endColumn": {
+                                                  "type": "integer",
+                                                  "minimum": 0,
+                                                  "maximum": 9007199254740991
+                                                }
+                                              },
+                                              "required": [
+                                                "file",
+                                                "offset",
+                                                "hidden",
+                                                "startLine",
+                                                "startColumn",
+                                                "endLine",
+                                                "endColumn"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "token",
+                                          "name",
+                                          "parameterSignatures",
+                                          "returnSignature",
+                                          "parameterCount",
+                                          "genericParameters",
+                                          "signature",
+                                          "files",
+                                          "points"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "token",
+                                    "className",
+                                    "baseTypeToken",
+                                    "baseTypeClass",
+                                    "baseTypeAssembly",
+                                    "methods"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "references": {
+                                "maxItems": 512,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "token": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "version": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "culture": {
+                                      "type": "string",
+                                      "maxLength": 256
+                                    },
+                                    "flags": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "publicKeyOrToken": {
+                                      "type": "string",
+                                      "maxLength": 1024,
+                                      "pattern": "^(?:[a-f0-9]{2})*$"
+                                    }
+                                  },
+                                  "required": [
+                                    "token",
+                                    "name",
+                                    "version",
+                                    "culture",
+                                    "flags",
+                                    "publicKeyOrToken"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": [
+                              "assemblyName",
+                              "mvid",
+                              "documents",
+                              "types",
+                              "references"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "processId",
+                          "runtime",
+                          "arguments",
+                          "workingDirectory",
+                          "helper",
+                          "framework",
+                          "assembly",
+                          "pdb",
+                          "modules",
+                          "mode",
+                          "observation"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "schemaVersion": { "type": "number", "const": 1 },
+                          "processId": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "runtime": { "type": "string", "const": "10.0.12" },
+                          "arguments": {
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 8192
+                            }
+                          },
+                          "workingDirectory": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                          },
+                          "helper": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "framework": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "assembly": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "pdb": {
+                            "type": "object",
+                            "properties": {
+                              "file": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 8192
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 67108864
+                              },
+                              "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              }
+                            },
+                            "required": ["file", "bytes", "sha256"],
+                            "additionalProperties": false
+                          },
+                          "modules": {
+                            "minItems": 1,
+                            "maxItems": 512,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 65536
+                                },
+                                "mvid": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                },
+                                "artifact": {
+                                  "type": "object",
+                                  "properties": {
+                                    "file": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "bytes": {
+                                      "type": "integer",
+                                      "exclusiveMinimum": 0,
+                                      "maximum": 67108864
+                                    },
+                                    "sha256": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    }
+                                  },
+                                  "required": ["file", "bytes", "sha256"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["name", "mvid", "artifact"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "mode": { "type": "string", "const": "discovery" },
+                          "observation": {
+                            "type": "object",
+                            "properties": {
+                              "count": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 20000
+                              },
+                              "nodeCount": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 20000
+                              },
+                              "cases": {
+                                "minItems": 1,
+                                "maxItems": 20000,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "fullName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "className": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methodName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "runState": {
+                                      "type": "string",
+                                      "enum": [
+                                        "Runnable",
+                                        "NotRunnable",
+                                        "Explicit",
+                                        "Skipped",
+                                        "Ignored"
+                                      ]
+                                    },
+                                    "fixtureType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "fixtureToken": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "fixtureMvid": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "fixtureAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "declaringType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "methodToken": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 2147483647
+                                    },
+                                    "methodMvid": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                    },
+                                    "methodAssembly": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 8192
+                                    },
+                                    "methodSignature": {
+                                      "type": "string",
+                                      "maxLength": 65536,
+                                      "pattern": "^(?:[a-f0-9]{2})+$"
+                                    },
+                                    "parameterSignatures": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "returnSignature": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "parameterTypes": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "returnType": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 65536
+                                    },
+                                    "genericArguments": {
+                                      "maxItems": 64,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 65536
+                                      }
+                                    },
+                                    "arguments": {
+                                      "maxItems": 256,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "value": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string",
+                                                "maxLength": 4096
+                                              },
+                                              { "type": "null" }
+                                            ]
+                                          }
+                                        },
+                                        "required": ["type", "value"],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "baseChain": {
+                                      "minItems": 1,
+                                      "maxItems": 64,
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "className": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 65536
+                                          },
+                                          "token": {
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 2147483647
+                                          },
+                                          "mvid": {
+                                            "type": "string",
+                                            "pattern": "^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                          },
+                                          "assembly": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 8192
+                                          }
+                                        },
+                                        "required": [
+                                          "className",
+                                          "token",
+                                          "mvid",
+                                          "assembly"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "name",
+                                    "fullName",
+                                    "className",
+                                    "methodName",
+                                    "runState",
+                                    "fixtureType",
+                                    "fixtureToken",
+                                    "fixtureMvid",
+                                    "fixtureAssembly",
+                                    "declaringType",
+                                    "methodToken",
+                                    "methodMvid",
+                                    "methodAssembly",
+                                    "methodSignature",
+                                    "parameterSignatures",
+                                    "returnSignature",
+                                    "parameterTypes",
+                                    "returnType",
+                                    "genericArguments",
+                                    "arguments",
+                                    "baseChain"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              }
+                            },
+                            "required": ["count", "nodeCount", "cases"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "schemaVersion",
+                          "processId",
+                          "runtime",
+                          "arguments",
+                          "workingDirectory",
+                          "helper",
+                          "framework",
+                          "assembly",
+                          "pdb",
+                          "modules",
+                          "mode",
+                          "observation"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "stdout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1048576
+                  },
+                  "stderr": { "type": "string", "const": "" },
+                  "launcherPid": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": ["native", "stdout", "stderr", "launcherPid"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "observerSourceSha256",
+            "observerSha256",
+            "runtimeconfigSha256",
+            "metadata",
+            "discovery"
+          ],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "build",
+    "testObserverSha256",
+    "testObserverSourceSha256",
+    "runs",
+    "nativeReceipts",
+    "generatorIdentity"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,1740 @@
+{
+  "schemaVersion": 1,
+  "profile": "dotnet-generator-extensions",
+  "recordedDate": "2026-10-10",
+  "scope": "Original synthetic declared incremental generators, overloaded and parameterized NUnit methods, inherited physical-source witnesses within and across C#/F#/VB producer/consumer assemblies; no inference, field evaluation or review-quality acceptance.",
+  "inventoryScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "sourceBaseCommit": "8edff681066b3043f14c96b83ed2075c30f47d2b",
+  "testedImplementationFileBindings": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 91105,
+      "sha256": "994d04666d9d64d9246d432b34db44904fd3b96c8e90ed8e913f323a605bb737"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "bytes": 31045,
+      "sha256": "f0aa186d633dccc15282754d39e92cc36c2d4392c9dea74a674a6b560f5af4f4"
+    },
+    {
+      "file": "docs/DOTNET-GENERATOR-EXTENSIONS.md",
+      "bytes": 5411,
+      "sha256": "1976d2f467af67df9f42c0d12b5b5acaab11103a93764c7aaec4b8e84aa0341a"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "bytes": 46840,
+      "sha256": "19e165a1c34453648071019d29554b16c1b75cb1a17bba4015d548ab9a5c1484"
+    },
+    {
+      "file": "schemas/dotnet-generator-extensions-config.schema.json",
+      "bytes": 1435,
+      "sha256": "9cc2fe480605520f78dc80f1eb912424014c3446da865dd62e49a84a12c093c3"
+    },
+    {
+      "file": "schemas/dotnet-generator-extensions-native.schema.json",
+      "bytes": 25129,
+      "sha256": "2dd0346cfd3a559d7136976388f5284d8aea933ea6e6b4b477ebd24a8e845b0b"
+    },
+    {
+      "file": "schemas/dotnet-generator-extensions-packet.schema.json",
+      "bytes": 104493,
+      "sha256": "ac8628dcc1741cceaad3b4c0e943bf42e12cdbed3985a306054c78a50cae93af"
+    },
+    {
+      "file": "schemas/plan.schema.json",
+      "bytes": 15987,
+      "sha256": "53edc7160c2d768f352d6ff9b98722ddcce9491016a778969eff3db5eba43330"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "bytes": 14999,
+      "sha256": "c8707eefff99d48639426c6bab8ff1d396a0902347a973786d57157a97df6513"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 183505,
+      "sha256": "fbe8a05fc0478564119388747a83fa99b3b83aaf6598ee956b0d8f2abc765ce6"
+    },
+    {
+      "file": "scripts/verify-dotnet-generator-extensions-container.mjs",
+      "bytes": 8919,
+      "sha256": "e881d64fd36b957276efc147ad349b1f8c44555741033ba173bbc78295662911"
+    },
+    {
+      "file": "scripts/verify-dotnet-generator-extensions-guards.mjs",
+      "bytes": 8734,
+      "sha256": "9b72930ff29afb8b72cdf57217a453f8c7f41ac55aa4a8eae3578e318e5edb0d"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 26133,
+      "sha256": "7cbca8d34bebd18eed47315a2bd98484add242a682b9fd7d612af362ddfe5993"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 4289,
+      "sha256": "77cbfe686ef99277b59715ae60e4da45e705c5e5936a6d9ead5cd9f233bf0fdc"
+    },
+    {
+      "file": "src/adapters.ts",
+      "bytes": 22308,
+      "sha256": "f7a7c16348b6583f4cb3af28a6a10c74d387de12bdb129e0719f87e9f3ea5700"
+    },
+    {
+      "file": "src/dotnet-build-runner.ts",
+      "bytes": 22103,
+      "sha256": "265895731e2150c44fdb62bae436752f1f68df8ee6e7c865181f08dacb02e86c"
+    },
+    {
+      "file": "src/dotnet-generator-extensions-collect.ts",
+      "bytes": 5410,
+      "sha256": "502d99affd554d1c2ec6122c3ceadd64538690c1b127131abd6be8fc6591404e"
+    },
+    {
+      "file": "src/dotnet-generator-extensions-contract.ts",
+      "bytes": 5382,
+      "sha256": "023c7924b6695f0acaa54d61676bc6d9eeada47b39aa6df232a88ae2a0086f18"
+    },
+    {
+      "file": "src/dotnet-generator-extensions-evidence.ts",
+      "bytes": 24383,
+      "sha256": "44454dae83627ca09f7ddac89d40ebbbd192f01b470b8672d3c90e434235d5f7"
+    },
+    {
+      "file": "src/dotnet-generator-extensions-native.ts",
+      "bytes": 14243,
+      "sha256": "88f50d44ca64312c9475603216fee6e2924d30b7d588ce3f029986925eac6b28"
+    },
+    {
+      "file": "src/dotnet-generator-extensions.ts",
+      "bytes": 6359,
+      "sha256": "59d95d025fab79ed590f449c4e255de9b3b5fa1faeda978fac165a71d2900cf0"
+    },
+    {
+      "file": "src/dotnet-test-evidence.ts",
+      "bytes": 26755,
+      "sha256": "6c1961abd6f080f3bba1e629a70fbcb120b8c7c4de0e038a6785216dc904bbad"
+    },
+    {
+      "file": "src/engine.ts",
+      "bytes": 11074,
+      "sha256": "788405b7535e90c7e22269b463602c8342d837663a92d623cb96ea2b03e561b2"
+    },
+    {
+      "file": "src/evidence.ts",
+      "bytes": 21593,
+      "sha256": "1a16def029eb28cbfc9feef49ed0ad7ed275eb1f8fa7838b5a4441b543727cc8"
+    },
+    {
+      "file": "src/index.ts",
+      "bytes": 8475,
+      "sha256": "b2af4f7a3f736f75d17504737d03546e41d102429b2aa6ded372a5c5c8150377"
+    },
+    {
+      "file": "src/tool-versions.ts",
+      "bytes": 27501,
+      "sha256": "11ff0ba814df5e5d41575fcc022adf3124a71778014ebf65d302835fb65221cf"
+    },
+    {
+      "file": "src/types.ts",
+      "bytes": 5702,
+      "sha256": "8b6eee08ecdd66ea3d9011d3eb93f72f651ec96b2472e574c827cb5362f60f44"
+    },
+    {
+      "file": "test/dotnet-generator-extensions-config.test.ts",
+      "bytes": 5199,
+      "sha256": "03f4c4c0e14d6017aba28590632a79fa6ab4201c4e62d4afe0a1dc77ac9649f5"
+    },
+    {
+      "file": "test/dotnet-generator-extensions-fixture.ts",
+      "bytes": 11415,
+      "sha256": "4e506c1751b1e552967afbcd05a3fbcbfd3a9c38c6b6a66e73bc21c4aa8212c9"
+    },
+    {
+      "file": "test/gate-dotnet-generator-extensions.test.ts",
+      "bytes": 30494,
+      "sha256": "c855d07cf670ef1ab0a4932d76e10e1e09ee837fe1badf3cb825031e9cd3c268"
+    }
+  ],
+  "nativeImage": {
+    "id": "sha256:004a02bbe8c70d965be091ca5e492f3d635a43d5e81157b68fe80df7a0d8f53f",
+    "recipe": "scripts/fsharp-format-tools.Dockerfile",
+    "imageIdentityIsWholeClosureAttestation": false
+  },
+  "acceptance": {
+    "executionMode": "Separate supervised native runs against identical frozen implementation inputs; the complete controller was not rerun locally after its temporary guard-harness asset copy was corrected.",
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "sdk": {
+        "version": "10.0.401",
+        "runtime": "10.0.12",
+        "selectedComponents": 368,
+        "selectedBytes": 131367223,
+        "pinsSha256": "988ed1d67b80de5bad70f441afcef8091e90a13929a2360866f85db96eead046",
+        "byteVerified": true,
+        "wholeClosureVerified": false
+      },
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+      "npm": {
+        "version": "10.9.8"
+      }
+    },
+    "environment": {
+      "network": "none",
+      "readOnlyRoot": true,
+      "user": "1000:1000",
+      "cpuLimit": 2,
+      "memoryBytes": 4294967296,
+      "pidLimit": 256,
+      "tmpfsBytes": 2147483648
+    },
+    "concurrency": {
+      "maxNativeAcceptanceContainers": 2,
+      "aggregateCpuLimit": 4,
+      "aggregateMemoryBytes": 8589934592,
+      "aggregatePidLimit": 512,
+      "aggregateTmpfsBytes": 4294967296,
+      "sharedWritableFixtures": false
+    },
+    "baselineProfiles": [
+      "dotnet-build",
+      "dotnet-test",
+      "dotnet-generated",
+      "dotnet-method"
+    ],
+    "baseline": {
+      "timeoutMs": 600000,
+      "profiles": [
+        {
+          "profile": "dotnet-build",
+          "required": 12
+        },
+        {
+          "profile": "dotnet-test",
+          "required": 10
+        },
+        {
+          "profile": "dotnet-generated",
+          "required": 8
+        },
+        {
+          "profile": "dotnet-method",
+          "required": 7
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 37,
+      "required": 37,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 37,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6e877eaf7f2791d5ea4514d64892e9d08b3ec1e674b8953aed6d9d45aa500c3e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "73e6f8591a2f849da7b4e3919f6b85cd875b61e22140d18e893bf1b5872bb2dc"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "dd1ff23b76f96dfaaefe3afbe2b890ea1bb3f43bf1c21a0583f4c80d0a48af3b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "342ee4e4acdf2c65abef146118ad807daef8b6a97ec38d7dd3b8da370a086191"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "48ad8c5abd7f635355f0016c4f54c783056cb8efdc0a9d1e23e6098dff5545f6"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2792c234623d2b8814d98123c9dbb65c0e20500962522033174fc11652fe93dd"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b31e4048e8456daf55497629fb937a105cd6dcd45c57abb8c435bccdcab6bd55"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0e76726e47b91e0dda68edade4f8c74c4a23f657fb6e5f6178829327bdc66b16"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8879947ce8bc8778469f3c565c155b9bf3ab0cc183bb954cc1b53bac6cd8404b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-10",
+            "before": {
+              "state": "present",
+              "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "50d11359eff1282bc6bc0d3097ae41dc536186a9835ce7731d94ca283e417a5e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-11",
+            "before": {
+              "state": "present",
+              "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7947438fc63c2acbef50fd95b0b6bcc6309d13f185c7a560fe255de105f6899a"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-12",
+            "before": {
+              "state": "present",
+              "sha256": "b1c487c90d838b86aa38a4c6c5c4ebd12efeb567164d72f9f1eb51ade334b55b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b1c487c90d838b86aa38a4c6c5c4ebd12efeb567164d72f9f1eb51ade334b55b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-13",
+            "before": {
+              "state": "present",
+              "sha256": "a2d51ffe3035178f5a8fc9477fd9d2c6764f7450c533978638e0c08b4d5d84b9"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "a2d51ffe3035178f5a8fc9477fd9d2c6764f7450c533978638e0c08b4d5d84b9"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-14",
+            "before": {
+              "state": "present",
+              "sha256": "9636ee5029bfc0c4e974df4be8fef4c21c32f25be26b3d3e0d4031af5d3f83d6"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "9636ee5029bfc0c4e974df4be8fef4c21c32f25be26b3d3e0d4031af5d3f83d6"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-15",
+            "before": {
+              "state": "present",
+              "sha256": "b67cf578d5aa7903f7b99c56c533251d0ed95111b5c3f03d1fe00f8834ae3829"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b67cf578d5aa7903f7b99c56c533251d0ed95111b5c3f03d1fe00f8834ae3829"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-16",
+            "before": {
+              "state": "present",
+              "sha256": "d39d921a245c380a2991627e416fcae59063a0ec1322e77f8e19d3e6b000c5f0"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d39d921a245c380a2991627e416fcae59063a0ec1322e77f8e19d3e6b000c5f0"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-17",
+            "before": {
+              "state": "present",
+              "sha256": "6de4f4cf3306e6e38559f1823b2e8b0cc62badbfb914836cb2001dbd212b707a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "6de4f4cf3306e6e38559f1823b2e8b0cc62badbfb914836cb2001dbd212b707a"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-18",
+            "before": {
+              "state": "present",
+              "sha256": "2aebeafb8a5c26c8d0f9da0d574014b78c6d818f4288a722bbaa9e5ef7da3efe"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2aebeafb8a5c26c8d0f9da0d574014b78c6d818f4288a722bbaa9e5ef7da3efe"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-19",
+            "before": {
+              "state": "present",
+              "sha256": "652b468f113af959f8adafad5512542fc82898d0ecd5052f5b8925a1124c938e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "652b468f113af959f8adafad5512542fc82898d0ecd5052f5b8925a1124c938e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-20",
+            "before": {
+              "state": "present",
+              "sha256": "e5c7e98ee47b47aca569a515aaeeb76c8b9ff78f934cf7f82c8086cf1a6cb93f"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e5c7e98ee47b47aca569a515aaeeb76c8b9ff78f934cf7f82c8086cf1a6cb93f"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-21",
+            "before": {
+              "state": "present",
+              "sha256": "3f53b223ecf33297f4c662271ff1afb6df9341db91ab55d71548be169dc42acf"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3f53b223ecf33297f4c662271ff1afb6df9341db91ab55d71548be169dc42acf"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-22",
+            "before": {
+              "state": "present",
+              "sha256": "0d4aedb350b68a3cd7189cf2c2a32f150f972be7b72d767946c030961bc8e0a1"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0d4aedb350b68a3cd7189cf2c2a32f150f972be7b72d767946c030961bc8e0a1"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-23",
+            "before": {
+              "state": "present",
+              "sha256": "7db423c29dfdac232d51d91f94560259f0480e66fdd14b82f58b7ea535226508"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "7db423c29dfdac232d51d91f94560259f0480e66fdd14b82f58b7ea535226508"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-24",
+            "before": {
+              "state": "present",
+              "sha256": "f72923c55b467481bff82b83a8b723c3d7035e07002cc17b0f63cc5e90dd2d24"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f72923c55b467481bff82b83a8b723c3d7035e07002cc17b0f63cc5e90dd2d24"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 35.265585,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 36080.958712,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-2",
+            "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9914.412511,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-3",
+            "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1366.927909,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-4",
+            "name": ".NET protected environment cannot be overridden by project requirements",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7271.415702,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-5",
+            "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17143.194545,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-6",
+            "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7023.426608,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-7",
+            "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12970.588647,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-8",
+            "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18532.484559,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-9",
+            "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2554.148069,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-10",
+            "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24730.299345,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-11",
+            "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2550.835965,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-12",
+            "name": ".NET tests are opt-in and missing declarations cannot execute during planning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 17.021359,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-12",
+            "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 41857.628766,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-13",
+            "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9737.838761,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-14",
+            "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24714.103616,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-15",
+            "name": "native .NET empty discovery and custom names without method provenance stay incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25739.202484,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-16",
+            "name": "native .NET test classes require exact declared source roles including newly compiled siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32762.385594,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-17",
+            "name": "native .NET tests distinguish source compilation restore and fixture setup failures",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23504.452251,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-18",
+            "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8441.887523,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-19",
+            "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 34248.426149,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-20",
+            "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6972.283389,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-21",
+            "name": "Roslyn source-generator declarations reject foreign unknown and unbounded origins",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2.55527,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-21",
+            "name": "native Roslyn planning retains invalid producers duplicate scope and unverified formatting without execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1013.492935,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-21",
+            "name": "native Roslyn C# and VB outputs participate in compilation symbols and repaired consumer boundary tests",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20507.851863,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-21",
+            "name": "native Roslyn packets reject omitted forged stale disabled and source-unbound generator evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6105.945476,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-21",
+            "name": "native Roslyn missing extra and throwing outputs cannot pass and preserve caller-owned generated files",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18421.358263,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-21",
+            "name": "native Roslyn producer source errors retain the actual diagnostic and valid interface spelling near misses compile",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13910.084999,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-22",
+            "name": "native Roslyn CLI and negotiated MCP preserve generated regressions privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 28714.77043,
+            "required": true
+          },
+          {
+            "sequence": 30,
+            "fileId": "file-22",
+            "name": "native Roslyn cancellation reaches the original generator and reaps compiler descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3157.341705,
+            "required": true
+          },
+          {
+            "sequence": 31,
+            "fileId": "file-23",
+            "name": "NUnit owned settings escape data and select complete native discovery without a result dump",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.383837,
+            "required": true
+          },
+          {
+            "sequence": 32,
+            "fileId": "file-23",
+            "name": "native NUnit method provenance reconciles C#/F#/VB custom names escaped literals broken boundaries and repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 24786.295635,
+            "required": true
+          },
+          {
+            "sequence": 33,
+            "fileId": "file-23",
+            "name": "native NUnit method evidence rejects missing forged stale duplicate hidden and mismatched XML and settings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9306.141163,
+            "required": true
+          },
+          {
+            "sequence": 34,
+            "fileId": "file-23",
+            "name": "native NUnit duplicate custom full names remain ambiguous without assigning a guessed method",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32344.511619,
+            "required": true
+          },
+          {
+            "sequence": 35,
+            "fileId": "file-23",
+            "name": "native NUnit custom-name parent fixture skips and setup failures retain promoted case counts source addresses and repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25354.01892,
+            "required": true
+          },
+          {
+            "sequence": 36,
+            "fileId": "file-24",
+            "name": "native NUnit custom-name CLI and negotiated MCP preserve source-bound assertion failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 34919.735963,
+            "required": true
+          },
+          {
+            "sequence": 37,
+            "fileId": "file-24",
+            "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6900.769713,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": ".NET build is opt-in and incomplete prerequisites cannot execute",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native .NET builds C#/F#/VB in fresh outputs and rejects source errors in each language",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native .NET packet rejects omitted, forged, stale and disabled participation",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-3",
+            "name": ".NET planning rejects incomplete source, project, role and dependency identities",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-4",
+            "name": ".NET protected environment cannot be overridden by project requirements",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native .NET disabled compiler, omitted source and prebuild failures cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native .NET preserves inventoried near misses and caller-owned output trees",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native .NET records declared generated inputs and rejects their undeclared presence",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native .NET classifies an enabled SDK analyzer's source error and preserves its repair",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native .NET rejects unavailable locked restore and corrupt dependency bytes before a source allegation",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-10",
+            "name": "native .NET build CLI and negotiated MCP preserve source failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-11",
+            "name": "native .NET build cancellation reaches the owned MSBuild client and removes descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-12",
+            "name": ".NET tests are opt-in and missing declarations cannot execute during planning",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-12",
+            "name": "native .NET tests reconcile every C#/F#/VB parameterized case and detect repaired boundary regressions",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-13",
+            "name": "native .NET test packets reject omitted forged stale and mismatched lifecycle artifact and TRX evidence",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-14",
+            "name": "native .NET tests retain mixed and all-skipped cases and their repaired execution",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-15",
+            "name": "native .NET empty discovery and custom names without method provenance stay incomplete",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-16",
+            "name": "native .NET test classes require exact declared source roles including newly compiled siblings",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-17",
+            "name": "native .NET tests distinguish source compilation restore and fixture setup failures",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-18",
+            "name": "native .NET tests preserve caller-owned outputs and do not honor project filters as complete coverage",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-19",
+            "name": "native .NET tests CLI and negotiated MCP preserve assertion failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-20",
+            "name": "native .NET test cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-21",
+            "name": "Roslyn source-generator declarations reject foreign unknown and unbounded origins",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-21",
+            "name": "native Roslyn planning retains invalid producers duplicate scope and unverified formatting without execution",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-21",
+            "name": "native Roslyn C# and VB outputs participate in compilation symbols and repaired consumer boundary tests",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-21",
+            "name": "native Roslyn packets reject omitted forged stale disabled and source-unbound generator evidence",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-21",
+            "name": "native Roslyn missing extra and throwing outputs cannot pass and preserve caller-owned generated files",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-21",
+            "name": "native Roslyn producer source errors retain the actual diagnostic and valid interface spelling near misses compile",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-22",
+            "name": "native Roslyn CLI and negotiated MCP preserve generated regressions privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-22",
+            "name": "native Roslyn cancellation reaches the original generator and reaps compiler descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [30]
+          },
+          {
+            "fileId": "file-23",
+            "name": "NUnit owned settings escape data and select complete native discovery without a result dump",
+            "outcome": "passed",
+            "terminalSequences": [31]
+          },
+          {
+            "fileId": "file-23",
+            "name": "native NUnit method provenance reconciles C#/F#/VB custom names escaped literals broken boundaries and repair",
+            "outcome": "passed",
+            "terminalSequences": [32]
+          },
+          {
+            "fileId": "file-23",
+            "name": "native NUnit method evidence rejects missing forged stale duplicate hidden and mismatched XML and settings",
+            "outcome": "passed",
+            "terminalSequences": [33]
+          },
+          {
+            "fileId": "file-23",
+            "name": "native NUnit duplicate custom full names remain ambiguous without assigning a guessed method",
+            "outcome": "passed",
+            "terminalSequences": [34]
+          },
+          {
+            "fileId": "file-23",
+            "name": "native NUnit custom-name parent fixture skips and setup failures retain promoted case counts source addresses and repair",
+            "outcome": "passed",
+            "terminalSequences": [35]
+          },
+          {
+            "fileId": "file-24",
+            "name": "native NUnit custom-name CLI and negotiated MCP preserve source-bound assertion failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [36]
+          },
+          {
+            "fileId": "file-24",
+            "name": "native NUnit custom-name cancellation reaches the actual test body and reaps VSTest testhost descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [37]
+          }
+        ]
+      }
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "source": {
+      "timeoutMs": 600000,
+      "profile": "dotnet-generator-extensions",
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "b09ddd09a25adaadcacc0ee0918badf7e426198dff17f4d23d4ae6882705be33"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "b09ddd09a25adaadcacc0ee0918badf7e426198dff17f4d23d4ae6882705be33"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11019.56557,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21819.480455,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 32763.878746,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2243.089943,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21549.194283,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 38942.673669,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 56291.406635,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 64649.063585,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 256198.257764,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "dotnet-generator-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "e2abf9bac7732463cfd65cce7c8afdfe746cebe89617cd7a4e6956d661687cd5",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 600000,
+        "profile": "dotnet-generator-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "b09ddd09a25adaadcacc0ee0918badf7e426198dff17f4d23d4ae6882705be33"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b09ddd09a25adaadcacc0ee0918badf7e426198dff17f4d23d4ae6882705be33"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 11021.635809,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21515.252716,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 32557.820955,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2146.593914,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21281.083796,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 38227.659406,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 56596.258288,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 64762.76042,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.600386,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "dotnet-generator-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "dotnet-generator-extensions",
+      "controls": [
+        {
+          "id": "cancelled-retained-packet",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "fcee14b4b21c9b434d50034a558c6b22c94f97670ce90973ddfb45e137a00295"
+        },
+        {
+          "id": "current-physical-input-bytes",
+          "callback": "dotnet-generator-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "7256c0d9c9e3a1a8d24094ea76b6c11fb4b284b9f76500882aa1cc99deb1886d"
+        },
+        {
+          "id": "complete-current-dependency-tree",
+          "callback": "dotnet-generator-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "0551b3e76f1f395d540465530fe2ee2a5712eb56ef3cbba6820edaf610902c2f"
+        },
+        {
+          "id": "raw-compiled-overload-signature",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "68a12f3a7668604f2ca06bf52d8691a1c03f6903fde2ae04980505544953f636"
+        },
+        {
+          "id": "decoded-parameter-signatures",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "5e2abe0d3660e14c366b6f5c499631c873784cfe6ea85c45f37aa7c561c4fe30"
+        },
+        {
+          "id": "decoded-return-signature",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "66da6bc3f642e9d60e20fda56153721058afaf64ed1f3b0202bf2333483ea4c7"
+        },
+        {
+          "id": "current-native-helper-artifact",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "3e5c460c27d3af452d54a096dceb662158c25d2b4536f2fb412e74538aaf803d"
+        },
+        {
+          "id": "physical-method-build-metadata-join",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "ac4158eb6590361a562e8b2cfa183c08bff5bda5b79d579585d48254cf07fb7b"
+        },
+        {
+          "id": "complete-project-reference-graph",
+          "callback": "dotnet-generator-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "ddfe7ac31ef2d84cc9802ffcb3c003327fb5cad03a7698c5a0b0fc20fa321186",
+          "mutantSha256": "3cc9bc471e065465a27540c72328cd03c757b3fcf2dd22da8c2f61422b51d092"
+        },
+        {
+          "id": "native-method-token",
+          "callback": "dotnet-generator-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutatedNativeObserverCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "46453e058244564e93b6f90f4756f7ef0e722147abc215cadc9f5d6f299d57b4",
+          "mutantSha256": "3ce517115da7011fc463fc5ebf4ed456329e8dc7549434ec31a4a1d262538483"
+        },
+        {
+          "id": "native-inheritance-chain",
+          "callback": "dotnet-generator-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutatedNativeObserverCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "46453e058244564e93b6f90f4756f7ef0e722147abc215cadc9f5d6f299d57b4",
+          "mutantSha256": "986bfaf661cdede8881898ed1d1d3c37d88ccb32bf7f7e8b515bdd32ce3046d2"
+        },
+        {
+          "id": "native-case-argument-retention",
+          "callback": "dotnet-generator-extensions near-miss acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantCompiled": true,
+          "mutatedNativeObserverCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "46453e058244564e93b6f90f4756f7ef0e722147abc215cadc9f5d6f299d57b4",
+          "mutantSha256": "adaa717b2cef6e66d94bd091d7de85991264c82599c01c9389ea6b61684a38a3"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": ["empty", "stale", "near-miss"],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-dotnet-generator-extensions.test.js",
+          "sha256": "b09ddd09a25adaadcacc0ee0918badf7e426198dff17f4d23d4ae6882705be33"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "dotnet-generator-extensions-fixture.js",
+          "sha256": "64827330597aeede8ad4e1dd4ae21f1bb0f46d2d446991bdfe700052723eac66"
+        }
+      ],
+      "fixturesUnchanged": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeMethodObserverExecuted": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "complete": true,
+    "interruptedDevelopmentControllerAttemptIsAcceptance": false,
+    "callbackDurationsAreControlledPerformanceBenchmark": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1625,
+    "pass": 937,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 688,
+    "todo": 0,
+    "durationMs": 264002.79,
+    "logSha256": "d6285e9654c4ee41b35d15e8a1ba423bcef0e3c09987aa9edab1d13aa53820e5",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "os": "Darwin 27.0.0"
+    },
+    "optionalNativeSkipsAreAcceptance": false,
+    "frozenMatrixAcceptance": false
+  },
+  "limits": {
+    "selectedSdkComponents": 368,
+    "selectedSdkBytes": 131367223,
+    "fullSdkOsPublisherAndLicenseClosureVerified": false,
+    "nativeReceiptCryptographicallyAttested": false,
+    "importedReceiptCoherenceIsExecutionAttestation": false,
+    "complexNUnitArgumentsSupported": false,
+    "constructedGenericBaseTypesSupported": false,
+    "broaderPlatformAcceptanceComplete": false,
+    "hostedAcceptanceMeasured": false,
+    "packagePublication": "The offline tarball was tested before this measurement and profile-status metadata were added. Its hash identifies the tested pre-publication bytes, not the subsequent package."
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}
