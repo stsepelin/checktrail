@@ -14,6 +14,11 @@ import {
   reviewMultiSummarySchema,
 } from "../dist/src/review-multi-scoring.js";
 import { fsharpFormatConfigSchema } from "../dist/src/fsharp-format.js";
+import { dotnetFormatExtensionsConfigSchema } from "../dist/src/dotnet-format-extensions.js";
+import {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "../dist/src/dotnet-format-extensions-contract.js";
 import {
   fsharpNativeSchema,
   fsharpPacketSchema,
@@ -187,6 +192,9 @@ for (const [name, schema] of Object.entries({
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
   "fsharp-format-config": fsharpFormatConfigSchema,
+  "dotnet-format-extensions-config": dotnetFormatExtensionsConfigSchema,
+  "dotnet-format-extensions-native": dotnetFormatExtensionsNativeSchema,
+  "dotnet-format-extensions-packet": dotnetFormatExtensionsPacketSchema,
   "fsharp-format-native": fsharpNativeSchema,
   "fsharp-format-packet": fsharpPacketSchema,
   "cpp-tools-config": cppToolsConfigSchema,

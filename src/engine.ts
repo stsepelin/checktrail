@@ -243,7 +243,12 @@ export async function validate(
         if (remaining <= 0 || outputBudget <= 0 || options.signal?.aborted)
           break;
         try {
-          const processResult = await execute(command);
+          const processResult = await execute(
+            command,
+            check.id === "dotnet.format-extensions"
+              ? 4 * 1024 * 1024
+              : 1024 * 1024,
+          );
           if (!processResult) break;
           processes.push(processResult);
           if (
