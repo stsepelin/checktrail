@@ -2999,6 +2999,14 @@
     {
       "file": "dist/test/scala-boundaries.test.js",
       "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks"
+    },
+    {
+      "file": "dist/test/scala-feature-phases.test.js",
+      "name": "native Scala baseline observes post-typer inline and quote flags before declaring a complete source profile"
+    },
+    {
+      "file": "dist/test/scala-feature-phases.test.js",
+      "name": "native Scala baseline observes an executed macro annotation and accepts a distinct ordinary annotation near miss"
     }
   ],
   "import-history": [
