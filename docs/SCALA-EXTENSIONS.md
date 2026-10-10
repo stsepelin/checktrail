@@ -130,6 +130,16 @@ This closes the selected implementation profile only. The record separates
 current native source/installed acceptance from optional host skips and from
 unfinished hosted CI, final runtime matrix, provenance and Gate A obligations.
 
+Mixed Java warning escalation can carry a selected Java source address while
+retaining global positions `-1/-1`. The engine accepts one exact
+`compiler.err.warnings.and.werror` summary only when the declared policy enables
+warning escalation and selected source warnings remain. It retains those source
+warnings and reports failed with incomplete compiler coverage; it does not invent
+a source error for the global summary. The same source can pass when warning
+escalation is disabled. Unknown, duplicate, mispositioned or foreign-source
+summaries remain inconclusive. The [repair record](measurements/mixed-jvm-java-warning-policy-2026-10-10.json)
+binds native and fresh installed warning regressions and the preserved acceptance
+cases for both Kotlin and Scala.
 The [baseline identity-guard repair](measurements/scala-identity-guard-fixtures-2026-10-10.json)
 keeps physical original bytes and staged compiler bytes distinct in coherent
 negative fixtures. It verifies that removing each corresponding digest comparison

@@ -130,11 +130,22 @@ const regressions = run([
   "--test-concurrency=1",
   "--test-reporter=tap",
   "dist/test/scala-extension-regressions.test.js",
+  "dist/test/scala-java-warning-policy.test.js",
 ]);
-assert.match(regressions, /# tests 3\n/);
-assert.match(regressions, /# pass 3\n/);
+assert.match(regressions, /# tests 4\n/);
+assert.match(regressions, /# pass 4\n/);
 assert.match(regressions, /# fail 0\n/);
 assert.match(regressions, /# skipped 0\n/);
+stage("fresh-installed-java-warning-policy");
+const installedJavaWarningPolicy = JSON.parse(
+  run([
+    "/bin/sh",
+    "-c",
+    "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs scala",
+  ]),
+);
+assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
+assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
 process.stdout.write(
   JSON.stringify({
     schemaVersion: 1,
@@ -157,8 +168,8 @@ process.stdout.write(
     installed,
     guards,
     regressions: {
-      tests: 3,
-      passed: 3,
+      tests: 4,
+      passed: 4,
       failed: 0,
       skipped: 0,
       outputSha256: (await import("node:crypto"))
@@ -166,6 +177,7 @@ process.stdout.write(
         .update(regressions)
         .digest("hex"),
     },
+    installedJavaWarningPolicy,
     complete: true,
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,

@@ -517,13 +517,20 @@ export function kotlinExtensionEvidence(
       );
       if (d.kind === "ERROR") errors++;
       else warnings++;
-      if (d.file === null) {
+      if (
+        d.file === null ||
+        (d.kind === "ERROR" && d.code === "compiler.err.warnings.and.werror")
+      ) {
         requireEvidence(
           d.kind === "ERROR" &&
             planned.config.warningsAsErrors &&
             d.code === "compiler.err.warnings.and.werror" &&
             d.line === -1 &&
-            d.column === -1,
+            d.column === -1 &&
+            (d.file === null ||
+              ext.javaSources.includes(
+                path.relative(data.snapshot, d.file).split(path.sep).join("/"),
+              )),
         );
         globalWarnings++;
         continue;
@@ -557,7 +564,10 @@ export function kotlinExtensionEvidence(
         java.success === (errors === 0),
     );
     if (!java.success) {
-      requireEvidence(findings.some((f) => f.level === "error"));
+      requireEvidence(
+        findings.some((f) => f.level === "error") ||
+          (globalWarnings === 1 && warnings > 0),
+      );
       return {
         status: "failed",
         reason:
