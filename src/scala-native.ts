@@ -28,6 +28,7 @@ object VerifierScala:
     var bytes = -1
     var frontend = 0
     var complete = 0
+    var featureVisits = 0
     var compiled = 0
     var nodes = 0
     var types = 0
@@ -38,7 +39,7 @@ object VerifierScala:
     var macros = false
     var suspended = false
     val annotations = mutable.ArrayBuffer.empty[String]
-    def json: String = s"{\\"file\\":\${q(file)},\\"sha256\\":\${q(sha256)},\\"bytes\\":$bytes,\\"frontend\\":$frontend,\\"complete\\":$complete,\\"compiled\\":$compiled,\\"nodes\\":$nodes,\\"types\\":$types,\\"declarations\\":$declarations,\\"unknownAnnotations\\":$unknownAnnotations,\\"inline\\":$inline,\\"staging\\":$staging,\\"macro\\":$macros,\\"suspended\\":$suspended,\\"annotations\\":\${arr(annotations.map(q))}}"
+    def json: String = s"{\\"file\\":\${q(file)},\\"sha256\\":\${q(sha256)},\\"bytes\\":$bytes,\\"frontend\\":$frontend,\\"featureVisits\\":$featureVisits,\\"complete\\":$complete,\\"compiled\\":$compiled,\\"nodes\\":$nodes,\\"types\\":$types,\\"declarations\\":$declarations,\\"unknownAnnotations\\":$unknownAnnotations,\\"inline\\":$inline,\\"staging\\":$staging,\\"macro\\":$macros,\\"suspended\\":$suspended,\\"annotations\\":\${arr(annotations.map(q))}}"
   val sources = mutable.LinkedHashMap.empty[String, Source]
   val messages = mutable.ArrayBuffer.empty[String]
   val bindings = mutable.ArrayBuffer.empty[(String, String, String)]
@@ -49,6 +50,7 @@ object VerifierScala:
   var declarations = 0
   var finishCalls = 0
   var frontendStages = 0
+  var featureStages = 0
   var completeStages = 0
   var diagnosticBytes = 0
   var phases = List.empty[String]
@@ -59,7 +61,9 @@ object VerifierScala:
   class Observation(stage: String) extends Phase:
     def phaseName = "checktrail-original-" + stage
     override def runOn(units: List[CompilationUnit])(using Context): List[CompilationUnit] =
-      if stage == "frontend" then frontendStages += 1 else completeStages += 1
+      if stage == "frontend" then frontendStages += 1
+      else if stage == "features" then featureStages += 1
+      else completeStages += 1
       super.runOn(units)
     def run(using ctx: Context): Unit =
       val unit = ctx.compilationUnit
@@ -70,9 +74,6 @@ object VerifierScala:
           source.frontend += 1
           source.sha256 = hash(b)
           source.bytes = b.length
-          source.inline = unit.needsInlining
-          source.staging = unit.needsStaging
-          source.macros = unit.hasMacroAnnotations
           source.suspended = unit.suspended
           val seen = mutable.HashSet.empty[dotty.tools.dotc.core.Symbols.Symbol]
           val seenTypes = new java.util.IdentityHashMap[dotty.tools.dotc.core.Types.Type, java.lang.Boolean]
@@ -95,7 +96,10 @@ object VerifierScala:
                     case annotated: dotty.tools.dotc.core.Types.AnnotatedType => annotation(annotated.annot.symbol)
                     case _ => ()
               }
+              if tree.symbol.exists && tree.symbol.is(dotty.tools.dotc.core.Flags.Inline) then source.inline = true
               tree match
+                case _: tpd.Quote => source.staging = true
+                case _: tpd.Splice => source.macros = true
                 case member: tpd.MemberDef =>
                   declarations += 1
                   source.declarations += 1
@@ -108,11 +112,20 @@ object VerifierScala:
               traverseChildren(tree)
           traverser.traverse(unit.tpdTree)
         else
-          source.complete += 1
           if source.sha256 != hash(b) || source.bytes != b.length then throw new IllegalStateException("Native source drift")
+          source.suspended = source.suspended || unit.suspended
+          if stage == "features" then
+            source.featureVisits += 1
+            source.inline = source.inline || unit.needsInlining
+            source.staging = source.staging || unit.needsStaging
+            source.macros = source.macros || unit.hasMacroAnnotations
+          else source.complete += 1
       }
   class OriginalCompiler extends Compiler:
-    override def frontendPhases = super.frontendPhases.flatMap(group => if group.exists(_.phaseName == "typer") then List(group, List(new Observation("frontend"))) else List(group))
+    override def frontendPhases = super.frontendPhases.flatMap(group =>
+      if group.exists(_.phaseName == "typer") then List(group, List(new Observation("frontend")))
+      else if group.exists(_.phaseName == "posttyper") then List(group, List(new Observation("features")))
+      else List(group))
     override def backendPhases = super.backendPhases ::: List(List(new Observation("complete")))
   class OriginalDriver extends Driver:
     override def newCompiler(using Context): Compiler =
@@ -186,7 +199,7 @@ object VerifierScala:
         else if !Files.isDirectory(f, LinkOption.NOFOLLOW_LINKS) then throw new IllegalStateException("Native output kind")
     finally stream.close()
     if classCount != bindings.size then throw new IllegalStateException("Missing native class output")
-    val data = s"{\\"version\\":1,\\"scala\\":\${q(version)},\\"runtime\\":\${q(System.getProperty("java.runtime.version"))},\\"vendor\\":\${q(System.getProperty("java.vendor"))},\\"registrations\\":$registrations,\\"finishCalls\\":$finishCalls,\\"frontendStages\\":$frontendStages,\\"completeStages\\":$completeStages,\\"unknownSources\\":$unknownSources,\\"nodes\\":$nodes,\\"types\\":$types,\\"declarations\\":$declarations,\\"phases\\":\${arr(phases.map(q))},\\"errors\\":\${result.errorCount},\\"warnings\\":\${result.warningCount},\\"unreported\\":\${arr(result.unreportedWarnings.map((k,v) => s"{\\"category\\":\${q(k)},\\"count\\":$v}"))},\\"sources\\":\${arr(sources.values.map(_.json))},\\"messages\\":\${arr(messages)},\\"outputs\\":\${arr(outputs)}}"
+    val data = s"{\\"version\\":1,\\"scala\\":\${q(version)},\\"runtime\\":\${q(System.getProperty("java.runtime.version"))},\\"vendor\\":\${q(System.getProperty("java.vendor"))},\\"registrations\\":$registrations,\\"finishCalls\\":$finishCalls,\\"frontendStages\\":$frontendStages,\\"featureStages\\":$featureStages,\\"completeStages\\":$completeStages,\\"unknownSources\\":$unknownSources,\\"nodes\\":$nodes,\\"types\\":$types,\\"declarations\\":$declarations,\\"phases\\":\${arr(phases.map(q))},\\"errors\\":\${result.errorCount},\\"warnings\\":\${result.warningCount},\\"unreported\\":\${arr(result.unreportedWarnings.map((k,v) => s"{\\"category\\":\${q(k)},\\"count\\":$v}"))},\\"sources\\":\${arr(sources.values.map(_.json))},\\"messages\\":\${arr(messages)},\\"outputs\\":\${arr(outputs)}}"
     if data.getBytes(UTF_8).length > 4 * 1024 * 1024 then throw new IllegalStateException("Native receipt byte budget")
     println(data)
 `;

@@ -148,6 +148,8 @@ test(
       ["version", (d) => (d.native.scala = "3.8.0")],
       ["registration", (d) => (d.native.registrations = 0)],
       ["finish", (d) => (d.native.finishCalls = 0)],
+      ["feature phase", (d) => (d.native.featureStages = 0)],
+      ["feature source", (d) => (d.native.sources[0].featureVisits = 0)],
       ["unknown source", (d) => d.native.unknownSources++],
       ["phase order", (d) => d.native.phases.reverse()],
       ["native source", (d) => d.native.sources.pop()],

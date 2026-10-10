@@ -266,7 +266,8 @@ runtime and package; mixed/generated/script profiles, Scala, wider platforms and
 Gate A remain open. No inference or field evaluation is invoked.
 
 The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
-collector immediately after typing and after JVM bytecode generation. Selected
+collector after typing, after post-typer feature flag assignment, and after JVM
+bytecode generation. Selected
 physical and native source bytes, declaration/tree/type counts, resolved
 suppression annotations, driver/source callbacks, diagnostics, raw bytes and
 physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.

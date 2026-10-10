@@ -30,6 +30,7 @@ const nativeSchema = z.strictObject({
   registrations: z.number().int().min(0).max(1),
   finishCalls: z.number().int().min(0).max(1),
   frontendStages: z.number().int().min(0).max(1),
+  featureStages: z.number().int().min(0).max(1),
   completeStages: z.number().int().min(0).max(1),
   unknownSources: count,
   nodes: count,
@@ -52,6 +53,7 @@ const nativeSchema = z.strictObject({
           .min(-1)
           .max(1024 * 1024),
         frontend: z.number().int().min(0).max(1),
+        featureVisits: z.number().int().min(0).max(1),
         complete: z.number().int().min(0).max(1),
         compiled: z.number().int().min(0).max(1),
         nodes: count,
@@ -305,6 +307,7 @@ export function scalaEvidence(
         observed.nodes ||
         observed.declarations ||
         observed.types ||
+        observed.featureVisits ||
         observed.complete ||
         observed.compiled ||
         observed.annotations.length
@@ -459,9 +462,14 @@ export function scalaEvidence(
     if (
       !native.declarations ||
       native.frontendStages !== 1 ||
+      native.featureStages !== 1 ||
       native.completeStages !== 1 ||
       native.sources.some(
-        (s) => s.frontend !== 1 || s.complete !== 1 || s.compiled !== 1,
+        (s) =>
+          s.frontend !== 1 ||
+          s.featureVisits !== 1 ||
+          s.complete !== 1 ||
+          s.compiled !== 1,
       )
     )
       return incomplete;
