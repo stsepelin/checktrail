@@ -1,0 +1,1608 @@
+{
+  "schemaVersion": 1,
+  "scope": "Synthetic required JVM wrapper acceptance and bounded CI scheduling repair; no reviewer quality or final distribution acceptance.",
+  "sourceBaseCommit": "ac1907e29b2d631222deac8689477897a072c756",
+  "changedFileBindings": [
+    {
+      "file": "docs/NATIVE-CI.md",
+      "bytes": 27322,
+      "sha256": "0a893d32e76ff380dce144710486ca63b20c5ef820c4e6c6049c8ef02844ba5b"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "bytes": 12423,
+      "sha256": "73dd555b1e894598753fa60251a47f4febbb83125550617020ca200dd91d8220"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 3794,
+      "sha256": "344af99b0d5acfe50ddcd196fcc9959b373d5ae924dcdcb2ead6a98cd2382bb9"
+    },
+    {
+      "file": "test/gate-jvm-wrappers.test.ts",
+      "bytes": 21259,
+      "sha256": "9a17fe6e05ed361c9929a49071f8e6c0b47776f65e112b0c2176d34ef6d057d4"
+    },
+    {
+      "file": "test/required-native-tests.test.ts",
+      "bytes": 40900,
+      "sha256": "20b9b33060def52d91c43f8582fa9d100907a8a903b65a54712ac4f8d0865bc3"
+    },
+    {
+      "file": "test/review-probe.test.ts",
+      "bytes": 47867,
+      "sha256": "253fee0f736bfb0d32f23ea83cd17a4216a7207ff76cfefa70d003cf7125a9f1"
+    }
+  ],
+  "requiredInventoryChanged": false,
+  "requiredNamesChanged": false,
+  "affectedFixtureBodiesChanged": true,
+  "perCallbackDeadlinesChanged": false,
+  "runtimeLimitsChanged": false,
+  "observedFailures": [
+    {
+      "kind": "whole-file cumulative timeout",
+      "sourcePassed": 6,
+      "sourceRequired": 9,
+      "timeoutMs": 600000,
+      "unobservedCasesRemainIncomplete": true,
+      "hostedJob": "https://github.com/stsepelin/checktrail/actions/runs/38013954600/job/114100068665"
+    },
+    {
+      "kind": "concurrent native thread exhaustion",
+      "diagnosticCallbacks": 2,
+      "containerPidsLimit": 256,
+      "nativeError": "java.lang.OutOfMemoryError: unable to create native thread",
+      "systemError": "pthread_create EAGAIN",
+      "gradleBuildExitCode": 1,
+      "engineStatus": "inconclusive",
+      "diagnosticCreditedAsAcceptance": false
+    }
+  ],
+  "repair": {
+    "freshProcessPerNamedCase": true,
+    "heavyJvmCaseWorkers": 1,
+    "ownedTemporaryNamespacePerCase": true,
+    "startupEnvironmentCarriesTemporaryNamespace": true,
+    "cleanupTriggerWaitsForNativeReadyMarker": true,
+    "independentJobsRemainParallel": true
+  },
+  "native": {
+    "image": "sha256:ccd09106a80027fbddf36859182775b92b475a6f16af310a702f250a5688830d",
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+      "selectedNativeArtifacts": [
+        {
+          "path": "bin/java",
+          "bytes": 12672,
+          "sha256": "bf14eecd544fe58970e7349aa1e7edf4b446927a731670b4d824d180f2622c0a",
+          "byteVerified": true
+        },
+        {
+          "path": "bin/javac",
+          "bytes": 12768,
+          "sha256": "1c8860f38047e666c25a9bfa74537d0e79f65f55bf50808e20b4b63e6c73283f",
+          "byteVerified": true
+        },
+        {
+          "path": "bin/jar",
+          "bytes": 12752,
+          "sha256": "20b171e5ea1f56e67380b23fc56347541988a08ad35b1c8cf8c132835639534c",
+          "byteVerified": true
+        },
+        {
+          "path": "lib/modules",
+          "bytes": 145699541,
+          "sha256": "8ef38b5ace821f5d0439b7961e35805677d94089ed3c82eff429a0f6b7b4f425",
+          "byteVerified": true
+        }
+      ],
+      "wrapperArtifacts": [
+        {
+          "kind": "gradle",
+          "path": "gradlew",
+          "bytes": 8656,
+          "sha256": "a5a5c199ba02189ae8c46a334223371a20599d9c298ef65e7540ede4a3f72d59",
+          "byteVerified": true
+        },
+        {
+          "kind": "gradle",
+          "path": "gradlew.bat",
+          "bytes": 4888,
+          "sha256": "f17917f8dbe61182b149273ee78090fec1197442c3f38276af907bfa5190db16",
+          "byteVerified": true
+        },
+        {
+          "kind": "gradle",
+          "path": "gradle/wrapper/gradle-wrapper.jar",
+          "bytes": 47623,
+          "sha256": "238e777fcddd7e34f9708186085def2abd6e08e658505b38718d79d74c21abd5",
+          "byteVerified": true
+        },
+        {
+          "kind": "gradle",
+          "path": "gradle/wrapper/gradle-wrapper.properties",
+          "bytes": 369,
+          "sha256": "acc4c8711f37414f247408726a36db4360f169c4319378ec02485465df67527d",
+          "byteVerified": true
+        },
+        {
+          "kind": "maven",
+          "path": "mvnw",
+          "bytes": 11336,
+          "sha256": "07e72ac35ecf8c24db67498fc6a9a8e7c64b31ab3798a7119fe73fb7cd6c0331",
+          "byteVerified": true
+        },
+        {
+          "kind": "maven",
+          "path": "mvnw.cmd",
+          "bytes": 7903,
+          "sha256": "8c720db91d96ba5f67afa4083726b20eb4be399d86bb859e09eb67436bb230f5",
+          "byteVerified": true
+        },
+        {
+          "kind": "maven",
+          "path": ".mvn/wrapper/maven-wrapper.jar",
+          "bytes": 63093,
+          "sha256": "4e2fbf6554bc8a4702cdfdd3bef464f423393d784ddbb037216320ce55d5e4e1",
+          "byteVerified": true
+        },
+        {
+          "kind": "maven",
+          "path": ".mvn/wrapper/maven-wrapper.properties",
+          "bytes": 431,
+          "sha256": "59839817a504dc4fa0fc0e07d83a2a772e4b474c97e21f4f57e949bfb495bdb1",
+          "byteVerified": true
+        }
+      ],
+      "archiveArtifacts": [
+        {
+          "file": "apache-maven-3.10.0-bin.zip",
+          "url": "https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.zip",
+          "bytes": 10102082,
+          "sha256": "1f6d9909266510f039f59aa0e13dcd2c66da85f043e56276e41f2918f8bddaff",
+          "byteVerified": true
+        },
+        {
+          "file": "gradle-9.8.0-bin.zip",
+          "url": "https://services.gradle.org/distributions/gradle-9.8.0-bin.zip",
+          "bytes": 151611662,
+          "sha256": "bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c",
+          "byteVerified": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "preparationOwnership": {
+      "schemaVersion": 1,
+      "controls": [
+        {
+          "parentUid": 1001,
+          "nativeUid": 0,
+          "nativeGradleWrapperGenerationExecuted": true,
+          "wrapperArtifactsByteVerified": 4,
+          "gradleCacheOwnerUid": 0,
+          "parentCleanupSucceeded": false,
+          "cleanupError": "EACCES"
+        },
+        {
+          "parentUid": 1001,
+          "nativeUid": 1001,
+          "nativeGradleWrapperGenerationExecuted": true,
+          "wrapperArtifactsByteVerified": 4,
+          "gradleCacheOwnerUid": 1001,
+          "parentCleanupSucceeded": true
+        }
+      ],
+      "positiveComplete": true,
+      "rootOwnedNegativeReproduced": true,
+      "applicationSourceExecuted": false,
+      "syntheticGradleConfigurationExecuted": true
+    },
+    "baseline": {
+      "timeoutMs": 300000,
+      "profiles": [
+        {
+          "profile": "java",
+          "required": 5
+        },
+        {
+          "profile": "maven",
+          "required": 11
+        },
+        {
+          "profile": "gradle",
+          "required": 13
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 29,
+      "required": 29,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 29,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "fa76d38350e816109d7cd1d08f8861f54f33d67f059ef75afe4a29ac272f8097"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "40c82b55b0bbf91d78212f094ffa6bf4f8f1ce3abfde0ce1a7ee35a1f309e79d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40c82b55b0bbf91d78212f094ffa6bf4f8f1ce3abfde0ce1a7ee35a1f309e79d"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "1ce0aa3df562dd9aa2e566be0be95bcb9179f2b2a14719b0872666a98c978bb2"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "1ce0aa3df562dd9aa2e566be0be95bcb9179f2b2a14719b0872666a98c978bb2"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "edd1316c837ab7a1d14f7c6d9713d75dac205f966a294f844bf84d76a6318099"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "d080b8df1c9c61b0191393d3b9a43c081b198f9700ed14f133c4630601e515b8"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8d2152ff1f43472ae2dd43cab7b5f3b9d40e44ebfa5d7f98ebcf4a9860f4e04b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "40d9666bfa4726386419cc544c5acd7270b3d7a609a986d4b7e0b71c980d2c7c"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0b2fe3a6aea61a2c23e2cf6a49bb94dabcc0cb30ac95f00388567fcaea9f8f7f"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "bbc34f2d8e287bafda788325d7a3fb08d45adabd6e743eb7ef6a886c0e1d2c04"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 26.8973,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1547.854053,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 497.633857,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2493.603404,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2374.149044,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "Maven planning is data-only and unsupported prerequisites stay unavailable",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12.655332,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-2",
+            "name": "Maven artifact manifests reject corruption, extras, missing files and links",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2.220473,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-2",
+            "name": "native Maven detects an assertion regression and repaired scale controls from fresh outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 8880.973304,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-2",
+            "name": "native Maven rejects test filtering, skip switches and omitted test classes",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16654.886904,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-2",
+            "name": "native Maven retains disabled and empty-test evidence as incomplete",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 11592.224934,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-2",
+            "name": "native Maven binds every compiler input, plugin parameter and test terminal event",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3280.994,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-2",
+            "name": "native Maven classifies compiler failures separately from bootstrap errors and protects cache pins",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2679.956735,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-2",
+            "name": "native Maven successful planning preserves project data and rejects startup and environment overrides",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1088.10531,
+            "required": true
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-3",
+            "name": "native Maven CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 13221.4644,
+            "required": true
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-3",
+            "name": "native Maven accounts for every declared reactor module and refuses hidden siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9565.862148,
+            "required": true
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-3",
+            "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3162.487375,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-4",
+            "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18.799543,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-4",
+            "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10940.598706,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-5",
+            "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 43277.204957,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-5",
+            "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 10923.019463,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-6",
+            "name": "native Gradle planning reads successful project data without executing build code",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 484.084108,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-6",
+            "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 25331.872641,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-6",
+            "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12822.707525,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-7",
+            "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9904.045938,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-8",
+            "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 23959.666498,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-8",
+            "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 12422.577404,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-8",
+            "name": "native Gradle protects client JVM settings against project daemon overrides",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6372.209569,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-9",
+            "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 26473.047355,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-9",
+            "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 6057.061103,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "Java planning never executes Maven/Gradle and requires explicit bounded configuration",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java compiles the public record fixture and reports a type regression without running application initialization",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java accounts for empty files, package metadata and each top-level type; missing analysis cannot pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java retains warnings, enforces declared release, and does not implicitly compile excluded source",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native Java consumes checksummed JARs but never executes processors or follows manifest classpaths",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Maven planning is data-only and unsupported prerequisites stay unavailable",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-2",
+            "name": "Maven artifact manifests reject corruption, extras, missing files and links",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven detects an assertion regression and repaired scale controls from fresh outputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven rejects test filtering, skip switches and omitted test classes",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven retains disabled and empty-test evidence as incomplete",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven binds every compiler input, plugin parameter and test terminal event",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven classifies compiler failures separately from bootstrap errors and protects cache pins",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Maven successful planning preserves project data and rejects startup and environment overrides",
+            "outcome": "passed",
+            "terminalSequences": [13]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Maven CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [14]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Maven accounts for every declared reactor module and refuses hidden siblings",
+            "outcome": "passed",
+            "terminalSequences": [15]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Maven cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-4",
+            "name": "Gradle planning requires explicit activation and bounded complete source prerequisites",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Gradle compiles fresh inputs and catches repaired assertion and scale boundaries",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Gradle rejects filtered skipped modified task and omitted source evidence",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Gradle binds source declarations classpaths native task identities and every terminal",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Gradle planning reads successful project data without executing build code",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Gradle retains disabled and empty execution and supports parameterized dynamic controls",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Gradle rejects an actual wrong test-source binding and accepts its repaired declaration",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Gradle classifies compiler failures without attributing infrastructure or cache failures as defects",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Gradle accounts for independent and dependent module failures and rejects undeclared siblings",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Gradle executes original Java projects declared by Kotlin DSL without admitting mixed compiler source",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Gradle CLI and negotiated MCP preserve failures privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Gradle cancellation reaches the running test and removes owned descendants and temporary outputs",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Gradle protects client JVM settings against project daemon overrides",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 600000,
+      "profile": "jvm-wrappers",
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "c0bd4e3f118e00b640285b2b3e299e15ecca57d0ac29e127f09039f632fca57d"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c0bd4e3f118e00b640285b2b3e299e15ecca57d0ac29e127f09039f632fca57d"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "jvm-wrappers broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18161.056763,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "jvm-wrappers fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 18386.964141,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "jvm-wrappers near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 16760.683339,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "jvm-wrappers prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1514.158763,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "jvm-wrappers stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 20084.291875,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "jvm-wrappers empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 28964.514002,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "jvm-wrappers privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 74969.513323,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "jvm-wrappers lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 62955.944035,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "jvm-wrappers installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 233945.107883,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "jvm-wrappers installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "guardCapture": {
+      "nativeReceipts": 2,
+      "generatedClasses": 4,
+      "jpmsDescriptors": 4,
+      "executedTests": 8,
+      "fieldEvaluationExecuted": false,
+      "inferenceInvoked": false
+    },
+    "guards": {
+      "controls": [
+        {
+          "id": "wrapper-identity",
+          "callback": "actual JVM wrapper receipt rejects wrapper-identity",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "b1a1ef9565c5e1ce94d5a087018e127ed9bf1c70ed5105e9da021415942e4372",
+          "mutantOutputSha256": "dfc4eebcaf6b74e3141025e53d97178ed1eff0ca32baeebf4761446273315394",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "generator-accounting",
+          "callback": "actual JVM wrapper receipt rejects generator-accounting",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "c1492e38297a0785c9a1924625737c4887ce6e7f5bcaf68a7dacf3f13f26103f",
+          "mutantOutputSha256": "f1fea9ff5a1854796da9e4f9b4b8a0dc56176be5b136fcdcaafb378ee5f7e366",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "generator-input",
+          "callback": "actual JVM wrapper receipt rejects generator-input",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "72e49fd585816307e767ab5118630b5719df9ba8387937eb1709d05f6c153886",
+          "mutantOutputSha256": "347e4a96a41af87958629b0e75965cd46403ee62df134582632969da7fac3166",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-output-accounting",
+          "callback": "actual JVM wrapper receipt rejects generated-output-accounting",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "6891490f8351d2c1ef4b8a171336dd1627d26afd3d9d04ab26f36f2c1c558979",
+          "mutantOutputSha256": "cfe67f496a444d346142b7bb32655826a012365bb7e7e08488dbc7996ddb1b25",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "generated-class-contract",
+          "callback": "actual JVM wrapper receipt rejects generated-class-contract",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "a06f0bb12c0118ca1d2ba492e5250189e4da0507b6ab1ca70d9663d9894d19ca",
+          "mutantOutputSha256": "00ecb585841e2890d8e8d6a6598ff848c9be0b68c3ea08adfce5a5a96ba4d8b9",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "physical-class-accounting",
+          "callback": "actual JVM wrapper receipt rejects physical-class-accounting",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "ff7f6644b760b21ef3c53594cebf5eb41fe981b79a70bc080116104d9c6f6cad",
+          "mutantOutputSha256": "f32099708d56a1c77b596b36e77056f84d9d8404e212086fb35c3b952c6eb954",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "physical-class-origin",
+          "callback": "actual JVM wrapper receipt rejects physical-class-origin",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "bacdbdcb351b5906d47235aac5d6110a0a79db267d22bdbcf9be9d22a6dd1cb6",
+          "mutantOutputSha256": "30cc27fb40c8f22e2e570a54db2d50b8a516215da09cad26f395d83fe574d0d7",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "module-accounting",
+          "callback": "actual JVM wrapper receipt rejects module-accounting",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "dfce7902ad538a67d54cc6e0fe9bf5fc8b4778c6d65b738f8fa16ce10f81fd8f",
+          "mutantOutputSha256": "25485d326f92dcb3c937769de65e7a00d887667bd2696af212058897f75894a1",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "module-contract",
+          "callback": "actual JVM wrapper receipt rejects module-contract",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "5abb3b226c936bf399093acd1be1e3070e33ccaf4fa956336a6428fd14f19e8f",
+          "mutantOutputSha256": "4ebd938c73c3980899f03ed5db6e0165d685abfc731eb7646517e4d14523102c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "owned-distribution",
+          "callback": "actual JVM wrapper receipt rejects owned-distribution",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "0079e1700e0f5c2decf742f2bbccec37689c2e09c477f93ff4902ba9d080bed4",
+          "mutantSha256": "8d5e6def532713fc999ae3e44910609eb0c3c44d14f9e3904a7e15419a6be3ce",
+          "mutantOutputSha256": "2ec2e91f3941ad161ab1e8990a4e25d644bf4e2c772ae367b2e5079bd34423c0",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "maven-compiler-inputs",
+          "callback": "actual JVM wrapper receipt rejects maven-compiler-inputs",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "5aa72a472f91b6574938a03f53fd8c350181b23c5ae2dc2ffdf901e95ec05097",
+          "mutantSha256": "140781c8b8d8fdfeba2994016a10353eefd974d0488732bfaeece7e00f4905a9",
+          "mutantOutputSha256": "5add8df2dcbf5e168a72c06b6512a05a3bd97abba09eda67ba0d0c6aa28ba84c",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "gradle-source-inputs",
+          "callback": "actual JVM wrapper receipt rejects gradle-source-inputs",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "75e2c5c8401205e1f26743aa5bc825373240320b36f43f85d7a82ebb0ee67012",
+          "mutantSha256": "97756a4dd6f105404ad6bb530b416ea5e311c1ab81e994179fc0e4dc723e2801",
+          "mutantOutputSha256": "e158a8085cfbefa8939dcede636b6f08efa14c9f3d3fbf6a6c050ef765be8204",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "gradle-launcher-ancestry",
+          "callback": "actual JVM wrapper receipt rejects gradle-launcher-ancestry",
+          "callbackSha256": "4ca10bc14dd8322c462196f8783873604efc2c6bfb4e913333c4daf059301777",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "75e2c5c8401205e1f26743aa5bc825373240320b36f43f85d7a82ebb0ee67012",
+          "mutantSha256": "4a5b9fedff9e13d996900fd9b11a3f23526b2fbd9ef1add55a95e928e6700fa0",
+          "mutantOutputSha256": "0ba1a623567e7cdebfa7b7f225fe4da2f8766b0855542f89661c531cc1b2d619",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "selected-native-digest",
+          "callback": "selected JVM artifacts reject both size changes and same-size digest changes",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "21162e3c09a35a07317e8ef997a648d92bc7e5bcbe9a02eff9c32dadd8623333",
+          "mutantSha256": "b4b890c3560dd2d56732ceb8e46812aaa05d9209878f1d87c225fcacfe71ca46",
+          "mutantOutputSha256": "6f06790fb6fcd247b8512a71a0f5a323a630c4174179fef4504e78aab3eb67d6",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "live-native-output",
+          "callback": "actual JVM invoker mirrors live output before a native child terminates",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "375f7c861c2c5289b8f10bc6a1f9a1d523529f77dbccacece32ecf62651e96de",
+          "mutantSha256": "b16b0ada0afc10a51e1764e6a2e7f37509a7b336d565ccf36d65a4d9452c43a2",
+          "mutantOutputSha256": "bad2692576779d81e3bb6b25ec59f8b4bc8cf1a20b4f0f74d37c5b8a74093ce1",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "maven-post-wrapper-bytes",
+          "callback": "native JVM wrappers recheck original excluded archives after successful tests",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "a94f23f9a469d3f316f6b829990e792e5ed8cdb6f163047e46e36f2d2485ecb4",
+          "mutantSha256": "410df1e3fe96ae46e8f89878b5c56174679b5eb48225d31c6e6a190f58bf8b3e",
+          "mutantOutputSha256": "e3ab032a8ce7c2fe02a543106060af581a984abf17e5c79498e333c8e4f18b18",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "maven-post-distribution-bytes",
+          "callback": "native JVM wrappers recheck bootstrap-produced distributions after successful tests",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "a94f23f9a469d3f316f6b829990e792e5ed8cdb6f163047e46e36f2d2485ecb4",
+          "mutantSha256": "4c7d700ef7b69784487d4ee3148e995e75acc90da3b865d10acd48873f493276",
+          "mutantOutputSha256": "d6a171bb2f481b5382d0f54a05fa71b70bb79f25a59c3e624ded7e1ba67c7667",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "maven-post-generated-source",
+          "callback": "native JVM generated source bytes remain bound after successful class and test witnesses",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "a94f23f9a469d3f316f6b829990e792e5ed8cdb6f163047e46e36f2d2485ecb4",
+          "mutantSha256": "0d4876ff2de0a551fbd471247682cd4ed596f451e7c73a09109449ae4a36ae23",
+          "mutantOutputSha256": "febe767382ddfa5c2e82f9010853852cafceb5ec173e04105db0efc01a33cf11",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "gradle-post-wrapper-bytes",
+          "callback": "native JVM wrappers recheck original excluded archives after successful tests",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "94513422e080d8284b1b714ef8837a9da12f4a8fe507bab1ef6571572e810ab7",
+          "mutantSha256": "7708e995e68be36cec3180ec6e9bf82736ba9397640b2812ad0a5126de55bb35",
+          "mutantOutputSha256": "25bd5a18e2f4fc2b312f0f1d586747ce633c8501f2b28d133a34093827eaec08",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "gradle-post-distribution-bytes",
+          "callback": "native JVM wrappers recheck bootstrap-produced distributions after successful tests",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "94513422e080d8284b1b714ef8837a9da12f4a8fe507bab1ef6571572e810ab7",
+          "mutantSha256": "8dca9bac6c3b05d6c8cfd631334adacfe9f397d906d6efd262d17860a0dfebc2",
+          "mutantOutputSha256": "5a7045e91008c7050eb21270530733d0160a555c817799232611fd728c0a0c17",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        },
+        {
+          "id": "gradle-post-generated-source",
+          "callback": "native JVM generated source bytes remain bound after successful class and test witnesses",
+          "callbackSha256": "0313e8be40f74c54d06e87e9198802a921f8a3f4be61296747675b6147a70803",
+          "fixtureSha256": "d440fe1828dfa906c2dd5cb4837b77128118ac564ea993157f38167632a57336",
+          "sourceSha256": "94513422e080d8284b1b714ef8837a9da12f4a8fe507bab1ef6571572e810ab7",
+          "mutantSha256": "7c4d92fdf4c6e9f607cfc7be348cbe2cceed017fe5d6121c2c799beb8d065413",
+          "mutantOutputSha256": "114dc31c62dae658181ae2bfd8684a9bae88f268f47f763bfca202a6cce9989b",
+          "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true
+        }
+      ],
+      "nativeReceiptControlsUseActualSourceExecution": true,
+      "eachControlUsesFreshChildProcess": true,
+      "wholeQualityAssessed": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "diagnosticSha256": "d630a17a07609641e5f7e2a4fa2e99311cedfc3b91de4e582b1b265ed84ccd40"
+    },
+    "installed": {
+      "tarballSha256": "bcad0103cc9c7d64e4d9c38b8eca664948b3b5c624d33fb97d199fac57dee9cb",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 600000,
+        "profile": "jvm-wrappers",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "c0bd4e3f118e00b640285b2b3e299e15ecca57d0ac29e127f09039f632fca57d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "c0bd4e3f118e00b640285b2b3e299e15ecca57d0ac29e127f09039f632fca57d"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "jvm-wrappers broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14426.316939,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "jvm-wrappers fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 14668.501435,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "jvm-wrappers near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 13627.801326,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "jvm-wrappers prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1117.784707,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "jvm-wrappers stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15541.89222,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "jvm-wrappers empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 29014.615053,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "jvm-wrappers privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 74200.229631,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "jvm-wrappers lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 62605.895033,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "jvm-wrappers installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.408634,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "jvm-wrappers installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "callbacks": [
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers broken acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers fixed acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers near-miss acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers prerequisite acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers stale acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers empty acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers privacy acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers lifecycle acceptance"
+      },
+      {
+        "file": "dist/test/gate-jvm-wrappers.test.js",
+        "name": "jvm-wrappers installed acceptance"
+      }
+    ],
+    "environment": {
+      "network": "none",
+      "sourceMount": "readonly",
+      "rootFilesystemReadonly": true,
+      "cpus": 2,
+      "memoryMiB": 4096,
+      "pids": 256,
+      "temporaryFilesystemMiB": 2048,
+      "temporaryFilesystemExecutable": true
+    },
+    "wholeJdkAndSystemClosureVerified": false,
+    "publisherAndLicenseClosureVerified": false,
+    "finalMatrixAccepted": false,
+    "gateAComplete": false,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "sourceCopyByteIdentical": true,
+    "node": "v26.9.0",
+    "stats": {
+      "tests": 1395,
+      "pass": 906,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 489,
+      "todo": 0
+    },
+    "durationMs": 252598.422541,
+    "optionalSkipsCreditedAsPasses": false
+  },
+  "packedCodeSnapshot": {
+    "tarballSha256": "bcad0103cc9c7d64e4d9c38b8eca664948b3b5c624d33fb97d199fac57dee9cb",
+    "scope": "Offline installed snapshot before adding this public measurement; affected runtime, callback and harness files are byte-bound above. The final distribution remains a separate open gate."
+  },
+  "finalMatrixAccepted": false,
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "reviewQualityAssessed": false
+}
