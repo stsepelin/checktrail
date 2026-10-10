@@ -70,6 +70,10 @@ again. Three mutate native compiler/test invocation code and prove the original
 compiled test bodies were reached; they are not mutations of Swift observer source.
 Reached cancellation, timeout and output exhaustion check native descendants and
 owned temporary cleanup. CI separates acceptance and three guard shards.
+The public SDK handoff uses explicit directory traversal and manifest read modes
+before atomic publication, so the read-only UID 1000 container can read it. The
+[CI handoff repair](measurements/swift-extensions-ci-sdk-handoff-2026-10-10.json)
+records a Linux before/after permission check separately from native Swift acceptance.
 
 The mandatory project check passed with optional native skips reported separately.
 Subsequent schema generation and strict public-schema parity checks preserved the

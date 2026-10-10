@@ -2,6 +2,7 @@ import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
+  chmod,
   lstat,
   mkdir,
   mkdtemp,
@@ -244,6 +245,10 @@ try {
     JSON.stringify(identity, null, 2) + "\n",
     { flag: "wx" },
   );
+  // This directory contains public tool artifacts and the synthetic SDK manifest.
+  // mkdtemp starts at 0700; the read-only UID 1000 acceptance mount needs traversal.
+  await chmod(path.join(temporary, "sdk.json"), 0o644);
+  await chmod(temporary, 0o755);
   await rename(temporary, destination);
   completed = true;
   process.stdout.write(JSON.stringify(identity) + "\n");
