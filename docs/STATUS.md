@@ -990,3 +990,5 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The separate [F# default formatter](FSHARP-FORMAT.md) now uses pinned native APIs for declared implementations, signatures and scripts, preserving current source and all returned formatter diagnostics without rewriting files. The selected source controls exercise default options, unsupported prerequisites, stale receipts, privacy and native lifecycle cleanup. [Measured native acceptance](measurements/fsharp-format-2026-10-10.json) passed every frozen source and fresh installed-package callback, preserved the selected .NET baselines and confirmed paired compiling controls; wider E12, artifact/platform closure and Gate A remain open.

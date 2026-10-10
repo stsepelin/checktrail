@@ -54,6 +54,7 @@ export const PARSERS = [
   "dotnet-build-json",
   "dotnet-test-json",
   "dotnet-format-json",
+  "fsharp-format-json",
   "actionlint-json",
   "external-json",
   "ruby-syntax",

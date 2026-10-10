@@ -53,6 +53,7 @@ export async function toolsFor(
         "dotnet.build",
         "dotnet.test",
         "dotnet.format-whitespace",
+        "dotnet.format-fsharp",
         "infrastructure.terraform-validate",
         "infrastructure.kustomize",
         "infrastructure.helm",
@@ -401,6 +402,18 @@ export async function toolsFor(
         "--version",
       ]),
     ];
+  if (check.id === "dotnet.format-fsharp")
+    return [
+      { name: "node", source: "engine-runtime" },
+      ...(check.commands[0]
+        ? [
+            command("fantomas", process.execPath, [
+              ...check.commands[0].args,
+              "--version",
+            ]),
+          ]
+        : []),
+    ];
   if (check.adapter === "dotnet")
     return [
       { name: "node", source: "engine-runtime" },
@@ -582,6 +595,16 @@ export async function identifyTool(
   )
     return result;
   const output = execution.stdout.trim();
+  if (tool.name === "fantomas") {
+    const verified =
+      !execution.stderr &&
+      output === "Fantomas 8.0.7 (SDK 10.0.401; runtime 10.0.12)";
+    return {
+      ...result,
+      status: verified ? "identified" : "inconclusive",
+      version: verified ? "8.0.7" : null,
+    };
+  }
   if (tool.name === "helm") {
     const verified = !execution.stderr && output === "v4.3.0";
     return {

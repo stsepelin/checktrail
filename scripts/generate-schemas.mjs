@@ -13,6 +13,11 @@ import {
   reviewMultiReportSchema,
   reviewMultiSummarySchema,
 } from "../dist/src/review-multi-scoring.js";
+import { fsharpFormatConfigSchema } from "../dist/src/fsharp-format.js";
+import {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "../dist/src/fsharp-format-contract.js";
 import { capturedProcessOutputSchema } from "../dist/src/process-output.js";
 import { windowsExecutionSchema } from "../dist/src/windows-execution.js";
 import {
@@ -181,6 +186,9 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "fsharp-format-config": fsharpFormatConfigSchema,
+  "fsharp-format-native": fsharpNativeSchema,
+  "fsharp-format-packet": fsharpPacketSchema,
   "cpp-tools-config": cppToolsConfigSchema,
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,

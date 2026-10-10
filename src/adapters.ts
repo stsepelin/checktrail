@@ -43,6 +43,7 @@ import { applyGoWorkspace } from "./go-workspace.js";
 import { pintCheck } from "./pint.js";
 import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
+import { fsharpFormatCheck } from "./fsharp-format.js";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
 import { phpExtensionsCheck } from "./php-extensions.js";
@@ -161,6 +162,7 @@ export const adapters = [
       "dotnet.build",
       "dotnet.test",
       "dotnet.format-whitespace",
+      "dotnet.format-fsharp",
     ],
   },
   {
@@ -595,6 +597,9 @@ export async function checksFor(
         : []),
       ...(requested?.includes("dotnet.format-whitespace")
         ? [await dotnetFormatCheck(source, project)]
+        : []),
+      ...(requested?.includes("dotnet.format-fsharp")
+        ? [await fsharpFormatCheck(source, project)]
         : []),
       ...(requested?.includes("dotnet.test")
         ? [await dotnetTestCheck(source, project)]

@@ -4514,5 +4514,43 @@
       "file": "dist/test/gate-confidence-provenance.test.js",
       "name": "confidence-provenance installed acceptance"
     }
+  ],
+  "dotnet-fsharp-format": [
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format installed acceptance"
+    }
   ]
 }

@@ -281,3 +281,9 @@ export {
   reviewProvenanceSummarySchema,
 } from "./review-provenance.js";
 export type { ReviewProvenanceReport } from "./review-provenance.js";
+
+export { fsharpFormatConfigSchema } from "./fsharp-format.js";
+export {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "./fsharp-format-contract.js";

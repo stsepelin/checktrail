@@ -234,3 +234,5 @@ accounting through library, CLI and MCP. See [REVIEW-PROVENANCE.md](REVIEW-PROVE
 Structural native receipt reconciliation does not attest execution; host
 probabilities and operator labels remain unverified. Authoritative judgments,
 calibration/independence evidence, final runtime bindings and Gate A remain open.
+
+FSHARP-FORMAT.md records the separate `dotnet.format-fsharp` default source-string profile, with explicit implementation/signature/script scope, selected SDK/formatter bytes, complete returned diagnostics and owned native lifecycle controls. It does not close broader E12 formatting, complete artifact/license closure, the final runtime matrix or Gate A.
