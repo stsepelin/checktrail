@@ -10,6 +10,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+import { tmpdir } from "node:os";
 import { test } from "node:test";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -377,6 +378,12 @@ test(
   "jvm-wrappers privacy acceptance",
   { skip, timeout: 360000 },
   async (t) => {
+    const startupEnvironment: Record<string, string> = {
+      TMPDIR: tmpdir(),
+      TEMP: tmpdir(),
+      TMP: tmpdir(),
+      ...(process.env.JAVA_HOME ? { JAVA_HOME: process.env.JAVA_HOME } : {}),
+    };
     for (const kind of kinds) {
       const f = await jvmOriginal(t, kind, true),
         report = await run(f.root);
@@ -411,6 +418,7 @@ test(
         try {
           await client.connect(
             new StdioClientTransport({
+              env: startupEnvironment,
               command: process.execPath,
               args: [
                 cli,
@@ -431,6 +439,7 @@ test(
           assert.equal(
             (response.structuredContent as { outcome: string }).outcome,
             "passed",
+            JSON.stringify(response.structuredContent),
           );
           assert.equal(JSON.stringify(response).includes(f.root), detailed);
           assert.equal(
@@ -453,6 +462,7 @@ test(
       try {
         await untrusted.connect(
           new StdioClientTransport({
+            env: startupEnvironment,
             command: process.execPath,
             args: [cli, "serve", "--root", f.root],
             stderr: "pipe",
@@ -543,7 +553,7 @@ test(
             ],
           }),
         );
-        const before = (await readdir("/tmp"))
+        const before = (await readdir(tmpdir()))
             .filter((n) => n.startsWith("checktrail-command-"))
             .sort(),
           abort = new AbortController();
@@ -612,7 +622,7 @@ test(
           }
           await assert.rejects(access(ids.temporary));
           assert.deepEqual(
-            (await readdir("/tmp"))
+            (await readdir(tmpdir()))
               .filter((n) => n.startsWith("checktrail-command-"))
               .sort(),
             before,
