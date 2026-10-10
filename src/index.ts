@@ -287,3 +287,9 @@ export {
   fsharpNativeSchema,
   fsharpPacketSchema,
 } from "./fsharp-format-contract.js";
+
+export { dotnetFormatExtensionsConfigSchema } from "./dotnet-format-extensions.js";
+export {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "./dotnet-format-extensions-contract.js";

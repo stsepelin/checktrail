@@ -27,6 +27,12 @@ import {
   DotnetGeneratedScopeError,
 } from "./dotnet-generated-collect.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
+import { collectDotnetFormattingExtensions } from "./dotnet-format-extensions-collect.js";
+import {
+  dotnetFormatExtensionsConfigSchema,
+  selectedDotnetFormatterSdk,
+} from "./dotnet-format-extensions.js";
+let invokeExecutable = "dotnet";
 
 const receipts: {
   phase: string;
@@ -54,7 +60,7 @@ Object.assign(env, {
 function invoke(phase: string, args: string[], cwd: string) {
   if (receipts.length >= 80) throw Error("Native call bound");
   const started = performance.now(),
-    result = spawnSync("dotnet", args, {
+    result = spawnSync(invokeExecutable, args, {
       cwd,
       env,
       encoding: "utf8",
@@ -117,7 +123,24 @@ async function main() {
     env.DOTNET_CLI_HOME = home;
     env.NUGET_HTTP_CACHE_PATH = path.join(home, "http");
     let sdk: string;
+    const extensionFlag = process.argv[4] === "--format-extensions";
+    const extensionConfig = extensionFlag
+      ? dotnetFormatExtensionsConfigSchema.parse(JSON.parse(process.argv[5]!))
+      : undefined;
     try {
+      if (extensionFlag) {
+        if (
+          process.argv.length !== 6 &&
+          !(process.argv.length === 7 && process.argv[6] === "--version")
+        )
+          throw Error("Exact formatting extension arguments required");
+        const selected = await selectedDotnetFormatterSdk();
+        invokeExecutable = selected.executable;
+        env.DOTNET_ROOT = selected.root;
+        env.DOTNET_MULTILEVEL_LOOKUP = "0";
+        env.DOTNET_ROLL_FORWARD = "Disable";
+        env.DOTNET_CLI_UI_LANGUAGE = "en-US";
+      }
       const listed = invoke("sdk", ["--list-sdks"], temporary),
         matches = listed.stdout
           .split(/\r?\n/)
@@ -489,6 +512,23 @@ async function main() {
             regular,
           })
         : undefined;
+    const extensionData =
+      extensionConfig && build.status === 0
+        ? await collectDotnetFormattingExtensions({
+            sdk,
+            workspace,
+            repository,
+            observer,
+            references: builtins,
+            invocation,
+            config: extensionConfig,
+            env,
+            compiledSources,
+            ownedPins,
+            observe,
+            regular,
+          })
+        : undefined;
     for (const [file, pin] of compiledSources)
       if (mavenHash(await regular(file, 4 * 1024 * 1024)) !== pin.sha256)
         throw Error("Compiler source changed after native execution");
@@ -551,7 +591,9 @@ async function main() {
                 format: formatData ?? null,
                 nativeReceipts: receipts,
               }
-            : packet,
+            : extensionFlag
+              ? { version: 1, build: packet, extensions: extensionData ?? null }
+              : packet,
       ),
     );
   } finally {

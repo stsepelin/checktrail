@@ -236,3 +236,5 @@ probabilities and operator labels remain unverified. Authoritative judgments,
 calibration/independence evidence, final runtime bindings and Gate A remain open.
 
 FSHARP-FORMAT.md records the separate `dotnet.format-fsharp` default source-string profile, with explicit implementation/signature/script scope, selected SDK/formatter bytes, complete returned diagnostics and owned native lifecycle controls. It does not close broader E12 formatting, complete artifact/license closure, the final runtime matrix or Gate A.
+
+DOTNET-FORMAT-EXTENSIONS.md records the selected C#/VB SDK style/analyzer and generated-source formatting cohort. It requires all nine frozen source/installed callbacks, retained .NET baselines and paired compiling controls. Declared profile receipts do not independently attest execution or close broader generators, artifact/license closure, final platform acceptance or Gate A.

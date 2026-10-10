@@ -87,3 +87,5 @@ replace external acceptance.
 This audit uses the existing execution ledger and recorded native observations.
 It is not a fresh security review of every source file, an independent review of
 the evaluation labels, or proof that the entire M0–M5 plan is complete.
+
+The selected C#/VB SDK formatting extension is specified in [DOTNET-FORMAT-EXTENSIONS.md](DOTNET-FORMAT-EXTENSIONS.md). [Its measurement](measurements/dotnet-format-extensions-2026-10-10.json) records all nine source and installed callbacks, 28 preserved .NET cases, 20 paired compiling controls and the mandatory host check. These are separate from final artifact/license, platform-matrix and Gate A acceptance. Native process freshness is not evidence of independent AI host sessions.

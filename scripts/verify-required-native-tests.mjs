@@ -42,7 +42,8 @@ const timeoutMs =
   selection.includes("jvm-wrappers") ||
   selection.includes("kotlin-extensions") ||
   selection.includes("scala-extensions") ||
-  selection.includes("jvm-analyzer-extensions")
+  selection.includes("jvm-analyzer-extensions") ||
+  selection.includes("dotnet-format-extensions")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),

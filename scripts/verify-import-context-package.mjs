@@ -59,6 +59,7 @@ assert.ok(
     "kustomize-extensions",
     "confidence-provenance",
     "dotnet-fsharp-format",
+    "dotnet-format-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -130,6 +131,8 @@ if (profile === "kustomize-extensions")
   process.env.CHECKTRAIL_KUSTOMIZE_EXTENSIONS_INSTALLED = "1";
 if (profile === "dotnet-fsharp-format")
   process.env.CHECKTRAIL_FSHARP_FORMAT_INSTALLED = "1";
+if (profile === "dotnet-format-extensions")
+  process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -198,6 +201,8 @@ try {
     "kustomize-extensions-fixture.js",
     "kustomize-fixture.js",
     "gate-dotnet-fsharp-format.test.js",
+    "gate-dotnet-format-extensions.test.js",
+    "dotnet-format-extensions-fixture.js",
     "fsharp-format-fixture.js",
     "gate-confidence-provenance.test.js",
     "confidence-provenance-fixture.js",

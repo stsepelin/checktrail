@@ -33,7 +33,10 @@ const metadataSchema = z.strictObject({
       z.strictObject({
         file,
         algorithm: file,
-        hash: z.string().regex(/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/),
+        hash: z
+          .string()
+          .regex(/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/)
+          .or(z.literal("")),
       }),
     )
     .max(4096),
@@ -178,6 +181,11 @@ const extensions = {
 export function dotnetBuildEvidence(
   check: Check,
   processes: ProcessResult[],
+  additionalSdkAnalyzerConfigs: ReadonlyMap<
+    string,
+    { bytes: number; sha256: string }
+  > = new Map(),
+  nativeMappedDocuments: ReadonlyMap<string, ReadonlySet<string>> = new Map(),
 ): Pick<CheckResult, "status" | "reason" | "findingsComplete" | "findings"> {
   const incomplete = {
     status: "inconclusive" as const,
@@ -793,6 +801,12 @@ export function dotnetBuildEvidence(
                     "Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig",
                   )) ||
                 (name === "AnalyzerConfigFiles" &&
+                  check.id === "dotnet.format-extensions" &&
+                  additionalSdkAnalyzerConfigs.get(file)?.sha256 ===
+                    observed.sha256 &&
+                  additionalSdkAnalyzerConfigs.get(file)?.bytes ===
+                    observed.bytes) ||
+                (name === "AnalyzerConfigFiles" &&
                   (file ===
                     path.join(
                       base,
@@ -872,7 +886,16 @@ export function dotnetBuildEvidence(
         const source = data.compiledSources.find(
           (pin) => pin.file === document.file,
         );
-        requireEvidence(source, "Every symbol document is a compiler input");
+        if (!source) {
+          requireEvidence(
+            check.id === "dotnet.format-extensions" &&
+              document.hash === "" &&
+              document.algorithm === "00000000-0000-0000-0000-000000000000" &&
+              nativeMappedDocuments.get(item.file)?.has(document.file),
+            "Every virtual symbol document has a native source mapping in this project",
+          );
+          continue;
+        }
         requireEvidence(
           document.algorithm === "8829d00f-11b8-4213-878b-770e8597ac16"
             ? document.hash === source.sha256

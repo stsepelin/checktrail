@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": { "type": "string", "const": "sdk-code-style-and-analyzers-v1" },
+    "styleDiagnostics": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$" }
+    },
+    "analyzerDiagnostics": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$" }
+    },
+    "severity": { "type": "string", "enum": ["info", "warn", "error"] },
+    "includeGenerated": { "type": "boolean", "const": true }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "styleDiagnostics",
+    "analyzerDiagnostics",
+    "severity",
+    "includeGenerated"
+  ],
+  "additionalProperties": false
+}
