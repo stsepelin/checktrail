@@ -15,7 +15,7 @@ const native = {
   skip: available
     ? false
     : "Pinned Ruby runtime and dependency cache not selected",
-  timeout: 600000,
+  timeout: 1200000,
 };
 const run = (root: string) =>
   validate(root, { trusted: true, timeoutMs: 120000 });

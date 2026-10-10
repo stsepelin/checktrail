@@ -64,7 +64,7 @@ async function executeRequiredTests(
   } = {},
 ) {
   assert.ok(
-    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 600000,
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000,
     "Required test harness timeout must be bounded",
   );
   assert.ok(

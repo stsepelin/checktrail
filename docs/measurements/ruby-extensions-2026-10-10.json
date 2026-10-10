@@ -1,0 +1,1269 @@
+{
+  "schemaVersion": 1,
+  "profile": "ruby-extensions",
+  "recordedDate": "2026-10-10",
+  "scope": "Original synthetic grouped/platform/conditional and evaluated-path Ruby manifests, physical shared RSpec example/hook receivers and inherited Minitest method owners; no inference or field/quality evaluation.",
+  "inventoryScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "sourceBaseCommit": "144f2bdf64a07137d98f5e67aea9727153e3e4d1",
+  "testedImplementationFileBindings": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 92214,
+      "sha256": "0f7a352c8af4c447391226b8dd5b6c0e51a82ccfba492a5e5a2610176650683f"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "bytes": 31495,
+      "sha256": "43403f72a447b0e3ad6e962da5ecac270e80a96dbfc88f424ed29e0bf3d0cff7"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "bytes": 46840,
+      "sha256": "b70c2c004a26929c40e6ea18842aadcd04d32a0a4d0e1582622012b72e3423ac"
+    },
+    {
+      "file": "docs/RUBY-EXTENSIONS.md",
+      "bytes": 4828,
+      "sha256": "2c2dc95cd455305961d15118f8f17585e84e0f609fc83e58d1691233a0f5ea34"
+    },
+    {
+      "file": "schemas/ruby-extensions-manifest.schema.json",
+      "bytes": 2160,
+      "sha256": "19398f9a63a66ed2b2ebae328f558fa29fff9389c4716fc279cc05b571753819"
+    },
+    {
+      "file": "schemas/ruby-extensions-native.schema.json",
+      "bytes": 6810,
+      "sha256": "5a98fad91b72eba0e4aabd6ca15d3484898b4dac15a22c8df4b6f3f579a21cc9"
+    },
+    {
+      "file": "schemas/ruby-extensions-policy.schema.json",
+      "bytes": 2724,
+      "sha256": "10682a1ac6f26e11648202e7cd64adc37bf7088f542fe48b25cc6af85ac5f5a1"
+    },
+    {
+      "file": "schemas/ruby-tools-config.schema.json",
+      "bytes": 8457,
+      "sha256": "59c6ff7b95db0568ab80cc57fa21c69ff4463a87e45a44e1112bbfe05f589070"
+    },
+    {
+      "file": "scripts/generate-schemas.mjs",
+      "bytes": 15352,
+      "sha256": "ee13bcb6d5c284d2eddc5a69ee7b30af8ea80d4f51808cd910089ec2927ad52f"
+    },
+    {
+      "file": "scripts/prepare-ruby-tools-runtime.mjs",
+      "bytes": 8691,
+      "sha256": "69e368e02e9f012a501f6c94c4a74be344b400627786b7a141c6d90fa9fdb44c"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 184616,
+      "sha256": "bfa37d8d6e6e0762fd57e5aee058f237c0eeb84c1ed14a70f6c542f7061083ba"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "bytes": 12424,
+      "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    },
+    {
+      "file": "scripts/ruby-tools.Dockerfile",
+      "bytes": 695,
+      "sha256": "ed493930f0ec97881ca0d3c6fb6a19eb894a56fe5c55a70b791f060076c1da12"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 26612,
+      "sha256": "d52cb68f9f18e9124829633b0d7c667c23b250a1240789d64e060a08df356cae"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 4529,
+      "sha256": "c848f6db19929c34dadad6c1c67615db06d97ab4ac7628ec9a46da228c1d8e0a"
+    },
+    {
+      "file": "scripts/verify-ruby-extensions-container.mjs",
+      "bytes": 9176,
+      "sha256": "23c4958e98dd7fb7327850ab9a92cf31e8a96bd4d611dc88de8c04a409a768e4"
+    },
+    {
+      "file": "scripts/verify-ruby-extensions-guards.mjs",
+      "bytes": 9090,
+      "sha256": "b9e9f2281f827ea6fcd0f658b7a3ad50612dfd6960e9ea386d85fa4274edfa5d"
+    },
+    {
+      "file": "src/adapters.ts",
+      "bytes": 22675,
+      "sha256": "0f308a3b476f6a10bc7ce13d42c8b7e9e1e9b16d5ca3577aa82685f4d0a75974"
+    },
+    {
+      "file": "src/evidence.ts",
+      "bytes": 21599,
+      "sha256": "e7878ab0854df57ea259cdd475b6778303cc84a1664c880950641bb79b1f3536"
+    },
+    {
+      "file": "src/index.ts",
+      "bytes": 8816,
+      "sha256": "3bb4e85042bcd88c74291970b784a469033baab956193a02eb848335628e5545"
+    },
+    {
+      "file": "src/ruby-extensions-contract.ts",
+      "bytes": 3238,
+      "sha256": "145ae7ab5dd3c9e83328a0d80fd406101a08436587cc4f8b3bbdb63b42531aa8"
+    },
+    {
+      "file": "src/ruby-extensions-freshness.ts",
+      "bytes": 3787,
+      "sha256": "67dafe0f726b589854a70f48dd7ffcf67c91a0b2aa0ce0a2b148d8db40118340"
+    },
+    {
+      "file": "src/ruby-extensions-native.ts",
+      "bytes": 5073,
+      "sha256": "7c95808b2c3a70b72d10577447c0b303bf84f4e6d3b7586caf1c56e455147afe"
+    },
+    {
+      "file": "src/ruby-extensions-prerequisite.ts",
+      "bytes": 1004,
+      "sha256": "2307a71cbaff40ddb03c7800bb982a0cc7f7d7bb5d769d3cd8bfa8104aab74a9"
+    },
+    {
+      "file": "src/ruby-tools-evidence.ts",
+      "bytes": 26648,
+      "sha256": "a14b8da119a56b49f5ecd3efcc306a044c023764f51afb2f463e1d551ed882ba"
+    },
+    {
+      "file": "src/ruby-tools-native.ts",
+      "bytes": 8887,
+      "sha256": "0c7e18e7b7f257808b2e8b8cd8a60d4d4b5016375c28fa3156e2cf726020e250"
+    },
+    {
+      "file": "src/ruby-tools-runner.ts",
+      "bytes": 11251,
+      "sha256": "f348ed1e0f11a5bd61b6610c1e103c391c543388152b34ce523c15e3cc063159"
+    },
+    {
+      "file": "src/ruby-tools.ts",
+      "bytes": 16907,
+      "sha256": "84ba2a8ed6b23a457b9c5774efc60bf65e953a1cbcbf200f556db137b593273d"
+    },
+    {
+      "file": "test/gate-ruby-extensions.test.ts",
+      "bytes": 28447,
+      "sha256": "1191dea64ba871182b53c64a60feb4eca71a2298122de9193821a91e1332c83d"
+    },
+    {
+      "file": "test/required-native-tests.test.ts",
+      "bytes": 42791,
+      "sha256": "570a9f1603314856d32c794790c38e3704094450f1aa59b6d0cd4b9ad3c7e914"
+    },
+    {
+      "file": "test/ruby-extensions-config.test.ts",
+      "bytes": 5386,
+      "sha256": "173365c47977e0b3e3d59d1e8c78a2e184f47756ccb3f82964749f9c107c50d1"
+    },
+    {
+      "file": "test/ruby-extensions-fixture.ts",
+      "bytes": 5078,
+      "sha256": "c94af1a191a99fcc4e200afd1a471e27c3bb9b3bf4d34e730a2fd9990122ff3b"
+    }
+  ],
+  "testedEmittedFileBindings": [
+    {
+      "file": "dist/src/ruby-extensions-contract.js",
+      "bytes": 3290,
+      "sha256": "4568634d05f8b7fc093aef74b54be7c5424307dd77cbbc578897be8e2e6625b5"
+    },
+    {
+      "file": "dist/src/ruby-extensions-freshness.js",
+      "bytes": 3426,
+      "sha256": "cd7c37f7abea70e20044a54279aa851c579209c7e59bba18c8ccd37677e4aaf2"
+    },
+    {
+      "file": "dist/src/ruby-extensions-native.js",
+      "bytes": 5075,
+      "sha256": "c043896080b3fb74a817f713cd6537adef15a2a0bbedd2a4c64e980426d79b4d"
+    },
+    {
+      "file": "dist/src/ruby-tools-evidence.js",
+      "bytes": 26642,
+      "sha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9"
+    },
+    {
+      "file": "dist/src/ruby-tools-native.js",
+      "bytes": 8869,
+      "sha256": "9da922de118adb7621ec97dc6fa143f0986563ef2d485933eee7832ea1369256"
+    },
+    {
+      "file": "dist/src/ruby-tools-runner.js",
+      "bytes": 11661,
+      "sha256": "3750cec551ed33f7814c96930312d925c117a1ddf2e679ac61d1fd2b24df27c0"
+    },
+    {
+      "file": "dist/src/ruby-tools.js",
+      "bytes": 16095,
+      "sha256": "956cabc52f97c6f7f4e5f3707c4ec608e2a66391f98407416e3819cf68d6488d"
+    },
+    {
+      "file": "dist/src/ruby.js",
+      "bytes": 958,
+      "sha256": "214cefd1b599917b061f49f51b6c3a4094190282b87c591d5a82f7abd994277a"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "bytes": 26702,
+      "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+    },
+    {
+      "file": "dist/test/ruby-extensions-config.test.js",
+      "bytes": 5668,
+      "sha256": "2001fc9b68ba0453c55ca0e6ee5dba10831dc522d15f9f7d6b36a5514391ccb1"
+    },
+    {
+      "file": "dist/test/ruby-extensions-fixture.js",
+      "bytes": 5579,
+      "sha256": "9e310510975aef6718a913055bfce4be27a636515559e4f48e46b9f708dd9539"
+    },
+    {
+      "file": "dist/src/ruby-extensions-prerequisite.js",
+      "bytes": 1012,
+      "sha256": "de1808eede558525482efedf32a589ec4aef219198f568029b1471138b3257eb"
+    }
+  ],
+  "nativeImage": {
+    "id": "sha256:801c086594ecd8ecb28fdb0213533c98d483e9aff4c4347891c6221084096a12",
+    "recipe": "scripts/ruby-tools.Dockerfile",
+    "rubyBase": "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+    "nodeBase": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "imageIdentityIsWholeClosureAttestation": false,
+    "compilerArchives": [
+      {
+        "path": "binutils-2.45.1-r1.apk",
+        "bytes": 3321769,
+        "sha256": "bac4a00e73296dfebf5f587c2b304b7d110e7de658cd2b05491f87c2b228420c"
+      },
+      {
+        "path": "g++-15.2.0-r5.apk",
+        "bytes": 17241310,
+        "sha256": "dc16babd6fdd7154ece263ca625ff832b03528d58f5060f9e92ca3b0bc0c079a"
+      },
+      {
+        "path": "gcc-15.2.0-r5.apk",
+        "bytes": 52501295,
+        "sha256": "ff3fecfc32c9a1bed4a47a32ccfee6f6f575708258f912c218dce8ed0d892221"
+      },
+      {
+        "path": "gmp-6.3.0-r4.apk",
+        "bytes": 221014,
+        "sha256": "4dab6e86b850fe1b5bc0cf2fac17efa4d7f648bea44f3d9019694cc1e1cb12b7"
+      },
+      {
+        "path": "isl26-0.26-r2.apk",
+        "bytes": 870482,
+        "sha256": "c195ea26929ada2bb9e66b7bc6d64b340123591b8f4c8ed158693e4dac0923d8"
+      },
+      {
+        "path": "jansson-2.15.0-r0.apk",
+        "bytes": 49825,
+        "sha256": "a13822f5ca1772cced4bb7d3d178ec5dee770d8accba5b4816b2ddc413e6f055"
+      },
+      {
+        "path": "libatomic-15.2.0-r5.apk",
+        "bytes": 10362,
+        "sha256": "31a45fec053c43a006370f83238f16f959838a9a703fbf26bfd1a36da4f538b2"
+      },
+      {
+        "path": "libgcc-15.2.0-r5.apk",
+        "bytes": 66323,
+        "sha256": "369aaa6e9d099a737bad6dd3e6c2fe7bb1547ca26d22b94ee0411228f709b403"
+      },
+      {
+        "path": "libgcc-static-15.2.0-r5.apk",
+        "bytes": 2187958,
+        "sha256": "2ec3dc4be953d842cc51193248367d86829ed699a1ed094fb5149b1b3fc62919"
+      },
+      {
+        "path": "libgomp-15.2.0-r5.apk",
+        "bytes": 146527,
+        "sha256": "90576a8899c560d3983b8ac8442b5b75957a917bc1c4e950e005945080f8682f"
+      },
+      {
+        "path": "libstdc++-15.2.0-r5.apk",
+        "bytes": 908984,
+        "sha256": "2302e766d4e4926038ec166ecb85837ee884576115236ddb565e3a5fca4a11d7"
+      },
+      {
+        "path": "libstdc++-dev-15.2.0-r5.apk",
+        "bytes": 4132711,
+        "sha256": "8385c811d93b64ee1877005a5473cde8ebabe82d346301f2b153ff8cb6a71510"
+      },
+      {
+        "path": "make-4.4.1-r4.apk",
+        "bytes": 117543,
+        "sha256": "0a2c6c3fa0d90b652bbaeac362d1bfe54b75aae57631a6b448826f8b51c85170"
+      },
+      {
+        "path": "mpc1-1.3.1-r1.apk",
+        "bytes": 53688,
+        "sha256": "c4e03923cf1b958ba0d3665196f521a00fb091132e79c39493298019fb59ae60"
+      },
+      {
+        "path": "mpfr4-4.2.2-r0.apk",
+        "bytes": 294772,
+        "sha256": "81cb276c1e050138fed90c8f1ef584cf5bfce26739733753fce138fc0a092b35"
+      },
+      {
+        "path": "musl-1.2.6-r2.apk",
+        "bytes": 417710,
+        "sha256": "5e9674b7f41152fe2119093b5cb4c13eaaadb19c2d5422b2d7267913e663ee6e"
+      },
+      {
+        "path": "musl-dev-1.2.6-r2.apk",
+        "bytes": 2539434,
+        "sha256": "ca72b84f4eb3c36bbbec04d919eb10159d414c7a43413cc2253841d301fa9486"
+      },
+      {
+        "path": "zlib-1.3.2-r0.apk",
+        "bytes": 54312,
+        "sha256": "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3"
+      },
+      {
+        "path": "zstd-libs-1.5.7-r2.apk",
+        "bytes": 365383,
+        "sha256": "2bb5136c89f5b0bbe1554c8915a3b520d5aa63ae2a51d4d821eb81698db5a818"
+      }
+    ],
+    "compilerArchiveManifestSha256": "06958fcdc400bf4c70a03d748a14079bb70d31c62d092d373287e0053b4a4142",
+    "apkSignatureChecksDisabled": false,
+    "transitiveIndexResolution": false,
+    "buildNetwork": "none"
+  },
+  "acceptance": {
+    "executionMode": "One complete supervised controller against identical frozen inputs; fresh native processes and isolated fixtures are not independent AI host sessions.",
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "ruby": {
+        "version": "ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [aarch64-linux-musl]",
+        "bytes": 225760,
+        "sha256": "4b68e010781f7701e1e7c16daf406acfbe1eecb97b464b3f01a99559597eabd4"
+      },
+      "bundler": "4.0.20",
+      "npm": "10.9.8",
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.2\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "environment": {
+      "network": "none",
+      "readOnlyRoot": true,
+      "user": "1000:1000",
+      "cpuLimit": 2,
+      "memoryBytes": 3221225472,
+      "pidLimit": 256,
+      "tmpfsBytes": 2147483648
+    },
+    "concurrency": {
+      "maxNativeContainers": 2,
+      "aggregateCpuLimit": 4,
+      "aggregateMemoryBytes": 6442450944,
+      "sharedWritableFixtures": false
+    },
+    "baselineProfiles": ["ruby-tools"],
+    "baseline": {
+      "timeoutMs": 300000,
+      "profile": "ruby-tools",
+      "fileWorkerLimit": 1,
+      "passed": 8,
+      "required": 8,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 8,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "462382239125c06f4c0fd0ce6b1e5c0b4a85bae02f2a9294e2bdef09ce416f9a"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "462382239125c06f4c0fd0ce6b1e5c0b4a85bae02f2a9294e2bdef09ce416f9a"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "bb99de0395d31f548d0308f77b7e2cacf0c3eb800a6b9984ba24071557fc1546"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "bb99de0395d31f548d0308f77b7e2cacf0c3eb800a6b9984ba24071557fc1546"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "c83565a53a4bbb89d8c32927480a03277e6438f7a44d7021cd66fb408fb7a5aa"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c83565a53a4bbb89d8c32927480a03277e6438f7a44d7021cd66fb408fb7a5aa"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "e22cf8d68d129a7eb1b1f7b2fe2b28563b7fc8246abea4b9a542852ebf59dac7"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e22cf8d68d129a7eb1b1f7b2fe2b28563b7fc8246abea4b9a542852ebf59dac7"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "5ca2e98b60a5944f6e30c6c7eee4f0873aef674cfad1a18c6cb2afa12887f068"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "5ca2e98b60a5944f6e30c6c7eee4f0873aef674cfad1a18c6cb2afa12887f068"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "f4566cfc9d4ad1aad457b4bd7474963341edfe160ba9470e27824730de4ad950"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "f4566cfc9d4ad1aad457b4bd7474963341edfe160ba9470e27824730de4ad950"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "86431a75f11dae41c54fc5859407152d4847babf0add441289d4a5fe69ed670b"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "86431a75f11dae41c54fc5859407152d4847babf0add441289d4a5fe69ed670b"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "13ea662264f7614d7e37e74e95f4a67886f13e40c5eb4c2501ae729cac3cef08"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "13ea662264f7614d7e37e74e95f4a67886f13e40c5eb4c2501ae729cac3cef08"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 79139.082231,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-2",
+            "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 151642.617562,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-3",
+            "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 72104.194262,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-4",
+            "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 133139.422799,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-5",
+            "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 130585.320985,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-6",
+            "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 107789.585604,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-7",
+            "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 88654.944373,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-8",
+            "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 42807.471153,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native Ruby RuboCop inspects exact files catches source diagnostics and leaves literal near misses clean",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Ruby RSpec and Minitest register scale boundaries bind callbacks and expose production regressions with repair",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Ruby artifact runtime entry point settings scope compiler and result mutations cannot yield pass",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Ruby RSpec skipped empty filtered and suite errors retain honest terminal accounting",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Ruby protected startup ignores host filters and refuses stale source and changed dependency archives",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Ruby CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Ruby cancellation reaches RSpec and Minitest bodies and reaps Ruby helper descendants and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          }
+        ]
+      }
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "source": {
+      "timeoutMs": 1200000,
+      "profile": "ruby-extensions",
+      "fileWorkerLimit": 1,
+      "requiredCaseWorkerLimit": 1,
+      "timeoutScope": "one fresh process per required named case",
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "ruby-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 65261.715892,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "ruby-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 87029.553125,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "ruby-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 130623.647919,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "ruby-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 820.246799,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "ruby-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 21877.673111,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "ruby-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 43640.711661,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "ruby-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 108024.698394,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "ruby-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 134048.20171,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "ruby-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 586759.805978,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "ruby-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "0e7c3cd1da97a339788d0e350daea21d9c8145e0ca2be9c69d18853c1981a829",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 1200000,
+        "profile": "ruby-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "ruby-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 62854.33675,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "ruby-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 84423.164096,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "ruby-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 125994.189588,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "ruby-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 810.628285,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "ruby-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 21118.581503,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "ruby-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 42294.885915,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "ruby-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 107519.116651,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "ruby-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 133544.934422,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "ruby-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1.408177,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "ruby-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "ruby-extensions",
+      "shard": "all",
+      "fullControlInventory": [
+        "cancelled-retained-packet",
+        "current-physical-input-bytes",
+        "complete-current-archive-tree",
+        "actual-evaluated-dependency-predicates",
+        "actual-evaluated-source-inventory",
+        "shared-physical-body-location",
+        "rspec-physical-receiver-identity",
+        "rspec-hook-invocation-denominator",
+        "complete-hook-registration-cohort",
+        "native-shared-example-inclusion",
+        "native-hook-registration",
+        "native-minitest-declaring-owner",
+        "pinned-runtime-before-project-dsl"
+      ],
+      "controls": [
+        {
+          "id": "cancelled-retained-packet",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "747c77263f251ee65148882be385f0d3e1af8de5237c3128b18bf2f306e20669"
+        },
+        {
+          "id": "current-physical-input-bytes",
+          "callback": "ruby-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cd7c37f7abea70e20044a54279aa851c579209c7e59bba18c8ccd37677e4aaf2",
+          "mutantSha256": "4cac84008b6a6f85ceb3cd135595e386b73376f28d856121a4a0b2dd9b64e315"
+        },
+        {
+          "id": "complete-current-archive-tree",
+          "callback": "ruby-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "cd7c37f7abea70e20044a54279aa851c579209c7e59bba18c8ccd37677e4aaf2",
+          "mutantSha256": "9a439b1935c1e8f62b34ca641dbec8be03948a90452e6f7ceb12a13d3c2b9a17"
+        },
+        {
+          "id": "actual-evaluated-dependency-predicates",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "01718757bb72da2c3403baab998e6713844386742cbde93090339192daacec24"
+        },
+        {
+          "id": "actual-evaluated-source-inventory",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "deea526afbb5bd6b910660354a014f4599d4b4a79c295872e1410e48649f64b6"
+        },
+        {
+          "id": "shared-physical-body-location",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "5e155819c2baf66f42069e80f6a3fc86f00570ff0c13703d4bf076d0d5b3bf92"
+        },
+        {
+          "id": "rspec-physical-receiver-identity",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "503c98924a63966dfde38024d6e0af2bccb6b355b9757b8c633c3e6c9895dab4"
+        },
+        {
+          "id": "rspec-hook-invocation-denominator",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "163ae4d0a93e24fd1e5fffe9e27424dde4e950b5f629eb03effc9b979eb10262"
+        },
+        {
+          "id": "complete-hook-registration-cohort",
+          "callback": "ruby-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "d8bc5f56a8fe15de2aaab5430d4e01de6c7fd97236c292bd610d33d135d77aa9",
+          "mutantSha256": "a11cb592bccb915aaaaaa27d74b2cd542485ea2550121099e299f2a2876a3694"
+        },
+        {
+          "id": "native-shared-example-inclusion",
+          "callback": "ruby-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeObserverSyntaxChecked": true,
+          "mutatedNativeTestBodyReached": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "c043896080b3fb74a817f713cd6537adef15a2a0bbedd2a4c64e980426d79b4d",
+          "mutantSha256": "3171b1d1a95b608aad7286339c9131f986012acef9f564c105a054ce79ddb647"
+        },
+        {
+          "id": "native-hook-registration",
+          "callback": "ruby-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeObserverSyntaxChecked": true,
+          "mutatedNativeTestBodyReached": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "c043896080b3fb74a817f713cd6537adef15a2a0bbedd2a4c64e980426d79b4d",
+          "mutantSha256": "635a2f952079a5880312e67ece49cc87ad0ff1ba9c3342c5b5c3f8b5d34dfff2"
+        },
+        {
+          "id": "native-minitest-declaring-owner",
+          "callback": "ruby-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeObserverSyntaxChecked": true,
+          "mutatedNativeTestBodyReached": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9da922de118adb7621ec97dc6fa143f0986563ef2d485933eee7832ea1369256",
+          "mutantSha256": "f21e694d42dd64517feb9acaed4adc9514a8d4a7f894de80d046b0cbc181f5af"
+        },
+        {
+          "id": "pinned-runtime-before-project-dsl",
+          "callback": "ruby-extensions prerequisite acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "de1808eede558525482efedf32a589ec4aef219198f568029b1471138b3257eb",
+          "mutantSha256": "35f85758116b2d2466752365ea74cb84dc423b36023f250fc8b87d92c0ce8057"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "empty",
+        "stale",
+        "broken",
+        "prerequisite"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-ruby-extensions.test.js",
+          "sha256": "ff384ef8cf494de90ffeb8660596c55021fac028c55c5d75ee70fb8052aabb3e"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "ruby-extensions-fixture.js",
+          "sha256": "9e310510975aef6718a913055bfce4be27a636515559e4f48e46b9f708dd9539"
+        }
+      ],
+      "fixturesUnchanged": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeRubyObserverExecuted": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "stageDurationMs": {
+      "preserved-ruby-tools-baseline": 808077,
+      "paired-guards-all": 1191509,
+      "source-and-fresh-offline-production-installation": 1180281
+    },
+    "durationMs": 1988891,
+    "complete": true
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1639,
+    "pass": 942,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 697,
+    "todo": 0,
+    "durationMs": 274309.027333,
+    "logSha256": "1c0230cb0b90cbc301dcccf56fd648e0044c24b1de1a07d66578bb6c189cfc93",
+    "runtime": {
+      "node": "v26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "os": "Darwin 27.0.0"
+    },
+    "optionalNativeSkipsAreAcceptance": false,
+    "frozenMatrixAcceptance": false
+  },
+  "limits": {
+    "fullRuntimeOsPublisherAndLicenseClosureVerified": false,
+    "nativeReceiptCryptographicallyAttested": false,
+    "importedReceiptCoherenceIsExecutionAttestation": false,
+    "broaderRubyEnginesSupported": false,
+    "suiteAndAroundContextHooksSupported": false,
+    "indistinguishableRepeatedHookInvocationsSupported": false,
+    "broaderPlatformAcceptanceComplete": false,
+    "hostedAcceptanceMeasured": false,
+    "packagePublication": "The tested offline tarball precedes this measurement and profile-state metadata. Its digest identifies the tested pre-publication bytes, not a subsequently packed release."
+  },
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

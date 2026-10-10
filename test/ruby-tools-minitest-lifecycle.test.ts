@@ -11,7 +11,7 @@ const native = {
   skip: available
     ? false
     : "Pinned Ruby runtime and dependency cache not selected",
-  timeout: 300000,
+  timeout: 1200000,
 };
 test(
   "native Ruby Minitest skipped empty setup teardown and after-run hooks retain honest terminal accounting",

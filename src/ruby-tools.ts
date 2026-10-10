@@ -3,6 +3,7 @@ import { lstat, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { externalPathSchema } from "./external-schema.js";
+import { rubyExtensionsPolicySchema } from "./ruby-extensions-contract.js";
 import { readProjectFile } from "./inventory.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
 import type { Check, Inventory, Project } from "./types.js";
@@ -14,7 +15,7 @@ const tests = z.strictObject({
   files: z.array(externalPathSchema).max(256),
   support: z.array(externalPathSchema).max(256),
 });
-export const rubyToolsConfigSchema = z.strictObject({
+export const rubyToolsConfigV1Schema = z.strictObject({
   schemaVersion: z.literal(1),
   rubyVersion: z.literal("4.0.7"),
   bundlerVersion: z.literal("4.0.20"),
@@ -35,6 +36,69 @@ export const rubyToolsConfigSchema = z.strictObject({
   rspec: tests,
   minitest: tests,
 });
+export const rubyToolsConfigV2Schema = rubyToolsConfigV1Schema.extend({
+  schemaVersion: z.literal(2),
+  extensions: rubyExtensionsPolicySchema,
+});
+export const rubyToolsConfigSchema = z.discriminatedUnion("schemaVersion", [
+  rubyToolsConfigV1Schema,
+  rubyToolsConfigV2Schema,
+]);
+/** Declarative lock closure; actual executable manifests are observed only after operator trust. */
+export function rubyToolsManifestLock(
+  config: z.infer<typeof rubyToolsConfigSchema>,
+  gemfile: string,
+  lock: string,
+) {
+  if (config.schemaVersion === 1) return rubyToolsLock(gemfile, lock);
+  const policy = config.extensions;
+  requireData(
+    policy.manifests.includes("Gemfile") &&
+      rubyToolsSame(policy.manifests, [...new Set(policy.manifests)]),
+    "Declare every evaluated manifest exactly once including Gemfile",
+  );
+  requireData(
+    new Set(policy.dependencies.map((d) => d.name)).size ===
+      policy.dependencies.length,
+    "Duplicate declared manifest dependency",
+  );
+  requireData(
+    policy.rspecHooks.reduce((n, h) => n + h.registrations, 0) <= 512 &&
+      policy.rspecHooks.reduce((n, h) => n + h.invocations, 0) <= 100000 &&
+      new Set(
+        policy.rspecHooks.map((h) =>
+          JSON.stringify([h.kind, h.scope, h.file, h.line]),
+        ),
+      ).size === policy.rspecHooks.length,
+    "Declare unique bounded RSpec hook sources and registration counts",
+  );
+  for (const d of policy.dependencies) {
+    requireData(
+      rubyToolsSame(d.groups, [...new Set(d.groups)]) &&
+        rubyToolsSame(d.platforms, [...new Set(d.platforms)]),
+      "Duplicate manifest group or platform",
+    );
+  }
+  for (const d of policy.dependencies)
+    requireData(
+      !d.included || d.platformMatches,
+      "An excluded platform cannot be included",
+    );
+  for (const name of ["rubocop", "rspec-core", "minitest"])
+    requireData(
+      policy.dependencies.some(
+        (d) => d.name === name && d.included && d.platformMatches,
+      ),
+      "Every pinned Ruby checker must be active on the selected platform",
+    );
+  return rubyToolsLock(
+    'source "https://rubygems.org"\nruby "4.0.7"\n' +
+      policy.dependencies
+        .map((d) => `gem "${d.name}", "${d.version}"\n`)
+        .join(""),
+    lock,
+  );
+}
 export const rubyToolsRepositorySchema = z.strictObject({
   schemaVersion: z.literal(1),
   files: z
@@ -301,13 +365,14 @@ export async function rubyToolsCheck(
   source: Inventory,
   project: Project,
   mode: "rubocop" | "rspec" | "minitest",
+  extensions = false,
 ): Promise<Check> {
   const prefix = project.path === "." ? "" : project.path + "/";
   const inputs = source.files
     .filter((f) => f.startsWith(prefix))
     .map((f) => f.slice(prefix.length));
   const check: Check = {
-    id: `ruby.${mode}`,
+    id: `ruby.${mode}${extensions ? "-extensions" : ""}`,
     adapter: "ruby",
     project: project.path,
     scope: [],
@@ -330,6 +395,37 @@ export async function rubyToolsCheck(
         ),
       ),
     );
+    requireData(
+      config.schemaVersion === (extensions ? 2 : 1),
+      "Select the exact Ruby manifest profile and matching check IDs",
+    );
+    if (config.schemaVersion === 2) {
+      requireData(
+        config.extensions.rspecHooks.every((h) =>
+          [...config.rspec.files, ...config.rspec.support].includes(h.file),
+        ),
+        "Declared RSpec hooks must belong to selected source",
+      );
+      for (const file of config.extensions.manifests) {
+        const value = await readProjectFile(
+          source.root,
+          path.posix.join(project.path, file),
+        );
+        requireData(
+          Buffer.byteLength(value) <= 65536 && !/[\r\0]/.test(value),
+          "Evaluated manifests require bounded canonical text",
+        );
+      }
+    }
+    if (config.schemaVersion === 2)
+      requireData(
+        config.extensions.manifests.every(
+          (f) =>
+            inputs.includes(f) &&
+            (f === "Gemfile" || config.sources.includes(f)),
+        ),
+        "Every evaluated manifest must belong to current declared inputs",
+      );
     requireData(
       rubyToolsSame(config.sources, inputs.filter(rubyToolsSource)),
       "Declare every inventoried Ruby source exactly once",
@@ -369,7 +465,8 @@ export async function rubyToolsCheck(
       check.scope.length > 0,
       "No Ruby tests declared for this framework",
     );
-    const lock = rubyToolsLock(
+    const lock = rubyToolsManifestLock(
+      config,
       await readProjectFile(
         source.root,
         path.posix.join(project.path, "Gemfile"),

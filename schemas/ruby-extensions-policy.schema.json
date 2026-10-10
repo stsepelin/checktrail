@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "profile": {
+      "type": "string",
+      "const": "declared-manifests-shared-and-inherited-v1"
+    },
+    "manifests": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+    },
+    "rspecHooks": {
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": { "type": "string", "enum": ["before", "after", "around"] },
+          "scope": { "type": "string", "enum": ["example", "context"] },
+          "file": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "line": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 1000000
+          },
+          "registrations": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 20000
+          },
+          "invocations": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 100000
+          }
+        },
+        "required": [
+          "kind",
+          "scope",
+          "file",
+          "line",
+          "registrations",
+          "invocations"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "dependencies": {
+      "minItems": 1,
+      "maxItems": 512,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_]+(?:-[A-Za-z0-9_]+)*$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+(?:\\.[0-9]+){1,3}$"
+          },
+          "groups": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            }
+          },
+          "platforms": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["ruby", "mri", "jruby", "windows", "truffleruby"]
+            }
+          },
+          "included": { "type": "boolean" },
+          "platformMatches": { "type": "boolean" }
+        },
+        "required": [
+          "name",
+          "version",
+          "groups",
+          "platforms",
+          "included",
+          "platformMatches"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["profile", "manifests", "rspecHooks", "dependencies"],
+  "additionalProperties": false
+}

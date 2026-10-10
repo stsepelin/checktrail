@@ -61,6 +61,7 @@ assert.ok(
     "dotnet-fsharp-format",
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
+    "ruby-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -136,8 +137,21 @@ if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
 if (profile === "dotnet-generator-extensions")
   process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
+if (profile === "ruby-extensions")
+  process.env.CHECKTRAIL_RUBY_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
+const rubyAcceptanceShard =
+  process.env.CHECKTRAIL_RUBY_EXTENSIONS_ACCEPTANCE_SHARD;
+if (rubyAcceptanceShard !== undefined) {
+  assert.equal(profile, "ruby-extensions");
+  assert.ok(["all", "1", "2", "3"].includes(rubyAcceptanceShard));
+  assert.equal(
+    process.env.CHECKTRAIL_IMPORT_CONTEXT_IMAGE,
+    undefined,
+    "Ruby shard acceptance runs inside the prepared offline container",
+  );
+}
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -207,6 +221,9 @@ try {
     "gate-dotnet-format-extensions.test.js",
     "dotnet-format-extensions-fixture.js",
     "gate-dotnet-generator-extensions.test.js",
+    "gate-ruby-extensions.test.js",
+    "ruby-extensions-fixture.js",
+    "ruby-tools-fixture.js",
     "dotnet-generator-extensions-fixture.js",
     "dotnet-build-fixture.js",
     "dotnet-generated-fixture.js",
@@ -267,6 +284,14 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "ruby-extensions") {
+    await mkdir(path.join(consumer, "examples"), { recursive: true });
+    await cp(
+      path.join(repository, "examples/ruby-tools"),
+      path.join(consumer, "examples/ruby-tools"),
+      { recursive: true },
+    );
+  }
   if (profile === "dotnet-generator-extensions") {
     await mkdir(path.join(consumer, "examples"));
     await cp(
@@ -465,6 +490,12 @@ try {
   for (const file of [
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
+    ...(rubyAcceptanceShard === undefined
+      ? []
+      : [
+          "verify-ruby-extensions-acceptance.mjs",
+          "ruby-extensions-acceptance-selection.mjs",
+        ]),
   ])
     await cp(
       path.join(repository, "scripts", file),
@@ -672,7 +703,13 @@ try {
       )
     : execFileSync(
         process.execPath,
-        ["scripts/verify-required-native-tests.mjs", profile],
+        rubyAcceptanceShard === undefined
+          ? ["scripts/verify-required-native-tests.mjs", profile]
+          : [
+              "scripts/verify-ruby-extensions-acceptance.mjs",
+              "installed",
+              rubyAcceptanceShard,
+            ],
         { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
       );
   const acceptance = JSON.parse(output);

@@ -4628,5 +4628,43 @@
       "file": "dist/test/gate-dotnet-generator-extensions.test.js",
       "name": "dotnet-generator-extensions installed acceptance"
     }
+  ],
+  "ruby-extensions": [
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-ruby-extensions.test.js",
+      "name": "ruby-extensions installed acceptance"
+    }
   ]
 }

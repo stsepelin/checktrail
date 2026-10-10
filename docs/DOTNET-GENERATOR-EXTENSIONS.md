@@ -100,3 +100,5 @@ check its testhost/client/child processes and owned temporary storage.
 The profile remains separate from whole artifact/license closure, the final
 runtime matrix, independent AI review/evaluation and Gate A closure. No model
 inference or real-project field evaluation is performed by native acceptance.
+
+The [CI installed-harness budget repair](measurements/dotnet-generator-ci-installed-budget-2026-10-10.json) records a fresh-install wrapper that reached its aggregate process deadline after all direct source callbacks passed. The profile now grants the installed callback and required-file harness a bounded twenty-minute aggregate budget, with a shorter child deadline and explicit spawn-error/signal assertions. Each engine invocation retains its two-minute bound. Current-head native CI remains required; the project check alone does not certify native acceptance.
