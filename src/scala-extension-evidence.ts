@@ -571,13 +571,20 @@ export function scalaExtensionEvidence(
       );
       if (d.kind === "ERROR") errors++;
       else warnings++;
-      if (d.file === null) {
+      if (
+        d.file === null ||
+        (d.kind === "ERROR" && d.code === "compiler.err.warnings.and.werror")
+      ) {
         requireEvidence(
           d.kind === "ERROR" &&
             planned.config.warningsAsErrors &&
             d.code === "compiler.err.warnings.and.werror" &&
             d.line === -1 &&
-            d.column === -1,
+            d.column === -1 &&
+            (d.file === null ||
+              ext.javaSources.includes(
+                path.relative(data.snapshot, d.file).split(path.sep).join("/"),
+              )),
         );
         globalWarnings++;
         continue;

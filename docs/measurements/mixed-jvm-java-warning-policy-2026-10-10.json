@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "profile": "mixed-jvm-java-warning-policy-repair-v1",
+  "measuredAt": "2026-10-10T01:18:13.954106+00:00",
+  "sourceBase": "828a7749ca2ee17754ae567b21922acd44ac6aa6",
+  "scope": "Synthetic source and fresh offline installed development acceptance for the existing Kotlin and Scala extension profiles. Package hashes describe the measured code snapshot before adding this public record; final distribution acceptance remains open.",
+  "sourceFiles": [
+    {
+      "file": "src/kotlin-extension-evidence.ts",
+      "sha256": "3b7bf7086d7d3c310e644b1559fab89d612847bd872d146ee139a472e292b281"
+    },
+    {
+      "file": "src/scala-extension-evidence.ts",
+      "sha256": "91fba1883ad155e50df8a696f1cf169b334b426992f620ec11143fc746efb27d"
+    },
+    {
+      "file": "test/kotlin-java-warning-policy.test.ts",
+      "sha256": "70218f428234219360c457a8ee0950127caf5ee96414aadb009c35f21f507142"
+    },
+    {
+      "file": "test/scala-java-warning-policy.test.ts",
+      "sha256": "a2e86863260d56227de024587b9692e67c68b7d87c76bdc2c7cc5e1c83057419"
+    },
+    {
+      "file": "scripts/verify-jvm-java-warning-package.mjs",
+      "sha256": "b1c7bd16552b80342ce2a77101fb259595f2d0a52e906aae00e35fe1640d094b"
+    },
+    {
+      "file": "scripts/verify-kotlin-extensions-container.mjs",
+      "sha256": "691452e6019a9e755eeebfa437ea47e4bf1fa8ac3119507c6293ab1533c954a4"
+    },
+    {
+      "file": "scripts/verify-scala-extensions-container.mjs",
+      "sha256": "26dd8ed61ddf783f7db86b2512c424eea8af849f383e05fd3c46d8b326663589"
+    }
+  ],
+  "observedRegression": {
+    "before": "A source-attached javac warning escalation summary made mixed Kotlin and Scala results inconclusive instead of failed.",
+    "nativeSummary": {
+      "kind": "ERROR",
+      "code": "compiler.err.warnings.and.werror",
+      "selectedSource": "Warnings.java",
+      "line": -1,
+      "column": -1
+    },
+    "after": "Retain source warnings and return failed with findingsComplete false. With warningsAsErrors false the same source passes with its warning retained.",
+    "negativeControls": [
+      "unknown summary code",
+      "summary without source warning",
+      "duplicate summary",
+      "invalid summary position",
+      "foreign warning source",
+      "foreign summary source"
+    ],
+    "nullSourceSummarySupported": true,
+    "redTestOutputSha256": {
+      "kotlin": "1def1c166e3064fc7a05b73e73c99cbedf5aa6695f7e37bc3e3866ea3fcbf069",
+      "scala": "9d51619ef54a2d6a6e73b0eb3ad94952c928a556a1568681136aa6b39b1e4a22"
+    }
+  },
+  "native": [
+    {
+      "language": "kotlin",
+      "environment": {
+        "image": "sha256:9889bbee5b1d67a633b1b931a83f03c201fd0b0d51de1e1a9c1b273ec0467d89",
+        "network": "none",
+        "rootFilesystemReadonly": true,
+        "sourceMountReadonly": true,
+        "preparedCacheReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "preserved": {
+        "timeoutMs": 300000,
+        "profiles": [
+          {
+            "profile": "kotlin",
+            "required": 13
+          },
+          {
+            "profile": "java",
+            "required": 5
+          }
+        ],
+        "fileWorkerLimit": 1,
+        "passed": 18,
+        "required": 18,
+        "problems": [],
+        "complete": true
+      },
+      "source": {
+        "timeoutMs": 600000,
+        "profile": "kotlin-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "d9ae085a4c808f7fd6d0829fc3c1800f8ef57ed10f34d4deff7f45e4a0169317",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true
+      },
+      "installedRequired": {
+        "timeoutMs": 600000,
+        "profile": "kotlin-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "compilingControls": {
+        "nativeCapture": {
+          "compilerActuallyExecuted": true,
+          "generatedClasses": 2,
+          "originalFixtureRetainedThroughControls": true
+        },
+        "controls": [
+          {
+            "id": "current-java-source",
+            "name": "mixed Kotlin guard checks current original Java bytes",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "88561b04ba090fa64e81dd6345663fb3712012a24c10d28adceca81f325e05b5",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "current-declaration",
+            "name": "mixed Kotlin guard checks current compiler declaration",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "923eae9f4a60fecf16d528afabb4e7cc6f34c3700d17e4b9ce239140efe68ef7",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "current-archive",
+            "name": "mixed Kotlin guard checks current archive bytes",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "19ef5e0412f65bd4e7c44134530333a1793af37ddb182f0de2d5bf018dd1a2a0",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "generator-input",
+            "name": "mixed Kotlin guard checks generator input",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "97a24c5671da54efeb5eea97f119cb0bbb1e900604cb90f00420a7d63a4feb20",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-class-name",
+            "name": "mixed Kotlin guard checks generated class name",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "05bbcacc8fa9b3f9ddc09ef485dbbcb45b3604a9f20435a67b826ac6afe0a106",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-source-origin",
+            "name": "mixed Kotlin guard checks generated class source origin",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "043b09a2962a317dc49eab4e0f087cf07c28df1eefc45fc36dc0922c9dd30cee",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-class-hash",
+            "name": "mixed Kotlin guard checks generated physical class hash",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "a1dab8aed8abd9aed1ea986e3d27c2ae21543a7312be7c8bf515a02850a5a234",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-parse",
+            "name": "mixed Kotlin guard checks Java parse participation",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "5947fcc2ae957a08ccbe8166be052d47adc1745f8ae4f66bb2108b748b7f59fe",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-target",
+            "name": "mixed Kotlin guard checks Java class target",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "618a8a4f9493517b969255ad55bfa022d7f0e0e1ef5d5dd8c51286b893b2b6ba",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-class-hash",
+            "name": "mixed Kotlin guard checks Java physical class hash",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "36c6b74dac70fbbe9705c4b6e80d512d215bfed0161202e20d6e82397017b9fb",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-suppression",
+            "name": "mixed Kotlin guard checks resolved Java suppression",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "8d57122b0c523f429a0ca19a0a09f1b8d387da5b63931df8c79b3c8ed69e3295",
+            "originalSha256": "86b6b1a1f43956370a79062e989892e9463f8318c07919d1c50fd36472facbc0",
+            "restoredPassed": true
+          },
+          {
+            "id": "staged-runtime-family",
+            "name": "mixed Kotlin rejects generator changes to staged libraries and original observer classes",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "actualFalsePassWithoutGuard": true,
+            "originalSha256": "f351a2a9c09d7936b9e3136588cde77508dd7c1e38576d8624156f015d501297",
+            "mutantSha256": "181266102fffcf36406540aab9eb49e135741217ffbc08e2c8b1c60a1b130133",
+            "restoredPassed": true
+          }
+        ],
+        "allComplete": true
+      },
+      "nativeRegressions": {
+        "tests": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0,
+        "outputSha256": "533ea95a85035fbff35b709379564e8a359d8331b0e494698f50a6a9aeccfe17"
+      },
+      "installedJavaWarningPolicy": {
+        "schemaVersion": 1,
+        "language": "kotlin",
+        "tarballSha256": "d9ae085a4c808f7fd6d0829fc3c1800f8ef57ed10f34d4deff7f45e4a0169317",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedRuntimeEvaluated": true,
+        "installedCliEvaluated": false,
+        "harnessOutsideInstalledPackage": true,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "acceptance": {
+          "fileWorkerLimit": 1,
+          "passed": 1,
+          "required": 1,
+          "problems": [],
+          "complete": true
+        }
+      }
+    },
+    {
+      "language": "scala",
+      "environment": {
+        "image": "sha256:9889bbee5b1d67a633b1b931a83f03c201fd0b0d51de1e1a9c1b273ec0467d89",
+        "network": "none",
+        "rootFilesystemReadonly": true,
+        "sourceMountReadonly": true,
+        "preparedCacheReadonly": true,
+        "cpus": 2,
+        "memoryMiB": 2048,
+        "pids": 256,
+        "temporaryFilesystemMiB": 1024,
+        "temporaryFilesystemExecutable": true
+      },
+      "preserved": {
+        "timeoutMs": 300000,
+        "profiles": [
+          {
+            "profile": "scala",
+            "required": 15
+          },
+          {
+            "profile": "java",
+            "required": 5
+          }
+        ],
+        "fileWorkerLimit": 1,
+        "passed": 20,
+        "required": 20,
+        "problems": [],
+        "complete": true
+      },
+      "source": {
+        "timeoutMs": 600000,
+        "profile": "scala-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "installed": {
+        "tarballSha256": "d9ae085a4c808f7fd6d0829fc3c1800f8ef57ed10f34d4deff7f45e4a0169317",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true
+      },
+      "installedRequired": {
+        "timeoutMs": 600000,
+        "profile": "scala-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true
+      },
+      "compilingControls": {
+        "nativeCapture": {
+          "compilerActuallyExecuted": true,
+          "generatedClasses": 1,
+          "originalFixtureRetainedThroughControls": true
+        },
+        "controls": [
+          {
+            "id": "current-java-source",
+            "name": "mixed Scala guard checks current original Java bytes",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "cca61f3d00a022d18211f63b28823c18d25fb1fad71fa7d612716dec2689c07f",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "current-declaration",
+            "name": "mixed Scala guard checks current compiler declaration",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "92434f318883c48701a3610b5912b7674df2b6cb0d083acec7f2e4b3811bfcef",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "current-archive",
+            "name": "mixed Scala guard checks current archive bytes",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "e4fb9aacbef104c6db31f18a4b68d8864b9c7fcdcbd518eadb77270af1f060b1",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "generator-input",
+            "name": "mixed Scala guard checks generator input",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "15807d9ffc6b8074f152efa0c0ecf7e1b685f953b1a22a857dd96c9ada08c163",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-class-name",
+            "name": "mixed Scala guard checks generated class name",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "3ec6237955ce0fcaa9148fbd26e005a1ac9076395efc5e8aee2ebf77915830ed",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-source-origin",
+            "name": "mixed Scala guard checks generated class source origin",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "28ce047f39851e30787476b7b5f3e91de1b214aca3fe3f57a21908f21eeaa71b",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "generated-class-hash",
+            "name": "mixed Scala guard checks generated physical class hash",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "39bbbb14945df4482a47f8d7c5b208691ea52373740d95933402b84a86f1f049",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-parse",
+            "name": "mixed Scala guard checks Java parse participation",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "2c50130ede78a2db049e9abc453a926d2c8996bc5edc81958e5fe609aa9f2fad",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-target",
+            "name": "mixed Scala guard checks Java class target",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "844dcba51ab8429cc61946c6cd9572a706f0bf5a24b112c4b3c7ea6356d901ec",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-class-hash",
+            "name": "mixed Scala guard checks Java physical class hash",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "fa4029330df1d083e289c1ef4847e6adc18610cc9a3ea74760f4413224e78b93",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "java-suppression",
+            "name": "mixed Scala guard checks resolved Java suppression",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "1b12ce81e6973c16359812143509073830789277cdcd7f5fcaababab5923094a",
+            "originalSha256": "2f5f4a21ef28f358f3acd4b58ec76c8e35aa18b47d458b862c4ad0becf617af5",
+            "restoredPassed": true
+          },
+          {
+            "id": "native-feature-phase",
+            "name": "mixed Scala guard checks native feature phase",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "38db765523b4c1bcc6a46dc50164f9620130bf315ef7fe3d03ebe697240a11e8",
+            "originalSha256": "f9ea1d9be27bbe88ff9d6e2c32ed5f611abade256793b31bd7c7d40684486966",
+            "restoredPassed": true
+          },
+          {
+            "id": "native-source-features",
+            "name": "mixed Scala guard checks native source feature visit",
+            "originalPassed": true,
+            "mutantCompiled": true,
+            "mutantFailedAssertion": true,
+            "mutantSha256": "5a81a3c0533e5668fa1ef924a4ca56af427565407703e1bffb37cc9fca57e3f4",
+            "originalSha256": "f9ea1d9be27bbe88ff9d6e2c32ed5f611abade256793b31bd7c7d40684486966",
+            "restoredPassed": true
+          }
+        ],
+        "allComplete": true
+      },
+      "nativeRegressions": {
+        "tests": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "outputSha256": "b1de7e131096ec54e7a2bd9a0b285ccad17e8620d24f30951b1296cb49f8edec"
+      },
+      "installedJavaWarningPolicy": {
+        "schemaVersion": 1,
+        "language": "scala",
+        "tarballSha256": "d9ae085a4c808f7fd6d0829fc3c1800f8ef57ed10f34d4deff7f45e4a0169317",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedRuntimeEvaluated": true,
+        "installedCliEvaluated": false,
+        "harnessOutsideInstalledPackage": true,
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "acceptance": {
+          "fileWorkerLimit": 1,
+          "passed": 1,
+          "required": 1,
+          "problems": [],
+          "complete": true
+        }
+      }
+    }
+  ],
+  "hostCheck": {
+    "command": "npm run check",
+    "tests": 1453,
+    "passed": 908,
+    "optionalSkipped": 545,
+    "failed": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "outputSha256": "ea31907b7548767bc150b018773c4613911b6af3c4e4b25fa6d6404de123a94e"
+  },
+  "implementationGatePromotion": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "finalPlatformMatrixAccepted": false
+}

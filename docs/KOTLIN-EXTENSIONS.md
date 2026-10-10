@@ -97,3 +97,14 @@ builds, Kotlin multiplatform, annotation processors, arbitrary script definition
 framework behavior, application runtime correctness, review quality or Gate A
 completion. Wider tool/artifact closures and the final platform matrix remain
 required. No inference or real-project field evaluation is invoked.
+
+Mixed Java warning escalation can carry a selected Java source address while
+retaining global positions `-1/-1`. The engine accepts one exact
+`compiler.err.warnings.and.werror` summary only when the declared policy enables
+warning escalation and selected source warnings remain. It retains those source
+warnings and reports failed with incomplete compiler coverage; it does not invent
+a source error for the global summary. The same source can pass when warning
+escalation is disabled. Unknown, duplicate, mispositioned or foreign-source
+summaries remain inconclusive. The [repair record](measurements/mixed-jvm-java-warning-policy-2026-10-10.json)
+binds native and fresh installed warning regressions and the preserved acceptance
+cases for both Kotlin and Scala.

@@ -130,11 +130,22 @@ const regressions = run([
   "--test-concurrency=1",
   "--test-reporter=tap",
   "dist/test/kotlin-extension-regressions.test.js",
+  "dist/test/kotlin-java-warning-policy.test.js",
 ]);
-assert.match(regressions, /# tests 6\n/);
-assert.match(regressions, /# pass 6\n/);
+assert.match(regressions, /# tests 7\n/);
+assert.match(regressions, /# pass 7\n/);
 assert.match(regressions, /# fail 0\n/);
 assert.match(regressions, /# skipped 0\n/);
+stage("fresh-installed-java-warning-policy");
+const installedJavaWarningPolicy = JSON.parse(
+  run([
+    "/bin/sh",
+    "-c",
+    "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs kotlin",
+  ]),
+);
+assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
+assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
 process.stdout.write(
   JSON.stringify({
     schemaVersion: 1,
@@ -157,8 +168,8 @@ process.stdout.write(
     installed,
     guards,
     regressions: {
-      tests: 6,
-      passed: 6,
+      tests: 7,
+      passed: 7,
       failed: 0,
       skipped: 0,
       outputSha256: (await import("node:crypto"))
@@ -166,6 +177,7 @@ process.stdout.write(
         .update(regressions)
         .digest("hex"),
     },
+    installedJavaWarningPolicy,
     complete: true,
     inferenceInvoked: false,
     fieldEvaluationExecuted: false,
