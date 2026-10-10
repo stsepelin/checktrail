@@ -39,7 +39,11 @@ const installedExtensionProfile =
 const timeoutMs =
   !fullSuite &&
   selection.length === 1 &&
-  ["ruby-extensions", "swift-extensions"].includes(selection[0])
+  [
+    "ruby-extensions",
+    "swift-extensions",
+    "dotnet-generator-extensions",
+  ].includes(selection[0])
     ? 1200000
     : fullSuite ||
         selection.includes("dotnet-method") ||
