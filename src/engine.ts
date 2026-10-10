@@ -248,6 +248,10 @@ export async function validate(
             [
               "dotnet.format-extensions",
               "dotnet.generator-extensions",
+              "swift.build-extensions",
+              "swift.xctest-extensions",
+              "swift.testing-extensions",
+              "swift.swiftlint-extensions",
             ].includes(check.id)
               ? 4 * 1024 * 1024
               : 1024 * 1024,

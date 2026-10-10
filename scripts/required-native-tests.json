@@ -4666,5 +4666,43 @@
       "file": "dist/test/gate-ruby-extensions.test.js",
       "name": "ruby-extensions installed acceptance"
     }
+  ],
+  "swift-extensions": [
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-swift-extensions.test.js",
+      "name": "swift-extensions installed acceptance"
+    }
   ]
 }

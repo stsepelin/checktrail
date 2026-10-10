@@ -62,6 +62,7 @@ assert.ok(
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
     "ruby-extensions",
+    "swift-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -137,6 +138,8 @@ if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
 if (profile === "dotnet-generator-extensions")
   process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
+if (profile === "swift-extensions")
+  process.env.CHECKTRAIL_SWIFT_EXTENSIONS_INSTALLED = "1";
 if (profile === "ruby-extensions")
   process.env.CHECKTRAIL_RUBY_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
@@ -211,6 +214,8 @@ try {
     "dotnet-format-extensions-fixture.js",
     "gate-dotnet-generator-extensions.test.js",
     "gate-ruby-extensions.test.js",
+    "gate-swift-extensions.test.js",
+    "swift-extensions-fixture.js",
     "ruby-extensions-fixture.js",
     "ruby-tools-fixture.js",
     "dotnet-generator-extensions-fixture.js",

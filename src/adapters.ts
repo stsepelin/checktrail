@@ -28,6 +28,10 @@ import {
 } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
 import { swiftToolsCheck } from "./swift-tools.js";
+import {
+  swiftExtensionsCheck,
+  swiftExtensionsPolicyFile,
+} from "./swift-extensions.js";
 import { rubyCheck } from "./ruby.js";
 import { rubyToolsCheck } from "./ruby-tools.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
@@ -185,7 +189,16 @@ export const adapters = [
   {
     id: "swift",
     markers: ["Package.swift"],
-    checks: ["swift.syntax", "swift.build", "swift.test", "swift.swiftlint"],
+    checks: [
+      "swift.syntax",
+      "swift.build",
+      "swift.test",
+      "swift.swiftlint",
+      "swift.build-extensions",
+      "swift.xctest-extensions",
+      "swift.testing-extensions",
+      "swift.swiftlint-extensions",
+    ],
   },
   {
     id: "cpp",
@@ -626,6 +639,19 @@ export async function checksFor(
   if (project.adapter === "swift")
     return [
       swiftCheck(project),
+      ...(project.files.includes(swiftExtensionsPolicyFile) ||
+      requested?.some((id) =>
+        /^swift\.(?:build|xctest|testing|swiftlint)-extensions$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "xctest", "testing", "swiftlint"] as const)
+              .filter(
+                (mode) =>
+                  !requested || requested.includes(`swift.${mode}-extensions`),
+              )
+              .map((mode) => swiftExtensionsCheck(source, project, mode)),
+          )
+        : []),
       ...(project.files.includes("checktrail.swift-tools.json") ||
       requested?.some((id) => /^swift\.(?:build|test|swiftlint)$/.test(id))
         ? await Promise.all(

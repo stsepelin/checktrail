@@ -8,6 +8,7 @@ import { kubeconformEvidence } from "./kubeconform-evidence.js";
 import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
+import { swiftExtensionsEvidence } from "./swift-extensions-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -410,6 +411,8 @@ export function evaluate(
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "swift-extensions-json")
+    return { ...result, ...swiftExtensionsEvidence(check, processes, root) };
   if (check.parser === "swift-tools-json")
     return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")

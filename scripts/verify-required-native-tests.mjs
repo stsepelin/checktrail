@@ -37,7 +37,9 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  !fullSuite && selection.length === 1 && selection[0] === "ruby-extensions"
+  !fullSuite &&
+  selection.length === 1 &&
+  ["ruby-extensions", "swift-extensions"].includes(selection[0])
     ? 1200000
     : fullSuite ||
         selection.includes("dotnet-method") ||
@@ -100,6 +102,7 @@ const isolatedCaseWorkers =
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
     "ruby-extensions",
+    "swift-extensions",
   ].includes(selection[0])
     ? 1
     : 0;

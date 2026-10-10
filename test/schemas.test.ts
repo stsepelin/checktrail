@@ -121,6 +121,7 @@ import {
   reportSummarySchema,
 } from "../src/schemas.js";
 import { swiftToolsConfigSchema } from "../src/swift-tools.js";
+import { swiftExtensionsConfigSchema } from "../src/swift-extensions-contract.js";
 import { importJUnit } from "../src/junit.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectPlan, projectReport } from "../src/output.js";
@@ -148,6 +149,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "go-scope-policy": goScopePolicySchema,
     "go-build-policy": goBuildPolicySchema,
     "swift-tools-config": swiftToolsConfigSchema,
+    "swift-extensions-config": swiftExtensionsConfigSchema,
     "dotnet-config": dotnetConfigSchema,
     "dotnet-build-config": dotnetBuildConfigSchema,
     "dotnet-build-repository": dotnetBuildRepositorySchema,

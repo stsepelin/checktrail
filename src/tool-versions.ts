@@ -238,17 +238,18 @@ export async function toolsFor(
     }
     return tools;
   }
-  if (check.adapter === "swift")
+  if (check.adapter === "swift" && check.id !== "swift.syntax")
     return [
-      command("swift", "swiftc", ["--version"]),
-      ...(check.id === "swift.syntax"
-        ? []
-        : [
-            { name: "node", source: "engine-runtime" } as const,
-            command("swiftpm", "swift", ["package", "--version"]),
-            command("swiftlint", "swiftlint", ["version"]),
-          ]),
+      { name: "node", source: "engine-runtime" },
+      ...["swift", "swiftpm", "swiftlint"].map((name) =>
+        command(name, process.execPath, [
+          fileURLToPath(new URL("./swift-version-runner.js", import.meta.url)),
+          name,
+        ]),
+      ),
     ];
+  if (check.adapter === "swift")
+    return [command("swift", "swiftc", ["--version"])];
   if (check.id === "jvm.gradle-test" && check.commands[0])
     return [
       { name: "node", source: "engine-runtime" },
