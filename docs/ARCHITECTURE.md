@@ -335,3 +335,10 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The explicit [Scala compiler extensions](SCALA-EXTENSIONS.md) use the same engine
+for Scala 2 typed/class observation and ordered Scala 3 mixed/generated/script
+stages. Later stages consume fresh earlier output, and Java bodies receive a
+separate native compiler task. Source, generated output, physical class/TASTy
+origins, feature observations and raw invocation streams must reconcile. Native
+acceptance remains scoped; wider platforms and Gate A remain open.

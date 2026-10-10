@@ -1,21 +1,14 @@
 import { createHash } from "node:crypto";
 import { inflateRawSync } from "node:zlib";
-import { scalaArtifacts } from "./scala-artifacts.js";
-import { scalaStagingLibrary } from "./scala-extension-artifacts.js";
-export const scalaHash = (bytes: Buffer | string) =>
+import { scala2Artifacts } from "./scala2-artifacts.js";
+export const scala2Hash = (bytes: Buffer | string) =>
   createHash("sha256").update(bytes).digest("hex");
-export function scalaLibraries(
-  archive: Buffer,
-  includeStaging = false,
-): Map<string, Buffer> {
-  const selected = includeStaging
-    ? [...scalaArtifacts.runtimeLibraries, scalaStagingLibrary]
-    : scalaArtifacts.runtimeLibraries;
+export function scala2Libraries(archive: Buffer): Map<string, Buffer> {
   if (
-    archive.length !== scalaArtifacts.archiveBytes ||
-    scalaHash(archive) !== scalaArtifacts.archiveSha256
+    archive.length !== scala2Artifacts.archiveBytes ||
+    scala2Hash(archive) !== scala2Artifacts.archiveSha256
   )
-    throw Error("The pinned Scala compiler archive bytes disagree");
+    throw Error("The pinned Scala 2 compiler archive bytes disagree");
   let end = -1;
   for (
     let i = archive.length - 22;
@@ -30,7 +23,7 @@ export function scalaLibraries(
       break;
     }
   if (end < 0 || archive.readUInt16LE(end + 4) || archive.readUInt16LE(end + 6))
-    throw Error("Unsupported Scala archive directory");
+    throw Error("Unsupported Scala 2 archive directory");
   const count = archive.readUInt16LE(end + 10),
     offset = archive.readUInt32LE(end + 16),
     size = archive.readUInt32LE(end + 12);
@@ -39,24 +32,24 @@ export function scalaLibraries(
     offset + size !== end ||
     count > 512
   )
-    throw Error("Scala archive directory bounds disagree");
+    throw Error("Scala 2 archive directory bounds disagree");
   const result = new Map<string, Buffer>();
   let cursor = offset;
   for (let i = 0; i < count; i++) {
     if (cursor + 46 > end || archive.readUInt32LE(cursor) !== 0x02014b50)
-      throw Error("Malformed Scala archive entry");
+      throw Error("Malformed Scala 2 archive entry");
     const nameSize = archive.readUInt16LE(cursor + 28),
       extra = archive.readUInt16LE(cursor + 30),
       comment = archive.readUInt16LE(cursor + 32),
       next = cursor + 46 + nameSize + extra + comment;
-    if (next > end) throw Error("Scala archive entry bounds disagree");
+    if (next > end) throw Error("Scala 2 archive entry bounds disagree");
     const name = archive.subarray(cursor + 46, cursor + 46 + nameSize);
-    const library = selected.find((item) =>
-      name.equals(Buffer.from("scala3-3.9.0/" + item.path)),
+    const library = scala2Artifacts.runtimeLibraries.find((item) =>
+      name.equals(Buffer.from("scala-2.13.18/" + item.path)),
     );
     if (library) {
       if (result.has(library.name))
-        throw Error("Duplicate pinned Scala library");
+        throw Error("Duplicate pinned Scala 2 library");
       const flags = archive.readUInt16LE(cursor + 8),
         method = archive.readUInt16LE(cursor + 10),
         compressed = archive.readUInt32LE(cursor + 20),
@@ -70,7 +63,7 @@ export function scalaLibraries(
         local + 30 > offset ||
         archive.readUInt32LE(local) !== 0x04034b50
       )
-        throw Error("Scala runtime library header disagrees");
+        throw Error("Scala 2 runtime library header disagrees");
       const localName = archive.readUInt16LE(local + 26),
         localExtra = archive.readUInt16LE(local + 28),
         data = local + 30 + localName + localExtra;
@@ -79,19 +72,22 @@ export function scalaLibraries(
         archive.readUInt16LE(local + 8) !== method ||
         data + compressed > offset
       )
-        throw Error("Scala runtime library data bounds disagree");
+        throw Error("Scala 2 runtime library data bounds disagree");
       const encoded = archive.subarray(data, data + compressed),
         bytes =
           method === 8
             ? inflateRawSync(encoded, { maxOutputLength: library.bytes + 1 })
             : encoded;
-      if (bytes.length !== library.bytes || scalaHash(bytes) !== library.sha256)
-        throw Error("Pinned Scala runtime library bytes disagree");
+      if (
+        bytes.length !== library.bytes ||
+        scala2Hash(bytes) !== library.sha256
+      )
+        throw Error("Pinned Scala 2 runtime library bytes disagree");
       result.set(library.name, bytes);
     }
     cursor = next;
   }
-  if (cursor !== end || result.size !== selected.length)
-    throw Error("Scala runtime library inventory is incomplete");
+  if (cursor !== end || result.size !== scala2Artifacts.runtimeLibraries.length)
+    throw Error("Scala 2 runtime library inventory is incomplete");
   return result;
 }

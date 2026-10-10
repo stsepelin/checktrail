@@ -40,7 +40,8 @@ const timeoutMs =
   fullSuite ||
   selection.includes("dotnet-method") ||
   selection.includes("jvm-wrappers") ||
-  selection.includes("kotlin-extensions")
+  selection.includes("kotlin-extensions") ||
+  selection.includes("scala-extensions")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),

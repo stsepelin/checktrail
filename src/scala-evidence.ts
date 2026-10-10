@@ -107,7 +107,7 @@ const nativeSchema = z.strictObject({
     )
     .max(4001),
 });
-const evidenceSchema = z.strictObject({
+export const scalaEvidenceSchema = z.strictObject({
   version: z.literal(1),
   requestDigest: digest,
   scala: z.literal(scalaArtifacts.version),
@@ -152,6 +152,8 @@ export function scalaEvidence(
   check: Check,
   processes: ProcessResult[],
   root: string | undefined,
+  generatedSources: ReadonlyMap<string, Buffer> = new Map(),
+  compilerSources: ReadonlyMap<string, Buffer> = new Map(),
 ): Pick<CheckResult, "status" | "reason" | "findings" | "findingsComplete"> {
   const incomplete = {
     status: "inconclusive" as const,
@@ -190,7 +192,7 @@ export function scalaEvidence(
       findingsComplete: false,
     };
   try {
-    const data = evidenceSchema.parse(JSON.parse(process.stdout)),
+    const data = scalaEvidenceSchema.parse(JSON.parse(process.stdout)),
       serialized = check.commands[0]!.args[2]!,
       planned = scalaInvocationSchema.parse(JSON.parse(serialized));
     if (
@@ -249,17 +251,21 @@ export function scalaEvidence(
         before.file !== expected[i] ||
         snapshots.has(before.nativeFile) ||
         !path.isAbsolute(before.nativeFile) ||
-        realpathSync(before.file) !== before.file
+        (!generatedSources.has(before.file) &&
+          realpathSync(before.file) !== before.file)
       )
         return incomplete;
       snapshots.set(before.nativeFile, i);
-      const physical = scalaReadSync(before.file, 1024 * 1024);
+      const physical =
+        generatedSources.get(before.file) ??
+        scalaReadSync(before.file, 1024 * 1024);
+      const compiledBytes = compilerSources.get(before.file) ?? physical;
       totalBytes += physical.length;
       if (
         physical.length !== before.bytes ||
         scalaHash(physical) !== before.sha256 ||
-        physical.length !== before.nativeBytes ||
-        scalaHash(physical) !== before.nativeSha256
+        compiledBytes.length !== before.nativeBytes ||
+        scalaHash(compiledBytes) !== before.nativeSha256
       )
         return incomplete;
       const after = data.after[i]!,
@@ -269,8 +275,8 @@ export function scalaEvidence(
         after.bytes !== before.bytes ||
         after.sha256 !== before.sha256 ||
         snapshot.file !== before.nativeFile ||
-        snapshot.bytes !== before.bytes ||
-        snapshot.sha256 !== before.sha256
+        snapshot.bytes !== before.nativeBytes ||
+        snapshot.sha256 !== before.nativeSha256
       )
         return incomplete;
       const observed = native.sources.find((s) => s.file === before.nativeFile);
@@ -284,9 +290,9 @@ export function scalaEvidence(
             a,
           ),
         ) ||
-        observed.inline ||
-        observed.staging ||
-        observed.macro ||
+        (planned.config.profile === scalaArtifacts.profile &&
+          !planned.config.extensions &&
+          (observed.inline || observed.staging || observed.macro)) ||
         observed.suspended
       )
         return incomplete;
@@ -316,7 +322,7 @@ export function scalaEvidence(
       const text = new TextDecoder("utf-8", {
           fatal: true,
           ignoreBOM: true,
-        }).decode(physical),
+        }).decode(compiledBytes),
         lines: string[] = text.match(/[^\n]*\n|[^\n]+$/g) ?? [];
       if (!lines.length || text.endsWith("\n")) lines.push("");
       texts.set(before.nativeFile, { text, lines });

@@ -4324,5 +4324,43 @@
       "file": "dist/test/gate-kotlin-extensions.test.js",
       "name": "kotlin-extensions installed acceptance"
     }
+  ],
+  "scala-extensions": [
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions installed acceptance"
+    }
   ]
 }

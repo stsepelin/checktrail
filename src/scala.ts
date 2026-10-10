@@ -4,6 +4,13 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { externalPathSchema } from "./external-schema.js";
 import { readProjectFile, withinRoot } from "./inventory.js";
+import { scala2ConfigSchema, scala2Inputs } from "./scala2.js";
+import {
+  scalaExtensionsSchema,
+  validateScalaExtensionScope,
+  scalaScriptSource,
+} from "./scala-extensions.js";
+import { verifyJvmToolchain } from "./jvm-extensions.js";
 import { scalaArtifacts } from "./scala-artifacts.js";
 import { scalaHash, scalaLibraries } from "./scala-archive.js";
 import { kotlinRead as scalaRead } from "./kotlin-io.js";
@@ -13,7 +20,7 @@ const dependency = z.strictObject({
   path: externalPathSchema,
   sha256: z.string().regex(/^[a-f0-9]{64}$/),
 });
-export const scalaConfigSchema = z.strictObject({
+const scala3ConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
   archive: externalPathSchema,
   sha256: z.literal(scalaArtifacts.archiveSha256),
@@ -21,7 +28,12 @@ export const scalaConfigSchema = z.strictObject({
   jvmTarget: z.enum(["17", "21", "25"]),
   warningsAsErrors: z.boolean(),
   classPath: z.array(dependency).max(128),
+  extensions: scalaExtensionsSchema.optional(),
 });
+export const scalaConfigSchema = z.union([
+  scala3ConfigSchema,
+  scala2ConfigSchema,
+]);
 export const scalaInvocationSchema = z.strictObject({
   config: scalaConfigSchema,
   scope: z.array(externalPathSchema).min(1).max(2000),
@@ -43,11 +55,15 @@ export async function scalaInputs(
       "Prepare the pinned Scala compiler archive without symbolic links",
     );
   const bytes = await scalaRead(archive, scalaArtifacts.archiveBytes),
-    libraries = scalaLibraries(bytes);
+    libraries = scalaLibraries(
+      bytes,
+      config.profile === scalaArtifacts.profile &&
+        config.extensions !== undefined,
+    );
   if (scalaHash(bytes) !== config.sha256)
     throw Error("Pinned Scala compiler archive identity disagrees");
-  for (const library of scalaArtifacts.runtimeLibraries) {
-    const actual = scalaJar(libraries.get(library.name)!);
+  for (const bytes of libraries.values()) {
+    const actual = scalaJar(bytes);
     if (actual.classPath.length)
       throw Error("Scala native runtime has undeclared manifest dependencies");
   }
@@ -103,16 +119,6 @@ export async function scalaCheck(
       throw Error(
         "Prepare an inventoried checktrail.scala.json and local pinned compiler archive",
       );
-    if (!check.scope.length) throw Error("No Scala source was inventoried");
-    if (project.files.some((file) => file.endsWith(".sc")))
-      throw Error("Scala scripts require a separate compiler profile");
-    if (project.files.some((file) => /\.(?:java|kt|kts)$/.test(file)))
-      throw Error("Mixed JVM source compilation requires a separate profile");
-    if (
-      check.scope.length > 2000 ||
-      new Set(check.scope).size !== check.scope.length
-    )
-      throw Error("Scala source inventory exceeds the declared profile");
     const config = scalaConfigSchema.parse(
       JSON.parse(
         await readProjectFile(
@@ -121,7 +127,46 @@ export async function scalaCheck(
         ),
       ),
     );
-    await scalaInputs(source.root, project.path, config);
+    const scala2 = config.profile === "linux-arm64-scala2-typed-class-v1";
+    const extensions =
+      config.profile === scalaArtifacts.profile ? config.extensions : undefined;
+    if (extensions) {
+      check.scope = project.files.filter((f) => /\.(scala|sc|java)$/.test(f));
+      validateScalaExtensionScope(extensions, check.scope);
+      if (project.files.some((f) => /\.(kt|kts)$/.test(f)))
+        throw Error(
+          "Kotlin sources require a separate selected compiler profile",
+        );
+      for (const script of extensions.scripts)
+        scalaScriptSource(
+          script,
+          await scalaRead(
+            path.resolve(source.root, project.path, script.file),
+            1024 * 1024,
+          ),
+        );
+      check.reason =
+        "Compile every declared ordered Scala 3 stage, Java source and compile-only script with fresh generator output and native typed/class/TASTy participation.";
+    } else {
+      if (!check.scope.length) throw Error("No Scala source was inventoried");
+      if (project.files.some((file) => file.endsWith(".sc")))
+        throw Error("Scala scripts require a separate compiler profile");
+      if (project.files.some((file) => /\.(?:java|kt|kts)$/.test(file)))
+        throw Error("Mixed JVM source compilation requires a separate profile");
+      if (
+        check.scope.length > 2000 ||
+        new Set(check.scope).size !== check.scope.length
+      )
+        throw Error("Scala source inventory exceeds the declared profile");
+    }
+    if (extensions) await verifyJvmToolchain();
+
+    if (scala2) {
+      await scala2Inputs(source.root, project.path, config);
+      await verifyJvmToolchain();
+      check.reason =
+        "Compile declared pinned Scala 2 source with native typed-tree, exact suppression and physical class-origin accounting.";
+    } else await scalaInputs(source.root, project.path, config);
     const invocation = JSON.stringify(
       scalaInvocationSchema.parse({ config, scope: check.scope }),
     );
@@ -130,7 +175,16 @@ export async function scalaCheck(
     check.commands.push({
       executable: process.execPath,
       args: [
-        fileURLToPath(new URL("./scala-runner.js", import.meta.url)),
+        fileURLToPath(
+          new URL(
+            scala2
+              ? "./scala2-runner.js"
+              : extensions
+                ? "./scala-extensions-runner.js"
+                : "./scala-runner.js",
+            import.meta.url,
+          ),
+        ),
         source.root,
         invocation,
       ],

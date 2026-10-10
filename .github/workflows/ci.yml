@@ -700,6 +700,34 @@ jobs:
       - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
         run: node scripts/verify-kotlin-extensions-container.mjs
 
+  scala-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-scala-extensions
+      CHECKTRAIL_SCALA_EXTENSIONS_IMAGE: checktrail-scala-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-scala-tools.mjs
+      - run: node scripts/prepare-scala2-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare pinned native Scala extension runtime
+        run: docker build --network none --label checktrail.task=ci-scala-extensions --file scripts/scala-extensions-tools.Dockerfile --tag "$CHECKTRAIL_SCALA_EXTENSIONS_IMAGE" .checktrail/scala-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
+        run: node scripts/verify-scala-extensions-container.mjs
+
   jvm-wrappers-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 40

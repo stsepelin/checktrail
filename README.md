@@ -97,7 +97,7 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | Kustomize                    | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
 | Terraform                    | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
 | Kotlin                       | Opt-in pinned detekt light analysis with every-selected-file rule, source, suppression and completion accounting  |
-| Scala, other infrastructure  | Discovery only; execution reports unavailable                                                                     |
+| Scala                        | Opt-in pinned Scala 2/3 compilation; explicit mixed/generated/compile-only script and ordered macro stages        |
 
 Tools must already be installed. No dependency installation, automatic fixes,
 service startup, migrations, commits or deployments are performed by the engine.
@@ -393,8 +393,9 @@ audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md
 and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
 native test evidence. The opt-in [SpotBugs profile](docs/SPOTBUGS.md) analyzes freshly
 compiled Java bytecode. The [Kotlin detekt profile](docs/DETEKT.md) analyzes selected
-Kotlin sources with pinned light rules. Wrappers, Kotlin compilation/type analysis,
-Scala, generated/JPMS scope and wider analyzer/platform profiles remain required.
+Kotlin sources with pinned light rules. The [Kotlin compiler profiles](docs/KOTLIN.md) and [Scala compiler profiles](docs/SCALA-EXTENSIONS.md)
+provide separately selected native compilation evidence. Wider analyzer/platform
+profiles and generated/JPMS analyzer scopes remain required.
 
 Reproduce synthetic planning and execution costs with the
 [performance harness](docs/PERFORMANCE.md). Reports retain raw measurements and

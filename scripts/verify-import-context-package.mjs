@@ -53,6 +53,7 @@ assert.ok(
     "rust-extensions",
     "jvm-wrappers",
     "kotlin-extensions",
+    "scala-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -114,6 +115,8 @@ if (profile === "jvm-wrappers")
   process.env.CHECKTRAIL_JVM_WRAPPERS_INSTALLED = "1";
 if (profile === "kotlin-extensions")
   process.env.CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED = "1";
+if (profile === "scala-extensions")
+  process.env.CHECKTRAIL_SCALA_EXTENSIONS_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -172,6 +175,10 @@ try {
     "gate-rust-extensions.test.js",
     "gate-kotlin-extensions.test.js",
     "kotlin-extensions-fixture.js",
+    "gate-scala-extensions.test.js",
+    "scala-extensions-fixture.js",
+    "scala-extension-evidence-fixture.js",
+    "scala-fixture.js",
     "kotlin-fixture.js",
     "gate-jvm-wrappers.test.js",
     "jvm-wrappers-fixture.js",
@@ -439,6 +446,9 @@ try {
           ...(profile === "kotlin-extensions"
             ? ["--env", "CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "scala-extensions"
+            ? ["--env", "CHECKTRAIL_SCALA_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "jvm-wrappers"
             ? [
                 "--env",
@@ -551,6 +561,7 @@ try {
                     "python-extensions",
                     "rust-extensions",
                     "kotlin-extensions",
+                    "scala-extensions",
                   ].includes(profile)
                 ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
                 : [
@@ -624,12 +635,14 @@ try {
                         "python-extensions",
                         "rust-extensions",
                         "kotlin-extensions",
+                        "scala-extensions",
                       ].includes(profile)
                     ? 1024
                     : 256,
             temporaryFilesystemExecutable: [
               "jvm-wrappers",
               "kotlin-extensions",
+              "scala-extensions",
               "context-go",
               "context-rust",
               "context-swift",
