@@ -187,10 +187,14 @@ an unavailable runtime or external service does not count as verification.
   KUBERNETES-EXTENSIONS.md adds the explicit thirteen-schema contract and current
   physical source/policy/schema/tool freshness.
   TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
-  source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
+  source ranges/snippets and native/installed CLI/MCP lifecycle controls.
   KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
   native render reconciliation and source-bound schema findings. Wider Terraform
-  providers/modules and wider Kustomize transforms remain pending under E16.
+  providers/modules remain pending under E16. KUSTOMIZE-EXTENSIONS.md adds selected
+  local strategic/JSON patches, name/namespace/image/replica transforms, literal
+  generator hashes/references and physical addresses through list edits. Native
+  output must reconcile with complete reconstructed values and current input bytes.
+  Unselected Kustomize semantics and platforms remain unverified.
   HELM.md records a bounded root-chart Helm strict lint/client-only rendering
   profile with original native, source-bound diagnostic, CLI/MCP, frozen-closure,
   mutation and fresh offline package controls. Broader Helm profiles remain pending.

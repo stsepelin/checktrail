@@ -1140,6 +1140,28 @@ jobs:
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
 
+  kustomize-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kustomize-extensions
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require preserved native checks, source and fresh installation, regressions and compiling controls
+        run: node scripts/verify-kustomize-extensions-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
   kubeconform:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20

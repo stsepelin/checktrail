@@ -10,6 +10,7 @@ import {
 import { kubeValidationEvidence } from "./kubeconform-evidence.js";
 import {
   kustomizeInvocationSchema,
+  kustomizeAssemblyScope,
   kustomizeResources,
   kustomizeCanonical,
   kustomizeBinarySha256,
@@ -19,6 +20,8 @@ import {
 } from "./kustomize.js";
 import { mavenHash } from "./maven.js";
 import type { Check, CheckResult, ProcessResult } from "./types.js";
+import { kustomizeExtensionProfile } from "./kustomize-extensions.js";
+import { verifyCurrentKubernetesExtensionInputs } from "./kubernetes-extensions.js";
 const file = z.string().min(1).max(8192),
   digest = z.string().regex(/^[a-f0-9]{64}$/),
   integer = z.number().int().nonnegative(),
@@ -118,10 +121,7 @@ export function kustomizeEvidence(
     kustomizeRequire(
       check.id === "infrastructure.kustomize" &&
         kustomizeCanonical(check.scope) ===
-          kustomizeCanonical([
-            ...invocation.config.kustomizations,
-            ...invocation.config.resources,
-          ]),
+          kustomizeCanonical(kustomizeAssemblyScope(invocation.config)),
       "Check identity differs",
     );
     kustomizeRequire(
@@ -159,6 +159,16 @@ export function kustomizeEvidence(
         ),
       "Schema closure differs",
     );
+    if (invocation.config.assemblyProfile === kustomizeExtensionProfile)
+      for (const tool of packet.tools)
+        verifyCurrentKubernetesExtensionInputs(
+          check.commands[0]!.args[1]!,
+          check.commands[0]!.cwd,
+          invocation.inputs,
+          invocation.config.schemaDirectory,
+          kubeSchemaPins,
+          tool,
+        );
     const receipt = (
       index: number,
       phase: string,

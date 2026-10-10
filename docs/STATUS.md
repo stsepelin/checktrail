@@ -133,15 +133,20 @@ with pinned native output and offline Kubernetes validation. Original controls
 cover source-bound defects/repair, supported overlay near misses, CLI/MCP trust and
 privacy, forged evidence, concurrent cleanup and observed native build/validator
 cancellation and source changes. Its [local record](measurements/kustomize-native-2026-10-06.json)
-binds source and fresh offline installed-package acceptance. Wider transforms and
-Gate A remain open.
+binds source and fresh offline installed-package acceptance. The explicit
+[local transform extension](KUSTOMIZE-EXTENSIONS.md) adds selected strategic/JSON
+patches, namespace/name/image/replica transforms, literal generator hashes and
+references, with physical addresses retained through array edits. Its
+[local record](measurements/kustomize-extensions-2026-10-10.json) binds preserved,
+source, installed, regression and compiling controls. Unselected semantics,
+wider platforms and Gate A remain open.
 
 The bounded [Terraform profile](TERRAFORM.md) validates complete provider-free
 JSON modules with pinned native Terraform. It binds source ranges/snippets,
 module/config/tool bytes, native counters and exact commands, with original
 defect/repair, CLI/MCP and reached lifecycle controls in the
 [local record](measurements/terraform-native-2026-10-06.json). Wider Terraform
-providers/modules, wider Helm charts and Kustomize transforms and Gate A remain open.
+providers/modules, wider Helm charts, unselected Kustomize semantics and Gate A remain open.
 
 The bounded [kubeconform profile](KUBECONFORM.md) validates every declared
 Deployment, Service and ConfigMap document against pinned local Kubernetes 1.36.0
@@ -150,7 +155,7 @@ JSON-pointer addresses must reconcile; empty, skipped, missing-schema and stale
 collections cannot pass. The [local record](measurements/kubeconform-native-2026-10-06.json)
 binds native source/offline installed CLI/MCP controls and compiling guard proofs.
 The explicit runtime preparer also pins Terraform, Helm and Kustomize binaries;
-Wider Helm charts, Kustomize transforms and Terraform profiles remain pending.
+Wider Helm charts, unselected Kustomize semantics and Terraform profiles remain pending.
 E16 and Gate A remain open.
 
 The bounded [C/C++ native tools profile](CPP-TOOLS.md) now builds declared C17/C++20

@@ -4438,5 +4438,43 @@
       "file": "dist/test/gate-kubernetes-extensions.test.js",
       "name": "kubernetes-extensions installed acceptance"
     }
+  ],
+  "kustomize-extensions": [
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions installed acceptance"
+    }
   ]
 }
