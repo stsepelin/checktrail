@@ -1,3 +1,4 @@
+import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import { Buffer } from "node:buffer";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -122,7 +123,8 @@ try {
     );
     observed.push(...rows);
   }
-  if (process.env.CHECKTRAIL_CPP_BASE_PREPARED !== "1") docker(["pull", base]);
+  if (process.env.CHECKTRAIL_CPP_BASE_PREPARED !== "1")
+    await pullPinnedImage(base);
   const [baseImage] = JSON.parse(docker(["image", "inspect", base]));
   assert.equal(baseImage.Architecture, "arm64");
   docker([

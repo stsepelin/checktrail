@@ -75,8 +75,10 @@ Declare every inventoried POM, including the root and aggregator modules. Paths
 and test-source assignments are exact; each executable module needs test classes,
 and every test Java source needs a test-class or support role. Aggregators cannot
 hide Java inputs. The selected check covers the whole declared reactor, including
-nested projects. Java sources use the conventional main/test roots; generated,
-JPMS, nonstandard and mixed-language scopes need additional verified profiles.
+nested projects. Java sources use the conventional main/test roots. The opt-in
+[JVM wrapper extension](JVM-WRAPPERS.md) admits pinned wrappers, declared native
+generated Java and main JPMS descriptors. Nonstandard and mixed-language scopes
+need additional verified profiles.
 Configuration and dependency manifests have published JSON Schemas.
 
 ## Execution and evidence
@@ -146,8 +148,9 @@ state, invalid native packets and observed running-test cancellation. They do no
 establish every JUnit extension, inheritance, nested class, class loader, compiler
 option, framework guard or language behavior.
 
-E11 remains partial. Maven wrappers and wider Maven/Gradle profiles, generated
-and JPMS scope, explicit Kotlin/Scala, SpotBugs and detekt remain required.
+E11 remains partial. The selected [JVM wrapper extension](JVM-WRAPPERS.md) covers
+offline Maven/Gradle launchers, generated Java and conventional JPMS builds. Wider
+build profiles, explicit Kotlin/Scala and wider analyzer profiles remain required.
 Broader native/runtime/client/platform profiles, full provenance, host isolation,
 representative performance and the other reviewer tasks remain open. Gate A is
 open; no inference, field trial or comparative-quality gate is established here.

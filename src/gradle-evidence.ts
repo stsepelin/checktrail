@@ -1,3 +1,5 @@
+import { jvmExtensionPacketSchema } from "./jvm-workspace-extensions.js";
+import { reconcileJvmExtensions } from "./jvm-extension-evidence.js";
 import path from "node:path";
 import { externalPathSchema } from "./external-schema.js";
 import { z } from "zod";
@@ -103,6 +105,11 @@ const eventSchema = z.discriminatedUnion("type", [
   z.strictObject({
     type: z.literal("init"),
     processId: z.number().int().min(1),
+    wrapperAncestors: z
+      .array(z.number().int().min(1))
+      .min(1)
+      .max(16)
+      .optional(),
     version: z.literal("9.8.0"),
     runtime: z.literal("25.0.4+7-LTS"),
     home: string,
@@ -175,6 +182,7 @@ export const gradlePacketSchema = z.strictObject({
   launcherPid: z.number().int().min(1),
   workspace: string,
   distribution: string,
+  extensions: jvmExtensionPacketSchema.optional(),
   repositoryManifest: z.string().max(1024 * 1024),
   artifacts: z.array(externalPathSchema).min(1).max(4096),
   exitCode: z.number().int().min(0).max(255),
@@ -273,18 +281,29 @@ export function gradleEvidence(
       "Exact pinned native artifact closure",
     );
     requireNative(
-      data.distribution ===
-        path.resolve(
-          check.commands[0]!.args[1]!,
-          check.project,
-          invocation.config.distribution,
-        ),
+      invocation.config.extensions ||
+        data.distribution ===
+          path.resolve(
+            check.commands[0]!.args[1]!,
+            check.project,
+            invocation.config.distribution,
+          ),
       "Configured native distribution binding",
     );
     requireNative(
       path.isAbsolute(data.workspace) &&
         path.basename(data.workspace) === "workspace",
       "Fresh workspace",
+    );
+    const generatedOutputs = reconcileJvmExtensions(
+      "gradle",
+      invocation.config.extensions,
+      data.extensions,
+      check.commands[0]!.args[1]!,
+      check.project,
+      invocation.inputs,
+      data.workspace,
+      data.distribution,
     );
     const ofType = <T extends z.infer<typeof eventSchema>["type"]>(type: T) =>
       data.events.filter(
@@ -305,8 +324,14 @@ export function gradleEvidence(
       "Complete native build lifecycle",
     );
     requireNative(
-      starts[0]!.processId === data.launcherPid,
-      "Native build runs in the owned client process",
+      invocation.config.extensions
+        ? starts[0]!.wrapperAncestors?.[0] === starts[0]!.processId &&
+            starts[0]!.wrapperAncestors.includes(data.launcherPid) &&
+            new Set(starts[0]!.wrapperAncestors).size ===
+              starts[0]!.wrapperAncestors.length
+        : starts[0]!.processId === data.launcherPid &&
+            starts[0]!.wrapperAncestors === undefined,
+      "Native build runs beneath the owned launcher",
     );
     requireNative(
       starts[0]!.home === data.distribution &&
@@ -416,6 +441,16 @@ export function gradleEvidence(
               ) && input.path.endsWith(".java"),
           )
           .map((input) => path.join(data.workspace, input.path));
+        if (set.name === "main")
+          expected.push(
+            ...generatedOutputs
+              .filter((output) =>
+                output.path.startsWith(
+                  path.posix.join(module.path, "src/main/java") + "/",
+                ),
+              )
+              .map((output) => path.join(data.workspace, output.path)),
+          );
         const resources = invocation.inputs
           .filter((input) =>
             input.path.startsWith(

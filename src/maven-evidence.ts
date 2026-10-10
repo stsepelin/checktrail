@@ -1,3 +1,5 @@
+import { jvmExtensionPacketSchema } from "./jvm-workspace-extensions.js";
+import { reconcileJvmExtensions } from "./jvm-extension-evidence.js";
 import path from "node:path";
 import { z } from "zod";
 import { importJUnit } from "./junit.js";
@@ -61,6 +63,7 @@ const schema = z.strictObject({
   maven: z.literal("3.10.0"),
   launcherPid: z.number().int().min(1),
   distribution: z.string().min(1).max(8192),
+  extensions: jvmExtensionPacketSchema.optional(),
   repositoryManifest: z
     .string()
     .min(1)
@@ -185,13 +188,24 @@ export function mavenEvidence(
       "Planned source scope",
     );
     assertEvidence(
-      data.distribution ===
-        path.resolve(
-          check.commands[0]!.args[1]!,
-          check.project,
-          invocation.config.distribution,
-        ),
+      invocation.config.extensions ||
+        data.distribution ===
+          path.resolve(
+            check.commands[0]!.args[1]!,
+            check.project,
+            invocation.config.distribution,
+          ),
       "Configured native Maven distribution",
+    );
+    const generatedOutputs = reconcileJvmExtensions(
+      "maven",
+      invocation.config.extensions,
+      data.extensions,
+      check.commands[0]!.args[1]!,
+      check.project,
+      invocation.inputs,
+      data.workspace,
+      data.distribution,
     );
     const events = data.events,
       ofType = (type: string) => events.filter((event) => event.type === type);
@@ -403,6 +417,16 @@ export function mavenEvidence(
               ),
             )
             .map((file) => path.resolve(data.workspace, file));
+          if (!test)
+            expectedInputs.push(
+              ...generatedOutputs
+                .filter((output) =>
+                  output.path.startsWith(
+                    path.posix.join(module.path, "src/main/java") + "/",
+                  ),
+                )
+                .map((output) => path.resolve(data.workspace, output.path)),
+            );
           assertEvidence(
             same(
               captured.inputs[test ? "testCompile" : "compile"],

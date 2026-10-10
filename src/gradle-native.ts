@@ -48,7 +48,13 @@ def snapshot = { task ->
  else result.role='lifecycle'
  result
 }
-emit([type:'init',processId:ProcessHandle.current().pid(),version:gradle.gradleVersion,runtime:System.getProperty('java.runtime.version'),home:gradle.gradleHomeDir.canonicalPath,userHome:gradle.gradleUserHomeDir.canonicalPath,offline:gradle.startParameter.offline,tasks:gradle.startParameter.taskNames,excludedTasks:gradle.startParameter.excludedTaskNames.toList().sort(),parallel:gradle.startParameter.parallelProjectExecutionEnabled,maxWorkers:gradle.startParameter.maxWorkerCount])
+def init=[type:'init',processId:ProcessHandle.current().pid(),version:gradle.gradleVersion,runtime:System.getProperty('java.runtime.version'),home:gradle.gradleHomeDir.canonicalPath,userHome:gradle.gradleUserHomeDir.canonicalPath,offline:gradle.startParameter.offline,tasks:gradle.startParameter.taskNames,excludedTasks:gradle.startParameter.excludedTaskNames.toList().sort(),parallel:gradle.startParameter.parallelProjectExecutionEnabled,maxWorkers:gradle.startParameter.maxWorkerCount]
+if(System.getProperty('checktrail.wrapper')=='1') {
+ def ancestors=[ProcessHandle.current().pid()];def parent=ProcessHandle.current().parent().orElse(null)
+ while(parent!=null && ancestors.size()<16){ancestors.add(parent.pid());parent=parent.parent().orElse(null)}
+ init.wrapperAncestors=ancestors
+}
+emit(init)
 gradle.projectsEvaluated {
  emit([type:'projects',projects:gradle.rootProject.allprojects.collect{p->[path:p.path,directory:p.projectDir.canonicalPath,build:p.buildFile.canonicalPath,tests:p.tasks.withType(Test).collect{it.path}.sort(),sourceSets:p.extensions.findByName('sourceSets')?.collect{s->[name:s.name,java:files(s.allJava),javaRoots:s.java.srcDirs.collect{it.canonicalPath}.sort(),resources:files(s.resources)]}]}])
  gradle.rootProject.allprojects.each { p -> p.tasks.withType(Test).configureEach {task->

@@ -37,7 +37,9 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  fullSuite || selection.includes("dotnet-method")
+  fullSuite ||
+  selection.includes("dotnet-method") ||
+  selection.includes("jvm-wrappers")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),
@@ -75,6 +77,14 @@ const timeoutMs =
           )
         ? 300000
         : 120000;
+// The JVM wrapper inventory contains independent top-level callbacks. Each
+// selected callback gets a fresh process and file budget; unchanged callback
+// deadlines still apply. One heavy case runs at a time: two Gradle pipelines
+// exhausted native threads under the required 256-PID container limit. A full-suite run keeps every file/test in scope.
+const isolatedCaseWorkers =
+  !fullSuite && selection.length === 1 && selection[0] === "jvm-wrappers"
+    ? 1
+    : 0;
 // Retain the single-profile report used by installed acceptance harnesses.
 const additionalFiles = fullSuite
   ? (await readdir(new URL("../dist/test/", import.meta.url)))
@@ -89,7 +99,10 @@ const report =
   selection.length === 1 && !fullSuite
     ? {
         profile: selection[0],
-        ...(await runRequiredTests(profiles[selection[0]], { timeoutMs })),
+        ...(await runRequiredTests(profiles[selection[0]], {
+          timeoutMs,
+          isolatedCaseWorkers,
+        })),
       }
     : await runRequiredProfiles(profiles, selection, {
         timeoutMs,

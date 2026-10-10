@@ -11,10 +11,19 @@ import {
   verifyMavenTree,
 } from "./maven.js";
 import { gradleDistributionFiles } from "./gradle-distribution.js";
+import {
+  jvmExtensionsSchema,
+  jvmGeneratorSourceFiles,
+  jvmWrapperSourceFiles,
+  validateJvmExtensionScope,
+  verifyJvmWrapper,
+  verifyJvmToolchain,
+} from "./jvm-extensions.js";
 import type { Check, Inventory, Project } from "./types.js";
 
 export const gradleConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
+  extensions: jvmExtensionsSchema.optional(),
   distribution: externalPathSchema,
   repository: externalPathSchema,
   repositoryManifest: externalPathSchema,
@@ -65,6 +74,8 @@ export const gradleProtectedEnvironment = [
   "HOME",
   "ENV",
   "BASH_ENV",
+  "JAVACMD",
+  "CDPATH",
 ];
 export class GradlePrerequisiteError extends Error {}
 export async function gradleTools(
@@ -166,7 +177,11 @@ export async function gradleCheck(
       inputs.some(
         (file) =>
           /(?:^|\/)(?:buildSrc|build-logic|\.gradle)\//.test(file) ||
-          /(?:^|\/)gradle\/(?:wrapper|gradle-daemon-jvm)/.test(file),
+          (/(?:^|\/)gradle\/(?:wrapper|gradle-daemon-jvm)/.test(file) &&
+            !(
+              config.extensions &&
+              jvmWrapperSourceFiles("gradle").includes(file)
+            )),
       )
     )
       throw new GradlePrerequisiteError(
@@ -220,7 +235,24 @@ export async function gradleCheck(
       throw new GradlePrerequisiteError(
         "This profile requires one root settings script and no composite builds",
       );
-    const assigned = new Set<string>();
+    if (config.extensions) {
+      validateJvmExtensionScope(
+        config.extensions,
+        inputs,
+        config.modules.map((m) => ({
+          path: m.path,
+          executable: m.kind === "java",
+        })),
+      );
+      await verifyJvmWrapper(
+        source.root,
+        project.path,
+        "gradle",
+        config.extensions,
+      );
+      await verifyJvmToolchain();
+    }
+    const assigned = jvmGeneratorSourceFiles(config.extensions);
     for (const module of config.modules) {
       const testPrefix = path.posix.join(module.path, "src/test/java") + "/",
         tests = check.scope.filter((file) => file.startsWith(testPrefix)),
@@ -266,7 +298,8 @@ export async function gradleCheck(
       check.scope.some(
         (file) =>
           !assigned.has(file) ||
-          path.posix.basename(file) === "module-info.java",
+          (path.posix.basename(file) === "module-info.java" &&
+            !config.extensions),
       )
     )
       throw new GradlePrerequisiteError(

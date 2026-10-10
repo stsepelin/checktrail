@@ -1,4 +1,13 @@
-import { spawnSync } from "node:child_process";
+import { jvmInvoker } from "./jvm-invoke.js";
+import { verifyJvmWrapper, verifyJvmToolchain } from "./jvm-extensions.js";
+import {
+  stageJvmWrapper,
+  findJvmWrapperDistribution,
+  generateJvmSources,
+  captureJvmModules,
+  captureJvmGeneratedClasses,
+} from "./jvm-workspace-extensions.js";
+import { mavenDistributionFiles } from "./maven-distribution.js";
 import {
   mkdir,
   mkdtemp,
@@ -16,6 +25,7 @@ import {
   mavenInvocationSchema,
   mavenLocal,
   mavenTools,
+  verifyMavenTree,
 } from "./maven.js";
 import { mavenNativeSource, mavenJUnitSource } from "./maven-native.js";
 const env = { ...process.env };
@@ -35,15 +45,18 @@ for (const name of [
   "HOME",
   "ENV",
   "BASH_ENV",
+  "JAVACMD",
+  "MAVEN_BASEDIR",
+  "MAVEN_PROJECTBASEDIR",
+  "MAVEN_DEBUG_OPTS",
+  "MVNW_USERNAME",
+  "MVNW_PASSWORD",
+  "MVNW_REPOURL",
+  "MVNW_VERBOSE",
+  "CDPATH",
 ])
   delete env[name];
-const invoke = (tool: string, args: string[], cwd?: string) =>
-  spawnSync(tool, args, {
-    env,
-    encoding: "utf8",
-    maxBuffer: 2 * 1024 * 1024,
-    ...(cwd ? { cwd } : {}),
-  });
+const invoke = jvmInvoker(env, process.argv[4] !== "--version");
 async function lines(file: string) {
   const bytes = await readFile(file);
   if (bytes.length > 2 * 1024 * 1024) throw Error("Native event bound");
@@ -58,7 +71,12 @@ async function main() {
   const root = await realpath(process.argv[2]!);
   const project = path.relative(root, await realpath(process.cwd())) || ".";
   const invocation = mavenInvocationSchema.parse(JSON.parse(process.argv[3]!));
-  const version = invoke("java", ["--version"]);
+  const extensions = invocation.config.extensions;
+  if (extensions) {
+    env.JAVA_HOME = await verifyJvmToolchain();
+    await verifyJvmWrapper(root, project, "maven", extensions);
+  }
+  const version = await invoke("java", ["--version"]);
   if (
     version.status !== 0 ||
     version.stderr ||
@@ -84,22 +102,6 @@ async function main() {
     await mkdir(classes);
     env.MAVEN_SKIP_RC = "1";
     env.HOME = home;
-    const nativeVersion = invoke(
-      path.join(tools.distribution, "bin/mvn"),
-      ["--version", `-Duser.home=${home}`],
-      home,
-    );
-    if (
-      nativeVersion.status !== 0 ||
-      nativeVersion.stderr ||
-      !nativeVersion.stdout.startsWith("Apache Maven 3.10.0 ")
-    )
-      throw Error("Maven version mismatch");
-    if (process.argv[4] === "--version") {
-      process.stdout.write(nativeVersion.stdout);
-      return;
-    }
-
     for (const item of invocation.inputs) {
       const source = await mavenLocal(root, project, item.path),
         bytes = await readFile(source);
@@ -111,6 +113,54 @@ async function main() {
       await mkdir(path.dirname(destination), { recursive: true });
       await writeFile(destination, bytes, { flag: "wx" });
     }
+    const wrapper = extensions
+      ? await stageJvmWrapper(
+          workspace,
+          "maven",
+          await verifyJvmWrapper(root, project, "maven", extensions),
+        )
+      : null;
+    env.MAVEN_USER_HOME = path.join(temporary, "wrapper-cache");
+    if (extensions) env.MAVEN_OPTS = "--enable-native-access=ALL-UNNAMED";
+    const nativeCommand = extensions
+      ? "/bin/sh"
+      : path.join(tools.distribution, "bin/mvn");
+    const nativeArguments = (args: string[]) =>
+      extensions ? [path.join(workspace, "mvnw"), ...args] : args;
+    const nativeVersion = await invoke(
+      nativeCommand,
+      nativeArguments(["--version", `-Duser.home=${home}`]),
+      extensions ? workspace : home,
+    );
+    if (
+      nativeVersion.status !== 0 ||
+      (extensions
+        ? ![
+            "",
+            "[WARNING] Using an insecure connection to download the Maven distribution. Please consider using HTTPS.\n",
+          ].includes(nativeVersion.stderr)
+        : !!nativeVersion.stderr) ||
+      !nativeVersion.stdout.startsWith("Apache Maven 3.10.0 ")
+    )
+      throw Error("Maven version mismatch");
+    const distribution = extensions
+      ? await findJvmWrapperDistribution(env.MAVEN_USER_HOME!, "maven")
+      : tools.distribution;
+    if (extensions) await verifyMavenTree(distribution, mavenDistributionFiles);
+    if (process.argv[4] === "--version") {
+      process.stdout.write(nativeVersion.stdout);
+      return;
+    }
+
+    const generated = extensions
+      ? await generateJvmSources(
+          extensions,
+          invocation.inputs,
+          workspace,
+          temporary,
+          invoke,
+        )
+      : [];
     await cp(tools.repository, repository, {
       recursive: true,
       errorOnExist: true,
@@ -122,12 +172,12 @@ async function main() {
     const jars = tools.pins.files
       .filter((item) => item.path.endsWith(".jar"))
       .map((item) => path.join(repository, item.path));
-    const compiled = invoke("javac", [
+    const compiled = await invoke("javac", [
       "-proc:none",
       "-encoding",
       "UTF-8",
       "-cp",
-      [path.join(tools.distribution, "lib/*"), ...jars].join(path.delimiter),
+      [path.join(distribution, "lib/*"), ...jars].join(path.delimiter),
       "-d",
       classes,
       compiler,
@@ -159,7 +209,7 @@ async function main() {
       "VerifierMavenTests\n",
     );
     const observer = path.join(temporary, "observer.jar"),
-      packed = invoke("jar", [
+      packed = await invoke("jar", [
         "--create",
         "--file",
         observer,
@@ -195,9 +245,9 @@ async function main() {
       `-Duser.home=${home}`,
       "test",
     ];
-    const result = invoke(
-      path.join(tools.distribution, "bin/mvn"),
-      args,
+    const result = await invoke(
+      nativeCommand,
+      nativeArguments(args),
       workspace,
     );
     if (result.error || result.signal || result.status === null)
@@ -247,7 +297,7 @@ async function main() {
           await readFile(await mavenLocal(root, project, item.path)),
         ) !== item.sha256 ||
         mavenHash(await readFile(path.join(workspace, item.path))) !==
-          item.sha256
+          (wrapper?.file === item.path ? wrapper.stagedSha256 : item.sha256)
       )
         throw Error("Maven mutated source inputs");
     for (const item of tools.pins.files.filter((item) =>
@@ -259,6 +309,35 @@ async function main() {
       )
         throw Error("Maven dependency changed during execution");
     }
+    const moduleWitnesses = extensions
+      ? await captureJvmModules(
+          extensions,
+          workspace,
+          temporary,
+          "maven",
+          invoke,
+        )
+      : [];
+    const generatedClasses = extensions
+      ? await captureJvmGeneratedClasses(
+          extensions,
+          workspace,
+          temporary,
+          "maven",
+          invoke,
+        )
+      : [];
+    if (extensions) {
+      await verifyJvmWrapper(root, project, "maven", extensions);
+      await verifyJvmToolchain();
+      await verifyMavenTree(distribution, mavenDistributionFiles);
+      for (const output of generated.flatMap((g) => g.outputs))
+        if (
+          mavenHash(await readFile(path.join(workspace, output.path))) !==
+          output.sha256
+        )
+          throw Error("Generated Java source changed after native witnesses");
+    }
     await mavenTools(root, project, invocation.config);
     process.stdout.write(
       JSON.stringify({
@@ -267,7 +346,19 @@ async function main() {
         runtime: "25.0.4+7-LTS",
         maven: "3.10.0",
         launcherPid: result.pid,
-        distribution: tools.distribution,
+        distribution,
+        ...(extensions && wrapper
+          ? {
+              extensions: {
+                schemaVersion: 1,
+                nativeToolchainVerified: true,
+                wrapper: { ...wrapper, installedDistributionVerified: true },
+                generated,
+                modules: moduleWitnesses,
+                generatedClasses,
+              },
+            }
+          : {}),
         repositoryManifest: tools.manifestText,
         workspace,
         artifacts: jars,
@@ -276,10 +367,10 @@ async function main() {
         tests,
         modules,
         console: {
-          stdoutBytes: Buffer.byteLength(result.stdout),
-          stderrBytes: Buffer.byteLength(result.stderr),
-          stdoutSha256: mavenHash(result.stdout),
-          stderrSha256: mavenHash(result.stderr),
+          stdoutBytes: result.stdoutBytes,
+          stderrBytes: result.stderrBytes,
+          stdoutSha256: result.stdoutSha256,
+          stderrSha256: result.stderrSha256,
         },
       }),
     );

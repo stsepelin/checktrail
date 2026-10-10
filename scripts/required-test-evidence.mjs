@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { open, realpath } from "node:fs/promises";
+import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
-import { availableParallelism } from "node:os";
+import { availableParallelism, tmpdir } from "node:os";
+import { pathToFileURL } from "node:url";
 import { run } from "node:test";
 
 export const testFileWorkerLimit = () =>
@@ -59,6 +60,7 @@ async function executeRequiredTests(
     timeoutMs = 120000,
     maxTerminalEvents = MAX_EVENTS,
     additionalFiles = [],
+    isolatedCaseWorkers = 0,
   } = {},
 ) {
   assert.ok(
@@ -72,6 +74,20 @@ async function executeRequiredTests(
     "Required terminal ledger must be bounded",
   );
   assert.ok(Array.isArray(additionalFiles));
+  assert.ok(
+    Number.isSafeInteger(isolatedCaseWorkers) &&
+      isolatedCaseWorkers >= 0 &&
+      isolatedCaseWorkers <= 2,
+    "Required case worker limit must be bounded",
+  );
+  assert.ok(
+    isolatedCaseWorkers === 0 || additionalFiles.length === 0,
+    "Named case isolation cannot replace a full-suite run",
+  );
+  const requiredCaseWorkerLimit =
+    isolatedCaseWorkers === 0
+      ? 0
+      : Math.min(isolatedCaseWorkers, availableParallelism());
   const fileWorkerLimit =
     additionalFiles.length > 0 ? testFileWorkerLimit() : 1;
   const requiredFiles = new Set(expected.map((item) => item.file));
@@ -91,87 +107,133 @@ async function executeRequiredTests(
   let passed = 0;
   let optionalSkipped = 0;
   let terminalEventCount = 0;
-  if (before.every((item) => item.state === "present"))
-    for await (const { type, data } of run({
-      files,
-      concurrency: fileWorkerLimit,
-      timeout: timeoutMs,
-      execArgv: [],
-    })) {
-      if (type !== "test:pass" && type !== "test:fail") continue;
-      terminalEventCount++;
-      const suite = data.details?.type === "suite";
-      const skipped = data.skip !== undefined && data.skip !== false;
-      const todo = data.todo !== undefined && data.todo !== false;
-      const outcome = skipped
-        ? "skipped"
-        : todo
-          ? "todo"
-          : type === "test:fail"
-            ? "failed"
-            : "passed";
-      const file = data.file ? path.resolve(data.file) : "";
-      const id = key({ file, name: data.name });
-      const duration = data.details?.duration_ms;
-      const retained = terminalEvents.length < maxTerminalEvents;
-      if (retained) {
-        const event = {
-          sequence: terminalEventCount,
-          fileId: fileIds.get(file) ?? null,
-          name: data.name.slice(0, MAX_NAME_CHARACTERS),
-          nameTruncated: data.name.length > MAX_NAME_CHARACTERS,
-          kind: suite ? "suite" : "test",
-          outcome,
-          durationMs:
-            typeof duration === "number" &&
-            Number.isFinite(duration) &&
-            duration >= 0
-              ? duration
-              : null,
-          required: !suite && expectedKeys.has(id),
-        };
-        terminalEvents.push(event);
-        if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
-        if (event.nameTruncated)
-          problems.push({
-            name: event.name,
-            reason: "terminal-name-truncated",
-          });
+  const collect = async (selection) => {
+    let temporary;
+    let execArgv = [];
+    try {
+      if (selection) {
+        temporary = await mkdtemp(
+          path.join(tmpdir(), "checktrail-native-case-"),
+        );
+        const preload = path.join(temporary, "environment.mjs");
+        await writeFile(
+          preload,
+          `import process from "node:process";for(const name of ["TMPDIR","TEMP","TMP"])process.env[name]=${JSON.stringify(temporary)};`,
+          { flag: "wx", mode: 0o600 },
+        );
+        execArgv = ["--import", pathToFileURL(preload).href];
       }
-      if (type === "test:fail" && retained) {
-        const error = data.details?.error;
-        problems.push({
-          name: data.name.slice(0, MAX_NAME_CHARACTERS),
-          reason: "failed",
-          ...(typeof error?.failureType === "string"
-            ? { failureType: error.failureType.slice(0, 128) }
-            : {}),
-          ...(typeof error?.code === "string"
-            ? { code: error.code.slice(0, 128) }
-            : {}),
-          ...(typeof error?.message === "string"
-            ? { message: error.message.slice(0, 1000) }
-            : {}),
-        });
-      }
-      if (skipped || todo) {
-        if (
-          skipped &&
-          !todo &&
-          optionalFiles.has(file) &&
-          !requiredFiles.has(file)
-        ) {
-          optionalSkipped++;
-        } else if (retained) {
+      for await (const { type, data } of run({
+        files: selection ? [selection.file] : files,
+        concurrency: selection ? 1 : fileWorkerLimit,
+        timeout: timeoutMs,
+        execArgv,
+        ...(selection
+          ? {
+              testNamePatterns: [
+                new RegExp(
+                  "^" +
+                    selection.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+                    "$",
+                ),
+              ],
+            }
+          : {}),
+      })) {
+        if (type !== "test:pass" && type !== "test:fail") continue;
+        terminalEventCount++;
+        const suite = data.details?.type === "suite";
+        const skipped = data.skip !== undefined && data.skip !== false;
+        const todo = data.todo !== undefined && data.todo !== false;
+        const outcome = skipped
+          ? "skipped"
+          : todo
+            ? "todo"
+            : type === "test:fail"
+              ? "failed"
+              : "passed";
+        const file = data.file ? path.resolve(data.file) : "";
+        const id = key({ file, name: data.name });
+        const duration = data.details?.duration_ms;
+        const retained = terminalEvents.length < maxTerminalEvents;
+        if (retained) {
+          const event = {
+            sequence: terminalEventCount,
+            fileId: fileIds.get(file) ?? null,
+            name: data.name.slice(0, MAX_NAME_CHARACTERS),
+            nameTruncated: data.name.length > MAX_NAME_CHARACTERS,
+            kind: suite ? "suite" : "test",
+            outcome,
+            durationMs:
+              typeof duration === "number" &&
+              Number.isFinite(duration) &&
+              duration >= 0
+                ? duration
+                : null,
+            required: !suite && expectedKeys.has(id),
+          };
+          terminalEvents.push(event);
+          if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+          if (event.nameTruncated)
+            problems.push({
+              name: event.name,
+              reason: "terminal-name-truncated",
+            });
+        }
+        if (type === "test:fail" && retained) {
+          const error = data.details?.error;
           problems.push({
             name: data.name.slice(0, MAX_NAME_CHARACTERS),
-            reason: "skipped-or-todo",
+            reason: "failed",
+            ...(typeof error?.failureType === "string"
+              ? { failureType: error.failureType.slice(0, 128) }
+              : {}),
+            ...(typeof error?.code === "string"
+              ? { code: error.code.slice(0, 128) }
+              : {}),
+            ...(typeof error?.message === "string"
+              ? { message: error.message.slice(0, 1000) }
+              : {}),
           });
         }
-        continue;
+        if (skipped || todo) {
+          if (
+            skipped &&
+            !todo &&
+            optionalFiles.has(file) &&
+            !requiredFiles.has(file)
+          ) {
+            optionalSkipped++;
+          } else if (retained) {
+            problems.push({
+              name: data.name.slice(0, MAX_NAME_CHARACTERS),
+              reason: "skipped-or-todo",
+            });
+          }
+          continue;
+        }
+        if (type === "test:pass" && !suite) passed++;
       }
-      if (type === "test:pass" && !suite) passed++;
+    } finally {
+      if (temporary) await rm(temporary, { recursive: true, force: true });
     }
+  };
+  if (before.every((item) => item.state === "present")) {
+    if (requiredCaseWorkerLimit > 0) {
+      let cursor = 0;
+      const outcomes = await Promise.allSettled(
+        Array.from({ length: requiredCaseWorkerLimit }, async () => {
+          while (cursor < expected.length) await collect(expected[cursor++]);
+        }),
+      );
+      // Wait for every running stream and namespace cleanup before propagating
+      // a harness error. A rejected worker must not strand its peers.
+      const rejected = outcomes.find(
+        (outcome) => outcome.status === "rejected",
+      );
+      if (rejected) throw rejected.reason;
+    } else await collect(null);
+  }
   const truncated = terminalEventCount > terminalEvents.length;
   if (truncated)
     problems.push({ name: "terminal-ledger", reason: "terminal-ledger-limit" });
@@ -218,6 +280,12 @@ async function executeRequiredTests(
   });
   return {
     fileWorkerLimit,
+    ...(requiredCaseWorkerLimit > 0
+      ? {
+          requiredCaseWorkerLimit,
+          timeoutScope: "one fresh process per required named case",
+        }
+      : {}),
     passed,
     required: expected.length,
     problems,

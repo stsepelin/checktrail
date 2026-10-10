@@ -4240,5 +4240,43 @@
       "file": "dist/test/gate-rust-extensions.test.js",
       "name": "rust-extensions installed acceptance"
     }
+  ],
+  "jvm-wrappers": [
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-wrappers.test.js",
+      "name": "jvm-wrappers installed acceptance"
+    }
   ]
 }

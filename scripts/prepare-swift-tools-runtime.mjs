@@ -1,3 +1,4 @@
+import { pullPinnedImage } from "./pull-pinned-image.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -132,8 +133,8 @@ try {
     files.find((f) => f.path === "swiftlint-static").sha256,
     "ecd5fceee78248088c596242c1f585944ba9ca9de2b92d246fd6e43a54b1fea4",
   );
-  docker(["pull", swift]);
-  docker(["pull", node]);
+  await pullPinnedImage(swift);
+  await pullPinnedImage(node);
   docker(
     [
       "build",

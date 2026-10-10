@@ -6,6 +6,14 @@ import { z } from "zod";
 import { externalPathSchema } from "./external-schema.js";
 import { readProjectFile, withinRoot } from "./inventory.js";
 import { mavenDistributionFiles } from "./maven-distribution.js";
+import {
+  jvmExtensionsSchema,
+  jvmGeneratorSourceFiles,
+  jvmWrapperSourceFiles,
+  validateJvmExtensionScope,
+  verifyJvmWrapper,
+  verifyJvmToolchain,
+} from "./jvm-extensions.js";
 import type { Check, Inventory, Project } from "./types.js";
 
 export const mavenHash = (value: Buffer | string) =>
@@ -14,6 +22,7 @@ const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const modulePath = z.union([z.literal("."), externalPathSchema]);
 export const mavenConfigSchema = z.strictObject({
   schemaVersion: z.literal(1),
+  extensions: jvmExtensionsSchema.optional(),
   distribution: externalPathSchema,
   repository: externalPathSchema,
   repositoryManifest: externalPathSchema,
@@ -214,7 +223,13 @@ export async function mavenCheck(
       throw new MavenPrerequisiteError(
         "Maven reactor modules must be unique and include the root",
       );
-    if (inputs.some((file) => /(?:^|\/)\.mvn\//.test(file)))
+    if (
+      inputs.some(
+        (file) =>
+          /(?:^|\/)\.mvn\//.test(file) &&
+          !(config.extensions && jvmWrapperSourceFiles("maven").includes(file)),
+      )
+    )
       throw new MavenPrerequisiteError(
         "Maven project startup configuration requires a separate verified profile",
       );
@@ -236,7 +251,24 @@ export async function mavenCheck(
       throw new MavenPrerequisiteError(
         "Declare every inventoried Maven module",
       );
-    const assigned = new Set<string>();
+    if (config.extensions) {
+      validateJvmExtensionScope(
+        config.extensions,
+        inputs,
+        config.modules.map((m) => ({
+          path: m.path,
+          executable: m.packaging === "jar",
+        })),
+      );
+      await verifyJvmWrapper(
+        source.root,
+        project.path,
+        "maven",
+        config.extensions,
+      );
+      await verifyJvmToolchain();
+    }
+    const assigned = jvmGeneratorSourceFiles(config.extensions);
     for (const module of config.modules) {
       const tests = inputs.filter((file) =>
         file.startsWith(path.posix.join(module.path, "src/test/java") + "/"),
@@ -293,7 +325,8 @@ export async function mavenCheck(
       check.scope.some(
         (file) =>
           !assigned.has(file) ||
-          path.posix.basename(file) === "module-info.java",
+          (path.posix.basename(file) === "module-info.java" &&
+            !config.extensions),
       )
     )
       throw new MavenPrerequisiteError(
@@ -346,6 +379,15 @@ export async function mavenCheck(
           "HOME",
           "ENV",
           "BASH_ENV",
+          "JAVACMD",
+          "MAVEN_BASEDIR",
+          "MAVEN_PROJECTBASEDIR",
+          "MAVEN_DEBUG_OPTS",
+          "MVNW_USERNAME",
+          "MVNW_PASSWORD",
+          "MVNW_REPOURL",
+          "MVNW_VERBOSE",
+          "CDPATH",
         ]
           .map((name) => [name, ""])
           .concat([["PATH", process.env.PATH ?? ""]]),

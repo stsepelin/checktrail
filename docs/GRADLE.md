@@ -70,8 +70,10 @@ physical module paths map to Gradle project paths. Every Java module declares it
 test classes and assigns all test source files exactly once. Aggregators cannot
 hide Java source or native test tasks. Native declarations and class-file source
 metadata bind configured classes to actual source files. Remapped project dirs,
-composites, buildSrc/build-logic, wrappers, generated/nonstandard/JPMS scope and
-Kotlin/Scala/Groovy source compilation need separate verified profiles.
+composites, buildSrc/build-logic, nonstandard scope and Kotlin/Scala/Groovy source
+compilation need separate verified profiles. The opt-in
+[JVM wrapper extension](JVM-WRAPPERS.md) admits exact offline wrappers, declared
+native generated Java and conventional main JPMS descriptors.
 
 ## Run and reconcile
 
@@ -127,7 +129,7 @@ incomplete. This acceptance deadline does not change engine command limits.
 The implementation bounds source inputs, manifests, captured records, reports,
 console buffers and command wall/output admission. These are not a complete
 aggregate raw-output/archive budget or a hermetic identity. Wider platforms,
-wrappers, analyzers, JVM languages, native provenance and performance remain
+wider wrappers, analyzers, JVM languages, native provenance and performance remain
 required. This profile does not close Gate A or demonstrate reviewer quality.
 
 The [official daemon documentation](https://docs.gradle.org/current/userguide/gradle_daemon.html)
