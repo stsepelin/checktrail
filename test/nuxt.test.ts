@@ -266,7 +266,9 @@ test(
 
 test(
   "Nuxt capture includes awaited app:rendered changes registered after the observer",
-  { skip, timeout: 45000 },
+  // Fixture copying, planning, native execution and cleanup share this outer
+  // budget. The native SSR process keeps its separate 30000 ms deadline.
+  { skip, timeout: 120000 },
   async (t) => {
     const root = await project(t);
     const file = path.join(root, "app/plugins/late.ts");
