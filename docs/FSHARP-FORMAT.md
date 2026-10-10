@@ -37,7 +37,10 @@ node scripts/prepare-fsharp-format-tools.mjs --archive PATH_TO_FANTOMAS_NUPKG
 
 The preparer validates the package length and SHA256, expands and verifies every
 selected payload before writing the advertised directory, and atomically installs
-only `FSharp.Core.dll`, `Fantomas.Core.dll` and `Fantomas.FCS.dll`. An existing
+only `FSharp.Core.dll`, `Fantomas.Core.dll` and `Fantomas.FCS.dll`. Newly prepared
+public payloads have mode 0644 and their published directory has mode 0755,
+including under a private host umask. The controller verifies exact payload bytes
+as its fixed non-root user before baseline execution. An existing
 partial or changed tree is refused. The selected byte identities are in
 `fsharp-format-pins.ts`; no downloaded assemblies are shipped in this package.
 
@@ -108,3 +111,5 @@ selected .NET build and C#/VB formatting baseline and runs compiling negative
 controls against unchanged acceptance callbacks. Native observer mutations
 additionally prove that the altered C# observer compiled and reached native
 formatting. [The selected native measurement](measurements/fsharp-format-2026-10-10.json) records source and fresh installed-package acceptance, preserved baselines, paired compiling controls and the mandatory host project check. Optional host skips are not acceptance. The wider frozen matrix, full artifact/license closure and Gate A completion remain separate requirements.
+
+[The publication repair measurement](measurements/pr96-formatter-publication-2026-10-10.json) records the reproduced owner-only publication, paired permission mutations, full native source/installed and preserved-baseline acceptance, and mandatory host check. Hosted CI after that repair remains a separate check.

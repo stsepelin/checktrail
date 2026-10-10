@@ -5,6 +5,7 @@ import process from "node:process";
 import console from "node:console";
 import { TextDecoder } from "node:util";
 import {
+  chmod,
   lstat,
   readFile,
   mkdir,
@@ -169,11 +170,14 @@ try {
     path.join(path.dirname(output), ".fsharp-format-pending-"),
   );
   try {
-    for (const [name, payload] of selected)
-      await writeFile(path.join(staged, name), payload, {
-        flag: "wx",
-        mode: 0o644,
-      });
+    for (const [name, payload] of selected) {
+      const file = path.join(staged, name);
+      await writeFile(file, payload, { flag: "wx", mode: 0o644 });
+      await chmod(file, 0o644);
+    }
+    // These verified public payloads must remain readable by the fixed non-root
+    // acceptance user after atomic publication, even under a private host umask.
+    await chmod(staged, 0o755);
     await rename(staged, output);
   } finally {
     await rm(staged, { recursive: true, force: true });
