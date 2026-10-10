@@ -59,8 +59,17 @@ packages offline, with lifecycle scripts disabled, and executes the same nine
 callbacks outside the installed package against shipped engine/CLI bytes. Thirteen
 paired controls mutate importer or native observer behavior; native mutations
 must reach real test bodies, fail assertions and pass again after byte restoration.
-CI separates source/fresh-install acceptance, three preserved-baseline shards and
-three guard shards. The baseline partitions the complete required inventory and
+CI separates three source/fresh-install shards, three preserved-baseline shards
+and three guard shards. Each acceptance shard runs its exact native callbacks
+from source and a new offline production installation. Across the shards, every
+one of the eight direct source callbacks and all nine installed callbacks runs
+exactly once; the installed identity callback runs against shipped engine bytes
+instead of recursively launching another complete installation. Receipts declare
+the full inventory and the selected subset separately. A shard passing establishes
+only that subset, and every matrix member remains required. The
+[acceptance CI repair](measurements/ruby-extensions-ci-acceptance-shards-2026-10-10.json)
+records the failed aggregate run and subsequent native shard evidence.
+The baseline partitions the complete required inventory and
 runs one exact named callback per fresh process within each shard; a missing or
 failed case fails its shard. The [baseline CI repair](measurements/ruby-extensions-ci-baseline-shards-2026-10-10.json)
 records all preserved callbacks and the unchanged production execution limits.
