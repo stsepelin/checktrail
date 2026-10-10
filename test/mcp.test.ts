@@ -72,6 +72,7 @@ test("MCP 2026-07-28 advertises tools, validates input, and cannot elevate execu
     "review_multi_score",
     "review_paired_score",
     "review_probe",
+    "review_provenance",
     "review_receipt",
     "review_refute",
     "review_run",

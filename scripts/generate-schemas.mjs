@@ -1,4 +1,9 @@
 import {
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "../dist/src/review-provenance.js";
+import {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "../dist/src/review-host-lease.js";
@@ -270,6 +275,9 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-provenance-input": reviewProvenanceInputSchema,
+  "review-provenance-report": reviewProvenanceReportSchema,
+  "review-provenance-summary": reviewProvenanceSummarySchema,
   "review-claim-probability": reviewClaimProbabilitySchema,
   "review-model-output": reviewModelOutputSchema,
   "review-provider-run": reviewProviderRunSchema,
