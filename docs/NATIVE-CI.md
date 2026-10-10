@@ -96,6 +96,18 @@ and fresh installed-package acceptance. The verifier records phase progress on
 stderr and retains the final JSON evidence on stdout. Existing control and engine
 execution limits remain in force; a job cutoff is incomplete acceptance.
 
+## Kustomize transform extension acceptance
+
+The `kustomize-extensions-arm64` job prepares the original infrastructure runtime
+and repeats `verify-kustomize-extensions-container.mjs`. It requires preserved
+kubeconform/Kustomize controls, named source and fresh offline installed
+acceptance, original regressions and compiling unchanged-callback controls.
+Native runs use no network, a read-only root/source/cache, bounded resources and
+user 1000. Reached build/validator cancellation, timeout and output exhaustion
+retain cleanup requirements. See [KUSTOMIZE-EXTENSIONS.md](KUSTOMIZE-EXTENSIONS.md)
+and its [dated record](measurements/kustomize-extensions-2026-10-10.json). Wider
+semantics/platforms, artifact closures and Gate A remain open.
+
 ## Kubernetes schema extension acceptance
 
 The `kubernetes-extensions-arm64` job prepares the original infrastructure runtime

@@ -11,6 +11,11 @@ import {
   kubeProtectedEnvironment,
   type KubeDocument,
 } from "./kubeconform.js";
+import {
+  extendedKustomizeResources,
+  kustomizeExtensionProfile,
+  verifyKustomizeExtensionTools,
+} from "./kustomize-extensions.js";
 export function kustomizeRequire(
   value: unknown,
   message: string,
@@ -32,6 +37,8 @@ export const kustomizeConfigSchema = z.strictObject({
   kustomizations: z.array(file).min(1).max(16),
   resources: z.array(file).min(1).max(32),
   schemaDirectory: file,
+  assemblyProfile: z.literal(kustomizeExtensionProfile).optional(),
+  patches: z.array(file).max(16).optional(),
 });
 export const kustomizeInvocationSchema = z.strictObject({
   config: kustomizeConfigSchema,
@@ -44,9 +51,16 @@ export const kustomizeInvocationSchema = z.strictObject({
       }),
     )
     .min(3)
-    .max(49),
+    .max(65),
 });
 export type KustomizeInvocation = z.infer<typeof kustomizeInvocationSchema>;
+export function kustomizeAssemblyScope(config: KustomizeInvocation["config"]) {
+  return [
+    ...config.kustomizations,
+    ...config.resources,
+    ...(config.patches ?? []),
+  ];
+}
 export const kustomizeBinarySha256 =
   "f16ee4ad0f3991e5236e33070427f630f3e911a4b81be53aeeb70946182e61a8";
 const declaration = z.strictObject({
@@ -120,6 +134,12 @@ function line(text: string, offset: number) {
 export function kustomizeResources(
   invocation: KustomizeInvocation,
 ): KustomizeResource[] {
+  if (invocation.config.assemblyProfile === kustomizeExtensionProfile)
+    return extendedKustomizeResources(invocation);
+  kustomizeRequire(
+    invocation.config.patches === undefined,
+    "Patches require the explicit extension profile",
+  );
   const { config, inputs } = invocation,
     scope = [...config.kustomizations, ...config.resources];
   kustomizeRequire(
@@ -409,7 +429,11 @@ export async function kustomizeCheck(
         f !== "checktrail.kustomize.json" &&
         !f.startsWith(config.schemaDirectory + "/"),
     );
-    const scope = [...config.kustomizations, ...config.resources];
+    const scope = kustomizeAssemblyScope(config);
+    if (config.assemblyProfile === kustomizeExtensionProfile) {
+      check.scope = scope;
+      await verifyKustomizeExtensionTools();
+    }
     kustomizeRequire(
       kustomizeCanonical([...own].sort()) ===
         kustomizeCanonical([...scope].sort()),

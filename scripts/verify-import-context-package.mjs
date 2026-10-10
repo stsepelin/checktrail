@@ -56,6 +56,7 @@ assert.ok(
     "scala-extensions",
     "jvm-analyzer-extensions",
     "kubernetes-extensions",
+    "kustomize-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -123,6 +124,8 @@ if (profile === "jvm-analyzer-extensions")
   process.env.CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_INSTALLED = "1";
 if (profile === "kubernetes-extensions")
   process.env.CHECKTRAIL_KUBERNETES_EXTENSIONS_INSTALLED = "1";
+if (profile === "kustomize-extensions")
+  process.env.CHECKTRAIL_KUSTOMIZE_EXTENSIONS_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -185,6 +188,9 @@ try {
     "gate-kubernetes-extensions.test.js",
     "kubernetes-extensions-fixture.js",
     "kubeconform-fixture.js",
+    "gate-kustomize-extensions.test.js",
+    "kustomize-extensions-fixture.js",
+    "kustomize-fixture.js",
     "native-process-observer.js",
     "spotbugs-extensions-fixture.js",
     "spotbugs-fixture.js",

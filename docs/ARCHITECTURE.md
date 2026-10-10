@@ -336,6 +336,13 @@ Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
 
+The explicit [Kustomize transform extension](KUSTOMIZE-EXTENSIONS.md) reconstructs
+selected local patches, transforms and generated references from bounded data.
+Native rendered values must match that reconstruction, and schema findings retain
+physical patch/base addresses through list edits. Saved receipts recheck current
+input, schema and both executable bytes. Planning remains data-only; CLI and MCP
+share the same operator-trusted engine.
+
 The explicit [Scala compiler extensions](SCALA-EXTENSIONS.md) use the same engine
 for Scala 2 typed/class observation and ordered Scala 3 mixed/generated/script
 stages. Later stages consume fresh earlier output, and Java bodies receive a
