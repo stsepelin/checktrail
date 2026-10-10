@@ -7,12 +7,16 @@ import { fileURLToPath, URL } from "node:url";
 import path from "node:path";
 import process from "node:process";
 import { performance } from "node:perf_hooks";
+import { selectRubyExtensionAcceptance } from "./ruby-extensions-acceptance-selection.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const phase = process.argv[2] ?? "all";
 assert.ok(
   [
     "all",
     "acceptance",
+    "acceptance-1",
+    "acceptance-2",
+    "acceptance-3",
     "baseline-1",
     "baseline-2",
     "baseline-3",
@@ -143,36 +147,69 @@ const baseline = (shard = "all") =>
     );
     return result;
   });
-const acceptance = () =>
-  measured("source-and-fresh-offline-production-installation", async () => {
-    const lines = (
-      await run([
-        "sh",
-        "-c",
-        "set -eu; node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache; CHECKTRAIL_RUBY_EXTENSIONS_INSTALL_RECEIPT=/tmp/installed-receipt.json node scripts/verify-required-native-tests.mjs ruby-extensions; cat /tmp/installed-receipt.json",
-      ])
-    )
-      .trim()
-      .split("\n");
-    assert.equal(lines.length, 3);
-    const preparedCache = JSON.parse(lines[0]),
-      source = JSON.parse(lines[1]),
-      installed = JSON.parse(lines[2]);
-    for (const result of [source, installed.profile]) {
-      assert.equal(result.required, 9);
-      assert.equal(result.passed, 9);
-      assert.equal(result.complete, true);
-      assert.equal(result.ledger.cases.length, 9);
-      assert.ok(
-        result.ledger.cases.every(
-          (c) => c.outcome === "passed" && c.terminalSequences.length === 1,
-        ),
-      );
-    }
-    assert.equal(installed.offlineProductionInstall, true);
-    assert.equal(installed.harnessOutsideInstalledPackage, true);
-    return { preparedCache, source, installed };
-  });
+const acceptance = (shard = "all") =>
+  measured(
+    "source-and-fresh-offline-production-installation-" + shard,
+    async () => {
+      const lines = (
+        await run([
+          "sh",
+          "-c",
+          "set -eu; node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache; node scripts/verify-ruby-extensions-acceptance.mjs source " +
+            shard +
+            "; CHECKTRAIL_IMPORT_CONTEXT_PROFILE=ruby-extensions CHECKTRAIL_RUBY_EXTENSIONS_ACCEPTANCE_SHARD=" +
+            shard +
+            " node scripts/verify-import-context-package.mjs",
+        ])
+      )
+        .trim()
+        .split("\n");
+      assert.equal(lines.length, 3);
+      const preparedCache = JSON.parse(lines[0]),
+        source = JSON.parse(lines[1]),
+        installed = JSON.parse(lines[2]);
+      for (const [mode, result] of [
+        ["source", source],
+        ["installed", installed.profile],
+      ]) {
+        const expected = selectRubyExtensionAcceptance(
+          requirements["ruby-extensions"],
+          mode,
+          shard,
+        );
+        assert.equal(result.acceptanceMode, mode);
+        assert.equal(result.acceptanceShard, shard);
+        assert.deepEqual(
+          result.fullRequiredInventory,
+          requirements["ruby-extensions"],
+        );
+        assert.deepEqual(
+          result.fullSelectedInventory,
+          selectRubyExtensionAcceptance(
+            requirements["ruby-extensions"],
+            mode,
+            "all",
+          ),
+        );
+        assert.equal(result.required, expected.length);
+        assert.equal(result.passed, expected.length);
+        assert.equal(result.complete, true);
+        assert.equal(result.ledger.cases.length, expected.length);
+        assert.deepEqual(
+          result.ledger.cases.map((c) => c.name),
+          expected.map((c) => c.name),
+        );
+        assert.ok(
+          result.ledger.cases.every(
+            (c) => c.outcome === "passed" && c.terminalSequences.length === 1,
+          ),
+        );
+      }
+      assert.equal(installed.offlineProductionInstall, true);
+      assert.equal(installed.harnessOutsideInstalledPackage, true);
+      return { preparedCache, source, installed };
+    },
+  );
 const guards = (shard) =>
   measured("paired-guards-" + shard, async () => {
     const result = JSON.parse(
@@ -218,7 +255,8 @@ if (phase === "all") {
       "Required Ruby native groups failed",
     );
   result = { ...groups[0].value, guards: groups[1].value };
-} else if (phase === "acceptance") result = await acceptance();
+} else if (phase === "acceptance" || phase.startsWith("acceptance-"))
+  result = await acceptance(phase === "acceptance" ? "all" : phase.slice(-1));
 else if (phase.startsWith("baseline-"))
   result = { baseline: await baseline(phase.slice(-1)) };
 else result = { guards: await guards(phase.slice(-1)) };
