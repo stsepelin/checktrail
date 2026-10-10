@@ -54,6 +54,17 @@ still applies. The installed callback runs the same required inventory against a
 fresh offline production installation; its nested worker ceiling is also one.
 Full-suite execution continues to select every compiled file and test.
 
+Standalone `scala-extensions` also gives each unchanged named callback its own
+fresh process and ten-minute file budget, with one callback running at a time.
+Hosted evidence reached seven passing callbacks before the shared file budget
+expired and left lifecycle/installed outcomes unobserved. The repair preserves
+callback and engine deadlines; it does not credit those missing outcomes. Native
+cleanup snapshots and MCP startup use the assigned temporary namespace. Source
+and fresh installed callbacks must still complete independently. The
+[Scala case-budget record](measurements/scala-native-case-budgets-2026-10-10.json)
+binds the repaired source and installed execution, preserved baseline, compiling
+controls, regressions and project check.
+
 The [case-isolation record](measurements/jvm-native-case-budgets-2026-10-10.json)
 binds native source and installed execution, unchanged required names, compiling
 controls and the project check. It also records the cleanup fixture repair: the

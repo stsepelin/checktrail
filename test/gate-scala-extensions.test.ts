@@ -14,6 +14,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
+import { tmpdir } from "node:os";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { reportSchema } from "../src/schemas.js";
@@ -442,6 +443,13 @@ test(
               f.root,
               ...(allow ? ["--allow-execution"] : []),
             ],
+            env: {
+              PATH: process.env.PATH ?? "",
+              JAVA_HOME: process.env.JAVA_HOME ?? "",
+              TMPDIR: tmpdir(),
+              TMP: tmpdir(),
+              TEMP: tmpdir(),
+            },
             stderr: "pipe",
           }),
         );
@@ -505,7 +513,7 @@ test(
           ],
         }),
       );
-      const before = (await readdir("/tmp"))
+      const before = (await readdir(tmpdir()))
           .filter((n) => n.startsWith("checktrail-command-"))
           .sort(),
         abort = new AbortController();
@@ -567,7 +575,7 @@ test(
         }
         await assert.rejects(access(ids.temporary));
         assert.deepEqual(
-          (await readdir("/tmp"))
+          (await readdir(tmpdir()))
             .filter((n) => n.startsWith("checktrail-command-"))
             .sort(),
           before,
