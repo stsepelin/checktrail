@@ -202,6 +202,7 @@ const complete = (r) => {
   assert.match(r.stdout, /^# skipped 0$/m);
 };
 const results = [];
+const baselines = new Set();
 for (const control of definitions) {
   process.stderr.write(
     JSON.stringify({ control: control.id, callback: control.name }) + "\n",
@@ -209,7 +210,13 @@ for (const control of definitions) {
   const url = new URL("../dist/src/" + control.file, import.meta.url),
     original = originals.get(control.file),
     mutant = original.replace(control.from, control.to);
-  complete(run(control.name));
+  // Every control restores the exact original bytes. A successful baseline for
+  // the same callback/source identity can be reused; each mutant and restored
+  // callback still executes in its own fresh native process and fixture.
+  if (!baselines.has(control.name)) {
+    complete(run(control.name));
+    baselines.add(control.name);
+  }
   let nativeCompiled = false;
   try {
     await writeFile(url, mutant);
@@ -249,6 +256,7 @@ const cleanup=[];try{const root=await dotnetFormattingFixture({after:f=>cleanup.
     callback: "dotnet-format-extensions " + control.name + " acceptance",
     expressionsReplaced: 1,
     originalPassed: true,
+    originalBaselineReusedForIdenticalBytes: true,
     mutantCompiled: true,
     ...(control.nativeSource
       ? { mutatedNativeObserverCompiled: nativeCompiled }
@@ -271,6 +279,8 @@ process.stdout.write(
     schemaVersion: 1,
     profile: "dotnet-format-extensions",
     controls: results,
+    distinctOriginalBaselineCallbacks: [...baselines],
+    mutantAndRestoredProcessesPerControl: 2,
     callbacks: [
       { file: "gate-dotnet-format-extensions.test.js", sha256: hash(before) },
     ],

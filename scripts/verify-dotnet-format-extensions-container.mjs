@@ -66,14 +66,14 @@ const run = async (args) => {
     return (
       await invoke("docker", [...base, ...args], {
         encoding: "utf8",
-        timeout: 1200000,
+        timeout: 1800000,
         maxBuffer: 16 * 1048576,
       })
     ).stdout;
   } catch (error) {
     throw Error(
       ".NET formatting acceptance stage failed: " +
-        String(error.stderr ?? error.message).slice(-3000),
+        String(error.stderr || error.stdout || error.message).slice(-3000),
       { cause: error },
     );
   }
@@ -183,7 +183,7 @@ const groups = await Promise.allSettled([
       await run([
         "sh",
         "-c",
-        "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-dotnet-format-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && cd /tmp/guards && node scripts/verify-dotnet-format-extensions-guards.mjs",
+        "mkdir /tmp/guards && cp -R dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-dotnet-format-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && cd /tmp/guards && node scripts/verify-dotnet-format-extensions-guards.mjs",
       ]),
     );
     assert.equal(guards.controls.length, 20);

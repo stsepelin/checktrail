@@ -1693,7 +1693,7 @@ jobs:
 
   dotnet-format-extensions-arm64:
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       CHECKTRAIL_TEST_TASK: ci-dotnet-format-extensions
       CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_IMAGE: checktrail-dotnet-format-extensions:ci

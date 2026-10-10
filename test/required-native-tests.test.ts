@@ -1026,3 +1026,53 @@ test("named native acceptance validates worker bounds before executing any callb
     });
   }
 });
+
+test("formatting acceptance CLI isolates exact callbacks without admitting an adjacent name", async (t) => {
+  const root = await fixture(t, {});
+  const { mkdir, readFile } = await import("node:fs/promises");
+  await mkdir(path.join(root, "scripts"));
+  for (const name of [
+    "verify-required-native-tests.mjs",
+    "required-test-evidence.mjs",
+  ])
+    await writeFile(
+      path.join(root, "scripts", name),
+      await readFile(new URL("../../scripts/" + name, import.meta.url)),
+    );
+  const callback = path.join(root, "original.test.mjs");
+  await writeFile(
+    callback,
+    `import {test} from 'node:test';import assert from 'node:assert/strict';import {appendFileSync} from 'node:fs';let calls=0;for(let i=0;i<3;i++)test('original ['+i+']',()=>{assert.equal(++calls,1);appendFileSync(new URL('pids',import.meta.url),process.pid+'\\n')});test('original [0] suffix',()=>{throw Error('Adjacent callback ran')});`,
+  );
+  await writeFile(
+    path.join(root, "scripts/required-native-tests.json"),
+    JSON.stringify({
+      "dotnet-format-extensions": Array.from({ length: 3 }, (_, i) => ({
+        file: callback,
+        name: "original [" + i + "]",
+      })),
+    }),
+  );
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "scripts/verify-required-native-tests.mjs"),
+      "dotnet-format-extensions",
+    ],
+    { cwd: root, env, encoding: "utf8", timeout: 10000 },
+  );
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.complete, true);
+  assert.equal(report.required, 3);
+  assert.equal(report.passed, 3);
+  assert.equal(report.ledger.terminalEventCount, 3);
+  assert.equal(
+    new Set(
+      (await readFile(path.join(root, "pids"), "utf8")).trim().split("\n"),
+    ).size,
+    3,
+  );
+});
