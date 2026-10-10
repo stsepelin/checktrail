@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "profile": "dotnet-format-extensions-hosted-budget",
+  "recordedDate": "2026-10-10",
+  "sourceBaseCommit": "8edff681066b3043f14c96b83ed2075c30f47d2b",
+  "observedFailure": {
+    "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/38056280804/job/114225364345",
+    "logSha256": "5db1677c34295305b180368e27ae198830d169e47dbeddbd89a1f3b622736a6a",
+    "baselineStageDurationMs": 860451,
+    "sourceAndInstalledStageDurationMs": 817167,
+    "guardStageDurationMs": 1800097,
+    "guardStageBudgetMs": 1800000,
+    "guardGroupComplete": false,
+    "lastStartedControl": "native-request-identity",
+    "elapsedStagesAreSuccessfulAcceptanceByThemselves": false
+  },
+  "repair": {
+    "stageBudgetMs": 2400000,
+    "jobBudgetMinutes": 60,
+    "individualCallbackDeadlineChanged": false,
+    "callbacksAndCompilingControlsChanged": false,
+    "selectedGuardCount": 20,
+    "selectedCompiledNativeObserverMutants": 4,
+    "nativeResourcesChanged": false
+  },
+  "unchangedControlFileBindings": [
+    {
+      "file": "scripts/verify-dotnet-format-extensions-guards.mjs",
+      "bytes": 11644,
+      "sha256": "61d2cd471efefce4eb3832565de43c8e07ac72c6d885e8099171b8a2053d0f5f"
+    },
+    {
+      "file": "src/dotnet-format-extensions-native.ts",
+      "bytes": 14318,
+      "sha256": "0324c7a92d378f8f17b1757dd80f710e24a48b503d79d51966b3183dea2beced"
+    },
+    {
+      "file": "src/dotnet-format-extensions-evidence.ts",
+      "bytes": 34258,
+      "sha256": "5ded25255f47a0bc54d193aac9f73d059660e9ae2b5b872266ced08c89fb4f01"
+    },
+    {
+      "file": "test/gate-dotnet-format-extensions.test.ts",
+      "bytes": 30146,
+      "sha256": "774523eb9a11728c33d6f6bd2a15e600776f3d9669b255397d09817f56ea3e6e"
+    },
+    {
+      "file": "test/dotnet-format-extensions-fixture.ts",
+      "bytes": 11121,
+      "sha256": "411a6752e71bc01c2edab807abed088f2b9273e1db2188ca63d2052bae42012e"
+    }
+  ],
+  "priorCompleteLocalNativeAcceptance": "docs/measurements/dotnet-format-ci-repair-2026-10-10.json",
+  "nativeAcceptanceRepeatedForBudgetOnlyChange": false,
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1613,
+    "pass": 934,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 679,
+    "todo": 0,
+    "durationMs": 247056.511458,
+    "logSha256": "5e66700cc12024f8ea232fbd3312ca4c0baeee3b2ee3c2cc8ec32936fd3f5ffc",
+    "optionalNativeSkipsAreAcceptance": false,
+    "frozenMatrixAcceptance": false
+  },
+  "changedWorkflowActionlintPassed": true,
+  "changedControllerEslintPassed": true,
+  "hostedAcceptanceAfterThisRepairMeasured": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
