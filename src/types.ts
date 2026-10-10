@@ -38,6 +38,7 @@ export const PARSERS = [
   "rustfmt-json",
   "clang-json",
   "cpp-tools-json",
+  "cpp-extensions-json",
   "kubeconform-json",
   "kustomize-json",
   "terraform-json",

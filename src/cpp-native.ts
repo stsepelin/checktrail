@@ -505,7 +505,7 @@ export const cppTidyCoreCheckers = [
   "clang-analyzer-core.uninitialized.NewArraySize",
   "clang-analyzer-core.uninitialized.UndefReturn",
 ] as const;
-export function cppTidyEnabled(c: CppToolsConfig): string[] {
+export function cppTidyEnabled(c: Pick<CppToolsConfig, "tidyRules">): string[] {
   return [
     ...(c.tidyRules.includes("bugprone-use-after-move")
       ? ["bugprone-use-after-move"]

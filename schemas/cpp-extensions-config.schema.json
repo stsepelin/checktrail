@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "declared-local-cmake-transitive-sdk-v1"
+    },
+    "project": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$" },
+    "clangVersion": { "type": "string", "const": "22.1.3" },
+    "cmakeVersion": { "type": "string", "const": "4.2.3" },
+    "makeVersion": { "type": "string", "const": "4.4.1" },
+    "binutilsVersion": { "type": "string", "const": "2.45.1" },
+    "platform": { "type": "string", "const": "aarch64-alpine-linux-musl" },
+    "sysroot": { "type": "string", "const": "/" },
+    "standardLibrary": { "type": "string", "const": "libstdc++" },
+    "directories": {
+      "minItems": 1,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "type": "string", "const": "." },
+          {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          }
+        ]
+      }
+    },
+    "headers": {
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+      }
+    },
+    "generatedHeaders": {
+      "minItems": 1,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "anyOf": [
+              { "type": "string", "const": "." },
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+              }
+            ]
+          },
+          "template": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          },
+          "output": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          },
+          "values": {
+            "type": "object",
+            "propertyNames": { "type": "string", "pattern": "^CT_[A-Z0-9_]+$" },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            }
+          }
+        },
+        "required": ["directory", "template", "output", "values"],
+        "additionalProperties": false
+      }
+    },
+    "targets": {
+      "minItems": 3,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "directory": {
+            "anyOf": [
+              { "type": "string", "const": "." },
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": ["static", "shared", "executable"]
+          },
+          "sources": {
+            "minItems": 1,
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+            }
+          },
+          "publicIncludes": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+            }
+          },
+          "privateIncludes": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+            }
+          },
+          "publicLinks": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            }
+          },
+          "privateLinks": {
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "directory",
+          "type",
+          "sources",
+          "publicIncludes",
+          "privateIncludes",
+          "publicLinks",
+          "privateLinks"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tests": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "target": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          }
+        },
+        "required": ["name", "target"],
+        "additionalProperties": false
+      }
+    },
+    "tidyRules": {
+      "minItems": 1,
+      "maxItems": 2,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["bugprone-use-after-move", "clang-analyzer-core.DivideZero"]
+      }
+    },
+    "sdk": {
+      "minItems": 1,
+      "maxItems": 8192,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.+-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.+-]*)*$"
+          },
+          "resolved": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.+-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.+-]*)*$"
+          },
+          "bytes": { "type": "integer", "minimum": 0, "maximum": 134217728 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["path", "resolved", "bytes", "sha256"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "project",
+    "clangVersion",
+    "cmakeVersion",
+    "makeVersion",
+    "binutilsVersion",
+    "platform",
+    "sysroot",
+    "standardLibrary",
+    "directories",
+    "headers",
+    "generatedHeaders",
+    "targets",
+    "tests",
+    "tidyRules",
+    "sdk"
+  ],
+  "additionalProperties": false
+}

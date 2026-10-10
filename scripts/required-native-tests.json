@@ -4704,5 +4704,47 @@
       "file": "dist/test/gate-swift-extensions.test.js",
       "name": "swift-extensions installed acceptance"
     }
+  ],
+  "cpp-extensions": [
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions compiler formatter analyzer acceptance"
+    },
+    {
+      "file": "dist/test/gate-cpp-extensions.test.js",
+      "name": "cpp-extensions installed acceptance"
+    },
+    {
+      "file": "dist/test/cpp-extensions-surfaces.test.js",
+      "name": "cpp-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/cpp-extensions-cancel.test.js",
+      "name": "cpp-extensions lifecycle acceptance"
+    }
   ]
 }
