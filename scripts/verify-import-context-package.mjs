@@ -60,6 +60,7 @@ assert.ok(
     "confidence-provenance",
     "dotnet-fsharp-format",
     "dotnet-format-extensions",
+    "dotnet-generator-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -133,6 +134,8 @@ if (profile === "dotnet-fsharp-format")
   process.env.CHECKTRAIL_FSHARP_FORMAT_INSTALLED = "1";
 if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
+if (profile === "dotnet-generator-extensions")
+  process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -203,6 +206,12 @@ try {
     "gate-dotnet-fsharp-format.test.js",
     "gate-dotnet-format-extensions.test.js",
     "dotnet-format-extensions-fixture.js",
+    "gate-dotnet-generator-extensions.test.js",
+    "dotnet-generator-extensions-fixture.js",
+    "dotnet-build-fixture.js",
+    "dotnet-generated-fixture.js",
+    "dotnet-format-fixture.js",
+    "dotnet-test-controls.js",
     "fsharp-format-fixture.js",
     "gate-confidence-provenance.test.js",
     "confidence-provenance-fixture.js",
@@ -258,6 +267,19 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "dotnet-generator-extensions") {
+    await mkdir(path.join(consumer, "examples"));
+    await cp(
+      path.join(repository, "examples/dotnet-build"),
+      path.join(consumer, "examples/dotnet-build"),
+      { recursive: true },
+    );
+    await mkdir(path.join(consumer, "scripts"), { recursive: true });
+    await cp(
+      path.join(repository, "scripts/dotnet-build-fixture-projects.json"),
+      path.join(consumer, "scripts/dotnet-build-fixture-projects.json"),
+    );
+  }
   if (profile === "dotnet-fsharp-format") {
     const prepared = path.join(consumer, ".checktrail/fsharp-format-tools");
     await mkdir(path.dirname(prepared), { recursive: true });
@@ -439,7 +461,7 @@ try {
       dependencies[copy.key] = copy.version;
     }
   } else await copyClientDependency("@modelcontextprotocol/client");
-  await mkdir(path.join(consumer, "scripts"));
+  await mkdir(path.join(consumer, "scripts"), { recursive: true });
   for (const file of [
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",

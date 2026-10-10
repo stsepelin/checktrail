@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "compiled-method-and-project-reference-v1"
+    },
+    "projectReferences": {
+      "minItems": 1,
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "consumer": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "producer": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "kind": { "type": "string", "enum": ["assembly", "analyzer"] }
+        },
+        "required": ["consumer", "producer", "kind"],
+        "additionalProperties": false
+      }
+    },
+    "incrementalGenerators": {
+      "minItems": 1,
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "className": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z_][\\w]*(?:\\.[A-Za-z_][\\w]*)*$"
+          }
+        },
+        "required": ["project", "className"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "projectReferences",
+    "incrementalGenerators"
+  ],
+  "additionalProperties": false
+}

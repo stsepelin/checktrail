@@ -45,6 +45,7 @@ import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
 import { fsharpFormatCheck } from "./fsharp-format.js";
 import { dotnetFormatExtensionsCheck } from "./dotnet-format-extensions.js";
+import { dotnetGeneratorExtensionsCheck } from "./dotnet-generator-extensions.js";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
 import { phpExtensionsCheck } from "./php-extensions.js";
@@ -165,6 +166,7 @@ export const adapters = [
       "dotnet.format-whitespace",
       "dotnet.format-fsharp",
       "dotnet.format-extensions",
+      "dotnet.generator-extensions",
     ],
   },
   {
@@ -605,6 +607,9 @@ export async function checksFor(
         : []),
       ...(requested?.includes("dotnet.format-extensions")
         ? [await dotnetFormatExtensionsCheck(source, project)]
+        : []),
+      ...(requested?.includes("dotnet.generator-extensions")
+        ? [await dotnetGeneratorExtensionsCheck(source, project)]
         : []),
       ...(requested?.includes("dotnet.test")
         ? [await dotnetTestCheck(source, project)]

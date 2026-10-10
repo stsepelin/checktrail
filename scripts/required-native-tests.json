@@ -4590,5 +4590,43 @@
       "file": "dist/test/gate-dotnet-format-extensions.test.js",
       "name": "dotnet-format-extensions installed acceptance"
     }
+  ],
+  "dotnet-generator-extensions": [
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-generator-extensions.test.js",
+      "name": "dotnet-generator-extensions installed acceptance"
+    }
   ]
 }
