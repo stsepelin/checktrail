@@ -28,6 +28,15 @@ requested PHP version. Linux retains its existing action pin. This is a beta
 setup dependency; current hosted acceptance must verify it. It does not replace
 test execution or supply cached test results.
 
+Pinned public image setup also retries the exact Docker daemon public ECR
+`/v2/` connection/header timeout observed before the Rust context tests started.
+The same digest, attempt ceiling, monotonic wall budget and cancellation guards
+apply. Adjacent hosts/paths, extra authentication or manifest text, child signals
+and command timeout/abort codes are not admitted by this new matcher. Synthetic
+regressions bind the observed error; they do not simulate the registry or certify
+a hosted delivery. See the
+[delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
+
 ## Acceptance time budgets
 
 The main OS/Node matrix has a 75-minute job limit, including preparation, the full
