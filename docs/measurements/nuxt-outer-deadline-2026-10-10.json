@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "scope": "CI regression harness outer deadline; native Nuxt validation deadlines and callback assertions remain unchanged.",
+  "observedFailure": {
+    "job": "https://github.com/stsepelin/checktrail/actions/runs/38029915566/job/114148495340",
+    "runtime": "macos-latest, Node 24 CI matrix entry",
+    "test": "Nuxt rejects unsupported runtime identities and protects test environment without loading dotenv or stale build output",
+    "failureType": "testTimeoutFailure",
+    "deadlineMs": 45000,
+    "mechanismLimit": "The CI receipt shows the outer deadline expired; which substep consumed that budget was not captured."
+  },
+  "repair": {
+    "outerDeadlineMs": 120000,
+    "nativeSsrDeadlineMs": 30000,
+    "scope": "One outer callback timeout; fixture copying, multiple independent prerequisite validations and native SSR share this callback."
+  },
+  "validation": {
+    "command": "npm run check",
+    "runtime": "Node 26.9.0, Darwin arm64 host; not the failed Node 24 CI runtime",
+    "summary": {
+      "tests": 1581,
+      "pass": 926,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 655,
+      "todo": 0,
+      "duration_ms": 242766.217584
+    },
+    "nuxtCallbacks": [
+      "\u2714 Nuxt planning requires an explicit profile, inventoried config and prepared tools without evaluating Nuxt config (23.636625ms)",
+      "\u2714 native Nuxt SSR captures generated pages and async runtime registration, catches a changed contract and uncovered records (9970.219542ms)",
+      "\u2714 native Nuxt SSR distinguishes HTTP failures, request-dependent route assemblies and unsupported metadata (7129.068541ms)",
+      "\u2714 Nuxt cancellation terminates a live startup and removes its owned build directory (2934.830042ms)",
+      "\u2714 Nuxt native evidence reconciles capture identity, ordered records and probe accounting (3995.23ms)",
+      "\u2714 Nuxt capture includes awaited app:rendered changes registered after the observer (4363.756334ms)",
+      "\u2714 Nuxt rejects unsupported runtime identities and protects test environment without loading dotenv or stale build output (4950.992792ms)"
+    ],
+    "inputSha256": "3465702366192c922ee95345fa23e078f1766724564499ba6907c7a02219bee1",
+    "limits": "Optional native skips are recorded as skipped; CI confirmation on the failed runtime remains pending."
+  }
+}
