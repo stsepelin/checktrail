@@ -43,6 +43,11 @@ import {
   rubyToolsConfigSchema,
   rubyToolsRepositorySchema,
 } from "../dist/src/ruby-tools.js";
+import {
+  rubyExtensionsPolicySchema,
+  rubyExtensionsManifestWitnessSchema,
+  rubyExtensionsRuntimeWitnessSchema,
+} from "../dist/src/ruby-extensions-contract.js";
 import { mkdir, writeFile } from "node:fs/promises";
 import { URL } from "node:url";
 import { z } from "zod";
@@ -210,6 +215,9 @@ for (const [name, schema] of Object.entries({
   "terraform-config": terraformConfigSchema,
   "swift-tools-config": swiftToolsConfigSchema,
   "ruby-tools-config": rubyToolsConfigSchema,
+  "ruby-extensions-policy": rubyExtensionsPolicySchema,
+  "ruby-extensions-manifest": rubyExtensionsManifestWitnessSchema,
+  "ruby-extensions-native": rubyExtensionsRuntimeWitnessSchema,
   "ruby-tools-repository": rubyToolsRepositorySchema,
   "dotnet-build-config": dotnetBuildConfigSchema,
   "dotnet-build-repository": dotnetBuildRepositorySchema,

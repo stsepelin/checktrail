@@ -61,6 +61,7 @@ assert.ok(
     "dotnet-fsharp-format",
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
+    "ruby-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -136,6 +137,8 @@ if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
 if (profile === "dotnet-generator-extensions")
   process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
+if (profile === "ruby-extensions")
+  process.env.CHECKTRAIL_RUBY_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
@@ -207,6 +210,9 @@ try {
     "gate-dotnet-format-extensions.test.js",
     "dotnet-format-extensions-fixture.js",
     "gate-dotnet-generator-extensions.test.js",
+    "gate-ruby-extensions.test.js",
+    "ruby-extensions-fixture.js",
+    "ruby-tools-fixture.js",
     "dotnet-generator-extensions-fixture.js",
     "dotnet-build-fixture.js",
     "dotnet-generated-fixture.js",
@@ -267,6 +273,14 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "ruby-extensions") {
+    await mkdir(path.join(consumer, "examples"), { recursive: true });
+    await cp(
+      path.join(repository, "examples/ruby-tools"),
+      path.join(consumer, "examples/ruby-tools"),
+      { recursive: true },
+    );
+  }
   if (profile === "dotnet-generator-extensions") {
     await mkdir(path.join(consumer, "examples"));
     await cp(

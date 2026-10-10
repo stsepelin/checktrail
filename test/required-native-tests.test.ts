@@ -784,7 +784,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
         problem.name === "original-bound" && problem.reason === "failed",
     ),
   );
-  const ceiling = execute(requirements, { timeoutMs: 600000 });
+  const ceiling = execute(requirements, { timeoutMs: 1200000 });
   assert.equal(ceiling.complete, true, JSON.stringify(ceiling));
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
@@ -794,7 +794,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
       path.join(root, "ledger-runner.mjs"),
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
       JSON.stringify(requirements),
-      JSON.stringify({ timeoutMs: 600001 }),
+      JSON.stringify({ timeoutMs: 1200001 }),
     ],
     { encoding: "utf8", timeout: 10000, env },
   );

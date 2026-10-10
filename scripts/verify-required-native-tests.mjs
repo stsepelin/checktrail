@@ -37,54 +37,56 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  fullSuite ||
-  selection.includes("dotnet-method") ||
-  selection.includes("jvm-wrappers") ||
-  selection.includes("kotlin-extensions") ||
-  selection.includes("scala-extensions") ||
-  selection.includes("jvm-analyzer-extensions") ||
-  selection.includes("dotnet-format-extensions") ||
-  selection.includes("dotnet-generator-extensions")
-    ? 600000
-    : selection.some((profile) =>
-          ["javascript-extensions", "rust-extensions"].includes(profile),
-        )
-      ? installedExtensionProfile
-        ? 300000
-        : 480000
+  !fullSuite && selection.length === 1 && selection[0] === "ruby-extensions"
+    ? 1200000
+    : fullSuite ||
+        selection.includes("dotnet-method") ||
+        selection.includes("jvm-wrappers") ||
+        selection.includes("kotlin-extensions") ||
+        selection.includes("scala-extensions") ||
+        selection.includes("jvm-analyzer-extensions") ||
+        selection.includes("dotnet-format-extensions") ||
+        selection.includes("dotnet-generator-extensions")
+      ? 600000
       : selection.some((profile) =>
-            [
-              "dotnet-build",
-              "gradle",
-              "detekt",
-              "kotlin",
-              "scala",
-              "maven",
-              "dotnet-test",
-              "dotnet-format",
-              "dotnet-fsharp-format",
-              "dotnet-generated",
-              "review-benchmark-multi",
-              "ruby-tools",
-              "ruby-tools-rubocop",
-              "ruby-tools-assertions",
-              "ruby-tools-evidence",
-              "ruby-tools-lifecycle",
-              "ruby-tools-defaults",
-              "ruby-tools-surfaces",
-              "ruby-tools-cancellation",
-              "swift-tools",
-              "go-extensions",
-              "assembly-nuxt",
-              "javascript-extensions",
-              "python-extensions",
-              "php-extensions",
-              "kubernetes-extensions",
-              "kustomize-extensions",
-            ].includes(profile),
+            ["javascript-extensions", "rust-extensions"].includes(profile),
           )
-        ? 300000
-        : 120000;
+        ? installedExtensionProfile
+          ? 300000
+          : 480000
+        : selection.some((profile) =>
+              [
+                "dotnet-build",
+                "gradle",
+                "detekt",
+                "kotlin",
+                "scala",
+                "maven",
+                "dotnet-test",
+                "dotnet-format",
+                "dotnet-fsharp-format",
+                "dotnet-generated",
+                "review-benchmark-multi",
+                "ruby-tools",
+                "ruby-tools-rubocop",
+                "ruby-tools-assertions",
+                "ruby-tools-evidence",
+                "ruby-tools-lifecycle",
+                "ruby-tools-defaults",
+                "ruby-tools-surfaces",
+                "ruby-tools-cancellation",
+                "swift-tools",
+                "go-extensions",
+                "assembly-nuxt",
+                "javascript-extensions",
+                "python-extensions",
+                "php-extensions",
+                "kubernetes-extensions",
+                "kustomize-extensions",
+              ].includes(profile),
+            )
+          ? 300000
+          : 120000;
 // The selected wrapper, compiler and formatting inventories contain independent callbacks. Each
 // selected callback gets a fresh process and file budget; unchanged callback
 // deadlines still apply. One heavy case runs at a time: two Gradle pipelines
@@ -97,6 +99,7 @@ const isolatedCaseWorkers =
     "scala-extensions",
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
+    "ruby-extensions",
   ].includes(selection[0])
     ? 1
     : 0;

@@ -235,6 +235,17 @@ try {
     architecture,
     alpine,
     nodeVersion: lines[0],
+    npmVersion: docker([
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--label",
+      `checktrail.task=${task}`,
+      image.Id,
+      "npm",
+      "--version",
+    ]).trim(),
     gccVersion: lines[2],
     makeVersion: lines[3],
     files,
@@ -246,6 +257,7 @@ try {
     buildNetwork: "none",
     publisherAndLicenseClosureVerified: false,
   };
+  assert.equal(identity.npmVersion, "10.9.8");
   await writeFile(
     path.join(temporary, "identity.json"),
     JSON.stringify(identity, null, 2) + "\n",
