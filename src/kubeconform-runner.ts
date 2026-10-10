@@ -17,7 +17,7 @@ import path from "node:path";
 import {
   kubeconformInvocationSchema,
   kubeDocuments,
-  kubeSchemaPins,
+  kubeSchemaPinsFor,
   kubeBinarySha256,
   kubeNativeArgs,
   kubeProtectedEnvironment,
@@ -62,6 +62,7 @@ async function main() {
   const invocation = kubeconformInvocationSchema.parse(
       JSON.parse(process.argv[3]!),
     ),
+    schemaPins = kubeSchemaPinsFor(invocation.config),
     documents = kubeDocuments(invocation.inputs, invocation.config),
     binary = await tool();
   const verify = async (base: string, relative: string) => {
@@ -78,7 +79,7 @@ async function main() {
     relative: string,
     directory: string,
   ) => {
-    for (const pin of kubeSchemaPins) {
+    for (const pin of schemaPins) {
       const bytes = await regular(
         await mavenLocal(base, relative, directory + "/" + pin.file),
       );
@@ -115,7 +116,7 @@ async function main() {
         errorOnExist: true,
       });
     }
-    for (const pin of kubeSchemaPins)
+    for (const pin of schemaPins)
       await cp(
         await mavenLocal(
           root,
@@ -219,7 +220,7 @@ async function main() {
         source,
         inputSha256: mavenHash(JSON.stringify(invocation.inputs)),
         tool: binary,
-        schemas: kubeSchemaPins.map((p) => ({
+        schemas: schemaPins.map((p) => ({
           file: p.file,
           sha256: p.sha256,
           afterSha256: p.sha256,

@@ -87,6 +87,20 @@ and fresh installed-package acceptance. The verifier records phase progress on
 stderr and retains the final JSON evidence on stdout. Existing control and engine
 execution limits remain in force; a job cutoff is incomplete acceptance.
 
+## Kubernetes schema extension acceptance
+
+The `kubernetes-extensions-arm64` job prepares the original infrastructure runtime
+and adds thirteen pinned strict schemas in a separate directory. The controller
+requires preserved kubeconform/Kustomize cases, source and fresh offline installed
+acceptance, native regressions and compiling assertion controls. Current physical
+source, raw policy, schema and binary drift invalidates saved extension receipts.
+Validation runs without network as user 1000 with read-only root/source/cache,
+two CPUs, 4 GiB memory, 256 PIDs and a 2 GiB temporary filesystem. The required
+extension file has a five-minute budget; optional absent-native tests do not count.
+See [KUBERNETES-EXTENSIONS.md](KUBERNETES-EXTENSIONS.md) and its
+[measurement](measurements/kubernetes-extensions-2026-10-10.json). Wider cluster
+semantics, kinds, versions, platforms and artifact/license closure remain open.
+
 ## JVM analyzer extension acceptance
 
 The `jvm-analyzer-extensions-arm64` job prepares pinned detekt, SpotBugs and Kotlin

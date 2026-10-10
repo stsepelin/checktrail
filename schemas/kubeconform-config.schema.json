@@ -11,6 +11,10 @@
       "maxLength": 256,
       "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
     },
+    "schemaProfile": {
+      "type": "string",
+      "const": "kubernetes-1.36-extended-kinds-v1"
+    },
     "manifests": {
       "minItems": 1,
       "maxItems": 64,

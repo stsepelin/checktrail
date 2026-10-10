@@ -15,6 +15,16 @@ coverage and the TypeScript 4.9.5 incompatibility fixed in alpha.3.
 
 ## Current source
 
+Opt-in [Kubernetes extensions](KUBERNETES-EXTENSIONS.md) add ten strict pinned
+kinds to the original three-kind contract. Current physical source, policy,
+schema and tool bytes, whole kind/API identifiers and complete native document
+accounting bind source-addressed type defects through the shared engine. The
+[local record](measurements/kubernetes-extensions-2026-10-10.json) records preserved
+callbacks, source and fresh installed acceptance, native regressions, compiling
+controls and the project check. Cluster admission, wider kinds/platforms and whole
+artifact provenance remain open. Gate A remains open; no inference or field
+evaluation is invoked.
+
 Opt-in [JVM analyzer extensions](JVM-ANALYZER-EXTENSIONS.md) compile explicit fresh
 Java application/library cohorts, nested and generated classes and conventional
 JPMS descriptors, with native SpotBugs plugin and rule provenance. Full detekt
