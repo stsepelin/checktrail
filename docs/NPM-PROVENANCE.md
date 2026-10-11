@@ -37,8 +37,11 @@ unrecognized filename remains a gap pending deliberate reconciliation.
 A complete audit exits 0. Missing declarations or notices produce an incomplete
 report and exit 2. Invalid trees, stale bindings and unsafe contents fail without
 a successful report. The current development audit remains incomplete because
-some packages omit notices; [the measured results](measurements/npm-provenance-2026-10-11.json)
-record the exact gaps and package accounting. The recorded production audit is
+some notices remain unavailable or declarations conflict;
+[the current measured results](measurements/npm-notice-bindings-2026-10-11.json)
+record the exact gaps and package accounting. The
+[earlier audit measurement](measurements/npm-provenance-2026-10-11.json) records
+its pre-reconciliation state. The recorded production audit is
 complete for its narrower npm scope.
 
 Original synthetic controls passed on the recorded macOS ARM64 Node runtimes.
@@ -53,3 +56,33 @@ Installed content hashes do not authenticate producers. License strings and noti
 presence do not establish legal compliance. Native compilers, framework artifacts,
 container layers and complete artifact/license closure remain outside this slice.
 Gate A, inference and field evaluation remain open.
+
+## Pinned and embedded notice reconciliation
+
+Development notice entries explicitly select the development scope. Each fallback
+binds every observed installed package file and a bounded, regular notice file in
+`docs/licenses`. Direct and parent-directory symlinks, changed bytes and newly
+bundled notices are refused. Source identities also reconcile literal lock names
+for ordinary and aliased locations; an alias installation name cannot replace the
+actual package identity.
+
+An embedded notice additionally binds an exact byte range in an already captured
+package file. Ranges use UTF-8 byte offsets, not string character positions.
+Invalid, empty, out-of-bounds, uncaptured or different sections cannot pass.
+The full installed file and copied notice remain independently hashed.
+
+A source entry for an absent platform-inapplicable package stays explicitly
+uninspected. It does not become an inspected notice or excuse an absent compatible
+optional package. Unrelated or obsolete entries fail the stale-source check.
+
+The source index records the selected notice's license declaration. A disagreement
+with the installed manifest remains an incomplete result with both declarations;
+the audit does not choose which grant applies. Some historical upstream manifest
+versions differ from the installed release. The current measurement retains these
+versions, immutable notice URLs and separately verified distributed-source matches
+rather than claiming identical release manifests or build provenance.
+
+The setup work recomputed the listed public npm archive integrity and compared
+every archived file with its installed counterpart. This finite observation is
+separate from the audit command's metadata/content capture and does not establish
+publisher authentication or complete dependency/native/container closure.

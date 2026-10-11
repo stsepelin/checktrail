@@ -1,0 +1,945 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Operator source setup: pinned development npm notice bytes and exact embedded README sections on macOS ARM64",
+  "baseSourceCommit": "fb62594e46d0ac1f139872f31d98dbc1d13951b9",
+  "nativeSourceControls": [
+    {
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "required": 17,
+      "passed": 17,
+      "complete": true,
+      "terminalEventCount": 17,
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "dependency audit reconciles installed metadata, reports missing notices and rejects drift",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reconciles installed foreign-platform and unresolved optional absences without counting them as inspected",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses dev manifest license drift and stale upstream fallback entries",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses regular-file symlink substitution without inspecting the external file",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit validates the exact CLI selector and retains manifest and notice byte hashes",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit follows exact npm platform selector boundaries including mixed any and negative-only lists",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit scopes pinned notices and preserves exact package document and stale fallback bindings",
+          "outcome": "passed",
+          "terminalSequences": [13]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit binds embedded notice bytes to a captured file and refuses wrong ranges and uncaptured addresses",
+          "outcome": "passed",
+          "terminalSequences": [14]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses direct and parent notice symlinks in both scopes and accepts restored regular bytes",
+          "outcome": "passed",
+          "terminalSequences": [15]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reports conflicting notice license declarations and leaves absent alias sources explicitly uninspected",
+          "outcome": "passed",
+          "terminalSequences": [16]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses installed names that disagree with literal lock identities at ordinary and aliased locations",
+          "outcome": "passed",
+          "terminalSequences": [17]
+        }
+      ],
+      "inputs": [
+        {
+          "file": "scripts/audit-dependencies.mjs",
+          "sha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b"
+        },
+        {
+          "file": "scripts/license-sources.json",
+          "sha256": "2be975bc0cfac54654fbbfe34e7df2c8a6da74d58f9ab23807b583d716c0d7cf"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        },
+        {
+          "file": "dist/test/dependency-audit.test.js",
+          "sha256": "76d4e85e3582c38281a72355cad4e24e6dd6ebb6ab9fdc788f03bc4e289034df"
+        },
+        {
+          "file": "dist/test/development-dependency-audit.test.js",
+          "sha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "docs/licenses/nodable-entities-3.0.0.txt",
+          "sha256": "750cb3fb6362804957ef52caaf9b5c824015be44d494637330d7cd8834d31d40"
+        },
+        {
+          "file": "docs/licenses/npm-humanfs-types0.15.0.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "file": "docs/licenses/npm-pkgr-core0.3.6.txt",
+          "sha256": "82a222189ab9764f8ec1c052b9661f2c9f12db52387312acbf73b2be5b8b6c32"
+        },
+        {
+          "file": "docs/licenses/npm-rolldown-binding-darwin-arm641.2.9.txt",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+        },
+        {
+          "file": "docs/licenses/npm-rolldown-binding-linux-arm64-musl1.2.9.txt",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+        },
+        {
+          "file": "docs/licenses/npm-unrs-resolver-binding-darwin-arm641.12.2.txt",
+          "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f"
+        },
+        {
+          "file": "docs/licenses/npm-unrs-resolver1.12.2.txt",
+          "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f"
+        },
+        {
+          "file": "docs/licenses/npm-bser2.1.1.txt",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        {
+          "file": "docs/licenses/npm-fb-watchman2.0.2.txt",
+          "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa"
+        },
+        {
+          "file": "docs/licenses/npm-natural-compare1.4.0.txt",
+          "sha256": "353fe762ba595bf1ffe786acf0f5984bb164205901d74f258af195fc8228c67d"
+        },
+        {
+          "file": "docs/licenses/npm-esrecurse@4.3.0.txt",
+          "sha256": "14b0f639e3cf08f948b4a06d4780070db9bfaa89e9449e94f0aa5a0c51289162"
+        },
+        {
+          "file": "docs/licenses/npm-imurmurhash@0.1.4.txt",
+          "sha256": "2f3de7ca97e07e9814e9a8dd61a561079ae6eb303579837e12d3d51f867ef7a6"
+        }
+      ],
+      "sourceHarnessOnly": true
+    },
+    {
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "required": 17,
+      "passed": 17,
+      "complete": true,
+      "terminalEventCount": 17,
+      "cases": [
+        {
+          "fileId": "file-1",
+          "name": "dependency audit reconciles installed metadata, reports missing notices and rejects drift",
+          "outcome": "passed",
+          "terminalSequences": [1]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+          "outcome": "passed",
+          "terminalSequences": [2]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+          "outcome": "passed",
+          "terminalSequences": [3]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reconciles installed foreign-platform and unresolved optional absences without counting them as inspected",
+          "outcome": "passed",
+          "terminalSequences": [4]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+          "outcome": "passed",
+          "terminalSequences": [5]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses dev manifest license drift and stale upstream fallback entries",
+          "outcome": "passed",
+          "terminalSequences": [6]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses regular-file symlink substitution without inspecting the external file",
+          "outcome": "passed",
+          "terminalSequences": [7]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+          "outcome": "passed",
+          "terminalSequences": [8]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit validates the exact CLI selector and retains manifest and notice byte hashes",
+          "outcome": "passed",
+          "terminalSequences": [9]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+          "outcome": "passed",
+          "terminalSequences": [10]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit follows exact npm platform selector boundaries including mixed any and negative-only lists",
+          "outcome": "passed",
+          "terminalSequences": [11]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+          "outcome": "passed",
+          "terminalSequences": [12]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit scopes pinned notices and preserves exact package document and stale fallback bindings",
+          "outcome": "passed",
+          "terminalSequences": [13]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit binds embedded notice bytes to a captured file and refuses wrong ranges and uncaptured addresses",
+          "outcome": "passed",
+          "terminalSequences": [14]
+        },
+        {
+          "fileId": "file-2",
+          "name": "dependency audit refuses direct and parent notice symlinks in both scopes and accepts restored regular bytes",
+          "outcome": "passed",
+          "terminalSequences": [15]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit reports conflicting notice license declarations and leaves absent alias sources explicitly uninspected",
+          "outcome": "passed",
+          "terminalSequences": [16]
+        },
+        {
+          "fileId": "file-2",
+          "name": "development audit refuses installed names that disagree with literal lock identities at ordinary and aliased locations",
+          "outcome": "passed",
+          "terminalSequences": [17]
+        }
+      ],
+      "inputs": [
+        {
+          "file": "scripts/audit-dependencies.mjs",
+          "sha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b"
+        },
+        {
+          "file": "scripts/license-sources.json",
+          "sha256": "2be975bc0cfac54654fbbfe34e7df2c8a6da74d58f9ab23807b583d716c0d7cf"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        },
+        {
+          "file": "dist/test/dependency-audit.test.js",
+          "sha256": "76d4e85e3582c38281a72355cad4e24e6dd6ebb6ab9fdc788f03bc4e289034df"
+        },
+        {
+          "file": "dist/test/development-dependency-audit.test.js",
+          "sha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "docs/licenses/nodable-entities-3.0.0.txt",
+          "sha256": "750cb3fb6362804957ef52caaf9b5c824015be44d494637330d7cd8834d31d40"
+        },
+        {
+          "file": "docs/licenses/npm-humanfs-types0.15.0.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "file": "docs/licenses/npm-pkgr-core0.3.6.txt",
+          "sha256": "82a222189ab9764f8ec1c052b9661f2c9f12db52387312acbf73b2be5b8b6c32"
+        },
+        {
+          "file": "docs/licenses/npm-rolldown-binding-darwin-arm641.2.9.txt",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+        },
+        {
+          "file": "docs/licenses/npm-rolldown-binding-linux-arm64-musl1.2.9.txt",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+        },
+        {
+          "file": "docs/licenses/npm-unrs-resolver-binding-darwin-arm641.12.2.txt",
+          "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f"
+        },
+        {
+          "file": "docs/licenses/npm-unrs-resolver1.12.2.txt",
+          "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f"
+        },
+        {
+          "file": "docs/licenses/npm-bser2.1.1.txt",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        {
+          "file": "docs/licenses/npm-fb-watchman2.0.2.txt",
+          "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa"
+        },
+        {
+          "file": "docs/licenses/npm-natural-compare1.4.0.txt",
+          "sha256": "353fe762ba595bf1ffe786acf0f5984bb164205901d74f258af195fc8228c67d"
+        },
+        {
+          "file": "docs/licenses/npm-esrecurse@4.3.0.txt",
+          "sha256": "14b0f639e3cf08f948b4a06d4780070db9bfaa89e9449e94f0aa5a0c51289162"
+        },
+        {
+          "file": "docs/licenses/npm-imurmurhash@0.1.4.txt",
+          "sha256": "2f3de7ca97e07e9814e9a8dd61a561079ae6eb303579837e12d3d51f867ef7a6"
+        }
+      ],
+      "sourceHarnessOnly": true
+    }
+  ],
+  "pairedGuardControls": [
+    {
+      "id": "development-scope",
+      "callback": "development audit preserves production scope and reconciles actual alias identities at every location without loading code",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "e91686968141c35971e9cf0364d294aa268dcc16ab29ca815c31310c424772d5",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "content-hash",
+      "callback": "development audit counts duplicate nested package locations and excludes those files from their parent content",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "b33bba0ca402b46293db8606c502e9889f70a6ed1bd25754f3eba679ba3fc8be",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "file-limit",
+      "callback": "development audit admits the exact individual file byte limit and refuses the next byte before returning evidence",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "ad116ec7c8d0de05025df05f807b274c83a27e2c1c2dbd0b501b919de905c172",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "notice-accounting",
+      "callback": "development audit leaves empty and missing development notice cohorts non-passing while retaining present notices",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "c8c2b848c8107d570c08962d6990196c19536736c90dd6328a254597fcca94ad",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "shared-optional-path",
+      "callback": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "0f4ffed8df0ec273a59d5ab9f3ee93cffd25da38c4202bcbfe599b1bf06adf64",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "inherited-optional-path",
+      "callback": "development audit excludes an absent dependency only when every declared path crosses a foreign platform ancestor",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "64585c74b1672e9dd515f998a961f2872674bf7fcc0e6010a7c2145adda90d37",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "exact-notice-name",
+      "callback": "dependency audit refuses backup notice filenames in both scopes and retains exact recognized license variants",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "7bdf4d3c40747ab0f0609e408de41bba10e7b7afb5e9e46ad9b5bef1f1d428f1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "notice-scope",
+      "callback": "development audit scopes pinned notices and preserves exact package document and stale fallback bindings",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "739694b11b3bc8f07c0ea0297f01ea5b3bf39f4752ea997c38671bb547794198",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "source-package-binding",
+      "callback": "development audit scopes pinned notices and preserves exact package document and stale fallback bindings",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "43632cd957d6f8dd8b1aea7acd704f02704b0d186eae92609eccf28a9a7a2e91",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "embedded-byte-range",
+      "callback": "development audit binds embedded notice bytes to a captured file and refuses wrong ranges and uncaptured addresses",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "b32cdeaa2e9cc90e89b9b1988b6ad753d2d0da694c7d2399ef2097df989987d8",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "source-license-conflict",
+      "callback": "development audit reports conflicting notice license declarations and leaves absent alias sources explicitly uninspected",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "6a95b88b8f1e5507505bd43afabc8f98b892ec3587b193402a4741050121c37e",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "locked-package-name",
+      "callback": "development audit refuses installed names that disagree with literal lock identities at ordinary and aliased locations",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "57f57e42cc2c1a1691073c8cd1b0d1fa732905deb0eb5c1d5cb84c9c76ab54b9",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "notice-file-boundary-family",
+      "callback": "dependency audit refuses direct and parent notice symlinks in both scopes and accepts restored regular bytes",
+      "callbackFileSha256": "1f6801dedc67bbd9d4582929efcf8a7cd869cae374a4b16b5cd4e228c442493a",
+      "baselineSourceSha256": "c6532d97c5372f82994325f2bdc4ef9352a19c4df7b689b0d9d5a6c0c2929b8b",
+      "mutantSourceSha256": "557f15d71f202e2c32d0fc915e6e749f6298268005a7886eaa3534c5922390d0",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "noticeBindings": [
+    {
+      "package": "@humanfs/types@0.15.0",
+      "notice": "docs/licenses/npm-humanfs-types0.15.0.txt",
+      "source": "https://raw.githubusercontent.com/humanwhocodes/humanfs/85069f193cbacc371c3beb649ce746f8c5a493be/packages/core/LICENSE",
+      "noticeSha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "upstreamManifestVersion": "0.15.0",
+      "noticeSourceLicense": "Apache-2.0",
+      "installedLicense": "Apache-2.0",
+      "archiveSha256": "3c2942da7ba321f6ba27255a5faceee76eae502403129d8aa50d2dc8400a94d5",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "@pkgr/core@0.3.6",
+      "notice": "docs/licenses/npm-pkgr-core0.3.6.txt",
+      "source": "https://raw.githubusercontent.com/un-ts/pkgr/6e1c7260486c7251e61404176a293986229a5869/LICENSE",
+      "noticeSha256": "82a222189ab9764f8ec1c052b9661f2c9f12db52387312acbf73b2be5b8b6c32",
+      "upstreamManifestVersion": "0.3.6",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "e2e38238b7d1fb836f2fb59adb1aae9d82eefdbbd1285d5798d41df7f475e5e3",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "@rolldown/binding-darwin-arm64@1.2.9",
+      "notice": "docs/licenses/npm-rolldown-binding-darwin-arm641.2.9.txt",
+      "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+      "noticeSha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+      "upstreamManifestVersion": "1.2.9",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "7b7da204879507a070d723323439f107d879cb8e11a4f2e2f0a9d3ee81ffbf80",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.2.9",
+      "notice": "docs/licenses/npm-rolldown-binding-linux-arm64-musl1.2.9.txt",
+      "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+      "noticeSha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+      "upstreamManifestVersion": "1.2.9",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "e89c3714ecca4c5e4a9e386765d71b3ce624ca4c796b1709ebe11ae58a301852",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "@unrs/resolver-binding-darwin-arm64@1.12.2",
+      "notice": "docs/licenses/npm-unrs-resolver-binding-darwin-arm641.12.2.txt",
+      "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+      "noticeSha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+      "upstreamManifestVersion": "1.12.2",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "d385600e989fe50a1bdd5e0de2d6142f6007ea82013b2a17a8eea90f3dc92621",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "unrs-resolver@1.12.2",
+      "notice": "docs/licenses/npm-unrs-resolver1.12.2.txt",
+      "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+      "noticeSha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+      "upstreamManifestVersion": "1.12.2",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "22203fe39b7626e2679fa74d6c2e9985e52b5cbf79ed27f8dc0439b3255c9778",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "bser@2.1.1",
+      "notice": "docs/licenses/npm-bser2.1.1.txt",
+      "source": "https://raw.githubusercontent.com/facebook/watchman/df9f2c4a5eb37354949fdefb2b917427fe05fa6c/LICENSE",
+      "noticeSha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "upstreamManifestVersion": "2.1.0",
+      "noticeSourceLicense": "Apache-2.0",
+      "installedLicense": "Apache-2.0",
+      "archiveSha256": "729d1b9694f6e4c58b340d52dead3bf24533e0b7a0d37ab5d8eaa2a4b36aee9e",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "fb-watchman@2.0.2",
+      "notice": "docs/licenses/npm-fb-watchman2.0.2.txt",
+      "source": "https://raw.githubusercontent.com/facebook/watchman/5a5c364ee24c7a44502bfd22f929fc8f74626bb7/LICENSE",
+      "noticeSha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
+      "upstreamManifestVersion": "2.0.1",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "Apache-2.0",
+      "archiveSha256": "7e16260469e7b07d888a0daa07d798e0358a2180fae897da18c7679edbc26845",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "natural-compare@1.4.0",
+      "notice": "docs/licenses/npm-natural-compare1.4.0.txt",
+      "source": "https://raw.githubusercontent.com/litejs/natural-compare-lite/6b42bc713dca62f35b927cd06b69a82e297f019b/LICENSE",
+      "noticeSha256": "353fe762ba595bf1ffe786acf0f5984bb164205901d74f258af195fc8228c67d",
+      "upstreamManifestVersion": "1.4.0",
+      "noticeSourceLicense": "MIT",
+      "installedLicense": "MIT",
+      "archiveSha256": "5e5569ecd12064f73632a8c18a45b1d1de4a27b699a671864801f1c35ee779ee",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "esrecurse@4.3.0",
+      "notice": "docs/licenses/npm-esrecurse@4.3.0.txt",
+      "noticeSha256": "14b0f639e3cf08f948b4a06d4780070db9bfaa89e9449e94f0aa5a0c51289162",
+      "source": "installed README.md",
+      "sourceFileSha256": "a7007c78c9d9da690ef6cdb0e7a3427d05832edb00abd1f5a9882700d73be4ad",
+      "sourceByteRange": {
+        "file": "README.md",
+        "startByte": 3712,
+        "endByte": 5102
+      },
+      "archiveSha256": "3ecf9370d7296b47b570c88a11f70b35bb965af8d536536b259eb55f9b793b61",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    },
+    {
+      "package": "imurmurhash@0.1.4",
+      "notice": "docs/licenses/npm-imurmurhash@0.1.4.txt",
+      "noticeSha256": "2f3de7ca97e07e9814e9a8dd61a561079ae6eb303579837e12d3d51f867ef7a6",
+      "source": "installed README.md",
+      "sourceFileSha256": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
+      "sourceByteRange": {
+        "file": "README.md",
+        "startByte": 3696,
+        "endByte": 4763
+      },
+      "archiveSha256": "ac23a031966a7371d192e35c7852ab31c772b7d4e468ddd886ad3c014372cb60",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true
+    }
+  ],
+  "verifiedNpmArchives": [
+    {
+      "package": "@humanfs/types@0.15.0",
+      "location": "node_modules/@humanfs/types",
+      "resolved": "https://registry.npmjs.org/@humanfs/types/-/types-0.15.0.tgz",
+      "archiveSha256": "3c2942da7ba321f6ba27255a5faceee76eae502403129d8aa50d2dc8400a94d5",
+      "declaredIntegrity": "sha512-ZZ1w0aoQkwuUuC7Yf+7sdeaNfqQiiLcSRbfI08oAxqLtpXQr9AIVX7Ay7HLDuiLYAaFPu8oBYNq/QIi9URHJ3Q==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 3866,
+      "expandedBytes": 15241,
+      "license": "Apache-2.0",
+      "fileCount": 5,
+      "orderedFileIdentitySha256": "47abfe9c69de023e163c2e3e7ef3eba240d95ab90e767b29fe0801ab79f305e3"
+    },
+    {
+      "package": "@pkgr/core@0.3.6",
+      "location": "node_modules/@pkgr/core",
+      "resolved": "https://registry.npmjs.org/@pkgr/core/-/core-0.3.6.tgz",
+      "archiveSha256": "e2e38238b7d1fb836f2fb59adb1aae9d82eefdbbd1285d5798d41df7f475e5e3",
+      "declaredIntegrity": "sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 3769,
+      "expandedBytes": 11671,
+      "license": "MIT",
+      "fileCount": 12,
+      "orderedFileIdentitySha256": "21c7402c9a0a8b995b74d92937f5daf8e1b67f0077ba16624f7f3559257a83a4"
+    },
+    {
+      "package": "@rolldown/binding-darwin-arm64@1.2.9",
+      "location": "node_modules/@rolldown/binding-darwin-arm64",
+      "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-arm64/-/binding-darwin-arm64-1.2.9.tgz",
+      "archiveSha256": "7b7da204879507a070d723323439f107d879cb8e11a4f2e2f0a9d3ee81ffbf80",
+      "declaredIntegrity": "sha512-IwhlH3qK5urrY8hZiEgGkHKEFN901p/p2bjxCxJlr4GyNnF7wYpUvK+Y43uaRYuC4hpfjzbR3SJC3arX1jGvmw==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 7185650,
+      "expandedBytes": 16373598,
+      "license": "MIT",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "aa48cf1d154454efa4d1f996d1fe80a22f26ff2cbb0897e8b92b8492f85aa7a2"
+    },
+    {
+      "package": "@rolldown/binding-linux-arm64-musl@1.2.9",
+      "location": "node_modules/@rolldown/binding-linux-arm64-musl",
+      "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.2.9.tgz",
+      "archiveSha256": "e89c3714ecca4c5e4a9e386765d71b3ce624ca4c796b1709ebe11ae58a301852",
+      "declaredIntegrity": "sha512-11vWvo8YDwLzukt27J3aYDWU+gg2P7J+ZOmiJ0hkF5BXZDW7pVya7r40MXDy6ya0i9KamoENSVKIugvJNgFXIA==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 7528422,
+      "expandedBytes": 17231151,
+      "license": "MIT",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "5f47118df5a79a5469ba98455f7726235f83d111d2632ec5adefba9740d28de1"
+    },
+    {
+      "package": "@unrs/resolver-binding-darwin-arm64@1.12.2",
+      "location": "node_modules/@unrs/resolver-binding-darwin-arm64",
+      "resolved": "https://registry.npmjs.org/@unrs/resolver-binding-darwin-arm64/-/resolver-binding-darwin-arm64-1.12.2.tgz",
+      "archiveSha256": "d385600e989fe50a1bdd5e0de2d6142f6007ea82013b2a17a8eea90f3dc92621",
+      "declaredIntegrity": "sha512-u9DiNT1auQMO20A9SyTuG3wUgQWB9Z7KjAg0uFuCDR1FsAY8A0CG2S6JpHS1xwm/w1G08bjXZDcyOCjv1WAm2w==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 887843,
+      "expandedBytes": 1686442,
+      "license": "MIT",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "e98ba8ceb1cf8e2803eaa3d60f07a0b231bd8b031c8adacac30ef2f1f14aa6ef"
+    },
+    {
+      "package": "bser@2.1.1",
+      "location": "node_modules/bser",
+      "resolved": "https://registry.npmjs.org/bser/-/bser-2.1.1.tgz",
+      "archiveSha256": "729d1b9694f6e4c58b340d52dead3bf24533e0b7a0d37ab5d8eaa2a4b36aee9e",
+      "declaredIntegrity": "sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 5571,
+      "expandedBytes": 17986,
+      "license": "Apache-2.0",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "b1264122d7e286aaffd5ca1067e71a54d6c887ccbe1da0d801b0af60d542259d"
+    },
+    {
+      "package": "eastasianwidth@0.2.0",
+      "location": "node_modules/eastasianwidth",
+      "resolved": "https://registry.npmjs.org/eastasianwidth/-/eastasianwidth-0.2.0.tgz",
+      "archiveSha256": "eccfa12bbda71f9f8e09de7ad1a4e554369a6b4d43d7f86085e85055a8694c27",
+      "declaredIntegrity": "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 2893,
+      "expandedBytes": 13640,
+      "license": "MIT",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "4b066d0448226f5db7e46f188ac085ff3bc37f963c6f8343bc1353cb98262e76"
+    },
+    {
+      "package": "esrecurse@4.3.0",
+      "location": "node_modules/esrecurse",
+      "resolved": "https://registry.npmjs.org/esrecurse/-/esrecurse-4.3.0.tgz",
+      "archiveSha256": "3ecf9370d7296b47b570c88a11f70b35bb965af8d536536b259eb55f9b793b61",
+      "declaredIntegrity": "sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 4053,
+      "expandedBytes": 13527,
+      "license": "BSD-2-Clause",
+      "fileCount": 5,
+      "orderedFileIdentitySha256": "680ff3d5d99d2e149038f338de344c6021e05e99449f24f80f3da3858280c559"
+    },
+    {
+      "package": "fb-watchman@2.0.2",
+      "location": "node_modules/fb-watchman",
+      "resolved": "https://registry.npmjs.org/fb-watchman/-/fb-watchman-2.0.2.tgz",
+      "archiveSha256": "7e16260469e7b07d888a0daa07d798e0358a2180fae897da18c7679edbc26845",
+      "declaredIntegrity": "sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 4112,
+      "expandedBytes": 11008,
+      "license": "Apache-2.0",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "be3a72a303f763ae3984a9d47ebedaf9c92a89e4eeee80c92406c68a9fc348a8"
+    },
+    {
+      "package": "imurmurhash@0.1.4",
+      "location": "node_modules/imurmurhash",
+      "resolved": "https://registry.npmjs.org/imurmurhash/-/imurmurhash-0.1.4.tgz",
+      "archiveSha256": "ac23a031966a7371d192e35c7852ab31c772b7d4e468ddd886ad3c014372cb60",
+      "declaredIntegrity": "sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 4312,
+      "expandedBytes": 11887,
+      "license": "MIT",
+      "fileCount": 4,
+      "orderedFileIdentitySha256": "7595a151ef83cb397ca52fb489c0275397087d624fc9c0e62fecf8061d0f4d35"
+    },
+    {
+      "package": "natural-compare@1.4.0",
+      "location": "node_modules/natural-compare",
+      "resolved": "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz",
+      "archiveSha256": "5e5569ecd12064f73632a8c18a45b1d1de4a27b699a671864801f1c35ee779ee",
+      "declaredIntegrity": "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 2510,
+      "expandedBytes": 5647,
+      "license": "MIT",
+      "fileCount": 3,
+      "orderedFileIdentitySha256": "dcf73af735a346d0a272af3a7e48294eca51b6286bcb6a511d178f111a2b5d0e"
+    },
+    {
+      "package": "stackback@0.0.2",
+      "location": "node_modules/stackback",
+      "resolved": "https://registry.npmjs.org/stackback/-/stackback-0.0.2.tgz",
+      "archiveSha256": "3e663c82d1ccf9748ed446b648ec21a7dd6c5895ecf4a95310a60a320ca55858",
+      "declaredIntegrity": "sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 3165,
+      "expandedBytes": 6884,
+      "license": "MIT",
+      "fileCount": 7,
+      "orderedFileIdentitySha256": "7a2a91993e2efadc5af66d7f88ced426327aa219c0164051c8132b4de0ab74f0"
+    },
+    {
+      "package": "unrs-resolver@1.12.2",
+      "location": "node_modules/unrs-resolver",
+      "resolved": "https://registry.npmjs.org/unrs-resolver/-/unrs-resolver-1.12.2.tgz",
+      "archiveSha256": "22203fe39b7626e2679fa74d6c2e9985e52b5cbf79ed27f8dc0439b3255c9778",
+      "declaredIntegrity": "sha512-dmlRxBJJayXjqTwC+JtF1HhJmgf3ftQ3YejFcZrf4+KKtJv0qDsK1pjqaaVjG7wJ5NJ6UVP1OqRMQ71Z4C3rxQ==",
+      "archiveIntegrityVerified": true,
+      "installedFilesMatchArchive": true,
+      "bytes": 11371,
+      "expandedBytes": 60433,
+      "license": "MIT",
+      "fileCount": 6,
+      "orderedFileIdentitySha256": "9e86e351637fb748c4d38a89b88819e8d8244cc1adc6c3040e427367c9efcd1a"
+    }
+  ],
+  "observedAudits": {
+    "production": {
+      "reportSha256": "6c2fdee494337ae657beadcd1158eaca1fa36f1d75c8f087656afa014c9917bc",
+      "exitCode": 0,
+      "complete": true,
+      "lockfileSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "packageCount": 21,
+      "gaps": []
+    },
+    "all": {
+      "reportSha256": "0fe7375b76956f4f8895842af3918bc334c2cb24c85668cfb2c3213b8eca5b92",
+      "exitCode": 2,
+      "complete": false,
+      "lockfileSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "packageCount": 437,
+      "gaps": [
+        {
+          "package": "eastasianwidth@0.2.0",
+          "reason": "No notice file was located"
+        },
+        {
+          "package": "fb-watchman@2.0.2",
+          "reason": "Installed and notice source license declarations differ",
+          "installedLicense": "Apache-2.0",
+          "noticeSourceLicense": "MIT"
+        },
+        {
+          "package": "stackback@0.0.2",
+          "reason": "No notice file was located"
+        }
+      ],
+      "lockedPackageCount": 497,
+      "installedPackageCount": 437,
+      "platformInapplicableCount": 60,
+      "optionalAbsentCount": 0,
+      "uninspectedNoticeSources": [],
+      "runtime": {
+        "node": "26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64"
+      }
+    }
+  },
+  "fullCheck": {
+    "tests": 1871,
+    "pass": 1119,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "todo": 0
+  },
+  "reproductions": [
+    {
+      "id": "external-notice-symlink",
+      "beforeExitCode": 0,
+      "requiredExitCode": 1,
+      "afterExitCode": 1,
+      "originalAssertion": "An external symlink cannot supply a pinned notice"
+    },
+    {
+      "id": "locked-alias-name",
+      "beforeExitCode": 0,
+      "requiredExitCode": 1,
+      "afterExitCode": 1,
+      "originalAssertion": "Installed alias identity must match the actual lockfile name"
+    }
+  ],
+  "completeNativeArtifactClosure": false,
+  "publisherAuthenticationVerified": false,
+  "legalComplianceEstablished": false,
+  "productionInstallationAcceptance": false,
+  "nativeWindowsAcceptance": false,
+  "gateAClosed": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "limitations": [
+    "Only the thirteen listed npm archives were fetched and recomputed against their locked SHA-512; the audit command does not itself fetch or recompute archive integrity.",
+    "Two notices remain unavailable and one installed/source license declaration conflicts; the development audit intentionally exits 2.",
+    "Pinned upstream manifests can have a different version from the installed archive. Exact distributed source matches were separately checked for the historical Watchman and natural-compare bindings.",
+    "Notice source declarations are explicit operator index metadata and do not constitute a legal determination.",
+    "Native compiler/framework/container closure, other platform package inventories and producer build authentication remain unverified."
+  ]
+}

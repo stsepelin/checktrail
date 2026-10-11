@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { open, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  open,
+  readFile,
+  rename,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { test, type TestContext } from "node:test";
 import { fixture } from "./helpers.js";
@@ -107,14 +115,24 @@ type Audit = {
   optionalAbsentCount: number;
   packageCount: number;
   completeNativeArtifactClosure: boolean;
-  absentPackages: { location: string; state: string }[];
+  absentPackages: { location: string; state: string; package: string }[];
+  uninspectedNoticeSources: {
+    package: string;
+    state: string;
+    noticeInspected: boolean;
+  }[];
   gaps: { package: string | null; reason: string }[];
   packages: {
     name: string;
     location: string;
     manifestSha256: string;
     content: { files: number; bytes: number; sha256: string };
-    notices: { file: string; sha256: string }[];
+    notices: {
+      file: string;
+      sha256: string;
+      provenance: string;
+      sourceByteRange?: { file: string; startByte: number; endByte: number };
+    }[];
   }[];
 };
 function parsed(result: ReturnType<typeof invoke>, status = 0): Audit {
@@ -513,5 +531,268 @@ test("dependency audit refuses backup notice filenames in both scopes and retain
       );
     }
     await rm(file);
+  }
+});
+
+async function pinnedNoticeFixture(
+  t: TestContext,
+  development: boolean,
+  embedded = false,
+) {
+  const name = "synthetic-notice";
+  const root = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    { name, dev: development },
+  ]);
+  const dependency = "node_modules/" + name;
+  const notice =
+    "Original synthetic notice; accounting only, no legal claim.\n";
+  const prefix = "Original 🧪 README heading.\n";
+  const readme = prefix + notice + "Original trailing instructions.\n";
+  await rm(path.join(root, dependency, "LICENSE"));
+  await writeFile(path.join(root, dependency, "README.md"), readme);
+  const files = Object.fromEntries(
+    await Promise.all(
+      ["package.json", "index.js", "README.md"].map(async (file) => [
+        file,
+        createHash("sha256")
+          .update(await readFile(path.join(root, dependency, file)))
+          .digest("hex"),
+      ]),
+    ),
+  );
+  const source = {
+    ...(development ? { scope: "development" } : {}),
+    notice: "docs/licenses/synthetic-notice.txt",
+    sha256: createHash("sha256").update(notice).digest("hex"),
+    source: "https://example.test/original/" + "a".repeat(40) + "/LICENSE",
+    upstreamManifestVersion: "1.0.0",
+    license: "MIT",
+    files,
+    ...(embedded
+      ? {
+          section: {
+            file: "README.md",
+            startByte: Buffer.byteLength(prefix),
+            endByte: Buffer.byteLength(prefix + notice),
+          },
+        }
+      : {}),
+  };
+  await mkdir(path.join(root, "docs/licenses"), { recursive: true });
+  await writeFile(path.join(root, source.notice), notice);
+  const setSource = async (value: unknown) =>
+    writeFile(
+      path.join(root, "scripts/license-sources.json"),
+      JSON.stringify({ [name + "@1.0.0"]: value }),
+    );
+  await setSource(source);
+  return { root, name, dependency, notice, source, setSource };
+}
+
+test("development audit scopes pinned notices and preserves exact package document and stale fallback bindings", async (t) => {
+  const f = await pinnedNoticeFixture(t, true);
+  assert.equal(
+    parsed(invoke(f.root, [])).packageCount,
+    1,
+    "A development notice source cannot widen the production dependency scope",
+  );
+  const report = parsed(invoke(f.root));
+  assert.equal(report.complete, true);
+  assert.equal(
+    report.packages.find((p) => p.name === f.name)!.notices[0]!.provenance,
+    "pinned-upstream-notice",
+  );
+  const file = path.join(f.root, f.dependency, "index.js");
+  const original = await readFile(file);
+  await writeFile(file, "Original drifted bytes.\n");
+  let bad = invoke(f.root);
+  assert.equal(bad.status, 1);
+  assert.match(bad.stderr, /source files changed/);
+  assert.equal(bad.stdout, "");
+  await writeFile(file, original);
+  await writeFile(
+    path.join(f.root, f.source.notice),
+    f.notice + "Original unexpected suffix.\n",
+  );
+  bad = invoke(f.root);
+  assert.equal(bad.status, 1);
+  assert.match(bad.stderr, /Pinned upstream notice changed/);
+  assert.equal(bad.stdout, "");
+  await writeFile(path.join(f.root, f.source.notice), f.notice);
+  await writeFile(path.join(f.root, f.dependency, "LICENSE"), f.notice);
+  bad = invoke(f.root);
+  assert.equal(bad.status, 1);
+  assert.match(bad.stderr, /fallback is stale/);
+  assert.equal(bad.stdout, "");
+  await rm(path.join(f.root, f.dependency, "LICENSE"));
+  await f.setSource({ ...f.source, scope: "development-extra" });
+  bad = invoke(f.root);
+  assert.equal(bad.status, 1);
+  assert.match(bad.stderr, /Invalid notice source scope/);
+  assert.equal(bad.stdout, "");
+  await f.setSource(f.source);
+  assert.equal(parsed(invoke(f.root)).complete, true);
+});
+
+test("development audit binds embedded notice bytes to a captured file and refuses wrong ranges and uncaptured addresses", async (t) => {
+  const f = await pinnedNoticeFixture(t, true, true);
+  const result = invoke(f.root),
+    report = parsed(result);
+  const notice = report.packages.find((p) => p.name === f.name)!.notices[0]!;
+  assert.equal(notice.provenance, "installed-text-section");
+  assert.deepEqual(notice.sourceByteRange, f.source.section);
+  assert.equal(notice.sha256, f.source.sha256);
+  assert.ok(!result.stdout.includes(f.root));
+  const section = f.source.section!;
+  for (const [changed, message] of [
+    [
+      { ...section, startByte: section.startByte - 1 },
+      /differs from pinned notice bytes/,
+    ],
+    [
+      { ...section, endByte: section.startByte },
+      /Invalid installed notice section/,
+    ],
+    [{ ...section, endByte: 100000 }, /section exceeds bounds/],
+    [{ ...section, file: "not-captured.txt" }, /not a captured package file/],
+    [
+      { ...section, file: "../external.txt" },
+      /Invalid installed notice section/,
+    ],
+  ] as const) {
+    await f.setSource({ ...f.source, section: changed });
+    const bad = invoke(f.root);
+    assert.equal(bad.status, 1);
+    assert.match(bad.stderr, message);
+    assert.equal(bad.stdout, "");
+  }
+  await f.setSource(f.source);
+  assert.equal(parsed(invoke(f.root)).complete, true);
+});
+
+test("dependency audit refuses direct and parent notice symlinks in both scopes and accepts restored regular bytes", async (t) => {
+  const f = await pinnedNoticeFixture(t, false);
+  const external = await fixture(t, { "notice.txt": f.notice });
+  const file = path.join(f.root, f.source.notice);
+  for (const args of [[], ["--include-dev"]]) {
+    assert.equal(parsed(invoke(f.root, args)).complete, true);
+    await rm(file);
+    await symlink(path.join(external, "notice.txt"), file);
+    let bad = invoke(f.root, args);
+    assert.equal(bad.status, 1);
+    assert.match(bad.stderr, /bounded regular file/);
+    assert.equal(bad.stdout, "");
+    await rm(file);
+    await writeFile(file, f.notice);
+    const directory = path.dirname(file),
+      moved = directory + "-owned-copy";
+    await rename(directory, moved);
+    try {
+      await symlink(moved, directory, "dir");
+      bad = invoke(f.root, args);
+      assert.equal(bad.status, 1);
+      assert.match(bad.stderr, /must not resolve through a symlink/);
+      assert.equal(bad.stdout, "");
+    } finally {
+      await rm(directory, { force: true });
+      await rename(moved, directory);
+    }
+    assert.equal(parsed(invoke(f.root, args)).complete, true);
+  }
+  assert.equal(
+    await readFile(path.join(external, "notice.txt"), "utf8"),
+    f.notice,
+  );
+});
+
+test("development audit reports conflicting notice license declarations and leaves absent alias sources explicitly uninspected", async (t) => {
+  const f = await pinnedNoticeFixture(t, true);
+  await f.setSource({ ...f.source, license: "BSD-2-Clause" });
+  const report = parsed(invoke(f.root), 2);
+  assert.equal(report.complete, false);
+  assert.deepEqual(report.gaps, [
+    {
+      package: f.name + "@1.0.0",
+      reason: "Installed and notice source license declarations differ",
+      installedLicense: "MIT",
+      noticeSourceLicense: "BSD-2-Clause",
+    },
+  ]);
+  await f.setSource(f.source);
+  assert.equal(parsed(invoke(f.root)).complete, true);
+  const foreign = await auditFixture(t, [
+    { name: "synthetic-prod" },
+    {
+      name: "synthetic-foreign",
+      alias: "synthetic-alias",
+      optional: true,
+      absent: true,
+      os: ["!" + process.platform],
+    },
+  ]);
+  await writeFile(
+    path.join(foreign, "scripts/license-sources.json"),
+    JSON.stringify({
+      "synthetic-foreign@1.0.0": { ...f.source, files: {} },
+    }),
+  );
+  const excluded = parsed(invoke(foreign));
+  assert.equal(excluded.platformInapplicableCount, 1);
+  assert.deepEqual(excluded.uninspectedNoticeSources, [
+    {
+      package: "synthetic-foreign@1.0.0",
+      state: "platform-inapplicable",
+      noticeInspected: false,
+    },
+  ]);
+  assert.equal(excluded.absentPackages[0]!.package, "synthetic-foreign@1.0.0");
+  await writeFile(
+    path.join(foreign, "scripts/license-sources.json"),
+    JSON.stringify({
+      "synthetic-uninstalled@1.0.0": f.source,
+    }),
+  );
+  const stale = invoke(foreign);
+  assert.equal(stale.status, 1);
+  assert.match(stale.stderr, /no longer describes/);
+  assert.equal(stale.stdout, "");
+});
+
+test("development audit refuses installed names that disagree with literal lock identities at ordinary and aliased locations", async (t) => {
+  for (const alias of [undefined, "synthetic-alias"]) {
+    const root = await auditFixture(t, [
+      { name: "synthetic-prod" },
+      { name: "synthetic-dev", dev: true, ...(alias ? { alias } : {}) },
+    ]);
+    assert.equal(parsed(invoke(root)).complete, true);
+    const file = path.join(root, "package-lock.json"),
+      original = await readFile(file, "utf8");
+    const lock = JSON.parse(original) as {
+      packages: Record<string, { name?: string }>;
+    };
+    const entry = lock.packages["node_modules/" + (alias ?? "synthetic-dev")]!;
+    entry.name = "synthetic-mismatched-identity";
+    await writeFile(file, JSON.stringify(lock));
+    let bad = invoke(root);
+    assert.equal(bad.status, 1);
+    assert.match(bad.stderr, /Installed dependency name differs from lock/);
+    assert.equal(bad.stdout, "");
+    delete entry.name;
+    await writeFile(file, JSON.stringify(lock));
+    if (alias) {
+      bad = invoke(root);
+      assert.equal(bad.status, 1);
+      assert.match(bad.stderr, /Installed dependency name differs from lock/);
+      assert.equal(bad.stdout, "");
+    } else {
+      assert.equal(
+        parsed(invoke(root)).complete,
+        true,
+        "An ordinary location retains its exact basename identity when the lock omits name",
+      );
+    }
+    await writeFile(file, original);
+    assert.equal(parsed(invoke(root)).complete, true);
   }
 });
