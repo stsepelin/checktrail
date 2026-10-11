@@ -2,6 +2,7 @@ import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { nativeAcceptanceFailure } from "./native-acceptance-diagnostics.mjs";
 import {
   access,
   cp,
@@ -534,8 +535,16 @@ try {
       ).trim()
     : undefined;
   if (image) assert.match(image, /^sha256:[a-f0-9]{64}$/);
+  const nativeAcceptance = (...args) => {
+    try {
+      return execFileSync(...args);
+    } catch (error) {
+      process.stderr.write(nativeAcceptanceFailure(error) + "\n");
+      throw error;
+    }
+  };
   const output = image
-    ? execFileSync(
+    ? nativeAcceptance(
         "docker",
         [
           "run",
@@ -713,7 +722,7 @@ try {
         ],
         { encoding: "utf8", maxBuffer: 1024 * 1024 },
       )
-    : execFileSync(
+    : nativeAcceptance(
         process.execPath,
         rubyAcceptanceShard === undefined
           ? ["scripts/verify-required-native-tests.mjs", profile]
