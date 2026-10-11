@@ -27,8 +27,10 @@ export async function requestPinnedArtifactBytes(
     signal = globalThis.AbortSignal.timeout(120000),
     delayImpl = (ms) => setTimeout(ms, undefined, { signal }),
     onRetry = () => {},
+    retryNotFound = false,
   } = {},
 ) {
+  assert.equal(typeof retryNotFound, "boolean");
   assert.equal(new URL(asset).protocol, "https:");
   assert.ok(
     Number.isSafeInteger(bytes) && bytes > 0 && bytes <= 128 * 1024 * 1024,
@@ -41,7 +43,10 @@ export async function requestPinnedArtifactBytes(
       try {
         response = await fetchImpl(asset, { signal });
         signal.throwIfAborted();
-        if (transientStatuses.has(response.status))
+        if (
+          transientStatuses.has(response.status) ||
+          (retryNotFound && response.status === 404)
+        )
           throw new TransientArtifactResponseError(
             `Pinned artifact HTTP ${response.status}`,
           );
