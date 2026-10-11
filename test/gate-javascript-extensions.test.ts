@@ -470,6 +470,12 @@ test(
             assert.throws(
               () => process.kill(pid, 0),
               (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",
+              JSON.stringify({
+                adapter,
+                mode,
+                role: pid === ids.parent ? "parent" : "detached-child",
+                errorCode: processResult.errorCode ?? null,
+              }),
             );
         } finally {
           abort.abort();
@@ -530,6 +536,12 @@ test(
       assert.throws(
         () => process.kill(pid!, 0),
         (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",
+        JSON.stringify({
+          adapter: "javascript.vite-library",
+          mode: "cancel",
+          role: "producer",
+          errorCode: result.checks[0]!.processes[0]!.errorCode ?? null,
+        }),
       );
       await assert.rejects(access(temporary));
     } finally {
