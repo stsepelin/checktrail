@@ -29,6 +29,33 @@ for (const profile of selection) {
     "Unknown required native test profile",
   );
 }
+const mutationProfiles = [
+  "mutation-vitest",
+  "mutation-jest",
+  "mutation-pytest",
+  "mutation-phpunit",
+];
+if (
+  selection.some(
+    (p) => mutationProfiles.includes(p) || p === "mutation-runners",
+  )
+) {
+  assert.equal(
+    selection.length,
+    1,
+    "Native mutation cohorts run separately; aggregate selection cannot reuse one family's execution",
+  );
+  assert.notEqual(
+    selection[0],
+    "mutation-runners",
+    "Mutation runners require all four per-family source and installed cohorts",
+  );
+  assert.equal(
+    selection[0],
+    "mutation-" + process.env.CHECKTRAIL_MUTATION_FAMILY,
+    "Selected native mutation family must match its required cohort",
+  );
+}
 const installedExtensionProfile =
   selection.length === 1 &&
   ((selection[0] === "javascript-extensions" &&
@@ -43,6 +70,10 @@ const timeoutMs =
     "ruby-extensions",
     "swift-extensions",
     "dotnet-generator-extensions",
+    "mutation-vitest",
+    "mutation-jest",
+    "mutation-pytest",
+    "mutation-phpunit",
   ].includes(selection[0])
     ? 1200000
     : !fullSuite &&
@@ -113,6 +144,10 @@ const isolatedCaseWorkers =
     "dotnet-generator-extensions",
     "ruby-extensions",
     "swift-extensions",
+    "mutation-vitest",
+    "mutation-jest",
+    "mutation-pytest",
+    "mutation-phpunit",
     "cpp-extensions",
     "terraform-extensions",
     "helm-extensions",

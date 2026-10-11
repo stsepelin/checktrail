@@ -1895,3 +1895,81 @@ jobs:
           node scripts/prepare-package-cache.mjs
       - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
         run: node scripts/verify-dotnet-generator-extensions-container.mjs
+
+  mutation-passive-guards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Require paired parser and bounded-copy controls
+        run: node scripts/verify-mutation-guards.mjs passive
+
+  mutation-native-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        family: [vitest, jest, pytest, phpunit]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-mutation-${{ matrix.family }}
+      CHECKTRAIL_MUTATION_FAMILY: ${{ matrix.family }}
+      CHECKTRAIL_MUTATION_IMAGE: checktrail-mutation-${{ matrix.family }}:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare the pinned Node image
+        run: node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare the exact locked native JavaScript tool closure
+        if: matrix.family == 'vitest' || matrix.family == 'jest'
+        run: |
+          node scripts/prepare-mutation-tools.mjs
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/mutation-javascript-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          docker tag public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 "$CHECKTRAIL_MUTATION_IMAGE"
+      - name: Prepare the pinned native Python image and public tools
+        if: matrix.family == 'pytest'
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+          node scripts/prepare-python-extensions-tools.mjs
+          docker build --network none --label "checktrail.task=$CHECKTRAIL_TEST_TASK" --file scripts/python-extensions-tools.Dockerfile --tag "$CHECKTRAIL_MUTATION_IMAGE" .
+      - name: Prepare the pinned native PHP image and locked tools
+        if: matrix.family == 'phpunit'
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          docker build --network none --label "checktrail.task=$CHECKTRAIL_TEST_TASK" --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_MUTATION_IMAGE" .
+          mkdir -p .checktrail/php-tools
+          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/php-tools,target=/tools" --workdir /tools "$CHECKTRAIL_MUTATION_IMAGE" composer install --no-interaction --no-scripts --prefer-dist --no-progress
+          test -s .checktrail/php-tools/vendor/pest-plugins.json
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require source, fresh production installation and paired native controls
+        run: node scripts/verify-mutation-container.mjs all
+
+  mutation-runners-complete:
+    if: always()
+    needs: [mutation-passive-guards, mutation-native-arm64]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PASSIVE_RESULT: ${{ needs.mutation-passive-guards.result }}
+      NATIVE_RESULT: ${{ needs.mutation-native-arm64.result }}
+    steps:
+      - name: Require every independent mutation family and all passive controls
+        run: |
+          test "$PASSIVE_RESULT" = success
+          test "$NATIVE_RESULT" = success

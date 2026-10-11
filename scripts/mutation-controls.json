@@ -1,0 +1,227 @@
+[
+  {
+    "id": "physical-json-duplicate-keys",
+    "file": "mutation-native-evidence.js",
+    "from": "uniqueKeys: true",
+    "to": "uniqueKeys: false",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "physical-cancellation",
+    "file": "mutation-native-evidence.js",
+    "from": "process.cancelled ||",
+    "to": "false ||",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "physical-deadline",
+    "file": "mutation-native-evidence.js",
+    "from": "process.timedOut ||",
+    "to": "false ||",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "physical-output-exhaustion",
+    "file": "mutation-native-evidence.js",
+    "from": "process.truncated ||",
+    "to": "false ||",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "physical-cleanup-error",
+    "file": "mutation-native-evidence.js",
+    "from": "process.errorCode ||",
+    "to": "false ||",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "physical-selected-address",
+    "file": "mutation-native-evidence.js",
+    "from": "expected.includes(file) &&",
+    "to": "true &&",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-flatness",
+    "file": "mutation-native-evidence.js",
+    "from": "module.flat === true &&",
+    "to": "true &&",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-vitest-pin",
+    "file": "mutation-native-evidence.js",
+    "from": "packet.version === \"5.0.1\" &&",
+    "to": "true &&",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-jest-assertion-identity",
+    "file": "mutation-native-evidence.js",
+    "from": "m.pass === false &&",
+    "to": "true &&",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-case-uniqueness",
+    "file": "mutation-native-evidence.js",
+    "from": "need(new Set(cases.map((c) => c.id)).size === cases.length);",
+    "to": "need(true);",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-hook-completion",
+    "file": "mutation-native-evidence.js",
+    "from": "if (!hook.completed || after > before)",
+    "to": "if (after > before)",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "interrupted Vitest setup hooks differ from completed body assertion failures"
+  },
+  {
+    "id": "native-pytest-setup",
+    "file": "mutation-native-evidence.js",
+    "from": "if (phase.phase === \"setup\")",
+    "to": "if (phase.phase === \"not-selected\")",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "pytest exception identity and native phase are both needed for an assertion kill"
+  },
+  {
+    "id": "native-pytest-assertion",
+    "file": "mutation-native-evidence.js",
+    "from": "phase.phase === \"teardown\" || !e.assertion",
+    "to": "phase.phase === \"teardown\" || true",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "pytest exception identity and native phase are both needed for an assertion kill"
+  },
+  {
+    "id": "physical-bounded-snapshot",
+    "file": "mutation-native-copy.js",
+    "from": "stat.size > maximum",
+    "to": "false",
+    "mode": "passive",
+    "testFile": "mutation-native-copy.test.js",
+    "name": "physical mutation snapshots enforce byte limits, preserve the selected tool cohort and relocate contained links"
+  },
+  {
+    "id": "native-phpunit-exact-exception",
+    "file": "mutation-native-evidence.js",
+    "from": "[\n                                                \"PHPUnit\\\\Framework\\\\ExpectationFailedException\",\n                                                \"PHPUnit\\\\Framework\\\\AssertionFailedError\",\n                                            ].includes(name)",
+    "to": "name.startsWith(\"PHPUnit\\\\Framework\\\\ExpectationFailedException\")",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures"
+  },
+  {
+    "id": "native-phpunit-setup-order",
+    "file": "mutation-native-evidence.js",
+    "from": "(!prepared\n                                    ? \"setup-error\"",
+    "to": "(false\n                                    ? \"setup-error\"",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures"
+  },
+  {
+    "id": "native-phpunit-teardown-order",
+    "file": "mutation-native-evidence.js",
+    "from": ": passed\n                                        ? \"execution-error\"",
+    "to": ": false\n                                        ? \"execution-error\"",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures"
+  },
+  {
+    "id": "native-exit-reconciliation",
+    "file": "mutation-native-evidence.js",
+    "from": "need(process.exitCode === 0);",
+    "to": "need(true);",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission"
+  },
+  {
+    "id": "native-phpunit-hook-failure-phase",
+    "file": "mutation-native-evidence.js",
+    "from": "hookFailure ??",
+    "to": "undefined ??",
+    "mode": "passive",
+    "testFile": "mutation-native-evidence.test.js",
+    "name": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures"
+  },
+  {
+    "id": "native-copied-source",
+    "file": "mutation-native.js",
+    "from": "outcome: sourceChanged || dependenciesChanged",
+    "to": "outcome: false",
+    "mode": "native",
+    "families": ["vitest", "jest", "pytest", "phpunit"],
+    "testFile": "mutation-native-guards.test.js",
+    "name": "native mutation copied source changes cannot pass",
+    "witness": "source"
+  },
+  {
+    "id": "native-copied-dependency",
+    "file": "mutation-native.js",
+    "from": "outcome: sourceChanged || dependenciesChanged",
+    "to": "outcome: false",
+    "mode": "native",
+    "families": ["vitest", "jest", "pytest", "phpunit"],
+    "testFile": "mutation-native-guards.test.js",
+    "name": "native mutation copied dependency changes cannot pass",
+    "witness": "dependency"
+  },
+  {
+    "id": "native-case-cohort",
+    "file": "mutation-native.js",
+    "from": "!same ||",
+    "to": "false ||",
+    "mode": "native",
+    "families": ["vitest", "jest"],
+    "testFile": "mutation-native-guards.test.js",
+    "name": "native mutation changed test identity cannot kill",
+    "witness": "cohort"
+  },
+  {
+    "id": "native-pytest-physical-output",
+    "file": "mutation-pytest-runner.js",
+    "from": "\"--capture=no\",",
+    "to": "",
+    "mode": "native",
+    "families": ["pytest"],
+    "testFile": "mutation-native-guards.test.js",
+    "name": "native pytest output reaches the physical output bound"
+  },
+  {
+    "id": "native-phpunit-teardown-phase",
+    "file": "mutation-native-evidence.js",
+    "from": "hookFailure ??",
+    "to": "undefined ??",
+    "mode": "native",
+    "families": ["phpunit"],
+    "testFile": "mutation-native-guards.test.js",
+    "name": "native PHPUnit teardown cannot kill",
+    "witness": "teardown"
+  }
+]

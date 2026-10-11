@@ -66,6 +66,12 @@ export type { GuidanceContext, GuidanceReport } from "./guidance.js";
 
 export { runMutations, projectMutations } from "./mutation.js";
 export type { MutationRecipe, MutationReport } from "./mutation.js";
+export type {
+  NativeMutationProfile,
+  NativeMutationRecipe,
+  NativeMutationReport,
+  NativeMutationObservation,
+} from "./mutation-native-schema.js";
 
 export { loadExternalAdapters } from "./external-adapter.js";
 export type {
