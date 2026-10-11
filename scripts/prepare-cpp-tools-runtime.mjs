@@ -1,5 +1,5 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
-import { Buffer } from "node:buffer";
+import { requestCppToolArchive } from "./request-cpp-tool-archive.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -92,25 +92,10 @@ try {
           bytes = await readFile(file);
           asset = "operator-prepared-archive";
         } else {
-          for (const repository of manifest.repositories) {
-            const url = repository + pin.path,
-              response = await globalThis.fetch(url, {
-                signal: globalThis.AbortSignal.timeout(120000),
-              });
-            if (response.status === 404) continue;
-            assert.equal(response.status, 200);
-            assert.ok(response.body);
-            let count = 0;
-            const chunks = [];
-            for await (const chunk of response.body) {
-              count += chunk.length;
-              assert.ok(count <= pin.bytes);
-              chunks.push(Buffer.from(chunk));
-            }
-            bytes = Buffer.concat(chunks);
-            asset = url;
-            break;
-          }
+          ({ bytes, asset } = await requestCppToolArchive(
+            pin,
+            manifest.repositories,
+          ));
         }
         assert.ok(bytes, "Pinned archive unavailable");
         assert.equal(bytes.length, pin.bytes);
