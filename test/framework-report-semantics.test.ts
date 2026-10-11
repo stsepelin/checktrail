@@ -143,3 +143,149 @@ test("framework semantic comparison preserves capture-like fields in runtime met
   }
   assert.throws(() => frameworkReportSemantics({ checks: left }));
 });
+
+test("framework semantic comparison validates tool probe captures and excludes only probe elapsed time while retaining identity status command and output", () => {
+  const probe = {
+    command: { executable: "python3", args: ["--version"], cwd: "." },
+    exitCode: 0,
+    signal: null,
+    durationMs: 5,
+    timedOut: false,
+    cancelled: false,
+    truncated: false,
+    stdout: "Python 3.12.13\n",
+    stderr: "",
+    outputBytes: 15,
+    capturedOutput: captureProcessOutput(
+      Buffer.from("Python 3.12.13\n"),
+      Buffer.alloc(0),
+      15,
+      true,
+    ),
+  };
+  const left = [
+    {
+      ...report("2026-10-11T00:00:00.000Z")[0],
+      tools: [
+        {
+          name: "python",
+          source: "version-command",
+          version: "3.12.13",
+          status: "identified",
+          process: probe,
+        },
+        {
+          name: "original-runtime",
+          source: "package-metadata",
+          version: "1.0.0",
+          status: "identified",
+          metadata: { durationMs: 42 },
+        },
+      ],
+    },
+  ];
+  const right = structuredClone(left);
+  right[0]!.tools[0]!.process!.durationMs = 73;
+  for (const options of [{}, { omitProcessOutput: true }]) {
+    assert.deepEqual(
+      frameworkReportSemantics(left, options),
+      frameworkReportSemantics(right, options),
+    );
+    for (const field of [
+      "name",
+      "source",
+      "version",
+      "status",
+      "command",
+      "exit",
+      "signal",
+      "timeout",
+      "cancel",
+      "truncated",
+      "output",
+      "metadata",
+    ]) {
+      const changed = structuredClone(right),
+        tool = changed[0]!.tools[0]!,
+        p = tool.process!;
+      switch (field) {
+        case "name":
+          tool.name = "different-tool";
+          break;
+        case "source":
+          tool.source = "different-source";
+          break;
+        case "version":
+          tool.version = "0.0.0";
+          break;
+        case "status":
+          tool.status = "unavailable";
+          break;
+        case "command":
+          p.command.args = ["different-command"];
+          break;
+        case "exit":
+          p.exitCode = 1;
+          break;
+        case "signal":
+          Object.assign(p, { signal: "SIGTERM" });
+          break;
+        case "timeout":
+          p.timedOut = true;
+          break;
+        case "cancel":
+          p.cancelled = true;
+          break;
+        case "truncated":
+          p.truncated = true;
+          break;
+        case "output": {
+          p.stdout = "Python 0.00.00\n";
+          p.outputBytes = Buffer.byteLength(p.stdout);
+          p.capturedOutput = captureProcessOutput(
+            Buffer.from(p.stdout),
+            Buffer.alloc(0),
+            p.outputBytes,
+            true,
+          );
+          break;
+        }
+        case "metadata":
+          changed[0]!.tools[1]!.metadata!.durationMs++;
+          break;
+      }
+      assert.notDeepEqual(
+        frameworkReportSemantics(left, options),
+        frameworkReportSemantics(changed, options),
+        field,
+      );
+    }
+    for (const field of ["text", "hash", "length", "observed", "incomplete"]) {
+      const changed = structuredClone(right),
+        p = changed[0]!.tools[0]!.process!;
+      switch (field) {
+        case "text":
+          p.stdout = "different text";
+          break;
+        case "hash":
+          p.capturedOutput.stdout.sha256 = "0".repeat(64);
+          break;
+        case "length":
+          p.capturedOutput.stdout.bytes++;
+          break;
+        case "observed":
+          p.outputBytes++;
+          break;
+        case "incomplete":
+          p.capturedOutput.completeForObservedStreams = false;
+          break;
+      }
+      assert.throws(
+        () => frameworkReportSemantics(changed, options),
+        (error: unknown) => error instanceof Error,
+        field,
+      );
+    }
+  }
+  assert.equal(left[0]!.tools[0]!.process!.durationMs, 5);
+});
