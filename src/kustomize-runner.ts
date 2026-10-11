@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -163,8 +163,8 @@ async function main() {
       KUBECONFIG: path.join(home, "no-cluster"),
     };
     let total = 0;
-    const invoke = (entry: string, phase: string, args: string[]) => {
-      const result = spawnSync(entry, args, {
+    const invoke = async (entry: string, phase: string, args: string[]) => {
+      const result = await invokeNativeOutput(entry, args, {
         cwd: workspace,
         env,
         encoding: "utf8",
@@ -189,8 +189,12 @@ async function main() {
         stderrSha256: mavenHash(result.stderr),
       };
     };
-    const version = invoke(binary.entry, "kustomize-version", ["version"]),
-      schemaVersion = invoke(validator.entry, "kubeconform-version", ["-v"]);
+    const version = await invoke(binary.entry, "kustomize-version", [
+        "version",
+      ]),
+      schemaVersion = await invoke(validator.entry, "kubeconform-version", [
+        "-v",
+      ]);
     if (
       version.exitCode !== 0 ||
       version.stdout !== "v5.8.2\n" ||
@@ -221,7 +225,7 @@ async function main() {
       );
       return;
     }
-    const build = invoke(binary.entry, "build", [
+    const build = await invoke(binary.entry, "build", [
       "build",
       invocation.config.root,
       "--load-restrictor",
@@ -267,7 +271,7 @@ async function main() {
         afterSha256: "",
       });
     }
-    const validation = invoke(
+    const validation = await invoke(
       validator.entry,
       "validate",
       kubeNativeArgs(

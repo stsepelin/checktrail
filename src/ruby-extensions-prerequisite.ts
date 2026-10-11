@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { z } from "zod";
 export const rubyExtensionsUnavailableSchema = z.strictObject({
   version: z.literal(1),
@@ -7,8 +7,8 @@ export const rubyExtensionsUnavailableSchema = z.strictObject({
   prerequisite: z.literal("unavailable"),
 });
 /** Probe only the selected interpreter and Bundler, before any project DSL. */
-export function rubyExtensionsPrerequisite(env: NodeJS.ProcessEnv) {
-  const result = spawnSync(
+export async function rubyExtensionsPrerequisite(env: NodeJS.ProcessEnv) {
+  const result = await invokeNativeOutput(
     "ruby",
     [
       "--disable-gems",

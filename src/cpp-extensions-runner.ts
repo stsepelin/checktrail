@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -204,9 +204,9 @@ async function main() {
     }
     await verify(temporary, "project", true);
     const tools = await Promise.all(cppExtensionsToolNames.map(tool));
-    const invoke = (phase: string, name: string, args: string[]) => {
+    const invoke = async (phase: string, name: string, args: string[]) => {
       const executable = tools.find((t) => t.name === name)!.entry,
-        result = spawnSync(executable, args, {
+        result = await invokeNativeOutput(executable, args, {
           cwd: build,
           env,
           encoding: "utf8",
@@ -260,7 +260,7 @@ async function main() {
       });
     };
     for (const name of cppExtensionsToolNames) {
-      const version = invoke(
+      const version = await invoke(
         "version:" + name,
         name,
         name === "clang" || name === "clang++"
@@ -282,7 +282,7 @@ async function main() {
     await mkdir(query, { recursive: true });
     for (const kind of ["codemodel-v2", "cmakeFiles-v1"])
       await writeFile(path.join(query, kind), "");
-    const configured = invoke(
+    const configured = await invoke(
       "configure",
       "cmake",
       cppExtensionsConfigure(workspace, build, tools),
@@ -372,7 +372,7 @@ async function main() {
         await artifact(file);
       }
       generatedBefore = await generatedTree();
-      const compiled = invoke("build", "cmake", [
+      const compiled = await invoke("build", "cmake", [
         "--build",
         build,
         "--verbose",
@@ -385,7 +385,7 @@ async function main() {
             config.sdk.some((p) => p.path === pin),
             "SDK CRT debug bytes undeclared",
           );
-          invoke("sdk-dwarf:" + pin, "llvm-dwarfdump", [
+          await invoke("sdk-dwarf:" + pin, "llvm-dwarfdump", [
             "--debug-line",
             "/" + pin,
           ]);
@@ -393,7 +393,7 @@ async function main() {
         for (const unit of cppExtensionsUnits(config)) {
           await artifact(unit.object, "base64");
           await artifact(unit.object + ".d");
-          invoke("dwarf:" + unit.object, "llvm-dwarfdump", [
+          await invoke("dwarf:" + unit.object, "llvm-dwarfdump", [
             "--debug-line",
             path.join(build, unit.object),
           ]);
@@ -403,7 +403,7 @@ async function main() {
           if (target.type === "static") await artifact(binary, "base64");
           else {
             await binaryWitness(binary);
-            invoke("elf:" + target.name, "llvm-readelf", [
+            await invoke("elf:" + target.name, "llvm-readelf", [
               "--wide",
               "--file-header",
               "--dynamic",
@@ -418,7 +418,7 @@ async function main() {
             ),
           );
           if (target.type === "static")
-            invoke("archive:" + target.name, "llvm-ar", [
+            await invoke("archive:" + target.name, "llvm-ar", [
               "t",
               path.join(build, binary),
             ]);
@@ -429,20 +429,20 @@ async function main() {
                 `CMakeFiles/${target.name}.dir/link.d`,
               ),
             );
-            invoke("dwarf:" + target.name, "llvm-dwarfdump", [
+            await invoke("dwarf:" + target.name, "llvm-dwarfdump", [
               "--debug-line",
               path.join(build, binary),
             ]);
           }
         }
         if (mode === "ctest") {
-          const listed = invoke("list", "ctest", [
+          const listed = await invoke("list", "ctest", [
             "--test-dir",
             build,
             "--show-only=json-v1",
           ]);
           if (listed.exitCode === 0) {
-            invoke("test", "ctest", [
+            await invoke("test", "ctest", [
               "--test-dir",
               build,
               "--output-on-failure",
@@ -457,20 +457,20 @@ async function main() {
           for (const pin of invocation.inputs.filter((p) =>
             /\.(?:c|cpp|h|hpp)$/.test(p.path),
           ))
-            invoke("format:" + pin.path, "clang-format", [
+            await invoke("format:" + pin.path, "clang-format", [
               `--style=${cppFormatStyle}`,
               "--output-replacements-xml",
               path.join(workspace, pin.path),
             ]);
         } else if (mode === "clang-tidy") {
-          invoke("tidy-rules", "clang-tidy", [
+          await invoke("tidy-rules", "clang-tidy", [
             "--config={InheritParentConfig: false}",
             `--checks=-*,${config.tidyRules.join(",")}`,
             "--list-checks",
           ]);
           for (const unit of cppExtensionsUnits(config)) {
             const fixes = `fixes-${unit.target}-${path.basename(unit.file)}.yaml`;
-            invoke("tidy:" + unit.file, "clang-tidy", [
+            await invoke("tidy:" + unit.file, "clang-tidy", [
               "-p",
               build,
               "--config={InheritParentConfig: false}",

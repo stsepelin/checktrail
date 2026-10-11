@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   mkdtemp,
   readdir,
@@ -35,8 +35,12 @@ const metadataSchema = z.object({
   ),
 });
 
-function invoke(executable: string, args: string[], env?: NodeJS.ProcessEnv) {
-  const result = spawnSync(executable, args, {
+async function invoke(
+  executable: string,
+  args: string[],
+  env?: NodeJS.ProcessEnv,
+) {
+  const result = await invokeNativeOutput(executable, args, {
     encoding: "utf8",
     ...(env ? { env } : {}),
     maxBuffer: 1024 * 1024,
@@ -52,7 +56,7 @@ async function main() {
   const [root, ...scope] = clippy || testing ? input.slice(1) : input;
   if (!root || !scope.length) throw new Error("Invalid Rust scope");
   for (const tool of ["rustc", "cargo", ...(testing ? ["rustdoc"] : [])]) {
-    const version = invoke(tool, ["--version"]);
+    const version = await invoke(tool, ["--version"]);
     if (
       version.status !== 0 ||
       version.stderr.trim() ||
@@ -71,7 +75,7 @@ async function main() {
     }
   }
   if (clippy) {
-    const version = invoke("cargo-clippy", ["--version"]);
+    const version = await invoke("cargo-clippy", ["--version"]);
     if (
       version.status !== 0 ||
       version.stderr.trim() ||
@@ -97,7 +101,7 @@ async function main() {
       "--config",
       `build.target-dir=${JSON.stringify(temporary)}`,
     ];
-    const metadataProcess = invoke("cargo", [
+    const metadataProcess = await invoke("cargo", [
       "metadata",
       "--format-version=1",
       "--offline",
@@ -134,7 +138,7 @@ async function main() {
       process.exitCode = 3;
       return;
     }
-    const execution = invoke("cargo", [
+    const execution = await invoke("cargo", [
       clippy ? "clippy" : "check",
       "--all-targets",
       "--offline",

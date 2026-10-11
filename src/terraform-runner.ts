@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -129,8 +129,8 @@ async function main() {
       CHECKPOINT_DISABLE: "1",
     };
     let total = 0;
-    const invoke = (phase: string, args: string[]) => {
-      const result = spawnSync(binary.entry, args, {
+    const invoke = async (phase: string, args: string[]) => {
+      const result = await invokeNativeOutput(binary.entry, args, {
         cwd: workspace,
         env,
         encoding: "utf8",
@@ -155,7 +155,7 @@ async function main() {
         stderrSha256: mavenHash(result.stderr),
       };
     };
-    const version = invoke("version", ["version", "-json"]);
+    const version = await invoke("version", ["version", "-json"]);
     if (
       version.exitCode !== 0 ||
       version.stderr ||
@@ -172,7 +172,11 @@ async function main() {
       process.stdout.write("Terraform v1.16.5\n");
       return;
     }
-    const validation = invoke("validate", ["validate", "-json", "-no-color"]);
+    const validation = await invoke("validate", [
+      "validate",
+      "-json",
+      "-no-color",
+    ]);
     await verify(root, project);
     await verify(temporary, "source");
     await verifyNative();

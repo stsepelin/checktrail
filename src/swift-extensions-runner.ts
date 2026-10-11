@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { cp, mkdir, mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -92,22 +92,26 @@ async function main() {
     )
       delete env[key];
   // No project manifest or plugin is touched before all native versions agree.
-  const ready = versions.every(([, name, args, expected]) => {
-    const r = spawnSync(name, [...args], {
+  let ready = true;
+  for (const [, name, args, expected] of versions) {
+    const r = await invokeNativeOutput(name, [...args], {
       env,
       encoding: "utf8",
       maxBuffer: 8192,
       stdio: ["ignore", "pipe", "pipe"],
       timeout: 15000,
     });
-    return (
-      !r.error &&
-      !r.signal &&
-      r.status === 0 &&
-      r.stdout === expected &&
-      r.stderr === ""
-    );
-  });
+    if (
+      r.error ||
+      r.signal ||
+      r.status !== 0 ||
+      r.stdout !== expected ||
+      r.stderr !== ""
+    ) {
+      ready = false;
+      break;
+    }
+  }
   if (!ready) {
     process.stdout.write(
       JSON.stringify({
@@ -182,10 +186,10 @@ async function main() {
     const tools = await Promise.all(
       ["swift", "swiftc", "swift-frontend", "swiftlint"].map(tool),
     );
-    const invoke = (phase: string, name: string, args: string[]) => {
+    const invoke = async (phase: string, name: string, args: string[]) => {
       const executable = tools.find((t) => t.name === name)!.entry,
         start = performance.now(),
-        r = spawnSync(executable, args, {
+        r = await invokeNativeOutput(executable, args, {
           cwd: workspace,
           env,
           encoding: "utf8",
@@ -232,7 +236,7 @@ async function main() {
       return row;
     };
     for (const [phase, name, args, expected] of versions) {
-      const r = invoke(phase, name, [...args]);
+      const r = await invoke(phase, name, [...args]);
       swiftRequire(
         r.exitCode === 0 && r.stdout === expected && !r.stderr,
         "Swift extension native version changed",
@@ -241,12 +245,12 @@ async function main() {
     const graph = [];
     for (const p of config.packages) {
       const common = swiftCommon(path.join(workspace, p.path), temporary),
-        manifest = invoke("manifest:" + p.identity, "swift", [
+        manifest = await invoke("manifest:" + p.identity, "swift", [
           "package",
           ...common,
           "dump-package",
         ]),
-        describe = invoke("describe:" + p.identity, "swift", [
+        describe = await invoke("describe:" + p.identity, "swift", [
           "package",
           ...common,
           "describe",
@@ -286,7 +290,7 @@ async function main() {
         sha256: mavenHash(text),
       });
     };
-    const build = invoke("build", "swift", [
+    const build = await invoke("build", "swift", [
       "build",
       ...common,
       "--build-tests",
@@ -323,7 +327,7 @@ async function main() {
       // Scan every physical module, including the plugin and both test frameworks.
       await mkdir(path.join(temporary, "sdk"));
       for (const target of targets) {
-        const row = invoke(
+        const row = await invoke(
           "sdk:" + target.name,
           "swift-frontend",
           swiftExtensionsScanArgs(config, workspace, temporary, target),
@@ -358,7 +362,7 @@ async function main() {
             ),
             "Swift extension inline lint directives unsupported",
           );
-        invoke("swiftlint", "swiftlint", [
+        await invoke("swiftlint", "swiftlint", [
           "lint",
           "--config",
           optionsFile,
@@ -371,7 +375,7 @@ async function main() {
       } else if (mode === "xctest" || mode === "testing") {
         const framework =
           mode === "xctest" ? "--disable-swift-testing" : "--disable-xctest";
-        invoke("list", "swift", [
+        await invoke("list", "swift", [
           "test",
           ...common,
           "--skip-build",
@@ -380,7 +384,7 @@ async function main() {
         ]);
         for (const target of targets.filter((t) => t.type === "test"))
           for (const f of target.sources)
-            invoke(
+            await invoke(
               "ast:" + f,
               "swiftc",
               swiftAstArgs(
@@ -395,7 +399,7 @@ async function main() {
                 frontend,
               ),
             );
-        invoke("test", "swift", [
+        await invoke("test", "swift", [
           "test",
           ...common,
           "--skip-build",

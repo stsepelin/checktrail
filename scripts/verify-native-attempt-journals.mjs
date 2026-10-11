@@ -64,6 +64,7 @@ process.stdout.write(
     attemptArchivesGateAcceptanceComplete: false,
     engineJournalIntegrationComplete: false,
     wholeNativeCallFamilyMigrated: false,
+    selectedNativeWrapperCallsitesMigrated: true,
     inferenceExecuted: false,
     fieldEvaluationExecuted: false,
     profileEvidence: profile,

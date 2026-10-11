@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -179,8 +179,8 @@ async function main() {
       HELM_REPOSITORY_CACHE: path.join(home, "repository-cache"),
     };
     let total = 0;
-    const invoke = (phase: string, args: string[]) => {
-      const result = spawnSync(binary.entry, args, {
+    const invoke = async (phase: string, args: string[]) => {
+      const result = await invokeNativeOutput(binary.entry, args, {
         cwd: workspace,
         env,
         encoding: "utf8",
@@ -205,7 +205,7 @@ async function main() {
         stderrSha256: mavenHash(result.stderr),
       };
     };
-    const version = invoke("version", helmVersionArgs);
+    const version = await invoke("version", helmVersionArgs);
     if (version.exitCode !== 0 || version.stdout !== "v4.3.0" || version.stderr)
       throw new ToolUnavailable();
     const receipts =
@@ -213,8 +213,8 @@ async function main() {
         ? [version]
         : [
             version,
-            invoke("lint", helmLintArgs),
-            invoke("render", helmRenderArgs),
+            await invoke("lint", helmLintArgs),
+            await invoke("render", helmRenderArgs),
           ];
     await verifyOriginalClosure();
     await verify(root, project);

@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { constants } from "node:fs";
 import {
   access,
@@ -134,10 +134,10 @@ async function main() {
     const tools = await Promise.all(
       ["swift", "swiftc", "swift-frontend", "swiftlint"].map(tool),
     );
-    const invoke = (phase: string, name: string, args: string[]) => {
+    const invoke = async (phase: string, name: string, args: string[]) => {
       const executable = tools.find((t) => t.name === name)!.entry,
         start = performance.now(),
-        result = spawnSync(executable, args, {
+        result = await invokeNativeOutput(executable, args, {
           cwd: workspace,
           env,
           encoding: "utf8",
@@ -183,7 +183,7 @@ async function main() {
       ],
       ["swiftlint-version", "swiftlint", ["version"], "0.65.1\n"],
     ] as const) {
-      const result = invoke(phase, name, [...args]);
+      const result = await invoke(phase, name, [...args]);
       swiftRequire(
         result.exitCode === 0 &&
           result.stdout === expected &&
@@ -192,12 +192,12 @@ async function main() {
       );
     }
     const common = swiftCommon(workspace, temporary),
-      manifest = invoke("manifest", "swift", [
+      manifest = await invoke("manifest", "swift", [
         "package",
         ...common,
         "dump-package",
       ]),
-      describe = invoke("describe", "swift", [
+      describe = await invoke("describe", "swift", [
         "package",
         ...common,
         "describe",
@@ -230,7 +230,7 @@ async function main() {
           ),
           "Swift inline lint directives need an audited suppression profile",
         );
-      invoke("swiftlint", "swiftlint", [
+      await invoke("swiftlint", "swiftlint", [
         "lint",
         "--config",
         optionsFile,
@@ -247,7 +247,7 @@ async function main() {
           config.tests.framework === "xctest"
             ? "--disable-swift-testing"
             : "--disable-xctest",
-        build = invoke("build", "swift", [
+        build = await invoke("build", "swift", [
           "build",
           ...common,
           "--build-tests",
@@ -257,7 +257,7 @@ async function main() {
           "--verbose",
         ]);
       if (build.exitCode === 0 && mode === "test") {
-        invoke("list", "swift", [
+        await invoke("list", "swift", [
           "test",
           ...common,
           "--skip-build",
@@ -266,7 +266,7 @@ async function main() {
         ]);
         for (const target of config.targets.filter((t) => t.type === "test"))
           for (const file of target.sources)
-            invoke(
+            await invoke(
               "ast:" + file,
               "swiftc",
               swiftAstArgs(
@@ -279,7 +279,7 @@ async function main() {
               ),
             );
         if (config.tests.framework === "xctest") {
-          invoke("test", "swift", [
+          await invoke("test", "swift", [
             "test",
             ...common,
             "--skip-build",
@@ -287,7 +287,7 @@ async function main() {
             "--no-parallel",
           ]);
         } else {
-          invoke("test", "swift", [
+          await invoke("test", "swift", [
             "test",
             ...common,
             "--skip-build",

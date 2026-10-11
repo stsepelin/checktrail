@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { createHash } from "node:crypto";
 import {
   mkdir,
@@ -26,14 +26,18 @@ for (const name of [
   delete env[name];
 const hash = (data: Buffer | string) =>
   createHash("sha256").update(data).digest("hex");
-const invoke = (args: string[]) =>
-  spawnSync("java", args, { env, encoding: "utf8", maxBuffer: 1024 * 1024 });
+const invoke = async (args: string[]) =>
+  await invokeNativeOutput("java", args, {
+    env,
+    encoding: "utf8",
+    maxBuffer: 1024 * 1024,
+  });
 async function main() {
   const root = await realpath(process.argv[2]!);
   const project = path.relative(root, await realpath(process.cwd())) || ".";
   const serialized = process.argv[3]!;
   const invocation = spotbugsInvocationSchema.parse(JSON.parse(serialized));
-  const version = invoke(["--version"]);
+  const version = await invoke(["--version"]);
   if (
     version.status !== 0 ||
     version.stderr ||
@@ -69,8 +73,8 @@ async function main() {
   const temporary = await mkdtemp(
     path.join(process.env.CHECKTRAIL_TEMP ?? tmpdir(), "checktrail-spotbugs-"),
   );
-  const java = (args: string[]) => {
-    const result = invoke([
+  const java = async (args: string[]) => {
+    const result = await invoke([
       "-Xmx256m",
       "-Dfile.encoding=UTF-8",
       "-Duser.language=en",
@@ -109,7 +113,11 @@ async function main() {
         'class VerifierSpotbugsVersion { public static void main(String[] args) { System.out.print("SpotBugs " + edu.umd.cs.findbugs.Version.VERSION_STRING); } }',
       );
       process.stdout.write(
-        java(["--class-path", libraries.join(path.delimiter), versionHelper]),
+        await java([
+          "--class-path",
+          libraries.join(path.delimiter),
+          versionHelper,
+        ]),
       );
       return;
     }
@@ -130,7 +138,7 @@ async function main() {
       ].join("\n"),
     );
     const compiler = JSON.parse(
-      java(["--class-path", temporary, helper, input, classes]),
+      await java(["--class-path", temporary, helper, input, classes]),
     ) as {
       success: boolean;
       classes: { name: string; file: string; bytes: number; sha256: string }[];
@@ -149,7 +157,7 @@ async function main() {
       await writeFile(native, spotbugsNativeSource);
       await writeFile(metadata, JSON.stringify(compiler));
       analysis = JSON.parse(
-        java([
+        await java([
           "--class-path",
           libraries.join(path.delimiter),
           native,

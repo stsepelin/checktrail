@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import path from "node:path";
 import { lstat } from "node:fs/promises";
 import { goBuildTagsSchema } from "./go-build.js";
@@ -14,7 +14,7 @@ async function main(): Promise<void> {
     throw new Error("Missing owned Go build output directory");
   const flags = tags.length ? [`-tags=${tags.join(",")}`] : [];
   const settings = { encoding: "utf8", maxBuffer: 1024 * 1024 } as const;
-  const listed = spawnSync(
+  const listed = await invokeNativeOutput(
     "go",
     ["list", "-json", ...flags, "./..."],
     settings,
@@ -49,7 +49,7 @@ async function main(): Promise<void> {
   // package handles archives and linked mains without writing into the project.
   let code = 0;
   for (const [index, item] of production.entries()) {
-    const result = spawnSync(
+    const result = await invokeNativeOutput(
       "go",
       [
         "build",

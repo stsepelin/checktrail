@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   lstat,
   readFile,
@@ -115,7 +115,7 @@ async function main() {
         /^(?:BUNDLE_|GEM_|RUBY)/.test(key)
       )
         delete prerequisiteEnvironment[key];
-    if (!rubyExtensionsPrerequisite(prerequisiteEnvironment)) {
+    if (!(await rubyExtensionsPrerequisite(prerequisiteEnvironment))) {
       process.stdout.write(
         JSON.stringify({
           version: 1,
@@ -168,9 +168,9 @@ async function main() {
     durationMs: number;
   }[] = [];
   let total = 0;
-  const invoke = (phase: string, args: string[]) => {
+  const invoke = async (phase: string, args: string[]) => {
     const started = performance.now();
-    const result = spawnSync("ruby", args, {
+    const result = await invokeNativeOutput("ruby", args, {
       cwd: workspace,
       env,
       encoding: "utf8",
@@ -234,7 +234,7 @@ async function main() {
       await writeFile(restoreObserver, rubyExtensionsRestoreNativeSource, {
         flag: "wx",
       });
-    const restore = invoke(
+    const restore = await invoke(
       "restore",
       config.schemaVersion === 2
         ? ["--disable-gems", restoreObserver, request, restoreOutput, "restore"]
@@ -252,7 +252,7 @@ async function main() {
     )
       throw Error("Ruby restore observer changed");
     const installedArtifacts = await installation(install);
-    const native = invoke(mode!, [
+    const native = await invoke(mode!, [
       "--disable-gems",
       observer,
       request,

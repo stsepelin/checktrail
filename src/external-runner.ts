@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   chmod,
   mkdir,
@@ -128,7 +128,7 @@ async function main() {
         await chmod(entry, 0o700);
         break;
     }
-    const result = spawnSync(executable, args, {
+    const result = await invokeNativeOutput(executable, args, {
       cwd,
       env: { ...process.env, NODE_OPTIONS: "" },
       encoding: "utf8",
