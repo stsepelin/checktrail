@@ -57,8 +57,8 @@ export function validateWindowsTaskAccess(
 // pre-existing objects are inspected and never repaired implicitly.
 const accessScript = String.raw`
 $ErrorActionPreference = 'Stop'
-[Console]::InputEncoding = New-Object System.Text.UTF8Encoding($false)
-[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+[Console]::InputEncoding = [Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 try {
   $request = [Console]::In.ReadToEnd() | ConvertFrom-Json
   if ($request.kind -ne 'directory' -and $request.kind -ne 'file') { throw 'invalid kind' }
@@ -67,8 +67,8 @@ try {
   if ([bool]$item.PSIsContainer -ne ($request.kind -eq 'directory')) { throw 'wrong type' }
   $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
   if ($request.created) {
-    if ($request.kind -eq 'directory') { $acl = New-Object System.Security.AccessControl.DirectorySecurity }
-    else { $acl = New-Object System.Security.AccessControl.FileSecurity }
+    if ($request.kind -eq 'directory') { $acl = [System.Security.AccessControl.DirectorySecurity]::new() }
+    else { $acl = [System.Security.AccessControl.FileSecurity]::new() }
     $acl.SetOwner($identity.User)
     $acl.SetAccessRuleProtection($true, $false)
     $inheritance = [System.Security.AccessControl.InheritanceFlags]::None
