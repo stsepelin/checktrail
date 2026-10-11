@@ -1,5 +1,5 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
-import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
+import { requestRubyCompilerArchive } from "./request-ruby-compiler-archive.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -127,40 +127,16 @@ try {
             pin.bytes > 0 &&
             pin.bytes <= 64 * 1024 * 1024,
         );
-        let bytes;
-        if (local) {
-          const file = path.join(local, pin.path),
-            stat = await lstat(file);
-          assert.ok(
-            stat.isFile() &&
-              !stat.isSymbolicLink() &&
-              stat.size === pin.bytes &&
-              (await realpath(file)) === file,
-          );
-          bytes = await readFile(file);
-        } else {
-          // Retrieve every original signed APK by exact URL. Resolving current indexes
-          // would replace transitive revisions even when compiler roots are pinned.
-          bytes = await requestPinnedArtifactBytes(
-            {
-              asset: selected.repository + encodeURIComponent(pin.path),
-              fallbackAsset:
-                selected.repository.replace(
-                  "https://dl-cdn.alpinelinux.org/",
-                  "https://dl-4.alpinelinux.org/",
-                ) + encodeURIComponent(pin.path),
-              bytes: pin.bytes,
-            },
-            {
-              // Bound retries for exact pinned archive delivery; every size
-              // and digest check remains mandatory before publication.
-              retryNotFound: true,
-              signal: globalThis.AbortSignal.timeout(120000),
-              fetchImpl: (asset, options) =>
-                globalThis.fetch(asset, { ...options, redirect: "error" }),
-            },
-          );
-        }
+        const bytes = await requestRubyCompilerArchive(
+          {
+            root,
+            architecture,
+            pin,
+            repository: selected.repository,
+            local,
+          },
+          { signal: globalThis.AbortSignal.timeout(120000) },
+        );
         assert.equal(bytes.length, pin.bytes);
         assert.equal(mavenHash(bytes), pin.sha256);
         await writeFile(path.join(artifacts, pin.path), bytes, {
