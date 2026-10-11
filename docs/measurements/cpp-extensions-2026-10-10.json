@@ -1,0 +1,1554 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "profile": "cpp-extensions",
+  "sourceBasis": {
+    "parentCommit": "8f50ccfe1f4c68038ae4ba99c98bb32ea6008374",
+    "featureChangesWereUncommittedAtAcceptance": true
+  },
+  "frozenInputs": {
+    "scope": "Source, tests, scripts, public schemas, assets, examples, workflow, emitted source/test and top-level build/dependency manifests. Documentation, installed dependency bytes and whole operating-system closure are not included.",
+    "files": 3303,
+    "sha256": "fd6d8b04b48669a6a9484a6dccf594360e7623164cc550333264ee020acb75e2",
+    "digestFormat": "Compact JSON array of lexically ordered [relativePath, sha256] pairs; UTF-8.",
+    "beforeAndAfterMatched": true
+  },
+  "runtime": {
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    "npm": "10.9.8",
+    "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+    "image": "sha256:02f052392b6adc415fe041be8c63761b8f8f41b8fc6a3e60a44f6008e8d131f5",
+    "base": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "nativeVersions": [
+      {
+        "name": "clang",
+        "output": "Alpine clang version 22.1.3\nTarget: aarch64-alpine-linux-musl\nThread model: posix\nInstalledDir: /usr/lib/llvm22/bin\n"
+      },
+      {
+        "name": "clang++",
+        "output": "Alpine clang version 22.1.3\nTarget: aarch64-alpine-linux-musl\nThread model: posix\nInstalledDir: /usr/lib/llvm22/bin\n"
+      },
+      {
+        "name": "clang-format",
+        "output": "Alpine clang-format version 22.1.3\n"
+      },
+      {
+        "name": "clang-tidy",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-dwarfdump",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-ar",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "llvm-ranlib",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "cmake",
+        "output": "cmake version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      {
+        "name": "ctest",
+        "output": "ctest version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+      },
+      {
+        "name": "make",
+        "output": "GNU Make 4.4.1\nBuilt for aarch64-alpine-linux-musl\nCopyright (C) 1988-2023 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"
+      },
+      {
+        "name": "llvm-readelf",
+        "output": "LLVM (http://llvm.org/):\n  LLVM version 22.1.3\n  Optimized build.\n"
+      },
+      {
+        "name": "as",
+        "output": "GNU assembler (GNU Binutils) 2.45.1\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or later.\nThis program has absolutely no warranty.\nThis assembler was configured for a target of `aarch64-alpine-linux-musl'.\n"
+      },
+      {
+        "name": "ld",
+        "output": "GNU ld (GNU Binutils) 2.45.1\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) a later version.\nThis program has absolutely no warranty.\n"
+      }
+    ],
+    "archiveCount": 48,
+    "packageSignaturesDisabled": false,
+    "sdkPins": 1355,
+    "sdkBytes": 43286558,
+    "sdkPinsSha256": "2e807f704dc11561d1824c068cdd4a0da661beef84ee3d806b2d1df4b91e0452",
+    "sdkManifestSha256": "15dcb54ddd9e722aa60dc8d5775ef498c17f9977e601a10391957eb8e26e5d6e",
+    "wholeRuntimeAndLicenseClosureVerified": false
+  },
+  "acceptance": {
+    "schemaVersion": 1,
+    "profile": "cpp-extensions",
+    "phase": "all",
+    "preserved": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "cpp-tools",
+        "fileWorkerLimit": 1,
+        "passed": 13,
+        "required": 12,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 13,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "4a982418000d27f45b2a2be8da6185b7a6dec51a3a1351957686e83b9fac222b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "4a982418000d27f45b2a2be8da6185b7a6dec51a3a1351957686e83b9fac222b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "a40fee751938eb2c83312a885187e365bbd4314984f13c9fdbc666c823c5e29b"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a40fee751938eb2c83312a885187e365bbd4314984f13c9fdbc666c823c5e29b"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "81fb5e2b107bd6032ff50f65351bf8de53c5ec3235c4f732d9f55e39296f7854"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "81fb5e2b107bd6032ff50f65351bf8de53c5ec3235c4f732d9f55e39296f7854"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "19150c30487f54f51b38eb4c22fd79b20c348bccf590fc0dc4572adeac1224b4"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "19150c30487f54f51b38eb4c22fd79b20c348bccf590fc0dc4572adeac1224b4"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-5",
+              "before": {
+                "state": "present",
+                "sha256": "b435d29b3868d95e365392ef5a28af90e4a870daea2901e0fdd765054ad68954"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "b435d29b3868d95e365392ef5a28af90e4a870daea2901e0fdd765054ad68954"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 54.908631,
+              "required": false
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6143.091159,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1231.218322,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1966.125368,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2019.390156,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1209.908733,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 897.078173,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-3",
+              "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1955.294176,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-3",
+              "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 120.664788,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-3",
+              "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2423.349279,
+              "required": true
+            },
+            {
+              "sequence": 11,
+              "fileId": "file-3",
+              "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2176.549878,
+              "required": true
+            },
+            {
+              "sequence": 12,
+              "fileId": "file-4",
+              "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5737.76232,
+              "required": true
+            },
+            {
+              "sequence": 13,
+              "fileId": "file-5",
+              "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 924.14959,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source",
+              "outcome": "passed",
+              "terminalSequences": [11]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+              "outcome": "passed",
+              "terminalSequences": [12]
+            },
+            {
+              "fileId": "file-5",
+              "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs",
+              "outcome": "passed",
+              "terminalSequences": [13]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "1d9ef4ccda021ce36c4e57726d4e9682f454fdb877d064a960b242c52f8a6df2",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "cpp-tools",
+          "fileWorkerLimit": 1,
+          "passed": 13,
+          "required": 12,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 13,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "4a982418000d27f45b2a2be8da6185b7a6dec51a3a1351957686e83b9fac222b"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "4a982418000d27f45b2a2be8da6185b7a6dec51a3a1351957686e83b9fac222b"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "a40fee751938eb2c83312a885187e365bbd4314984f13c9fdbc666c823c5e29b"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "a40fee751938eb2c83312a885187e365bbd4314984f13c9fdbc666c823c5e29b"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "81fb5e2b107bd6032ff50f65351bf8de53c5ec3235c4f732d9f55e39296f7854"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "81fb5e2b107bd6032ff50f65351bf8de53c5ec3235c4f732d9f55e39296f7854"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-4",
+                "before": {
+                  "state": "present",
+                  "sha256": "19150c30487f54f51b38eb4c22fd79b20c348bccf590fc0dc4572adeac1224b4"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "19150c30487f54f51b38eb4c22fd79b20c348bccf590fc0dc4572adeac1224b4"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-5",
+                "before": {
+                  "state": "present",
+                  "sha256": "b435d29b3868d95e365392ef5a28af90e4a870daea2901e0fdd765054ad68954"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "b435d29b3868d95e365392ef5a28af90e4a870daea2901e0fdd765054ad68954"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "C/C++ planning is data only and rejects undeclared CMake commands and missing source scope",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 50.398103,
+                "required": false
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 6815.755486,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1234.463551,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2056.365051,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1985.376446,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-2",
+                "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1055.122317,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-2",
+                "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 845.142352,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-3",
+                "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1827.938472,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-3",
+                "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 118.138689,
+                "required": true
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-3",
+                "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2300.697979,
+                "required": true
+              },
+              {
+                "sequence": 11,
+                "fileId": "file-3",
+                "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1500.619698,
+                "required": true
+              },
+              {
+                "sequence": 12,
+                "fileId": "file-4",
+                "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5403.607128,
+                "required": true
+              },
+              {
+                "sequence": 13,
+                "fileId": "file-5",
+                "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 906.221313,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "native C/C++ build and CTest bind generated headers and both linked callbacks with regression and repair",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native clang-format checks every declared source and header and detects replacement XML despite exit zero",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native clang-tidy binds compiled units and exposes use after move with a valid repair",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native clang-tidy selected division rule detects its defect and accepts a nonzero repair",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native C/C++ packet guards reject stale scope commands metadata source checksums objects tools and CTest counters",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-2",
+                "name": "native C/C++ requires consumed headers and rejects empty registered test scope and source suppressions",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native C/C++ concurrent checks use distinct fresh workspaces and clean every owned build artifact",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native C/C++ missing tools remain unavailable and protected environment cannot replace selected PATH or compiler options",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native C/C++ source change after a compiled CTest body starts invalidates the completed execution",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native C/C++ callback mutations of generated headers or linked binaries invalidate unchanged original source",
+                "outcome": "passed",
+                "terminalSequences": [11]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native C/C++ CLI and negotiated MCP preserve source failures summary privacy and operator-only trust",
+                "outcome": "passed",
+                "terminalSequences": [12]
+              },
+              {
+                "fileId": "file-5",
+                "name": "native C/C++ cancellation reaches a CTest executable and reaps compiled helpers descendants and owned outputs",
+                "outcome": "passed",
+                "terminalSequences": [13]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      }
+    },
+    "acceptance": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 300000,
+        "profile": "cpp-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 10,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "82cee7225ecb01dd81cc0cda3da67d6ac727834dc1615d1e2da66da4e6000914"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "82cee7225ecb01dd81cc0cda3da67d6ac727834dc1615d1e2da66da4e6000914"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "ad3cba7b354d8fcb4903e325884b90a258817a3c735c248cd158437e0dbd2a67"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "ad3cba7b354d8fcb4903e325884b90a258817a3c735c248cd158437e0dbd2a67"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "cpp-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4138.094551,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "cpp-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 16114.795165,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "cpp-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 15195.69648,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "cpp-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3393.971907,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "cpp-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2237.613922,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "cpp-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2560.547628,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "cpp-extensions compiler formatter analyzer acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 18794.070151,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "cpp-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 79555.807083,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "cpp-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9749.375156,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-3",
+              "name": "cpp-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1379.957116,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions compiler formatter analyzer acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "cpp-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "cpp-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-3",
+              "name": "cpp-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "1d9ef4ccda021ce36c4e57726d4e9682f454fdb877d064a960b242c52f8a6df2",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 300000,
+          "profile": "cpp-extensions",
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 10,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "82cee7225ecb01dd81cc0cda3da67d6ac727834dc1615d1e2da66da4e6000914"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "82cee7225ecb01dd81cc0cda3da67d6ac727834dc1615d1e2da66da4e6000914"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "ad3cba7b354d8fcb4903e325884b90a258817a3c735c248cd158437e0dbd2a67"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "ad3cba7b354d8fcb4903e325884b90a258817a3c735c248cd158437e0dbd2a67"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "cpp-extensions broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3639.526301,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "cpp-extensions fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 15088.229875,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "cpp-extensions near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 14803.988284,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "cpp-extensions prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3760.166624,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "cpp-extensions stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2126.165313,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "cpp-extensions empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 2557.609564,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "cpp-extensions compiler formatter analyzer acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 17846.200594,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-1",
+                "name": "cpp-extensions installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.991429,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-2",
+                "name": "cpp-extensions privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 9519.084815,
+                "required": true
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-3",
+                "name": "cpp-extensions lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1450.796137,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions compiler formatter analyzer acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-1",
+                "name": "cpp-extensions installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-2",
+                "name": "cpp-extensions privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-3",
+                "name": "cpp-extensions lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      }
+    },
+    "guards-1": {
+      "schemaVersion": 1,
+      "profile": "cpp-extensions",
+      "shard": "1",
+      "fullControlInventory": [
+        "cancelled-retained-packet",
+        "current-physical-input-bytes",
+        "complete-current-input-tree",
+        "native-tool-after-bytes",
+        "complete-sdk-after-bytes",
+        "complete-generated-after-tree",
+        "physical-sdk-alias",
+        "complete-linker-phony-cohort",
+        "complete-linker-runtime-groups",
+        "complete-used-sdk-cohort",
+        "linked-binary-after-bytes",
+        "archived-object-byte-identity",
+        "native-assembler-selection",
+        "native-test-discovery-filter",
+        "complete-analyzer-console-cohort",
+        "native-analyzer-diagnostic-counters",
+        "physical-analyzer-range-boundaries",
+        "physical-sdk-before-cmake"
+      ],
+      "controls": [
+        {
+          "id": "cancelled-retained-packet",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f855d2906de740d56cb871a48e7c43b86cc13656e6caded39590bab86c53795d",
+          "mutantSha256": "58165b4133e2d528c6ce62916fe5e8e3a49fc903f09f42e53834948b1ae61594"
+        },
+        {
+          "id": "complete-current-input-tree",
+          "callback": "cpp-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "31fbd37c3784aec2e74cfa81b610ce7df802c17c676d9cd052df161f20cfc6b3",
+          "mutantSha256": "8e21b37d8eeb2bac895843bd0aeccdd70dee676a67a7ef6a339651c4e911915b"
+        },
+        {
+          "id": "complete-sdk-after-bytes",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f855d2906de740d56cb871a48e7c43b86cc13656e6caded39590bab86c53795d",
+          "mutantSha256": "81e299fad31a687aee25ad571b26369de5afbae71ac4e5c96db42279173d152a"
+        },
+        {
+          "id": "physical-sdk-alias",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "01b767efc547b11900908405d43b7a44f19bba827f8ebc01c51d419860d5f76e"
+        },
+        {
+          "id": "complete-linker-runtime-groups",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "9096b3bc58d8556c130bca20eee3863e9dab1488bdd902174a00ea4af7b5059b"
+        },
+        {
+          "id": "linked-binary-after-bytes",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "fbe93438e5a662cf0bb0cea47e81a88c2110b03fc48b5c54876e97ee920ea492"
+        },
+        {
+          "id": "native-assembler-selection",
+          "callback": "cpp-extensions fixed acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeInvocationCompilerCohortReached": true,
+          "nativeTestBodiesReachedUnderMutatedInvocation": true,
+          "expectedExecutedBodies": 2,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "09eba4f8fabc5f5139fd5fbb707467be0de95c205f8fe7d228172efb3b7c40b0",
+          "mutantSha256": "3b009fab882c4cbcd777d532a425140b39dc18ac9f439912c6d3ded1158dd79b"
+        },
+        {
+          "id": "complete-analyzer-console-cohort",
+          "callback": "cpp-extensions compiler formatter analyzer acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "de5d197c07418e2f19795b28041c0933b19987cee378e3c99314fd8f2eb47444",
+          "mutantSha256": "015e0a8b4964cf362d006b0b67b9efa2de25366780012116288241653364f984"
+        },
+        {
+          "id": "physical-analyzer-range-boundaries",
+          "callback": "cpp-extensions compiler formatter analyzer acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "de5d197c07418e2f19795b28041c0933b19987cee378e3c99314fd8f2eb47444",
+          "mutantSha256": "3540571597c860680cd29b20951c5a2547e125525e300b81e45128b5e25dc99b"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "empty",
+        "stale",
+        "fixed",
+        "compiler formatter analyzer"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-cpp-extensions.test.js",
+          "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "cpp-extensions-fixture.js",
+          "sha256": "80ce591eaac4827b872d96de3edf2dbb65a2015708d6f15fcd608a600f24c9a6"
+        }
+      ],
+      "fixturesUnchanged": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeCppExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "guards-2": {
+      "schemaVersion": 1,
+      "profile": "cpp-extensions",
+      "shard": "2",
+      "fullControlInventory": [
+        "cancelled-retained-packet",
+        "current-physical-input-bytes",
+        "complete-current-input-tree",
+        "native-tool-after-bytes",
+        "complete-sdk-after-bytes",
+        "complete-generated-after-tree",
+        "physical-sdk-alias",
+        "complete-linker-phony-cohort",
+        "complete-linker-runtime-groups",
+        "complete-used-sdk-cohort",
+        "linked-binary-after-bytes",
+        "archived-object-byte-identity",
+        "native-assembler-selection",
+        "native-test-discovery-filter",
+        "complete-analyzer-console-cohort",
+        "native-analyzer-diagnostic-counters",
+        "physical-analyzer-range-boundaries",
+        "physical-sdk-before-cmake"
+      ],
+      "controls": [
+        {
+          "id": "current-physical-input-bytes",
+          "callback": "cpp-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "31fbd37c3784aec2e74cfa81b610ce7df802c17c676d9cd052df161f20cfc6b3",
+          "mutantSha256": "4334df3cfb356ed67cd2edfff844665c32df2fe2857ddafc0de0788895989bff"
+        },
+        {
+          "id": "native-tool-after-bytes",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f855d2906de740d56cb871a48e7c43b86cc13656e6caded39590bab86c53795d",
+          "mutantSha256": "056a1b63a815cc793d9f43359c8f87dc295207f71883f4b5f4ae231fe48114b9"
+        },
+        {
+          "id": "complete-generated-after-tree",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "f855d2906de740d56cb871a48e7c43b86cc13656e6caded39590bab86c53795d",
+          "mutantSha256": "e92769f06989c0caaa454e2a0f192be3e2b10e301a285b71186d05d571d59a79"
+        },
+        {
+          "id": "complete-linker-phony-cohort",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "d53a62e8b61f24d5498834ce3ba6ba174a7eb0e928af47c1adbfbabfce7a9bea"
+        },
+        {
+          "id": "complete-used-sdk-cohort",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "815cfbf78df95940f238b22b319805e0a7722aa8ae9d020ce79f89e68a58655d"
+        },
+        {
+          "id": "archived-object-byte-identity",
+          "callback": "cpp-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5f9c6acce3056e8a38ff0eb5bc772ea75d3f6a2c9962e73c74ad25eb5cf02606",
+          "mutantSha256": "f8b9e2064b33d6cb45beebd817267e538172b65bd20701d323faffc3d09b6293"
+        },
+        {
+          "id": "native-test-discovery-filter",
+          "callback": "cpp-extensions fixed acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutatedNativeInvocationCompilerCohortReached": true,
+          "nativeTestBodiesReachedUnderMutatedInvocation": true,
+          "expectedExecutedBodies": 2,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "21ca3dca623c6cbfb7328a26f3d2edeb7b6f6bd2314b33b6a08cba06bbedcde1",
+          "mutantSha256": "4f3d44a4dfff497c480b07ff5dda820225a5ef7cdeaefc3eb4451bb9461e716a"
+        },
+        {
+          "id": "native-analyzer-diagnostic-counters",
+          "callback": "cpp-extensions compiler formatter analyzer acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "de5d197c07418e2f19795b28041c0933b19987cee378e3c99314fd8f2eb47444",
+          "mutantSha256": "f4516fc111e9c5c94b025c1b69905804780797dceeb3d1fa24bcf68dfabe8553"
+        },
+        {
+          "id": "physical-sdk-before-cmake",
+          "callback": "cpp-extensions prerequisite acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "3cbf6b46a5456162711c2c4a8c176d25836f8bb0cc58e71dc9f4a311b623a0c7",
+          "mutantSha256": "3f1b9973d2612f0bdf55939a6ad84bab0add4a551edd23f7f66080f8ae40fbfd"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "stale",
+        "empty",
+        "fixed",
+        "compiler formatter analyzer",
+        "prerequisite"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-cpp-extensions.test.js",
+          "sha256": "ea59e8aeec69041efce9aa3591bf81e4292c7b0970dc9ec595bd57e64703a471"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "cpp-extensions-fixture.js",
+          "sha256": "80ce591eaac4827b872d96de3edf2dbb65a2015708d6f15fcd608a600f24c9a6"
+        }
+      ],
+      "fixturesUnchanged": true,
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "nativeCppExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "timings": {
+      "preserved-native-source-and-installation": 62488,
+      "source-and-fresh-production-installation": 155729,
+      "paired-guards-1": 132469,
+      "paired-guards-2": 134977
+    },
+    "durationMs": 485669,
+    "resourceBounds": {
+      "maximumConcurrentContainers": 1,
+      "aggregateCpuQuota": 2,
+      "aggregateMemoryGiB": 3,
+      "stageDeadlineMs": 1200000,
+      "engineInvocationDeadlineMs": 120000
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "isolatedMatchingSourceCopy": true,
+    "counts": {
+      "tests": 1682,
+      "pass": 966,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 716,
+      "todo": 0
+    },
+    "optionalHostSkipsAreNativeAcceptance": false,
+    "durationMs": 258153.129959
+  },
+  "publicationBoundary": {
+    "measuredTarballsPrecedeMeasurementAndStatusDocumentation": "Fresh source/installed acceptance binds the recorded tarball identities and frozen runtime/schema/lock inputs. This receipt and subsequent status/support prose are publication metadata; the final whole distribution has a separate Gate A release-readiness obligation."
+  },
+  "limits": [
+    "Selected Linux ARM64 C17/C++20 finite CMake profile only.",
+    "Native diagnostic/test observations do not establish assertion correctness, production reachability, review truth or calibrated confidence.",
+    "Raw linked executable/shared-library bytes are not retained; their size/hash, ELF and DWARF observations are reconciled. Raw object/archive bytes are retained.",
+    "Pinned CRT bytes account for foreign debug metadata without hashing unavailable upstream source.",
+    "Selected SDK/header/runtime pins do not close the whole publisher, operating-system or license closure.",
+    "Fresh native processes do not establish independent AI host sessions."
+  ],
+  "gateAComplete": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false
+}

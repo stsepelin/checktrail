@@ -122,6 +122,7 @@ import {
 } from "../src/schemas.js";
 import { swiftToolsConfigSchema } from "../src/swift-tools.js";
 import { swiftExtensionsConfigSchema } from "../src/swift-extensions-contract.js";
+import { cppExtensionsConfigSchema } from "../src/cpp-extensions-contract.js";
 import { importJUnit } from "../src/junit.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectPlan, projectReport } from "../src/output.js";
@@ -164,6 +165,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "maven-repository": mavenRepositorySchema,
     "clang-database": clangDatabaseSchema,
     "cpp-tools-config": cppToolsConfigSchema,
+    "cpp-extensions-config": cppExtensionsConfigSchema,
     "kubeconform-config": kubeconformConfigSchema,
     "kustomize-config": kustomizeConfigSchema,
     "terraform-config": terraformConfigSchema,
