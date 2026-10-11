@@ -36,6 +36,12 @@ The [Pyright profile](PYRIGHT.md) requires a pinned local compiler, explicit sou
 and native diagnostic accounting. Its JSON/TOML and namespace/virtual-environment
 controls are bounded; suppression exceptions and native Windows are not promoted.
 
+The finite [consumer-impact foundation](CONSUMER-IMPACT.md) additionally reconciles
+exact captured Node imports and literal resource reads before narrowing an
+all-Node-test plan. Other runners/languages, unresolved inputs and missing graph
+edges retain full validation. Native per-language consumer acceptance and the
+Gate A profile remain pending.
+
 ## Windows execution profile
 
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md) describes the experimental bounded

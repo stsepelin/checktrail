@@ -58,7 +58,7 @@ test("native impact measurement retains a transitive assertion failure and expos
     import {fileURLToPath} from 'node:url';
     const root=process.argv[1], scripts=process.argv[2];
     const {prepareImpactFixture,projects}=await import(new URL('impact-fixture.mjs',scripts));
-    const corpus=JSON.parse(await readFile(new URL('impact-corpus.json',scripts),'utf8'));
+    const corpus=JSON.parse(await readFile(new URL('impact-corpus-v2.json',scripts),'utf8'));
     const run=(directory,base)=>JSON.parse(execFileSync(process.execPath,[fileURLToPath(new URL('impact-worker.mjs',scripts)),directory,base],{encoding:'utf8',timeout:60000}));
     for(const id of ['producer-defect','misdeclared-graph']) {
       const specification=corpus.cases.find(item=>item.id===id);
@@ -71,7 +71,9 @@ test("native impact measurement retains a transitive assertion failure and expos
       assert.deepEqual(full.checks.filter(check=>check.status==='failed').map(check=>check.project),['service','web']);
       assert.deepEqual(full.checks.filter(check=>check.status==='failed').flatMap(check=>check.assertions),['service contract','web contract']);
       assert.deepEqual(selected.checks.map(check=>check.project),specification.selectedProjects);
-      assert.equal(selected.outcome,id==='producer-defect'?'failed':'passed');
+      assert.equal(selected.outcome,'failed');
+      assert.equal(selected.selection.mode,specification.mode);
+      assert.deepEqual(selected.checks.filter(check=>check.status==='failed').flatMap(check=>check.assertions),['service contract','web contract']);
       assert.equal(full.sourceFingerprint,selected.sourceFingerprint);
       assert.equal(full.policyFingerprint,selected.policyFingerprint);
     }
