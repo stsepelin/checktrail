@@ -1,3 +1,9 @@
+import { runNativeMutations } from "./mutation-native.js";
+import {
+  nativeMutationRecipeSchema,
+  nativeMutationReportSchema,
+  nativeMutationSummarySchema,
+} from "./mutation-native-schema.js";
 import { createHash } from "node:crypto";
 import {
   mkdir,
@@ -30,7 +36,7 @@ const relative = z
         .split("/")
         .every((part) => part !== "" && part !== "." && part !== ".."),
   );
-export const mutationRecipeSchema = z.strictObject({
+const nodeMutationRecipeSchema = z.strictObject({
   schemaVersion: z.literal(1),
   profile: z.literal("node-flat-tests"),
   mutations: z
@@ -93,13 +99,24 @@ const metadata = {
     notRun: count,
   }),
 };
-export const mutationReportSchema = z.strictObject({
+const nodeMutationReportSchema = z.strictObject({
   ...metadata,
   excluded: z.array(z.string()),
   baseline: observationSchema.optional(),
   trials: z.array(trialSchema).max(8),
 });
-export const mutationSummarySchema = z.strictObject(metadata);
+export const mutationRecipeSchema = z.discriminatedUnion("profile", [
+  nodeMutationRecipeSchema,
+  nativeMutationRecipeSchema,
+]);
+export const mutationReportSchema = z.discriminatedUnion("profile", [
+  nodeMutationReportSchema,
+  nativeMutationReportSchema,
+]);
+export const mutationSummarySchema = z.discriminatedUnion("profile", [
+  z.strictObject(metadata),
+  nativeMutationSummarySchema,
+]);
 export type MutationRecipe = z.infer<typeof mutationRecipeSchema>;
 export type MutationReport = z.infer<typeof mutationReportSchema>;
 type Trial = z.infer<typeof trialSchema>;
@@ -193,6 +210,8 @@ export async function runMutations(
   if (serialized === undefined || Buffer.byteLength(serialized) > 128 * 1024)
     throw new Error("Mutation recipe exceeds input limits");
   const recipe = mutationRecipeSchema.parse(input);
+  if (recipe.profile !== "node-flat-tests")
+    return runNativeMutations(root, recipe, options);
   if (
     new Set(recipe.mutations.map((mutation) => mutation.id)).size !==
     recipe.mutations.length

@@ -6,11 +6,13 @@ import { fileURLToPath } from "node:url";
 export async function copyInstalledPackages(
   root: string,
   packages: string[],
+  selectedModules?: string,
 ): Promise<void> {
   const copied = new Set<string>();
-  const sourceModules = fileURLToPath(
-    new URL("../../node_modules/", import.meta.url),
-  );
+  const planned: { source: string; relative: string }[] = [];
+  const sourceModules =
+    selectedModules ??
+    fileURLToPath(new URL("../../node_modules/", import.meta.url));
   async function copy(
     name: string,
     from: string,
@@ -20,6 +22,14 @@ export async function copyInstalledPackages(
     for (const directory of require.resolve.paths(`${name}/package.json`) ??
       []) {
       const source = path.join(directory, name);
+      const candidate = path.relative(sourceModules, source);
+      if (
+        selectedModules &&
+        (candidate === ".." ||
+          candidate.startsWith(".." + path.sep) ||
+          path.isAbsolute(candidate))
+      )
+        continue;
       let metadata: {
         dependencies?: Record<string, string>;
         optionalDependencies?: Record<string, string>;
@@ -40,9 +50,7 @@ export async function copyInstalledPackages(
         path.isAbsolute(relative)
       )
         throw new Error("Test dependency is outside the local install");
-      await cp(source, path.join(root, "node_modules", relative), {
-        recursive: true,
-      });
+      planned.push({ source, relative });
       for (const dependency of Object.keys(metadata.dependencies ?? {}))
         await copy(
           dependency,
@@ -55,5 +63,16 @@ export async function copyInstalledPackages(
     }
     if (!optional) throw new Error(`Missing installed test dependency ${name}`);
   }
-  for (const name of packages) await copy(name, import.meta.filename);
+  for (const name of packages)
+    await copy(
+      name,
+      selectedModules
+        ? path.join(path.dirname(sourceModules), "package.json")
+        : import.meta.filename,
+    );
+  for (const item of planned)
+    await cp(item.source, path.join(root, "node_modules", item.relative), {
+      recursive: true,
+      verbatimSymlinks: true,
+    });
 }

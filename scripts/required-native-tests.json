@@ -4830,5 +4830,195 @@
       "file": "dist/test/gate-helm-extensions.test.js",
       "name": "helm-extensions installed acceptance"
     }
+  ],
+  "mutation-vitest": [
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners installed acceptance"
+    }
+  ],
+  "mutation-jest": [
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners installed acceptance"
+    }
+  ],
+  "mutation-pytest": [
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners installed acceptance"
+    }
+  ],
+  "mutation-phpunit": [
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners installed acceptance"
+    }
+  ],
+  "mutation-runners": [
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-mutation-runners.test.js",
+      "name": "mutation-runners installed acceptance"
+    }
   ]
 }

@@ -23,8 +23,7 @@ The engine does not generate mutations or decide their semantic validity.
 development dependencies, optional dependencies or peer dependencies. Additional
 checks/projects, environment requirements, Git selection and operator overlays
 are unsupported. Only flat native Node tests are accepted; suites and nested
-tests do not yet have the required identity accounting. Other languages and
-framework runners remain separate work.
+tests do not yet have the required identity accounting. The selected native runner profiles below have separate dependency and evidence contracts.
 
 Recipes use `schemas/mutation-recipe.schema.json`. Each mutation names an
 inventoried `.js`, `.mjs` or `.cjs` source file outside the selected test files,
@@ -36,7 +35,7 @@ Helpers can indirectly alter test behavior, so recipe review is still necessary.
 
 ## Execution and evidence
 
-The engine snapshots only its bounded inventory and copies those files. Excluded
+For `node-flat-tests`, the engine snapshots only its bounded inventory and copies those files. Excluded
 dependencies, symlinks, secrets, caches and generated outputs are not copied.
 The report records original exclusions. File permissions, Git metadata and
 external resources are not reproduced; a copy is not a hermetic build identity.
@@ -68,8 +67,8 @@ were classified as killed or survived against unchanged original source; it does
 not mean the tests are adequate. CLI exits `0` for a complete experiment, even with
 survivors, and `2` for incomplete/error. There is no implicit mutation-score gate.
 Summary mode omits mutation IDs, file paths, individual runs and logs. Detailed
-mode adds bounded native run IDs, fingerprints, durations and counters without
-raw process output. No model is invoked and no source is uploaded by the engine.
+mode for `node-flat-tests` adds bounded native run IDs, fingerprints, durations and counters without
+raw process output. The native profiles below retain bounded physical output in detailed mode. No model is invoked and no source is uploaded by the engine.
 
 ## Bounds and lifecycle
 
@@ -89,5 +88,91 @@ async calls do not implement durable MCP Tasks.
 The regression suite exercises the public example, error classifications, invalid
 edits, failing/skipped/nested baselines, changed test identity, source preservation,
 cancellation and cleanup. These synthetic cases are not an independently held-out
-review-quality evaluation. Broader language support, mutation generation, impact
+review-quality evaluation. Wider runner shapes, mutation generation, impact
 selection and comparison with the prior review workflow remain pending.
+
+## Selected native runner profiles
+
+The separate `vitest-flat-tests`, `jest-flat-tests`, `pytest-flat-tests` and
+`phpunit-flat-tests` recipes use the same library, CLI and MCP entry points.
+They select one root project and only its registered test check, without
+project environment grants. The measured runtime target is Linux ARM64 with
+Node 22.23.2. Selected tool versions are Vitest 5.0.1, Jest 30.5.2,
+Python 3.12.13 with pytest 9.1.1, and PHP 8.5.6 with PHPUnit 13.3.4.
+No automatic tool download or project configuration evaluation occurs during
+planning. Trusted test execution can execute source and imported dependencies.
+
+Only flat tests in at most sixteen selected files and 256 observed cases are admitted. Nested suites,
+parameterized cases, retries, expected failures, focused selections and
+incomplete native accounting cannot produce a conclusive experiment. Targets
+must be inventoried source outside selected tests, with one exact UTF-8
+replacement. Existing recipes and the original Node profile keep their contracts.
+
+The native profiles snapshot the complete selected physical dependency directory:
+`node_modules`, `.checktrail/mutation-python-tools`, or `vendor`. Every baseline
+and trial gets fresh source, dependencies, HOME and temporary directories from
+that snapshot. Contained relative dependency symlinks are relocated; escaping
+links, special files and incomplete closures are rejected. Original and copied
+source/dependency fingerprints are inspected before and after native execution.
+Excluded external resources and executable runtime libraries are not a complete
+hermetic or licensed artifact closure.
+
+Prepare dependencies as an explicit operator action before running recipes.
+The acceptance harness derives Vitest/Jest packages from the existing npm lock
+with `scripts/prepare-mutation-tools.mjs`, uses the pinned public Python tools
+prepared by `scripts/prepare-python-extensions-tools.mjs`, and installs the
+existing locked `scripts/php-tools` Composer tree. Consumer pytest projects must
+place the selected dependencies at `.checktrail/mutation-python-tools`; PHP
+projects supply `vendor`. The experiment never invokes a package manager.
+
+The native report distinguishes:
+
+- `killed`: the same file/name/line/column test cohort completes with typed body
+  assertion failures and no skip or setup/execution error.
+- `survived`: the same complete native cohort passes the changed source.
+- `skipped`: the native cohort skips tests; this is incomplete, never a kill.
+- `setup-error`: collection, import or setup failure prevents body admission.
+- `execution-error`: a body runtime error or teardown failure prevents a kill,
+  including a typed assertion raised from teardown.
+- `inconclusive`: changed test identities, source/dependency writes, malformed or
+  incomplete evidence, invalid UTF-8, cancellation, deadline or output exhaustion.
+- `invalid` and `not-run`: the target contract rejects the edit, or a passing
+  baseline/current inputs/budget is unavailable.
+
+Native reporters retain assertion identity and lifecycle phase. Vitest records
+hook start/completion; Jest records actual hook failures; pytest records setup,
+call and teardown separately; PHPUnit records native hook-failure events rather
+than inferring teardown from a final passed event. pytest capture is disabled
+so descendant output reaches the shared physical process-output limit.
+Observed case addresses must fall within the frozen selected source bytes;
+this does not independently attest a runner's reported column.
+
+A zero-test or all-skipped baseline cannot start trials. `complete` requires a
+passing baseline, only killed/survived trials and unchanged final original
+source/dependencies. Survivors remain advisory observations, including equivalent
+mutations; no mutation-score or missing-test conclusion is implied.
+
+Native source bounds are 8 MiB per file and 64 MiB total. Dependency bounds are
+64 MiB per file, 384 MiB total, 32,000 entries and depth 32. Each native attempt
+has a combined physical stdout/stderr limit of 1 MiB; at most one baseline plus
+eight trials run sequentially. The 30-second default and 120-second maximum
+cover preparation, copying and execution. Final inspection and cleanup use
+cooperative bounded filesystem operations and can exceed the execution budget.
+
+Detailed native reports contain physical base64 output, stream digests, byte
+counts, process flags, observed test identities and current fingerprints.
+Summary mode omits observations, individual trials, exclusions and raw output.
+Operator trust remains a CLI invocation or MCP startup decision; a recipe or tool
+argument cannot grant it. Native child processes retain operator privileges.
+Fresh processes and copied directories do not prove independent AI host sessions.
+
+CI runs each native family independently through
+`scripts/verify-mutation-container.mjs`, including its frozen source callbacks,
+fresh offline production-install callbacks and paired native guard controls.
+`scripts/verify-mutation-guards.mjs passive` separately checks parser/copy guards
+by removing one safeguard, requiring its named assertion to fail, and restoring
+identical bytes. The completion job requires every matrix family and the passive
+controls to succeed. Gate A's remaining profiles, full runtime/license closure,
+final platform matrix and independent evaluation remain separate obligations.
+
+The selected mutation-runner source and fresh installed-package cohorts passed for all four families. [The scoped measurement](measurements/mutation-runners-2026-10-11.json) retains the named receipts, paired native/parser controls and reached lifecycle witnesses. These receipts do not close the remaining Gate A profiles, artifact/license closure, final runtime bindings or independent evaluation.
