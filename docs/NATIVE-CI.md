@@ -488,3 +488,9 @@ closure and release versions are unchanged. Preparation validates all archive
 bytes before publishing its runtime directory. Native Swift failures include
 phase, exit status, signal and bounded errno code without exception prose, so a
 failed invocation can be diagnosed without weakening its acceptance checks.
+
+Failed installed native acceptance now emits a bounded summary of the failed named
+cases before its full subprocess exception. Swift assertions preserve that prefix
+alongside the diagnostic tail, so a large terminal ledger cannot hide the cause.
+This improves failure reporting; it does not qualify a failed or unavailable
+native profile as passing.
