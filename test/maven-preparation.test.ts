@@ -62,7 +62,7 @@ test("Maven distribution preparation retries transient connection and response f
  const calls=[],waits=[],signal=AbortSignal.timeout(5000);
  const timeout=Object.assign(new AggregateError([],'synthetic connect timeout'),{code:'ETIMEDOUT'});
  const bytes=await requestMavenDistribution({signal,fetchImpl:async(asset,options)=>{calls.push([asset,options.redirect,options.signal===signal]);if(calls.length===1)throw new TypeError('fetch failed',{cause:timeout});if(calls.length===2)return new Response('temporary',{status:503});return new Response(new Uint8Array(mavenDistributionPin.bytes).fill(7));},delayImpl:async ms=>waits.push(ms)});
- assert.deepEqual(calls,Array.from({length:3},()=>[mavenDistributionPin.asset,'error',true]));assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
+ assert.deepEqual(calls,[[mavenDistributionPin.asset,'error',true],[mavenDistributionPin.fallbackAsset,'error',true],[mavenDistributionPin.fallbackAsset,'error',true]]);assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
  assert.equal(mavenDistributionPin.sha256,'a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e');
 `,
   ));
@@ -74,5 +74,26 @@ test("Maven distribution preparation preserves permanent redirects short bodies 
  const failure=new TypeError('redirect blocked');let redirects=0;await assert.rejects(requestMavenDistribution({fetchImpl:async()=>{redirects++;throw failure;},delayImpl:async()=>{throw new Error('must not retry')}}),e=>e===failure);assert.equal(redirects,1);
  let attempts=0;const waits=[],last=Object.assign(new Error('connect timeout'),{code:'ETIMEDOUT'});await assert.rejects(requestMavenDistribution({fetchImpl:async()=>{attempts++;throw last},delayImpl:async ms=>waits.push(ms)}),e=>e===last);assert.equal(attempts,3);assert.deepEqual(waits,[1000,3000]);
  const abort=new Error('original abort');let calls=0;await assert.rejects(requestMavenDistribution({signal:AbortSignal.abort(abort),fetchImpl:async()=>{calls++;return new Response('never')}}),e=>e===abort);assert.equal(calls,0);
+`,
+  ));
+
+test("Pinned artifact mirrors retain bounded retry admission exact filenames and integrity failures instead of treating alternate delivery as validation", async (t) =>
+  control(
+    t,
+    `
+ const {requestPinnedArtifactBytes}=await import(${JSON.stringify(new URL("../../scripts/request-pinned-artifact.mjs", import.meta.url).href)});
+ const pin={asset:'https://primary.example.invalid/original-1.apk',fallbackAsset:'https://mirror.example.invalid/original-1.apk',bytes:3};
+ const calls=[],waits=[];
+ const bytes=await requestPinnedArtifactBytes(pin,{retryNotFound:true,fetchImpl:async url=>{calls.push(url);return calls.length===1?new Response('missing',{status:404}):new Response(Uint8Array.from([0,255,7]));},delayImpl:async ms=>waits.push(ms)});
+ assert.deepEqual(calls,[pin.asset,pin.fallbackAsset]);assert.deepEqual(waits,[1000]);assert.deepEqual([...bytes],[0,255,7]);
+ for(const fallbackAsset of ['http://mirror.example.invalid/original-1.apk','https://mirror.example.invalid/original-2.apk','https://user:secret@mirror.example.invalid/original-1.apk','https://mirror.example.invalid/original-1.apk?changed=1','https://mirror.example.invalid/original-1.apk#changed']){
+  let reached=0;await assert.rejects(requestPinnedArtifactBytes({...pin,fallbackAsset},{fetchImpl:async()=>{reached++;return new Response('yes');}}));assert.equal(reached,0);
+ }
+ for(const response of [()=>new Response('missing',{status:404}),()=>new Response('short'),()=>new Response('longer'),()=>new Response('redirect',{status:302})]){
+  let reached=0;await assert.rejects(requestPinnedArtifactBytes(pin,{fetchImpl:async()=>{reached++;return response();},delayImpl:async()=>assert.fail('An integrity or non-admitted HTTP failure must not retry')}));assert.equal(reached,1);
+ }
+ let reached=0;const waits2=[],failure=Object.assign(new Error('synthetic network timeout'),{code:'ETIMEDOUT'});
+ await assert.rejects(requestPinnedArtifactBytes(pin,{fetchImpl:async url=>{assert.equal(url,reached===0?pin.asset:pin.fallbackAsset);reached++;throw failure;},delayImpl:async ms=>waits2.push(ms)}),e=>e===failure);
+ assert.equal(reached,3);assert.deepEqual(waits2,[1000,3000]);
 `,
   ));
