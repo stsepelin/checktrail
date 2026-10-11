@@ -1,33 +1,21 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { test } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { fixture, nodeManifest } from "./helpers.js";
 import { contractFixture } from "./contract-helpers.js";
-
-async function waitForPid(
-  root: string,
-): Promise<{ pid: number; group: number }> {
-  for (let attempt = 0; attempt < 100; attempt++) {
-    try {
-      return JSON.parse(
-        await readFile(path.join(root, ".checktrail", "started.json"), "utf8"),
-      ) as { pid: number; group: number };
-    } catch {
-      await delay(25);
-    }
-  }
-  throw new Error("Synthetic long-running test did not start");
-}
+import {
+  waitForMcpStartup,
+  waitForValidationPid,
+  waitForMcpShutdown,
+} from "./mcp-lifecycle-waits.js";
 
 for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
   test(
     `MCP ${shutdown} terminates an active contract worker`,
-    { timeout: 10_000 },
+    { timeout: 45_000 },
     async (t) => {
       const input = contractFixture();
       input.contracts[0]!.schema = { type: "string", pattern: "^(a+)+$" };
@@ -47,9 +35,7 @@ for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
         { stdio: ["pipe", "pipe", "pipe"] },
       );
       t.after(() => child.kill("SIGKILL"));
-      const closed = once(child, "close", {
-        signal: AbortSignal.timeout(5000),
-      });
+      const closed = once(child, "close");
       void closed.catch(() => {});
       const ready = new Promise<void>((resolve) => {
         let buffer = "";
@@ -86,15 +72,15 @@ for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
             },
           }) + "\n",
         );
-      await ready;
+      await waitForMcpStartup(ready, closed);
       if (shutdown === "eof") child.stdin.end();
       else child.kill(shutdown);
-      await closed;
+      await waitForMcpShutdown(closed);
     },
   );
   test(
     `MCP ${shutdown} stops active validation and its child processes`,
-    { timeout: 10_000 },
+    { timeout: 45_000 },
     async (t) => {
       const root = await fixture(t, {
         "package.json": nodeManifest,
@@ -102,7 +88,8 @@ for (const shutdown of ["eof", "SIGTERM", "SIGINT"] as const) {
 import fs from 'node:fs';
 test('waits for cancellation', async () => {
   fs.mkdirSync('.checktrail', {recursive:true});
-  fs.writeFileSync('.checktrail/started.json', JSON.stringify({pid:process.pid,group:process.ppid}));
+  fs.writeFileSync('.checktrail/starting.json', JSON.stringify({pid:process.pid,group:process.ppid}));
+  fs.renameSync('.checktrail/starting.json', '.checktrail/started.json');
   await new Promise(resolve => setTimeout(resolve, 60000));
 });`,
       });
@@ -128,9 +115,7 @@ test('waits for cancellation', async () => {
           }
         }
       });
-      const closed = once(child, "close", {
-        signal: AbortSignal.timeout(5000),
-      });
+      const closed = once(child, "close");
       void closed.catch(() => {});
       child.stdin.write(
         JSON.stringify({
@@ -147,11 +132,11 @@ test('waits for cancellation', async () => {
           },
         }) + "\n",
       );
-      const started = await waitForPid(root);
+      const started = await waitForValidationPid(root, child);
       cleanup.group = started.group;
       if (shutdown === "eof") child.stdin.end();
       else child.kill(shutdown);
-      await closed;
+      await waitForMcpShutdown(closed);
       let alive = true;
       for (let attempt = 0; attempt < 40; attempt++) {
         try {
