@@ -477,3 +477,13 @@ is scoped to its observed host; it does not close the wider runtime matrix or
 independent evaluation. No inference or field evaluation is invoked.
 
 The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.
+
+Pinned archive delivery can use one explicit official mirror for the same pinned
+artifact filename after an admitted transient failure. Maven uses Apache's
+archive endpoint; Ruby compiler APKs use the fixed Alpine mirror. The existing
+three-attempt allowance and shared deadline still apply. Permanent HTTP errors,
+redirects, wrong byte counts and digest mismatches remain failures; the compiler
+closure and release versions are unchanged. Preparation validates all archive
+bytes before publishing its runtime directory. Native Swift failures include
+phase, exit status, signal and bounded errno code without exception prose, so a
+failed invocation can be diagnosed without weakening its acceptance checks.

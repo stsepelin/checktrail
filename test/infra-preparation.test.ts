@@ -186,7 +186,8 @@ const task=process.env.CHECKTRAIL_TEST_TASK,tag='checktrail-'+task+':public',ima
 const digest=createHash('sha256').update('original').digest('hex');const manifest=JSON.parse(await readFile(new URL('./scripts/ruby-tools-archives.json',root),'utf8'));
 for(const architecture of Object.values(manifest.architectures)) for(const pin of architecture.archives){pin.bytes=8;pin.sha256=digest;}
 await writeFile(new URL('./scripts/ruby-tools-archives.json',root),JSON.stringify(manifest));
-const pins=manifest.architectures.aarch64.archives;let built=false,pulls=0;const requests=new Map(),signals=new Map();const badDigest=${badDigest};
+const pins=manifest.architectures.aarch64.archives,primary=manifest.architectures.aarch64.repository,mirror='https://dl-4.alpinelinux.org/alpine/v3.24/main/aarch64/';let built=false,pulls=0;const requests=new Map(),signals=new Map(),deliveryUrls=new Map();const badDigest=${badDigest};
+const allowed=new Map(pins.flatMap(pin=>[[primary+encodeURIComponent(pin.path),pin],[mirror+encodeURIComponent(pin.path),pin]]));
 childProcess.execFileSync=(command,args)=>{
  assert.equal(command,'docker');
  if(args[0]==='pull'){assert.equal(args.length,2);assert.match(args[1],/^public\\.ecr\\.aws\\/docker\\/library\\/(ruby|node)@sha256:[a-f0-9]{64}$/);pulls++;return '';}
@@ -196,8 +197,9 @@ childProcess.execFileSync=(command,args)=>{
  throw Error('unexpected docker call '+JSON.stringify(args));
 };syncBuiltinESMExports();
 globalThis.fetch=async(asset,options)=>{
- const pin=pins.find(pin=>asset===manifest.architectures.aarch64.repository+encodeURIComponent(pin.path));assert.ok(pin,'Must retrieve only the exact encoded pinned archive');assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
+ const pin=allowed.get(asset);assert.ok(pin,'Must retrieve only an enumerated exact encoded pinned archive URL');const urls=deliveryUrls.get(pin.path)||[];assert.equal(asset,(urls.length?mirror:primary)+encodeURIComponent(pin.path));urls.push(asset);deliveryUrls.set(pin.path,urls);assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
  const count=(requests.get(pin.path)||0)+1;requests.set(pin.path,count);
+ if(pin.path==='g++-15.2.0-r5.apk'&&count===3)assert.deepEqual(deliveryUrls.get(pin.path),[primary,mirror,mirror].map(origin=>origin+encodeURIComponent(pin.path)));
  if(pin.path==='g++-15.2.0-r5.apk'&&count<3)return new Response(null,{status:404});
  return new Response(badDigest&&pin.path==='g++-15.2.0-r5.apk'?'modified':'original');
 };
