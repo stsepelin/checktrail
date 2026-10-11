@@ -193,9 +193,24 @@ async function main() {
           maxBuffer: 4 * 1024 * 1024,
           timeout: 110000,
         });
+      const nativeErrorCode = (r.error as NodeJS.ErrnoException | undefined)
+        ?.code;
       swiftRequire(
         !r.error && !r.signal && r.status !== null,
-        "Swift extension native process incomplete",
+        "Swift extension native process incomplete: " +
+          JSON.stringify({
+            phase,
+            errorCode:
+              r.error &&
+              typeof nativeErrorCode === "string" &&
+              /^[A-Z][A-Z0-9_]{0,63}$/.test(nativeErrorCode)
+                ? nativeErrorCode
+                : r.error
+                  ? "UNKNOWN"
+                  : null,
+            signal: r.signal,
+            exitCode: r.status,
+          }),
       );
       total += Buffer.byteLength(r.stdout) + Buffer.byteLength(r.stderr);
       swiftRequire(
