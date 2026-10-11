@@ -1934,13 +1934,13 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - name: Prepare the pinned Node image
-        run: node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+        run: node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare the exact locked native JavaScript tool closure
         if: matrix.family == 'vitest' || matrix.family == 'jest'
         run: |
           node scripts/prepare-mutation-tools.mjs
-          docker run --rm --mount "type=bind,src=$PWD/.checktrail/mutation-javascript-tools,target=/tools" --workdir /tools public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
-          docker tag public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 "$CHECKTRAIL_MUTATION_IMAGE"
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/mutation-javascript-tools,target=/tools" --workdir /tools docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          docker tag docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 "$CHECKTRAIL_MUTATION_IMAGE"
       - name: Prepare the pinned native Python image and public tools
         if: matrix.family == 'pytest'
         run: |
