@@ -500,3 +500,9 @@ exceeded` response as a transient delivery failure, within its existing retry an
 wall budgets. Adjacent hosts/paths, added authentication errors, cancellation and
 local subprocess deadline failures remain terminal. Every attempt retains the
 same immutable image reference.
+
+Laravel supplemental acceptance now inventories the exact static callback names
+in both supplemental files and requires each through the existing bounded
+acceptance ledger. This replaces a stale aggregate TAP count. Empty, duplicate,
+skipped, failed, missing, changed-file and truncated evidence stays non-passing;
+the original callbacks are preserved.
