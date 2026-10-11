@@ -16,6 +16,8 @@ const transient = (error) => {
     /^Error response from daemon: Get "https:\/\/public\.ecr\.aws\/v2\/": net\/http: request canceled while waiting for connection \(Client\.Timeout exceeded while awaiting headers\)$/.test(
       text.trim(),
     ) ||
+    text.trim() ===
+      'Error response from daemon: Get "https://public.ecr.aws/v2/": context deadline exceeded' ||
     /(?:^|\s)toomanyrequests:\s*Rate exceeded(?:\s|$)/i.test(text) ||
     /(?:unexpected (?:HTTP )?status(?: code)?|HTTP response code|received status)[^\n]{0,200}\b(?:429|500|502|503|504)\b/i.test(
       text,
