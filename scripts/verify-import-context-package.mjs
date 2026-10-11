@@ -194,6 +194,7 @@ try {
     "import-history.test.js",
     "git-fixture.js",
     "helpers.js",
+    "framework-report-semantics.js",
     "review-call-identity-fixture.js",
     "gate-context-python.test.js",
     "gate-context-go.test.js",
