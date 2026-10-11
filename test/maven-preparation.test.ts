@@ -62,7 +62,7 @@ test("Maven distribution preparation retries transient connection and response f
  const calls=[],waits=[],signal=AbortSignal.timeout(5000);
  const timeout=Object.assign(new AggregateError([],'synthetic connect timeout'),{code:'ETIMEDOUT'});
  const bytes=await requestMavenDistribution({signal,fetchImpl:async(asset,options)=>{calls.push([asset,options.redirect,options.signal===signal]);if(calls.length===1)throw new TypeError('fetch failed',{cause:timeout});if(calls.length===2)return new Response('temporary',{status:503});return new Response(new Uint8Array(mavenDistributionPin.bytes).fill(7));},delayImpl:async ms=>waits.push(ms)});
- assert.deepEqual(calls,[[mavenDistributionPin.asset,'error',true],[mavenDistributionPin.fallbackAsset,'error',true],[mavenDistributionPin.fallbackAsset,'error',true]]);assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
+ assert.deepEqual(calls,[[mavenDistributionPin.asset,'error',true],[mavenDistributionPin.fallbackAssets[0],'error',true],[mavenDistributionPin.fallbackAssets[1],'error',true]]);assert.deepEqual(waits,[1000,3000]);assert.equal(bytes.length,9979885);assert.equal(bytes[0],7);assert.equal(bytes[bytes.length-1],7);
  assert.equal(mavenDistributionPin.sha256,'a46cc51bc74fa23fd267c7a0b9132b146dcf526da60d31aa5174e565632e9e0e');
 `,
   ));
