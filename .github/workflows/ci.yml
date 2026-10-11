@@ -1441,6 +1441,9 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build
+      - name: Diagnose native Windows private-access setup boundaries
+        if: matrix.slot == 'windows-node22'
+        run: node scripts/diagnose-windows-task-access.mjs
       - name: Require source controls with exact runtime and observed image identity
         run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
       - name: Prepare pinned production installation cache
