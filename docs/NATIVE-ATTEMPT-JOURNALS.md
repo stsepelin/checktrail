@@ -1,6 +1,6 @@
 # ADR: Retain interrupted inner native attempts
 
-**Status:** Codec, private storage, streaming and selected engine-wrapper collection implemented; complete native call-family acceptance and durable retention pending
+**Status:** Codec, private storage, streaming, selected engine-wrapper collection and bounded detailed Tasks retention implemented; complete native call-family acceptance pending
 **Date:** 2026-10-11
 **Deciders:** Implementation owner, within the authorized Gate A scope
 
@@ -149,8 +149,14 @@ Linux ARM64 Node 22 receipts, alongside unchanged-callback paired guard removals
 These scoped controls preserve the earlier journal/streaming controls; they do
 not qualify every language toolchain or Windows engine execution.
 
+Detailed Tasks now retain oversized reports, including captured native journals,
+through bounded hashed report chunks. The original inline result limit,
+startup-only disclosure, source binding, cancellation and terminal rules remain
+in force; failed archive retention is not successful completion. See
+[TASK-STORAGE.md](TASK-STORAGE.md) and the
+[durable archive measurement](measurements/durable-task-report-archives-2026-10-11.json).
+
 Complete native call migration acceptance, embedded language/VM subprocesses,
-required Windows/runtime acceptance, durable large-report replay and host-model
-usage remain open. The existing detailed Tasks storage limit does not yet accept
-all retained large journals. The frozen attempt-archives profile remains pending.
+required Windows/runtime acceptance and host-model usage remain open. The frozen
+attempt-archives profile remains pending.
 No Gate A closure, model inference or real-project field evaluation is claimed.

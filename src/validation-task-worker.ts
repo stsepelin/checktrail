@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { TaskArchiveChunk } from "./task-report-archives.js";
 import { createPlan, validate, type PlanOptions } from "./engine.js";
 import {
   openTaskStore,
@@ -29,7 +30,10 @@ function send(message: Record<string, unknown>): void {
     disconnect();
   }
 }
-function reply(id: number, value: StoredValidationTask | null): void {
+function reply(
+  id: number,
+  value: StoredValidationTask | TaskArchiveChunk | null,
+): void {
   send({ id, ok: true, value });
 }
 function error(id: number, code: string): void {
@@ -59,7 +63,8 @@ async function run(taskId: string, controller: AbortController): Promise<void> {
         timeoutMs: options!.timeoutMs,
         signal: controller.signal,
       });
-      if (!controller.signal.aborted) store!.complete(taskId, report);
+      if (!controller.signal.aborted)
+        store!.completeWithArchive(taskId, report);
     } catch {
       if (!controller.signal.aborted) store!.interrupt(taskId);
     }
@@ -189,7 +194,9 @@ process.on("message", (message: unknown) => {
         id,
         method === "get"
           ? store!.get(request.data.taskId)
-          : await cancel(request.data.taskId),
+          : method === "read-archive"
+            ? store!.readArchive(request.data.taskId, request.data.index)
+            : await cancel(request.data.taskId),
       );
     } catch {
       error(id, "invalid");

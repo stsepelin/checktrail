@@ -15,6 +15,14 @@ import { projectReport } from "./output.js";
 import { ensureWindowsTaskAccess } from "./windows-task-access.js";
 import { reportSchema, reportSummarySchema } from "./schemas.js";
 import type { Report } from "./types.js";
+import {
+  archivedTaskResult,
+  isArchivedTaskResult,
+  installTaskReportArchives,
+  TaskReportArchives,
+  taskArchiveLimits,
+  type TaskArchiveChunk,
+} from "./task-report-archives.js";
 
 const MAX_TASKS = 32;
 const MAX_RESULT_BYTES = 256 * 1024;
@@ -128,7 +136,11 @@ function decodeTask(row: Row, detailed: boolean): StoredValidationTask {
     if (Buffer.byteLength(row.result) > MAX_RESULT_BYTES)
       throw new Error("Stored task result exceeds the byte limit");
     const value: unknown = JSON.parse(row.result);
-    if (JSON.stringify(value) === JSON.stringify(interruptedResult)) {
+    if (isArchivedTaskResult(row.result)) {
+      if (!detailed)
+        throw new Error("Task archives require startup detail permission");
+      task.result = structuredClone(archivedTaskResult);
+    } else if (JSON.stringify(value) === JSON.stringify(interruptedResult)) {
       task.result = structuredClone(interruptedResult);
     } else {
       const envelope = z
@@ -161,12 +173,15 @@ function decodeTask(row: Row, detailed: boolean): StoredValidationTask {
 /** Bounded validation-result persistence; this component does not execute or stop workers. */
 export class ValidationTaskStore {
   private closed = false;
+  private readonly archives: TaskReportArchives;
 
   constructor(
     private readonly database: DatabaseSync,
     private readonly ownership: DatabaseSync,
     private readonly detailed: boolean,
-  ) {}
+  ) {
+    this.archives = new TaskReportArchives(database, detailed);
+  }
 
   private active(): void {
     if (this.closed) throw new Error("Task store is closed");
@@ -217,10 +232,36 @@ export class ValidationTaskStore {
   }
 
   get(taskId: string): StoredValidationTask {
-    return decodeTask(this.row(taskId), this.detailed);
+    const row = this.row(taskId);
+    if (
+      Boolean(this.archives.manifest(taskId, row.source)) !==
+      isArchivedTaskResult(row.result)
+    )
+      throw new Error("Task archive and terminal state disagree");
+    return decodeTask(row, this.detailed);
+  }
+
+  readArchive(taskId: string, index: number): TaskArchiveChunk {
+    const row = this.row(taskId);
+    if (row.status !== "completed" || !isArchivedTaskResult(row.result))
+      throw new Error("Task archive unavailable");
+    return this.archives.read(taskId, row.source, index);
   }
 
   complete(taskId: string, report: Report): TaskTransition {
+    return this.completeResult(taskId, report, false);
+  }
+
+  /** Retain oversized detail only under this store's startup disclosure permission. */
+  completeWithArchive(taskId: string, report: Report): TaskTransition {
+    return this.completeResult(taskId, report, true);
+  }
+
+  private completeResult(
+    taskId: string,
+    report: Report,
+    retain: boolean,
+  ): TaskTransition {
     this.active();
     return transaction(this.database, () => {
       const row = this.row(taskId);
@@ -230,12 +271,17 @@ export class ValidationTaskStore {
       if (report.sourceFingerprint !== row.source)
         throw new Error("Task and report source fingerprints differ");
       const projected = projectReport(report, this.detailed);
-      const result = JSON.stringify({
+      let result = JSON.stringify({
         content: [{ type: "text", text: JSON.stringify(projected) }],
         structuredContent: projected,
       });
-      if (Buffer.byteLength(result) > MAX_RESULT_BYTES)
-        throw new Error("Task result exceeds the byte limit");
+      if (Buffer.byteLength(result) > MAX_RESULT_BYTES) {
+        if (!retain || !this.detailed)
+          throw new Error("Task result exceeds the byte limit");
+        this.prune();
+        this.archives.retain(taskId, row.source, report);
+        result = JSON.stringify(archivedTaskResult);
+      }
       this.database
         .prepare(
           "UPDATE tasks SET status = 'completed', result = ?, updated = ? WHERE id = ? AND status = 'working'",
@@ -335,11 +381,15 @@ export async function openTaskStore(
     );
   if (process.platform === "win32")
     ensureWindowsTaskAccess(directory, "directory", created);
+  const detailed = options.detailed === true;
+  const maximum = detailed
+    ? taskArchiveLimits.databaseBytes
+    : MAX_DATABASE_BYTES;
   const limits: Record<string, number> = {
     "owner.sqlite": 4096,
     "owner.sqlite-journal": 16384,
-    "tasks.sqlite": MAX_DATABASE_BYTES,
-    "tasks.sqlite-journal": MAX_DATABASE_BYTES + 1024 * 1024,
+    "tasks.sqlite": maximum,
+    "tasks.sqlite-journal": maximum + 1024 * 1024,
   };
   for (const entry of readdirSync(directory)) {
     const limit = limits[entry];
@@ -368,12 +418,11 @@ export async function openTaskStore(
       ownership.prepare("PRAGMA user_version").get()!.user_version !== 1
     )
       throw new Error("Unrecognized task ownership database");
-    privateFile(path.join(directory, "tasks.sqlite"), MAX_DATABASE_BYTES);
+    privateFile(path.join(directory, "tasks.sqlite"), maximum);
     database = new DatabaseSync(path.join(directory, "tasks.sqlite"), {
       allowExtension: false,
     });
     const db = database;
-    const detailed = options.detailed === true;
     const scope = createHash("sha256")
       .update(JSON.stringify([root, detailed]))
       .digest("hex");
@@ -386,7 +435,7 @@ export async function openTaskStore(
     if (db.prepare("PRAGMA page_size").get()!.page_size !== 4096)
       throw new Error("Unsupported task database page size");
     db.exec(
-      "PRAGMA journal_mode = DELETE; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF; PRAGMA secure_delete = ON; PRAGMA max_page_count = 4096",
+      `PRAGMA journal_mode = DELETE; PRAGMA synchronous = FULL; PRAGMA trusted_schema = OFF; PRAGMA secure_delete = ON; PRAGMA foreign_keys = ON; PRAGMA max_page_count = ${maximum / 4096}`,
     );
     if (id === 0)
       transaction(db, () => {
@@ -397,8 +446,9 @@ export async function openTaskStore(
         db.prepare("INSERT INTO metadata VALUES (?)").run(scope);
       });
     const metadata = db.prepare("SELECT scope FROM metadata").all();
+    const version = db.prepare("PRAGMA user_version").get()!.user_version;
     if (
-      db.prepare("PRAGMA user_version").get()!.user_version !== 1 ||
+      (version !== 1 && version !== 2) ||
       metadata.length !== 1 ||
       metadata[0]!.scope !== scope
     )
@@ -412,10 +462,17 @@ export async function openTaskStore(
       const rows = db.prepare("SELECT * FROM tasks LIMIT 33").all();
       if (rows.length > MAX_TASKS)
         throw new Error("Task store exceeds task capacity");
-      for (const row of rows) {
-        const parsed = rowSchema.parse(row);
-        decodeTask(parsed, detailed);
+      const parsedRows = rows.map((row) => rowSchema.parse(row));
+      for (const row of parsedRows) decodeTask(row, detailed);
+      if (version === 1) {
+        if (parsedRows.some((row) => isArchivedTaskResult(row.result)))
+          throw new Error(
+            "Legacy task database cannot declare archived results",
+          );
+        installTaskReportArchives(db);
+        db.exec("PRAGMA user_version = 2");
       }
+      new TaskReportArchives(db, detailed).validateAll(parsedRows);
       db.prepare("DELETE FROM tasks WHERE expires <= ?").run(Date.now());
       db.prepare(
         "UPDATE tasks SET status = 'completed', result = ?, updated = max(updated, ?) WHERE status = 'working'",

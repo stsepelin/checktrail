@@ -5,15 +5,21 @@ import {
   validationTasksOptionsSchema,
   validationTaskRequestSchema,
   validationTaskResponseSchema,
+  storedValidationTaskSchema,
   type ValidationTasksOptions,
 } from "./validation-tasks-protocol.js";
 import type { StoredValidationTask } from "./task-store.js";
+import {
+  taskArchiveChunkSchema,
+  type TaskArchiveChunk,
+} from "./task-report-archives.js";
 import { windowsEnvironment } from "./windows-process.js";
 
 export type { ValidationTasksOptions } from "./validation-tasks-protocol.js";
 export interface ValidationTasks {
   start(): Promise<StoredValidationTask>;
   get(taskId: string): Promise<StoredValidationTask>;
+  readArchive(taskId: string, index: number): Promise<TaskArchiveChunk>;
   cancel(taskId: string): Promise<StoredValidationTask>;
   close(): Promise<void>;
 }
@@ -52,7 +58,7 @@ export async function openValidationTasks(
   const pending = new Map<
     number,
     {
-      resolve: (value: StoredValidationTask | null) => void;
+      resolve: (value: StoredValidationTask | TaskArchiveChunk | null) => void;
       reject: (error: Error) => void;
     }
   >();
@@ -75,6 +81,14 @@ export async function openValidationTasks(
       if (!child.pid) resolve();
     });
   });
+  function storedTask(value: unknown): StoredValidationTask {
+    const { result: payload, ...metadata } =
+      storedValidationTaskSchema.parse(value);
+    return {
+      ...metadata,
+      ...(payload !== undefined ? { result: payload } : {}),
+    };
+  }
   child.on("message", (message: unknown) => {
     const result = validationTaskResponseSchema.safeParse(message);
     if (!result.success) {
@@ -87,20 +101,14 @@ export async function openValidationTasks(
     pending.delete(result.data.id);
     if (result.data.ok) {
       const value = result.data.value;
-      if (value) {
-        const { result: payload, ...metadata } = value;
-        entry.resolve({
-          ...metadata,
-          ...(payload !== undefined ? { result: payload } : {}),
-        });
-      } else entry.resolve(null);
+      entry.resolve(value && "taskId" in value ? storedTask(value) : value);
     } else
       entry.reject(new Error(`Validation task request ${result.data.error}`));
   });
   async function send(
     id: number,
     message: Serializable,
-  ): Promise<StoredValidationTask | null> {
+  ): Promise<StoredValidationTask | TaskArchiveChunk | null> {
     if (closed || !child.connected)
       throw new Error("Validation task worker is closed");
     if (pending.size >= 32)
@@ -141,11 +149,22 @@ export async function openValidationTasks(
     });
     const result = await send(id, message);
     if (!result) throw new Error("Validation task response is missing");
-    return result;
+    return storedTask(result);
   }
   return {
     start: () => request("start"),
     get: (taskId) => request("get", taskId),
+    readArchive: async (taskId, index) => {
+      if (closing) throw new Error("Validation task worker is closing");
+      const id = ++sequence;
+      const message = validationTaskRequestSchema.parse({
+        id,
+        method: "read-archive",
+        taskId,
+        index,
+      });
+      return taskArchiveChunkSchema.parse(await send(id, message));
+    },
     cancel: (taskId) => request("cancel", taskId),
     close: () => {
       closing ??= (async () => {

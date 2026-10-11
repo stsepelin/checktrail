@@ -1,4 +1,8 @@
 import {
+  taskArchiveManifestSchema,
+  taskArchiveChunkSchema,
+} from "../dist/src/task-report-archives.js";
+import {
   reviewProvenanceInputSchema,
   reviewProvenanceReportSchema,
   reviewProvenanceSummarySchema,
@@ -361,6 +365,8 @@ for (const [name, schema] of Object.entries({
   "plan-summary": planSummarySchema,
   report: reportSchema,
   "report-summary": reportSummarySchema,
+  "task-archive-manifest": taskArchiveManifestSchema,
+  "task-archive-chunk": taskArchiveChunkSchema,
 })) {
   await writeFile(
     new URL(`../schemas/${name}.schema.json`, import.meta.url),

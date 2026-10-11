@@ -92,6 +92,15 @@ export type {
   ReviewReceipt,
 } from "./review.js";
 
+export {
+  taskArchiveLimits,
+  taskArchiveManifestSchema,
+  taskArchiveChunkSchema,
+} from "./task-report-archives.js";
+export type {
+  TaskArchiveManifest,
+  TaskArchiveChunk,
+} from "./task-report-archives.js";
 export { openTaskStore } from "./task-store.js";
 export type {
   ValidationTaskStore,
