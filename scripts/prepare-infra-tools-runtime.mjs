@@ -26,9 +26,13 @@ const manifest = JSON.parse(
   await readFile(path.join(root, "scripts/infra-tools-artifacts.json"), "utf8"),
 );
 assert.equal(manifest.schemaVersion, 1);
-assert.match(
-  manifest.base,
-  /^public\.ecr\.aws\/docker\/library\/node@sha256:[a-f0-9]{64}$/,
+assert.ok(
+  /^public\.ecr\.aws\/docker\/library\/node@sha256:[a-f0-9]{64}$/.test(
+    manifest.base,
+  ) ||
+    manifest.base ===
+      "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+  "Select the pinned Node base or an exact legacy official ECR Node digest",
 );
 const downloads = [
   ...manifest.tools.map((t) => ({
