@@ -89,3 +89,51 @@ concurrent process-tree RSS, and this foundation does not establish coverage of
 unreaped descendants. The binding and harness remain outside the product package.
 Representative workload, output/archive storage, Windows and final release checks
 remain pending. Gate A stays open; no inference or field evaluation was invoked.
+
+## Synthetic native workload and archive measurements
+
+`node scripts/measure-native-resources.mjs --node-headers /absolute/canonical-node-header-directory --samples 5`
+prepares the own observer and counter binding, creates original fixtures outside
+the measurements, and runs five to thirty samples per case in rotated order.
+Each sample uses a fresh worker and the shared bounded process runner. The small
+fixture imports ten JavaScript modules, the large fixture imports a thousand and
+emits Unicode output, and the polyglot fixture executes both JavaScript and native
+Go tests. The Go profile requires the actual Go 1.27.1 executable, records its
+hash/version, and declares `GOCACHE`; the operator worker supplies a private cache
+through existing engine environment permissions. The engine's allowlist is preserved.
+
+[The workload measurement](measurements/native-resource-workloads-2026-10-11.json)
+retains the original native control ledger and each sample on macOS Node 24/26 and
+Linux Node 22, in source and fresh offline production installation layouts.
+Unlike the counter-only controls, these workload controls invoke the actual
+source or installed engine. Compiler preparation, fixture creation and the initial
+harness inventory precede validation counter collection. Separate kernel self and
+reaped-child CPU counters cover validation; peak RSS describes the worker lifetime,
+not a memory delta. The outer `wait4` receipt covers the whole worker, including
+startup and later durable storage, and binds its actual PID and terminal status.
+Neither RSS scope is a sum of concurrently resident processes. Unreaped descendant
+coverage remains unverified.
+
+Every selected check must pass its original non-skipped test with unchanged source
+and complete physical output. Failed, skipped, stale, malformed or truncated
+results cannot become measurements. Retained stdout/stderr lengths and hashes
+must reconcile with observed process bytes. The measurement exposes counts and
+hashes, retaining raw reports, output and local paths privately.
+
+The worker records exact report JSON bytes, inline envelope bytes, archive bytes,
+chunk count and the physical SQLite store files after closing the store. Every
+large sample reaches multi-chunk storage; reconstructing its chunks must match the
+complete report's bytes and hash. Validation counters exclude those later writes;
+the outer observer includes them. Physical database storage and logical archive
+bytes are distinct quantities. Go build-cache storage is not counted as archive
+storage. Its private profile cache is shared across samples, filesystem warmth is
+uncontrolled, and no engine validation result is cached. No regression budget or
+representative real-project performance conclusion is inferred from these samples.
+
+Broken tests, source changed during a test and changed prepared bindings have
+original native controls. Seven paired removals prove pass admission, freshness,
+raw output digest/byte accounting, snapshot worker identity, the preparation
+boundary and physical database byte accounting. Compiler/SDK/standard-library
+and publisher closures, Windows, final schema/package/privacy/upgrade readiness
+and the whole resource-release-readiness profile remain pending. Gate A stays open;
+no inference, field evaluation, tag or publication was performed.
