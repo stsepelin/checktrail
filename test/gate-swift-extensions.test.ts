@@ -637,7 +637,11 @@ test("swift-extensions installed acceptance", native, async () => {
     { env, encoding: "utf8", timeout: 1170000, maxBuffer: 4 * 1048576 },
   );
   assert.equal(r.error, undefined, r.error?.message ?? "");
-  assert.equal(r.status, 0, r.stderr.slice(-3000));
+  assert.equal(
+    r.status,
+    0,
+    r.stderr.slice(0, 3000) + "\n" + r.stderr.slice(-1000),
+  );
   const receipt = JSON.parse(r.stdout);
   assert.equal(receipt.profile.required, 9);
   assert.equal(receipt.profile.passed, 9);
