@@ -80,6 +80,12 @@ try {
     ["@modelcontextprotocol/client"],
     path.join(root, "node_modules"),
   );
+  // The AST wiring control uses the pinned production TypeScript dependency.
+  await copyInstalledPackages(
+    harness,
+    ["typescript"],
+    path.join(consumer, "node_modules"),
+  );
   for (const [base, name] of [
     [harness, "client"],
     [consumer, "server"],
