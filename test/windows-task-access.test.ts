@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdir, realpath, writeFile } from "node:fs/promises";
+import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
+import ts from "typescript";
 import path from "node:path";
 import { test } from "node:test";
 import {
@@ -106,7 +107,7 @@ const native = process.platform === "win32";
 function changeAcl(filename: string) {
   const script = String.raw`
 $ErrorActionPreference='Stop'
-[Console]::InputEncoding=New-Object System.Text.UTF8Encoding($false)
+[Console]::InputEncoding=[Text.UTF8Encoding]::new($false)
 $request=[Console]::In.ReadToEnd() | ConvertFrom-Json
 $acl=Get-Acl -LiteralPath $request.path
 $rule=[System.Security.AccessControl.FileSystemAccessRule]::new([System.Security.Principal.SecurityIdentifier]::new('S-1-1-0'),[System.Security.AccessControl.FileSystemRights]::ReadAndExecute,[System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit,[System.Security.AccessControl.PropagationFlags]::None,[System.Security.AccessControl.AccessControlType]::Allow)
@@ -196,3 +197,53 @@ test(
     assert.deepEqual(await readdir(directory), []);
   },
 );
+
+test("Windows task ACL shipped scripts retain typed constructors without the observed legacy cmdlet startup path", async () => {
+  for (const [filename, variable, expected] of [
+    [
+      "../src/windows-task-access.js",
+      "accessScript",
+      [
+        "[Console]::InputEncoding = [Text.UTF8Encoding]::new($false)",
+        "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
+        "$acl = [System.Security.AccessControl.DirectorySecurity]::new()",
+        "$acl = [System.Security.AccessControl.FileSecurity]::new()",
+      ],
+    ],
+    [
+      "./windows-task-access.test.js",
+      "script",
+      ["[Console]::InputEncoding=[Text.UTF8Encoding]::new($false)"],
+    ],
+  ] as const) {
+    const file = ts.createSourceFile(
+      filename,
+      await readFile(new URL(filename, import.meta.url), "utf8"),
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.JS,
+    );
+    const scripts: string[] = [];
+    const walk = (node: ts.Node): void => {
+      if (
+        ts.isVariableDeclaration(node) &&
+        ts.isIdentifier(node.name) &&
+        node.name.text === variable &&
+        node.initializer &&
+        ts.isTaggedTemplateExpression(node.initializer)
+      ) {
+        if (!ts.isNoSubstitutionTemplateLiteral(node.initializer.template))
+          assert.fail(
+            "Fixed OS scripts must not interpolate caller paths into source",
+          );
+        scripts.push(node.initializer.template.text);
+      }
+      ts.forEachChild(node, walk);
+    };
+    walk(file);
+    assert.equal(scripts.length, 1, filename);
+    for (const constructor of expected)
+      assert.ok(scripts[0]!.includes(constructor), constructor);
+    assert.doesNotMatch(scripts[0]!, /(?:^|\s)New-Object(?:\s|$)/i);
+  }
+});
