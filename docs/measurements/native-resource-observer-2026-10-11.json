@@ -1,0 +1,1218 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original POSIX wait4 observer foundation; source and fresh offline installed runner controls with repository-owned measurement harness. This does not close the resource-release-readiness profile.",
+  "measuredDate": "2026-10-11",
+  "sourceInputs": [
+    {
+      "file": "scripts/native-resource-observer.c",
+      "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+    },
+    {
+      "file": "scripts/native-resource-receipt.mjs",
+      "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+    },
+    {
+      "file": "scripts/prepare-native-resource-observer.mjs",
+      "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+    },
+    {
+      "file": "test/native-resource-observer.test.ts",
+      "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+    },
+    {
+      "file": "dist/test/native-resource-observer.test.js",
+      "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+    },
+    {
+      "file": "dist/test/helpers.js",
+      "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+    }
+  ],
+  "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+  "fullProjectCheck": {
+    "command": "npm run check",
+    "tests": 1876,
+    "pass": 1124,
+    "fail": 0,
+    "skipped": 752,
+    "cancelled": 0,
+    "todo": 0,
+    "optionalSkippedCountedAsPassing": false
+  },
+  "nativeProfiles": [
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; source engine with repository-owned measurement harness",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "4ecce373d9c6683e25d7d68aada095158ace4bb4800ab9d18a8e4314e3a266c6",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 130.490667,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 109.294375,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 628.710291,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 642.847,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 476.908417,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; installed engine with repository-owned measurement harness",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "4ecce373d9c6683e25d7d68aada095158ace4bb4800ab9d18a8e4314e3a266c6",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 108.673084,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 121.456375,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 689.678375,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 628.362083,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 459.914375,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "ab53ccdf9e5e2c8c4d78e7b72c8d0848cc212bba84ad516ce57a30517e077cfc",
+      "productionDependencyLockSha256": "57418d60a5e1913ac83460cb48dbeda5149c0ee4f50b43d25ffdc35223ba9e20",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; source engine with repository-owned measurement harness",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "4ecce373d9c6683e25d7d68aada095158ace4bb4800ab9d18a8e4314e3a266c6",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 63.693125,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 58.034875,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 372.752791,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 518.838708,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 212.407791,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; installed engine with repository-owned measurement harness",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "4ecce373d9c6683e25d7d68aada095158ace4bb4800ab9d18a8e4314e3a266c6",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 62.379292,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.25475,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 381.584292,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 558.840208,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 219.53425,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "ab53ccdf9e5e2c8c4d78e7b72c8d0848cc212bba84ad516ce57a30517e077cfc",
+      "productionDependencyLockSha256": "8ea6ec89b3b375a86233782bbe33cc1be7e7e626d7d4afd99dc0d2e803141a8f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; source engine with repository-owned measurement harness",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "linux",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "0e56242014fe7ce934e73b2495b801785fcf7d78ad7131e8ec086b1884ee1d07",
+        "compilerVersion": "gcc (Alpine 15.2.0) 15.2.0",
+        "binarySha256": "b1587ccb70170a8af35838bbe605a8845af2dcfab7fee820874c553361ceae5f",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 77.161583,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 63.739553,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 285.84275,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2293.799118,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 141.29097,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native resource observer controls; installed engine with repository-owned measurement harness",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "inputs": [
+        {
+          "file": "scripts/native-resource-observer.c",
+          "sha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5"
+        },
+        {
+          "file": "scripts/native-resource-receipt.mjs",
+          "sha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3"
+        },
+        {
+          "file": "scripts/prepare-native-resource-observer.mjs",
+          "sha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508"
+        },
+        {
+          "file": "test/native-resource-observer.test.ts",
+          "sha256": "5544d4539028f32142797e763eceaa419481748064fd1cfa1aafbb60206082e7"
+        },
+        {
+          "file": "dist/test/native-resource-observer.test.js",
+          "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "observerBuild": {
+        "schemaVersion": 1,
+        "platform": "linux",
+        "architecture": "arm64",
+        "sourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+        "compilerSha256": "0e56242014fe7ce934e73b2495b801785fcf7d78ad7131e8ec086b1884ee1d07",
+        "compilerVersion": "gcc (Alpine 15.2.0) 15.2.0",
+        "binarySha256": "b1587ccb70170a8af35838bbe605a8845af2dcfab7fee820874c553361ceae5f",
+        "binaryPath": "native-resource-observer/observer",
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 5,
+        "required": 5,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 5,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 53.718289,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 55.55655,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 263.033085,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 2287.419166,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 135.201438,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native POSIX observer deadlines cannot supply completed resource evidence and preserve unrelated artifacts",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "2569747800d8ea2865f0432487c395a2285ad3e0894c342116ec381a2ceeac2c",
+      "productionDependencyLockSha256": "8df1cb5d492f8bc129be8418d431c1eab9d5da7da892933407de4c9a8f66c1f8",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    }
+  ],
+  "pairedGuards": [
+    {
+      "id": "nonce-binding",
+      "callback": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-receipt.mjs",
+      "baselineSourceSha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3",
+      "mutantSourceSha256": "a72807e8fd091bad28c6947e9bf78715d24325455bb4da134b5c4ddad0e2c6b0",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "rss-normalization",
+      "callback": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-receipt.mjs",
+      "baselineSourceSha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3",
+      "mutantSourceSha256": "e0ceafb84b42aa6d615d081d26445ddfd63aa972dbb30a7407b64d806d88f67d",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "canonical-record-boundary",
+      "callback": "native resource receipts retain failed exit evidence and refuse incomplete duplicate stale counter and unit records",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-receipt.mjs",
+      "baselineSourceSha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3",
+      "mutantSourceSha256": "06d79b68b034f394ad6182c120804c99c6c15348d3c8cb4f1f0c4209bc9bfa36",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "private-record-boundary",
+      "callback": "POSIX resource receipt files refuse links public permissions and changed identities without consuming unrelated data",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-receipt.mjs",
+      "baselineSourceSha256": "9853785a3d7e116ee2414333b033e80ec535785be5530619efca943b3cf788e3",
+      "mutantSourceSha256": "5268ddd966abea95abbc71513dcb04396e1d6f4c2c252e494d246fc6f4429b06",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "native-kernel-counters",
+      "callback": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-observer.c",
+      "baselineSourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+      "mutantSourceSha256": "0d0fa21f6985dc0fc8fb5371313c3b0c6d285b4e2599132e438fa3f1541207c9",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "exclusive-receipt-creation",
+      "callback": "native POSIX observer accounts literal arguments actual PIDs CPU RSS units failed exits and refused receipt reuse",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/native-resource-observer.c",
+      "baselineSourceSha256": "e74965d6e3362ed445dcff1b913da5360d561e519486b88cdf5ba2f23e99a9e5",
+      "mutantSourceSha256": "313ed080c577a5fb17ac3d15379c182fe6976d23f4774078b6c3623e3c7745bb",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "all-or-none-compile-failure",
+      "callback": "native resource preparation preflights private output and leaves no half-published bundle after actual compiler failure",
+      "callbackFileSha256": "52451620c685bbb0ba6bd91d3ce2f916034bf38ee30c8304e898695b23f7c3c7",
+      "file": "scripts/prepare-native-resource-observer.mjs",
+      "baselineSourceSha256": "874512f806a05693e0a34aee71a4488dbc849c0f5680ad09dcebb3bff5066508",
+      "mutantSourceSha256": "0a3297b922c58c1f00ec79c4c1884fcffbfc35b2aee824e0b8b83073e91b3906",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "measuredPackageIncludesThisReceipt": false,
+  "summedProcessTreeRss": false,
+  "descendantCoverage": "unverified",
+  "compilerSdkClosureVerified": false,
+  "completeNativeArtifactClosure": false,
+  "nativeWindowsAcceptance": false,
+  "representativeResourceSamplesComplete": false,
+  "resourceReleaseReadinessComplete": false,
+  "gateAComplete": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false
+}
