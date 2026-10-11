@@ -9,7 +9,7 @@ import { fileURLToPath, URL } from "node:url";
 
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const image =
-  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+  "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const native = [
   "run",
   "--rm",
