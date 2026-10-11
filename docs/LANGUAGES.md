@@ -4,6 +4,11 @@ The [setup guide](ONBOARDING.md) describes conservative
 per-language configuration proposals and static tool diagnosis. Setup does not
 extend the execution capabilities or native evidence listed below.
 
+The [operator npm provenance audit](NPM-PROVENANCE.md) reconciles production and
+development dependency locations, optional platform exclusions and installed
+content. Its current development notice gaps remain incomplete; complete native
+artifact/license closure and the final runtime matrix remain pending.
+
 Capability levels are discovery, planning, execution, structured evidence,
 semantic rules, and integration validation. None implies the next. This file's
 initial scope column describes the experimental implementation. Node, Python,

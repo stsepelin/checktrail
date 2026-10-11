@@ -175,6 +175,11 @@ local schema validation alone cannot establish acceptance. See the official
 GitHub private vulnerability reporting is enabled. Use the channel linked in
 `SECURITY.md`. Tags and GitHub releases also require explicit authorization.
 
+The [npm provenance audit](NPM-PROVENANCE.md) adds explicit development dependency
+accounting and installed-file bindings. Its measured development report remains
+incomplete; production notice acceptance does not close native/compiler/container
+provenance or release readiness.
+
 ## Before a concrete release
 
 1. Select the supported release scope and version using `LANGUAGES.md` and
