@@ -170,6 +170,7 @@ test("Ruby preparation recovers pinned delivery and still refuses changed bytes 
     for (const name of [
       "prepare-ruby-tools-runtime.mjs",
       "request-pinned-artifact.mjs",
+      "request-ruby-compiler-archive.mjs",
       "pull-pinned-image.mjs",
       "ruby-tools-archives.json",
     ])
@@ -179,6 +180,9 @@ test("Ruby preparation recovers pinned delivery and still refuses changed bytes 
       );
     files["dist/src/maven.js"] =
       `export {mavenHash,verifyMavenTree} from ${JSON.stringify(new URL("../../dist/src/maven.js", import.meta.url).href)};`;
+    files[
+      "assets/native-tool-archives/alpine-v3.24/aarch64/zlib-1.3.2-r0.apk"
+    ] = "original";
     files["control.mjs"] = `
 import assert from 'node:assert/strict';import {readFile,writeFile,readdir,access} from 'node:fs/promises';import path from 'node:path';import {createHash} from 'node:crypto';import childProcess from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';
 process.env.CHECKTRAIL_TEST_TASK='original-ruby-preparation';delete process.env.CHECKTRAIL_RUBY_APK_DIRECTORY;
@@ -186,26 +190,26 @@ const task=process.env.CHECKTRAIL_TEST_TASK,tag='checktrail-'+task+':public',ima
 const digest=createHash('sha256').update('original').digest('hex');const manifest=JSON.parse(await readFile(new URL('./scripts/ruby-tools-archives.json',root),'utf8'));
 for(const architecture of Object.values(manifest.architectures)) for(const pin of architecture.archives){pin.bytes=8;pin.sha256=digest;}
 await writeFile(new URL('./scripts/ruby-tools-archives.json',root),JSON.stringify(manifest));
-const pins=manifest.architectures.aarch64.archives,primary=manifest.architectures.aarch64.repository,mirror='https://dl-4.alpinelinux.org/alpine/v3.24/main/aarch64/';let built=false,pulls=0;const requests=new Map(),signals=new Map(),deliveryUrls=new Map();const badDigest=${badDigest};
-const allowed=new Map(pins.flatMap(pin=>[[primary+encodeURIComponent(pin.path),pin],[mirror+encodeURIComponent(pin.path),pin]]));
+const pins=manifest.architectures.aarch64.archives,primary=manifest.architectures.aarch64.repository,mirror='https://dl-4.alpinelinux.org/alpine/v3.24/main/aarch64/',secondMirror='https://dl-5.alpinelinux.org/alpine/v3.24/main/aarch64/';let built=false,pulls=0;const requests=new Map(),signals=new Map(),deliveryUrls=new Map();const badDigest=${badDigest};
+const allowed=new Map(pins.flatMap(pin=>[[primary+encodeURIComponent(pin.path),pin],[mirror+encodeURIComponent(pin.path),pin],[secondMirror+encodeURIComponent(pin.path),pin]]));
 childProcess.execFileSync=(command,args)=>{
  assert.equal(command,'docker');
  if(args[0]==='pull'){assert.equal(args.length,2);assert.equal(args[1],['public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3','docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32'][pulls]);pulls++;return ''; }
  if(args[0]==='image'&&args[1]==='inspect'){assert.deepEqual(args,['image','inspect',tag]);if(!built)throw Object.assign(new Error('absent'),{status:1,stderr:'No such image'});return JSON.stringify([{Id:image,Config:{Labels:{'checktrail.task':task}}}]);}
  if(args[0]==='run'){assert.ok(args.includes('--rm'));assert.equal(args[args.indexOf('--network')+1],'none');if(args.at(-1)==='ruby --disable-gems --version; apk --print-arch; cat /etc/alpine-release')return 'ruby 4.0.7 original\\naarch64\\n3.24.2\\n';if(args.at(-1)==='--version')return '10.9.8\\n';assert.equal(args.at(-1),'node --version; ruby --disable-gems --version; gcc -dumpfullversion; make --version');return 'v22.23.2\\nruby 4.0.7 original\\n15.2.0\\nGNU Make 4.4.1\\n';}
- if(args[0]==='build'){assert.equal(badDigest,false,'Changed archive bytes must never reach the build');assert.equal(args[args.indexOf('--network')+1],'none');assert.equal(requests.size,19);built=true;return '';}
+ if(args[0]==='build'){assert.equal(badDigest,false,'Changed archive bytes must never reach the build');assert.equal(args[args.indexOf('--network')+1],'none');assert.equal(requests.size,18);built=true;return '';}
  throw Error('unexpected docker call '+JSON.stringify(args));
 };syncBuiltinESMExports();
 globalThis.fetch=async(asset,options)=>{
- const pin=allowed.get(asset);assert.ok(pin,'Must retrieve only an enumerated exact encoded pinned archive URL');const urls=deliveryUrls.get(pin.path)||[];assert.equal(asset,(urls.length===1?mirror:primary)+encodeURIComponent(pin.path));urls.push(asset);deliveryUrls.set(pin.path,urls);assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
+ const pin=allowed.get(asset);assert.ok(pin,'Must retrieve only an enumerated exact encoded pinned archive URL');const urls=deliveryUrls.get(pin.path)||[];assert.equal(asset,([primary,mirror,secondMirror][urls.length])+encodeURIComponent(pin.path));urls.push(asset);deliveryUrls.set(pin.path,urls);assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
  const count=(requests.get(pin.path)||0)+1;requests.set(pin.path,count);
- if(pin.path==='g++-15.2.0-r5.apk'&&count===3)assert.deepEqual(deliveryUrls.get(pin.path),[primary,mirror,primary].map(origin=>origin+encodeURIComponent(pin.path)));
+ if(pin.path==='g++-15.2.0-r5.apk'&&count===3)assert.deepEqual(deliveryUrls.get(pin.path),[primary,mirror,secondMirror].map(origin=>origin+encodeURIComponent(pin.path)));
  if(pin.path==='g++-15.2.0-r5.apk'&&count<3)return new Response(null,{status:404});
  return new Response(badDigest&&pin.path==='g++-15.2.0-r5.apk'?'modified':'original');
 };
 if(badDigest){await assert.rejects(import('./scripts/prepare-ruby-tools-runtime.mjs'),{code:'ERR_ASSERTION'});assert.equal(built,false);assert.equal(requests.size,4);assert.deepEqual(await readdir(new URL('./.checktrail/',root)),[]);await assert.rejects(access(new URL('./.checktrail/ruby-tools-runtime',root)),{code:'ENOENT'});}
 else {await import('./scripts/prepare-ruby-tools-runtime.mjs');assert.equal(built,true);const identity=JSON.parse(await readFile(new URL('./.checktrail/ruby-tools-runtime/identity.json',root),'utf8'));assert.equal(identity.files.length,19);assert.ok(identity.files.every(pin=>pin.sha256===digest&&pin.bytes===8));assert.equal(identity.transitiveIndexResolution,false);assert.equal(identity.apkSignatureChecksDisabled,false);assert.equal(identity.buildNetwork,'none');}
-assert.equal(pulls,2);assert.equal(requests.get('g++-15.2.0-r5.apk'),3);assert.ok([...requests].every(([name,count])=>name==='g++-15.2.0-r5.apk'?count===3:count===1));
+assert.equal(pulls,2);assert.equal(requests.has('zlib-1.3.2-r0.apk'),false);assert.equal(requests.get('g++-15.2.0-r5.apk'),3);assert.ok([...requests].every(([name,count])=>name==='g++-15.2.0-r5.apk'?count===3:count===1));
 `;
     const root = await fixture(t, files);
     const env = { ...process.env };
@@ -218,3 +222,38 @@ assert.equal(pulls,2);assert.equal(requests.get('g++-15.2.0-r5.apk'),3);assert.o
     assert.equal(result.status, 0, result.stdout + result.stderr);
   }
 });
+
+test("pinned artifact preparation rotates distinct exact mirrors within the original attempt and deadline budget", async (t) =>
+  control(
+    t,
+    `
+ const item={asset:'https://primary.invalid/exact%2Barchive.bin?revision=1',fallbackAssets:['https://first.invalid/exact%2Barchive.bin?revision=1','https://second.invalid/exact%2Barchive.bin?revision=1'],bytes:8};
+ for(const kind of ['http','transport']) {
+  const seen=[],waits=[],signal=new AbortController().signal;let cancelled=0;
+  const result=await requestPinnedArtifactBytes(item,{retryNotFound:true,signal,fetchImpl:async(asset,options)=>{assert.equal(options.signal,signal);seen.push(asset);if(seen.length===3)return new Response('original');if(kind==='transport')throw Object.assign(new Error('original timeout'),{code:'ETIMEDOUT'});return new Response(new ReadableStream({cancel(){cancelled++}}),{status:404});},delayImpl:async ms=>waits.push(ms)});
+  assert.deepEqual(seen,[item.asset,...item.fallbackAssets]);assert.deepEqual(waits,[1000,3000]);assert.equal(result.toString(),'original');assert.equal(cancelled,kind==='http'?2:0);
+ }
+ const seen=[];await assert.rejects(requestPinnedArtifactBytes(item,{retryNotFound:true,fetchImpl:async asset=>{seen.push(asset);return new Response(null,{status:404})},delayImpl:async()=>{}}),/HTTP 404/);assert.deepEqual(seen,[item.asset,...item.fallbackAssets]);
+ let calls=0;await assert.rejects(requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return new Response(null,{status:404})},delayImpl:async()=>assert.fail('Default permanent HTTP must not retry')}),/HTTP response/);assert.equal(calls,1);
+ calls=0;await assert.rejects(requestPinnedArtifactBytes(item,{fetchImpl:async()=>{calls++;return new Response('short')},delayImpl:async()=>assert.fail('Incorrect bytes must not reach a mirror')}),/byte count/);assert.equal(calls,1);
+ const controller=new AbortController();calls=0;await assert.rejects(requestPinnedArtifactBytes(item,{signal:controller.signal,fetchImpl:async()=>{calls++;return new Response(null,{status:500})},delayImpl:async()=>controller.abort(new Error('original total deadline'))}),/original total deadline/);assert.equal(calls,1);
+`,
+  ));
+
+test("pinned artifact preparation rejects ambiguous mirror lists credentials fragments filenames and queries before fetching", async (t) =>
+  control(
+    t,
+    `
+ const base={asset:'https://primary.invalid/exact%2Barchive.bin?revision=1',bytes:8},good='https://mirror.invalid/exact%2Barchive.bin?revision=1';
+ for(const override of [
+  {fallbackAssets:[]},{fallbackAssets:[good,good]},{fallbackAssets:[base.asset]},
+  {fallbackAssets:[good,good+'2',good+'3']},{fallbackAssets:[1]},
+  {fallbackAssets:[good],fallbackAsset:good},{fallbackAssets:good},
+  {fallbackAssets:['http://mirror.invalid/exact%2Barchive.bin?revision=1']},
+  {fallbackAssets:[good+'#fragment']},{fallbackAssets:[good.replace('mirror.invalid','name:secret@mirror.invalid')]},
+  {fallbackAssets:[good.replace('revision=1','revision=2')]},{fallbackAssets:[good.replace('archive.bin','archive.bin.backup')]}
+ ]) {let calls=0;await assert.rejects(requestPinnedArtifactBytes({...base,...override},{fetchImpl:async()=>{calls++;return new Response('original')}}));assert.equal(calls,0);}
+ let calls=0;const valid=await requestPinnedArtifactBytes({...base,fallbackAssets:[good]},{fetchImpl:async asset=>{calls++;assert.equal(asset,calls===1?base.asset:good);return calls===1?new Response(null,{status:503}):new Response('original')},delayImpl:async()=>{}});assert.equal(calls,2);assert.equal(valid.toString(),'original');
+ calls=0;const repeated=await requestPinnedArtifactBytes({...base,fallbackAssets:[good]},{fetchImpl:async asset=>{calls++;assert.equal(asset,calls===1?base.asset:good);return calls<3?new Response(null,{status:503}):new Response('original')},delayImpl:async()=>{}});assert.equal(calls,3);assert.equal(repeated.toString(),'original');
+`,
+  ));
