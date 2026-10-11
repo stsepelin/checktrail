@@ -43,6 +43,11 @@ The [measurement](measurements/attempt-output-foundation-2026-10-11.json) record
 observed runtimes, immutable code/harness/package identities and paired guard
 removals using unchanged assertions on isolated copies.
 
+A [native journal codec and private storage foundation](NATIVE-ATTEMPT-JOURNALS.md)
+adds ordered admissions, actual process acknowledgements, bounded physical chunks
+and strict replay. Source and offline installed controls are measured; the shared
+engine and wrappers do not use this foundation yet.
+
 The frozen `attempt-archives` profile remains pending. Complete individually
 addressed artifacts for every inner compiler/framework/bootstrap attempt,
 interrupted-attempt journals, durable replay, the remaining native matrix and
