@@ -394,12 +394,18 @@ test("POSIX cleanup stops a quiesced root after direct children are signalled an
       },
       exists: (pid) => rows.has(pid),
       now: () => 0,
-      wait: async () =>
+      wait: async () => {
         assert.equal(
           rows.has(root.pid),
           true,
           "No reaping wait after root termination",
-        ),
+        );
+        assert.equal(
+          signalled,
+          false,
+          "Release the stopped root before waiting to reap signalled direct children",
+        );
+      },
     },
     () => {
       assert.equal(signalled, true);

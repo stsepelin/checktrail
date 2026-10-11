@@ -197,9 +197,9 @@ childProcess.execFileSync=(command,args)=>{
  throw Error('unexpected docker call '+JSON.stringify(args));
 };syncBuiltinESMExports();
 globalThis.fetch=async(asset,options)=>{
- const pin=allowed.get(asset);assert.ok(pin,'Must retrieve only an enumerated exact encoded pinned archive URL');const urls=deliveryUrls.get(pin.path)||[];assert.equal(asset,(urls.length?mirror:primary)+encodeURIComponent(pin.path));urls.push(asset);deliveryUrls.set(pin.path,urls);assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
+ const pin=allowed.get(asset);assert.ok(pin,'Must retrieve only an enumerated exact encoded pinned archive URL');const urls=deliveryUrls.get(pin.path)||[];assert.equal(asset,(urls.length===1?mirror:primary)+encodeURIComponent(pin.path));urls.push(asset);deliveryUrls.set(pin.path,urls);assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
  const count=(requests.get(pin.path)||0)+1;requests.set(pin.path,count);
- if(pin.path==='g++-15.2.0-r5.apk'&&count===3)assert.deepEqual(deliveryUrls.get(pin.path),[primary,mirror,mirror].map(origin=>origin+encodeURIComponent(pin.path)));
+ if(pin.path==='g++-15.2.0-r5.apk'&&count===3)assert.deepEqual(deliveryUrls.get(pin.path),[primary,mirror,primary].map(origin=>origin+encodeURIComponent(pin.path)));
  if(pin.path==='g++-15.2.0-r5.apk'&&count<3)return new Response(null,{status:404});
  return new Response(badDigest&&pin.path==='g++-15.2.0-r5.apk'?'modified':'original');
 };
