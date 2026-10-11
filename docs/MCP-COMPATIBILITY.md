@@ -35,6 +35,11 @@ abort signal. String `"0"` must not cancel numeric `0`.
 
 ## Standard Tasks polling profile
 
+The Tasks runtime foundation now includes strict source/installed checks for the
+selected runtime slots and an experimental Windows ACL backend. Native Windows
+acceptance and the frozen whole-profile Gate A cases remain pending; CI wiring
+alone does not verify them. See [task storage](TASK-STORAGE.md).
+
 The foreground server advertises `io.modelcontextprotocol/tasks` only when the
 operator supplies `--task-store`. A capable `validation_run` creates a durable
 handle; get, cancel and update use the public extension methods. Other clients

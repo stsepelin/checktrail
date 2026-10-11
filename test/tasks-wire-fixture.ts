@@ -1,0 +1,220 @@
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { readFile, realpath } from "node:fs/promises";
+import path from "node:path";
+import { createInterface } from "node:readline";
+import type { TestContext } from "node:test";
+import { setTimeout as delay } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
+import { fixture, nodeManifest, passingTest } from "./helpers.js";
+import { VERSION } from "../src/types.js";
+
+export const extension = "io.modelcontextprotocol/tasks";
+type Response = {
+  result?: Record<string, unknown>;
+  error?: { code: number; message: string; data?: unknown };
+};
+export async function setup(t: TestContext, source = passingTest) {
+  const root = await realpath(
+    await fixture(t, {
+      "package.json": nodeManifest,
+      "check.test.js": source,
+      ".checktrail/keep": "",
+    }),
+  );
+  const directory = path.join(await realpath(await fixture(t, {})), "tasks");
+  return { root, directory };
+}
+export async function wire(
+  t: TestContext,
+  opt: { root: string; directory: string },
+  args: string[] = ["--allow-execution"],
+  configured = true,
+) {
+  const child = spawn(
+    process.execPath,
+    [
+      fileURLToPath(new URL("../src/cli.js", import.meta.url)),
+      "serve",
+      "--root",
+      opt.root,
+      ...(configured
+        ? ["--task-store", opt.directory, "--timeout-ms", "5000"]
+        : []),
+      ...args,
+    ],
+    { stdio: ["pipe", "pipe", "pipe"] },
+  );
+  const lines = createInterface({ input: child.stdout });
+  const pending = new Map<
+    number,
+    { resolve: (value: Response) => void; reject: (error: Error) => void }
+  >();
+  let sequence = 0,
+    exited = false,
+    stderr = "";
+  child.stderr.on("data", (bytes) => {
+    stderr = (stderr + String(bytes)).slice(-4096);
+  });
+  const exit = once(child, "exit");
+  child.on("exit", () => {
+    exited = true;
+    for (const item of pending.values())
+      item.reject(new Error(`Server exited: ${stderr}`));
+    pending.clear();
+  });
+  lines.on("line", (line) => {
+    const response = JSON.parse(line) as Response & { id?: number };
+    if (response.id !== undefined) {
+      pending.get(response.id)?.resolve(response);
+      pending.delete(response.id);
+    }
+  });
+  async function close() {
+    if (!exited) child.stdin.end();
+    const timer = setTimeout(() => child.kill("SIGKILL"), 10000);
+    try {
+      await exit;
+    } finally {
+      clearTimeout(timer);
+      lines.close();
+    }
+  }
+  t.after(close);
+  function send(
+    method: string,
+    params: Record<string, unknown>,
+    caps = true,
+    id?: number,
+  ) {
+    child.stdin.write(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        ...(id !== undefined ? { id } : {}),
+        method,
+        params: {
+          ...params,
+          _meta: {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientCapabilities": {
+              extensions: caps ? { [extension]: {} } : {},
+            },
+          },
+        },
+      }) + "\n",
+    );
+  }
+  async function request(
+    method: string,
+    params: Record<string, unknown> = {},
+    caps = true,
+  ): Promise<Response> {
+    const id = sequence++;
+    const timer = setTimeout(() => {
+      pending
+        .get(id)
+        ?.reject(new Error(`Request timed out: ${method}: ${stderr}`));
+      pending.delete(id);
+    }, 10000);
+    try {
+      return await new Promise<Response>((resolve, reject) => {
+        pending.set(id, { resolve, reject });
+        send(method, params, caps, id);
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return {
+    request,
+    close,
+    notify: (method: string, params: Record<string, unknown>) =>
+      send(method, params),
+  };
+}
+export function acknowledge(response: Response) {
+  assert.equal(response.error, undefined);
+  assert.deepEqual(response.result, {
+    resultType: "complete",
+    _meta: {
+      "io.modelcontextprotocol/serverInfo": {
+        name: "checktrail",
+        version: VERSION,
+      },
+    },
+  });
+}
+export function taskId(response: Response): string {
+  assert.equal(response.error, undefined);
+  assert.equal(response.result?.resultType, "task", JSON.stringify(response));
+  assert.match(String(response.result.taskId), /^[a-f0-9-]{36}$/);
+  return String(response.result.taskId);
+}
+export async function terminal(
+  connection: Awaited<ReturnType<typeof wire>>,
+  id: string,
+  timeoutMs = 4000,
+) {
+  for (let attempt = 0; attempt < Math.ceil(timeoutMs / 25); attempt++) {
+    const response = await connection.request("tasks/get", { taskId: id });
+    assert.equal(response.error, undefined);
+    assert.equal(response.result?.resultType, "complete");
+    if (response.result.status !== "working") return response.result;
+    await delay(25);
+  }
+  throw new Error("Task did not finish");
+}
+export function report(task: Record<string, unknown>) {
+  return (task.result as { structuredContent?: Record<string, unknown> })
+    .structuredContent!;
+}
+export const slow = `import {test} from 'node:test'; import fs from 'node:fs'; import {spawn} from 'node:child_process';
+test('waits', async()=> {const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});
+fs.writeFileSync('.checktrail/started.json',JSON.stringify({pid:process.pid,group:process.ppid,child:child.pid}));
+await new Promise(resolve=>setTimeout(resolve,60000));});`;
+type Pids = { pid: number; group: number; child: number };
+export async function alive(pid: number) {
+  try {
+    process.kill(pid, 0);
+  } catch {
+    return false;
+  }
+  if (process.platform === "linux") {
+    try {
+      return !/\) Z /.test(await readFile(`/proc/${pid}/stat`, "utf8"));
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+export async function started(t: TestContext, root: string): Promise<Pids> {
+  for (let attempt = 0; attempt < 160; attempt++) {
+    try {
+      const value = JSON.parse(
+        await readFile(path.join(root, ".checktrail/started.json"), "utf8"),
+      ) as Pids;
+      t.after(() => {
+        try {
+          process.kill(-value.group, "SIGKILL");
+        } catch {
+          /* Cleaned up. */
+        }
+      });
+      assert.equal(await alive(value.pid), true);
+      assert.equal(await alive(value.child), true);
+      return value;
+    } catch {
+      await delay(25);
+    }
+  }
+  throw new Error("Native descendants did not start");
+}
+export async function stopped(pids: Pids) {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    if (!(await alive(pids.pid)) && !(await alive(pids.child))) return;
+    await delay(25);
+  }
+  assert.fail("Native descendants survived terminal cancellation");
+}

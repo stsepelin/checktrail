@@ -305,7 +305,9 @@ Ordinary validation calls run asynchronously and return their report on the orig
 call. Startup `--task-store` enables the bounded standard Tasks polling profile for
 capable requests, preserving ordinary-call fallback. See
 [MCP compatibility](docs/MCP-COMPATIBILITY.md) for the tested SDK 2.3.0 routing,
-lifecycle evidence and remaining client/runtime profiles.
+lifecycle evidence and remaining client/runtime profiles. The selected
+[Windows private task-store backend](docs/TASK-STORAGE.md#windows-storage-acceptance)
+has new native source/package CI controls; its platform acceptance is pending.
 
 Exact finding baselines and exceptions are available through the CLI, library and
 MCP. [Finding policy](docs/FINDING-POLICY.md) describes creation, expiration,
