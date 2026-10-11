@@ -494,3 +494,9 @@ cases before its full subprocess exception. Swift assertions preserve that prefi
 alongside the diagnostic tail, so a large terminal ledger cannot hide the cause.
 This improves failure reporting; it does not qualify a failed or unavailable
 native profile as passing.
+
+Image acquisition admits the exact public ECR daemon registry `context deadline
+exceeded` response as a transient delivery failure, within its existing retry and
+wall budgets. Adjacent hosts/paths, added authentication errors, cancellation and
+local subprocess deadline failures remain terminal. Every attempt retains the
+same immutable image reference.
