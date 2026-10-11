@@ -36,6 +36,10 @@ import { createToolCatalog } from "./mcp-tool-catalog.js";
 import { McpValidationTasks, taskMetadata } from "./mcp-validation-tasks.js";
 import { validationTasksOptionsSchema } from "./validation-tasks-protocol.js";
 import {
+  taskArchiveChunkSchema,
+  taskArchiveLimits,
+} from "./task-report-archives.js";
+import {
   ProtocolError,
   ProtocolErrorCode,
   type CallToolResult,
@@ -1180,6 +1184,33 @@ function createConnectionServer(
       }
     },
   );
+  if (tasks && options.detailed)
+    registerTool(
+      "validation_archive_read",
+      {
+        description:
+          "Read one bounded chunk of a retained detailed validation report by its original task ID. Requires the operator's startup task store and detailed disclosure settings. Historical evidence does not establish current-source freshness.",
+        inputSchema: z.strictObject({
+          taskId: z.string().uuid(),
+          index: z
+            .number()
+            .int()
+            .min(0)
+            .max(
+              taskArchiveLimits.reportBytes / taskArchiveLimits.chunkBytes - 1,
+            ),
+        }),
+        outputSchema: taskArchiveChunkSchema,
+        annotations: readOnly,
+      },
+      async ({ taskId, index }) => {
+        try {
+          return reply(await tasks.readArchive(taskId, index));
+        } catch {
+          return error("Retained validation archive chunk is unavailable.");
+        }
+      },
+    );
   registerTool(
     "validation_report",
     {

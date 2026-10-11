@@ -157,12 +157,22 @@ has no interactive input or JSON-RPC error state.
 - TTL defaults to 24 hours, measured from creation, and accepts integer milliseconds
   from 1 through seven days. Wall-clock changes affect expiration. Expired IDs are
   inaccessible; rows are pruned on creation or reopening.
-- Each serialized tool result is limited to 256 KiB of UTF-8, including both text
-  and structured representations. Oversized completion throws and leaves the
-  task working. Retained payloads therefore total at most 8 MiB.
-- SQLite uses 4 KiB pages with a 16 MiB database limit, DELETE journaling and FULL
-  synchronous commits. A rollback journal temporarily consumes additional bounded
-  space. The ownership database and accepted journal sizes have separate limits.
+- Each inline tool result remains limited to 256 KiB of UTF-8, including both
+  text and structured representations. The original `complete()` API rejects
+  oversized completion and leaves the task working. Inline payloads therefore
+  total at most 8 MiB.
+- The detailed worker uses `completeWithArchive()`. Oversized detail is retained
+  as exact compact report JSON with a whole-report SHA-256 and fixed 64 KiB chunks
+  with individual hashes. Its completed inline result remains an explicit tool
+  error directing readers to `validation_archive_read`; completion does not mean
+  validation passed. Ordinary small results retain their original representation.
+- One archive is limited to 32 MiB and all retained archive bytes to 64 MiB.
+  Capacity failures reject the entire completion transaction without evicting
+  unexpired sibling results. Summary stores never receive archive bytes.
+- SQLite uses 4 KiB pages, a 16 MiB summary or 96 MiB detailed database limit,
+  DELETE journaling and FULL synchronous commits. Accepted rollback journals are
+  bounded at the selected database limit plus 1 MiB. Ownership files retain their
+  separate limits.
 - Short synchronous database operations run on the caller's thread. The store
   rejects malformed state, mismatched result representations and corrupt databases;
   it does not erase an unreadable store and claim successful recovery.
@@ -174,12 +184,45 @@ SQLite secure deletion is enabled, but expiry is not a secure-erasure promise fo
 backups, filesystem snapshots or storage devices. Tests demonstrate process-crash
 recovery, not arbitrary hardware or power-loss durability.
 
+## Large detailed reports
+
+`completeWithArchive(id, report)` keeps the task's original source binding,
+terminal immutability and cancellation reservation. Every chunk, manifest and
+terminal result commits in one SQLite transaction. A mid-write refusal rolls all
+of them back. The worker records its existing interruption error if retention
+fails; it never reports partial retention as a completed report.
+
+`readArchive(id, index)` returns one bounded canonical base64 chunk plus its byte
+count, SHA-256 and a manifest binding the task, initial source fingerprint and
+whole report. Concatenate decoded chunks in index order and verify the whole
+manifest's byte count and SHA-256 before using the report. Reading hashes one
+bounded chunk; completion and reopening verify the whole report. These are byte
+integrity checks, not producer authentication or current-source revalidation.
+
+Opening a valid version 1 store validates its root, disclosure and original rows
+before atomically upgrading to version 2. Existing terminal results are retained.
+Older releases refuse the new store version; keep using the upgraded release for
+that directory. Reopening refuses missing, extra, reordered or inconsistent
+archive artifacts, including wrong source, digests and terminal state. Expiration
+cascades through manifest and chunk rows. This retains the report's captured
+streams and their original incomplete flags; it cannot recover bytes the engine
+never captured or supply missing model-host usage.
+
+The [durable archive measurement](measurements/durable-task-report-archives-2026-10-11.json)
+binds the recorded source and fresh installed controls and paired guard removals.
+The whole Attempt archives profile, native Windows archive controls, complete
+platform matrix and resource release measurements remain pending. Reopening may
+read and validate up to the bounded aggregate archive volume. The ordinary
+same-user filesystem ownership assumptions above still apply.
+
 ## Reproduce
 
 ```sh
 npm run build
 node --test dist/test/task-store.test.js
 node scripts/verify-task-store-container.mjs
+node scripts/verify-task-archives.mjs
+node scripts/verify-task-archives-package.mjs
 ```
 
 Native regressions cover real validation and reopening, same-process and

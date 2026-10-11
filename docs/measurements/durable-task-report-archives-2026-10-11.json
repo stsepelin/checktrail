@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Selected durable task report retention; original synthetic storage, worker, CLI/MCP and native journal controls only",
+  "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+  "limits": {
+    "chunkBytes": 65536,
+    "reportBytes": 33554432,
+    "retainedBytes": 67108864,
+    "detailedDatabaseBytes": 100663296,
+    "inlineResultBytes": 262144
+  },
+  "controls": [
+    {
+      "file": "task-store.test.js",
+      "name": "task store retains native validation results through reopening without retaining summary source"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task stores reject root and disclosure changes and retain detailed results only when configured"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task cancellation reserves the transition and cannot be overwritten by late completion"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task store rejects concurrent owners in this process and another process without disrupting work"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task store recovers after a real owner SIGKILL and never resumes or passes unfinished tasks"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "SQLite rolls back an interrupted write before task-store recovery"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task retention enforces capacity, expiry, result bytes and source identity"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task store refuses unsafe directories, links, foreign databases and damaged results"
+    },
+    {
+      "file": "task-store.test.js",
+      "name": "task store bounds UTF-8 results and total retained data with private file modes"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable validation tasks preserve native passed, failed and incomplete outcomes through reopening"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task startup does not grant execution, load project code or inherit Node preloads"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task parent SIGKILL triggers worker cleanup and retains cancellation across restart"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task timeout retains incomplete native evidence rather than a passing result"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "oversized durable detail becomes an explicit tool error while the same native run fits summary mode"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task close during planning rejects new work and releases the store"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task cancel stops a live process group before recording cancellation or releasing ownership"
+    },
+    {
+      "file": "validation-tasks.test.js",
+      "name": "durable task close stops a live process group before recording cancellation or releasing ownership"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks capability is operator enabled and per-request; discovery and planning create no store"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks durably create, retrieve and reopen passed failed and empty native outcomes"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks reject tool trust injection timeout changes and unknown handles without leaking paths"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks ordinary request cancellation leaves background work alive and explicit cancellation waits for descendants"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks foreground shutdown waits for native cleanup and retains cancellation on restart"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks preserve oversized detail as a completed tool error while summary retains the same native result"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks owner rejects overlap during planning and closes an initialized worker before returning"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks reject expired handles and preserve crash interruption without resuming execution"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks admission shares the ordinary native execution slot in both directions"
+    },
+    {
+      "file": "mcp-validation-tasks.test.js",
+      "name": "MCP Tasks require capabilities for every control request and acknowledge only declared updates"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archives retain exact multi-chunk UTF-8 reports and bounded terminal errors across reopening"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archive report and shared quotas admit exact byte boundaries and refuse one extra byte without evicting siblings"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archive completion rolls back every chunk and terminal transition on a real mid-insert SQLite refusal"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archive source cancellation expiry and summary disclosure guards preserve independent siblings"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archive migration validates legacy bindings and rows before atomically changing its schema"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "task archive reopening refuses every manifest chunk source and terminal corruption family"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "native validation worker retains oversized original reports and supports bounded read-only reopening"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "native MCP archive retrieval retains failed outcomes with startup-only detail and exact bounded addresses"
+    },
+    {
+      "file": "task-report-archives.test.js",
+      "name": "durable Tasks retain oversized physical inner-wrapper journals with their original PID source and stream bindings"
+    }
+  ],
+  "receipts": [
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "660034828b633d8cbffd19b2a489a785508fe305efe647b61bff4fda0a4e5e19",
+      "kind": "source",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ]
+    },
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "2bf39f167c6064738fd527e43591f04deee93ad4bca71c7fc881d5c4660a741b",
+      "kind": "installed",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ],
+      "tarballSha256": "31ba1717599412fe057284adf826d006b270b068fb8e87e25e58394f29f6e7db",
+      "productionDependencyLockSha256": "8c339a1f6281a90dea5af7e5f730bcc616c899d095588c7a508e7962b1ba3172",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "660034828b633d8cbffd19b2a489a785508fe305efe647b61bff4fda0a4e5e19",
+      "kind": "source",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ]
+    },
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "2bf39f167c6064738fd527e43591f04deee93ad4bca71c7fc881d5c4660a741b",
+      "kind": "installed",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ],
+      "tarballSha256": "31ba1717599412fe057284adf826d006b270b068fb8e87e25e58394f29f6e7db",
+      "productionDependencyLockSha256": "a757cf9869ed1bf40bfb48da82d9e91f431455a55e8c4f41d9f1a23419b50812",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "660034828b633d8cbffd19b2a489a785508fe305efe647b61bff4fda0a4e5e19",
+      "kind": "source",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ]
+    },
+    {
+      "profile": "durable-task-report-archives-v1",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "harnessSha256": "2bf39f167c6064738fd527e43591f04deee93ad4bca71c7fc881d5c4660a741b",
+      "kind": "installed",
+      "required": 36,
+      "passed": 36,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "compiledCallbackFiles": [
+        {
+          "file": "task-store.test.js",
+          "sha256": "7efdc4ba3e84b2d5cfe8d83afccdd80f000e669034bbc25d3062d84d0d3215c7"
+        },
+        {
+          "file": "validation-tasks.test.js",
+          "sha256": "45be9cb98a9d422aa9c02d06afffa8bc0674bc07a88973d0b1fb2373ca10deba"
+        },
+        {
+          "file": "mcp-validation-tasks.test.js",
+          "sha256": "eef0e1e70a96c1c757970fe770130ddb4ce5cdbf977aeb9f7aa31b3c886495b6"
+        },
+        {
+          "file": "task-report-archives.test.js",
+          "sha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7"
+        }
+      ],
+      "tarballSha256": "3844e46d8ed5fe1f83c589f930c1da0f67060df1986cd2e0d05f21abeb15941a",
+      "productionDependencyLockSha256": "7dfff782ced2b8a770e3c50737fa95baf246e275f7341d6c3e5b9db7aa020ffa",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    }
+  ],
+  "pairedGuardRemovals": [
+    {
+      "id": "shared-quota",
+      "file": "dist/src/task-report-archives.js",
+      "callback": "task archive report and shared quotas admit exact byte boundaries and refuse one extra byte without evicting siblings",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "chunk-digest",
+      "file": "dist/src/task-report-archives.js",
+      "callback": "task archive reopening refuses every manifest chunk source and terminal corruption family",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "manifest-task",
+      "file": "dist/src/task-report-archives.js",
+      "callback": "task archive reopening refuses every manifest chunk source and terminal corruption family",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "whole-report-digest",
+      "file": "dist/src/task-report-archives.js",
+      "callback": "task archive reopening refuses every manifest chunk source and terminal corruption family",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "manifest-source",
+      "file": "dist/src/task-report-archives.js",
+      "callback": "task archive reopening refuses every manifest chunk source and terminal corruption family",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "cancellation",
+      "file": "dist/src/task-store.js",
+      "callback": "task archive source cancellation expiry and summary disclosure guards preserve independent siblings",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "expiry-cascade",
+      "file": "dist/src/task-store.js",
+      "callback": "task archive source cancellation expiry and summary disclosure guards preserve independent siblings",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "migration-preflight",
+      "file": "dist/src/task-store.js",
+      "callback": "task archive migration validates legacy bindings and rows before atomically changing its schema",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "all-artifacts-transaction",
+      "file": "dist/src/task-store.js",
+      "callback": "task archive completion rolls back every chunk and terminal transition on a real mid-insert SQLite refusal",
+      "callbackFileSha256": "e7fb08b731f3c813c58c402f810f30ec7cf35befb8ca2955631cf705eab6fae7",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "fullLocalCheck": {
+    "tests": 1854,
+    "pass": 1102,
+    "fail": 0,
+    "skipped": 752,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "selectedDurableTaskReportRetention": true,
+  "completeDurableAttemptArchiveAcceptance": false,
+  "nativeWindowsArchiveAcceptance": false,
+  "wholeNativeCallFamilyMigrated": false,
+  "producerAndLicenseClosureComplete": false,
+  "completePlatformMatrixAccepted": false,
+  "resourceReleaseAcceptanceComplete": false,
+  "hostModelUsageMeasured": false,
+  "attemptArchivesGateAcceptanceComplete": false,
+  "gateAClosed": false,
+  "qualityComparisonMeasured": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false
+}
