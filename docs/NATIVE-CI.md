@@ -501,6 +501,14 @@ wall budgets. Adjacent hosts/paths, added authentication errors, cancellation an
 local subprocess deadline failures remain terminal. Every attempt retains the
 same immutable image reference.
 
+Laravel supplemental accounting runs from a regular module entry point. The
+pinned Linux Node 22.23.2 runtime reproduced recursive test-runner startup when
+the parent was started with inline evaluation flags: the file wrapper ran while
+the selected original callback did not. A file-based entry point avoids those
+inherited evaluation flags; the required-name ledger still refuses missing,
+skipped or failed callbacks. This change preserves the original supplemental
+callbacks and their assertions.
+
 Laravel supplemental acceptance now inventories the exact static callback names
 in both supplemental files and requires each through the existing bounded
 acceptance ledger. This replaces a stale aggregate TAP count. Empty, duplicate,
