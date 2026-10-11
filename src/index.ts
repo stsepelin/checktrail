@@ -1,4 +1,13 @@
 export { createPlan, validate, aggregate } from "./engine.js";
+export {
+  inspectReviewCohortDeclaration,
+  projectReviewCohortDeclaration,
+  reviewCohortDeclarationSchema,
+} from "./review-cohort.js";
+export type {
+  ReviewCohortDeclaration,
+  ReviewCohortDeclarationReport,
+} from "./review-cohort.js";
 export { validateContracts } from "./contracts.js";
 export type { ContractBundle, ContractReport } from "./contract-schema.js";
 export type { PlanOptions, ValidationOptions } from "./engine.js";
