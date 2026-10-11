@@ -506,3 +506,11 @@ in both supplemental files and requires each through the existing bounded
 acceptance ledger. This replaces a stale aggregate TAP count. Empty, duplicate,
 skipped, failed, missing, changed-file and truncated evidence stays non-passing;
 the original callbacks are preserved.
+
+The current Windows startup diagnostic independently compares the legacy
+`New-Object` encoding path with a typed managed constructor. On the observed
+Windows 2025/Node 22 runner, the former reached the diagnostic deadline while
+the latter completed. The Tasks ACL inspector and its public-ACL negative
+fixture now use typed encoding/security constructors. Caller-only ACL validation
+and the original required Tasks/native Windows callbacks remain intact. Native
+Tasks CI must pass before treating this change as platform acceptance.
