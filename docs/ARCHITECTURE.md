@@ -360,3 +360,5 @@ source but executes no project code or inference. Stored projections validate
 recorded accounting; current freshness requires reinspection.
 
 The opt-in `dotnet.format-fsharp` check uses the shared engine with a strict native packet parser. It compiles an original source-string observer, verifies selected SDK/formatter bytes, stages fresh source, retains both native phases and rechecks every document/diagnostic/text binding. FSHARP-FORMAT.md records parser API limits and first-document lifecycle witnesses; source-string formatting does not establish compilation or whole runtime closure.
+
+The opt-in `dotnet.format-extensions` profile uses the shared engine and build prerequisite contract. DOTNET-FORMAT-EXTENSIONS.md defines pinned native SDK style/analyzer selection, complete physical edit/report reconciliation, generated-source participation and explicit unsupported generated semantic fixes. Mapped SDK coordinates are linked to native diagnostics whose physical source spans are validated; findings cite physical source.

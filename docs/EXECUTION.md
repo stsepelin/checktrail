@@ -429,3 +429,5 @@ native execution, confidence, claim truth and host independence remain unverifie
 Final runtime acceptance and Gate A remain open.
 
 - Available: opt-in `dotnet.format-fsharp` binds every declared implementation, signature and script to pinned native default formatting, current raw source and complete returned formatter diagnostics. FSHARP-FORMAT.md records first-combination validation limits, full native parse exceptions/conditional failure lists, source grants and lifecycle controls. Final native source/installed acceptance is recorded separately; broader formatting, provenance and Gate A remain open.
+
+- Selected implementation: opt-in `dotnet.format-extensions` retains native C#/VB code-style/analyzer diagnostics, exact proposed text edits and declared MSBuild/Roslyn-generated participation. DOTNET-FORMAT-EXTENSIONS.md defines physical versus mapped addresses, SDK document summaries, unchanged SDK/package compiler documents, unsupported generated semantic fixes and reached lifecycle witnesses. Native acceptance is recorded separately; broader generators, provenance, platforms and Gate A remain open.

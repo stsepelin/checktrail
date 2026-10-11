@@ -29,6 +29,7 @@ import { dotnetBuildEvidence } from "./dotnet-build-evidence.js";
 import { dotnetTestEvidence } from "./dotnet-test-evidence.js";
 import { dotnetFormatEvidence } from "./dotnet-format-evidence.js";
 import { fsharpFormatEvidence } from "./fsharp-format-evidence.js";
+import { dotnetFormatExtensionsEvidence } from "./dotnet-format-extensions-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
@@ -414,6 +415,11 @@ export function evaluate(
     return { ...result, ...rubyToolsEvidence(check, processes) };
   if (check.parser === "fsharp-format-json")
     return { ...result, ...fsharpFormatEvidence(check, processes, root) };
+  if (check.parser === "dotnet-format-extensions-json")
+    return {
+      ...result,
+      ...dotnetFormatExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "dotnet-format-json")
     return { ...result, ...dotnetFormatEvidence(check, processes) };
   if (check.parser === "dotnet-test-json")

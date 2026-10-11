@@ -4552,5 +4552,43 @@
       "file": "dist/test/gate-dotnet-fsharp-format.test.js",
       "name": "dotnet-fsharp-format installed acceptance"
     }
+  ],
+  "dotnet-format-extensions": [
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions installed acceptance"
+    }
   ]
 }

@@ -54,6 +54,7 @@ export async function toolsFor(
         "dotnet.test",
         "dotnet.format-whitespace",
         "dotnet.format-fsharp",
+        "dotnet.format-extensions",
         "infrastructure.terraform-validate",
         "infrastructure.kustomize",
         "infrastructure.helm",
@@ -390,9 +391,12 @@ export async function toolsFor(
       ]),
     ];
   if (
-    ["dotnet.build", "dotnet.test", "dotnet.format-whitespace"].includes(
-      check.id,
-    ) &&
+    [
+      "dotnet.build",
+      "dotnet.test",
+      "dotnet.format-whitespace",
+      "dotnet.format-extensions",
+    ].includes(check.id) &&
     check.commands[0]
   )
     return [

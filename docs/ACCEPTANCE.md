@@ -87,3 +87,9 @@ replace external acceptance.
 This audit uses the existing execution ledger and recorded native observations.
 It is not a fresh security review of every source file, an independent review of
 the evaluation labels, or proof that the entire M0–M5 plan is complete.
+
+The selected C#/VB SDK formatting extension is specified in [DOTNET-FORMAT-EXTENSIONS.md](DOTNET-FORMAT-EXTENSIONS.md). [Its measurement](measurements/dotnet-format-extensions-2026-10-10.json) records all nine source and installed callbacks, 28 preserved .NET cases, 20 paired compiling controls and the mandatory host check. These are separate from final artifact/license, platform-matrix and Gate A acceptance. Native process freshness is not evidence of independent AI host sessions.
+
+[The formatting CI repair](measurements/dotnet-format-ci-repair-2026-10-10.json) records the observed file/stage budget failures and complete local acceptance after exact callback isolation. Every native mutant and restored callback still runs; identical unchanged baselines are reused. Wider runtime and Gate A acceptance remain separate.
+
+[The hosted formatting budget adjustment](measurements/dotnet-format-hosted-budget-2026-10-10.json) retains every native callback and paired control after the hosted guard stage exhausted its previous deadline. Its finite stage/job budgets are execution limits, not a performance improvement or additional native acceptance.
