@@ -17,7 +17,12 @@ const transientCodes = new Set([
 ]);
 
 const transientStatuses = new Set([500, 502, 503, 504]);
-class TransientArtifactResponseError extends Error {}
+export class PinnedArtifactHttpError extends Error {
+  constructor(status) {
+    super(`Pinned artifact HTTP ${status}`);
+    this.status = status;
+  }
+}
 
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
@@ -80,9 +85,7 @@ export async function requestPinnedArtifactBytes(
           transientStatuses.has(response.status) ||
           (retryNotFound && response.status === 404)
         )
-          throw new TransientArtifactResponseError(
-            `Pinned artifact HTTP ${response.status}`,
-          );
+          throw new PinnedArtifactHttpError(response.status);
         assert.equal(response.status, 200, "Pinned artifact HTTP response");
         assert.ok(response.body, "Pinned artifact response has no body");
         let count = 0;
@@ -100,7 +103,7 @@ export async function requestPinnedArtifactBytes(
     } catch (error) {
       signal.throwIfAborted();
       if (
-        (!(error instanceof TransientArtifactResponseError) &&
+        (!(error instanceof PinnedArtifactHttpError) &&
           !transientCodes.has(error?.code ?? error?.cause?.code)) ||
         attempt > waits.length
       )
