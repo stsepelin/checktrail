@@ -501,6 +501,15 @@ wall budgets. Adjacent hosts/paths, added authentication errors, cancellation an
 local subprocess deadline failures remain terminal. Every attempt retains the
 same immutable image reference.
 
+CI setup selects the official Docker Hub Node and Temurin indexes at the same
+existing SHA-256 pins after the public ECR daemon refused Temurin delivery with
+`Data limit exceeded`. Both returned OCI index byte streams were hashed and
+matched the selected pins; this does not verify publisher signatures or the
+whole native artifact/license closure. Other selected image pins remain in place.
+Preparation controls retain exact source identities, artifact hashes, byte bounds
+and refusal before publication. See the
+[delivery measurement](measurements/ci-image-delivery-2026-10-11.json).
+
 Laravel supplemental accounting runs from a regular module entry point. The
 pinned Linux Node 22.23.2 runtime reproduced recursive test-runner startup when
 the parent was started with inline evaluation flags: the file wrapper ran while
