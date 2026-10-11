@@ -4400,5 +4400,43 @@
       "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
       "name": "jvm-analyzer-extensions installed acceptance"
     }
+  ],
+  "kubernetes-extensions": [
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions installed acceptance"
+    }
   ]
 }

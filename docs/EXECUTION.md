@@ -184,6 +184,8 @@ an unavailable runtime or external service does not count as verification.
   per-file completion evidence. The separate KUBECONFORM.md profile adds pinned
   offline Kubernetes schema validation, every-document accounting, physical source
   diagnostics, native/installed CLI/MCP controls and compiling guard proofs.
+  KUBERNETES-EXTENSIONS.md adds the explicit thirteen-schema contract and current
+  physical source/policy/schema/tool freshness.
   TERRAFORM.md adds provider-free multi-file JSON module validation with pinned
   source ranges/snippets and native/installed CLI/MCP lifecycle controls. Wider
   KUSTOMIZE.md adds complete bounded local resource/prefix/replica assemblies with
