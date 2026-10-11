@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 assert.ok(["linux", "darwin"].includes(process.platform));
 assert.equal(process.arch, "arm64");
 const reference =
-  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+  "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const name = "checktrail-tasks-runtime-" + process.pid,
   task = "tasks-runtime-native-arm64";
 const cache = await realpath(
