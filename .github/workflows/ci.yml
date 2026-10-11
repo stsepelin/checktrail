@@ -117,6 +117,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+      - name: Verify captured consumer selection guards
+        if: runner.os == 'Linux' && matrix.node == '26'
+        run: node scripts/verify-consumer-impact-guards.mjs
       - name: Audit finite inventory structure and preserved native obligations
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
@@ -146,6 +149,8 @@ jobs:
       - run: node scripts/audit-context-grammars.mjs
       - name: Prepare package-install cache with network access
         run: node scripts/prepare-package-cache.mjs
+      - name: Verify captured consumer impact in the offline production package
+        run: node scripts/verify-consumer-impact-package.mjs
       - run: node scripts/smoke-package.mjs
       - name: Verify POSIX cleanup in the production package
         run: node scripts/verify-posix-cleanup-package.mjs

@@ -18,9 +18,12 @@ changed projects and their declared transitive consumers:
 ```
 
 `complete` asserts that the maintainer has listed every relevant dependency
-between configured projects. The engine does not infer imports or prove the
-graph complete. Edges must name configured projects; duplicate and self edges
-are rejected. Cycles terminate and include every reachable consumer.
+between configured projects. Before narrowing an all-Node-test plan, the engine
+also reconciles the finite captured-source import/resource profile described in
+[CONSUMER-IMPACT.md](CONSUMER-IMPACT.md). Missing captured edges and unknown inputs
+retain the full plan. This does not prove a complete runtime graph. Edges must
+name configured projects; duplicate and self edges are rejected. Cycles terminate
+and include every reachable consumer.
 
 ```sh
 node dist/src/cli.js plan --root /path/to/worktree --base main --detailed
@@ -43,7 +46,9 @@ The full configured plan is retained for missing Git/history/base, an incomplete
 graph, no changed paths, a root or hidden configuration change, an unowned path,
 a root-project change, unsupported index entries, unresolved merges, submodules,
 tracked excluded content, inspection limits or inconsistent Git metadata. The
-configured root must be the worktree root. Fallback is a broader validation run,
+configured root must be the worktree root. Unresolved captured imports, other
+runner families and granted project environments also retain the full plan.
+Fallback is a broader validation run,
 not a passing empty selection. It does not add unconfigured checks.
 
 Git inspection uses a host executable outside the project and bounded read-only
