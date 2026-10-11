@@ -122,6 +122,8 @@ recognition. Novel original cases can reduce one source of contamination but do
 not replace independently authored OSS cases. Previously inspected ESLint/Ruff
 cohorts remain regression evidence, not fresh holdout evidence.
 
+The [cohort declaration checker](EVALUATION-COHORT-DECLARATIONS.md) provides metadata-only preflight for transitive grouping, exclusions and declared eligibility. A complete declaration is not a frozen experiment or verified independence.
+
 ## Native and reference validation
 
 Run the project's pinned native checks with explicit scope and completion evidence.
