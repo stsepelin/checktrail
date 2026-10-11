@@ -56,15 +56,13 @@ export async function requestPinnedArtifactBytes(
     Number.isSafeInteger(bytes) && bytes > 0 && bytes <= 128 * 1024 * 1024,
   );
   const waits = [1000, 3000];
+  let nextAsset = asset;
   for (let attempt = 1; ; attempt++) {
     signal.throwIfAborted();
     let response, downloaded;
     try {
       try {
-        response = await fetchImpl(
-          attempt === 1 || fallbackAsset === undefined ? asset : fallbackAsset,
-          { signal },
-        );
+        response = await fetchImpl(nextAsset, { signal });
         signal.throwIfAborted();
         if (
           transientStatuses.has(response.status) ||
@@ -95,6 +93,12 @@ export async function requestPinnedArtifactBytes(
         attempt > waits.length
       )
         throw error;
+      // A lagging mirror can lack the exact revision still served by the primary.
+      // Return there after an admitted mirror 404 within the same attempt budget.
+      nextAsset =
+        fallbackAsset && nextAsset === fallbackAsset && response?.status === 404
+          ? asset
+          : (fallbackAsset ?? asset);
       await onRetry({ attempt, waitMs: waits[attempt - 1] });
       await delayImpl(waits[attempt - 1]);
       continue;
