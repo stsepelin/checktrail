@@ -253,5 +253,18 @@
   "acceptanceClaim": false,
   "gateAClosed": false,
   "inferenceExecuted": false,
-  "fieldEvaluationExecuted": false
+  "fieldEvaluationExecuted": false,
+  "integrationFullCheck": {
+    "scope": "Cohort implementation with the separately validated lifecycle, C++ acquisition and Windows diagnostic test repairs inherited from the current base. Engine/control input identities above remain unchanged. Final whole-package release closure is not claimed.",
+    "command": "npm run check",
+    "typecheckPassed": true,
+    "lintPassed": true,
+    "tests": 1912,
+    "pass": 1160,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 752,
+    "duration_ms": 309294.507125,
+    "optionalUnavailableChecksCountedAsPassed": false
+  }
 }
