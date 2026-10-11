@@ -1,3 +1,4 @@
+import { frameworkReportSemantics } from "./framework-report-semantics.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { access, readFile, writeFile, realpath, rm } from "node:fs/promises";
@@ -307,22 +308,8 @@ test("assembly-vue-router privacy acceptance", { skip }, async (t) => {
       assert.equal(answer.isError, undefined);
       const report = answer.structuredContent as Record<string, unknown>;
       assert.equal(report.outcome, "passed");
-      const semantic = (checks: unknown) => {
-        const value = structuredClone(checks) as {
-          runtime?: { capturedAt?: string };
-          processes?: { durationMs?: number; stdout: string }[];
-        }[];
-        for (const check of value) {
-          if (check.runtime) delete check.runtime.capturedAt;
-          for (const execution of check.processes ?? []) {
-            delete execution.durationMs;
-            const raw = JSON.parse(execution.stdout);
-            if (raw.runtime) delete raw.runtime.capturedAt;
-            execution.stdout = JSON.stringify(raw);
-          }
-        }
-        return value;
-      };
+      const semantic = (input: unknown): unknown =>
+        frameworkReportSemantics(input);
       assert.deepEqual(semantic(report.checks), semantic(value.checks));
       assert.equal(JSON.stringify(answer).includes("/catalog"), detailed);
       assert.equal(
