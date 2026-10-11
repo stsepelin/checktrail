@@ -21,7 +21,7 @@ class TransientArtifactResponseError extends Error {}
 
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
-  { asset, bytes },
+  { asset, bytes, fallbackAsset },
   {
     fetchImpl = globalThis.fetch,
     signal = globalThis.AbortSignal.timeout(120000),
@@ -31,7 +31,27 @@ export async function requestPinnedArtifactBytes(
   } = {},
 ) {
   assert.equal(typeof retryNotFound, "boolean");
-  assert.equal(new URL(asset).protocol, "https:");
+  const primary = new URL(asset);
+  assert.equal(primary.protocol, "https:");
+  if (fallbackAsset !== undefined) {
+    const fallback = new URL(fallbackAsset);
+    assert.equal(fallback.protocol, "https:");
+    assert.equal(
+      fallback.pathname.split("/").at(-1),
+      primary.pathname.split("/").at(-1),
+      "Pinned mirror must retain the exact artifact filename",
+    );
+    assert.equal(
+      fallback.search,
+      primary.search,
+      "Pinned mirror must retain the exact artifact query",
+    );
+    assert.equal(
+      fallback.username + fallback.password + fallback.hash,
+      "",
+      "Pinned mirror cannot contain credentials or a fragment",
+    );
+  }
   assert.ok(
     Number.isSafeInteger(bytes) && bytes > 0 && bytes <= 128 * 1024 * 1024,
   );
@@ -41,7 +61,10 @@ export async function requestPinnedArtifactBytes(
     let response, downloaded;
     try {
       try {
-        response = await fetchImpl(asset, { signal });
+        response = await fetchImpl(
+          attempt === 1 || fallbackAsset === undefined ? asset : fallbackAsset,
+          { signal },
+        );
         signal.throwIfAborted();
         if (
           transientStatuses.has(response.status) ||

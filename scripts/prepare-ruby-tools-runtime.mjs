@@ -144,6 +144,11 @@ try {
           bytes = await requestPinnedArtifactBytes(
             {
               asset: selected.repository + encodeURIComponent(pin.path),
+              fallbackAsset:
+                selected.repository.replace(
+                  "https://dl-cdn.alpinelinux.org/",
+                  "https://dl-4.alpinelinux.org/",
+                ) + encodeURIComponent(pin.path),
               bytes: pin.bytes,
             },
             {
