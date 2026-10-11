@@ -349,3 +349,12 @@ stages. Later stages consume fresh earlier output, and Java bodies receive a
 separate native compiler task. Source, generated output, physical class/TASTy
 origins, feature observations and raw invocation streams must reconcile. Native
 acceptance remains scoped; wider platforms and Gate A remain open.
+
+The shared [review provenance inspector](REVIEW-PROVENANCE.md) joins a bounded
+serialized packet with current physical source/citation checks, exact host claim
+and trial bindings, imported raw-native accounting and descriptive scoring.
+Unverified claim/confidence/label declarations remain distinct from reconciled
+addresses and receipt structure. Strict derived projections retain partial and
+unknown states without quality or session-independence claims. Inspection reads
+source but executes no project code or inference. Stored projections validate
+recorded accounting; current freshness requires reinspection.

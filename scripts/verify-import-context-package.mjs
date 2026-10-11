@@ -57,6 +57,7 @@ assert.ok(
     "jvm-analyzer-extensions",
     "kubernetes-extensions",
     "kustomize-extensions",
+    "confidence-provenance",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -126,6 +127,8 @@ if (profile === "kubernetes-extensions")
   process.env.CHECKTRAIL_KUBERNETES_EXTENSIONS_INSTALLED = "1";
 if (profile === "kustomize-extensions")
   process.env.CHECKTRAIL_KUSTOMIZE_EXTENSIONS_INSTALLED = "1";
+if (profile === "confidence-provenance")
+  process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -191,6 +194,8 @@ try {
     "gate-kustomize-extensions.test.js",
     "kustomize-extensions-fixture.js",
     "kustomize-fixture.js",
+    "gate-confidence-provenance.test.js",
+    "confidence-provenance-fixture.js",
     "native-process-observer.js",
     "spotbugs-extensions-fixture.js",
     "spotbugs-fixture.js",

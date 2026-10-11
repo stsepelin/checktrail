@@ -419,3 +419,11 @@ analysis cannot pass. Declared generators and detector plugins execute project
 code. Reached cancellation, timeout and output exhaustion remove owned processes
 and temporary artifacts. Required native acceptance and fresh offline installed
 acceptance cover this selected Linux ARM64 profile; wider platforms remain open.
+
+The `confidence-provenance` extension implements shared evidence tiers and
+explicit source/claim/label/confidence provenance through library, CLI and MCP;
+see [REVIEW-PROVENANCE.md](REVIEW-PROVENANCE.md). Its original source/installed
+callbacks retain broken/fixed native witnesses, multiple claims, stale source,
+unknown labels, source-grant boundaries and reached lifecycle cleanup. Imported
+native execution, confidence, claim truth and host independence remain unverified.
+Final runtime acceptance and Gate A remain open.

@@ -465,3 +465,13 @@ reviews are part of this development profile.
 Native controls can launch additional compilers, adapters and child processes within each test worker. Bounding test-file fanout prevents a high-core host from starting a full CPU-sized set of those nested workloads at once. Dedicated required-native profile runners and independent CI jobs keep their existing scheduling and strict completion checks.
 
 The normal test launcher and required full-suite harness share a cap of up to four test-file workers, reduced to available parallelism. Each required receipt records the file-worker limit used. Profile-only acceptance retains serial file execution. The cap controls concurrent test files; native tools' descendant processes retain their separate execution/container limits. The original concurrency control uses multiple real overlapping files, accounts for every terminal outcome and confirms all active worker slots are released.
+
+The `confidence-provenance` profile is required in the main OS/Node full-suite
+matrix. Its frozen callbacks repeat against an offline production installation;
+`verify-confidence-provenance-guards.mjs` removes one exact compiled protection
+per control, requires an unchanged callback to fail an assertion, restores the
+source and requires it to pass again. The [profile documentation](REVIEW-PROVENANCE.md)
+separates current source-address checks, unverified host probabilities/operator
+labels, unattested native imports and descriptive scoring. The local measurement
+is scoped to its observed host; it does not close the wider runtime matrix or
+independent evaluation. No inference or field evaluation is invoked.

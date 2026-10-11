@@ -227,3 +227,10 @@ diagnostics. The [profile contract](JVM-ANALYZER-EXTENSIONS.md) and
 preserved callbacks, compiling guard controls and reached lifecycle evidence.
 This declaration leaves every other profile and unresolved freeze decision in
 place. The structural inventory audit does not independently certify acceptance.
+
+The selected `confidence-provenance` extension now retains current source checks,
+exact host/native/trial bindings, evidence tiers and unknown/partial decision
+accounting through library, CLI and MCP. See [REVIEW-PROVENANCE.md](REVIEW-PROVENANCE.md).
+Structural native receipt reconciliation does not attest execution; host
+probabilities and operator labels remain unverified. Authoritative judgments,
+calibration/independence evidence, final runtime bindings and Gate A remain open.
