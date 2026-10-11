@@ -34,7 +34,7 @@ output belong in private measurement storage.
 `wait4` peak RSS is **not summed process-tree RSS**. Descendant coverage has not
 been established by this foundation. The existing performance harness's engine
 CPU and peak RSS also exclude child processes. Representative small, large and
-polyglot/native workload accounting, separate child counters, output/archive
+polyglot/native workload accounting, integrating the separate child counters, output/archive
 storage accounting, Windows measurements, final schema/package/privacy/upgrade
 readiness and the resource-release-readiness profile remain pending.
 
@@ -49,3 +49,43 @@ compiler and observer executable hashes; they do not certify its artifact or
 license closure. Owned measurement containers were removed and the borrowed image
 was preserved. Windows acceptance and Gate A remain open. No inference or field
 evaluation was run.
+
+## Separate self and reaped-child counters
+
+The repository-owned Node-API 8 binding reads `getrusage(RUSAGE_SELF)` and
+`getrusage(RUSAGE_CHILDREN)` in the collecting process. It retains the actual PID,
+separate user/system CPU counters, raw RSS units and normalized KiB for each scope.
+Its reader refuses stale PIDs, incompatible scopes/units, unsafe or negative
+counters, malformed UTF-8, duplicate keys and extra records. Kernel/API failures
+throw rather than returning invented successful zero counters.
+
+Prepare it with
+`node scripts/prepare-native-child-resource.mjs /absolute/private-empty-directory /absolute/canonical-node-header-directory`.
+The explicit existing header directory is an operator input. Preparation hashes
+the actual compiler, own C source, produced binary, Node executable and five
+selected Node header files, then publishes `native-child-resource/{binding.node,build.json}`
+together. Failed compilation removes owned staging. Those selected header hashes
+do not constitute a complete SDK or publisher closure.
+
+`loadNativeChildResource` accepts that canonical private caller-owned bundle and
+checks exact artifacts, metadata, current C source and binary hashes before loading.
+It rechecks binary and receipt bytes after loading. Its `snapshot()` takes no
+arguments. Preparation and native loading require operator authority; this does
+not add an MCP permission or execute repository project source.
+
+[The counter measurement](measurements/native-child-resource-2026-10-11.json)
+records original controls on macOS Node 24/26 and Linux Node 22, in source and
+fresh offline production installation layouts. Package engine bytes are checked
+against source; these counter controls execute the external harness and do not
+exercise installed-engine validation. The unchanged external harness compiles outside
+a fresh collecting worker. Two sequential children touch 64 and 96 MiB and perform
+CPU work; assertions compare their own reported counters with the parent's kernel
+counters, distinguish child CPU from self CPU, and reject summing child RSS peaks.
+Eight paired guard removals fail for their intended assertions and pass on restoration,
+including the fresh-worker boundary that excludes compiler children.
+
+`RUSAGE_CHILDREN` describes reaped child resource accounting. It is not summed
+concurrent process-tree RSS, and this foundation does not establish coverage of
+unreaped descendants. The binding and harness remain outside the product package.
+Representative workload, output/archive storage, Windows and final release checks
+remain pending. Gate A stays open; no inference or field evaluation was invoked.

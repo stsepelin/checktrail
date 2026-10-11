@@ -1,0 +1,1331 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original POSIX kernel self/reaped-child counter foundation, source and fresh offline installed engine with a repository-owned measurement harness; this does not close resource-release-readiness.",
+  "measuredDate": "2026-10-11",
+  "sourceInputs": [
+    {
+      "file": "scripts/native-child-resource.c",
+      "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+    },
+    {
+      "file": "scripts/native-child-resource.mjs",
+      "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+    },
+    {
+      "file": "scripts/prepare-native-child-resource.mjs",
+      "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+    },
+    {
+      "file": "test/native-child-resource.test.ts",
+      "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+    },
+    {
+      "file": "dist/test/native-child-resource.test.js",
+      "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+    },
+    {
+      "file": "dist/test/helpers.js",
+      "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+    },
+    {
+      "file": "scripts/required-test-evidence.mjs",
+      "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+    }
+  ],
+  "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+  "fullProjectCheck": {
+    "command": "npm run check",
+    "tests": 1885,
+    "pass": 1133,
+    "fail": 0,
+    "skipped": 752,
+    "cancelled": 0,
+    "todo": 0,
+    "optionalSkippedCountedAsPassing": false
+  },
+  "nativeProfiles": [
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; source engine with repository-owned measurement harness",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "26.9.0",
+        "preparedByNodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 33170,
+            "sha256": "82d3708ce120f8000ec34d72e1aa70b0d7d8a43027986293681374a71b2cb840"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 8335,
+            "sha256": "c12406a8c0036aefdb66b98065fc88e2e7a053c1f274deef33af6c26c099b933"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1930,
+            "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4629,
+            "sha256": "216ab58c9859e625019d005c3854fe57aceaa73cf68c762553e32aa9269b66d4"
+          }
+        ],
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "7cbbfea349bf95db0bbf24ef6703323e54421e9590552d4acdd177993576d467",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 76.561667,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 700.635958,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 226.589042,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 310.17075,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; installed engine with repository-owned measurement harness",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "26.9.0",
+        "preparedByNodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 33170,
+            "sha256": "82d3708ce120f8000ec34d72e1aa70b0d7d8a43027986293681374a71b2cb840"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 8335,
+            "sha256": "c12406a8c0036aefdb66b98065fc88e2e7a053c1f274deef33af6c26c099b933"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1930,
+            "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4629,
+            "sha256": "216ab58c9859e625019d005c3854fe57aceaa73cf68c762553e32aa9269b66d4"
+          }
+        ],
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "7cbbfea349bf95db0bbf24ef6703323e54421e9590552d4acdd177993576d467",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 80.082,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 669.296417,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 231.926209,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 305.369833,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "103f560c5f8fc23198ab40a543f31c268a15a4b172c390bf2793faf2572f6c37",
+      "productionDependencyLockSha256": "1bec7f5af3db202c1f7bd32f21938d12e2e121c329d1b3b97b5b0c2127c085f7",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; source engine with repository-owned measurement harness",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "24.20.0",
+        "preparedByNodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 33170,
+            "sha256": "82d3708ce120f8000ec34d72e1aa70b0d7d8a43027986293681374a71b2cb840"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 8335,
+            "sha256": "c12406a8c0036aefdb66b98065fc88e2e7a053c1f274deef33af6c26c099b933"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1930,
+            "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4629,
+            "sha256": "216ab58c9859e625019d005c3854fe57aceaa73cf68c762553e32aa9269b66d4"
+          }
+        ],
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "7cbbfea349bf95db0bbf24ef6703323e54421e9590552d4acdd177993576d467",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 30.671583,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 720.614792,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 506.810167,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 136.267334,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; installed engine with repository-owned measurement harness",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "darwin",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "24.20.0",
+        "preparedByNodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 33170,
+            "sha256": "82d3708ce120f8000ec34d72e1aa70b0d7d8a43027986293681374a71b2cb840"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 8335,
+            "sha256": "c12406a8c0036aefdb66b98065fc88e2e7a053c1f274deef33af6c26c099b933"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1930,
+            "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4629,
+            "sha256": "216ab58c9859e625019d005c3854fe57aceaa73cf68c762553e32aa9269b66d4"
+          }
+        ],
+        "compilerVersion": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "binarySha256": "7cbbfea349bf95db0bbf24ef6703323e54421e9590552d4acdd177993576d467",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31.434208,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 464.0275,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 189.97675,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 133.817833,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "103f560c5f8fc23198ab40a543f31c268a15a4b172c390bf2793faf2572f6c37",
+      "productionDependencyLockSha256": "4e67b58ac2f85f3a3d938e12ff1e51fd49e2c02197560c25e29f41f465b44a9f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; source engine with repository-owned measurement harness",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "linux",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "22.23.2",
+        "preparedByNodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "0e56242014fe7ce934e73b2495b801785fcf7d78ad7131e8ec086b1884ee1d07",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 31770,
+            "sha256": "582e64ead4d5fdf663e2bd934f2fc97e8e155a7740d28995830393d19d089705"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 7603,
+            "sha256": "05e3d86e24c814f94a8b52b6a70cec11d7e91c810008253553528637e3a15b2f"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1825,
+            "sha256": "088766b3cf1f0cd9b292c361ad30f7a04e7cc6db35a20ca52c572c1adf9635e7"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4243,
+            "sha256": "21f88237adb8b6823e2fb64fdc868c50fa785c8c2c5a19f6e7498401b1a963ff"
+          }
+        ],
+        "compilerVersion": "gcc (Alpine 15.2.0) 15.2.0",
+        "binarySha256": "4f34bac574ea96a53a8d7325b3b320123f4753b2c5616dd13ef2df4f864708cd",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 28.283382,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 406.552254,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 155.501917,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 91.341521,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": null,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    },
+    {
+      "schemaVersion": 1,
+      "scope": "Original native child resource controls; installed engine with repository-owned measurement harness",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "inputs": [
+        {
+          "file": "scripts/native-child-resource.c",
+          "sha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877"
+        },
+        {
+          "file": "scripts/native-child-resource.mjs",
+          "sha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa"
+        },
+        {
+          "file": "scripts/prepare-native-child-resource.mjs",
+          "sha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e"
+        },
+        {
+          "file": "test/native-child-resource.test.ts",
+          "sha256": "492733592d3071a81f7742663fc9c41cef2a368707c43e9afc586999cdc671c6"
+        },
+        {
+          "file": "dist/test/native-child-resource.test.js",
+          "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+        },
+        {
+          "file": "dist/test/helpers.js",
+          "sha256": "33a871c9a5bc458c44ac592979b6d7d2ebba6aa90eb494f805c75d7ea6f1b8bc"
+        },
+        {
+          "file": "scripts/required-test-evidence.mjs",
+          "sha256": "e97a915a9d9974bc5de0d8012ee8182b59f168ed870bab2e3c8698dd4c621db9"
+        },
+        {
+          "file": "package-lock.json",
+          "sha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58"
+        }
+      ],
+      "compiledEngineSha256": "92ed5fdfd2c729f434193242a4d403dc5fec047a4316940a53931b3b45ba94de",
+      "childResourceBuild": {
+        "schemaVersion": 1,
+        "platform": "linux",
+        "architecture": "arm64",
+        "napiVersion": 8,
+        "preparedByNode": "22.23.2",
+        "preparedByNodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+        "sourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+        "compilerSha256": "0e56242014fe7ce934e73b2495b801785fcf7d78ad7131e8ec086b1884ee1d07",
+        "selectedNodeHeaders": [
+          {
+            "file": "js_native_api.h",
+            "bytes": 31770,
+            "sha256": "582e64ead4d5fdf663e2bd934f2fc97e8e155a7740d28995830393d19d089705"
+          },
+          {
+            "file": "js_native_api_types.h",
+            "bytes": 7603,
+            "sha256": "05e3d86e24c814f94a8b52b6a70cec11d7e91c810008253553528637e3a15b2f"
+          },
+          {
+            "file": "node_api.h",
+            "bytes": 10370,
+            "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a"
+          },
+          {
+            "file": "node_api_types.h",
+            "bytes": 1825,
+            "sha256": "088766b3cf1f0cd9b292c361ad30f7a04e7cc6db35a20ca52c572c1adf9635e7"
+          },
+          {
+            "file": "node_version.h",
+            "bytes": 4243,
+            "sha256": "21f88237adb8b6823e2fb64fdc868c50fa785c8c2c5a19f6e7498401b1a963ff"
+          }
+        ],
+        "compilerVersion": "gcc (Alpine 15.2.0) 15.2.0",
+        "binarySha256": "4f34bac574ea96a53a8d7325b3b320123f4753b2c5616dd13ef2df4f864708cd",
+        "binaryPath": "native-child-resource/binding.node",
+        "selectedNodeHeaderClosureComplete": false,
+        "compilerSdkClosureVerified": false,
+        "completeNativeArtifactClosure": false
+      },
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 4,
+        "required": 4,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 4,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 27.158459,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 404.730243,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 156.775424,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 90.35139,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            }
+          ]
+        }
+      },
+      "tarballSha256": "ea2fd0bb62cc216ceb15490ebdb29f6a308e5db5a16d1d9fb5d55b589bc9c5df",
+      "productionDependencyLockSha256": "c94d29e82eea80852e8661a80d2c86a7338de992d04b5231ff36c59e2a088d5f",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "measurementHarnessShipped": false,
+      "resourceReleaseReadinessComplete": false,
+      "nativeWindowsAcceptance": false,
+      "compilerSdkClosureVerified": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "imageId": "sha256:b5aab26fadf49295a4b4c80bf67beb60e67a972daa26c92bcd0939ac64d126d1",
+      "ownedContainerCleanupConfirmed": true
+    }
+  ],
+  "pairedGuards": [
+    {
+      "id": "snapshot-process-binding",
+      "callback": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.mjs",
+      "baselineSourceSha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa",
+      "mutantSourceSha256": "c765ad0bc21a833570946608837bd7620e8361beaba9e0d6a4ad09288233a4da",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "rss-normalization",
+      "callback": "native child resource snapshots retain separate kernel scopes and reject stale process units counters duplicate and incomplete records",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.mjs",
+      "baselineSourceSha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa",
+      "mutantSourceSha256": "fb2bfb6be5e2780b7cb0b8cf8db42ac543f1984e26eccc6174c076b63d35c79c",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "separate-kernel-child-scope",
+      "callback": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.c",
+      "baselineSourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+      "mutantSourceSha256": "3c60e5b9c5508f97df8c7f6d25430ed65a9f1c9547a30a2126df2fefeeee7647",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "actual-native-cpu-counters",
+      "callback": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.c",
+      "baselineSourceSha256": "1d6831defd84cf59148efb7b50513103c708c027be8d2befa3e12c9e106db877",
+      "mutantSourceSha256": "f468ca8e7db561f05fbfdc445d6f7ca1406d0bc8c1851732c69c9690712eee98",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "source-byte-binding",
+      "callback": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.mjs",
+      "baselineSourceSha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa",
+      "mutantSourceSha256": "f74567dd0c3d5c9b88e3a5b6ead1c18a897ebaf8997f313341a35cd9907dd5ed",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "binary-byte-binding",
+      "callback": "native child resource bundle refuses stale source changed binary malformed metadata and linked or public bundles before native loading",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/native-child-resource.mjs",
+      "baselineSourceSha256": "d116c9a576cace84efead0916ed506865dc2ac5c2cc9fe38cfacc1cdc0f3bdaa",
+      "mutantSourceSha256": "3dc365b063e9cd2e9ec5a1456cbbb56efcbf27897964bee343695e5088adc7e6",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "all-or-none-failed-compile",
+      "callback": "native child resource preparation preflights all artifacts and removes owned staging after an actual compiler failure",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "scripts/prepare-native-child-resource.mjs",
+      "baselineSourceSha256": "482cdacc95f9985f7efe99e49227a60d274043532adac9db213e90a9eaa1189e",
+      "mutantSourceSha256": "f7092e2fbf8a480f01d5e583ce72e853884460a4cc397de0e44df55f65faf029",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "fresh-worker-excludes-compiler-children",
+      "callback": "native child resource binding measures actual CPU and largest reaped child RSS across two allocated children without summing their peaks",
+      "callbackFileSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "file": "dist/test/native-child-resource.test.js",
+      "baselineSourceSha256": "e22b9ce16536885544dc4d6c245d11713342af7debfb1989bfbcc91325df7fa9",
+      "mutantSourceSha256": "379120b45d1e05e906a25a287367357179b26637603687d0b7f31746959164bb",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "nativeRequiredTerminalCases": 24,
+  "method": {
+    "freshWorkerExcludesPreparationChildren": true,
+    "allocatedChildCountPerControl": 2,
+    "allocatedChildMiB": [64, 96],
+    "childBusyLoopMinimumWallMs": 100,
+    "selfAndReapedChildrenCpuRetainedSeparately": true,
+    "rssScope": "kernel peak for self and reaped children, not summed/concurrent process-tree RSS",
+    "unreapedDescendantCoverage": "unverified",
+    "selectedNodeHeaderClosureComplete": false,
+    "compilerSdkClosureVerified": false
+  },
+  "measurementHarnessShipped": false,
+  "resourceReleaseReadinessComplete": false,
+  "nativeWindowsAcceptance": false,
+  "wholeNativeLicenseAndPublisherClosureComplete": false,
+  "representativeWorkloadMeasurementsComplete": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false,
+  "installedEngineValidationExercisedByCounterControls": false,
+  "installedPackageIdentityVerified": true
+}
