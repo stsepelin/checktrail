@@ -5,6 +5,7 @@ export interface ProcessIdentity {
   parent: number;
   group: number;
   identity: string;
+  state?: "running" | "stopped" | "exited";
 }
 export function ownedDescendants(rows: ProcessIdentity[], root: number) {
   if (
@@ -56,6 +57,7 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
     !text.startsWith(pid + " (") ||
     end < 0 ||
     fields.length < 20 ||
+    !/^[A-Za-z]$/.test(fields[0]!) ||
     !/^[0-9]+$/.test(fields[1]!) ||
     !/^[0-9]+$/.test(fields[2]!) ||
     !/^[0-9]+$/.test(fields[19]!)
@@ -66,6 +68,11 @@ function linuxIdentity(pid: number, text: string): ProcessIdentity {
     parent: Number(fields[1]),
     group: Number(fields[2]),
     identity: fields[19]!,
+    state: /^[Tt]$/.test(fields[0]!)
+      ? "stopped"
+      : /^[ZX]$/.test(fields[0]!)
+        ? "exited"
+        : "running",
   };
 }
 export async function processSnapshot(): Promise<ProcessIdentity[]> {
@@ -101,12 +108,16 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
   }
   if (process.platform !== "darwin")
     throw Error("Process snapshot platform unsupported");
-  const result = spawnSync("/bin/ps", ["-axo", "pid=,ppid=,pgid=,lstart="], {
-    encoding: "utf8",
-    maxBuffer: 2 * 1024 * 1024,
-    timeout: 1000,
-    env: { PATH: "/usr/bin:/bin", LC_ALL: "C" },
-  });
+  const result = spawnSync(
+    "/bin/ps",
+    ["-axo", "pid=,ppid=,pgid=,stat=,lstart="],
+    {
+      encoding: "utf8",
+      maxBuffer: 2 * 1024 * 1024,
+      timeout: 1000,
+      env: { PATH: "/usr/bin:/bin", LC_ALL: "C" },
+    },
+  );
   if (
     result.status !== 0 ||
     result.error ||
@@ -114,17 +125,30 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
     result.stderr.trim()
   )
     throw Error("Process snapshot unavailable");
-  const rows = result.stdout
+  return darwinProcessIdentities(result.stdout);
+}
+/** Unknown Darwin status is never evidence of quiescence. */
+export function darwinProcessIdentities(text: string): ProcessIdentity[] {
+  if (!text.trim()) throw Error("Process snapshot is empty");
+  const rows = text
     .trim()
     .split("\n")
     .map((line) => {
-      const match = /^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+(.+)$/.exec(line);
+      const match =
+        /^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([A-Za-z?][A-Za-z0-9+<>?-]{0,15})\s+(.+)$/.exec(
+          line,
+        );
       if (!match) throw Error("Process snapshot malformed");
       return {
         pid: Number(match[1]),
         parent: Number(match[2]),
         group: Number(match[3]),
-        identity: match[4]!,
+        identity: match[5]!.trim(),
+        state: match[4]!.startsWith("T")
+          ? ("stopped" as const)
+          : match[4]!.startsWith("Z")
+            ? ("exited" as const)
+            : ("running" as const),
       };
     });
   if (rows.length > 65536) throw Error("Process snapshot exceeds bound");
@@ -132,6 +156,7 @@ export async function processSnapshot(): Promise<ProcessIdentity[]> {
 }
 interface StopDescendantIo {
   snapshot(): Promise<ProcessIdentity[]>;
+  stop(pid: number): void;
   kill(pid: number): void;
   exists(pid: number): boolean;
   now(): number;
@@ -139,6 +164,9 @@ interface StopDescendantIo {
 }
 const nativeControl: StopDescendantIo = {
   snapshot: processSnapshot,
+  stop: (pid) => {
+    process.kill(pid, "SIGSTOP");
+  },
   kill: (pid) => {
     process.kill(pid, "SIGKILL");
   },
@@ -154,9 +182,10 @@ const nativeControl: StopDescendantIo = {
   now: () => performance.now(),
   wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 };
-/** Stop observed descendants before their waiting parents, including separate groups.
- * Confirm their observed identities disappeared before advancing; sending SIGKILL
- * is not proof of exit or reaping. All depths share a bounded cleanup deadline.
+/** Quiesce the observed family before any child can trigger replacement work.
+ * Signal deepest children before their stopped parents, then confirm every observed
+ * identity disappeared. Stopped parents cannot reap children, so reaping is checked
+ * after the family and root are terminated. One deadline bounds the entire cleanup.
  */
 export async function stopDescendants(
   root: number,
@@ -171,7 +200,11 @@ export async function stopDescendants(
     }
   };
   const deadline = io.now() + 2000;
-  const selected = ownedDescendants(await io.snapshot(), root);
+  const observed = new Map<
+    number,
+    { process: ProcessIdentity; depth: number }
+  >();
+  const signalled = new Set<number>();
   const sameProcess = (
     child: ProcessIdentity,
     current: Map<number, ProcessIdentity>,
@@ -187,33 +220,113 @@ export async function stopDescendants(
       throw Error("Process cleanup identity changed group");
     return true;
   };
-  for (const depth of [...new Set(selected.map((r) => r.depth))].sort(
-    (a, b) => b - a,
-  )) {
-    const children = selected
-      .filter((r) => r.depth === depth)
-      .map((r) => r.process);
-    const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-    for (const child of children) {
-      if (!sameProcess(child, current)) continue;
-      if (io.now() >= deadline)
-        throw Error("Process cleanup deadline exceeded");
-      try {
-        io.kill(child.pid);
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+  const checkDeadline = () => {
+    if (io.now() >= deadline) throw Error("Process cleanup deadline exceeded");
+  };
+  const signal = (pid: number, kind: "stop" | "kill") => {
+    try {
+      io[kind](pid);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+    }
+  };
+  const first = await io.snapshot(),
+    initialRoot = first.find((p) => p.pid === root);
+  let rows = first;
+  try {
+    // A parent can fork between the initial snapshot and its SIGSTOP. Capture again
+    // until every discovered identity is observed stopped or already exited.
+    for (;;) {
+      checkDeadline();
+      const current = new Map(rows.map((p) => [p.pid, p]));
+      if (
+        initialRoot &&
+        current.get(root) &&
+        current.get(root)!.identity !== initialRoot.identity
+      )
+        throw Error("Process cleanup root identity changed");
+      const selected = ownedDescendants(rows, root);
+      let added = false;
+      for (const entry of selected) {
+        if (!observed.has(entry.process.pid)) {
+          observed.set(entry.process.pid, entry);
+          added = true;
+        }
+      }
+      let pending = false;
+      for (const child of [...observed.values()].sort(
+        (a, b) => a.depth - b.depth,
+      )) {
+        if (!sameProcess(child.process, current)) continue;
+        const state = current.get(child.process.pid)!.state;
+        if (state !== "stopped" && state !== "exited") {
+          pending = true;
+          signal(child.process.pid, "stop");
+        }
+      }
+      if (!added && !pending) break;
+      await io.wait(Math.min(10, deadline - io.now()));
+      rows = await io.snapshot();
+    }
+    for (const depth of [
+      ...new Set([...observed.values()].map((entry) => entry.depth)),
+    ].sort((a, b) => b - a)) {
+      const children = [...observed.values()].filter(
+        (entry) => entry.depth === depth,
+      );
+      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      for (const entry of children) {
+        checkDeadline();
+        if (!sameProcess(entry.process, current)) continue;
+        signal(entry.process.pid, "kill");
+        signalled.add(entry.process.pid);
+      }
+      if (depth <= 1) finishRoot();
+      // A stopped parent cannot reap a zombie. Confirm physical exit (or complete
+      // disappearance) before signalling the next parent, then require final reaping.
+      for (;;) {
+        const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+        if (
+          !children.some(
+            (entry) =>
+              sameProcess(entry.process, current) &&
+              current.get(entry.process.pid)!.state !== "exited",
+          )
+        )
+          break;
+        checkDeadline();
+        await io.wait(Math.min(25, deadline - io.now()));
       }
     }
-    // A quiesced root cannot reap direct children. Stop it after those children
-    // are signalled so the system reaper can finish them without resuming work.
-    if (depth <= 1) finishRoot();
-    while (true) {
-      const remaining = new Map((await io.snapshot()).map((p) => [p.pid, p]));
-      if (!children.some((child) => sameProcess(child, remaining))) break;
-      if (io.now() >= deadline)
-        throw Error("Process cleanup deadline exceeded");
-      await io.wait(25);
+    finishRoot();
+    for (;;) {
+      const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+      if (
+        ![...observed.values()].some((child) =>
+          sameProcess(child.process, current),
+        )
+      )
+        break;
+      checkDeadline();
+      await io.wait(Math.min(25, deadline - io.now()));
     }
+  } catch (error) {
+    // An incomplete cleanup must still try to release each safely identified stopped
+    // process. Never signal a reused or unreadable identity as a recovery shortcut.
+    const current = new Map((await io.snapshot()).map((p) => [p.pid, p]));
+    for (const child of observed.values()) {
+      try {
+        if (
+          !signalled.has(child.process.pid) &&
+          sameProcess(child.process, current)
+        )
+          signal(child.process.pid, "kill");
+      } catch {
+        /* The original cleanup error remains incomplete. */
+      }
+    }
+    throw error;
+  } finally {
+    finishRoot();
   }
-  finishRoot();
 }
