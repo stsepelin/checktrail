@@ -31697,6 +31697,73 @@
                   "minimum": 0,
                   "maximum": 32
                 },
+                "responseArchive": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attemptId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "requestSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "httpStatus": {
+                        "anyOf": [
+                          { "type": "integer", "minimum": 100, "maximum": 599 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "observedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "retainedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "bodyState": {
+                        "type": "string",
+                        "enum": [
+                          "complete",
+                          "withheld-credential",
+                          "withheld-uninspectable",
+                          "withheld-incomplete",
+                          "unobserved"
+                        ]
+                      },
+                      "bodySha256": {
+                        "anyOf": [
+                          { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                          { "type": "null" }
+                        ]
+                      },
+                      "bodyBase64": {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 1398104 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "attemptId",
+                      "requestSha256",
+                      "httpStatus",
+                      "observedBodyBytes",
+                      "retainedBodyBytes",
+                      "bodyState",
+                      "bodySha256",
+                      "bodyBase64"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
                 "candidates": {
                   "maxItems": 32,
                   "type": "array",
@@ -35432,6 +35499,73 @@
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 32
+                },
+                "responseArchive": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attemptId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "requestSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "httpStatus": {
+                        "anyOf": [
+                          { "type": "integer", "minimum": 100, "maximum": 599 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "observedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "retainedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "bodyState": {
+                        "type": "string",
+                        "enum": [
+                          "complete",
+                          "withheld-credential",
+                          "withheld-uninspectable",
+                          "withheld-incomplete",
+                          "unobserved"
+                        ]
+                      },
+                      "bodySha256": {
+                        "anyOf": [
+                          { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                          { "type": "null" }
+                        ]
+                      },
+                      "bodyBase64": {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 1398104 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "attemptId",
+                      "requestSha256",
+                      "httpStatus",
+                      "observedBodyBytes",
+                      "retainedBodyBytes",
+                      "bodyState",
+                      "bodySha256",
+                      "bodyBase64"
+                    ],
+                    "additionalProperties": false
+                  }
                 },
                 "candidates": {
                   "maxItems": 32,
@@ -68329,6 +68463,73 @@
                   "minimum": 0,
                   "maximum": 32
                 },
+                "responseArchive": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attemptId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "requestSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "httpStatus": {
+                        "anyOf": [
+                          { "type": "integer", "minimum": 100, "maximum": 599 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "observedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "retainedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "bodyState": {
+                        "type": "string",
+                        "enum": [
+                          "complete",
+                          "withheld-credential",
+                          "withheld-uninspectable",
+                          "withheld-incomplete",
+                          "unobserved"
+                        ]
+                      },
+                      "bodySha256": {
+                        "anyOf": [
+                          { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                          { "type": "null" }
+                        ]
+                      },
+                      "bodyBase64": {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 1398104 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "attemptId",
+                      "requestSha256",
+                      "httpStatus",
+                      "observedBodyBytes",
+                      "retainedBodyBytes",
+                      "bodyState",
+                      "bodySha256",
+                      "bodyBase64"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
                 "candidates": {
                   "maxItems": 32,
                   "type": "array",
@@ -72064,6 +72265,73 @@
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 32
+                },
+                "responseArchive": {
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attemptId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "requestSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "httpStatus": {
+                        "anyOf": [
+                          { "type": "integer", "minimum": 100, "maximum": 599 },
+                          { "type": "null" }
+                        ]
+                      },
+                      "observedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "retainedBodyBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "bodyState": {
+                        "type": "string",
+                        "enum": [
+                          "complete",
+                          "withheld-credential",
+                          "withheld-uninspectable",
+                          "withheld-incomplete",
+                          "unobserved"
+                        ]
+                      },
+                      "bodySha256": {
+                        "anyOf": [
+                          { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                          { "type": "null" }
+                        ]
+                      },
+                      "bodyBase64": {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 1398104 },
+                          { "type": "null" }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "attemptId",
+                      "requestSha256",
+                      "httpStatus",
+                      "observedBodyBytes",
+                      "retainedBodyBytes",
+                      "bodyState",
+                      "bodySha256",
+                      "bodyBase64"
+                    ],
+                    "additionalProperties": false
+                  }
                 },
                 "candidates": {
                   "maxItems": 32,

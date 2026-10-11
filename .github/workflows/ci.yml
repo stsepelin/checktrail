@@ -170,6 +170,10 @@ jobs:
         run: CHECKTRAIL_IMPORT_CONTEXT_PROFILE=import-history node scripts/verify-import-context-package.mjs
       - name: Repeat physical native evidence controls in an offline installed package
         run: node scripts/verify-native-raw-package.mjs
+      - name: Require bounded native and offline API attempt output controls
+        run: node scripts/verify-attempt-outputs.mjs
+      - name: Repeat bounded attempt output controls in an offline production package
+        run: node scripts/verify-attempt-outputs-package.mjs
       - name: Repeat structured native value controls in an offline installed package
         run: node scripts/verify-native-json-package.mjs
       - name: Verify sealed claim probabilities in the production package
