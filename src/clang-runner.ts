@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { mkdtemp, readFile, realpath, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -6,8 +6,8 @@ import { clangInvocationSchema } from "./clang.js";
 import { clangDependencies, supportedClangVersion } from "./clang-protocol.js";
 import { withinRoot } from "./inventory.js";
 
-function invoke(executable: string, args: string[], cwd: string) {
-  const result = spawnSync(executable, args, {
+async function invoke(executable: string, args: string[], cwd: string) {
+  const result = await invokeNativeOutput(executable, args, {
     cwd,
     encoding: "utf8",
     maxBuffer: 1024 * 1024,
@@ -27,7 +27,11 @@ async function main() {
   for (const name of new Set(invocation.units.map((unit) => unit.compiler))) {
     let output;
     try {
-      output = invoke(name, ["--no-default-config", "--version"], projectRoot);
+      output = await invoke(
+        name,
+        ["--no-default-config", "--version"],
+        projectRoot,
+      );
     } catch {
       process.stdout.write(
         JSON.stringify({
@@ -86,7 +90,7 @@ async function main() {
         "checktrail",
         unit.input,
       ];
-      const native = invoke(unit.compiler, args, cwd);
+      const native = await invoke(unit.compiler, args, cwd);
       bytes +=
         Buffer.byteLength(native.stdout) + Buffer.byteLength(native.stderr);
       if (bytes > 4 * 1024 * 1024)

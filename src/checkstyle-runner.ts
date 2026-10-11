@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -17,15 +17,19 @@ for (const name of [
   "CLASSPATH",
 ])
   delete env[name];
-const invoke = (args: string[]) =>
-  spawnSync("java", args, { env, encoding: "utf8", maxBuffer: 1024 * 1024 });
+const invoke = async (args: string[]) =>
+  await invokeNativeOutput("java", args, {
+    env,
+    encoding: "utf8",
+    maxBuffer: 1024 * 1024,
+  });
 async function main() {
   const root = await realpath(process.argv[2]!);
   const project = path.relative(root, await realpath(process.cwd())) || ".";
   const invocation = checkstyleInvocationSchema.parse(
     JSON.parse(process.argv[3]!),
   );
-  const version = invoke(["--version"]);
+  const version = await invoke(["--version"]);
   if (
     version.status !== 0 ||
     version.stderr ||
@@ -47,7 +51,7 @@ async function main() {
   )
     throw Error("Checkstyle configuration changed");
   if (process.argv[4] === "--version") {
-    const result = invoke(["-jar", inputs.jar, "--version"]);
+    const result = await invoke(["-jar", inputs.jar, "--version"]);
     process.stdout.write(result.stdout ?? "");
     process.stderr.write(result.stderr ?? "");
     process.exitCode = result.status ?? 2;
@@ -80,7 +84,7 @@ async function main() {
         ...files.map((file) => Buffer.from(file).toString("base64")),
       ].join("\n"),
     );
-    const result = invoke([
+    const result = await invoke([
       "-Xmx256m",
       "-Dfile.encoding=UTF-8",
       "-Duser.language=en",

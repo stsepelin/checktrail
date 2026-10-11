@@ -1,6 +1,6 @@
 import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
-import type { SpawnSyncReturns } from "node:child_process";
+import type { NativeTextResult } from "./native-invoke-output.js";
 import { dotnetTestNativeSource } from "./dotnet-test-native.js";
 import { dotnetNunitSettings } from "./dotnet-nunit.js";
 import { mavenHash } from "./maven.js";
@@ -18,7 +18,7 @@ interface Context {
     phase: string,
     args: string[],
     cwd: string,
-  ) => SpawnSyncReturns<string>;
+  ) => Promise<NativeTextResult>;
   observe: (file: string) => Promise<{ bytes: number; sha256: string }>;
   regular: (file: string, bound: number) => Promise<Buffer>;
   events: (file: string) => Promise<Record<string, unknown>[]>;
@@ -57,7 +57,7 @@ export async function collectDotnetTests(context: Context) {
   ])
     await observe(file);
   await writeFile(source, dotnetTestNativeSource, { flag: "wx" });
-  const compiled = invoke(
+  const compiled = await invoke(
     "test-observer-compile",
     [
       "exec",
@@ -128,7 +128,7 @@ export async function collectDotnetTests(context: Context) {
       "/Framework:.NETCoreApp,Version=v10.0",
       `/TestAdapterPath:${observer};${adapter}`,
     ];
-    const discovery = invoke(
+    const discovery = await invoke(
       "test-discovery:" + project.file,
       [
         ...common,
@@ -141,7 +141,7 @@ export async function collectDotnetTests(context: Context) {
     const discoveryXml = await nativeXml(
       path.join(base, "Dump", "D_" + project.assemblyName + ".dll.dump"),
     );
-    const execution = invoke(
+    const execution = await invoke(
       "test-execution:" + project.file,
       [
         ...common,

@@ -1,5 +1,5 @@
 import { goBuildTagsSchema } from "./go-build.js";
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -37,10 +37,14 @@ async function main(): Promise<void> {
   if (!root || !configFile || !encodedTags || !files.length)
     throw new Error("Invalid golangci-lint arguments");
   const tags = goBuildTagsSchema.parse(JSON.parse(encodedTags));
-  const version = spawnSync("golangci-lint", ["version", "--short"], {
-    encoding: "utf8",
-    maxBuffer: 8192,
-  });
+  const version = await invokeNativeOutput(
+    "golangci-lint",
+    ["version", "--short"],
+    {
+      encoding: "utf8",
+      maxBuffer: 8192,
+    },
+  );
   if (
     version.error ||
     version.status !== 0 ||
@@ -119,7 +123,7 @@ async function main(): Promise<void> {
       },
     };
     await writeFile(target, JSON.stringify(native));
-    const result = spawnSync(
+    const result = await invokeNativeOutput(
       "golangci-lint",
       ["run", "--config", target, "--color", "never", "./..."],
       {

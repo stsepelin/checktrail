@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   mkdir,
   mkdtemp,
@@ -26,16 +26,20 @@ for (const name of [
 ])
   delete env[name];
 const started = Date.now();
-const invoke = (
+const invoke = async (
   executable: string,
   args: string[],
   maxBuffer = 4 * 1024 * 1024,
 ) => {
   const remaining = 110000 - (Date.now() - started);
   if (remaining <= 0) throw Error("Scala native total runtime bound");
-  return spawnSync(executable, args, { env, maxBuffer, timeout: remaining });
+  return await invokeNativeOutput(executable, args, {
+    env,
+    maxBuffer,
+    timeout: remaining,
+  });
 };
-const completed = (result: ReturnType<typeof invoke>) =>
+const completed = (result: Awaited<ReturnType<typeof invoke>>) =>
   !result.error &&
   !result.signal &&
   result.status === 0 &&
@@ -45,7 +49,7 @@ async function main() {
   const root = await realpath(process.argv[2]!),
     project = path.relative(root, await realpath(process.cwd())) || ".",
     invocation = scalaInvocationSchema.parse(JSON.parse(process.argv[3]!));
-  const version = invoke("java", ["--version"]);
+  const version = await invoke("java", ["--version"]);
   if (
     version.error ||
     version.signal ||
@@ -125,7 +129,7 @@ async function main() {
     const helper = path.join(temporary, "VerifierScala.scala");
     await writeFile(helper, scalaNativeSource, { flag: "wx", mode: 0o600 });
     const classPath = libraryFiles.join(path.delimiter);
-    const compiled = invoke("java", [
+    const compiled = await invoke("java", [
       "-Xmx512m",
       "-Dfile.encoding=UTF-8",
       "-classpath",
@@ -159,13 +163,13 @@ async function main() {
       "VerifierScala",
     ];
     if (process.argv[4] === "--version") {
-      const result = invoke("java", [...args, "--version"]);
+      const result = await invoke("java", [...args, "--version"]);
       process.stdout.write(result.stdout ?? "");
       process.stderr.write(result.stderr ?? "");
       process.exitCode = result.status ?? 2;
       return;
     }
-    const result = invoke("java", [
+    const result = await invoke("java", [
       ...args,
       output,
       [

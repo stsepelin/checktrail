@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { invokeNativeOutput } from "./native-invoke-output.js";
 import {
   mkdir,
   mkdtemp,
@@ -18,8 +18,8 @@ import {
 import { inventory, withinRoot } from "./inventory.js";
 
 let nativeBytes = 0;
-function invoke(args: string[], cwd: string) {
-  const result = spawnSync("actionlint", args, {
+async function invoke(args: string[], cwd: string) {
+  const result = await invokeNativeOutput("actionlint", args, {
     cwd,
     env: { PATH: process.env.PATH ?? "" },
     encoding: "utf8",
@@ -44,7 +44,7 @@ async function main() {
   );
   try {
     try {
-      const result = invoke(["-version"], temporary);
+      const result = await invoke(["-version"], temporary);
       if (
         result.status !== 0 ||
         result.stderr ||
@@ -124,7 +124,7 @@ async function main() {
         }),
       );
       for (const file of scope) {
-        const result = invoke(
+        const result = await invoke(
           [
             "-verbose",
             "-format",

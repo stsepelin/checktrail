@@ -1,6 +1,6 @@
 import path from "node:path";
 import { cp, mkdir, readdir, writeFile } from "node:fs/promises";
-import type { SpawnSyncReturns } from "node:child_process";
+import type { NativeTextResult } from "./native-invoke-output.js";
 import type { z } from "zod";
 import type { dotnetBuildInvocationSchema } from "./dotnet-build.js";
 import { dotnetFormatNativeSource } from "./dotnet-format-native.js";
@@ -17,7 +17,7 @@ interface Context {
     phase: string,
     args: string[],
     cwd: string,
-  ) => SpawnSyncReturns<string>;
+  ) => Promise<NativeTextResult>;
   observe: (file: string) => Promise<{ bytes: number; sha256: string }>;
   regular: (file: string, bound: number) => Promise<Buffer>;
 }
@@ -84,7 +84,7 @@ export async function collectDotnetFormatting(context: Context) {
     }),
     { flag: "wx" },
   );
-  const compiled = invoke(
+  const compiled = await invoke(
     "format-observer-compile",
     [
       "exec",
@@ -111,7 +111,7 @@ export async function collectDotnetFormatting(context: Context) {
     throw Error("Native formatter observer did not compile cleanly");
   for (const file of [source, helper, runtime, request])
     ownedPins.set(file, mavenHash(await regular(file, 1024 * 1024)));
-  const observed = invoke(
+  const observed = await invoke(
     "format-documents",
     ["exec", helper, sdk, repository, request],
     workspace,
@@ -120,7 +120,7 @@ export async function collectDotnetFormatting(context: Context) {
     throw Error("Native formatter document observation failed");
   const reportDirectory = path.join(directory, "native-report");
   await mkdir(reportDirectory);
-  const formatted = invoke(
+  const formatted = await invoke(
     "format-whitespace",
     [
       "exec",
