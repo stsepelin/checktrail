@@ -21,7 +21,7 @@ class TransientArtifactResponseError extends Error {}
 
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
-  { asset, bytes, fallbackAsset },
+  { asset, bytes, fallbackAsset, fallbackAssets },
   {
     fetchImpl = globalThis.fetch,
     signal = globalThis.AbortSignal.timeout(120000),
@@ -33,8 +33,20 @@ export async function requestPinnedArtifactBytes(
   assert.equal(typeof retryNotFound, "boolean");
   const primary = new URL(asset);
   assert.equal(primary.protocol, "https:");
-  if (fallbackAsset !== undefined) {
-    const fallback = new URL(fallbackAsset);
+  assert.ok(
+    fallbackAssets === undefined ||
+      (fallbackAsset === undefined &&
+        Array.isArray(fallbackAssets) &&
+        fallbackAssets.length > 0 &&
+        fallbackAssets.length <= 2 &&
+        fallbackAssets.every((value) => typeof value === "string") &&
+        new Set(fallbackAssets).size === fallbackAssets.length &&
+        !fallbackAssets.includes(asset)),
+    "Pinned mirrors must be a unique bounded list without a legacy mirror",
+  );
+  for (const value of fallbackAssets ??
+    (fallbackAsset === undefined ? [] : [fallbackAsset])) {
+    const fallback = new URL(value);
     assert.equal(fallback.protocol, "https:");
     assert.equal(
       fallback.pathname.split("/").at(-1),
@@ -95,8 +107,11 @@ export async function requestPinnedArtifactBytes(
         throw error;
       // A lagging mirror can lack the exact revision still served by the primary.
       // Return there after an admitted mirror 404 within the same attempt budget.
-      nextAsset =
-        fallbackAsset && nextAsset === fallbackAsset && response?.status === 404
+      nextAsset = fallbackAssets
+        ? (fallbackAssets[attempt - 1] ?? fallbackAssets.at(-1))
+        : fallbackAsset &&
+            nextAsset === fallbackAsset &&
+            response?.status === 404
           ? asset
           : (fallbackAsset ?? asset);
       await onRetry({ attempt, waitMs: waits[attempt - 1] });
