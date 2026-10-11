@@ -1,6 +1,6 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { requestPinnedArtifactBytes } from "./request-pinned-artifact.mjs";
 import assert from "node:assert/strict";
-import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
 import {
   lstat,
@@ -141,26 +141,20 @@ try {
         } else {
           // Retrieve every original signed APK by exact URL. Resolving current indexes
           // would replace transitive revisions even when compiler roots are pinned.
-          const response = await globalThis.fetch(
-            selected.repository + pin.path,
+          bytes = await requestPinnedArtifactBytes(
             {
-              redirect: "error",
-              signal: globalThis.AbortSignal.timeout(60000),
+              asset: selected.repository + encodeURIComponent(pin.path),
+              bytes: pin.bytes,
+            },
+            {
+              // Bound retries for exact pinned archive delivery; every size
+              // and digest check remains mandatory before publication.
+              retryNotFound: true,
+              signal: globalThis.AbortSignal.timeout(120000),
+              fetchImpl: (asset, options) =>
+                globalThis.fetch(asset, { ...options, redirect: "error" }),
             },
           );
-          assert.equal(response.status, 200);
-          assert.ok(response.body);
-          let count = 0;
-          const chunks = [];
-          for await (const chunk of response.body) {
-            count += chunk.length;
-            assert.ok(
-              count <= pin.bytes,
-              "Pinned compiler archive exceeded its byte bound",
-            );
-            chunks.push(Buffer.from(chunk));
-          }
-          bytes = Buffer.concat(chunks);
         }
         assert.equal(bytes.length, pin.bytes);
         assert.equal(mavenHash(bytes), pin.sha256);

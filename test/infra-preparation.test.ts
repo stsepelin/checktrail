@@ -148,3 +148,71 @@ test("infra preparation rejects near-miss registry image identifiers before down
     await preparationControl(t, false, invalid);
   }
 });
+
+test("pinned artifact preparation optionally retries exact not-found delivery without weakening defaults or byte bounds", async (t) =>
+  control(
+    t,
+    `
+ const item=${item};const signal=new AbortController().signal;let calls=0,cancelled=0;const waits=[];
+ const result=await requestPinnedArtifactBytes(item,{retryNotFound:true,signal,fetchImpl:async(asset,options)=>{assert.equal(asset,item.asset);assert.equal(options.signal,signal);calls++;return calls<3?new Response(new ReadableStream({cancel(){cancelled++}}),{status:404}):new Response('original')},delayImpl:async ms=>waits.push(ms)});
+ assert.equal(result.toString(),'original');assert.equal(calls,3);assert.equal(cancelled,2);assert.deepEqual(waits,[1000,3000]);
+ let exhausted=0;await assert.rejects(requestPinnedArtifactBytes(item,{retryNotFound:true,fetchImpl:async()=>{exhausted++;return new Response(null,{status:404})},delayImpl:async()=>{}}),/HTTP 404/);assert.equal(exhausted,3);
+ for(const value of ['true',1,null]){let count=0;await assert.rejects(requestPinnedArtifactBytes(item,{retryNotFound:value,fetchImpl:async()=>{count++;return new Response('original')}}));assert.equal(count,0);}
+ let invalid=0;await assert.rejects(requestPinnedArtifactBytes(item,{retryNotFound:true,fetchImpl:async()=>{invalid++;return new Response('short')},delayImpl:async()=>{throw Error('must not retry invalid bytes')}}),/byte count/);assert.equal(invalid,1);
+ const controller=new AbortController();let attempts=0;await assert.rejects(requestPinnedArtifactBytes(item,{retryNotFound:true,signal:controller.signal,fetchImpl:async()=>{attempts++;return new Response(null,{status:404})},delayImpl:async()=>controller.abort(new Error('original deadline'))}),/original deadline/);assert.equal(attempts,1);
+`,
+  ));
+
+test("Ruby preparation recovers pinned delivery and still refuses changed bytes before publishing", async (t) => {
+  const { readFile } = await import("node:fs/promises");
+  for (const badDigest of [false, true]) {
+    const files: Record<string, string> = {};
+    for (const name of [
+      "prepare-ruby-tools-runtime.mjs",
+      "request-pinned-artifact.mjs",
+      "pull-pinned-image.mjs",
+      "ruby-tools-archives.json",
+    ])
+      files["scripts/" + name] = await readFile(
+        new URL("../../scripts/" + name, import.meta.url),
+        "utf8",
+      );
+    files["dist/src/maven.js"] =
+      `export {mavenHash,verifyMavenTree} from ${JSON.stringify(new URL("../../dist/src/maven.js", import.meta.url).href)};`;
+    files["control.mjs"] = `
+import assert from 'node:assert/strict';import {readFile,writeFile,readdir,access} from 'node:fs/promises';import path from 'node:path';import {createHash} from 'node:crypto';import childProcess from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';
+process.env.CHECKTRAIL_TEST_TASK='original-ruby-preparation';delete process.env.CHECKTRAIL_RUBY_APK_DIRECTORY;
+const task=process.env.CHECKTRAIL_TEST_TASK,tag='checktrail-'+task+':public',image='sha256:'+'1'.repeat(64),root=new URL('./',import.meta.url);
+const digest=createHash('sha256').update('original').digest('hex');const manifest=JSON.parse(await readFile(new URL('./scripts/ruby-tools-archives.json',root),'utf8'));
+for(const architecture of Object.values(manifest.architectures)) for(const pin of architecture.archives){pin.bytes=8;pin.sha256=digest;}
+await writeFile(new URL('./scripts/ruby-tools-archives.json',root),JSON.stringify(manifest));
+const pins=manifest.architectures.aarch64.archives;let built=false,pulls=0;const requests=new Map(),signals=new Map();const badDigest=${badDigest};
+childProcess.execFileSync=(command,args)=>{
+ assert.equal(command,'docker');
+ if(args[0]==='pull'){assert.equal(args.length,2);assert.match(args[1],/^public\\.ecr\\.aws\\/docker\\/library\\/(ruby|node)@sha256:[a-f0-9]{64}$/);pulls++;return '';}
+ if(args[0]==='image'&&args[1]==='inspect'){assert.deepEqual(args,['image','inspect',tag]);if(!built)throw Object.assign(new Error('absent'),{status:1,stderr:'No such image'});return JSON.stringify([{Id:image,Config:{Labels:{'checktrail.task':task}}}]);}
+ if(args[0]==='run'){assert.ok(args.includes('--rm'));assert.equal(args[args.indexOf('--network')+1],'none');if(args.at(-1)==='ruby --disable-gems --version; apk --print-arch; cat /etc/alpine-release')return 'ruby 4.0.7 original\\naarch64\\n3.24.2\\n';if(args.at(-1)==='--version')return '10.9.8\\n';assert.equal(args.at(-1),'node --version; ruby --disable-gems --version; gcc -dumpfullversion; make --version');return 'v22.23.2\\nruby 4.0.7 original\\n15.2.0\\nGNU Make 4.4.1\\n';}
+ if(args[0]==='build'){assert.equal(badDigest,false,'Changed archive bytes must never reach the build');assert.equal(args[args.indexOf('--network')+1],'none');assert.equal(requests.size,19);built=true;return '';}
+ throw Error('unexpected docker call '+JSON.stringify(args));
+};syncBuiltinESMExports();
+globalThis.fetch=async(asset,options)=>{
+ const pin=pins.find(pin=>asset===manifest.architectures.aarch64.repository+encodeURIComponent(pin.path));assert.ok(pin,'Must retrieve only the exact encoded pinned archive');assert.equal(options.redirect,'error');assert.ok(options.signal instanceof AbortSignal);if(signals.has(pin.path))assert.equal(options.signal,signals.get(pin.path));else signals.set(pin.path,options.signal);
+ const count=(requests.get(pin.path)||0)+1;requests.set(pin.path,count);
+ if(pin.path==='g++-15.2.0-r5.apk'&&count<3)return new Response(null,{status:404});
+ return new Response(badDigest&&pin.path==='g++-15.2.0-r5.apk'?'modified':'original');
+};
+if(badDigest){await assert.rejects(import('./scripts/prepare-ruby-tools-runtime.mjs'),{code:'ERR_ASSERTION'});assert.equal(built,false);assert.equal(requests.size,4);assert.deepEqual(await readdir(new URL('./.checktrail/',root)),[]);await assert.rejects(access(new URL('./.checktrail/ruby-tools-runtime',root)),{code:'ENOENT'});}
+else {await import('./scripts/prepare-ruby-tools-runtime.mjs');assert.equal(built,true);const identity=JSON.parse(await readFile(new URL('./.checktrail/ruby-tools-runtime/identity.json',root),'utf8'));assert.equal(identity.files.length,19);assert.ok(identity.files.every(pin=>pin.sha256===digest&&pin.bytes===8));assert.equal(identity.transitiveIndexResolution,false);assert.equal(identity.apkSignatureChecksDisabled,false);assert.equal(identity.buildNetwork,'none');}
+assert.equal(pulls,2);assert.equal(requests.get('g++-15.2.0-r5.apk'),3);assert.ok([...requests].every(([name,count])=>name==='g++-15.2.0-r5.apk'?count===3:count===1));
+`;
+    const root = await fixture(t, files);
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [path.join(root, "control.mjs")],
+      { encoding: "utf8", env, timeout: 20000 },
+    );
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+  }
+});
