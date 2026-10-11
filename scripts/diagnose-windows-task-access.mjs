@@ -1,4 +1,8 @@
 import assert from "node:assert/strict";
+import {
+  buildWindowsTaskAccessDiagnostic,
+  summarizeWindowsTaskAccessDiagnostic,
+} from "./windows-task-access-diagnostics.mjs";
 import { spawnSync } from "node:child_process";
 import { Buffer } from "node:buffer";
 import { URL } from "node:url";
@@ -43,52 +47,9 @@ assert.ok(
     ts.isTaggedTemplateExpression(initializer) &&
     ts.isNoSubstitutionTemplateLiteral(initializer.template),
 );
-let program = initializer.template.rawText ?? initializer.template.text;
-const points = [
-  [
-    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)",
-    "console-ready",
-    false,
-  ],
-  [
-    "  $request = [Console]::In.ReadToEnd() | ConvertFrom-Json",
-    "request-start",
-    true,
-  ],
-  ["  if ($request.kind -ne 'directory'", "request-finished", true],
-  ["  $item = Get-Item -LiteralPath $request.path -Force", "item-start", true],
-  ["  if (($item.Attributes", "item-finished", true],
-  [
-    "  $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()",
-    "identity-start",
-    true,
-  ],
-  ["  if ($request.created)", "identity-finished", true],
-  [
-    "    Set-Acl -LiteralPath $request.path -AclObject $acl",
-    "acl-write-start",
-    true,
-  ],
-  ["  $acl = Get-Acl -LiteralPath $request.path", "acl-read-start", true],
-  ["  $rules = @(", "acl-read-finished", true],
-  ["  [ordered]@{userSid=", "rules-finished", true],
-];
-for (const [anchor] of points)
-  assert.equal(
-    program.split(anchor).length,
-    2,
-    "Diagnostic anchor changed: " + anchor,
-  );
-for (const [anchor, name, before] of points) {
-  const marker =
-    "[Console]::Error.WriteLine('CT_ACL_STAGE|" +
-    name +
-    "|'+[Diagnostics.Stopwatch]::GetTimestamp())";
-  program = program.replace(
-    anchor,
-    before ? marker + "\n" + anchor : anchor + "\n" + marker,
-  );
-}
+const program = buildWindowsTaskAccessDiagnostic(
+  initializer.template.rawText ?? initializer.template.text,
+);
 const environment = windowsEnvironment(process.env);
 assert.ok(environment.SYSTEMROOT);
 const executable = await realpath(
@@ -162,14 +123,7 @@ try {
           /* This diagnostic does not convert unusable data into acceptance. */
         }
       }
-      const markers = [
-        ...stderr.matchAll(/^CT_ACL_STAGE\|([a-z-]+)\|(\d+)\r?$/gm),
-      ].map((match) => ({ stage: match[1], clockTicks: match[2] }));
-      assert.ok(
-        markers.every((marker) =>
-          points.some((point) => point[1] === marker.stage),
-        ),
-      );
+      const diagnostic = summarizeWindowsTaskAccessDiagnostic(stderr);
       cases.push({
         environment: mode,
         created,
@@ -182,7 +136,7 @@ try {
         stdoutSha256: hash(stdout),
         stderrBytes: Buffer.byteLength(stderr),
         stderrSha256: hash(stderr),
-        stages: markers,
+        ...diagnostic,
       });
     }
   }
@@ -202,7 +156,7 @@ process.stdout.write(
   JSON.stringify({
     schemaVersion: 1,
     scope:
-      "Original Windows ACL program with stage markers; private owned setup only",
+      "Shipped Windows ACL decisions with staged stdin and JSON parsing; private owned setup only",
     sourceEntrypointSha256: hash(sourceBytes),
     diagnosticProgramSha256: hash(program),
     node: process.versions.node,
