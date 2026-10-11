@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "profile": "swift-extensions-ci-sdk-handoff",
+  "date": "2026-10-10",
+  "problem": {
+    "hostedRun": 38075406283,
+    "hostedJob": "swift-extensions (guards-2)",
+    "observedResult": "The UID 1000 acceptance process failed to read sdk.json with EACCES because the atomically published mkdtemp directory retained mode 0700."
+  },
+  "change": {
+    "directoryMode": "0755",
+    "sdkManifestMode": "0644",
+    "permissionsSetBeforeAtomicRename": true,
+    "onlyPublicPreparationArtifacts": true,
+    "nativeRuntimeOrRequiredAssertionsChanged": false
+  },
+  "inputs": [
+    {
+      "file": "scripts/prepare-swift-extensions-runtime.mjs",
+      "bytes": 7522,
+      "sha256": "3b10797e0e9c8ec8901b46cfd7d9d2a2820995c1d4d0822c4a77013527d0699f"
+    }
+  ],
+  "linuxPermissionValidation": {
+    "unprivilegedUid": 1000,
+    "originalDenied": true,
+    "fixedReadable": true,
+    "directoryMode": "0755",
+    "manifestMode": "0644",
+    "sdkManifestSha256": "e70e780df8db4d72c99bb408bff6ae1d56d76c52165528a842f163bcca09af6d",
+    "sdkPins": 2883,
+    "sdkBytes": 93011176,
+    "network": "none",
+    "wholeRuntimeClosureVerified": false,
+    "linuxNodeImage": "sha256:02f052392b6adc415fe041be8c63761b8f8f41b8fc6a3e60a44f6008e8d131f5"
+  },
+  "projectValidation": {
+    "command": "npm run check",
+    "tests": 1661,
+    "passed": 955,
+    "failed": 0,
+    "skippedOptionalNative": 706,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 243478.468375
+  },
+  "fullNativeProfileRerunForRepair": false,
+  "priorCompleteNativeProfileReceipt": "swift-extensions-2026-10-10.json",
+  "priorReceiptBindingsRemainHistorical": true,
+  "hostedRepairAcceptancePending": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

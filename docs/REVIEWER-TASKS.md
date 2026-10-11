@@ -147,3 +147,5 @@ source byte gates, registration identity and reached lifecycle controls remain
 separate from complete dependency/license closure and final Gate A acceptance.
 Version 1 retains its flat inventory behavior; no inference or field evaluation
 is invoked.
+
+The selected `swift-extensions` profile has native source, fresh offline installation and paired-control evidence in [SWIFT-EXTENSIONS.md](SWIFT-EXTENSIONS.md). Local package/plugin/generated compiler roles and selected Linux SDK bytes remain separate from final platform/license closure and AI host independence. Gate A remains open.

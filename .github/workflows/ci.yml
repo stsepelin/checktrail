@@ -1098,6 +1098,33 @@ jobs:
       - if: always()
         run: node scripts/cleanup-ruby-tools-runtime.mjs
 
+  swift-extensions-arm64:
+    name: swift-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [acceptance, guards-1, guards-2, guards-3]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-swift-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-swift-extensions-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, paired controls and fresh offline installed acceptance
+        run: node scripts/verify-swift-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-swift-extensions-runtime.mjs
+
   swift:
     runs-on: macos-latest
     timeout-minutes: 15

@@ -62,6 +62,7 @@ export const PARSERS = [
   "ruby-syntax",
   "ruby-tools-json",
   "swift-tools-json",
+  "swift-extensions-json",
   "silent-syntax",
   "ruff-json",
   "python-extension-json",
