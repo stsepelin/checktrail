@@ -52,6 +52,15 @@ harness. Both current paired corpora retain every observed native failure. The
 CommonJS global module-loader regression fails before its guard and passes after
 the repair. CI runs source controls, paired guards and offline installed checks.
 
+The [compiler-syntax follow-up](measurements/consumer-impact-syntax-2026-10-11.json)
+adds explicit AST checks because the parser accepts TypeScript and JSX in
+JavaScript without parse diagnostics. Native Node rejects each unsupported
+control, while ordinary identifiers, private fields and conditional expressions
+remain resolved. The recorded macOS and Linux source guards and fresh installed
+controls pass; the later macOS development corpus retains every observed failure.
+The earlier foundation receipt remains an unchanged historical checkpoint.
+These parser guards do not prove arbitrary JavaScript runtime or loader validity.
+
 The broader Gate A consumer-impact profile remains pending: native
 producer/consumer chains for every advertised language, whole-profile frozen
 nine-case source and fresh installed acceptance, and final acceptance bindings

@@ -12,6 +12,46 @@ export interface ConsumerImportEvidence {
   parsedFiles: number;
 }
 
+// TypeScript's JavaScript parser accepts compiler-only nodes without parse
+// diagnostics. Recognize their AST shapes rather than matching keyword text.
+function requiresCompilerSyntax(node: ts.Node): boolean {
+  return (
+    ts.isTypeNode(node) ||
+    ts.isTypeParameterDeclaration(node) ||
+    ts.isTypeAliasDeclaration(node) ||
+    ts.isInterfaceDeclaration(node) ||
+    ts.isEnumDeclaration(node) ||
+    ts.isAsExpression(node) ||
+    ts.isSatisfiesExpression(node) ||
+    ts.isTypeAssertionExpression(node) ||
+    ts.isNonNullExpression(node) ||
+    ts.isDecorator(node) ||
+    ts.isJsxElement(node) ||
+    ts.isJsxFragment(node) ||
+    ts.isJsxSelfClosingElement(node) ||
+    (ts.isImportClause(node) && node.isTypeOnly) ||
+    (ts.isImportSpecifier(node) && node.isTypeOnly) ||
+    (ts.isExportDeclaration(node) && node.isTypeOnly) ||
+    (ts.isExportSpecifier(node) && node.isTypeOnly) ||
+    (ts.isExportAssignment(node) && node.isExportEquals) ||
+    ((ts.isParameter(node) ||
+      ts.isPropertyDeclaration(node) ||
+      ts.isMethodDeclaration(node)) &&
+      !!node.questionToken) ||
+    (ts.isPropertyDeclaration(node) && !!node.exclamationToken) ||
+    [
+      ts.SyntaxKind.AbstractKeyword,
+      ts.SyntaxKind.DeclareKeyword,
+      ts.SyntaxKind.PublicKeyword,
+      ts.SyntaxKind.PrivateKeyword,
+      ts.SyntaxKind.ProtectedKeyword,
+      ts.SyntaxKind.ReadonlyKeyword,
+      ts.SyntaxKind.OverrideKeyword,
+      ts.SyntaxKind.AccessorKeyword,
+    ].includes(node.kind)
+  );
+}
+
 // This is a finite captured-source profile, not a complete runtime graph. No
 // loader, compiler configuration, manifest script or project code is evaluated.
 export async function reconcileConsumerImports(
@@ -127,6 +167,8 @@ export async function reconcileConsumerImports(
       const modules: string[] = [];
       function visit(node: ts.Node, depth = 0): void {
         if (++nodes > 100000 || depth > 64) throw Error("Import syntax bound");
+        if (requiresCompilerSyntax(node))
+          throw Error("Compiler-dependent source syntax");
         if (ts.isModuleDeclaration(node) || ts.isImportEqualsDeclaration(node))
           throw Error("Unresolved module scope");
         if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {

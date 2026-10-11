@@ -23,6 +23,13 @@ const bounded =
   "stale, excluded, empty, unsupported and exhausted import observations stay unknown";
 const controls = [
   {
+    id: "compiler-syntax",
+    file: "consumer-imports.js",
+    from: "if (requiresCompilerSyntax(node))",
+    to: "if (false)",
+    name: "compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved",
+  },
+  {
     id: "commonjs-module-loader",
     file: "consumer-imports.js",
     from: '"module",',

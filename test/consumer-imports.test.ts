@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { writeFile, mkdir, readFile, symlink } from "node:fs/promises";
 import path from "node:path";
 import { test } from "node:test";
+import { spawnSync } from "node:child_process";
 import { reconcileConsumerImports } from "../src/consumer-imports.js";
 import { inventory } from "../src/inventory.js";
 import { createPlan, validate } from "../src/engine.js";
@@ -451,4 +452,128 @@ test("CommonJS module loaders retain full validation and its actual consumer ass
   const repaired = await validate(root, { trusted: true, base });
   assert.equal(repaired.outcome, "passed");
   assert.equal(repaired.selection?.mode, "full");
+});
+
+test("compiler-dependent syntax in JavaScript retains full validation while ordinary keyword spellings remain resolved", async (t) => {
+  const unsupported = [
+    "export const value=1 as number;",
+    "export const value=1 satisfies number;",
+    "export const value=other!;",
+    "interface Shape {}",
+    "type Shape=number;",
+    "enum Shape {Value}",
+    "namespace Shape {}",
+    "export const value=<section/>;",
+    "export const value=<>text</>;",
+    "export function id<T>(value){return value}",
+    "export function id(value?){return value}",
+    "export class Shape {value!}",
+    "export class Shape {value?}",
+    "class Shape {private value=1}",
+    "class Shape {protected value=1}",
+    "class Shape {public value=1}",
+    "class Shape {readonly value=1}",
+    "abstract class Shape {}",
+    "declare const value=1;",
+    "class Shape {override method(){}}",
+    "class Shape {accessor value=1}",
+    "class Shape {constructor(public value){}}",
+    "@mark class Shape {}",
+    "import type {value} from '../lib/value.js';",
+    "import {type value} from '../lib/value.js';",
+    "export type {value} from '../lib/value.js';",
+    "export {type value} from '../lib/value.js';",
+  ];
+  for (const [index, text] of unsupported.entries()) {
+    const files = { ...sources(), "other/value.test.js": text };
+    const root = await fixture(t, files);
+    const native = spawnSync(
+      process.execPath,
+      ["--check", path.join(root, "other/value.test.js")],
+      { encoding: "utf8", timeout: 10000 },
+    );
+    assert.equal(native.status, 1, text + native.stderr);
+    assert.match(native.stderr, /SyntaxError/, text);
+    fixtureGit(root, ["init", "--quiet", "--object-format=sha1"]);
+    const base = await syntheticCommit(root, files);
+    await writeFile(
+      path.join(root, "lib/value.js"),
+      "export const value=1+0;\n",
+    );
+    const evidence = await reconcileConsumerImports(
+      await inventory(root),
+      projects,
+      workspace,
+    );
+    assert.equal(evidence.status, "unknown", text);
+    assert.deepEqual(evidence.edges, []);
+    const selected = await createPlan(root, { base });
+    assert.equal(selected.plan.selection?.mode, "full", text);
+    assert.deepEqual(
+      selected.plan.checks.map((c) => c.project),
+      projects,
+    );
+    if (index === 0) {
+      const report = await validate(root, { trusted: true, base });
+      assert.equal(report.outcome, "failed");
+      assert.deepEqual(
+        report.checks.map((c) => [c.project, c.status]),
+        [
+          ["app", "passed"],
+          ["lib", "passed"],
+          ["other", "failed"],
+        ],
+      );
+      assert.match(
+        report.checks[2]!.processes.map((p) => p.stdout + p.stderr).join("\n"),
+        /SyntaxError/,
+      );
+    }
+  }
+  for (const extension of ["mjs", "cjs"]) {
+    const root = await fixture(t, {
+      ...sources(),
+      ["other/unsupported." + extension]: "const value=1 as number;",
+    });
+    assert.equal(
+      (
+        await reconcileConsumerImports(
+          await inventory(root),
+          projects,
+          workspace,
+        )
+      ).status,
+      "unknown",
+      extension,
+    );
+  }
+  for (const text of [
+    "const type=1,readonly=2,declare=3,interfaceValue=4,override=5,accessor=6; export const value=type+readonly+declare+interfaceValue+override+accessor;",
+    "export const object={type:1,readonly:2,declare:3,override:4,accessor:5};",
+    "// interface Shape {}\nexport const text='value as number';",
+    "export const value=true?1:2, opposite=!false, maybe=null??1;",
+    "class Shape {#value=1; method(){return this.#value}} export {Shape};",
+  ]) {
+    const root = await fixture(t, {
+      ...sources(),
+      "other/value.test.js": text,
+    });
+    const native = spawnSync(
+      process.execPath,
+      ["--check", path.join(root, "other/value.test.js")],
+      { encoding: "utf8", timeout: 10000 },
+    );
+    assert.equal(native.status, 0, native.stderr);
+    assert.equal(
+      (
+        await reconcileConsumerImports(
+          await inventory(root),
+          projects,
+          workspace,
+        )
+      ).status,
+      "resolved",
+      text,
+    );
+  }
 });

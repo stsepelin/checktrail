@@ -22,7 +22,7 @@ import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const testFiles = [
-  ["consumer-imports.test.js", 8],
+  ["consumer-imports.test.js", 9],
   ["git-selection.test.js", 6],
   ["impact.test.js", 3],
 ];
@@ -54,7 +54,7 @@ for (const [file, total] of testFiles) {
   for (const name of names)
     requirements.push({ file: "dist/test/" + file, name });
 }
-assert.equal(requirements.length, 17);
+assert.equal(requirements.length, 18);
 const harnessSha256 = hash(
   JSON.stringify(inputs.map((x) => [x.file, hash(x.bytes)])),
 );
