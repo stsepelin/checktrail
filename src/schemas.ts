@@ -22,6 +22,7 @@ export {
 export { actionlintConfigSchema } from "./actionlint.js";
 export { cppToolsConfigSchema } from "./cpp-tools.js";
 export { terraformConfigSchema } from "./terraform.js";
+export { terraformExtensionsConfigSchema } from "./terraform-extensions-contract.js";
 export { kubeconformConfigSchema } from "./kubeconform.js";
 export { kustomizeConfigSchema } from "./kustomize.js";
 export { helmConfigSchema } from "./helm.js";

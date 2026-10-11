@@ -1,0 +1,206 @@
+[
+  {
+    "id": "executed-collector-command",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(process.command, command, \"Executed collector command differs\")",
+    "to": "same(0, 0, \"Executed collector command differs\")"
+  },
+  {
+    "id": "invocation-digest",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.inputSha256, mavenHash(JSON.stringify(invocation)), \"Invocation digest differs\")",
+    "to": "same(0, 0, \"Invocation digest differs\")"
+  },
+  {
+    "id": "frozen-input-cohort",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.sourceInputs, invocation.inputs.map((input) => ({\n            ...input,\n            afterSha256: input.sha256,\n        })), \"Frozen input cohort differs\")",
+    "to": "same(0, 0, \"Frozen input cohort differs\")"
+  },
+  {
+    "id": "native-source-cohort",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.nativeFiles, Object.keys(current.rendered).toSorted(), \"Native source cohort differs\")",
+    "to": "same(0, 0, \"Native source cohort differs\")"
+  },
+  {
+    "id": "native-data-cohort",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.dataFiles, [\n            \"modules/modules.json\",\n            ...provider.members.map((member) => path.posix.join(\"providers\", provider.address, provider.version, \"linux_arm64\", member.path)),\n        ].toSorted(), \"Native data cohort differs\")",
+    "to": "same(0, 0, \"Native data cohort differs\")"
+  },
+  {
+    "id": "tool-after-bytes",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.tool.afterSha256, packet.tool.sha256, \"Tool changed\")",
+    "to": "same(0, 0, \"Tool changed\")"
+  },
+  {
+    "id": "installed-provider-member",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.providerMembers[index], {\n                ...pin,\n                entry: path.join(packet.data, \"providers\", provider.address, provider.version, \"linux_arm64\", pin.path),\n                afterSha256: pin.sha256,\n            }, \"Installed provider member differs\")",
+    "to": "same(0, 0, \"Installed provider member differs\")"
+  },
+  {
+    "id": "owned-provider-archive",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.copiedArchive, {\n            file: path.join(packet.mirror, \"registry.terraform.io/hashicorp/random\", provider.archive),\n            sha256: provider.archiveSha256,\n            afterSha256: provider.archiveSha256,\n        }, \"Owned archive pin differs\")",
+    "to": "same(0, 0, \"Owned archive pin differs\")"
+  },
+  {
+    "id": "local-only-cli-configuration",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.cliConfig, {\n            file: path.join(packet.temporary, \"home/terraform.tfrc\"),\n            text: configText,\n            sha256: mavenHash(configText),\n            afterSha256: mavenHash(configText),\n        }, \"Exact local-only installation policy differs\")",
+    "to": "same(0, 0, \"Exact local-only installation policy differs\")"
+  },
+  {
+    "id": "native-lock-bytes",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.lock, {\n            file: path.join(packet.workspace, \".terraform.lock.hcl\"),\n            sha256: mavenHash(terraformExtensionsLock),\n            afterSha256: mavenHash(terraformExtensionsLock),\n        }, \"Pinned readonly lock differs\")",
+    "to": "same(0, 0, \"Pinned readonly lock differs\")"
+  },
+  {
+    "id": "installed-module-cohort",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(modules.Modules.toSorted((a, b) => a.Key.localeCompare(b.Key, \"en\")), instances\n            .map((instance) => ({\n            Key: instance.key,\n            Source: instance.source,\n            Dir: instance.directory,\n        }))\n            .sort((a, b) => a.Key.localeCompare(b.Key, \"en\")), \"Complete installed local module graph differs\")",
+    "to": "same(0, 0, \"Complete installed local module graph differs\")"
+  },
+  {
+    "id": "fixed-native-arguments",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(row.args, args, \"Fixed native arguments differ\")",
+    "to": "same(0, 0, \"Fixed native arguments differ\")"
+  },
+  {
+    "id": "initialization-version-role",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(events[0].message_code, undefined, \"Initialization version role differs\")",
+    "to": "same(0, 0, \"Initialization version role differs\")"
+  },
+  {
+    "id": "initialization-stage-messages",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(stages.map((event) => ({\n            message: event[\"@message\"],\n            terraform: event.terraform,\n            ui: event.ui,\n        })), [\n            \"Initializing modules...\",\n            \"Initializing provider plugins...\",\n            \"Terraform has been successfully initialized!\",\n        ].map((message) => ({ message, terraform: undefined, ui: undefined })), \"Initialization stage messages/roles differ\")",
+    "to": "same(0, 0, \"Initialization stage messages/roles differ\")"
+  },
+  {
+    "id": "complete-provider-schema",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(mavenHash(schema.stdout), provider.schemaSha256, \"Complete pinned provider schema differs\")",
+    "to": "same(0, 0, \"Complete pinned provider schema differs\")"
+  },
+  {
+    "id": "native-error-cohort",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(result.error_count, errors, \"Error cohort differs\")",
+    "to": "same(0, 0, \"Error cohort differs\")"
+  },
+  {
+    "id": "native-validity",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(result.valid, errors === 0, \"Native validity differs\")",
+    "to": "same(0, 0, \"Native validity differs\")"
+  },
+  {
+    "id": "native-validation-exit",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(validation.exitCode, errors ? 1 : 0, \"Validation exit differs\")",
+    "to": "same(0, 0, \"Validation exit differs\")"
+  },
+  {
+    "id": "physical-diagnostic-position",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "terraformRequire(Buffer.byteLength(before) === p.byte &&\n                    before.split(\"\\n\").length === p.line &&\n                    Array.from(new Intl.Segmenter(\"en\", { granularity: \"grapheme\" }).segment(before.slice(before.lastIndexOf(\"\\n\") + 1))).length +\n                        1 ===\n                        p.column, \"Physical diagnostic position differs\")",
+    "to": "terraformRequire(true, \"Physical diagnostic position differs\")"
+  },
+  {
+    "id": "native-diagnostic-snippet",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(lines\n                .slice(snippet.start_line - 1, snippet.start_line - 1 + snippet.code.split(\"\\n\").length)\n                .join(\"\\n\"), snippet.code, \"Native snippet differs\")",
+    "to": "same(0, 0, \"Native snippet differs\")"
+  },
+  {
+    "id": "native-highlight-start",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(prefixBytes + snippet.highlight_start_offset, start.byte, \"Native highlight start differs\")",
+    "to": "same(0, 0, \"Native highlight start differs\")"
+  },
+  {
+    "id": "native-highlight-end",
+    "name": "diagnostic",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(prefixBytes + snippet.highlight_end_offset, end.byte, \"Native highlight end differs\")",
+    "to": "same(0, 0, \"Native highlight end differs\")"
+  },
+  {
+    "id": "current-physical-inputs",
+    "name": "stale",
+    "file": "terraform-extensions-physical.js",
+    "from": "terraformRequire(isDeepStrictEqual(current.invocation, invocation), \"Current physical input/policy cohort differs\")",
+    "to": "terraformRequire(true, \"Current physical input/policy cohort differs\")"
+  },
+  {
+    "id": "retained-cancelled",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "!process.cancelled",
+    "to": "true"
+  },
+  {
+    "id": "retained-timedOut",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "!process.timedOut",
+    "to": "true"
+  },
+  {
+    "id": "retained-truncated",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "!process.truncated",
+    "to": "true"
+  },
+  {
+    "id": "native-input-flag-selection",
+    "name": "fixed",
+    "file": "terraform-extensions-runner.js",
+    "from": "\"-input=false\"",
+    "to": "\"-input=0\"",
+    "nativeInvocation": true
+  },
+  {
+    "id": "native-temporary-owned-target",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.nativeTemporary.before, path.join(packet.temporary, \"tmp\"), \"Owned native temporary alias target differs\")",
+    "to": "same(0, 0, \"Owned native temporary alias target differs\")"
+  },
+  {
+    "id": "native-temporary-after-target",
+    "name": "empty",
+    "file": "terraform-extensions-evidence.js",
+    "from": "same(packet.nativeTemporary.after, packet.nativeTemporary.before, \"Owned native temporary alias changed\")",
+    "to": "same(0, 0, \"Owned native temporary alias changed\")"
+  }
+]

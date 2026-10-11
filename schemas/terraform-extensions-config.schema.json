@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "declared-local-modules-random-v1"
+    },
+    "terraformVersion": { "type": "string", "const": "1.16.5" },
+    "provider": {
+      "type": "string",
+      "const": "registry.terraform.io/hashicorp/random"
+    },
+    "providerVersion": { "type": "string", "const": "3.9.1" },
+    "platform": { "type": "string", "const": "linux_arm64" },
+    "modules": {
+      "minItems": 3,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "directory": {
+            "anyOf": [
+              { "type": "string", "const": "." },
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(?:\\/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+              }
+            ]
+          },
+          "format": { "type": "string", "enum": ["hcl", "json"] },
+          "variables": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            },
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["number", "string", "bool"]
+                },
+                "default": {
+                  "anyOf": [
+                    { "type": "string", "maxLength": 2048 },
+                    { "type": "number" },
+                    { "type": "boolean" }
+                  ]
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            }
+          },
+          "locals": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    { "type": "string", "maxLength": 2048 },
+                    { "type": "number" },
+                    { "type": "boolean" }
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "maxLength": 192,
+                      "pattern": "^(?:(?:var|local)\\.[A-Za-z_][A-Za-z0-9_]*|module\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*|random_integer\\.[A-Za-z_][A-Za-z0-9_]*\\.(?:result|id|min|max|seed|keepers))$"
+                    },
+                    "offset": {
+                      "type": "integer",
+                      "minimum": -1000000,
+                      "maximum": 1000000
+                    }
+                  },
+                  "required": ["reference"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "resources": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            },
+            "additionalProperties": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+              },
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      { "type": "string", "maxLength": 2048 },
+                      { "type": "number" },
+                      { "type": "boolean" }
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "maxLength": 192,
+                        "pattern": "^(?:(?:var|local)\\.[A-Za-z_][A-Za-z0-9_]*|module\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*|random_integer\\.[A-Za-z_][A-Za-z0-9_]*\\.(?:result|id|min|max|seed|keepers))$"
+                      },
+                      "offset": {
+                        "type": "integer",
+                        "minimum": -1000000,
+                        "maximum": 1000000
+                      }
+                    },
+                    "required": ["reference"],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          },
+          "calls": {
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                },
+                "target": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                },
+                "arguments": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "anyOf": [
+                          { "type": "string", "maxLength": 2048 },
+                          { "type": "number" },
+                          { "type": "boolean" }
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "reference": {
+                            "type": "string",
+                            "maxLength": 192,
+                            "pattern": "^(?:(?:var|local)\\.[A-Za-z_][A-Za-z0-9_]*|module\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*|random_integer\\.[A-Za-z_][A-Za-z0-9_]*\\.(?:result|id|min|max|seed|keepers))$"
+                          },
+                          "offset": {
+                            "type": "integer",
+                            "minimum": -1000000,
+                            "maximum": 1000000
+                          }
+                        },
+                        "required": ["reference"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": ["name", "target", "arguments"],
+              "additionalProperties": false
+            }
+          },
+          "outputs": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    { "type": "string", "maxLength": 2048 },
+                    { "type": "number" },
+                    { "type": "boolean" }
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "reference": {
+                      "type": "string",
+                      "maxLength": 192,
+                      "pattern": "^(?:(?:var|local)\\.[A-Za-z_][A-Za-z0-9_]*|module\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*|random_integer\\.[A-Za-z_][A-Za-z0-9_]*\\.(?:result|id|min|max|seed|keepers))$"
+                    },
+                    "offset": {
+                      "type": "integer",
+                      "minimum": -1000000,
+                      "maximum": 1000000
+                    }
+                  },
+                  "required": ["reference"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "directory",
+          "format",
+          "variables",
+          "locals",
+          "resources",
+          "calls",
+          "outputs"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "terraformVersion",
+    "provider",
+    "providerVersion",
+    "platform",
+    "modules"
+  ],
+  "additionalProperties": false
+}

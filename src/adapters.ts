@@ -12,6 +12,7 @@ import {
   cppExtensionsPolicyFile,
 } from "./cpp-extensions.js";
 import { terraformCheck } from "./terraform.js";
+import { terraformExtensionsCheck } from "./terraform-extensions.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { kustomizeCheck } from "./kustomize.js";
 import { helmCheck } from "./helm.js";
@@ -227,6 +228,7 @@ export const adapters = [
       "checktrail.kubeconform.json",
       "checktrail.kustomize.json",
       "checktrail.terraform.json",
+      "checktrail.terraform-extensions.json",
       "checktrail.helm.json",
     ],
     checks: [
@@ -234,6 +236,7 @@ export const adapters = [
       "infrastructure.kubeconform",
       "infrastructure.kustomize",
       "infrastructure.terraform-validate",
+      "infrastructure.terraform-extensions",
       "infrastructure.helm",
     ],
   },
@@ -282,9 +285,32 @@ export function discover(
       found.set(key, project);
     }
   }
-  const projects = [...found.values()].sort((a, b) =>
-    `${a.path}:${a.adapter}`.localeCompare(`${b.path}:${b.adapter}`, "en"),
+  // A declared Terraform extension owns its local Terraform-only child directories.
+  // Other infrastructure markers retain their independent project boundaries.
+  const declaredTerraformRoots = [...found.values()].filter(
+    (project) =>
+      project.adapter === "infrastructure" &&
+      project.markers.includes(
+        path.posix.join(project.path, "checktrail.terraform-extensions.json"),
+      ),
   );
+  const projects = [...found.values()]
+    .filter(
+      (project) =>
+        !declaredTerraformRoots.some(
+          (parent) =>
+            project !== parent &&
+            project.adapter === "infrastructure" &&
+            (parent.path === "." ||
+              project.path.startsWith(parent.path + "/")) &&
+            project.markers.every(
+              (marker) => marker.endsWith(".tf") || marker.endsWith(".tf.json"),
+            ),
+        ),
+    )
+    .sort((a, b) =>
+      `${a.path}:${a.adapter}`.localeCompare(`${b.path}:${b.adapter}`, "en"),
+    );
   for (const project of projects) {
     const prefix = project.path === "." ? "" : `${project.path}/`;
     const children = projects.filter(
@@ -535,6 +561,11 @@ export async function checksFor(
         path.posix.basename(file) !== "checktrail.kubeconform.json" &&
         path.posix.basename(file) !== "checktrail.kustomize.json" &&
         path.posix.basename(file) !== "checktrail.terraform.json" &&
+        path.posix.basename(file) !== "checktrail.terraform-extensions.json" &&
+        !(
+          project.files.includes("checktrail.terraform-extensions.json") &&
+          (file.endsWith(".tf") || file.endsWith(".tf.json"))
+        ) &&
         path.posix.basename(file) !== "checktrail.helm.json" &&
         !(
           project.files.includes("checktrail.helm.json") &&
@@ -553,6 +584,10 @@ export async function checksFor(
       ...(project.files.includes("checktrail.kustomize.json") ||
       requested?.includes("infrastructure.kustomize")
         ? [await kustomizeCheck(source, project)]
+        : []),
+      ...(project.files.includes("checktrail.terraform-extensions.json") ||
+      requested?.includes("infrastructure.terraform-extensions")
+        ? [await terraformExtensionsCheck(source, project)]
         : []),
       ...(project.files.includes("checktrail.terraform.json") ||
       requested?.includes("infrastructure.terraform-validate")

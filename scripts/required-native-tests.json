@@ -4746,5 +4746,47 @@
       "file": "dist/test/cpp-extensions-cancel.test.js",
       "name": "cpp-extensions lifecycle acceptance"
     }
+  ],
+  "terraform-extensions": [
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions diagnostic acceptance"
+    },
+    {
+      "file": "dist/test/gate-terraform-extensions.test.js",
+      "name": "terraform-extensions installed acceptance"
+    },
+    {
+      "file": "dist/test/terraform-extensions-surfaces.test.js",
+      "name": "terraform-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/terraform-extensions-lifecycle.test.js",
+      "name": "terraform-extensions lifecycle acceptance"
+    }
   ]
 }

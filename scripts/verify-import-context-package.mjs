@@ -64,8 +64,11 @@ assert.ok(
     "ruby-extensions",
     "swift-extensions",
     "cpp-extensions",
+    "terraform-extensions",
   ].includes(profile),
 );
+if (profile === "terraform-extensions")
+  process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_INSTALLED = "1";
 if (profile === "review-context-limits")
   process.env.CHECKTRAIL_CONTEXT_LIMITS_INSTALLED = "1";
 if (profile === "host-session-readiness")
@@ -229,6 +232,10 @@ try {
     "gate-dotnet-generator-extensions.test.js",
     "gate-ruby-extensions.test.js",
     "gate-swift-extensions.test.js",
+    "gate-terraform-extensions.test.js",
+    "terraform-extensions-fixture.js",
+    "terraform-extensions-surfaces.test.js",
+    "terraform-extensions-lifecycle.test.js",
     "gate-cpp-extensions.test.js",
     "cpp-extensions-fixture.js",
     "cpp-extensions-surfaces.test.js",
@@ -543,6 +550,18 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "terraform-extensions"
+            ? [
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_NATIVE=1",
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_INSTALLED=1",
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT=/operator-provider",
+                "--mount",
+                `type=bind,src=${process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT},target=/operator-provider,readonly`,
+              ]
+            : []),
           ...(profile === "assembly-fastapi"
             ? ["--env", "CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED=1"]
             : []),
