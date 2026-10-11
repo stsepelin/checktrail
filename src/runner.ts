@@ -1,4 +1,9 @@
 import { captureProcessOutput } from "./process-output.js";
+import {
+  nativeJournalContextEnvironment,
+  withoutNativeJournalContext,
+} from "./native-journal-channel.js";
+import type { NativeJournalContext } from "./native-attempt-storage.js";
 import { spawn } from "node:child_process";
 import { stopDescendants } from "./process-tree.js";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -10,6 +15,8 @@ import type { Command, ProcessResult } from "./types.js";
 export interface RunOptions {
   /** Engine/operator-selected evidence capture; grants no execution authority. */
   captureRawOutput?: boolean;
+  /** Internal engine evidence channel; never a tool argument or execution grant. */
+  nativeJournalContext?: NativeJournalContext;
   timeoutMs: number;
   maxOutputBytes?: number;
   signal?: AbortSignal;
@@ -70,7 +77,15 @@ export async function runProcess(
   ]) {
     if (process.env[key] !== undefined) env[key] = process.env[key];
   }
-  Object.assign(env, options.environment, command.env);
+  Object.assign(
+    env,
+    withoutNativeJournalContext({ ...options.environment, ...command.env }),
+  );
+  if (options.nativeJournalContext)
+    Object.assign(
+      env,
+      nativeJournalContextEnvironment(options.nativeJournalContext),
+    );
   const temporary = command.temporaryDirectory
     ? await mkdtemp(path.join(tmpdir(), "checktrail-command-"))
     : undefined;

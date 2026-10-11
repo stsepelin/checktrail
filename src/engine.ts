@@ -19,6 +19,10 @@ import { loadConfig } from "./config.js";
 import { evaluate } from "./evidence.js";
 import { inventory } from "./inventory.js";
 import { runProcess } from "./runner.js";
+import {
+  prepareEngineNativeJournal,
+  nativeJournalAllowsParserPass,
+} from "./native-journal-engine.js";
 import { identifyTool, toolsFor } from "./tool-versions.js";
 import { VERSION } from "./types.js";
 import type {
@@ -212,6 +216,7 @@ export async function validate(
   let activeEnvironment: Record<string, string> = {};
   const checks: CheckResult[] = [];
   let outputBudget = 4 * 1024 * 1024;
+  let nativeOutputBudget = 4 * 1024 * 1024;
   const identified = new Map<string, ToolEvidence>();
   const execute = async (
     command: Command,
@@ -220,13 +225,34 @@ export async function validate(
     const remaining = timeoutMs - (Date.now() - started);
     if (remaining <= 0 || outputBudget <= 0 || options.signal?.aborted)
       return undefined;
-    const result = await runProcess(source.root, command, {
-      timeoutMs: remaining,
-      environment: activeEnvironment,
-      maxOutputBytes: Math.min(outputBudget, maximum),
-      captureRawOutput: true,
-      ...(options.signal ? { signal: options.signal } : {}),
-    });
+    const owned = prepareEngineNativeJournal(
+      command,
+      source.fingerprint,
+      nativeOutputBudget,
+    );
+    let result: ProcessResult;
+    try {
+      result = await runProcess(source.root, command, {
+        timeoutMs: remaining,
+        environment: activeEnvironment,
+        maxOutputBytes: Math.min(outputBudget, maximum),
+        captureRawOutput: true,
+        ...(owned ? { nativeJournalContext: owned.context } : {}),
+        ...(options.signal ? { signal: options.signal } : {}),
+      });
+    } catch (error) {
+      owned?.cleanup();
+      throw error;
+    }
+    if (owned) {
+      result.nativeJournal = owned.collect();
+      const retained =
+        result.nativeJournal.capture?.state === "invalid"
+          ? undefined
+          : result.nativeJournal.capture?.replay?.retainedBytes;
+      nativeOutputBudget -=
+        typeof retained === "number" ? retained : nativeOutputBudget;
+    }
     outputBudget -=
       Buffer.byteLength(result.stdout) + Buffer.byteLength(result.stderr);
     return result;
@@ -308,6 +334,20 @@ export async function validate(
       result.status = "inconclusive";
       result.reason =
         "The check completed but required tool identity could not be established.";
+    }
+    if (
+      result.status === "passed" &&
+      [
+        ...processes,
+        ...tools.flatMap((tool) => (tool.process ? [tool.process] : [])),
+      ].some(
+        (p) =>
+          p.nativeJournal && !nativeJournalAllowsParserPass(p.nativeJournal),
+      )
+    ) {
+      result.status = "inconclusive";
+      result.reason =
+        "The native wrapper completed without a complete current nonempty journal of its reached calls.";
     }
     if (executionError) {
       result.status = "error";

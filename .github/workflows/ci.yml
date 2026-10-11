@@ -174,10 +174,10 @@ jobs:
         run: node scripts/verify-attempt-outputs.mjs
       - name: Repeat bounded attempt output controls in an offline production package
         run: node scripts/verify-attempt-outputs-package.mjs
-      - name: Verify private native journal and streamed invocation controls
-        run: node scripts/verify-native-attempt-journals.mjs
-      - name: Repeat native journal and streamed invocation controls in an offline installed package
-        run: node scripts/verify-native-attempt-journals-package.mjs
+      - name: Verify preserved native journal controls and selected engine collection
+        run: node scripts/verify-native-engine-journals.mjs
+      - name: Repeat preserved journal and selected engine controls in an offline installed package
+        run: node scripts/verify-native-engine-journals-package.mjs
       - name: Repeat structured native value controls in an offline installed package
         run: node scripts/verify-native-json-package.mjs
       - name: Verify sealed claim probabilities in the production package

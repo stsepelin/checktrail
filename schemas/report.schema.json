@@ -328,6 +328,215 @@
             "items": {
               "type": "object",
               "properties": {
+                "nativeJournal": {
+                  "type": "object",
+                  "properties": {
+                    "expectedHeader": {
+                      "type": "object",
+                      "properties": {
+                        "schemaVersion": { "type": "number", "const": 1 },
+                        "format": {
+                          "type": "string",
+                          "const": "native-attempt-journal"
+                        },
+                        "journalId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "sourceFingerprint": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "outerCommandSha256": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "maxNativeCalls": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4096
+                        },
+                        "maxOutputBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4194304
+                        }
+                      },
+                      "required": [
+                        "schemaVersion",
+                        "format",
+                        "journalId",
+                        "sourceFingerprint",
+                        "outerCommandSha256",
+                        "maxNativeCalls",
+                        "maxOutputBytes"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "producer": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64,
+                          "pattern": "^[a-z][a-z0-9-]*$"
+                        },
+                        "beforeSha256": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "afterSha256": {
+                          "anyOf": [
+                            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                            { "type": "null" }
+                          ]
+                        }
+                      },
+                      "required": ["name", "beforeSha256", "afterSha256"],
+                      "additionalProperties": false
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["collected", "unavailable"]
+                    },
+                    "capture": {
+                      "type": "object",
+                      "properties": {
+                        "schemaVersion": { "type": "number", "const": 1 },
+                        "format": {
+                          "type": "string",
+                          "const": "native-attempt-capture"
+                        },
+                        "header": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": { "type": "number", "const": 1 },
+                            "format": {
+                              "type": "string",
+                              "const": "native-attempt-journal"
+                            },
+                            "journalId": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "sourceFingerprint": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "outerCommandSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "maxNativeCalls": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 4096
+                            },
+                            "maxOutputBytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4194304
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "format",
+                            "journalId",
+                            "sourceFingerprint",
+                            "outerCommandSha256",
+                            "maxNativeCalls",
+                            "maxOutputBytes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "headerData": {
+                          "type": "object",
+                          "properties": {
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 8388608
+                            },
+                            "base64": {
+                              "type": "string",
+                              "maxLength": 11184812
+                            },
+                            "sha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            }
+                          },
+                          "required": ["bytes", "base64", "sha256"],
+                          "additionalProperties": false
+                        },
+                        "framesData": {
+                          "type": "object",
+                          "properties": {
+                            "bytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 8388608
+                            },
+                            "base64": {
+                              "type": "string",
+                              "maxLength": 11184812
+                            },
+                            "sha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            }
+                          },
+                          "required": ["bytes", "base64", "sha256"],
+                          "additionalProperties": false
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": ["complete", "incomplete", "invalid"]
+                        },
+                        "replayedPrefixBytes": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 8388608
+                        },
+                        "replay": {},
+                        "errorCode": {
+                          "type": "string",
+                          "enum": [
+                            "NATIVE_JOURNAL_HEADER_CHANGED",
+                            "NATIVE_JOURNAL_PARTIAL_FRAME",
+                            "NATIVE_JOURNAL_INVALID_FRAME"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "schemaVersion",
+                        "format",
+                        "header",
+                        "headerData",
+                        "framesData",
+                        "state",
+                        "replayedPrefixBytes"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "enum": [
+                        "NATIVE_JOURNAL_STORAGE_UNAVAILABLE",
+                        "NATIVE_JOURNAL_PRODUCER_CHANGED"
+                      ]
+                    },
+                    "cleanupErrorCode": {
+                      "type": "string",
+                      "const": "NATIVE_JOURNAL_CLEANUP_UNAVAILABLE"
+                    }
+                  },
+                  "required": ["expectedHeader", "producer", "status"],
+                  "additionalProperties": false
+                },
                 "capturedOutput": {
                   "type": "object",
                   "properties": {
@@ -770,6 +979,221 @@
                 "process": {
                   "type": "object",
                   "properties": {
+                    "nativeJournal": {
+                      "type": "object",
+                      "properties": {
+                        "expectedHeader": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": { "type": "number", "const": 1 },
+                            "format": {
+                              "type": "string",
+                              "const": "native-attempt-journal"
+                            },
+                            "journalId": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "sourceFingerprint": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "outerCommandSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "maxNativeCalls": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 4096
+                            },
+                            "maxOutputBytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4194304
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "format",
+                            "journalId",
+                            "sourceFingerprint",
+                            "outerCommandSha256",
+                            "maxNativeCalls",
+                            "maxOutputBytes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "producer": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 64,
+                              "pattern": "^[a-z][a-z0-9-]*$"
+                            },
+                            "beforeSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "afterSha256": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                { "type": "null" }
+                              ]
+                            }
+                          },
+                          "required": ["name", "beforeSha256", "afterSha256"],
+                          "additionalProperties": false
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["collected", "unavailable"]
+                        },
+                        "capture": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": { "type": "number", "const": 1 },
+                            "format": {
+                              "type": "string",
+                              "const": "native-attempt-capture"
+                            },
+                            "header": {
+                              "type": "object",
+                              "properties": {
+                                "schemaVersion": {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "const": "native-attempt-journal"
+                                },
+                                "journalId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "sourceFingerprint": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "outerCommandSha256": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "maxNativeCalls": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 4096
+                                },
+                                "maxOutputBytes": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 4194304
+                                }
+                              },
+                              "required": [
+                                "schemaVersion",
+                                "format",
+                                "journalId",
+                                "sourceFingerprint",
+                                "outerCommandSha256",
+                                "maxNativeCalls",
+                                "maxOutputBytes"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "headerData": {
+                              "type": "object",
+                              "properties": {
+                                "bytes": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 8388608
+                                },
+                                "base64": {
+                                  "type": "string",
+                                  "maxLength": 11184812
+                                },
+                                "sha256": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                }
+                              },
+                              "required": ["bytes", "base64", "sha256"],
+                              "additionalProperties": false
+                            },
+                            "framesData": {
+                              "type": "object",
+                              "properties": {
+                                "bytes": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 8388608
+                                },
+                                "base64": {
+                                  "type": "string",
+                                  "maxLength": 11184812
+                                },
+                                "sha256": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                }
+                              },
+                              "required": ["bytes", "base64", "sha256"],
+                              "additionalProperties": false
+                            },
+                            "state": {
+                              "type": "string",
+                              "enum": ["complete", "incomplete", "invalid"]
+                            },
+                            "replayedPrefixBytes": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 8388608
+                            },
+                            "replay": {},
+                            "errorCode": {
+                              "type": "string",
+                              "enum": [
+                                "NATIVE_JOURNAL_HEADER_CHANGED",
+                                "NATIVE_JOURNAL_PARTIAL_FRAME",
+                                "NATIVE_JOURNAL_INVALID_FRAME"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "format",
+                            "header",
+                            "headerData",
+                            "framesData",
+                            "state",
+                            "replayedPrefixBytes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "errorCode": {
+                          "type": "string",
+                          "enum": [
+                            "NATIVE_JOURNAL_STORAGE_UNAVAILABLE",
+                            "NATIVE_JOURNAL_PRODUCER_CHANGED"
+                          ]
+                        },
+                        "cleanupErrorCode": {
+                          "type": "string",
+                          "const": "NATIVE_JOURNAL_CLEANUP_UNAVAILABLE"
+                        }
+                      },
+                      "required": ["expectedHeader", "producer", "status"],
+                      "additionalProperties": false
+                    },
                     "capturedOutput": {
                       "type": "object",
                       "properties": {
