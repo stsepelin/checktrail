@@ -509,3 +509,5 @@ wiring controls remain distinct from native acceptance for each language;
 engine journal collection, wider runtime acceptance and Gate A remain open.
 
 The repository-owned [native resource observer](NATIVE-RESOURCE-ACCOUNTING.md) has scoped POSIX source/fresh installed runner controls on macOS Node 24/26 and Linux Node 22. Its kernel peak RSS is not a summed process-tree measurement; descendant coverage, Windows, representative workloads, compiler/SDK provenance and final resource/release acceptance remain pending.
+
+The [separate POSIX self/reaped-child resource binding](NATIVE-RESOURCE-ACCOUNTING.md#separate-self-and-reaped-child-counters) has scoped original macOS Node 24/26 and Linux Node 22 source/fresh installed controls and paired guard evidence in [its measurement](measurements/native-child-resource-2026-10-11.json). Preparation is excluded from each fresh collecting worker. Kernel child peak RSS is not summed process-tree RSS; representative workloads, unreaped descendants, Windows, full artifact provenance and final resource/release acceptance remain pending. Gate A remains open, with no inference or field evaluation.
