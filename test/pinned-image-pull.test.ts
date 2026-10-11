@@ -305,3 +305,89 @@ test("pinned image delivery retries the exact daemon public ECR header timeout a
     assert.equal(delays, 0);
   }
 });
+
+test("pinned image delivery retries the exact daemon registry deadline within existing quotas and preserves adjacent permanent cancellation and process deadline failures", async () => {
+  const observed =
+    'Error response from daemon: Get "https://public.ecr.aws/v2/": context deadline exceeded';
+  const images: string[] = [],
+    waits: number[] = [];
+  const value = await pullPinnedImage(reference, {
+    runImpl: async (image: string) => {
+      images.push(image);
+      if (images.length < 3) throw failure(observed + "\n");
+    },
+    delayImpl: async (ms: number) => {
+      waits.push(ms);
+    },
+    onRetry: async () => {},
+  });
+  assert.deepEqual(images, [reference, reference, reference]);
+  assert.deepEqual(waits, [2000, 5000]);
+  assert.deepEqual(value, { reference, attempts: 3, deliveryComplete: true });
+  for (const error of [
+    failure(
+      observed.replace("public.ecr.aws", "public.ecr.aws.attacker.invalid"),
+    ),
+    failure(observed.replace("/v2/", "/v2/other/")),
+    failure(observed + " authentication token expired"),
+    failure("manifest unknown\n" + observed),
+    Object.assign(failure(observed), { signal: "SIGTERM" }),
+    Object.assign(failure(observed), { code: "ETIMEDOUT" }),
+    Object.assign(failure(observed), { code: "ABORT_ERR" }),
+  ]) {
+    let attempts = 0,
+      delays = 0;
+    await assert.rejects(
+      pullPinnedImage(reference, {
+        runImpl: async () => {
+          attempts++;
+          throw error;
+        },
+        delayImpl: async () => {
+          delays++;
+        },
+        onRetry: async () => {},
+      }),
+      (actual: unknown) => actual === error,
+    );
+    assert.equal(attempts, 1);
+    assert.equal(delays, 0);
+  }
+  let attempts = 0;
+  const exhausted = failure(observed);
+  const backoffs: number[] = [];
+  await assert.rejects(
+    pullPinnedImage(reference, {
+      runImpl: async () => {
+        attempts++;
+        throw exhausted;
+      },
+      delayImpl: async (ms: number) => {
+        backoffs.push(ms);
+      },
+      onRetry: async () => {},
+    }),
+    (actual: unknown) => actual === exhausted,
+  );
+  assert.equal(attempts, 5);
+  assert.deepEqual(backoffs, [2000, 5000, 15000, 30000]);
+  attempts = 0;
+  let delayed = 0;
+  await assert.rejects(
+    pullPinnedImage(reference, {
+      timeoutMs: 2000,
+      nowImpl: () => 0,
+      runImpl: async () => {
+        attempts++;
+        throw exhausted;
+      },
+      delayImpl: async () => {
+        delayed++;
+      },
+      onRetry: async () => {},
+    }),
+    /wall limit exhausted/,
+  );
+  assert.equal(attempts, 1);
+  assert.equal(delayed, 0);
+});
