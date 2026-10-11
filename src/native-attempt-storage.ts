@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { z } from "zod";
 import { ensureWindowsTaskAccess } from "./windows-task-access.js";
+import { captureNativeJournal } from "./native-journal-capture.js";
 import {
   nativeJournalHeaderSchema,
   nativeAttemptFrameSchema,
@@ -164,8 +165,45 @@ export function createNativeAttemptStorage(headerInput: unknown) {
       context,
       header,
       destroy,
+      capture() {
+        const current = directory(root);
+        if (
+          !identity ||
+          current.dev !== identity.dev ||
+          current.ino !== identity.ino
+        )
+          throw Error("Native journal directory identity changed");
+        const h = file(
+            path.join(root, "header.json"),
+            headerFd!,
+            MAX_HEADER_BYTES,
+          ),
+          l = file(path.join(root, "frames.jsonl"), logFd!, MAX_JOURNAL_BYTES);
+        if (
+          h.dev !== headerIdentity.dev ||
+          h.ino !== headerIdentity.ino ||
+          l.dev !== logIdentity.dev ||
+          l.ino !== logIdentity.ino
+        )
+          throw Error("Native journal file identity changed");
+        // Replay uses these exact captured buffers; it never rereads a mutable file.
+        const observedHeader = readBounded(headerFd!, MAX_HEADER_BYTES),
+          raw = readBounded(logFd!, MAX_JOURNAL_BYTES);
+        return captureNativeJournal(
+          header,
+          observedHeader,
+          raw,
+          context.headerSha256,
+        );
+      },
       read() {
-        directory(root);
+        const current = directory(root);
+        if (
+          !identity ||
+          current.dev !== identity.dev ||
+          current.ino !== identity.ino
+        )
+          throw Error("Native journal directory identity changed");
         const h = file(
             path.join(root, "header.json"),
             headerFd!,

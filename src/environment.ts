@@ -1,10 +1,15 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import { nativeJournalEnvironmentName } from "./native-journal-channel.js";
 
 export const environmentName = z
   .string()
   .max(128)
-  .regex(/^[A-Z_][A-Z0-9_]*$/);
+  .regex(/^[A-Z_][A-Z0-9_]*$/)
+  .refine(
+    (name) => name !== nativeJournalEnvironmentName,
+    "Reserved native journal environment name",
+  );
 const environmentSchema = z
   .record(
     environmentName,

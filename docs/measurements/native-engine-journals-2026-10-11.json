@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Selected engine-owned native wrapper journals; original synthetic execution controls only",
+  "catalogEntryCount": 37,
+  "metadataOnlyIdentityExceptions": [
+    "external version",
+    "F# formatter version"
+  ],
+  "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+  "controls": [
+    {
+      "file": "native-attempt-frames.test.js",
+      "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations"
+    },
+    {
+      "file": "native-attempt-frames.test.js",
+      "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals"
+    },
+    {
+      "file": "native-attempt-frames.test.js",
+      "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions"
+    },
+    {
+      "file": "native-attempt-frames.test.js",
+      "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes"
+    },
+    {
+      "file": "native-attempt-frames.test.js",
+      "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct"
+    },
+    {
+      "file": "native-attempt-storage.test.js",
+      "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting"
+    },
+    {
+      "file": "native-attempt-storage.test.js",
+      "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume"
+    },
+    {
+      "file": "native-attempt-storage.test.js",
+      "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output"
+    },
+    {
+      "file": "native-attempt-storage.test.js",
+      "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation retains binary bytes and real process identities for successful and failed children in one ordered journal"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation preserves failed spawn evidence without manufacturing a PID and refuses exhausted admission before starting project code"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation leaves preaborted and invalid-bound calls unreached while retaining exact zero-output and exact-prefix controls"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation distinguishes journal exhaustion from a smaller caller output cap and keeps each observed prefix on failure"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation retains reached child bytes and identities across actual cancellation deadlines and observer failure"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation closes ordinary descendants retaining output pipes after root exit without inventing a successful timeout"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation respects mirror backpressure without dropping physical chunks and deadlines release a stalled drain"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native invocation journal retains the reached physical prefix after its actual wrapper is killed before any final response"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native wrapper output adapter keeps binary evidence before parser decoding and preserves failed exit receipts"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native wrapper output adapter rejects invalid modes before admission and keeps reached prefixes on bounded failure"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "shipped native wrapper inventory awaits every migrated invocation and downstream collector without asynchronous predicate shortcuts"
+    },
+    {
+      "file": "native-invoke.test.js",
+      "name": "native output receipt keeps physical exit codes separate from parser completion for zero nonzero and absent exits"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native capture revalidates every held file and directory boundary and preserves replacement safety"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native receipt schemas recompute physical replay and reject every false declaration and lifecycle error"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native context initialization failures stay failed across retries before any child executes"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native outer launch uses the engine-owned context after stripping operator and command aliases"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "native cancelled outer wrappers retain reached raw prefixes without inventing completion after cleanup"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "engine wrapper journals are shared by native CLI and stateless MCP with startup-only trust and detailed receipts"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "engine collector retains physical bytes on producer changes and simulated cleanup failure and rejects empty capture"
+    },
+    {
+      "file": "native-journal-engine.test.js",
+      "name": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal"
+    }
+  ],
+  "receipts": [
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "76befd5f199c5891189c132bfa45234bbce9564d68639efcdeb4745283bac986",
+      "kind": "source",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false
+    },
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "5afa891269d304e4640e016d4aeb6b5e40faa8d697d187a303a13a13675e090d",
+      "kind": "installed",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "tarballSha256": "a5dae309b354562d2131d7123b16437d1b096b33a918f61e9f483b438b0b3c74",
+      "productionDependencyLockSha256": "cd575bbda23b8b8c8246a0bc23f6384af707f23b3f331cb5cc4147f66ff68534",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "76befd5f199c5891189c132bfa45234bbce9564d68639efcdeb4745283bac986",
+      "kind": "source",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false
+    },
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "5afa891269d304e4640e016d4aeb6b5e40faa8d697d187a303a13a13675e090d",
+      "kind": "installed",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "tarballSha256": "a5dae309b354562d2131d7123b16437d1b096b33a918f61e9f483b438b0b3c74",
+      "productionDependencyLockSha256": "c099cd5ff00955560c237a6ac0f7b87ed9d310fc7033b5146454349971d1293a",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    },
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "76befd5f199c5891189c132bfa45234bbce9564d68639efcdeb4745283bac986",
+      "kind": "source",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false
+    },
+    {
+      "profile": "native-engine-journal-scoped-integration",
+      "node": "22.23.2",
+      "platform": "linux",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+      "compiledCodeSha256": "eced19f556cd794b5db38d8b50c9661189a75981eeb103f245cec661e7663077",
+      "harnessSha256": "5afa891269d304e4640e016d4aeb6b5e40faa8d697d187a303a13a13675e090d",
+      "kind": "installed",
+      "required": 34,
+      "passed": 34,
+      "skippedRequired": 0,
+      "complete": true,
+      "ledgerTruncated": false,
+      "tarballSha256": "bc05b940533e037837e2a5261a0accc8b710ede7cebb98f65857e83ce3b29a7d",
+      "productionDependencyLockSha256": "4ab63a13b4e0d9eae01ebb948c027f69bbb4bb4d2d70ade7ac98784584b3edef",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true
+    }
+  ],
+  "pairedGuardRemovals": [
+    {
+      "id": "directory-identity",
+      "file": "dist/src/native-attempt-storage.js",
+      "callback": "native capture revalidates every held file and directory boundary and preserves replacement safety",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "initialization-poison",
+      "file": "dist/src/native-journal-channel.js",
+      "callback": "native context initialization failures stay failed across retries before any child executes",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "native-child-channel",
+      "file": "dist/src/native-invoke.js",
+      "callback": "native protected process channel records two actual child PIDs and strips exact context aliases without stripping near misses",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "partial-frame-state",
+      "file": "dist/src/native-journal-capture.js",
+      "callback": "native capture preserves physical valid partial invalid and changed-header buffers while strict replay remains strict",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "command-binding",
+      "file": "dist/src/schemas.js",
+      "callback": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "source-binding",
+      "file": "dist/src/schemas.js",
+      "callback": "engine journals preserve actual original adapter success and failure while discovery and untrusted runs execute nothing",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "engine-pass-guard",
+      "file": "dist/src/engine.js",
+      "callback": "engine refuses a zero-call successful wrapper and rejects a passed report with an incomplete current journal",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    },
+    {
+      "id": "metadata-exemption",
+      "file": "dist/src/native-journal-engine.js",
+      "callback": "native producer catalog matches exact shipped entrypoints and exempts only the two metadata-only identity paths",
+      "callbackFileSha256": "09a1fa3c2eb19e6ee86bdba7bf314f8ea786cd32cca0437b084325c8df30ecc1",
+      "baselineExitCode": 0,
+      "removedExitCode": 1,
+      "removedAssertionCode": "ERR_ASSERTION",
+      "restoredExitCode": 0
+    }
+  ],
+  "fullLocalCheck": {
+    "tests": 1844,
+    "pass": 1092,
+    "fail": 0,
+    "skipped": 752,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "selectedEngineWrapperJournalIntegration": true,
+  "entrypointHashesAreCompleteProducerClosure": false,
+  "wholeNativeCallFamilyMigrated": false,
+  "embeddedLanguageVmCallsAccepted": false,
+  "nativeWindowsEngineAcceptanceComplete": false,
+  "durableLargeJournalRetentionComplete": false,
+  "hostModelUsageMeasured": false,
+  "attemptArchivesGateAcceptanceComplete": false,
+  "gateAClosed": false,
+  "qualityComparisonMeasured": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false
+}

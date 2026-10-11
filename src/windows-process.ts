@@ -1,3 +1,7 @@
+import {
+  nativeJournalContextEnvironment,
+  withoutNativeJournalContext,
+} from "./native-journal-channel.js";
 import { captureProcessOutput } from "./process-output.js";
 import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
@@ -214,10 +218,22 @@ export async function runWindowsProcess(
   try {
     if (!localDrive(cwd)) throw invalid("WINDOWS_LOCAL_DRIVE_REQUIRED");
     const env = windowsEnvironment(
-      process.env,
-      options.environment,
-      command.env,
+      withoutNativeJournalContext(process.env),
+      options.environment
+        ? (withoutNativeJournalContext(options.environment) as Record<
+            string,
+            string
+          >)
+        : undefined,
+      command.env
+        ? (withoutNativeJournalContext(command.env) as Record<string, string>)
+        : undefined,
     );
+    if (options.nativeJournalContext)
+      Object.assign(
+        env,
+        nativeJournalContextEnvironment(options.nativeJournalContext),
+      );
     const executable = await resolveWindowsExecutable(
       command.executable,
       cwd,
