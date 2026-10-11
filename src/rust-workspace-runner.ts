@@ -1,7 +1,7 @@
 import { rustNativeToolchainMatches } from "./rust-toolchain-native.js";
 import { rustWorkspaceTemporaryBase } from "./rust-workspace-directory.js";
 import { inventory } from "./inventory.js";
-import { spawn } from "node:child_process";
+import { invokeNative } from "./native-invoke.js";
 import {
   mkdtemp,
   readdir,
@@ -18,55 +18,24 @@ import {
   rustWorkspaceInputSchema,
   rustWorkspaceMetadataSchema,
 } from "./rust-workspace-schema.js";
-function invoke(
+async function invoke(
   executable: string,
   args: string[],
   env?: NodeJS.ProcessEnv,
 ): Promise<{ status: number; stdout: string; stderr: string }> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(executable, args, {
-      ...(env ? { env } : {}),
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    const stdout: Buffer[] = [],
-      stderr: Buffer[] = [];
-    let bytes = 0,
-      failure: Error | undefined;
-    const collect = (chunks: Buffer[], chunk: Buffer) => {
-      const available = Math.max(0, 1048576 - bytes);
-      if (available) chunks.push(chunk.subarray(0, available));
-      bytes += chunk.length;
-      // Mirror actual native bytes while the process is alive. The engine can
-      // enforce its aggregate output budget and stop reached descendants.
-      if (!process.stderr.write(chunk)) {
-        child.stdout.pause();
-        child.stderr.pause();
-        process.stderr.once("drain", () => {
-          child.stdout.resume();
-          child.stderr.resume();
-        });
-      }
-      if (bytes > 1048576) {
-        failure = Error("Native Rust output exceeds its capture bound");
-        child.kill("SIGKILL");
-      }
-    };
-    child.stdout.on("data", (chunk: Buffer) => collect(stdout, chunk));
-    child.stderr.on("data", (chunk: Buffer) => collect(stderr, chunk));
-    child.on("error", (error) => {
-      failure = error;
-    });
-    child.on("close", (status, signal) => {
-      if (failure || signal || status === null)
-        reject(failure ?? Error("Native Rust process did not complete"));
-      else
-        resolve({
-          status,
-          stdout: Buffer.concat(stdout).toString("utf8"),
-          stderr: Buffer.concat(stderr).toString("utf8"),
-        });
-    });
+  const result = await invokeNative(executable, args, {
+    ...(env ? { env } : {}),
+    maxOutputBytes: 1048576,
+    timeoutMs: 110000,
+    mirror: process.stderr,
   });
+  if (result.error || result.signal || result.status === null)
+    throw result.error ?? Error("Native Rust process did not complete");
+  return {
+    status: result.status,
+    stdout: result.stdout.toString("utf8"),
+    stderr: result.stderr.toString("utf8"),
+  };
 }
 async function native(executable: string, args: string[]) {
   const r = await invoke(executable, args);

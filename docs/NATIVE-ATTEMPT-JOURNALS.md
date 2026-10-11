@@ -1,6 +1,6 @@
 # ADR: Retain interrupted inner native attempts
 
-**Status:** Codec and private storage implemented; streamed engine integration pending
+**Status:** Codec, private storage and streamed invocation implemented; engine collection and complete wrapper migration pending
 **Date:** 2026-10-11
 **Deciders:** Implementation owner, within the authorized Gate A scope
 
@@ -81,8 +81,23 @@ independent byte/identity/quota contradictions, hard links, partial/empty frames
 changed headers, prefix limits and replacement-safe cleanup. Package and code
 bindings are recorded in the [foundation measurement](measurements/native-attempt-journal-foundation-2026-10-11.json).
 
-The engine does not create or consume these journals yet. Wrapper streaming,
-complete native call migration, required Windows/Linux acceptance, durable replay
+The shared streamed invocation now writes admission, actual child PID and physical
+binary chunks before returning. Successful and failed exits, missing executables,
+preaborted calls, journal and caller output limits, cancellation, deadlines,
+observer failures and a killed wrapper have original synthetic controls. The
+ordinary POSIX process-group control is separate from Windows Job Object cleanup.
+The JVM invoker accepts one explicit journal shared by quiet and observed calls;
+JVM and Rust workspace invocations use the shared streamed process boundary and
+retain their existing native parsers, output limits and mirroring backpressure.
+Physical journal completion does not validate decoded semantics: bytes rejected
+by strict UTF-8 decoding remain recorded as actual observed bytes.
+Source and fresh offline installed controls on native macOS ARM64 Node 24/26 and
+Linux ARM64 Node 22, with independent guard removals, are recorded in the
+[streaming invocation measurement](measurements/native-streaming-invocation-2026-10-11.json).
+These Node process controls do not qualify every native language/tool migration.
+
+The engine does not create or consume these journals yet. The remaining synchronous
+wrapper calls, complete native call migration, required Windows/Linux acceptance, durable replay
 and host-model usage remain open. The frozen attempt-archives profile remains
 pending. No Gate A closure, model inference or real-project field evaluation is
 claimed.
