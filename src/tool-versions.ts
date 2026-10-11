@@ -64,6 +64,7 @@ export async function toolsFor(
         "infrastructure.terraform-extensions",
         "infrastructure.kustomize",
         "infrastructure.helm",
+        "infrastructure.helm-extensions",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
@@ -378,7 +379,12 @@ export async function toolsFor(
         "--version",
       ]),
     ];
-  if (check.id === "infrastructure.helm" && check.commands[0])
+  if (
+    ["infrastructure.helm", "infrastructure.helm-extensions"].includes(
+      check.id,
+    ) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("helm", process.execPath, [
@@ -585,6 +591,26 @@ export async function identifyTool(
   result.process = execution;
   if (execution.errorCode === "ENOENT")
     return { ...result, status: "unavailable" };
+  if (
+    tool.name === "helm" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "helm-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "helm-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
+    return { ...result, status: "unavailable" };
+
   if (
     tool.name === "terraform" &&
     path.basename(tool.command?.args[0] ?? "") ===

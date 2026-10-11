@@ -40,6 +40,7 @@ import { terraformExtensionsConfigSchema } from "../dist/src/terraform-extension
 import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
 import { kustomizeConfigSchema } from "../dist/src/kustomize.js";
 import { helmConfigSchema } from "../dist/src/helm.js";
+import { helmExtensionsConfigSchema } from "../dist/src/helm-extensions-contract.js";
 import { swiftToolsConfigSchema } from "../dist/src/swift-tools.js";
 import { swiftExtensionsConfigSchema } from "../dist/src/swift-extensions-contract.js";
 import {
@@ -216,6 +217,7 @@ for (const [name, schema] of Object.entries({
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,
   "helm-config": helmConfigSchema,
+  "helm-extensions-config": helmExtensionsConfigSchema,
   "terraform-config": terraformConfigSchema,
   "terraform-extensions-config": terraformExtensionsConfigSchema,
   "swift-tools-config": swiftToolsConfigSchema,

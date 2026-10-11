@@ -16,6 +16,7 @@ import { terraformExtensionsCheck } from "./terraform-extensions.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { kustomizeCheck } from "./kustomize.js";
 import { helmCheck } from "./helm.js";
+import { helmExtensionsCheck } from "./helm-extensions.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { detektCheck } from "./detekt.js";
@@ -230,6 +231,7 @@ export const adapters = [
       "checktrail.terraform.json",
       "checktrail.terraform-extensions.json",
       "checktrail.helm.json",
+      "checktrail.helm-extensions.json",
     ],
     checks: [
       "infrastructure.actionlint",
@@ -238,6 +240,7 @@ export const adapters = [
       "infrastructure.terraform-validate",
       "infrastructure.terraform-extensions",
       "infrastructure.helm",
+      "infrastructure.helm-extensions",
     ],
   },
 ] as const;
@@ -294,6 +297,13 @@ export function discover(
         path.posix.join(project.path, "checktrail.terraform-extensions.json"),
       ),
   );
+  const declaredHelmRoots = [...found.values()].filter(
+    (project) =>
+      project.adapter === "infrastructure" &&
+      project.markers.includes(
+        path.posix.join(project.path, "checktrail.helm-extensions.json"),
+      ),
+  );
   const projects = [...found.values()]
     .filter(
       (project) =>
@@ -305,6 +315,19 @@ export function discover(
               project.path.startsWith(parent.path + "/")) &&
             project.markers.every(
               (marker) => marker.endsWith(".tf") || marker.endsWith(".tf.json"),
+            ),
+        ),
+    )
+    .filter(
+      (project) =>
+        !declaredHelmRoots.some(
+          (parent) =>
+            project !== parent &&
+            project.adapter === "infrastructure" &&
+            (parent.path === "." ||
+              project.path.startsWith(parent.path + "/")) &&
+            project.markers.every(
+              (marker) => path.posix.basename(marker) === "Chart.yaml",
             ),
         ),
     )
@@ -566,6 +589,11 @@ export async function checksFor(
           project.files.includes("checktrail.terraform-extensions.json") &&
           (file.endsWith(".tf") || file.endsWith(".tf.json"))
         ) &&
+        path.posix.basename(file) !== "checktrail.helm-extensions.json" &&
+        !(
+          project.files.includes("checktrail.helm-extensions.json") &&
+          path.posix.basename(file) === "Chart.yaml"
+        ) &&
         path.posix.basename(file) !== "checktrail.helm.json" &&
         !(
           project.files.includes("checktrail.helm.json") &&
@@ -577,6 +605,10 @@ export async function checksFor(
         ),
     );
     return [
+      ...(project.files.includes("checktrail.helm-extensions.json") ||
+      requested?.includes("infrastructure.helm-extensions")
+        ? [await helmExtensionsCheck(source, project)]
+        : []),
       ...(project.files.includes("checktrail.helm.json") ||
       requested?.includes("infrastructure.helm")
         ? [await helmCheck(source, project)]

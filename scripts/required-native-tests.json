@@ -4788,5 +4788,47 @@
       "file": "dist/test/terraform-extensions-lifecycle.test.js",
       "name": "terraform-extensions lifecycle acceptance"
     }
+  ],
+  "helm-extensions": [
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions diagnostic acceptance"
+    },
+    {
+      "file": "dist/test/helm-extensions-surfaces.test.js",
+      "name": "helm-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/helm-extensions-lifecycle.test.js",
+      "name": "helm-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-helm-extensions.test.js",
+      "name": "helm-extensions installed acceptance"
+    }
   ]
 }

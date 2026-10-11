@@ -26,6 +26,7 @@ export { terraformExtensionsConfigSchema } from "./terraform-extensions-contract
 export { kubeconformConfigSchema } from "./kubeconform.js";
 export { kustomizeConfigSchema } from "./kustomize.js";
 export { helmConfigSchema } from "./helm.js";
+export { helmExtensionsConfigSchema } from "./helm-extensions-contract.js";
 export { swiftToolsConfigSchema } from "./swift-tools.js";
 export {
   rubyToolsConfigSchema,
