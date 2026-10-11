@@ -480,7 +480,8 @@ The `dotnet-fsharp-format` profile requires nine frozen callbacks against source
 
 Pinned archive delivery can use one explicit official mirror for the same pinned
 artifact filename after an admitted transient failure. Maven uses Apache's
-archive endpoint; Ruby compiler APKs use the fixed Alpine mirror. The existing
+archive endpoint; Ruby compiler APKs use the fixed Alpine mirror. An admitted
+404 from the mirror returns to the primary for the final permitted attempt. The existing
 three-attempt allowance and shared deadline still apply. Permanent HTTP errors,
 redirects, wrong byte counts and digest mismatches remain failures; the compiler
 closure and release versions are unchanged. Preparation validates all archive
