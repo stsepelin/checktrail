@@ -15,5 +15,175 @@
       "src/index.d.ts": "aea4188bf00c7d6474a34adb715810cfa9e45acafb1b4931e63db0b4253c07da",
       "src/index.js": "79a65ddeda08664d00b7b82f5a903ea437de1dff54a02ed469e9cb1067cb568b"
     }
+  },
+  "@humanfs/types@0.15.0": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-humanfs-types0.15.0.txt",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "source": "https://raw.githubusercontent.com/humanwhocodes/humanfs/85069f193cbacc371c3beb649ce746f8c5a493be/packages/core/LICENSE",
+    "upstreamManifestVersion": "0.15.0",
+    "license": "Apache-2.0",
+    "files": {
+      "package.json": "1b849aa49814883fc0e70ca461c9faccb675ed1c801e784f1858e75e3b36eec5",
+      "tsconfig.json": "cf8b7f383f52c63171a58ea307aaa0687d0b4ba3074cb923d3dac46271879a9e",
+      "CHANGELOG.md": "b83799ec420f33e6fe9dfcb76a03c77fbcededef4c353a18c4274b7b0a3690fe",
+      "README.md": "e1076e47ea96eef79e05496912ad03a9fa8031e1bf4847aab1a9554aef5cc5c0",
+      "src/hfs-types.ts": "a3befb11eea960f9285e5122e7df6c428c7b5bf0f0e73713bbbe085c17c2916e"
+    }
+  },
+  "@pkgr/core@0.3.6": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-pkgr-core0.3.6.txt",
+    "sha256": "82a222189ab9764f8ec1c052b9661f2c9f12db52387312acbf73b2be5b8b6c32",
+    "source": "https://raw.githubusercontent.com/un-ts/pkgr/6e1c7260486c7251e61404176a293986229a5869/LICENSE",
+    "upstreamManifestVersion": "0.3.6",
+    "license": "MIT",
+    "files": {
+      "lib/index.cjs": "f80fb8e2cc7c4550d29bad282789ae804c8a0d8880d930fae6bfe57128e38d71",
+      "index.d.cts": "50d2261a14b2ac591ecca97eacc69093b0245a2f2bc9da45b6167dbd6a9406da",
+      "lib/constants.js": "ff89a278326d8a6bcffd839fd6ec251b27856d46d152dcbf44aaa6880004c0d1",
+      "lib/helpers.js": "a518a8e1c3662dd2a4b5bedf8758eb875f6b548f699235194112b339d33bee30",
+      "lib/index.js": "85721b1550efd693888f48cbe1dcbebf7fa3eb9402833e7f2a992d9d8c1eec76",
+      "package.json": "fb3f554e4ac4d5b1733812110270d8a8ffec1d328f9a1e725c8465bfd20ad664",
+      "lib/constants.js.map": "149561ad4dfe612c4961035bccbffa53b07c021816a6836f65ee99c774cbf944",
+      "lib/helpers.js.map": "84effc8aef052213f84d824ce3adf267e8b3e3e01c923bfc46dbd445d971406a",
+      "lib/index.js.map": "7d9c65882178235781d4dd59d44652bf2f00e685db32b697f7f2b70a13d2aa2e",
+      "lib/constants.d.ts": "1da074b872ef21f9981d59b9ca44e3075b231591d79085e415331038fec38260",
+      "lib/helpers.d.ts": "ec665d2969be2c38f8855fbb57aaf3dbd2834616dfb67f1af5979ba5d860a059",
+      "lib/index.d.ts": "27756203a19715802609144d47331c5b1360cba8480571b0b98bbd0d3365b07b"
+    }
+  },
+  "@rolldown/binding-darwin-arm64@1.2.9": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-rolldown-binding-darwin-arm641.2.9.txt",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+    "upstreamManifestVersion": "1.2.9",
+    "license": "MIT",
+    "files": {
+      "package.json": "5be95fa887969d486c1711d269aa8a7641755c51ea47ba1ed17d9a417c67ab8d",
+      "README.md": "d0ed9ea9f9b8215381c7db10404bb507d7e54146c4a6a2fa80ca1e8dccd3dad1",
+      "rolldown-binding.darwin-arm64.node": "6c530f1a82893925f733d1ba412c323684fa3e524a8aa6cbb2cb4aa04937abaa"
+    }
+  },
+  "@rolldown/binding-linux-arm64-musl@1.2.9": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-rolldown-binding-linux-arm64-musl1.2.9.txt",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/5b4746e442989d770c606ce08d2737e6aafbd25d/LICENSE",
+    "upstreamManifestVersion": "1.2.9",
+    "license": "MIT",
+    "files": {
+      "package.json": "ad2a9ae87e93c5b5dae4c1a411b6b0b8683344ef05b589ef290ed08b362053b8",
+      "README.md": "7146f7dfb97aa4c355f176a8c18c80bcb0dc2b538b88c943b2c4413237056396",
+      "rolldown-binding.linux-arm64-musl.node": "c23210dbf8a42120f21d23ec65793106b7040d9e3684f42fab14d1203469b82c"
+    }
+  },
+  "@unrs/resolver-binding-darwin-arm64@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-resolver-binding-darwin-arm641.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "package.json": "847b7c519dc27ff4e609b09a190303c1991ff9430bd3a71ebfe82e91219eea6f",
+      "README.md": "2b764e9b8b3d69521edea0ceae74083076199952153675d09f4e3d2e992c182e",
+      "resolver.darwin-arm64.node": "74ecd4da1cb587ac65623781a5b7c0a9fba56e504c4ba3ca2f48c093b549602c"
+    }
+  },
+  "unrs-resolver@1.12.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-unrs-resolver1.12.2.txt",
+    "sha256": "a9e35996693bd619302922c731fa2f620ad12d5f50b19a37c8a3e0e078c9bd2f",
+    "source": "https://raw.githubusercontent.com/unrs/unrs-resolver/ccb26d205e2938b16069c64a28996b48ee97ff94/LICENSE",
+    "upstreamManifestVersion": "1.12.2",
+    "license": "MIT",
+    "files": {
+      "browser.js": "82a8459e5fcf7e3b1648fcbc69bf508dd0f1614d03c67d35edbfb0779cf39b71",
+      "index.js": "27d182dbbaf5eefe65230cf8ab257037197376ca3da067adae26530401ccd19f",
+      "postinstall.js": "446a0aeed55eeb28eadd9ac31f0b71654265aba8ca5a99dbc22dab0b26a02469",
+      "package.json": "3ef3f74675fe31a88dc490e4136178a5fd8f96142df0c565d66be9a894543adf",
+      "README.md": "059674343f991fa562138ec008a9654044ed434113ef42f974992692317f7b26",
+      "index.d.ts": "2e36248ff3cc1b0b20adc82e596d519539cd892bd98d8338c4bd4a1ed625634d"
+    }
+  },
+  "bser@2.1.1": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-bser2.1.1.txt",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "source": "https://raw.githubusercontent.com/facebook/watchman/df9f2c4a5eb37354949fdefb2b917427fe05fa6c/LICENSE",
+    "upstreamManifestVersion": "2.1.0",
+    "license": "Apache-2.0",
+    "files": {
+      "README.md": "fbc3054ed9e51cce426c17344d2c0b9a3792e7f13828c2da2941e92032571650",
+      "index.js": "c62fdb182214f4d56354b4955f3beebd3a50da617eef8a8937fcaddf8adc2f7d",
+      "package.json": "1e90f98039f760ebd91af36846690b70a09154608f228967d3fa7858402b3de6"
+    }
+  },
+  "fb-watchman@2.0.2": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-fb-watchman2.0.2.txt",
+    "sha256": "2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa",
+    "source": "https://raw.githubusercontent.com/facebook/watchman/5a5c364ee24c7a44502bfd22f929fc8f74626bb7/LICENSE",
+    "upstreamManifestVersion": "2.0.1",
+    "license": "MIT",
+    "files": {
+      "index.js": "174162c01b5c8bf9b031bbef70f5ecd9b8a972e67c16e3cd1a098944b51293bf",
+      "package.json": "1cbf98d28443db3b03e6fe0425fcebbea9aa6569c421abee605da0fd61d612ee",
+      "README.md": "2b5f0e7274a619ee2b37eee170bf1d32ffae35e9806312e886561f93ceea80df"
+    }
+  },
+  "natural-compare@1.4.0": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-natural-compare1.4.0.txt",
+    "sha256": "353fe762ba595bf1ffe786acf0f5984bb164205901d74f258af195fc8228c67d",
+    "source": "https://raw.githubusercontent.com/litejs/natural-compare-lite/6b42bc713dca62f35b927cd06b69a82e297f019b/LICENSE",
+    "upstreamManifestVersion": "1.4.0",
+    "license": "MIT",
+    "files": {
+      "package.json": "3d99911ccfa0ca34ae0c68bfd32c038b952542e55db7c649c37b11dd1573f6af",
+      "README.md": "ced6cb1fe6ee15a32c63ea8c7e0425454e80456a890c6df3909429530566d40a",
+      "index.js": "15f5c6fd3086eb01f2beede34bf23a84f3ca2b9f4a87ec86c1bfc2045b99c6e3"
+    }
+  },
+  "esrecurse@4.3.0": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-esrecurse@4.3.0.txt",
+    "sha256": "14b0f639e3cf08f948b4a06d4780070db9bfaa89e9449e94f0aa5a0c51289162",
+    "source": "README.md",
+    "upstreamManifestVersion": "4.3.0",
+    "license": "BSD-2-Clause",
+    "section": {
+      "file": "README.md",
+      "startByte": 3712,
+      "endByte": 5102
+    },
+    "files": {
+      ".babelrc": "9b5fa5ccf91f15404f266f8595c85a005814efdecc3fd7c584630e6667fb5597",
+      "esrecurse.js": "aa99847033c240a621fe987f0e06b754f388f22abd11a05bdf9cdd00794b7350",
+      "gulpfile.babel.js": "fb47567884ee5dddc084a93db85d940f0874dbb4a1863820c6c317a3a83e62b1",
+      "package.json": "3bc67cb54672ec6957b53947613c23599371bf9222dbbe97275d20516a561a20",
+      "README.md": "a7007c78c9d9da690ef6cdb0e7a3427d05832edb00abd1f5a9882700d73be4ad"
+    }
+  },
+  "imurmurhash@0.1.4": {
+    "scope": "development",
+    "notice": "docs/licenses/npm-imurmurhash@0.1.4.txt",
+    "sha256": "2f3de7ca97e07e9814e9a8dd61a561079ae6eb303579837e12d3d51f867ef7a6",
+    "source": "README.md",
+    "upstreamManifestVersion": "0.1.4",
+    "license": "MIT",
+    "section": {
+      "file": "README.md",
+      "startByte": 3696,
+      "endByte": 4763
+    },
+    "files": {
+      "package.json": "aa3b07e7fa3d63aa96e401c3842b8cca1dd3247954baf92377094766e903c185",
+      "README.md": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
+      "imurmurhash.js": "45368bfe11080c4504b7804602015d93873303c5b13d5710af6c42e9abc35b4a",
+      "imurmurhash.min.js": "ea8490563a229b89f2b779217938f9eb2bcf93dd89de9f7fc5c035632f0934b5"
+    }
   }
 }
