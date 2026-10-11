@@ -26,14 +26,22 @@ export function frameworkReportSemantics(
   };
   function normalize(
     value: unknown,
-    context: "ordinary" | "check" | "process" | "raw" | "runtime" = "ordinary",
+    context:
+      | "ordinary"
+      | "check"
+      | "tool"
+      | "process"
+      | "probe"
+      | "raw"
+      | "runtime" = "ordinary",
   ): unknown {
     if (Array.isArray(value))
       return value.map((item) => normalize(item, context));
     if (value === null || typeof value !== "object") return value;
     const object = value as Record<string, unknown>;
+    const isProcess = context === "process" || context === "probe";
     let normalizedCapture: unknown;
-    if (context === "process" && Object.hasOwn(object, "capturedOutput")) {
+    if (isProcess && Object.hasOwn(object, "capturedOutput")) {
       const captured = parseCapturedProcessOutput(object.capturedOutput);
       if (Object.hasOwn(object, "outputBytes"))
         assert.equal(
@@ -59,14 +67,22 @@ export function frameworkReportSemantics(
           "Framework physical capture differs from original process text",
         );
       }
-      if (options.omitProcessOutput)
+      if (context === "process" && options.omitProcessOutput)
         normalizedCapture = {
           profile: captured.profile,
           completeForObservedStreams: captured.completeForObservedStreams,
         };
       else {
-        const stdout = Buffer.from(normalizeText(object.stdout as string)),
-          stderr = Buffer.from(normalizeText(object.stderr as string));
+        const stdout = Buffer.from(
+            context === "process"
+              ? normalizeText(object.stdout as string)
+              : (object.stdout as string),
+          ),
+          stderr = Buffer.from(
+            context === "process"
+              ? normalizeText(object.stderr as string)
+              : (object.stderr as string),
+          );
         normalizedCapture = captureProcessOutput(
           stdout,
           stderr,
@@ -79,7 +95,7 @@ export function frameworkReportSemantics(
       Object.entries(object)
         .filter(
           ([key]) =>
-            !(context === "process" && key === "durationMs") &&
+            !(isProcess && key === "durationMs") &&
             !(context === "runtime" && key === "capturedAt") &&
             !(
               context === "process" &&
@@ -111,10 +127,14 @@ export function frameworkReportSemantics(
               item,
               context === "check" && key === "processes"
                 ? "process"
-                : (context === "check" || context === "raw") &&
-                    key === "runtime"
-                  ? "runtime"
-                  : "ordinary",
+                : context === "check" && key === "tools"
+                  ? "tool"
+                  : context === "tool" && key === "process"
+                    ? "probe"
+                    : (context === "check" || context === "raw") &&
+                        key === "runtime"
+                      ? "runtime"
+                      : "ordinary",
             ),
           ];
         }),
