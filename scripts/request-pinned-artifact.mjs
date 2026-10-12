@@ -21,27 +21,53 @@ class TransientArtifactResponseError extends Error {}
 
 // Operator setup only. The caller must verify the pinned digest before use.
 export async function requestPinnedArtifactBytes(
-  { asset, bytes },
+  { asset, bytes, fallbackAsset },
   {
     fetchImpl = globalThis.fetch,
     signal = globalThis.AbortSignal.timeout(120000),
     delayImpl = (ms) => setTimeout(ms, undefined, { signal }),
     onRetry = () => {},
+    retryNotFound = false,
   } = {},
 ) {
-  assert.equal(new URL(asset).protocol, "https:");
+  assert.equal(typeof retryNotFound, "boolean");
+  const primary = new URL(asset);
+  assert.equal(primary.protocol, "https:");
+  if (fallbackAsset !== undefined) {
+    const fallback = new URL(fallbackAsset);
+    assert.equal(fallback.protocol, "https:");
+    assert.equal(
+      fallback.pathname.split("/").at(-1),
+      primary.pathname.split("/").at(-1),
+      "Pinned mirror must retain the exact artifact filename",
+    );
+    assert.equal(
+      fallback.search,
+      primary.search,
+      "Pinned mirror must retain the exact artifact query",
+    );
+    assert.equal(
+      fallback.username + fallback.password + fallback.hash,
+      "",
+      "Pinned mirror cannot contain credentials or a fragment",
+    );
+  }
   assert.ok(
     Number.isSafeInteger(bytes) && bytes > 0 && bytes <= 128 * 1024 * 1024,
   );
   const waits = [1000, 3000];
+  let nextAsset = asset;
   for (let attempt = 1; ; attempt++) {
     signal.throwIfAborted();
     let response, downloaded;
     try {
       try {
-        response = await fetchImpl(asset, { signal });
+        response = await fetchImpl(nextAsset, { signal });
         signal.throwIfAborted();
-        if (transientStatuses.has(response.status))
+        if (
+          transientStatuses.has(response.status) ||
+          (retryNotFound && response.status === 404)
+        )
           throw new TransientArtifactResponseError(
             `Pinned artifact HTTP ${response.status}`,
           );
@@ -67,6 +93,12 @@ export async function requestPinnedArtifactBytes(
         attempt > waits.length
       )
         throw error;
+      // A lagging mirror can lack the exact revision still served by the primary.
+      // Return there after an admitted mirror 404 within the same attempt budget.
+      nextAsset =
+        fallbackAsset && nextAsset === fallbackAsset && response?.status === 404
+          ? asset
+          : (fallbackAsset ?? asset);
       await onRetry({ attempt, waitMs: waits[attempt - 1] });
       await delayImpl(waits[attempt - 1]);
       continue;
