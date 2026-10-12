@@ -183,6 +183,19 @@ archive versions nor pins change. Integrity/permanent-response errors still fail
 without alternate repository fallback; the offline image build still verifies APK
 signatures. A download is preparation, not passing native acceptance.
 
+The retired `zlib-1.3.2-r0.apk` pin has an unchanged repository copy in
+`scripts/cpp-archive-fallbacks/`, with original public source attribution and
+upstream license text. Only that exact basename, byte count and SHA-256 can
+select it after the original bounded requests end in HTTP 404. Corrupt content,
+adjacent pins, cancellation and permanent network errors cannot use this fallback.
+It is CI preparation data outside the npm package's published file inventory;
+the offline image build still verifies its original APK signature.
+
+The CI cancellation control waits for complete PID contents rather than marker
+existence. Its fixture deliberately publishes an empty marker and waits for an
+observation acknowledgment before writing the PID, so the incomplete-publication
+boundary is reached before cancellation and detached-child cleanup are checked.
+
 ## Kustomize transform extension acceptance
 
 The `kustomize-extensions-arm64` job prepares the original infrastructure runtime

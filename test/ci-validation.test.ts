@@ -206,7 +206,7 @@ test("CI rejects unrestored mutation bytes and changes to the original source", 
 });
 test("CI command cancellation removes detached descendants after a physical start marker", async (t) => {
   const { root, outer } = await repository(t, {
-    "hang.mjs": `import{spawn}from'node:child_process';import{writeFile}from'node:fs/promises';const child=spawn(process.execPath,['-e',"setInterval(()=>{},1000)"],{detached:true,stdio:'ignore'});await writeFile(process.argv[2],String(child.pid));setInterval(()=>{},1000);`,
+    "hang.mjs": `import{spawn}from'node:child_process';import{writeFile,access}from'node:fs/promises';import{setTimeout as delay}from'node:timers/promises';const marker=process.argv[2];const child=spawn(process.execPath,['-e',"setInterval(()=>{},1000)"],{detached:true,stdio:'ignore'});await writeFile(marker,'');while(!await access(marker+'.observed-empty').then(()=>true,()=>false))await delay(10);await writeFile(marker,String(child.pid));setInterval(()=>{},1000);`,
   });
   const abort = new AbortController(),
     marker = path.join(outer, "pid");
@@ -217,18 +217,24 @@ test("CI command cancellation removes detached descendants after a physical star
   });
   const observed = assert.rejects(promise, /failed or cancelled/);
   try {
+    let pid = 0,
+      observedEmpty = false;
     for (let i = 0; i < 200; i++) {
-      if (
-        await access(marker).then(
-          () => true,
-          () => false,
-        )
-      )
-        break;
+      const contents = await readFile(marker, "utf8").catch((error) => {
+        if (error.code === "ENOENT") return undefined;
+        throw error;
+      });
+      if (contents === "") {
+        observedEmpty = true;
+        await writeFile(marker + ".observed-empty", "observed");
+      } else if (contents !== undefined && /^[1-9]\d*$/.test(contents)) {
+        pid = Number(contents);
+        if (Number.isSafeInteger(pid) && pid > 1) break;
+      }
       await delay(10);
     }
-    const pid = Number(await readFile(marker, "utf8"));
-    assert.ok(pid > 1);
+    assert.equal(observedEmpty, true);
+    assert.ok(Number.isSafeInteger(pid) && pid > 1);
     abort.abort();
     await observed;
     assert.throws(() => process.kill(pid, 0), { code: "ESRCH" });

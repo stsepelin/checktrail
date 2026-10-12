@@ -211,3 +211,100 @@ test("C++ archive acquisition rechecks only the original main URL after six term
     assert.equal(count, 7, variant);
   }
 });
+
+const retiredZlib = {
+  path: "zlib-1.3.2-r0.apk",
+  bytes: 54312,
+  sha256: "a535991af7c9e8369ebbf33c1e388c1bc63c87ead5142eddaee71f65836c33e3",
+};
+test("C++ acquisition preserves the exact signed retired zlib archive after bounded terminal 404s", async () => {
+  let calls = 0;
+  const result = await requestCppToolArchive(retiredZlib, repositories, {
+    delayImpl: async () => {},
+    fetchImpl: async () => {
+      calls++;
+      return new Response(null, { status: 404 });
+    },
+  });
+  assert.equal(calls, 9);
+  assert.equal(result.asset, "repository-pinned-archive");
+  assert.equal(result.bytes.length, retiredZlib.bytes);
+  assert.equal(
+    createHash("sha256").update(result.bytes).digest("hex"),
+    retiredZlib.sha256,
+  );
+});
+test("C++ retired archive fallback rejects corrupt bytes and adjacent pin identities", async () => {
+  for (const bytes of [
+    Buffer.alloc(retiredZlib.bytes),
+    Buffer.alloc(retiredZlib.bytes - 1),
+    Buffer.alloc(retiredZlib.bytes + 1),
+  ]) {
+    let reads = 0;
+    await assert.rejects(
+      requestCppToolArchive(retiredZlib, repositories, {
+        delayImpl: async () => {},
+        fetchImpl: async () => new Response(null, { status: 404 }),
+        readFallbackImpl: async (url: URL) => {
+          reads++;
+          assert.ok(
+            url.pathname.endsWith("/cpp-archive-fallbacks/" + retiredZlib.path),
+          );
+          return bytes;
+        },
+      }),
+      /C\+\+ fallback archive (digest|size) differs/,
+    );
+    assert.equal(reads, 1);
+  }
+  let reads = 0;
+  for (const adjacent of [
+    { ...retiredZlib, path: "zlib-1.3.2-r1.apk" },
+    { ...retiredZlib, bytes: retiredZlib.bytes + 1 },
+    { ...retiredZlib, sha256: "0".repeat(64) },
+  ]) {
+    await assert.rejects(
+      requestCppToolArchive(adjacent, repositories, {
+        delayImpl: async () => {},
+        fetchImpl: async () => new Response(null, { status: 404 }),
+        readFallbackImpl: async () => {
+          reads++;
+          return Buffer.alloc(retiredZlib.bytes);
+        },
+      }),
+      /Pinned archive unavailable/,
+    );
+  }
+  assert.equal(reads, 0);
+});
+test("C++ retired archive fallback cannot hide permanent network errors integrity failures or cancellation", async () => {
+  for (const variant of ["forbidden", "redirect", "corrupt", "cancelled"]) {
+    const abort = new AbortController();
+    let calls = 0,
+      reads = 0;
+    await assert.rejects(
+      requestCppToolArchive(retiredZlib, repositories, {
+        signal: abort.signal,
+        delayImpl: async () => {},
+        fetchImpl: async () => {
+          calls++;
+          if (calls <= 6) return new Response(null, { status: 404 });
+          if (variant === "cancelled") abort.abort();
+          return variant === "forbidden"
+            ? new Response(null, { status: 403 })
+            : variant === "redirect"
+              ? new Response(null, { status: 302 })
+              : variant === "corrupt"
+                ? new Response(Buffer.alloc(retiredZlib.bytes))
+                : new Response(null, { status: 404 });
+        },
+        readFallbackImpl: async () => {
+          reads++;
+          return Buffer.alloc(retiredZlib.bytes);
+        },
+      }),
+    );
+    assert.equal(calls, 7, variant);
+    assert.equal(reads, 0, variant);
+  }
+});
