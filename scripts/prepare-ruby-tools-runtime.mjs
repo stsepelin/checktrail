@@ -1,6 +1,6 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { requestRubyCompilerArchive } from "./request-ruby-compiler-archive.mjs";
 import assert from "node:assert/strict";
-import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
 import {
   lstat,
@@ -19,9 +19,9 @@ import { fileURLToPath, URL } from "node:url";
 import { mavenHash, verifyMavenTree } from "../dist/src/maven.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const ruby =
-    "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+    "docker.io/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
   node =
-    "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+    "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const task = process.env.CHECKTRAIL_TEST_TASK || `ruby-tools-${process.pid}`;
 assert.match(task, /^[a-z][a-z0-9-]{0,80}$/);
 const tag = `checktrail-${task}:public`,
@@ -127,41 +127,16 @@ try {
             pin.bytes > 0 &&
             pin.bytes <= 64 * 1024 * 1024,
         );
-        let bytes;
-        if (local) {
-          const file = path.join(local, pin.path),
-            stat = await lstat(file);
-          assert.ok(
-            stat.isFile() &&
-              !stat.isSymbolicLink() &&
-              stat.size === pin.bytes &&
-              (await realpath(file)) === file,
-          );
-          bytes = await readFile(file);
-        } else {
-          // Retrieve every original signed APK by exact URL. Resolving current indexes
-          // would replace transitive revisions even when compiler roots are pinned.
-          const response = await globalThis.fetch(
-            selected.repository + pin.path,
-            {
-              redirect: "error",
-              signal: globalThis.AbortSignal.timeout(60000),
-            },
-          );
-          assert.equal(response.status, 200);
-          assert.ok(response.body);
-          let count = 0;
-          const chunks = [];
-          for await (const chunk of response.body) {
-            count += chunk.length;
-            assert.ok(
-              count <= pin.bytes,
-              "Pinned compiler archive exceeded its byte bound",
-            );
-            chunks.push(Buffer.from(chunk));
-          }
-          bytes = Buffer.concat(chunks);
-        }
+        const bytes = await requestRubyCompilerArchive(
+          {
+            root,
+            architecture,
+            pin,
+            repository: selected.repository,
+            local,
+          },
+          { signal: globalThis.AbortSignal.timeout(120000) },
+        );
         assert.equal(bytes.length, pin.bytes);
         assert.equal(mavenHash(bytes), pin.sha256);
         await writeFile(path.join(artifacts, pin.path), bytes, {
