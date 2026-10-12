@@ -1,6 +1,6 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
+import { requestRubyCompilerArchive } from "./request-ruby-compiler-archive.mjs";
 import assert from "node:assert/strict";
-import { Buffer } from "node:buffer";
 import { execFileSync } from "node:child_process";
 import {
   lstat,
@@ -127,41 +127,16 @@ try {
             pin.bytes > 0 &&
             pin.bytes <= 64 * 1024 * 1024,
         );
-        let bytes;
-        if (local) {
-          const file = path.join(local, pin.path),
-            stat = await lstat(file);
-          assert.ok(
-            stat.isFile() &&
-              !stat.isSymbolicLink() &&
-              stat.size === pin.bytes &&
-              (await realpath(file)) === file,
-          );
-          bytes = await readFile(file);
-        } else {
-          // Retrieve every original signed APK by exact URL. Resolving current indexes
-          // would replace transitive revisions even when compiler roots are pinned.
-          const response = await globalThis.fetch(
-            selected.repository + pin.path,
-            {
-              redirect: "error",
-              signal: globalThis.AbortSignal.timeout(60000),
-            },
-          );
-          assert.equal(response.status, 200);
-          assert.ok(response.body);
-          let count = 0;
-          const chunks = [];
-          for await (const chunk of response.body) {
-            count += chunk.length;
-            assert.ok(
-              count <= pin.bytes,
-              "Pinned compiler archive exceeded its byte bound",
-            );
-            chunks.push(Buffer.from(chunk));
-          }
-          bytes = Buffer.concat(chunks);
-        }
+        const bytes = await requestRubyCompilerArchive(
+          {
+            root,
+            architecture,
+            pin,
+            repository: selected.repository,
+            local,
+          },
+          { signal: globalThis.AbortSignal.timeout(120000) },
+        );
         assert.equal(bytes.length, pin.bytes);
         assert.equal(mavenHash(bytes), pin.sha256);
         await writeFile(path.join(artifacts, pin.path), bytes, {
@@ -235,6 +210,17 @@ try {
     architecture,
     alpine,
     nodeVersion: lines[0],
+    npmVersion: docker([
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--label",
+      `checktrail.task=${task}`,
+      image.Id,
+      "npm",
+      "--version",
+    ]).trim(),
     gccVersion: lines[2],
     makeVersion: lines[3],
     files,
@@ -246,6 +232,7 @@ try {
     buildNetwork: "none",
     publisherAndLicenseClosureVerified: false,
   };
+  assert.equal(identity.npmVersion, "10.9.8");
   await writeFile(
     path.join(temporary, "identity.json"),
     JSON.stringify(identity, null, 2) + "\n",
