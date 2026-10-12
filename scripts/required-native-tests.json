@@ -2999,6 +2999,14 @@
     {
       "file": "dist/test/scala-boundaries.test.js",
       "name": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks"
+    },
+    {
+      "file": "dist/test/scala-feature-phases.test.js",
+      "name": "native Scala baseline observes post-typer inline and quote flags before declaring a complete source profile"
+    },
+    {
+      "file": "dist/test/scala-feature-phases.test.js",
+      "name": "native Scala baseline observes an executed macro annotation and accepts a distinct ordinary annotation near miss"
     }
   ],
   "import-history": [
@@ -4277,6 +4285,310 @@
     {
       "file": "dist/test/gate-jvm-wrappers.test.js",
       "name": "jvm-wrappers installed acceptance"
+    }
+  ],
+  "kotlin-extensions": [
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kotlin-extensions.test.js",
+      "name": "kotlin-extensions installed acceptance"
+    }
+  ],
+  "scala-extensions": [
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-scala-extensions.test.js",
+      "name": "scala-extensions installed acceptance"
+    }
+  ],
+  "jvm-analyzer-extensions": [
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-jvm-analyzer-extensions.test.js",
+      "name": "jvm-analyzer-extensions installed acceptance"
+    }
+  ],
+  "kubernetes-extensions": [
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kubernetes-extensions.test.js",
+      "name": "kubernetes-extensions installed acceptance"
+    }
+  ],
+  "kustomize-extensions": [
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-kustomize-extensions.test.js",
+      "name": "kustomize-extensions installed acceptance"
+    }
+  ],
+  "confidence-provenance": [
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-confidence-provenance.test.js",
+      "name": "confidence-provenance installed acceptance"
+    }
+  ],
+  "dotnet-fsharp-format": [
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-fsharp-format.test.js",
+      "name": "dotnet-fsharp-format installed acceptance"
+    }
+  ],
+  "dotnet-format-extensions": [
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions broken acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions fixed acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions near-miss acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions prerequisite acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions stale acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions empty acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions privacy acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions lifecycle acceptance"
+    },
+    {
+      "file": "dist/test/gate-dotnet-format-extensions.test.js",
+      "name": "dotnet-format-extensions installed acceptance"
     }
   ]
 }

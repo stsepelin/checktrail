@@ -1,4 +1,10 @@
 import {
+  inspectReviewProvenance,
+  projectReviewProvenance,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "./review-provenance.js";
+import {
   scoreMultiClaimReviewTrials,
   projectMultiClaimReviewScoring,
   reviewMultiReportSchema,
@@ -917,6 +923,36 @@ function createConnectionServer(
       } catch {
         return error(
           "Paired review scoring failed. Check frozen identities, paired labels, observations and bootstrap limits locally with the CLI.",
+        );
+      }
+    },
+  );
+  registerTool(
+    "review_provenance",
+    {
+      description:
+        "Recheck source addresses and reconcile bound host claims, imported native receipts and descriptive label/probability scores. Confidence and labels remain unverified declarations; no inference or project execution is performed.",
+      inputSchema: z.strictObject({ input: z.string().min(1).max(1024) }),
+      outputSchema: options.allowReviewSource
+        ? reviewProvenanceReportSchema
+        : reviewProvenanceSummarySchema,
+      annotations: readOnly,
+    },
+    async ({ input }, request) => {
+      try {
+        return reply(
+          projectReviewProvenance(
+            await inspectReviewProvenance(
+              options.root,
+              await readProjectFile(options.root, input),
+              { signal: request.mcpReq.signal, wallMs: probeLimits.wallMs },
+            ),
+            Boolean(options.allowReviewSource),
+          ),
+        );
+      } catch {
+        return error(
+          "Review provenance failed. Inspect source, claim, native receipt and scoring bindings locally with the CLI.",
         );
       }
     },

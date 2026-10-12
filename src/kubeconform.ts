@@ -4,6 +4,11 @@ import { z } from "zod";
 import { parseAllDocuments, visit } from "yaml";
 import { readProjectFile } from "./inventory.js";
 import { mavenHash } from "./maven.js";
+import {
+  kubernetesExtensionPins,
+  kubernetesExtensionProfile,
+  verifyKubernetesExtensionTool,
+} from "./kubernetes-extensions.js";
 import type { Check, Inventory, Project } from "./types.js";
 export function kubeRequire(value: unknown, message: string): asserts value {
   if (!value) throw new Error(message);
@@ -38,8 +43,18 @@ export const kubeconformConfigSchema = z.strictObject({
   kubernetesVersion: z.literal("1.36.0"),
   platform: z.literal("linux_arm64"),
   schemaDirectory: file,
+  schemaProfile: z.literal(kubernetesExtensionProfile).optional(),
   manifests: z.array(file).min(1).max(64),
 });
+export function kubeSchemaPinsFor(
+  config: z.infer<typeof kubeconformConfigSchema>,
+) {
+  return config.schemaProfile === kubernetesExtensionProfile
+    ? [...kubeSchemaPins, ...kubernetesExtensionPins].map(
+        ({ file, bytes, sha256 }) => ({ file, bytes, sha256 }),
+      )
+    : kubeSchemaPins;
+}
 export const kubeconformInvocationSchema = z.strictObject({
   config: kubeconformConfigSchema,
   inputs: z
@@ -132,7 +147,12 @@ export function kubeDocuments(
       kubeRequire(
         (data.apiVersion === "apps/v1" && data.kind === "Deployment") ||
           (data.apiVersion === "v1" &&
-            ["ConfigMap", "Service"].includes(data.kind)),
+            ["ConfigMap", "Service"].includes(data.kind)) ||
+          (config.schemaProfile === kubernetesExtensionProfile &&
+            kubernetesExtensionPins.some(
+              (pin) =>
+                pin.kind === data.kind && pin.version === data.apiVersion,
+            )),
         "Schema kind/version not in verified profile",
       );
       const text = input.text.slice(doc.range[0], doc.range[2]);
@@ -244,6 +264,11 @@ export async function kubeconformCheck(
         ),
       ),
     );
+    const schemaPins = kubeSchemaPinsFor(config);
+    if (config.schemaProfile === kubernetesExtensionProfile) {
+      check.scope = [...config.manifests];
+      await verifyKubernetesExtensionTool(kubeBinarySha256);
+    }
     const own = project.files.filter(
       (p) =>
         /\.(?:ya?ml|json)$/.test(p) &&
@@ -262,13 +287,11 @@ export async function kubeconformCheck(
     kubeRequire(
       JSON.stringify(schemas.sort()) ===
         JSON.stringify(
-          kubeSchemaPins
-            .map((p) => config.schemaDirectory + "/" + p.file)
-            .sort(),
+          schemaPins.map((p) => config.schemaDirectory + "/" + p.file).sort(),
         ),
       "Pinned schema scope differs",
     );
-    for (const pin of kubeSchemaPins) {
+    for (const pin of schemaPins) {
       const text = await readProjectFile(
         source.root,
         prefix + config.schemaDirectory + "/" + pin.file,

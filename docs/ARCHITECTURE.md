@@ -266,7 +266,8 @@ runtime and package; mixed/generated/script profiles, Scala, wider platforms and
 Gate A remain open. No inference or field evaluation is invoked.
 
 The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
-collector immediately after typing and after JVM bytecode generation. Selected
+collector after typing, after post-typer feature flag assignment, and after JVM
+bytecode generation. Selected
 physical and native source bytes, declaration/tree/type counts, resolved
 suppression annotations, driver/source callbacks, diagnostics, raw bytes and
 physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
@@ -334,3 +335,30 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The explicit [Kustomize transform extension](KUSTOMIZE-EXTENSIONS.md) reconstructs
+selected local patches, transforms and generated references from bounded data.
+Native rendered values must match that reconstruction, and schema findings retain
+physical patch/base addresses through list edits. Saved receipts recheck current
+input, schema and both executable bytes. Planning remains data-only; CLI and MCP
+share the same operator-trusted engine.
+
+The explicit [Scala compiler extensions](SCALA-EXTENSIONS.md) use the same engine
+for Scala 2 typed/class observation and ordered Scala 3 mixed/generated/script
+stages. Later stages consume fresh earlier output, and Java bodies receive a
+separate native compiler task. Source, generated output, physical class/TASTy
+origins, feature observations and raw invocation streams must reconcile. Native
+acceptance remains scoped; wider platforms and Gate A remain open.
+
+The shared [review provenance inspector](REVIEW-PROVENANCE.md) joins a bounded
+serialized packet with current physical source/citation checks, exact host claim
+and trial bindings, imported raw-native accounting and descriptive scoring.
+Unverified claim/confidence/label declarations remain distinct from reconciled
+addresses and receipt structure. Strict derived projections retain partial and
+unknown states without quality or session-independence claims. Inspection reads
+source but executes no project code or inference. Stored projections validate
+recorded accounting; current freshness requires reinspection.
+
+The opt-in `dotnet.format-fsharp` check uses the shared engine with a strict native packet parser. It compiles an original source-string observer, verifies selected SDK/formatter bytes, stages fresh source, retains both native phases and rechecks every document/diagnostic/text binding. FSHARP-FORMAT.md records parser API limits and first-document lifecycle witnesses; source-string formatting does not establish compilation or whole runtime closure.
+
+The opt-in `dotnet.format-extensions` profile uses the shared engine and build prerequisite contract. DOTNET-FORMAT-EXTENSIONS.md defines pinned native SDK style/analyzer selection, complete physical edit/report reconciliation, generated-source participation and explicit unsupported generated semantic fixes. Mapped SDK coordinates are linked to native diagnostics whose physical source spans are validated; findings cite physical source.

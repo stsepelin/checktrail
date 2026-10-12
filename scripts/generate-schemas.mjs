@@ -1,4 +1,9 @@
 import {
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "../dist/src/review-provenance.js";
+import {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "../dist/src/review-host-lease.js";
@@ -8,6 +13,16 @@ import {
   reviewMultiReportSchema,
   reviewMultiSummarySchema,
 } from "../dist/src/review-multi-scoring.js";
+import { fsharpFormatConfigSchema } from "../dist/src/fsharp-format.js";
+import { dotnetFormatExtensionsConfigSchema } from "../dist/src/dotnet-format-extensions.js";
+import {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "../dist/src/dotnet-format-extensions-contract.js";
+import {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "../dist/src/fsharp-format-contract.js";
 import { capturedProcessOutputSchema } from "../dist/src/process-output.js";
 import { windowsExecutionSchema } from "../dist/src/windows-execution.js";
 import {
@@ -176,6 +191,12 @@ for (const [name, schema] of Object.entries({
   "go-build-policy": goBuildPolicySchema,
   "rust-build-policy": rustBuildPolicySchema,
   "dotnet-config": dotnetConfigSchema,
+  "fsharp-format-config": fsharpFormatConfigSchema,
+  "dotnet-format-extensions-config": dotnetFormatExtensionsConfigSchema,
+  "dotnet-format-extensions-native": dotnetFormatExtensionsNativeSchema,
+  "dotnet-format-extensions-packet": dotnetFormatExtensionsPacketSchema,
+  "fsharp-format-native": fsharpNativeSchema,
+  "fsharp-format-packet": fsharpPacketSchema,
   "cpp-tools-config": cppToolsConfigSchema,
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,
@@ -270,6 +291,9 @@ for (const [name, schema] of Object.entries({
   "review-probe-summary": reviewProbeSummarySchema,
   "review-provider-config": reviewProviderConfigSchema,
   "review-candidate": reviewCandidateSchema,
+  "review-provenance-input": reviewProvenanceInputSchema,
+  "review-provenance-report": reviewProvenanceReportSchema,
+  "review-provenance-summary": reviewProvenanceSummarySchema,
   "review-claim-probability": reviewClaimProbabilitySchema,
   "review-model-output": reviewModelOutputSchema,
   "review-provider-run": reviewProviderRunSchema,

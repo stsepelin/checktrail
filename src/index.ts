@@ -272,3 +272,24 @@ export {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "./review-host-lease.js";
+
+export {
+  inspectReviewProvenance,
+  projectReviewProvenance,
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "./review-provenance.js";
+export type { ReviewProvenanceReport } from "./review-provenance.js";
+
+export { fsharpFormatConfigSchema } from "./fsharp-format.js";
+export {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "./fsharp-format-contract.js";
+
+export { dotnetFormatExtensionsConfigSchema } from "./dotnet-format-extensions.js";
+export {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "./dotnet-format-extensions-contract.js";

@@ -90,7 +90,7 @@ export async function findJvmWrapperDistribution(root: string, kind: JvmKind) {
   return matches[0]!;
 }
 export async function generateJvmSources(
-  extensions: JvmExtensions,
+  extensions: Pick<JvmExtensions, "generators">,
   inputs: { path: string; sha256: string }[],
   workspace: string,
   temporary: string,

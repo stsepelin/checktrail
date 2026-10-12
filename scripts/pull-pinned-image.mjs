@@ -13,6 +13,11 @@ const transient = (error) => {
     return false;
   const text = String(error?.stderr ?? "");
   return (
+    /^Error response from daemon: Get "https:\/\/public\.ecr\.aws\/v2\/": net\/http: request canceled while waiting for connection \(Client\.Timeout exceeded while awaiting headers\)$/.test(
+      text.trim(),
+    ) ||
+    text.trim() ===
+      'Error response from daemon: Get "https://public.ecr.aws/v2/": context deadline exceeded' ||
     /(?:^|\s)toomanyrequests:\s*Rate exceeded(?:\s|$)/i.test(text) ||
     /(?:unexpected (?:HTTP )?status(?: code)?|HTTP response code|received status)[^\n]{0,200}\b(?:429|500|502|503|504)\b/i.test(
       text,
@@ -45,8 +50,17 @@ export async function pullPinnedImage(
     /^public\.ecr\.aws\/docker\/library\/[a-z][a-z0-9-]*@sha256:[a-f0-9]{64}$/.exec(
       reference,
     );
+  const frozenMicrosoftSdk =
+    "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256";
+  const frozenOfficialMirrors = new Set([
+    "docker.io/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+    "docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+    "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+  ]);
   assert.ok(
-    match && match[0] === reference,
+    (match && match[0] === reference) ||
+      reference === frozenMicrosoftSdk ||
+      frozenOfficialMirrors.has(reference),
     "Select an exact pinned official public image reference",
   );
   assert.ok(

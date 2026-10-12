@@ -4,6 +4,7 @@ import {
   kubeconformInvocationSchema,
   kubeDocuments,
   kubeSchemaPins,
+  kubeSchemaPinsFor,
   kubeBinarySha256,
   kubeNativeArgs,
   kubePointerLine,
@@ -11,6 +12,11 @@ import {
   type KubeDocument,
 } from "./kubeconform.js";
 import { mavenHash } from "./maven.js";
+import {
+  kubernetesExtensionPins,
+  kubernetesExtensionProfile,
+  verifyCurrentKubernetesExtensionInputs,
+} from "./kubernetes-extensions.js";
 import type { Check, CheckResult, ProcessResult, Finding } from "./types.js";
 const text = z.string().max(1024 * 1024),
   file = z.string().min(1).max(8192),
@@ -30,7 +36,8 @@ export const kubeconformPacketSchema = z.strictObject({
   }),
   schemas: z
     .array(z.strictObject({ file, sha256: digest, afterSha256: digest }))
-    .length(kubeSchemaPins.length),
+    .min(kubeSchemaPins.length)
+    .max(kubeSchemaPins.length + kubernetesExtensionPins.length),
   documents: z
     .array(
       z.strictObject({
@@ -98,6 +105,7 @@ export function kubeconformEvidence(
     const invocation = kubeconformInvocationSchema.parse(
         JSON.parse(check.commands[0]!.args[2]!),
       ),
+      schemaPins = kubeSchemaPinsFor(invocation.config),
       documents = kubeDocuments(invocation.inputs, invocation.config),
       packet = kubeconformPacketSchema.parse(JSON.parse(process.stdout));
     kubeRequire(
@@ -127,7 +135,7 @@ export function kubeconformEvidence(
     kubeRequire(
       JSON.stringify(packet.schemas) ===
         JSON.stringify(
-          kubeSchemaPins.map((p) => ({
+          schemaPins.map((p) => ({
             file: p.file,
             sha256: p.sha256,
             afterSha256: p.sha256,
@@ -148,6 +156,15 @@ export function kubeconformEvidence(
         ),
       "Copied document scope differs",
     );
+    if (invocation.config.schemaProfile === kubernetesExtensionProfile)
+      verifyCurrentKubernetesExtensionInputs(
+        check.commands[0]!.args[1]!,
+        check.commands[0]!.cwd,
+        invocation.inputs,
+        invocation.config.schemaDirectory,
+        schemaPins,
+        packet.tool,
+      );
     const receipt = (index: number, phase: string, args: string[]) => {
       const row = packet.receipts[index]!;
       kubeRequire(
