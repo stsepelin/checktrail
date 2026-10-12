@@ -496,3 +496,10 @@ is scoped to its observed host; it does not close the wider runtime matrix or
 independent evaluation. No inference or field evaluation is invoked.
 
 The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.
+
+The C#, F#, Ruby and Visual Basic context jobs explicitly pull the existing pinned
+Microsoft SDK through `pull-pinned-image.mjs` before building their context images.
+This uses the same bounded setup path as the formatter jobs instead of allowing
+BuildKit to spend the entire job budget fetching that base. The subsequent build
+steps disable networking for build commands; image digests, native callbacks and
+job deadlines remain unchanged. A failed or incomplete pull still fails setup.
