@@ -1,3 +1,4 @@
+import { frameworkReportSemantics } from "./framework-report-semantics.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { access, readFile, writeFile, realpath, rm } from "node:fs/promises";
@@ -369,29 +370,8 @@ test("assembly-django privacy acceptance", { skip }, async (t) => {
       assert.equal(answer.isError, undefined);
       const report = answer.structuredContent as Record<string, unknown>;
       assert.equal(report.outcome, "passed");
-      const semantic = (input: unknown): unknown => {
-        if (Array.isArray(input)) return input.map(semantic);
-        if (input !== null && typeof input === "object")
-          return Object.fromEntries(
-            Object.entries(input)
-              .filter(([key]) => key !== "durationMs" && key !== "capturedAt")
-              .map(([key, value]) => {
-                if (
-                  key === "stdout" &&
-                  typeof value === "string" &&
-                  value.startsWith("{")
-                ) {
-                  try {
-                    return [key, JSON.stringify(semantic(JSON.parse(value)))];
-                  } catch {
-                    /* Plain tool output remains unchanged. */
-                  }
-                }
-                return [key, semantic(value)];
-              }),
-          );
-        return input;
-      };
+      const semantic = (input: unknown): unknown =>
+        frameworkReportSemantics(input);
       assert.deepEqual(semantic(report.checks), semantic(value.checks));
       assert.equal(JSON.stringify(answer).includes("/web/items/7/"), detailed);
       assert.equal(
