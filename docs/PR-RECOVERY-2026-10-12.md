@@ -21,7 +21,7 @@ A merged status records a merge into that PR’s base, which was often a feature
 
 ## Review and merge order
 
-Merge this recovery PR into main after its required checks pass. PR #98 and then PR #99 follow, both targeting main. Until the recovery is merged, their main-based diffs will include recovered prerequisites. Until #98 is merged, #99 will also include #98’s changes. Existing branches are preserved; no force push or remote merge is part of this repair.
+Merge this recovery PR into main after its required checks pass. Use **Create a merge commit** for the recovery and #98 so the preserved shared ancestry lets downstream diffs shrink after each merge. PR #98 and then PR #99 follow, both targeting main. Until the recovery is merged, their main-based diffs will include recovered prerequisites. Until #98 is merged, #99 will also include #98’s changes. Existing branches are preserved; no force push or remote merge is part of this repair.
 
 Leave #100–118 as unmerged backlog while this baseline is repaired. Their historical cancelled checks are incomplete evidence. The aggregate mutation job fails when its required jobs were cancelled; that is not a mutation-test result. Do not interpret it as passing or as proof of a source regression.
 
