@@ -85,7 +85,7 @@ test("C++ archive acquisition tries community only after all three exact main re
     }),
     /Pinned archive unavailable/,
   );
-  assert.equal(missing.length, 6);
+  assert.equal(missing.length, 9);
   assert.equal(new Set(missing).size, 6);
 });
 
@@ -166,4 +166,48 @@ test("C++ archive acquisition preserves cancellation across retries and rejects 
       }),
     );
   assert.equal(count, 0);
+});
+
+test("C++ archive acquisition rechecks only the original main URL after six terminal mirror 404s and retains exact integrity", async () => {
+  const calls: string[] = [],
+    waits: number[] = [];
+  const result = await requestCppToolArchive(pin, repositories, {
+    delayImpl: async (ms: number) => {
+      waits.push(ms);
+    },
+    fetchImpl: async (url: string) => {
+      calls.push(url);
+      return new Response(calls.length < 7 ? null : body, {
+        status: calls.length < 7 ? 404 : 200,
+      });
+    },
+  });
+  assert.equal(calls.length, 7);
+  assert.equal(calls[6], calls[0]);
+  assert.deepEqual(waits, [1000, 3000, 1000, 3000]);
+  assert.deepEqual(result.bytes, body);
+  assert.equal(result.asset, repositories[0] + pin.path);
+  for (const variant of ["hash", "short", "redirect", "forbidden"]) {
+    let count = 0;
+    await assert.rejects(
+      requestCppToolArchive(pin, repositories, {
+        delayImpl: async () => {},
+        fetchImpl: async () => {
+          count++;
+          return count <= 6
+            ? new Response(null, { status: 404 })
+            : variant === "redirect"
+              ? new Response(null, { status: 302 })
+              : variant === "forbidden"
+                ? new Response(null, { status: 403 })
+                : new Response(
+                    variant === "short"
+                      ? body.subarray(1)
+                      : Buffer.alloc(body.length),
+                  );
+        },
+      }),
+    );
+    assert.equal(count, 7, variant);
+  }
 });

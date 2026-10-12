@@ -416,9 +416,17 @@
     "kustomize-extensions-arm64",
     "maven",
     "ruby-tools",
+    "scala",
+    "scala-context-arm64",
+    "scala-extensions-arm64",
     "terraform"
   ],
   "scripts/request-ruby-compiler-archive.mjs": ["ruby-tools"],
+  "scripts/request-scala-archive.mjs": [
+    "scala",
+    "scala-context-arm64",
+    "scala-extensions-arm64"
+  ],
   "scripts/required-native-tests.json": [
     "c-context-arm64",
     "checkstyle",

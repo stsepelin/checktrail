@@ -80,5 +80,31 @@ export async function requestCppToolArchive(
     );
     return { bytes, asset };
   }
-  throw new Error("Pinned archive unavailable");
+  // A transient mirror/cache miss can affect all six delivery URLs. Recheck
+  // the original main URL only after those terminal 404s; no version or pin
+  // changes. The shared deadline bounds these three final primary attempts.
+  try {
+    const asset = repositories[0] + encodeURIComponent(pin.path);
+    const bytes = await requestPinnedArtifactBytes(
+      { asset, bytes: pin.bytes },
+      {
+        ...options,
+        signal,
+        retryNotFound: true,
+        fetchImpl: (url, request) =>
+          fetchImpl(url, { ...request, redirect: "error" }),
+      },
+    );
+    assert.equal(
+      createHash("sha256").update(bytes).digest("hex"),
+      pin.sha256,
+      "C++ archive digest differs",
+    );
+    return { bytes, asset };
+  } catch (error) {
+    signal.throwIfAborted();
+    throw new Error("Pinned archive unavailable: " + pin.path, {
+      cause: error,
+    });
+  }
 }

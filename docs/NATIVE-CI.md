@@ -157,11 +157,31 @@ trials and invalid mapping variations. It reports each stage on stderr and still
 requires the exact unchanged callback to pass, kill its compiling mutant, and
 pass again after restoration. Nested review execution budgets remain unchanged.
 
-The Scala container job allows thirty minutes for artifact preparation, source
-acceptance, compiling guard mutations with their original and restored callbacks,
-and fresh installed-package acceptance. The verifier records phase progress on
-stderr and retains the final JSON evidence on stdout. Existing control and engine
-execution limits remain in force; a job cutoff is incomplete acceptance.
+The Scala container job retains its thirty-minute limit. It overlaps two isolated
+read-only native lanes: preserved compilation/regressions/installed warning policy,
+and extension source/fresh installation/compiling guards. Each lane owns its
+container temporary filesystem and npm cache; named heavy callbacks remain serial
+inside their container. Per-container limits stay at two CPUs, 2 GiB memory,
+256 PIDs and 1 GiB temporary storage; aggregate admission is at most two containers
+(four CPUs, 4 GiB memory, 512 PIDs and 2 GiB temporary storage). Both lanes must
+finish all original assertions before complete evidence is emitted. Stage durations
+are retained in the receipt. Control/file/engine deadlines remain unchanged.
+
+Scala 2/3 setup retries only admitted transient network and HTTP 5xx failures,
+starting each attempt at the exact original release URL. Manual redirects retain
+the original HTTPS/host restrictions, adding explicit port rejection. At most three
+attempts share the original sixty-second deadline; byte counts, SHA-256 pins,
+atomic publication and fresh native tests remain required. The common acquisition
+helper retains its default 128 MiB admission ceiling; Scala explicitly admits up to
+256 MiB because its existing pinned Scala 3 archive exceeds the default. The actual
+stream limit remains the declared archive byte count.
+
+C++ acquisition rechecks the original main URL after both bounded repository
+searches end in HTTP 404 across the existing CDN/mirror inventory. Those final primary attempts
+share the original deadline and bring the worst case to nine requests. Neither
+archive versions nor pins change. Integrity/permanent-response errors still fail
+without alternate repository fallback; the offline image build still verifies APK
+signatures. A download is preparation, not passing native acceptance.
 
 ## Kustomize transform extension acceptance
 
