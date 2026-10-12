@@ -80,12 +80,24 @@ test("CI lanes preserve every original matrix command and keep distinct package 
     ),
   );
   assert.equal(
-    workflow.jobs.checks.steps.filter(
+    workflow.jobs["host-validation"].steps.filter(
       (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
     ).length,
     1,
   );
   assert.equal(workflow.jobs.checks.strategy.matrix.include.length, 4);
+  assert.deepEqual(
+    workflow.jobs["host-validation"].strategy.matrix,
+    workflow.jobs.checks.strategy.matrix,
+  );
+  assert.equal(workflow.jobs["host-validation"]["timeout-minutes"], 75);
+  assert.equal(workflow.jobs["host-validation"].needs, undefined);
+  assert.equal(workflow.jobs.checks.needs, undefined);
+  assert.ok(
+    !workflow.jobs.checks.steps.some(
+      (s: { run?: string }) => s.run === "node scripts/run-ci-validation.mjs",
+    ),
+  );
   assert.equal(
     workflow.jobs.checks.timeoutMinutes ??
       workflow.jobs.checks["timeout-minutes"],
