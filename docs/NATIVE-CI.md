@@ -56,10 +56,58 @@ regressions bind the observed error; they do not simulate the registry or certif
 a hosted delivery. See the
 [delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
 
+## Affected native jobs on pull requests
+
+PRs keep the shared full suite, selected required profiles, and every fresh
+package/mutation command on each original OS/Node variant. The full suite and
+package/mutation phase now have independent jobs and identical tool preparation.
+This duplicates preparation to shorten the serial path; it can increase runner
+minutes. It does not cache passing results or omit any of those commands.
+
+`ci-plan` compares the exact PR base and head with a NUL-delimited Git diff,
+including both paths of renames as delete/add changes. It reads the full Git
+inventory instead of using workflow-level path filters or a truncated PR-files
+response. `scripts/ci-native-inputs.json` is an explicit native input contract.
+The generator follows declared controller references, finite matrix members,
+required profiles and fixture imports; the contract is checked against that
+inventory before selective routing. It is not proof of every runtime dependency.
+All production source, schemas, dependency/configuration, CI and unknown inputs
+therefore select every native job. Native-specific fixture/controller inputs
+select the union of their exact recorded consumers. Markdown changes still run
+the shared suite, formatting, audits and fresh package/mutation verification.
+
+Selective routing additionally requires a successful full `main` push run of
+the exact PR base commit, with a complete job inventory and no skipped,
+cancelled or failed jobs. Missing history, an unavailable API, a pending/failed
+base or a stale input contract falls back to all jobs. Pushes, tags, manual runs
+and the weekly scheduled run always verify every native job. API access is
+read-only and confined to `ci-plan`; PRs do not receive write permissions.
+
+The initial full-verification wave admits the shared matrices, long .NET/JVM
+jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). Shorter
+native jobs wait for actionlint to terminate. An actionlint failure or skip does
+not block their selected checks: their job condition evaluates the plan even
+when that dependency did not pass. GitHub runner availability and other workflow
+runs still affect queue times; this is not a job-priority API.
+
+`ci-complete` runs even after dependency failure or cancellation and requires
+both shared matrices, the planner and every selected native job to succeed.
+It requires unselected jobs to be explicitly skipped and reports them as
+**not selected**, never as passing native acceptance. Require this aggregate
+check in branch protection when enabling selective CI. Existing native check
+names and commands remain intact. Historical full baseline evidence is not
+acceptance of a native job against the new PR revision; Gate A still requires
+its separately specified current-revision evidence.
+
+The first CI-improvement PR changes workflow/CI inputs and must run the complete
+matrix. There is no hosted speed claim before measuring that run. A source-code
+change still runs all native stacks: narrowing production-source changes needs
+separately reviewed ownership/dependency contracts, not filename prefixes.
+
 ## Acceptance time budgets
 
-The main OS/Node matrix has a 75-minute job limit, including preparation, the full
-suite, required profiles and fresh installed-package checks. The required-profile
+The shared suite and package/mutation OS/Node matrices each retain a 75-minute
+job limit, including their own preparation and required verification. The required-profile
 runner normally applies its timeout to each entire selected test file. Sequential
 controls therefore share that file budget even when each control has its own
 timeout.
@@ -109,11 +157,44 @@ trials and invalid mapping variations. It reports each stage on stderr and still
 requires the exact unchanged callback to pass, kill its compiling mutant, and
 pass again after restoration. Nested review execution budgets remain unchanged.
 
-The Scala container job allows thirty minutes for artifact preparation, source
-acceptance, compiling guard mutations with their original and restored callbacks,
-and fresh installed-package acceptance. The verifier records phase progress on
-stderr and retains the final JSON evidence on stdout. Existing control and engine
-execution limits remain in force; a job cutoff is incomplete acceptance.
+The Scala container job retains its thirty-minute limit. It overlaps two isolated
+read-only native lanes: preserved compilation/regressions/installed warning policy,
+and extension source/fresh installation/compiling guards. Each lane owns its
+container temporary filesystem and npm cache; named heavy callbacks remain serial
+inside their container. Per-container limits stay at two CPUs, 2 GiB memory,
+256 PIDs and 1 GiB temporary storage; aggregate admission is at most two containers
+(four CPUs, 4 GiB memory, 512 PIDs and 2 GiB temporary storage). Both lanes must
+finish all original assertions before complete evidence is emitted. Stage durations
+are retained in the receipt. Control/file/engine deadlines remain unchanged.
+
+Scala 2/3 setup retries only admitted transient network and HTTP 5xx failures,
+starting each attempt at the exact original release URL. Manual redirects retain
+the original HTTPS/host restrictions, adding explicit port rejection. At most three
+attempts share the original sixty-second deadline; byte counts, SHA-256 pins,
+atomic publication and fresh native tests remain required. The common acquisition
+helper retains its default 128 MiB admission ceiling; Scala explicitly admits up to
+256 MiB because its existing pinned Scala 3 archive exceeds the default. The actual
+stream limit remains the declared archive byte count.
+
+C++ acquisition rechecks the original main URL after both bounded repository
+searches end in HTTP 404 across the existing CDN/mirror inventory. Those final primary attempts
+share the original deadline and bring the worst case to nine requests. Neither
+archive versions nor pins change. Integrity/permanent-response errors still fail
+without alternate repository fallback; the offline image build still verifies APK
+signatures. A download is preparation, not passing native acceptance.
+
+The retired `zlib-1.3.2-r0.apk` pin has an unchanged repository copy in
+`scripts/cpp-archive-fallbacks/`, with original public source attribution and
+upstream license text. Only that exact basename, byte count and SHA-256 can
+select it after the original bounded requests end in HTTP 404. Corrupt content,
+adjacent pins, cancellation and permanent network errors cannot use this fallback.
+It is CI preparation data outside the npm package's published file inventory;
+the offline image build still verifies its original APK signature.
+
+The CI cancellation control waits for complete PID contents rather than marker
+existence. Its fixture deliberately publishes an empty marker and waits for an
+observation acknowledgment before writing the PID, so the incomplete-publication
+boundary is reached before cancellation and detached-child cleanup are checked.
 
 ## Kustomize transform extension acceptance
 
