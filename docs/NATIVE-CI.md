@@ -4,7 +4,26 @@
 
 Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
 account and runner capacity decides when queued jobs receive a runner. Steps
-within an individual job remain ordered.
+within an individual job remain ordered. After the complete required suite, the
+OS/Node matrix runs the unchanged host mutation and fresh-package command sets
+in two concurrent lanes inside one runner. The mutation lane receives a private
+copy of tracked/unignored working source and compiled files; package checks use
+the unchanged checkout. Each lane has its own temporary namespace. Prepared
+dependencies and caches are reused; test results are not cached. Every package
+controller still performs its original fresh-install verification.
+
+The controller waits for both lanes, rejects changed original inputs, and
+requires restoration of mutation input bytes and inventory. The original command
+inventory is retained in a fixture and checked by the full suite. Output is
+bounded per command and retained in grouped CI logs. Cancellation and the bounded
+lane deadline stop owned descendants; incomplete or failed commands cannot yield
+a completed receipt. The four matrix variants, full-suite command, native jobs,
+callback assertions and 75-minute job limit are unchanged.
+
+The [dated lane comparison](measurements/ci-validation-lanes-2026-10-12.json)
+records actual sequential and concurrent executions of the sealed multi-claim
+mutation and installed-package controllers. This is one local subset comparison,
+not current hosted acceptance or a prediction for total workflow duration.
 
 Stack branches under `pr/**` use pull-request events for verification rather than
 duplicating the full workflow on their branch push. Other branch pushes and all
@@ -477,3 +496,10 @@ is scoped to its observed host; it does not close the wider runtime matrix or
 independent evaluation. No inference or field evaluation is invoked.
 
 The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.
+
+The C#, F#, Ruby and Visual Basic context jobs explicitly pull the existing pinned
+Microsoft SDK through `pull-pinned-image.mjs` before building their context images.
+This uses the same bounded setup path as the formatter jobs instead of allowing
+BuildKit to spend the entire job budget fetching that base. The subsequent build
+steps disable networking for build commands; image digests, native callbacks and
+job deadlines remain unchanged. A failed or incomplete pull still fails setup.
