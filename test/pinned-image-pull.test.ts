@@ -4,6 +4,46 @@ const { pullPinnedImage } = await import(
   new URL("../../scripts/pull-pinned-image.mjs", import.meta.url).href
 );
 const reference = "public.ecr.aws/docker/library/node@sha256:" + "a".repeat(64);
+test("pinned image delivery admits only the frozen Microsoft SDK reference and rejects adjacent Microsoft images", async () => {
+  const sdk =
+    "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256";
+  const calls: string[] = [];
+  const result = await pullPinnedImage(sdk, {
+    runImpl: async (image: string) => {
+      calls.push(image);
+    },
+    onRetry: async () => {},
+  });
+  assert.deepEqual(calls, [sdk]);
+  assert.deepEqual(result, {
+    reference: sdk,
+    attempts: 1,
+    deliveryComplete: true,
+  });
+  for (const image of [
+    sdk + "\n",
+    sdk + "x",
+    " " + sdk,
+    sdk.replace("mcr.microsoft.com", "mcr.microsoft.com.attacker.invalid"),
+    sdk.replace("/dotnet/sdk@", "/dotnet/runtime@"),
+    sdk.replace("@sha256:", ":sha256:"),
+    sdk.slice(0, -1) + "0",
+    "mcr.microsoft.com/dotnet/sdk:10.0.401",
+    sdk.toUpperCase(),
+  ]) {
+    calls.length = 0;
+    await assert.rejects(
+      pullPinnedImage(image, {
+        runImpl: async (actual: string) => {
+          calls.push(actual);
+        },
+        onRetry: async () => {},
+      }),
+      /exact pinned/,
+    );
+    assert.deepEqual(calls, []);
+  }
+});
 const failure = (stderr: string) =>
   Object.assign(new Error("Synthetic pinned image failure"), {
     status: 1,
@@ -211,5 +251,57 @@ test("pinned image delivery checks monotonic elapsed time even when a synchronou
       /wall limit is invalid/,
     );
     assert.equal(calls, 0);
+  }
+});
+
+test("pinned image delivery retries the exact daemon public ECR header timeout and rejects adjacent errors", async () => {
+  const observed =
+    'Error response from daemon: Get "https://public.ecr.aws/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)';
+  const calls: string[] = [],
+    waits: number[] = [];
+  const result = await pullPinnedImage(reference, {
+    runImpl: async (image: string) => {
+      calls.push(image);
+      if (calls.length === 1) throw failure(observed + "\n");
+    },
+    delayImpl: async (ms: number) => {
+      waits.push(ms);
+    },
+    onRetry: async () => {},
+  });
+  assert.deepEqual(calls, [reference, reference]);
+  assert.deepEqual(waits, [2000]);
+  assert.deepEqual(result, { reference, attempts: 2, deliveryComplete: true });
+  for (const error of [
+    failure(
+      observed.replace(
+        "public.ecr.aws/v2/",
+        "public.ecr.aws.attacker.invalid/v2/",
+      ),
+    ),
+    failure(observed.replace("/v2/", "/v2/not-the-registry/")),
+    failure(observed + " authentication token expired"),
+    failure("manifest unknown\n" + observed),
+    Object.assign(failure(observed), { signal: "SIGTERM" }),
+    Object.assign(failure(observed), { code: "ETIMEDOUT" }),
+    Object.assign(failure(observed), { code: "ABORT_ERR" }),
+  ]) {
+    let attempts = 0,
+      delays = 0;
+    await assert.rejects(
+      pullPinnedImage(reference, {
+        runImpl: async () => {
+          attempts++;
+          throw error;
+        },
+        delayImpl: async () => {
+          delays++;
+        },
+        onRetry: async () => {},
+      }),
+      (actual: unknown) => actual === error,
+    );
+    assert.equal(attempts, 1);
+    assert.equal(delays, 0);
   }
 });

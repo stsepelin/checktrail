@@ -121,7 +121,7 @@ jobs:
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
         run: |
-          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router
+          node scripts/verify-required-native-tests.mjs --full-suite gate-inventory laravel-cache import-history init-publication posix-cleanup native-raw-evidence native-json-evidence windows-contract core native-acceptance-ledger native-process-observer mcp-tasks-routing mcp-tasks mcp-task-dispatch javascript python frameworks go php-tools php-review laravel rust rust-format clippy rust-tests rust-workspace review-budget review-workflow review-workflow-audit review-benchmark review-benchmark-judging review-benchmark-scoring review-benchmark-multi review-paired-scoring review-multi-scoring review-calibration import-context review-claim-probability review-native-budget review-workflow-multi selected-syntax-context go-extensions review-context-limits host-session-readiness context-python context-go context-php context-rust assembly-vue-router confidence-provenance
           CHECKTRAIL_TEST_TASKS=1 node --test dist/test/mcp.test.js
       - name: Verify concurrent init publication in a fresh installed CLI
         run: node scripts/verify-init-publication-package.mjs
@@ -130,6 +130,8 @@ jobs:
       - run: node scripts/verify-review-workflow-multi-guards.mjs
       - run: node scripts/verify-selected-syntax-guards.mjs
       - run: node scripts/verify-host-session-guards.mjs
+      - name: Verify confidence and evidence provenance guard controls
+        run: node scripts/verify-confidence-provenance-guards.mjs
       - run: node scripts/verify-go-context-guards.mjs
       - run: node scripts/verify-python-context-guards.mjs
       - run: node scripts/verify-acceptance-ledger-guards.mjs
@@ -673,6 +675,91 @@ jobs:
       - name: Require native original callbacks, compiling controls and fresh package
         run: node scripts/verify-django-assembly-container.mjs
 
+  jvm-analyzer-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-jvm-analyzer-extensions
+      CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_IMAGE: checktrail-jvm-analyzer-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-detekt-tools.mjs
+      - run: node scripts/prepare-spotbugs-tools.mjs
+      - run: node scripts/prepare-kotlin-tools.mjs
+      - run: node scripts/prepare-jvm-analyzer-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Build the pinned offline analyzer runtime
+        run: docker build --network none --label checktrail.task=ci-jvm-analyzer-extensions --file scripts/jvm-analyzer-tools.Dockerfile --tag "$CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_IMAGE" .checktrail/jvm-analyzer-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved profiles, source and fresh installation, native regressions and compiling guards
+        run: node scripts/verify-jvm-analyzer-extensions-container.mjs
+
+  kotlin-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kotlin-extensions
+      CHECKTRAIL_KOTLIN_EXTENSIONS_IMAGE: checktrail-kotlin-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-kotlin-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare pinned native Kotlin extension runtime
+        run: docker build --network none --label checktrail.task=ci-kotlin-extensions --file scripts/kotlin-tools.Dockerfile --tag "$CHECKTRAIL_KOTLIN_EXTENSIONS_IMAGE" .checktrail/kotlin-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
+        run: node scripts/verify-kotlin-extensions-container.mjs
+
+  scala-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-scala-extensions
+      CHECKTRAIL_SCALA_EXTENSIONS_IMAGE: checktrail-scala-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-scala-tools.mjs
+      - run: node scripts/prepare-scala2-tools.mjs
+      - name: Prepare pinned public images with bounded delivery retries
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare pinned native Scala extension runtime
+        run: docker build --network none --label checktrail.task=ci-scala-extensions --file scripts/scala-extensions-tools.Dockerfile --tag "$CHECKTRAIL_SCALA_EXTENSIONS_IMAGE" .checktrail/scala-tools
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Verify preserved compilation, extension source and installed acceptance, compiling guards and native regressions
+        run: node scripts/verify-scala-extensions-container.mjs
+
   jvm-wrappers-arm64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 40
@@ -1029,6 +1116,53 @@ jobs:
       - run: node scripts/verify-cpp-tools-container.mjs
       - if: always()
         run: node scripts/cleanup-cpp-tools-runtime.mjs
+
+  kubernetes-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kubernetes-extensions
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-kubernetes-extensions-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require preserved native checks, source and fresh installation, regressions and compiling controls
+        run: node scripts/verify-kubernetes-extensions-container.mjs
+      - if: always()
+        run: node scripts/cleanup-kubernetes-extensions-runtime.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  kustomize-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    env:
+      CHECKTRAIL_TEST_TASK: ci-kustomize-extensions
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require preserved native checks, source and fresh installation, regressions and compiling controls
+        run: node scripts/verify-kustomize-extensions-container.mjs
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
 
   kubeconform:
     runs-on: ubuntu-24.04-arm
@@ -1522,3 +1656,66 @@ jobs:
       - name: Release owned YAML runtime image
         if: always()
         run: node scripts/cleanup-yaml-context-runtime.mjs
+
+  fsharp-format-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      CHECKTRAIL_TEST_TASK: ci-fsharp-format
+      CHECKTRAIL_FSHARP_FORMAT_IMAGE: checktrail-fsharp-format:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare exact selected formatter components
+        run: |
+          mkdir -p .checktrail
+          curl --fail --location --connect-timeout 20 --max-time 120 --output .checktrail/fantomas.8.0.7.nupkg https://api.nuget.org/v3-flatcontainer/fantomas/8.0.7/fantomas.8.0.7.nupkg
+          node scripts/prepare-fsharp-format-tools.mjs --archive "$PWD/.checktrail/fantomas.8.0.7.nupkg"
+      - name: Prepare pinned public runtime images
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256
+      - name: Build selected native runtime without build network
+        run: docker build --network none --label checktrail.task=ci-fsharp-format --file scripts/fsharp-format-tools.Dockerfile --tag "$CHECKTRAIL_FSHARP_FORMAT_IMAGE" scripts
+      - name: Prepare public dependencies and offline package cache
+        run: |
+          CHECKTRAIL_DOTNET_BUILD_IMAGE="$CHECKTRAIL_FSHARP_FORMAT_IMAGE" node scripts/prepare-dotnet-build-dependencies.mjs
+          node scripts/prepare-package-cache.mjs
+      - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
+        run: node scripts/verify-fsharp-format-container.mjs
+
+  dotnet-format-extensions-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    env:
+      CHECKTRAIL_TEST_TASK: ci-dotnet-format-extensions
+      CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_IMAGE: checktrail-dotnet-format-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned public runtime images
+        run: |
+          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256
+      - name: Build selected native runtime without build network
+        run: docker build --network none --label checktrail.task=ci-dotnet-format-extensions --file scripts/fsharp-format-tools.Dockerfile --tag "$CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_IMAGE" scripts
+      - name: Prepare public dependencies and offline package cache
+        run: |
+          CHECKTRAIL_DOTNET_BUILD_IMAGE="$CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_IMAGE" node scripts/prepare-dotnet-build-dependencies.mjs
+          node scripts/prepare-package-cache.mjs
+      - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
+        run: node scripts/verify-dotnet-format-extensions-container.mjs

@@ -13,6 +13,9 @@ const transient = (error) => {
     return false;
   const text = String(error?.stderr ?? "");
   return (
+    /^Error response from daemon: Get "https:\/\/public\.ecr\.aws\/v2\/": net\/http: request canceled while waiting for connection \(Client\.Timeout exceeded while awaiting headers\)$/.test(
+      text.trim(),
+    ) ||
     /(?:^|\s)toomanyrequests:\s*Rate exceeded(?:\s|$)/i.test(text) ||
     /(?:unexpected (?:HTTP )?status(?: code)?|HTTP response code|received status)[^\n]{0,200}\b(?:429|500|502|503|504)\b/i.test(
       text,
@@ -45,8 +48,10 @@ export async function pullPinnedImage(
     /^public\.ecr\.aws\/docker\/library\/[a-z][a-z0-9-]*@sha256:[a-f0-9]{64}$/.exec(
       reference,
     );
+  const frozenMicrosoftSdk =
+    "mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256";
   assert.ok(
-    match && match[0] === reference,
+    (match && match[0] === reference) || reference === frozenMicrosoftSdk,
     "Select an exact pinned official public image reference",
   );
   assert.ok(

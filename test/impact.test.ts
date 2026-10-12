@@ -59,7 +59,7 @@ test("native impact measurement retains a transitive assertion failure and expos
     const root=process.argv[1], scripts=process.argv[2];
     const {prepareImpactFixture,projects}=await import(new URL('impact-fixture.mjs',scripts));
     const corpus=JSON.parse(await readFile(new URL('impact-corpus.json',scripts),'utf8'));
-    const run=(directory,base)=>JSON.parse(execFileSync(process.execPath,[fileURLToPath(new URL('impact-worker.mjs',scripts)),directory,base],{encoding:'utf8'}));
+    const run=(directory,base)=>JSON.parse(execFileSync(process.execPath,[fileURLToPath(new URL('impact-worker.mjs',scripts)),directory,base],{encoding:'utf8',timeout:60000}));
     for(const id of ['producer-defect','misdeclared-graph']) {
       const specification=corpus.cases.find(item=>item.id===id);
       const directory=path.join(root,id);await mkdir(directory);
@@ -79,9 +79,19 @@ test("native impact measurement retains a transitive assertion failure and expos
       root,
       new URL("../../scripts/", import.meta.url).href,
     ],
-    { encoding: "utf8", timeout: 15000 },
+    // Six independent native workers, each bounded to the measurement harness's
+    // 60-second limit, plus a bounded minute for both fresh Git fixtures.
+    { encoding: "utf8", timeout: 6 * 60000 + 60000 },
   );
-  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    result.status,
+    0,
+    JSON.stringify({
+      signal: result.signal,
+      error: result.error?.message,
+      stderr: result.stderr,
+    }),
+  );
 });
 
 test("impact snapshots account for each paired observation, assertion identity and frozen case", () => {

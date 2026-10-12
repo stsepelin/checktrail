@@ -4,8 +4,10 @@
 for SDK 10.0.401, runtime/reference pack 10.0.12 and `net10.0`. It uses the
 [fresh build contract](DOTNET-BUILD.md) and the same project/dependency declarations.
 It is not in the published alpha.5 package. E12 and Gate A remain open:
-code-style/analyzer fixes, Roslyn generator participation, F# formatting and wider
-native target/framework/platform profiles are unfinished.
+code-style/analyzer fixes, Roslyn generator participation and wider
+native target/framework/platform profiles are unfinished. [FSHARP-FORMAT.md](FSHARP-FORMAT.md)
+records the separate opt-in F# source-string default formatter; it does not make
+this mixed-language C#/VB whitespace profile complete.
 
 ## Select and execute
 

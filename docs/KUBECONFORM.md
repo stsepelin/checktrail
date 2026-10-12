@@ -17,7 +17,9 @@ and Kubernetes 1.36.0 standalone strict schemas for Deployment (`apps/v1`), Serv
 and ConfigMap (`v1`). Binary and schema bytes are pinned by SHA-256. Schema files
 must be explicitly prepared as canonical regular files in the declared local
 schema directory. Changed, missing or extra schema files make the profile unavailable.
-Other kinds, versions, platforms and custom schemas require separate acceptance.
+The explicit [Kubernetes extension](KUBERNETES-EXTENSIONS.md) adds ten kinds under
+a separate thirteen-schema contract. Other kinds, versions, platforms and custom
+schemas require separate acceptance.
 
 The dedicated manifest project declares every inventoried YAML/JSON input, excluding
 its Checktrail configuration and the exact schema directory. Canonical paths and
@@ -102,7 +104,7 @@ shared foreground dev-env lifecycle and verify cleanup at task end.
 `node scripts/cleanup-infra-tools-runtime.mjs` checks ownership and refuses while
 an owned container remains, preserving code and preparation artifacts.
 
-No inference or real-project field evaluation is part of these controls. Broader
+No inference or real-project field evaluation is part of these controls. Wider
 Kubernetes schemas, Helm/Kustomize and broader Terraform profiles, Windows, complete
 attempt archives, full provenance and representative-project performance remain
 required and unverified.

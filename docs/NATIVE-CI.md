@@ -28,6 +28,15 @@ requested PHP version. Linux retains its existing action pin. This is a beta
 setup dependency; current hosted acceptance must verify it. It does not replace
 test execution or supply cached test results.
 
+Pinned public image setup also retries the exact Docker daemon public ECR
+`/v2/` connection/header timeout observed before the Rust context tests started.
+The same digest, attempt ceiling, monotonic wall budget and cancellation guards
+apply. Adjacent hosts/paths, extra authentication or manifest text, child signals
+and command timeout/abort codes are not admitted by this new matcher. Synthetic
+regressions bind the observed error; they do not simulate the registry or certify
+a hosted delivery. See the
+[delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
+
 ## Acceptance time budgets
 
 The main OS/Node matrix has a 75-minute job limit, including preparation, the full
@@ -54,6 +63,17 @@ still applies. The installed callback runs the same required inventory against a
 fresh offline production installation; its nested worker ceiling is also one.
 Full-suite execution continues to select every compiled file and test.
 
+Standalone `scala-extensions` also gives each unchanged named callback its own
+fresh process and ten-minute file budget, with one callback running at a time.
+Hosted evidence reached seven passing callbacks before the shared file budget
+expired and left lifecycle/installed outcomes unobserved. The repair preserves
+callback and engine deadlines; it does not credit those missing outcomes. Native
+cleanup snapshots and MCP startup use the assigned temporary namespace. Source
+and fresh installed callbacks must still complete independently. The
+[Scala case-budget record](measurements/scala-native-case-budgets-2026-10-10.json)
+binds the repaired source and installed execution, preserved baseline, compiling
+controls, regressions and project check.
+
 The [case-isolation record](measurements/jvm-native-case-budgets-2026-10-10.json)
 binds native source and installed execution, unchanged required names, compiling
 controls and the project check. It also records the cleanup fixture repair: the
@@ -75,6 +95,51 @@ acceptance, compiling guard mutations with their original and restored callbacks
 and fresh installed-package acceptance. The verifier records phase progress on
 stderr and retains the final JSON evidence on stdout. Existing control and engine
 execution limits remain in force; a job cutoff is incomplete acceptance.
+
+## Kustomize transform extension acceptance
+
+The `kustomize-extensions-arm64` job prepares the original infrastructure runtime
+and repeats `verify-kustomize-extensions-container.mjs`. It requires preserved
+kubeconform/Kustomize controls, named source and fresh offline installed
+acceptance, original regressions and compiling unchanged-callback controls.
+Native runs use no network, a read-only root/source/cache, bounded resources and
+user 1000. Reached build/validator cancellation, timeout and output exhaustion
+retain cleanup requirements. See [KUSTOMIZE-EXTENSIONS.md](KUSTOMIZE-EXTENSIONS.md)
+and its [dated record](measurements/kustomize-extensions-2026-10-10.json). Wider
+semantics/platforms, artifact closures and Gate A remain open.
+
+## Kubernetes schema extension acceptance
+
+The `kubernetes-extensions-arm64` job prepares the original infrastructure runtime
+and adds thirteen pinned strict schemas in a separate directory. The controller
+requires preserved kubeconform/Kustomize cases, source and fresh offline installed
+acceptance, native regressions and compiling assertion controls. Current physical
+source, raw policy, schema and binary drift invalidates saved extension receipts.
+Validation runs without network as user 1000 with read-only root/source/cache,
+two CPUs, 4 GiB memory, 256 PIDs and a 2 GiB temporary filesystem. The required
+extension file has a five-minute budget; optional absent-native tests do not count.
+See [KUBERNETES-EXTENSIONS.md](KUBERNETES-EXTENSIONS.md) and its
+[measurement](measurements/kubernetes-extensions-2026-10-10.json). Wider cluster
+semantics, kinds, versions, platforms and artifact/license closure remain open.
+
+## JVM analyzer extension acceptance
+
+The `jvm-analyzer-extensions-arm64` job prepares pinned detekt, SpotBugs and Kotlin
+artifacts before atomically publishing a verified combined build context. The
+Dockerfile explicitly makes those public artifacts readable by the controller's
+non-root user, including when freshly prepared inputs have owner-only permissions.
+The controller runs preserved Java/SpotBugs/light-detekt callbacks, nine required
+source cases and the same nine fresh offline installed cases, native regressions
+and compiling guard controls. A required skip, timeout, surviving guard or failed
+restoration prevents acceptance. The selected-file budget is ten minutes; the job
+limit is thirty minutes. These are upper bounds, not passing evidence.
+
+The [local measurement](measurements/jvm-analyzer-extensions-2026-10-10.json) records
+its exact selected Linux ARM64 runtime and outcomes. Fresh installation uses a
+verified subset of the prepared lockfile cache with no network and no lifecycle
+scripts. Source/cache mounts and the root filesystem are read-only. Resource
+limits, operator trust and source-detail boundaries remain enforced. This
+profile does not close the remaining native matrix or Gate A.
 
 ## Pinned image delivery
 
@@ -400,3 +465,15 @@ reviews are part of this development profile.
 Native controls can launch additional compilers, adapters and child processes within each test worker. Bounding test-file fanout prevents a high-core host from starting a full CPU-sized set of those nested workloads at once. Dedicated required-native profile runners and independent CI jobs keep their existing scheduling and strict completion checks.
 
 The normal test launcher and required full-suite harness share a cap of up to four test-file workers, reduced to available parallelism. Each required receipt records the file-worker limit used. Profile-only acceptance retains serial file execution. The cap controls concurrent test files; native tools' descendant processes retain their separate execution/container limits. The original concurrency control uses multiple real overlapping files, accounts for every terminal outcome and confirms all active worker slots are released.
+
+The `confidence-provenance` profile is required in the main OS/Node full-suite
+matrix. Its frozen callbacks repeat against an offline production installation;
+`verify-confidence-provenance-guards.mjs` removes one exact compiled protection
+per control, requires an unchanged callback to fail an assertion, restores the
+source and requires it to pass again. The [profile documentation](REVIEW-PROVENANCE.md)
+separates current source-address checks, unverified host probabilities/operator
+labels, unattested native imports and descriptive scoring. The local measurement
+is scoped to its observed host; it does not close the wider runtime matrix or
+independent evaluation. No inference or field evaluation is invoked.
+
+The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.

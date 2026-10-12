@@ -52,6 +52,14 @@ assert.ok(
     "php-extensions",
     "rust-extensions",
     "jvm-wrappers",
+    "kotlin-extensions",
+    "scala-extensions",
+    "jvm-analyzer-extensions",
+    "kubernetes-extensions",
+    "kustomize-extensions",
+    "confidence-provenance",
+    "dotnet-fsharp-format",
+    "dotnet-format-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -111,6 +119,22 @@ if (profile === "assembly-vue-router")
   process.env.CHECKTRAIL_ROUTER_ASSEMBLY_INSTALLED = "1";
 if (profile === "jvm-wrappers")
   process.env.CHECKTRAIL_JVM_WRAPPERS_INSTALLED = "1";
+if (profile === "kotlin-extensions")
+  process.env.CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED = "1";
+if (profile === "scala-extensions")
+  process.env.CHECKTRAIL_SCALA_EXTENSIONS_INSTALLED = "1";
+if (profile === "jvm-analyzer-extensions")
+  process.env.CHECKTRAIL_JVM_ANALYZER_EXTENSIONS_INSTALLED = "1";
+if (profile === "kubernetes-extensions")
+  process.env.CHECKTRAIL_KUBERNETES_EXTENSIONS_INSTALLED = "1";
+if (profile === "kustomize-extensions")
+  process.env.CHECKTRAIL_KUSTOMIZE_EXTENSIONS_INSTALLED = "1";
+if (profile === "dotnet-fsharp-format")
+  process.env.CHECKTRAIL_FSHARP_FORMAT_INSTALLED = "1";
+if (profile === "dotnet-format-extensions")
+  process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
+if (profile === "confidence-provenance")
+  process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -167,6 +191,31 @@ try {
     "review-nuxt-assembly-fixture.js",
     "gate-javascript-extensions.test.js",
     "gate-rust-extensions.test.js",
+    "gate-kotlin-extensions.test.js",
+    "kotlin-extensions-fixture.js",
+    "gate-jvm-analyzer-extensions.test.js",
+    "gate-kubernetes-extensions.test.js",
+    "kubernetes-extensions-fixture.js",
+    "kubeconform-fixture.js",
+    "gate-kustomize-extensions.test.js",
+    "kustomize-extensions-fixture.js",
+    "kustomize-fixture.js",
+    "gate-dotnet-fsharp-format.test.js",
+    "gate-dotnet-format-extensions.test.js",
+    "dotnet-format-extensions-fixture.js",
+    "fsharp-format-fixture.js",
+    "gate-confidence-provenance.test.js",
+    "confidence-provenance-fixture.js",
+    "native-process-observer.js",
+    "spotbugs-extensions-fixture.js",
+    "spotbugs-fixture.js",
+    "detekt-extensions-fixture.js",
+    "detekt-fixture.js",
+    "gate-scala-extensions.test.js",
+    "scala-extensions-fixture.js",
+    "scala-extension-evidence-fixture.js",
+    "scala-fixture.js",
+    "kotlin-fixture.js",
     "gate-jvm-wrappers.test.js",
     "jvm-wrappers-fixture.js",
     "maven-fixture.js",
@@ -209,6 +258,17 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "dotnet-fsharp-format") {
+    const prepared = path.join(consumer, ".checktrail/fsharp-format-tools");
+    await mkdir(path.dirname(prepared), { recursive: true });
+    await cp(
+      process.env.CHECKTRAIL_FSHARP_FORMAT_CACHE ??
+        path.join(repository, ".checktrail/fsharp-format-tools"),
+      prepared,
+      { recursive: true },
+    );
+    process.env.CHECKTRAIL_FSHARP_FORMAT_CACHE = prepared;
+  }
   if (profile === "assembly-nuxt") {
     const prepared = path.join(consumer, ".checktrail/nuxt-tools/node_modules");
     await mkdir(path.dirname(prepared), { recursive: true });
@@ -430,6 +490,12 @@ try {
           ...(profile === "rust-extensions"
             ? ["--env", "CHECKTRAIL_RUST_EXTENSIONS_INSTALLED=1"]
             : []),
+          ...(profile === "kotlin-extensions"
+            ? ["--env", "CHECKTRAIL_KOTLIN_EXTENSIONS_INSTALLED=1"]
+            : []),
+          ...(profile === "scala-extensions"
+            ? ["--env", "CHECKTRAIL_SCALA_EXTENSIONS_INSTALLED=1"]
+            : []),
           ...(profile === "jvm-wrappers"
             ? [
                 "--env",
@@ -541,6 +607,8 @@ try {
                     "javascript-extensions",
                     "python-extensions",
                     "rust-extensions",
+                    "kotlin-extensions",
+                    "scala-extensions",
                   ].includes(profile)
                 ? "/tmp:rw,exec,nosuid,nodev,size=1024m"
                 : [
@@ -613,11 +681,15 @@ try {
                         "javascript-extensions",
                         "python-extensions",
                         "rust-extensions",
+                        "kotlin-extensions",
+                        "scala-extensions",
                       ].includes(profile)
                     ? 1024
                     : 256,
             temporaryFilesystemExecutable: [
               "jvm-wrappers",
+              "kotlin-extensions",
+              "scala-extensions",
               "context-go",
               "context-rust",
               "context-swift",

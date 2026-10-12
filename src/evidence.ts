@@ -16,10 +16,11 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
-import { kotlinEvidence } from "./kotlin-evidence.js";
-import { scalaEvidence } from "./scala-evidence.js";
-import { detektEvidence } from "./detekt-evidence.js";
+import { selectedKotlinEvidence } from "./kotlin-extension-evidence.js";
+import { selectedScalaEvidence } from "./scala-selected-evidence.js";
+import { selectedDetektEvidence } from "./detekt-extensions-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
+import { spotbugsExtensionsEvidence } from "./spotbugs-extensions-evidence.js";
 import { checkstyleEvidence } from "./checkstyle-evidence.js";
 import { mavenEvidence } from "./maven-evidence.js";
 import { gradleEvidence } from "./gradle-evidence.js";
@@ -27,6 +28,8 @@ import { dotnetEvidence } from "./dotnet-evidence.js";
 import { dotnetBuildEvidence } from "./dotnet-build-evidence.js";
 import { dotnetTestEvidence } from "./dotnet-test-evidence.js";
 import { dotnetFormatEvidence } from "./dotnet-format-evidence.js";
+import { fsharpFormatEvidence } from "./fsharp-format-evidence.js";
+import { dotnetFormatExtensionsEvidence } from "./dotnet-format-extensions-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
@@ -388,13 +391,18 @@ export function evaluate(
   if (check.parser === "maven-json")
     return { ...result, ...mavenEvidence(check, processes) };
   if (check.parser === "scala-json")
-    return { ...result, ...scalaEvidence(check, processes, root) };
+    return { ...result, ...selectedScalaEvidence(check, processes, root) };
   if (check.parser === "kotlin-json")
-    return { ...result, ...kotlinEvidence(check, processes, root) };
+    return { ...result, ...selectedKotlinEvidence(check, processes, root) };
   if (check.parser === "detekt-json")
-    return { ...result, ...detektEvidence(check, processes, root) };
+    return { ...result, ...selectedDetektEvidence(check, processes, root) };
   if (check.parser === "spotbugs-json")
-    return { ...result, ...spotbugsEvidence(check, processes, root) };
+    return {
+      ...result,
+      ...(check.commands[0]?.args[0]?.endsWith("/spotbugs-extensions-runner.js")
+        ? spotbugsExtensionsEvidence(check, processes, root)
+        : spotbugsEvidence(check, processes, root)),
+    };
   if (check.parser === "checkstyle-json")
     return { ...result, ...checkstyleEvidence(check, processes, root) };
   if (check.parser === "java-json")
@@ -405,6 +413,13 @@ export function evaluate(
     return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")
     return { ...result, ...rubyToolsEvidence(check, processes) };
+  if (check.parser === "fsharp-format-json")
+    return { ...result, ...fsharpFormatEvidence(check, processes, root) };
+  if (check.parser === "dotnet-format-extensions-json")
+    return {
+      ...result,
+      ...dotnetFormatExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "dotnet-format-json")
     return { ...result, ...dotnetFormatEvidence(check, processes) };
   if (check.parser === "dotnet-test-json")
