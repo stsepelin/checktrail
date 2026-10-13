@@ -413,7 +413,7 @@ export function evaluate(
   if (check.parser === "swift-tools-json")
     return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")
-    return { ...result, ...rubyToolsEvidence(check, processes) };
+    return { ...result, ...rubyToolsEvidence(check, processes, root) };
   if (check.parser === "fsharp-format-json")
     return { ...result, ...fsharpFormatEvidence(check, processes, root) };
   if (check.parser === "dotnet-format-extensions-json")

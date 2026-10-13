@@ -1077,7 +1077,7 @@ test("formatting acceptance CLI isolates exact callbacks without admitting an ad
   );
 });
 
-test("required native runner grants the installation budget only to the exact isolated generator file and callback", async (t) => {
+test("required native runner grants the installation budget only to exact isolated generator and Ruby installed callbacks", async (t) => {
   const root = await realpath(await fixture(t, {}));
   const helper = path.join(root, "scripts/required-test-evidence.mjs");
   await mkdir(path.dirname(helper), { recursive: true });
@@ -1089,16 +1089,19 @@ test("required native runner grants the installation budget only to the exact is
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
     ),
   );
-  const exact = path.join(
-      root,
-      "dist/test/gate-dotnet-generator-extensions.test.js",
-    ),
-    adjacent = path.join(
-      root,
-      "other/gate-dotnet-generator-extensions.test.js",
-    ),
-    installed = "dotnet-generator-extensions installed acceptance";
-  for (const file of [exact, adjacent]) {
+  const profiles = ["dotnet-generator-extensions", "ruby-extensions"];
+  const requirements = profiles.flatMap((profile) => {
+    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
+    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
+    const installed = `${profile} installed acceptance`;
+    return [
+      { file: exact, name: installed },
+      { file: exact, name: `${profile} broken acceptance` },
+      { file: exact, name: installed + "-extra" },
+      { file: adjacent, name: installed },
+    ];
+  });
+  for (const file of new Set(requirements.map((item) => item.file))) {
     await mkdir(path.dirname(file), { recursive: true });
     await writeFile(
       file,
@@ -1142,19 +1145,13 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
       calls: { files: string[]; timeout: number; patterns?: string[] }[];
     };
   };
-  const requirements = [
-    { file: exact, name: installed },
-    { file: exact, name: "dotnet-generator-extensions broken acceptance" },
-    { file: exact, name: installed + "-extra" },
-    { file: adjacent, name: installed },
-  ];
   const admitted = invoke(requirements);
   assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
   assert.equal(admitted.report.required, requirements.length);
   assert.equal(admitted.report.passed, requirements.length);
   assert.deepEqual(
     admitted.calls.map((call) => call.timeout),
-    [1200000, 600000, 600000, 600000],
+    [1200000, 600000, 600000, 600000, 1200000, 600000, 600000, 600000],
   );
   assert.deepEqual(
     admitted.calls.map((call) => call.files),
@@ -1162,8 +1159,11 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
   );
   assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
   for (const budget of [1000, 599999]) {
-    const custom = invoke([requirements[0]!], budget);
-    assert.equal(custom.calls[0]!.timeout, budget);
+    const custom = invoke([requirements[0]!, requirements[4]!], budget);
+    assert.deepEqual(
+      custom.calls.map((call) => call.timeout),
+      [budget, budget],
+    );
   }
   const batch = invoke(requirements, 600000, 0);
   assert.equal(batch.calls.length, 1);

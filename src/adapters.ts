@@ -172,7 +172,15 @@ export const adapters = [
   {
     id: "ruby",
     markers: ["Gemfile"],
-    checks: ["ruby.syntax", "ruby.rubocop", "ruby.rspec", "ruby.minitest"],
+    checks: [
+      "ruby.syntax",
+      "ruby.rubocop",
+      "ruby.rspec",
+      "ruby.minitest",
+      "ruby.rubocop-extensions",
+      "ruby.rspec-extensions",
+      "ruby.minitest-extensions",
+    ],
   },
   {
     id: "swift",
@@ -642,6 +650,11 @@ export async function checksFor(
               .map((mode) => rubyToolsCheck(source, project, mode)),
           )
         : []),
+      ...(await Promise.all(
+        (["rubocop", "rspec", "minitest"] as const)
+          .filter((mode) => requested?.includes(`ruby.${mode}-extensions`))
+          .map((mode) => rubyToolsCheck(source, project, mode, true)),
+      )),
     ];
   if (project.adapter === "rust") {
     const checks = [

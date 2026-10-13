@@ -127,12 +127,14 @@ async function executeRequiredTests(
       // through a fresh installation. Other callbacks and file budgets stay bounded.
       const caseTimeoutMs =
         timeoutMs === 600000 &&
-        selection?.file ===
-          path.join(
-            fileURLToPath(new URL("../dist/test/", import.meta.url)),
-            "gate-dotnet-generator-extensions.test.js",
-          ) &&
-        selection.name === "dotnet-generator-extensions installed acceptance"
+        ["dotnet-generator-extensions", "ruby-extensions"].some(
+          (profile) =>
+            selection?.file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ) && selection.name === `${profile} installed acceptance`,
+        )
           ? 1200000
           : timeoutMs;
       for await (const { type, data } of run({

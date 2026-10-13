@@ -600,3 +600,16 @@ installed callback during isolated execution with the ordinary ten-minute file
 budget. Other file/callback selections, full-suite budgets, engine execution
 limits, container resource limits and the sixty-minute native job limit remain
 unchanged. Errors and terminating signals are asserted before receipt admission.
+
+## Remaining official image delivery
+
+The PHP review job stopped before tests when the public ECR Composer pull returned
+`Data limit exceeded`. Remaining production ECR references now select the
+byte-verified official Docker registry addresses with the same immutable digests.
+[The delivery measurement](measurements/ci-official-index-delivery-2026-10-13.json)
+records every changed production caller and each captured index hash. Existing
+image versions, native callbacks, budgets and resource limits remain unchanged.
+CI input discovery omits pinned image addresses when reading native profile tokens.
+Explicit workflow and controller profiles still supply their required callbacks.
+The fixed mirror allowlist rejects adjacent digests, registries and repositories;
+byte identity does not establish publisher signatures or complete license closure.

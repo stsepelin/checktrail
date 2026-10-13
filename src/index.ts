@@ -297,3 +297,16 @@ export {
 export { dotnetGeneratorExtensionsConfigSchema } from "./dotnet-generator-extensions.js";
 export { dotnetGeneratorIdentityNativeSchema } from "./dotnet-generator-extensions-contract.js";
 export { dotnetGeneratorExtensionsPacketSchema } from "./dotnet-generator-extensions-evidence.js";
+
+export {
+  rubyToolsConfigSchema,
+  rubyToolsConfigV1Schema,
+  rubyToolsConfigV2Schema,
+} from "./ruby-tools.js";
+export {
+  rubyExtensionsPolicySchema,
+  rubyExtensionsManifestWitnessSchema,
+  rubyExtensionsCaseWitnessSchema,
+  rubyExtensionsHookWitnessSchema,
+  rubyExtensionsRuntimeWitnessSchema,
+} from "./ruby-extensions-contract.js";

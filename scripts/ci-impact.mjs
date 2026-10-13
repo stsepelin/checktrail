@@ -54,7 +54,13 @@ export async function buildNativeInputs({
       ))
         admit(match[0]);
       if (expandProfiles) {
-        for (const token of text.match(/[a-z][a-z0-9-]*/g) ?? []) {
+        // Image repository names are setup data, not native profile arguments.
+        // Keep explicit profile invocations after an address visible.
+        const profileText = text.replace(
+          /\b(?:docker\.io|public\.ecr\.aws|mcr\.microsoft\.com)\/[a-z0-9_./-]+@sha256:[a-f0-9]{64}(?![a-f0-9])/g,
+          " ",
+        );
+        for (const token of profileText.match(/[a-z][a-z0-9-]*/g) ?? []) {
           if (profiles.has(token))
             for (const item of requirements[token]) admit(item.file);
         }
