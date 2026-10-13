@@ -48,7 +48,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "scripts/cleanup-kubernetes-extensions-runtime.mjs": [
     "kubernetes-extensions-arm64"
@@ -107,6 +108,7 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
@@ -138,7 +140,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "scripts/infra-tools.Dockerfile": [
     "helm",
@@ -146,7 +149,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "scripts/install-acceptance-package.mjs": [
     "actionlint",
@@ -202,6 +206,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -253,6 +258,7 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
@@ -288,6 +294,7 @@
     "rust-extensions-arm64",
     "scala-extensions-arm64",
     "swift-extensions-arm64",
+    "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
   ],
   "scripts/prepare-cpp-extensions-runtime.mjs": ["cpp-extensions-arm64"],
@@ -319,7 +326,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "scripts/prepare-java-review-tools.mjs": ["checkstyle"],
   "scripts/prepare-javascript-tools.mjs": [
@@ -356,6 +364,7 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
@@ -426,6 +435,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -459,6 +469,9 @@
   ],
   "scripts/prepare-swift-extensions-runtime.mjs": ["swift-extensions-arm64"],
   "scripts/prepare-swift-tools-runtime.mjs": ["swift-tools"],
+  "scripts/prepare-terraform-extensions-runtime.mjs": [
+    "terraform-extensions-arm64"
+  ],
   "scripts/prepare-yaml-context-runtime.mjs": ["yaml-context-arm64"],
   "scripts/probe-windows-runner.mjs": ["windows"],
   "scripts/pull-pinned-image.mjs": [
@@ -516,6 +529,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -543,7 +557,8 @@
     "scala",
     "scala-context-arm64",
     "scala-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "scripts/request-ruby-compiler-archive.mjs": [
     "ruby-extensions-arm64",
@@ -605,6 +620,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
     "windows",
@@ -667,6 +683,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -688,6 +705,7 @@
   "scripts/swift-context-tools.Dockerfile": ["swift-context-arm64"],
   "scripts/swift-extensions-tools.Dockerfile": ["swift-extensions-arm64"],
   "scripts/swift-tools.Dockerfile": ["swift-tools"],
+  "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
   "scripts/verify-actionlint-container.mjs": ["actionlint"],
   "scripts/verify-c-context-container.mjs": ["c-context-arm64"],
@@ -776,6 +794,7 @@
     "scala-extensions-arm64",
     "swift-context-arm64",
     "swift-extensions-arm64",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
@@ -895,6 +914,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -930,7 +950,16 @@
   "scripts/verify-swift-tools-container.mjs": ["swift-tools"],
   "scripts/verify-swift-tools-package.mjs": ["swift-tools"],
   "scripts/verify-terraform-container.mjs": ["terraform"],
-  "scripts/verify-terraform-package.mjs": ["terraform"],
+  "scripts/verify-terraform-extensions-container.mjs": [
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-extensions-guards.mjs": [
+    "terraform-extensions-arm64"
+  ],
+  "scripts/verify-terraform-package.mjs": [
+    "terraform",
+    "terraform-extensions-arm64"
+  ],
   "scripts/verify-vb-context-container.mjs": ["vb-context-arm64"],
   "scripts/verify-vb-context-guards.mjs": ["vb-context-arm64"],
   "scripts/verify-vue-router-assembly-container.mjs": [
@@ -1174,7 +1203,8 @@
     "scala",
     "spotbugs",
     "swift-tools",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/eslint-helpers.ts": [
     "javascript-extensions-arm64",
@@ -1258,6 +1288,7 @@
   "test/gate-rust-extensions.test.ts": ["rust-extensions-arm64"],
   "test/gate-scala-extensions.test.ts": ["scala-extensions-arm64"],
   "test/gate-swift-extensions.test.ts": ["swift-extensions-arm64"],
+  "test/gate-terraform-extensions.test.ts": ["terraform-extensions-arm64"],
   "test/git-fixture.ts": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -1321,7 +1352,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/helm-lifecycle.test.ts": [
     "helm",
@@ -1329,7 +1361,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/helm-scope.test.ts": [
     "helm",
@@ -1337,7 +1370,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/helm-surfaces.test.ts": [
     "helm",
@@ -1345,7 +1379,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/helm.test.ts": [
     "helm",
@@ -1353,7 +1388,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/helpers.ts": [
     "actionlint",
@@ -1412,6 +1448,7 @@
     "swift-extensions-arm64",
     "swift-tools",
     "terraform",
+    "terraform-extensions-arm64",
     "vb-context-arm64",
     "vue-router",
     "vue-router-assembly-arm64",
@@ -1497,7 +1534,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kubeconform-lifecycle.test.ts": [
     "helm",
@@ -1505,7 +1543,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kubeconform-reached.test.ts": [
     "helm",
@@ -1513,7 +1552,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kubeconform-surfaces.test.ts": [
     "helm",
@@ -1521,7 +1561,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kubeconform.test.ts": [
     "helm",
@@ -1529,7 +1570,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kubernetes-evidence-controls.test.ts": ["kubernetes-extensions-arm64"],
   "test/kubernetes-extensions-fixture.ts": [
@@ -1544,7 +1586,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kustomize-lifecycle.test.ts": [
     "helm",
@@ -1552,7 +1595,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kustomize-reached.test.ts": [
     "helm",
@@ -1560,7 +1604,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kustomize-scope.test.ts": [
     "helm",
@@ -1568,7 +1613,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kustomize-surfaces.test.ts": [
     "helm",
@@ -1576,7 +1622,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/kustomize.test.ts": [
     "helm",
@@ -1584,7 +1631,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/larastan.test.ts": ["php-extensions-arm64", "php-review"],
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
@@ -1608,7 +1656,8 @@
     "ruby-tools",
     "swift-extensions-arm64",
     "swift-tools",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/maven-preparation.test.ts": ["jvm-wrappers-arm64", "maven"],
   "test/maven-surfaces.test.ts": [
@@ -1629,7 +1678,8 @@
     "ruby-tools",
     "swift-extensions-arm64",
     "swift-tools",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/maven.test.ts": [
     "cpp-extensions-arm64",
@@ -1649,7 +1699,8 @@
     "ruby-tools",
     "swift-extensions-arm64",
     "swift-tools",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/mypy-evidence.test.ts": ["python-extensions-arm64"],
   "test/mypy.test.ts": [
@@ -1663,7 +1714,8 @@
   "test/native-process-observer.test.ts": [
     "kubeconform",
     "kustomize",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/native-process-observer.ts": [
     "hcl-context-arm64",
@@ -1672,7 +1724,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/node-loaders.test.ts": ["javascript-extensions-arm64"],
   "test/nuxt.test.ts": ["nuxt", "nuxt-assembly-arm64"],
@@ -1903,6 +1956,9 @@
     "swift-extensions-arm64",
     "swift-tools"
   ],
+  "test/terraform-extensions-fixture.ts": ["terraform-extensions-arm64"],
+  "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
+  "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-fixture.ts": [
     "hcl-context-arm64",
     "helm",
@@ -1910,7 +1966,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/terraform-lifecycle.test.ts": [
     "hcl-context-arm64",
@@ -1919,7 +1976,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/terraform-reached.test.ts": [
     "hcl-context-arm64",
@@ -1928,7 +1986,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/terraform-surfaces.test.ts": [
     "hcl-context-arm64",
@@ -1937,7 +1996,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/terraform.test.ts": [
     "hcl-context-arm64",
@@ -1946,7 +2006,8 @@
     "kubernetes-extensions-arm64",
     "kustomize",
     "kustomize-extensions-arm64",
-    "terraform"
+    "terraform",
+    "terraform-extensions-arm64"
   ],
   "test/tool-fixture.ts": [
     "javascript-extensions-arm64",

@@ -4,6 +4,7 @@ import { nodeLoaderEvidence } from "./node-loader-evidence.js";
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
 import { cppToolsEvidence } from "./cpp-tools-evidence.js";
 import { terraformEvidence } from "./terraform-evidence.js";
+import { terraformExtensionsEvidence } from "./terraform-extensions-evidence.js";
 import { kubeconformEvidence } from "./kubeconform-evidence.js";
 import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
@@ -377,6 +378,11 @@ export function evaluate(
     return { ...result, ...vueRouterEvidence(check, processes) };
   if (check.parser === "fastapi-json")
     return { ...result, ...fastapiEvidence(check, processes) };
+  if (check.parser === "terraform-extensions-json")
+    return {
+      ...result,
+      ...terraformExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "terraform-json")
     return { ...result, ...terraformEvidence(check, processes) };
   if (check.parser === "helm-json")

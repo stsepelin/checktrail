@@ -123,6 +123,7 @@ import {
 import { swiftToolsConfigSchema } from "../src/swift-tools.js";
 import { swiftExtensionsConfigSchema } from "../src/swift-extensions-contract.js";
 import { cppExtensionsConfigSchema } from "../src/cpp-extensions-contract.js";
+import { terraformExtensionsConfigSchema } from "../src/terraform-extensions-contract.js";
 import { importJUnit } from "../src/junit.js";
 import { createPlan, validate } from "../src/engine.js";
 import { projectPlan, projectReport } from "../src/output.js";
@@ -169,6 +170,7 @@ test("published schemas match runtime definitions and compile in a strict standa
     "kubeconform-config": kubeconformConfigSchema,
     "kustomize-config": kustomizeConfigSchema,
     "terraform-config": terraformConfigSchema,
+    "terraform-extensions-config": terraformExtensionsConfigSchema,
     "mutation-recipe": mutationRecipeSchema,
     "mutation-report": mutationReportSchema,
     "mutation-summary": mutationSummarySchema,

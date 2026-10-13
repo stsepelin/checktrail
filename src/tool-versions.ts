@@ -61,6 +61,7 @@ export async function toolsFor(
         "dotnet.format-extensions",
         "dotnet.generator-extensions",
         "infrastructure.terraform-validate",
+        "infrastructure.terraform-extensions",
         "infrastructure.kustomize",
         "infrastructure.helm",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
@@ -363,7 +364,13 @@ export async function toolsFor(
         : [{ name: "node", source: "engine-runtime" } as const]),
       command("ruby", "ruby", ["--disable-gems", "--version"]),
     ];
-  if (check.id === "infrastructure.terraform-validate" && check.commands[0])
+  if (
+    [
+      "infrastructure.terraform-validate",
+      "infrastructure.terraform-extensions",
+    ].includes(check.id) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("terraform", process.execPath, [
@@ -577,6 +584,25 @@ export async function identifyTool(
   if (!execution) return result;
   result.process = execution;
   if (execution.errorCode === "ENOENT")
+    return { ...result, status: "unavailable" };
+  if (
+    tool.name === "terraform" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "terraform-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "terraform-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
     return { ...result, status: "unavailable" };
   if (
     (tool.name === "terraform" ||

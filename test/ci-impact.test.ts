@@ -6,6 +6,7 @@ import { parse } from "yaml";
 const {
   buildNativeInputs,
   acceptFullBaseline,
+  requestFullBaselineJobs,
   workflowJobNames,
   nativeJobIds,
   planNativeJobs,
@@ -94,6 +95,12 @@ test("CI declared native inputs match every workflow controller profile matrix a
   ]);
   assert.deepEqual(selected(plan(["test/cpp-extensions-fixture.ts"])), [
     "cpp-extensions-arm64",
+  ]);
+  assert.deepEqual(selected(plan(["test/gate-terraform-extensions.test.ts"])), [
+    "terraform-extensions-arm64",
+  ]);
+  assert.deepEqual(selected(plan(["test/terraform-extensions-fixture.ts"])), [
+    "terraform-extensions-arm64",
   ]);
   assert.ok(inputs["test/dotnet-build.test.ts"].includes("dotnet"));
   for (const entry of workflow.jobs.dotnet.strategy.matrix.include)
@@ -426,4 +433,107 @@ test("CI split matrix retains each runner's package cache before Linux installed
     ).length,
     1,
   );
+});
+
+test("CI full baseline pagination admits every declared job across page boundaries in one run attempt", async () => {
+  for (const count of [1, 100, 101, 205]) {
+    const expectedNames = Array.from(
+      { length: count },
+      (_, i) => "job-" + String(i).padStart(3, "0"),
+    );
+    const run = {
+      id: 1,
+      head_sha: baseline.commit,
+      head_branch: "main",
+      event: "push",
+      status: "completed",
+      conclusion: "success",
+      html_url: baseline.run,
+    };
+    const jobs = expectedNames.map((name, i) => ({
+      id: i + 1,
+      run_id: 1,
+      name,
+      status: "completed",
+      conclusion: "success",
+    }));
+    const endpoint =
+      "https://api.github.com/repos/example/project/actions/runs/1/attempts/2/jobs";
+    const requests: string[] = [];
+    const receipt = await requestFullBaselineJobs(
+      async (url: string) => {
+        requests.push(url);
+        const page = requests.length;
+        return {
+          total_count: count,
+          jobs: jobs.slice((page - 1) * 100, page * 100),
+        };
+      },
+      endpoint,
+      count,
+    );
+    assert.deepEqual(
+      requests,
+      Array.from(
+        { length: Math.ceil(count / 100) },
+        (_, i) => endpoint + "?per_page=100&page=" + (i + 1),
+      ),
+    );
+    assert.deepEqual(
+      acceptFullBaseline(run, receipt, {
+        base: baseline.commit,
+        expectedNames,
+      }),
+      { ...baseline, jobs: count },
+    );
+    if (count > 100)
+      assert.equal(
+        acceptFullBaseline(
+          run,
+          { total_count: count, jobs: jobs.slice(0, 100) },
+          { base: baseline.commit, expectedNames },
+        ),
+        null,
+      );
+  }
+});
+
+test("CI full baseline pagination rejects missing changing duplicate and malformed continuation pages", async () => {
+  const jobs = Array.from({ length: 101 }, (_, i) => ({ id: i + 1 }));
+  for (const bad of [
+    { total_count: 101, jobs: [] },
+    { total_count: 102, jobs: jobs.slice(100) },
+    { total_count: 101, jobs: jobs.slice(0, 1) },
+    { total_count: 101, jobs: null },
+  ]) {
+    const requests: string[] = [];
+    await assert.rejects(
+      requestFullBaselineJobs(
+        async (url: string) => {
+          requests.push(url);
+          return requests.length === 1
+            ? { total_count: 101, jobs: jobs.slice(0, 100) }
+            : bad;
+        },
+        "attempt-jobs",
+        101,
+      ),
+      /Baseline job|Duplicate baseline/,
+    );
+    assert.equal(requests.length, 2);
+  }
+  for (const count of [0, 1.5, 1001]) {
+    let requested = false;
+    await assert.rejects(
+      requestFullBaselineJobs(
+        async () => {
+          requested = true;
+        },
+        "attempt-jobs",
+        count,
+      ),
+      /bounded pagination/,
+    );
+    assert.equal(requested, false);
+  }
 });

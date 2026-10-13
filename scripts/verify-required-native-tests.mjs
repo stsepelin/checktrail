@@ -37,7 +37,9 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  !fullSuite && selection.length === 1 && selection[0] === "cpp-extensions"
+  !fullSuite &&
+  selection.length === 1 &&
+  ["cpp-extensions", "terraform-extensions"].includes(selection[0])
     ? 300000
     : fullSuite ||
         selection.includes("dotnet-method") ||
@@ -104,6 +106,7 @@ const isolatedCaseWorkers =
     "ruby-extensions",
     "swift-extensions",
     "cpp-extensions",
+    "terraform-extensions",
   ].includes(selection[0])
     ? 1
     : 0;

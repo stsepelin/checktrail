@@ -42,6 +42,7 @@ export const PARSERS = [
   "kubeconform-json",
   "kustomize-json",
   "terraform-json",
+  "terraform-extensions-json",
   "helm-json",
   "java-json",
   "checkstyle-json",
