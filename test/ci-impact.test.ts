@@ -101,6 +101,59 @@ test("CI declared native inputs match every workflow controller profile matrix a
       );
   }
 });
+test("CI image delivery addresses do not expand native callback owners while explicit controller profiles still do", async () => {
+  const families = ["python", "rust", "swift"];
+  const actual = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        delivery: {
+          steps: [
+            {
+              run:
+                "node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:" +
+                "a".repeat(64),
+            },
+          ],
+        },
+        validation: {
+          steps: [{ run: "node scripts/native-controller.mjs" }],
+        },
+        adjacent: {
+          steps: [
+            {
+              run:
+                "docker run public.ecr.aws/docker/library/rust@sha256:" +
+                "b".repeat(64) +
+                " node scripts/verify-required-native-tests.mjs swift",
+            },
+          ],
+        },
+      },
+    },
+    requirements: Object.fromEntries(
+      families.map((name) => [
+        name,
+        [{ file: "dist/test/" + name + "-native.test.js" }],
+      ]),
+    ),
+    files: [
+      "scripts/pull-pinned-image.mjs",
+      "scripts/native-controller.mjs",
+      ...families.map((name) => "test/" + name + "-native.test.ts"),
+    ],
+    readText: (file: string) =>
+      file === "scripts/pull-pinned-image.mjs"
+        ? readFile(new URL(file, root), "utf8")
+        : Promise.resolve(
+            "node scripts/verify-required-native-tests.mjs python",
+          ),
+  });
+  assert.deepEqual(actual["scripts/pull-pinned-image.mjs"], ["delivery"]);
+  assert.deepEqual(actual["test/python-native.test.ts"], ["validation"]);
+  assert.deepEqual(actual["test/swift-native.test.ts"], ["adjacent"]);
+  assert.equal(Object.hasOwn(actual, "test/rust-native.test.ts"), false);
+});
+
 test("CI selection unions exact native owners and keeps unclassified near misses global", () => {
   assert.deepEqual(
     selected(
