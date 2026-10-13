@@ -5,7 +5,7 @@ import path from "node:path";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath, URL } from "node:url";
 import { run } from "node:test";
 
 export const testFileWorkerLimit = () =>
@@ -64,7 +64,7 @@ async function executeRequiredTests(
   } = {},
 ) {
   assert.ok(
-    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000,
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 600000,
     "Required test harness timeout must be bounded",
   );
   assert.ok(
@@ -123,10 +123,28 @@ async function executeRequiredTests(
         );
         execArgv = ["--import", pathToFileURL(preload).href];
       }
+      // Only this exact isolated wrapper needs time to repeat the native cases
+      // through a fresh installation. Other callbacks and file budgets stay bounded.
+      const caseTimeoutMs =
+        timeoutMs === 600000 &&
+        [
+          "dotnet-generator-extensions",
+          "ruby-extensions",
+          "swift-extensions",
+        ].some(
+          (profile) =>
+            selection?.file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ) && selection.name === `${profile} installed acceptance`,
+        )
+          ? 1200000
+          : timeoutMs;
       for await (const { type, data } of run({
         files: selection ? [selection.file] : files,
         concurrency: selection ? 1 : fileWorkerLimit,
-        timeout: timeoutMs,
+        timeout: caseTimeoutMs,
         execArgv,
         ...(selection
           ? {

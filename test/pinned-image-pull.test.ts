@@ -392,8 +392,11 @@ test("pinned image delivery retries the exact daemon registry deadline within ex
   assert.equal(delayed, 0);
 });
 
-test("pinned image delivery admits exactly the two verified official mirror indexes and refuses adjacent digests registries and families", async () => {
+test("pinned image delivery admits the verified Node Temurin Ruby and Swift mirror indexes and refuses adjacent digests registries and families", async () => {
   const mirrors = [
+    "docker.io/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+    "docker.io/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+    "docker.io/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
     "docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
     "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
   ];

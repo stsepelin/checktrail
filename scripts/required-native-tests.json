@@ -2789,6 +2789,22 @@
     {
       "file": "dist/test/maven-preparation.test.js",
       "name": "Maven acquisition preserves checksum test timeout signal and foreign-origin failures without retries or invented success"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "JVM wrapper setup retries transient deliveries through exact Apache mirrors and keeps Central artifact URLs unchanged"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "JVM wrapper setup rejects redirects permanent responses malformed bodies and incorrect digests without retry"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "JVM wrapper setup bounds exhausted retries and preserves cancellation before fetch and between attempts"
+    },
+    {
+      "file": "dist/test/maven-preparation.test.js",
+      "name": "JVM wrapper setup discards interrupted body bytes and rejects URLs outside its exact artifact inventory"
     }
   ],
   "posix-cleanup": [
