@@ -747,7 +747,7 @@ try {
         rubyAcceptanceShard === undefined
           ? ["scripts/verify-required-native-tests.mjs", profile]
           : [
-              "scripts/verify-ruby-extensions-acceptance.mjs",
+              path.join("scripts", "verify-ruby-extensions-acceptance.mjs"),
               "installed",
               rubyAcceptanceShard,
             ],

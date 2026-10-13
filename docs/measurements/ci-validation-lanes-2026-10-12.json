@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "scope": "Two actual existing benchmark controllers, unchanged original callbacks and fresh production installation. This is a local subset comparison, not full hosted CI acceptance.",
+  "node": "v26.9.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "sequentialMs": 255345,
+  "parallelMs": 185072,
+  "sequential": [
+    {
+      "command": "[\"scripts/verify-review-benchmark-multi-guards.mjs\",[],[]]",
+      "durationMs": 183470,
+      "passed": true,
+      "outputBytes": 16206
+    },
+    {
+      "command": "[\"scripts/verify-review-benchmark-multi-package.mjs\",[],[]]",
+      "durationMs": 71875,
+      "passed": true,
+      "outputBytes": 6161
+    }
+  ],
+  "parallel": [
+    {
+      "lane": "mutations",
+      "commands": [
+        {
+          "command": "[\"scripts/verify-review-benchmark-multi-guards.mjs\",[],[]]",
+          "durationMs": 183152,
+          "passed": true,
+          "outputBytes": 16414
+        }
+      ]
+    },
+    {
+      "lane": "packages",
+      "commands": [
+        {
+          "command": "[\"scripts/verify-review-benchmark-multi-package.mjs\",[],[]]",
+          "durationMs": 76279,
+          "passed": true,
+          "outputBytes": 6160
+        }
+      ]
+    }
+  ],
+  "complete": true,
+  "sourceStable": true,
+  "mutationsRestored": true,
+  "speedup": 1.38,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "date": "2026-10-12",
+  "kind": "ci-validation-lane-subset-comparison",
+  "timingScope": "Controller execution and snapshot copy are included; its initial source inventory/hash pass is excluded. One local trial, warm prepared dependency cache. Hosted total runtime remains unmeasured.",
+  "baselineWorkflow": {
+    "run": "https://github.com/stsepelin/checktrail/actions/runs/38217688833",
+    "head": "6275f8bb16be0178b94446934eab1c13cd163782",
+    "jobs": 75,
+    "elapsedMinutes": 70.18,
+    "runnerMinutesUnweighted": 752.78
+  },
+  "requiredCommands": {
+    "mutations": 14,
+    "freshPackage": 29,
+    "matrixVariants": 4
+  },
+  "currentHostedAcceptance": "pending",
+  "gateAComplete": false
+}

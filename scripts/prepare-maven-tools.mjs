@@ -1,4 +1,8 @@
 import process from "node:process";
+import {
+  requestMavenDistribution,
+  mavenDistributionPin,
+} from "./request-maven-distribution.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -6,13 +10,9 @@ import { lstat, mkdir, mkdtemp, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { mavenDistributionFiles } from "../dist/src/maven-distribution.js";
 import { verifyMavenTree } from "../dist/src/maven.js";
-import {
-  mavenDistributionPin,
-  requestMavenDistribution,
-} from "./request-maven-distribution.mjs";
 const cache = path.resolve(".checktrail/maven-review-tools"),
   destination = path.join(cache, "apache-maven-3.10.0");
-const { sha256 } = mavenDistributionPin;
+const sha256 = mavenDistributionPin.sha256;
 const parent = path.dirname(cache);
 await mkdir(parent, { recursive: false }).catch((error) => {
   if (error.code !== "EEXIST") throw error;
@@ -41,7 +41,7 @@ if (exists) {
   const temporary = await mkdtemp(path.join(cache, ".prepare-"));
   try {
     const bytes = await requestMavenDistribution();
-    assert.equal(bytes.length, mavenDistributionPin.bytes);
+    assert.equal(bytes.length, 9979885);
     assert.equal(createHash("sha256").update(bytes).digest("hex"), sha256);
     const archive = path.join(temporary, "maven.tar.gz");
     await writeFile(archive, bytes, { flag: "wx", mode: 0o600 });
