@@ -44,6 +44,7 @@ export const PARSERS = [
   "terraform-json",
   "terraform-extensions-json",
   "helm-json",
+  "helm-extensions-json",
   "java-json",
   "checkstyle-json",
   "spotbugs-json",

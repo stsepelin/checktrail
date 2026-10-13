@@ -102,6 +102,12 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/terraform-extensions-fixture.ts"])), [
     "terraform-extensions-arm64",
   ]);
+  assert.deepEqual(selected(plan(["test/gate-helm-extensions.test.ts"])), [
+    "helm-extensions-arm64",
+  ]);
+  assert.deepEqual(selected(plan(["test/helm-extensions-fixture.ts"])), [
+    "helm-extensions-arm64",
+  ]);
   assert.ok(inputs["test/dotnet-build.test.ts"].includes("dotnet"));
   for (const entry of workflow.jobs.dotnet.strategy.matrix.include)
     assert.ok(inputs["scripts/" + entry.script].includes("dotnet"));

@@ -66,8 +66,11 @@ assert.ok(
     "swift-extensions",
     "cpp-extensions",
     "terraform-extensions",
+    "helm-extensions",
   ].includes(profile),
 );
+if (profile === "helm-extensions")
+  process.env.CHECKTRAIL_HELM_EXTENSIONS_INSTALLED = "1";
 if (profile === "terraform-extensions")
   process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_INSTALLED = "1";
 if (profile === "review-context-limits")
@@ -234,6 +237,10 @@ try {
     "gate-dotnet-generator-extensions.test.js",
     "gate-ruby-extensions.test.js",
     "gate-swift-extensions.test.js",
+    "gate-helm-extensions.test.js",
+    "helm-extensions-fixture.js",
+    "helm-extensions-surfaces.test.js",
+    "helm-extensions-lifecycle.test.js",
     "gate-terraform-extensions.test.js",
     "terraform-extensions-fixture.js",
     "terraform-extensions-surfaces.test.js",
@@ -560,6 +567,14 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "helm-extensions"
+            ? [
+                "--env",
+                "CHECKTRAIL_HELM_EXTENSIONS_NATIVE=1",
+                "--env",
+                "CHECKTRAIL_HELM_EXTENSIONS_INSTALLED=1",
+              ]
+            : []),
           ...(profile === "terraform-extensions"
             ? [
                 "--env",

@@ -8,6 +8,7 @@ import { terraformExtensionsEvidence } from "./terraform-extensions-evidence.js"
 import { kubeconformEvidence } from "./kubeconform-evidence.js";
 import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
+import { helmExtensionsEvidence } from "./helm-extensions-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
 import { swiftExtensionsEvidence } from "./swift-extensions-evidence.js";
 import { cppExtensionsEvidence } from "./cpp-extensions-evidence.js";
@@ -385,6 +386,8 @@ export function evaluate(
     };
   if (check.parser === "terraform-json")
     return { ...result, ...terraformEvidence(check, processes) };
+  if (check.parser === "helm-extensions-json")
+    return { ...result, ...helmExtensionsEvidence(check, processes, root) };
   if (check.parser === "helm-json")
     return { ...result, ...helmEvidence(check, processes) };
   if (check.parser === "kustomize-json")

@@ -96,6 +96,7 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | Kubernetes                   | Bounded offline kubeconform document/schema validation with physical source addresses                             |
 | Kustomize                    | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
 | Terraform                    | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
+| Helm                         | Root-chart and opt-in local application/subchart alias validation with native constraints and source diagnostics  |
 | Kotlin                       | Opt-in pinned detekt light analysis with every-selected-file rule, source, suppression and completion accounting  |
 | Scala                        | Opt-in pinned Scala 2/3 compilation; explicit mixed/generated/compile-only script and ordered macro stages        |
 
@@ -466,3 +467,5 @@ narrow validation plans or establish runtime reachability.
 The experimental bounded [Windows executable profile](docs/WINDOWS-EXECUTION.md)
 has a dedicated native CI gate. Its acceptance is pending; broader Windows tools,
 Git and private persistence profiles remain unverified.
+
+The selected [local Helm application/subchart profile](docs/HELM-EXTENSIONS.md) validates declared transitive and repeated alias graphs, physical defaults and root overrides, native value constraints and source-bound template/rendered diagnostics. It uses prepared pinned tools through the same trusted CLI/MCP engine; arbitrary charts and cluster behavior require separate support.

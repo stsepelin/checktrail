@@ -44,6 +44,7 @@
   "scripts/cleanup-hcl-context-runtime.mjs": ["hcl-context-arm64"],
   "scripts/cleanup-infra-tools-runtime.mjs": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -87,6 +88,7 @@
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
+    "helm-extensions-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
@@ -133,9 +135,11 @@
   ],
   "scripts/gradle-tools.Dockerfile": ["gradle"],
   "scripts/hcl-context-tools.Dockerfile": ["hcl-context-arm64"],
+  "scripts/helm-extensions-controls.json": ["helm-extensions-arm64"],
   "scripts/infra-tools-artifacts.json": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -145,6 +149,7 @@
   ],
   "scripts/infra-tools.Dockerfile": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -173,6 +178,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -237,6 +243,7 @@
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
+    "helm-extensions-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
@@ -280,6 +287,7 @@
     "dotnet-generator-extensions-arm64",
     "fastapi-assembly-arm64",
     "fsharp-format-arm64",
+    "helm-extensions-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
     "jvm-wrappers-arm64",
@@ -322,6 +330,7 @@
   "scripts/prepare-hcl-context-runtime.mjs": ["hcl-context-arm64"],
   "scripts/prepare-infra-tools-runtime.mjs": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -343,6 +352,7 @@
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
+    "helm-extensions-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
@@ -403,6 +413,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -495,6 +506,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -546,6 +558,7 @@
     "cpp-tools",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "jvm-wrappers-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
@@ -589,6 +602,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
@@ -648,6 +662,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -759,7 +774,9 @@
   "scripts/verify-hcl-context-container.mjs": ["hcl-context-arm64"],
   "scripts/verify-hcl-context-guards.mjs": ["hcl-context-arm64"],
   "scripts/verify-helm-container.mjs": ["helm"],
-  "scripts/verify-helm-package.mjs": ["helm"],
+  "scripts/verify-helm-extensions-container.mjs": ["helm-extensions-arm64"],
+  "scripts/verify-helm-extensions-guards.mjs": ["helm-extensions-arm64"],
+  "scripts/verify-helm-package.mjs": ["helm", "helm-extensions-arm64"],
   "scripts/verify-import-context-package.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -773,6 +790,7 @@
     "fsharp-format-arm64",
     "go-workspaces-arm64",
     "hcl-context-arm64",
+    "helm-extensions-arm64",
     "java-context-arm64",
     "javascript-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
@@ -879,6 +897,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -1194,6 +1213,7 @@
     "external-adapters",
     "gradle",
     "helm",
+    "helm-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
     "kotlin",
     "kubeconform",
@@ -1270,6 +1290,7 @@
     "dotnet-generator-extensions-arm64"
   ],
   "test/gate-go-extensions.test.ts": ["go-workspaces-arm64"],
+  "test/gate-helm-extensions.test.ts": ["helm-extensions-arm64"],
   "test/gate-host-session-readiness.test.ts": ["go-workspaces-arm64"],
   "test/gate-javascript-extensions.test.ts": ["javascript-extensions-arm64"],
   "test/gate-jvm-analyzer-extensions.test.ts": [
@@ -1346,8 +1367,12 @@
   "test/gradle-preparation.test.ts": ["gradle"],
   "test/gradle-surfaces.test.ts": ["gradle", "jvm-wrappers-arm64"],
   "test/gradle.test.ts": ["gradle", "jvm-wrappers-arm64"],
+  "test/helm-extensions-fixture.ts": ["helm-extensions-arm64"],
+  "test/helm-extensions-lifecycle.test.ts": ["helm-extensions-arm64"],
+  "test/helm-extensions-surfaces.test.ts": ["helm-extensions-arm64"],
   "test/helm-fixture.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1357,6 +1382,7 @@
   ],
   "test/helm-lifecycle.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1366,6 +1392,7 @@
   ],
   "test/helm-scope.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1375,6 +1402,7 @@
   ],
   "test/helm-surfaces.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1384,6 +1412,7 @@
   ],
   "test/helm.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1413,6 +1442,7 @@
     "gradle",
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "java",
     "java-context-arm64",
     "javascript-extensions-arm64",
@@ -1530,6 +1560,7 @@
   ],
   "test/kubeconform-fixture.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1539,6 +1570,7 @@
   ],
   "test/kubeconform-lifecycle.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1548,6 +1580,7 @@
   ],
   "test/kubeconform-reached.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1557,6 +1590,7 @@
   ],
   "test/kubeconform-surfaces.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1566,6 +1600,7 @@
   ],
   "test/kubeconform.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1582,6 +1617,7 @@
   "test/kustomize-extensions-fixture.ts": ["kustomize-extensions-arm64"],
   "test/kustomize-fixture.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1591,6 +1627,7 @@
   ],
   "test/kustomize-lifecycle.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1600,6 +1637,7 @@
   ],
   "test/kustomize-reached.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1609,6 +1647,7 @@
   ],
   "test/kustomize-scope.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1618,6 +1657,7 @@
   ],
   "test/kustomize-surfaces.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1627,6 +1667,7 @@
   ],
   "test/kustomize.test.ts": [
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1645,6 +1686,7 @@
     "fsharp-format-arm64",
     "gradle",
     "helm",
+    "helm-extensions-arm64",
     "jvm-analyzer-extensions-arm64",
     "jvm-wrappers-arm64",
     "kubeconform",
@@ -1668,6 +1710,7 @@
     "fsharp-format-arm64",
     "gradle",
     "helm",
+    "helm-extensions-arm64",
     "jvm-wrappers-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
@@ -1689,6 +1732,7 @@
     "fsharp-format-arm64",
     "gradle",
     "helm",
+    "helm-extensions-arm64",
     "jvm-wrappers-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
@@ -1720,6 +1764,7 @@
   "test/native-process-observer.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1962,6 +2007,7 @@
   "test/terraform-fixture.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1972,6 +2018,7 @@
   "test/terraform-lifecycle.test.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1982,6 +2029,7 @@
   "test/terraform-reached.test.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -1992,6 +2040,7 @@
   "test/terraform-surfaces.test.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",
@@ -2002,6 +2051,7 @@
   "test/terraform.test.ts": [
     "hcl-context-arm64",
     "helm",
+    "helm-extensions-arm64",
     "kubeconform",
     "kubernetes-extensions-arm64",
     "kustomize",

@@ -39,7 +39,9 @@ const installedExtensionProfile =
 const timeoutMs =
   !fullSuite &&
   selection.length === 1 &&
-  ["cpp-extensions", "terraform-extensions"].includes(selection[0])
+  ["cpp-extensions", "terraform-extensions", "helm-extensions"].includes(
+    selection[0],
+  )
     ? 300000
     : fullSuite ||
         selection.includes("dotnet-method") ||
@@ -107,6 +109,7 @@ const isolatedCaseWorkers =
     "swift-extensions",
     "cpp-extensions",
     "terraform-extensions",
+    "helm-extensions",
   ].includes(selection[0])
     ? 1
     : 0;
