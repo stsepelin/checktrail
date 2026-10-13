@@ -85,7 +85,9 @@ test("mutation acceptance rejects cohort substitution and aggregate reuse before
       0,
       result.stderr || JSON.stringify(JSON.parse(result.stdout).problems),
     );
+    assert.equal(result.signal, null);
     const receipt = JSON.parse(result.stdout);
+    assert.equal(receipt.timeoutMs, 600000);
     assert.equal(receipt.profile, "mutation-" + family);
     assert.equal(receipt.required, 9);
     assert.equal(receipt.passed, 9);
