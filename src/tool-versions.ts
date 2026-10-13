@@ -1,6 +1,10 @@
 import { laravelAssemblyVersionRunner } from "./laravel-assembly-runner.js";
 import { laravelAssemblyPhpFlags } from "./laravel.js";
 import { cppToolNames, cppSupportedVersion } from "./cpp-native.js";
+import {
+  cppExtensionsToolNames,
+  cppExtensionsSupportedVersion,
+} from "./cpp-extensions-native.js";
 import { externalInvocationSchema } from "./external-adapter.js";
 import { clangVersion } from "./clang-protocol.js";
 import path from "node:path";
@@ -215,13 +219,19 @@ export async function toolsFor(
         : []),
     ];
   if (check.adapter === "cpp") {
-    if (check.parser === "cpp-tools-json")
+    if (
+      check.parser === "cpp-tools-json" ||
+      check.parser === "cpp-extensions-json"
+    )
       return [
         { name: "node", source: "engine-runtime" },
-        ...cppToolNames.map((name) =>
+        ...(check.parser === "cpp-extensions-json"
+          ? cppExtensionsToolNames
+          : cppToolNames
+        ).map((name) =>
           command(
             name,
-            name,
+            name === "as" || name === "ld" ? "/usr/bin/" + name : name,
             name === "clang" || name === "clang++"
               ? ["--no-default-config", "--version"]
               : ["--version"],
@@ -627,13 +637,19 @@ export async function identifyTool(
       "llvm-dwarfdump",
       "llvm-ar",
       "llvm-ranlib",
+      "llvm-readelf",
+      "as",
+      "ld",
       "cmake",
       "ctest",
       "make",
     ].includes(tool.name)
   ) {
     const verified =
-      !execution.stderr.trim() && cppSupportedVersion(tool.name, output);
+      !execution.stderr.trim() &&
+      (tool.name === "as" || tool.name === "ld"
+        ? cppExtensionsSupportedVersion(tool.name, output)
+        : cppSupportedVersion(tool.name, output));
     return {
       ...result,
       status: verified ? "identified" : "inconclusive",
@@ -642,7 +658,9 @@ export async function identifyTool(
           ? "4.2.3"
           : tool.name === "make"
             ? "4.4.1"
-            : "22.1.3"
+            : tool.name === "as" || tool.name === "ld"
+              ? "2.45.1"
+              : "22.1.3"
         : null,
     };
   }

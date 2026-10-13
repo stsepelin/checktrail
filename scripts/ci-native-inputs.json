@@ -37,7 +37,10 @@
   "scripts/c-context-tools.Dockerfile": ["c-context-arm64"],
   "scripts/capture-jvm-wrapper-guards.mjs": ["jvm-wrappers-arm64"],
   "scripts/clang-tools.Dockerfile": ["clang"],
-  "scripts/cleanup-cpp-tools-runtime.mjs": ["cpp-tools"],
+  "scripts/cleanup-cpp-tools-runtime.mjs": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
   "scripts/cleanup-hcl-context-runtime.mjs": ["hcl-context-arm64"],
   "scripts/cleanup-infra-tools-runtime.mjs": [
     "helm",
@@ -57,16 +60,22 @@
   "scripts/cleanup-swift-extensions-runtime.mjs": ["swift-extensions-arm64"],
   "scripts/cleanup-swift-tools-runtime.mjs": ["swift-tools"],
   "scripts/cleanup-yaml-context-runtime.mjs": ["yaml-context-arm64"],
+  "scripts/collect-cpp-extensions-sdk.mjs": ["cpp-extensions-arm64"],
   "scripts/collect-swift-extensions-sdk.mjs": ["swift-extensions-arm64"],
-  "scripts/cpp-archive-fallbacks/zlib-1.3.2-r0.apk": ["cpp-tools"],
+  "scripts/cpp-archive-fallbacks/zlib-1.3.2-r0.apk": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
   "scripts/cpp-context-tools.Dockerfile": ["cpp-context-arm64"],
-  "scripts/cpp-tools-archives.json": ["cpp-tools"],
-  "scripts/cpp-tools.Dockerfile": ["cpp-tools"],
+  "scripts/cpp-extensions-controls.json": ["cpp-extensions-arm64"],
+  "scripts/cpp-tools-archives.json": ["cpp-extensions-arm64", "cpp-tools"],
+  "scripts/cpp-tools.Dockerfile": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/csharp-context-tools.Dockerfile": ["csharp-context-arm64"],
   "scripts/detekt-tools.Dockerfile": ["detekt"],
   "scripts/dotnet-build-fixture-projects.json": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet",
@@ -144,6 +153,7 @@
     "c-context-arm64",
     "checkstyle",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -212,6 +222,7 @@
   "scripts/native-acceptance-diagnostics.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
@@ -257,6 +268,7 @@
   "scripts/php-review-tools/composer.json": ["php-review"],
   "scripts/php-review-tools/composer.lock": ["php-review"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
+    "cpp-extensions-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
@@ -278,7 +290,11 @@
     "swift-extensions-arm64",
     "vue-router-assembly-arm64"
   ],
-  "scripts/prepare-cpp-tools-runtime.mjs": ["cpp-tools"],
+  "scripts/prepare-cpp-extensions-runtime.mjs": ["cpp-extensions-arm64"],
+  "scripts/prepare-cpp-tools-runtime.mjs": [
+    "cpp-extensions-arm64",
+    "cpp-tools"
+  ],
   "scripts/prepare-detekt-tools.mjs": [
     "detekt",
     "jvm-analyzer-extensions-arm64"
@@ -309,6 +325,7 @@
   "scripts/prepare-javascript-tools.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
@@ -361,6 +378,7 @@
     "c-context-arm64",
     "checkstyle",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -449,6 +467,7 @@
     "checkstyle",
     "clang",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -504,11 +523,12 @@
   ],
   "scripts/python-extensions-tools.Dockerfile": ["python-extensions-arm64"],
   "scripts/python-extensions-wheels.json": ["python-extensions-arm64"],
-  "scripts/request-cpp-tool-archive.mjs": ["cpp-tools"],
+  "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/request-jvm-wrapper-artifact.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/request-maven-distribution.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/request-pinned-artifact.mjs": [
+    "cpp-extensions-arm64",
     "cpp-tools",
     "hcl-context-arm64",
     "helm",
@@ -538,6 +558,7 @@
     "c-context-arm64",
     "checkstyle",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -595,6 +616,7 @@
     "checkstyle",
     "clang",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -675,8 +697,10 @@
   "scripts/verify-clang-container.mjs": ["clang"],
   "scripts/verify-cpp-context-container.mjs": ["cpp-context-arm64"],
   "scripts/verify-cpp-context-guards.mjs": ["cpp-context-arm64"],
+  "scripts/verify-cpp-extensions-container.mjs": ["cpp-extensions-arm64"],
+  "scripts/verify-cpp-extensions-guards.mjs": ["cpp-extensions-arm64"],
   "scripts/verify-cpp-tools-container.mjs": ["cpp-tools"],
-  "scripts/verify-cpp-tools-package.mjs": ["cpp-tools"],
+  "scripts/verify-cpp-tools-package.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/verify-csharp-context-container.mjs": ["csharp-context-arm64"],
   "scripts/verify-csharp-context-guards.mjs": ["csharp-context-arm64"],
   "scripts/verify-detekt-container.mjs": ["detekt"],
@@ -721,6 +745,7 @@
   "scripts/verify-import-context-package.mjs": [
     "c-context-arm64",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
@@ -819,6 +844,7 @@
     "checkstyle",
     "clang",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -931,16 +957,24 @@
   "test/checkstyle-fixture.ts": ["checkstyle"],
   "test/checkstyle-surfaces.test.ts": ["checkstyle"],
   "test/checkstyle.test.ts": ["checkstyle"],
-  "test/clang.test.ts": ["clang", "cpp-tools", "swift-extensions-arm64"],
+  "test/clang.test.ts": [
+    "clang",
+    "cpp-extensions-arm64",
+    "cpp-tools",
+    "swift-extensions-arm64"
+  ],
   "test/clippy-evidence.test.ts": ["rust-extensions-arm64"],
   "test/clippy-surfaces.test.ts": ["rust-extensions-arm64"],
   "test/clippy.test.ts": ["rust-extensions-arm64"],
-  "test/cpp-controls.test.ts": ["cpp-tools"],
-  "test/cpp-tools-cancel.test.ts": ["cpp-tools"],
-  "test/cpp-tools-fixture.ts": ["cpp-tools"],
-  "test/cpp-tools-lifecycle.test.ts": ["cpp-tools"],
-  "test/cpp-tools-surfaces.test.ts": ["cpp-tools"],
-  "test/cpp-tools.test.ts": ["cpp-tools"],
+  "test/cpp-controls.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
+  "test/cpp-extensions-cancel.test.ts": ["cpp-extensions-arm64"],
+  "test/cpp-extensions-fixture.ts": ["cpp-extensions-arm64"],
+  "test/cpp-extensions-surfaces.test.ts": ["cpp-extensions-arm64"],
+  "test/cpp-tools-cancel.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
+  "test/cpp-tools-fixture.ts": ["cpp-extensions-arm64", "cpp-tools"],
+  "test/cpp-tools-lifecycle.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
+  "test/cpp-tools-surfaces.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
+  "test/cpp-tools.test.ts": ["cpp-extensions-arm64", "cpp-tools"],
   "test/detekt-boundaries.test.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
   "test/detekt-extensions-fixture.ts": ["jvm-analyzer-extensions-arm64"],
   "test/detekt-fixture.ts": ["detekt", "jvm-analyzer-extensions-arm64"],
@@ -1124,6 +1158,7 @@
   ],
   "test/engine.test.ts": [
     "checkstyle",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "detekt",
     "dotnet",
@@ -1196,6 +1231,7 @@
   "test/gate-context-swift.test.ts": ["swift-context-arm64"],
   "test/gate-context-vb.test.ts": ["vb-context-arm64"],
   "test/gate-context-yaml.test.ts": ["yaml-context-arm64"],
+  "test/gate-cpp-extensions.test.ts": ["cpp-extensions-arm64"],
   "test/gate-dotnet-format-extensions.test.ts": [
     "dotnet-format-extensions-arm64"
   ],
@@ -1325,6 +1361,7 @@
     "checkstyle",
     "clang",
     "cpp-context-arm64",
+    "cpp-extensions-arm64",
     "cpp-tools",
     "csharp-context-arm64",
     "detekt",
@@ -1553,6 +1590,7 @@
   "test/laravel-cache.test.ts": ["laravel-assembly-arm64"],
   "test/laravel.test.ts": ["laravel-assembly-arm64"],
   "test/maven-fixture.ts": [
+    "cpp-extensions-arm64",
     "cpp-tools",
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
@@ -1574,6 +1612,7 @@
   ],
   "test/maven-preparation.test.ts": ["jvm-wrappers-arm64", "maven"],
   "test/maven-surfaces.test.ts": [
+    "cpp-extensions-arm64",
     "cpp-tools",
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",
@@ -1593,6 +1632,7 @@
     "terraform"
   ],
   "test/maven.test.ts": [
+    "cpp-extensions-arm64",
     "cpp-tools",
     "dotnet-format-extensions-arm64",
     "dotnet-generator-extensions-arm64",

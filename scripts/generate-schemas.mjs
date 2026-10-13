@@ -34,6 +34,7 @@ import {
   importContextSummarySchema,
 } from "../dist/src/import-context.js";
 import { cppToolsConfigSchema } from "../dist/src/cpp-tools.js";
+import { cppExtensionsConfigSchema } from "../dist/src/cpp-extensions-contract.js";
 import { terraformConfigSchema } from "../dist/src/terraform.js";
 import { kubeconformConfigSchema } from "../dist/src/kubeconform.js";
 import { kustomizeConfigSchema } from "../dist/src/kustomize.js";
@@ -210,6 +211,7 @@ for (const [name, schema] of Object.entries({
   "fsharp-format-native": fsharpNativeSchema,
   "fsharp-format-packet": fsharpPacketSchema,
   "cpp-tools-config": cppToolsConfigSchema,
+  "cpp-extensions-config": cppExtensionsConfigSchema,
   "kubeconform-config": kubeconformConfigSchema,
   "kustomize-config": kustomizeConfigSchema,
   "helm-config": helmConfigSchema,

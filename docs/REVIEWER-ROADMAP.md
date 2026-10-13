@@ -222,3 +222,5 @@ The bounded Scala 3 JVM profile has source, compiling-guard and offline installe
 acceptance recorded at its code revision in
 [scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
 declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The selected [C/C++ extension profile](CPP-EXTENSIONS.md) now has preserved native baseline, source, fresh offline installed and paired-control evidence in its [measurement](measurements/cpp-extensions-2026-10-10.json). Its finite CMake/SDK participation remains separate from complete artifact/license closure, the final runtime matrix and review quality. The required inventory remains the source of pending Gate A work.

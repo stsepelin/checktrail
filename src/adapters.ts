@@ -7,6 +7,10 @@ import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { cppToolsCheck } from "./cpp-tools.js";
+import {
+  cppExtensionsCheck,
+  cppExtensionsPolicyFile,
+} from "./cpp-extensions.js";
 import { terraformCheck } from "./terraform.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { kustomizeCheck } from "./kustomize.js";
@@ -209,6 +213,10 @@ export const adapters = [
       "cpp.ctest",
       "cpp.clang-format",
       "cpp.clang-tidy",
+      "cpp.build-extensions",
+      "cpp.ctest-extensions",
+      "cpp.clang-format-extensions",
+      "cpp.clang-tidy-extensions",
     ],
   },
   {
@@ -578,6 +586,19 @@ export async function checksFor(
   if (project.adapter === "cpp")
     return [
       await clangCheck(source, project),
+      ...(project.files.includes(cppExtensionsPolicyFile) ||
+      requested?.some((id) =>
+        /^cpp\.(?:build|ctest|clang-format|clang-tidy)-extensions$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "ctest", "clang-format", "clang-tidy"] as const)
+              .filter(
+                (mode) =>
+                  !requested || requested.includes(`cpp.${mode}-extensions`),
+              )
+              .map((mode) => cppExtensionsCheck(source, project, mode)),
+          )
+        : []),
       ...(project.files.includes("checktrail.cpp-tools.json") ||
       requested?.some((id) =>
         /^cpp\.(?:build|ctest|clang-format|clang-tidy)$/.test(id),

@@ -89,6 +89,12 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/swift-extensions-fixture.ts"])), [
     "swift-extensions-arm64",
   ]);
+  assert.deepEqual(selected(plan(["test/gate-cpp-extensions.test.ts"])), [
+    "cpp-extensions-arm64",
+  ]);
+  assert.deepEqual(selected(plan(["test/cpp-extensions-fixture.ts"])), [
+    "cpp-extensions-arm64",
+  ]);
   assert.ok(inputs["test/dotnet-build.test.ts"].includes("dotnet"));
   for (const entry of workflow.jobs.dotnet.strategy.matrix.include)
     assert.ok(inputs["scripts/" + entry.script].includes("dotnet"));

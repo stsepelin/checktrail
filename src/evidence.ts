@@ -9,6 +9,7 @@ import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
 import { swiftExtensionsEvidence } from "./swift-extensions-evidence.js";
+import { cppExtensionsEvidence } from "./cpp-extensions-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -384,6 +385,8 @@ export function evaluate(
     return { ...result, ...kustomizeEvidence(check, processes) };
   if (check.parser === "kubeconform-json")
     return { ...result, ...kubeconformEvidence(check, processes) };
+  if (check.parser === "cpp-extensions-json")
+    return { ...result, ...cppExtensionsEvidence(check, processes, root) };
   if (check.parser === "cpp-tools-json")
     return { ...result, ...cppToolsEvidence(check, processes) };
   if (check.parser === "clang-json")

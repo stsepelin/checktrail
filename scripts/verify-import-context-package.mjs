@@ -64,6 +64,7 @@ assert.ok(
     "dotnet-generator-extensions",
     "ruby-extensions",
     "swift-extensions",
+    "cpp-extensions",
   ].includes(profile),
 );
 if (profile === "review-context-limits")
@@ -139,6 +140,8 @@ if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
 if (profile === "dotnet-generator-extensions")
   process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
+if (profile === "cpp-extensions")
+  process.env.CHECKTRAIL_CPP_EXTENSIONS_INSTALLED = "1";
 if (profile === "swift-extensions")
   process.env.CHECKTRAIL_SWIFT_EXTENSIONS_INSTALLED = "1";
 if (profile === "ruby-extensions")
@@ -228,6 +231,10 @@ try {
     "gate-dotnet-generator-extensions.test.js",
     "gate-ruby-extensions.test.js",
     "gate-swift-extensions.test.js",
+    "gate-cpp-extensions.test.js",
+    "cpp-extensions-fixture.js",
+    "cpp-extensions-surfaces.test.js",
+    "cpp-extensions-cancel.test.js",
     "swift-extensions-fixture.js",
     "ruby-extensions-fixture.js",
     "ruby-tools-fixture.js",
