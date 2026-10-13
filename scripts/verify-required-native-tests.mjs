@@ -43,7 +43,8 @@ const timeoutMs =
   selection.includes("kotlin-extensions") ||
   selection.includes("scala-extensions") ||
   selection.includes("jvm-analyzer-extensions") ||
-  selection.includes("dotnet-format-extensions")
+  selection.includes("dotnet-format-extensions") ||
+  selection.includes("dotnet-generator-extensions")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),
@@ -91,9 +92,12 @@ const timeoutMs =
 const isolatedCaseWorkers =
   !fullSuite &&
   selection.length === 1 &&
-  ["jvm-wrappers", "scala-extensions", "dotnet-format-extensions"].includes(
-    selection[0],
-  )
+  [
+    "jvm-wrappers",
+    "scala-extensions",
+    "dotnet-format-extensions",
+    "dotnet-generator-extensions",
+  ].includes(selection[0])
     ? 1
     : 0;
 // Retain the single-profile report used by installed acceptance harnesses.

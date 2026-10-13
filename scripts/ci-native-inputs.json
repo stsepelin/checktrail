@@ -60,9 +60,40 @@
   "scripts/csharp-context-tools.Dockerfile": ["csharp-context-arm64"],
   "scripts/detekt-tools.Dockerfile": ["detekt"],
   "scripts/dotnet-build-fixture-projects.json": [
+    "c-context-arm64",
+    "cpp-context-arm64",
+    "csharp-context-arm64",
+    "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
-    "fsharp-format-arm64"
+    "dotnet-generator-extensions-arm64",
+    "fastapi-assembly-arm64",
+    "fsharp-context-arm64",
+    "fsharp-format-arm64",
+    "go-workspaces-arm64",
+    "hcl-context-arm64",
+    "java-context-arm64",
+    "javascript-extensions-arm64",
+    "jvm-analyzer-extensions-arm64",
+    "jvm-wrappers-arm64",
+    "kotlin-context-arm64",
+    "kotlin-extensions-arm64",
+    "kubernetes-extensions-arm64",
+    "kustomize-extensions-arm64",
+    "laravel-assembly-arm64",
+    "nuxt-assembly-arm64",
+    "php-context-arm64",
+    "php-extensions-arm64",
+    "python-extensions-arm64",
+    "ruby-context-arm64",
+    "rust-context-arm64",
+    "rust-extensions-arm64",
+    "scala-context-arm64",
+    "scala-extensions-arm64",
+    "swift-context-arm64",
+    "vb-context-arm64",
+    "vue-router-assembly-arm64",
+    "yaml-context-arm64"
   ],
   "scripts/dotnet-tools.Dockerfile": ["dotnet"],
   "scripts/executable-bundle-tools.Dockerfile": ["external-adapters"],
@@ -79,6 +110,7 @@
   "scripts/fsharp-context-tools.Dockerfile": ["fsharp-context-arm64"],
   "scripts/fsharp-format-tools.Dockerfile": [
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "scripts/gradle-tools.Dockerfile": ["gradle"],
@@ -111,6 +143,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -180,6 +213,7 @@
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fastapi-assembly-arm64",
     "fsharp-format-arm64",
     "javascript-extensions-arm64",
@@ -204,6 +238,7 @@
   "scripts/prepare-dotnet-build-dependencies.mjs": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "scripts/prepare-fastapi-assembly-tools.mjs": [
@@ -229,6 +264,7 @@
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
     "fsharp-format-arm64",
@@ -281,6 +317,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -356,6 +393,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -438,6 +476,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -492,6 +531,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -581,6 +621,12 @@
     "dotnet-format-extensions-arm64"
   ],
   "scripts/verify-dotnet-generated-container.mjs": ["dotnet"],
+  "scripts/verify-dotnet-generator-extensions-container.mjs": [
+    "dotnet-generator-extensions-arm64"
+  ],
+  "scripts/verify-dotnet-generator-extensions-guards.mjs": [
+    "dotnet-generator-extensions-arm64"
+  ],
   "scripts/verify-dotnet-method-container.mjs": ["dotnet"],
   "scripts/verify-dotnet-test-container.mjs": ["dotnet"],
   "scripts/verify-executable-bundle-package.mjs": ["external-adapters"],
@@ -604,6 +650,7 @@
     "csharp-context-arm64",
     "django-assembly-arm64",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
     "fsharp-format-arm64",
@@ -702,6 +749,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -819,66 +867,79 @@
   "test/dotnet-build-analyzers.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-cache.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-cancellation.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-controls.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-disabled.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-environment.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-evidence.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-fixture.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-generated.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-outputs.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-scope.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build-surfaces.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-build.test.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-format-extensions-fixture.ts": [
@@ -887,6 +948,7 @@
   "test/dotnet-format-fixture.ts": [
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64"
   ],
   "test/dotnet-format-surfaces.test.ts": [
@@ -901,27 +963,72 @@
   ],
   "test/dotnet-generated-fixture.ts": [
     "dotnet",
-    "dotnet-format-extensions-arm64"
+    "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64"
   ],
   "test/dotnet-generated-surfaces.test.ts": [
     "dotnet",
-    "dotnet-format-extensions-arm64"
+    "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64"
   ],
-  "test/dotnet-generated.test.ts": ["dotnet", "dotnet-format-extensions-arm64"],
-  "test/dotnet-method-fixture.ts": ["dotnet"],
-  "test/dotnet-method-surfaces.test.ts": ["dotnet"],
-  "test/dotnet-method.test.ts": ["dotnet"],
-  "test/dotnet-test-cancellation.test.ts": ["dotnet"],
-  "test/dotnet-test-controls.ts": ["dotnet"],
-  "test/dotnet-test-evidence.test.ts": ["dotnet"],
-  "test/dotnet-test-failures.test.ts": ["dotnet"],
-  "test/dotnet-test-fixture.ts": ["dotnet"],
-  "test/dotnet-test-lifecycle.test.ts": ["dotnet"],
-  "test/dotnet-test-names.test.ts": ["dotnet"],
-  "test/dotnet-test-outputs.test.ts": ["dotnet"],
-  "test/dotnet-test-scope.test.ts": ["dotnet"],
-  "test/dotnet-test-surfaces.test.ts": ["dotnet"],
-  "test/dotnet-test.test.ts": ["dotnet"],
+  "test/dotnet-generated.test.ts": [
+    "dotnet",
+    "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-generator-extensions-fixture.ts": [
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-method-fixture.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-method-surfaces.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-method.test.ts": ["dotnet", "dotnet-generator-extensions-arm64"],
+  "test/dotnet-test-cancellation.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-controls.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-evidence.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-failures.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-fixture.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-lifecycle.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-names.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-outputs.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-scope.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test-surfaces.test.ts": [
+    "dotnet",
+    "dotnet-generator-extensions-arm64"
+  ],
+  "test/dotnet-test.test.ts": ["dotnet", "dotnet-generator-extensions-arm64"],
   "test/dotnet.test.ts": [
     "actionlint",
     "c-context-arm64",
@@ -934,6 +1041,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -1056,6 +1164,9 @@
     "dotnet-format-extensions-arm64"
   ],
   "test/gate-dotnet-fsharp-format.test.ts": ["fsharp-format-arm64"],
+  "test/gate-dotnet-generator-extensions.test.ts": [
+    "dotnet-generator-extensions-arm64"
+  ],
   "test/gate-go-extensions.test.ts": ["go-workspaces-arm64"],
   "test/gate-host-session-readiness.test.ts": ["go-workspaces-arm64"],
   "test/gate-javascript-extensions.test.ts": ["javascript-extensions-arm64"],
@@ -1182,6 +1293,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",
@@ -1403,6 +1515,7 @@
   "test/maven-fixture.ts": [
     "cpp-tools",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "gradle",
     "helm",
@@ -1421,6 +1534,7 @@
   "test/maven-surfaces.test.ts": [
     "cpp-tools",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "gradle",
     "helm",
@@ -1437,6 +1551,7 @@
   "test/maven.test.ts": [
     "cpp-tools",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
     "gradle",
     "helm",
@@ -1593,6 +1708,7 @@
     "django-assembly-arm64",
     "dotnet",
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "fsharp-context-arm64",

@@ -245,7 +245,10 @@ export async function validate(
         try {
           const processResult = await execute(
             command,
-            check.id === "dotnet.format-extensions"
+            [
+              "dotnet.format-extensions",
+              "dotnet.generator-extensions",
+            ].includes(check.id)
               ? 4 * 1024 * 1024
               : 1024 * 1024,
           );

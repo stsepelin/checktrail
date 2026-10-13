@@ -584,3 +584,19 @@ This uses the same bounded setup path as the formatter jobs instead of allowing
 BuildKit to spend the entire job budget fetching that base. The subsequent build
 steps disable networking for build commands; image digests, native callbacks and
 job deadlines remain unchanged. A failed or incomplete pull still fails setup.
+
+## Generator installation acceptance budget
+
+The generator extension job participates in the planner, native input inventory
+and final completion gate. It starts in the initial wave; F# format admission
+waits for actionlint so the initial expanded wave stays within twenty jobs.
+The existing four shared OS/Node variants and every native callback remain.
+
+The installed generator acceptance callback repeats its original native cases
+through a fresh offline production installation. Its subprocess deadline is
+19.5 minutes and its callback deadline is twenty minutes. The harness grants the
+same twenty-minute budget only to that exact physical compiled file and exact
+installed callback during isolated execution with the ordinary ten-minute file
+budget. Other file/callback selections, full-suite budgets, engine execution
+limits, container resource limits and the sixty-minute native job limit remain
+unchanged. Errors and terminating signals are asserted before receipt admission.

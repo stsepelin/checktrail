@@ -5,7 +5,7 @@ import path from "node:path";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath, URL } from "node:url";
 import { run } from "node:test";
 
 export const testFileWorkerLimit = () =>
@@ -123,10 +123,22 @@ async function executeRequiredTests(
         );
         execArgv = ["--import", pathToFileURL(preload).href];
       }
+      // Only this exact isolated wrapper needs time to repeat the native cases
+      // through a fresh installation. Other callbacks and file budgets stay bounded.
+      const caseTimeoutMs =
+        timeoutMs === 600000 &&
+        selection?.file ===
+          path.join(
+            fileURLToPath(new URL("../dist/test/", import.meta.url)),
+            "gate-dotnet-generator-extensions.test.js",
+          ) &&
+        selection.name === "dotnet-generator-extensions installed acceptance"
+          ? 1200000
+          : timeoutMs;
       for await (const { type, data } of run({
         files: selection ? [selection.file] : files,
         concurrency: selection ? 1 : fileWorkerLimit,
-        timeout: timeoutMs,
+        timeout: caseTimeoutMs,
         execArgv,
         ...(selection
           ? {

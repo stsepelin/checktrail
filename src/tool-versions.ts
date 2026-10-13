@@ -55,6 +55,7 @@ export async function toolsFor(
         "dotnet.format-whitespace",
         "dotnet.format-fsharp",
         "dotnet.format-extensions",
+        "dotnet.generator-extensions",
         "infrastructure.terraform-validate",
         "infrastructure.kustomize",
         "infrastructure.helm",
@@ -396,6 +397,7 @@ export async function toolsFor(
       "dotnet.test",
       "dotnet.format-whitespace",
       "dotnet.format-extensions",
+      "dotnet.generator-extensions",
     ].includes(check.id) &&
     check.commands[0]
   )

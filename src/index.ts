@@ -293,3 +293,7 @@ export {
   dotnetFormatExtensionsNativeSchema,
   dotnetFormatExtensionsPacketSchema,
 } from "./dotnet-format-extensions-contract.js";
+
+export { dotnetGeneratorExtensionsConfigSchema } from "./dotnet-generator-extensions.js";
+export { dotnetGeneratorIdentityNativeSchema } from "./dotnet-generator-extensions-contract.js";
+export { dotnetGeneratorExtensionsPacketSchema } from "./dotnet-generator-extensions-evidence.js";

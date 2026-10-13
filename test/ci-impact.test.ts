@@ -70,6 +70,7 @@ test("CI declared native inputs match every workflow controller profile matrix a
   ]);
   assert.deepEqual(selected(plan(["scripts/fsharp-format-tools.Dockerfile"])), [
     "dotnet-format-extensions-arm64",
+    "dotnet-generator-extensions-arm64",
     "fsharp-format-arm64",
   ]);
   assert.ok(inputs["test/dotnet-build.test.ts"].includes("dotnet"));
@@ -232,6 +233,13 @@ test("CI initial wave stays within the free runner ceiling and selected jobs sur
     workflow.jobs["ci-complete"].needs.toSorted(),
     ["ci-plan", "checks", "host-validation", ...jobs].sort(),
   );
+  assert.deepEqual(workflow.jobs["dotnet-generator-extensions-arm64"].needs, [
+    "ci-plan",
+  ]);
+  assert.deepEqual(workflow.jobs["fsharp-format-arm64"].needs, [
+    "ci-plan",
+    "actionlint",
+  ]);
   assert.equal(workflow.jobs["ci-complete"].if, "${{ always() }}");
   assert.ok(workflow.on.schedule.length > 0);
   assert.ok(Object.hasOwn(workflow.on, "workflow_dispatch"));
