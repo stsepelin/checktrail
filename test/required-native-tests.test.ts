@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { access, mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile, realpath } from "node:fs/promises";
 import { test } from "node:test";
 import { fixture } from "./helpers.js";
 
@@ -784,7 +784,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
         problem.name === "original-bound" && problem.reason === "failed",
     ),
   );
-  const ceiling = execute(requirements, { timeoutMs: 1200000 });
+  const ceiling = execute(requirements, { timeoutMs: 600000 });
   assert.equal(ceiling.complete, true, JSON.stringify(ceiling));
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT;
@@ -794,7 +794,7 @@ test("native acceptance accepts cumulative callbacks within file budgets and rej
       path.join(root, "ledger-runner.mjs"),
       new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
       JSON.stringify(requirements),
-      JSON.stringify({ timeoutMs: 1200001 }),
+      JSON.stringify({ timeoutMs: 600001 }),
     ],
     { encoding: "utf8", timeout: 10000, env },
   );
@@ -1075,4 +1075,97 @@ test("formatting acceptance CLI isolates exact callbacks without admitting an ad
     ).size,
     3,
   );
+});
+
+test("required native runner grants the installation budget only to exact isolated generator and Ruby installed callbacks", async (t) => {
+  const root = await realpath(await fixture(t, {}));
+  const helper = path.join(root, "scripts/required-test-evidence.mjs");
+  await mkdir(path.dirname(helper), { recursive: true });
+  await writeFile(
+    helper,
+    await (
+      await import("node:fs/promises")
+    ).readFile(
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url),
+    ),
+  );
+  const profiles = ["dotnet-generator-extensions", "ruby-extensions"];
+  const requirements = profiles.flatMap((profile) => {
+    const exact = path.join(root, "dist/test", `gate-${profile}.test.js`);
+    const adjacent = path.join(root, "other", `gate-${profile}.test.js`);
+    const installed = `${profile} installed acceptance`;
+    return [
+      { file: exact, name: installed },
+      { file: exact, name: `${profile} broken acceptance` },
+      { file: exact, name: installed + "-extra" },
+      { file: adjacent, name: installed },
+    ];
+  });
+  for (const file of new Set(requirements.map((item) => item.file))) {
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(
+      file,
+      "// Synthetic timer-admission fixture; no native acceptance.\n",
+    );
+  }
+  const runner = path.join(root, "timer-admission.mjs");
+  // Observe options at the actual node:test boundary without waiting twenty minutes.
+  // Synthetic terminal events exercise harness accounting, not native acceptance.
+  await writeFile(
+    runner,
+    `
+import{registerHooks}from'node:module';import{pathToFileURL}from'node:url';
+const helper=pathToFileURL(process.argv[2]).href,expected=JSON.parse(process.argv[3]),options=JSON.parse(process.argv[4]);
+globalThis.originalTimerCalls=[];globalThis.originalTimerExpected=expected;
+const stub="export async function* run(options){globalThis.originalTimerCalls.push({files:options.files,timeout:options.timeout,patterns:options.testNamePatterns?.map(String)});for(const item of globalThis.originalTimerExpected){if(options.files.includes(item.file)&&(!options.testNamePatterns||options.testNamePatterns.some(p=>p.test(item.name))))yield{type:'test:pass',data:{file:item.file,name:item.name,details:{type:'test',duration_ms:0}}}}}";
+registerHooks({resolve(specifier,context,next){return specifier==='node:test'&&context.parentURL===helper?{url:'data:text/javascript,'+encodeURIComponent(stub),shortCircuit:true}:next(specifier,context)}});
+const{runRequiredTests}=await import(helper);const report=await runRequiredTests(expected,options);console.log(JSON.stringify({report,calls:globalThis.originalTimerCalls}));
+`,
+  );
+  const invoke = (
+    requirements: { file: string; name: string }[],
+    timeoutMs = 600000,
+    isolatedCaseWorkers = 1,
+  ) => {
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        runner,
+        helper,
+        JSON.stringify(requirements),
+        JSON.stringify({ timeoutMs, isolatedCaseWorkers }),
+      ],
+      { env, encoding: "utf8", timeout: 10000 },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout) as {
+      report: TerminalReceipt;
+      calls: { files: string[]; timeout: number; patterns?: string[] }[];
+    };
+  };
+  const admitted = invoke(requirements);
+  assert.equal(admitted.report.complete, true, JSON.stringify(admitted));
+  assert.equal(admitted.report.required, requirements.length);
+  assert.equal(admitted.report.passed, requirements.length);
+  assert.deepEqual(
+    admitted.calls.map((call) => call.timeout),
+    [1200000, 600000, 600000, 600000, 1200000, 600000, 600000, 600000],
+  );
+  assert.deepEqual(
+    admitted.calls.map((call) => call.files),
+    requirements.map((item) => [item.file]),
+  );
+  assert.ok(admitted.calls.every((call) => call.patterns?.length === 1));
+  for (const budget of [1000, 599999]) {
+    const custom = invoke([requirements[0]!, requirements[4]!], budget);
+    assert.deepEqual(
+      custom.calls.map((call) => call.timeout),
+      [budget, budget],
+    );
+  }
+  const batch = invoke(requirements, 600000, 0);
+  assert.equal(batch.calls.length, 1);
+  assert.equal(batch.calls[0]!.timeout, 600000);
 });
