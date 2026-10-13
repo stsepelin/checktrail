@@ -83,6 +83,13 @@ aggregate request budget. The callback and guard-process envelopes allow up to
 unchanged. The original measurement binds its earlier tested callback bytes;
 subsequent [CI repair evidence](measurements/ruby-extensions-ci-request-isolation-2026-10-10.json) is tracked separately.
 
+The shared required-test harness retains a ten-minute admission ceiling and file
+budget for ordinary isolated callbacks. Only the exact Ruby installed-package
+callback at its expected physical path receives twenty minutes when the caller
+selects the normal ten-minute budget. Shorter custom budgets and non-isolated
+file budgets remain unchanged. The same narrow policy preserves the existing
+generator installed-package allowance.
+
 The prepared runtime uses pinned MRI 4.0.7, Bundler 4.0.20, RuboCop 1.91.0,
 RSpec Core 3.13.6 and Minitest 6.0.6, with signed/checksummed compiler archives.
 Native package restoration compiles selected source gems in an owned directory.

@@ -839,6 +839,7 @@ test(
       { env, encoding: "utf8", timeout: 1170000, maxBuffer: 4 * 1048576 },
     );
     assert.equal(installed.error, undefined, installed.error?.message ?? "");
+    assert.equal(installed.signal, null);
     assert.equal(installed.status, 0, installed.stderr.slice(-3000));
     const receipt = JSON.parse(installed.stdout);
     assert.equal(receipt.profile.complete, true);
