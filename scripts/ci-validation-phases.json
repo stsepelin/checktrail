@@ -1,0 +1,227 @@
+{
+  "mutations": [
+    {
+      "script": "scripts/verify-posix-cleanup-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-benchmark-multi-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-workflow-multi-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-selected-syntax-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-host-session-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-confidence-provenance-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-go-context-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-python-context-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-acceptance-ledger-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-laravel-cache-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-import-history-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-multi-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-context-limits-guards.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-go-workspace-guards.mjs",
+      "args": [],
+      "env": {}
+    }
+  ],
+  "packages": [
+    {
+      "script": "scripts/verify-init-publication-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-laravel-cache-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/smoke-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-posix-cleanup-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-budget-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-workflow-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-workflow-package.mjs",
+      "args": ["--all-candidates"],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-workflow-audit-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-import-context-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-import-context-package.mjs",
+      "args": [],
+      "env": {
+        "CHECKTRAIL_IMPORT_CONTEXT_PROFILE": "selected-syntax-context"
+      }
+    },
+    {
+      "script": "scripts/verify-import-context-package.mjs",
+      "args": [],
+      "env": {
+        "CHECKTRAIL_IMPORT_CONTEXT_PROFILE": "import-history"
+      }
+    },
+    {
+      "script": "scripts/verify-native-raw-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-native-json-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-claim-probability-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-calibration-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-multi-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-paired-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-benchmark-score-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-benchmark-multi-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-review-benchmark-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-mcp-tasks-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-php-review-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-rust-format-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-clippy-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-rust-test-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-rust-workspace-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-go-matrix-package.mjs",
+      "args": [],
+      "env": {}
+    },
+    {
+      "script": "scripts/verify-import-context-package.mjs",
+      "args": [],
+      "env": {
+        "CHECKTRAIL_IMPORT_CONTEXT_PROFILE": "review-context-limits"
+      }
+    },
+    {
+      "script": "scripts/verify-go-workspace-package.mjs",
+      "args": [],
+      "env": {}
+    }
+  ]
+}
