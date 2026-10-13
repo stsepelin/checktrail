@@ -12,6 +12,14 @@ the unchanged checkout. Each lane has its own temporary namespace. Prepared
 dependencies and caches are reused; test results are not cached. Every package
 controller still performs its original fresh-install verification.
 
+Within required full-suite execution, the complete physical JavaScript extension
+test file runs in an exclusive process after the shared file wave. Its loader,
+linter, build, lifecycle and fresh-install callbacks still run, including callbacks
+outside the selected required profiles. It receives a private temporary namespace
+that is removed after execution. Adjacent filenames stay in the parallel wave;
+file and callback deadlines are unchanged. This scheduling boundary avoids
+competition with other full-suite files without weakening native cleanup checks.
+
 The controller waits for both lanes, rejects changed original inputs, and
 requires restoration of mutation input bytes and inventory. The original command
 inventory is retained in a fixture and checked by the full suite. Output is

@@ -100,6 +100,23 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
+  // This native file repeats loader/linter/build and fresh-install controls. Give
+  // its complete file an exclusive slot after the shared full-suite wave; named
+  // selection would omit unlisted callbacks. All existing deadlines still apply.
+  const exclusiveFiles =
+    additionalFiles.length > 0
+      ? files.filter((file) =>
+          ["javascript-extensions"].some(
+            (profile) =>
+              file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ),
+          ),
+        )
+      : [];
+  const exclusiveSet = new Set(exclusiveFiles);
   const before = await Promise.all(files.map(fingerprint));
   const observed = new Map(expected.map((item) => [key(item), []]));
   const terminalEvents = [];
@@ -107,11 +124,11 @@ async function executeRequiredTests(
   let passed = 0;
   let optionalSkipped = 0;
   let terminalEventCount = 0;
-  const collect = async (selection) => {
+  const collect = async (selection, batch = files, exclusive = false) => {
     let temporary;
     let execArgv = [];
     try {
-      if (selection) {
+      if (selection || exclusive) {
         temporary = await mkdtemp(
           path.join(tmpdir(), "checktrail-native-case-"),
         );
@@ -143,8 +160,8 @@ async function executeRequiredTests(
           ? 1200000
           : timeoutMs;
       for await (const { type, data } of run({
-        files: selection ? [selection.file] : files,
-        concurrency: selection ? 1 : fileWorkerLimit,
+        files: selection ? [selection.file] : batch,
+        concurrency: selection || exclusive ? 1 : fileWorkerLimit,
         timeout: caseTimeoutMs,
         execArgv,
         ...(selection
@@ -251,7 +268,11 @@ async function executeRequiredTests(
         (outcome) => outcome.status === "rejected",
       );
       if (rejected) throw rejected.reason;
-    } else await collect(null);
+    } else {
+      const sharedFiles = files.filter((file) => !exclusiveSet.has(file));
+      if (sharedFiles.length) await collect(null, sharedFiles);
+      for (const file of exclusiveFiles) await collect(null, [file], true);
+    }
   }
   const truncated = terminalEventCount > terminalEvents.length;
   if (truncated)
@@ -299,6 +320,9 @@ async function executeRequiredTests(
   });
   return {
     fileWorkerLimit,
+    ...(exclusiveFiles.length > 0
+      ? { exclusiveFullSuiteFileCount: exclusiveFiles.length }
+      : {}),
     ...(requiredCaseWorkerLimit > 0
       ? {
           requiredCaseWorkerLimit,
