@@ -127,7 +127,11 @@ async function executeRequiredTests(
       // through a fresh installation. Other callbacks and file budgets stay bounded.
       const caseTimeoutMs =
         timeoutMs === 600000 &&
-        ["dotnet-generator-extensions", "ruby-extensions"].some(
+        [
+          "dotnet-generator-extensions",
+          "ruby-extensions",
+          "swift-extensions",
+        ].some(
           (profile) =>
             selection?.file ===
               path.join(

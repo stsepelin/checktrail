@@ -741,7 +741,7 @@ test(
 );
 test(
   "dotnet-generator-extensions privacy acceptance",
-  { ...native, timeout: 300000 },
+  { ...native, timeout: 900000 },
   async (t) => {
     const root = await dotnetGeneratorMethodFixture(t).then((d) => d.root),
       file = path.join(root, "CSharpTests/CounterTests.cs"),
@@ -787,9 +787,11 @@ test(
           "--root",
           root,
           "--trust-project",
+          "--timeout-ms",
+          "120000",
           ...(detailed ? ["--detailed"] : []),
         ],
-        { encoding: "utf8", timeout: 120000, maxBuffer: 8 * 1048576 },
+        { encoding: "utf8", timeout: 150000, maxBuffer: 8 * 1048576 },
       );
       assert.equal(response.status, 1, response.stderr.slice(-1500));
       assert.equal(JSON.parse(response.stdout).outcome, "failed");
@@ -817,6 +819,8 @@ test(
               "serve",
               "--root",
               root,
+              "--timeout-ms",
+              "120000",
               ...(allow ? ["--allow-execution"] : []),
               ...(detailed ? ["--detailed"] : []),
             ],
@@ -838,14 +842,20 @@ test(
           ).isError,
           true,
         );
-        const response = await client.callTool({
-          name: "validation_run",
-          arguments: {},
-        });
+        const response = await client.callTool(
+          {
+            name: "validation_run",
+            arguments: { timeoutMs: 120000 },
+          },
+          { timeout: 150000 },
+        );
         if (allow) {
           assert.notEqual(response.isError, true);
           const encoded = JSON.stringify(response);
-          assert.ok(encoded.includes("failed"));
+          assert.equal(
+            (response.structuredContent as { outcome?: unknown }).outcome,
+            "failed",
+          );
           assert.equal(
             encoded.includes("original_generator_private_case_canary"),
             detailed,

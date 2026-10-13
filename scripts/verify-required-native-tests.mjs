@@ -45,7 +45,8 @@ const timeoutMs =
   selection.includes("jvm-analyzer-extensions") ||
   selection.includes("dotnet-format-extensions") ||
   selection.includes("dotnet-generator-extensions") ||
-  selection.includes("ruby-extensions")
+  selection.includes("ruby-extensions") ||
+  selection.includes("swift-extensions")
     ? 600000
     : selection.some((profile) =>
           ["javascript-extensions", "rust-extensions"].includes(profile),
@@ -99,6 +100,7 @@ const isolatedCaseWorkers =
     "dotnet-format-extensions",
     "dotnet-generator-extensions",
     "ruby-extensions",
+    "swift-extensions",
   ].includes(selection[0])
     ? 1
     : 0;

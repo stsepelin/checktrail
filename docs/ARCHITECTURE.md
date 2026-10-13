@@ -88,7 +88,12 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation; deeper children must disappear before their waiting descendant parents are stopped. Direct children are signalled before root termination, then their disappearance is required under the same bounded cleanup deadline; unavailable identity or surviving-process evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
+POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation. The observed family
+must acknowledge quiescence before deeper children are killed; children forked
+before that acknowledgement are included by repeated snapshots. Physical child
+exit precedes parent termination, while final reaping follows root termination
+under one bounded cleanup deadline. Unavailable identity or surviving-process
+evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
 runner uses creation-time Job Object ownership and explicit completion/cleanup
 receipts; native acceptance and wider Windows profiles remain pending in
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md). No automatic dependency installation,
@@ -366,3 +371,5 @@ The opt-in `dotnet.format-extensions` profile uses the shared engine and build p
 The opt-in `dotnet.generator-extensions` check shares build/test execution and adds pinned native PE/PDB and reflected NUnit method witnesses. DOTNET-GENERATOR-EXTENSIONS.md defines exact project-reference graphs, compiled overload signatures, receiver/declaring-module ancestry, physical source reconciliation and current-input receipt admission. Native observations remain separate from assertion correctness, review truth and full Gate A acceptance.
 
 The opt-in Ruby extension checks share the original Ruby engine/runner and use strict configuration version 2. [RUBY-EXTENSIONS.md](RUBY-EXTENSIONS.md) defines evaluated manifest/source witnesses, file-qualified RSpec shared receiver and hook cohorts, actual inherited Minitest method ownership, and mandatory current-input receipt admission. Native observations remain separate from assertion correctness, review truth and final Gate A acceptance.
+
+The opt-in [Swift extension checks](SWIFT-EXTENSIONS.md) reconcile declared local package/plugin graphs, physical generated compiler roles and selected Linux SDK/header/macro bytes. Current-root receipt admission and native XCTest/Swift Testing accounting share the engine with CLI and MCP. Wider artifact/license and runtime-matrix obligations remain separate.

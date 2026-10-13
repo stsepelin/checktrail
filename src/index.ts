@@ -310,3 +310,9 @@ export {
   rubyExtensionsHookWitnessSchema,
   rubyExtensionsRuntimeWitnessSchema,
 } from "./ruby-extensions-contract.js";
+
+export {
+  swiftExtensionsConfigSchema,
+  swiftExtensionsInvocationSchema,
+} from "./swift-extensions-contract.js";
+export type { SwiftExtensionsConfig } from "./swift-extensions-contract.js";
