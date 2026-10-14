@@ -381,13 +381,14 @@ test("MCP finding comparison retains native failure and enforces startup detail 
 
 test(
   "MCP remains responsive during validation, rejects overlap, and accepts a run after cancellation",
-  { timeout: 10_000 },
+  { timeout: 30_000 },
   async (t) => {
     const root = await fixture(t, {
       "package.json": nodeManifest,
       "slow.test.js": `import {test} from 'node:test';
 import fs from 'node:fs';
 test('waits', async () => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
   fs.mkdirSync('.checktrail', {recursive:true});
   fs.writeFileSync('.checktrail/ready', 'ready');
   await new Promise(resolve => setTimeout(resolve, 60000));
@@ -395,59 +396,68 @@ test('waits', async () => {
     });
     const client = await connect(t, root, ["--allow-execution"]);
     const controller = new AbortController();
-    t.after(() => controller.abort());
     const run = client.callTool(
       { name: "validation_run", arguments: { timeoutMs: 120_000 } },
       { signal: controller.signal },
     );
     const cancelled = assert.rejects(run, /abort|cancel/i);
-    let ready = false;
-    for (let attempt = 0; attempt < 100; attempt++) {
-      try {
-        ready =
-          (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
-          "ready";
-        if (ready) break;
-      } catch {
-        // The native fixture has not created its readiness marker yet.
+    // Cancellation must settle before the registered client teardown, including
+    // when readiness or overlap assertions fail.
+    void cancelled.catch(() => {});
+    try {
+      let ready = false;
+      const readinessDeadline = performance.now() + 20000;
+      while (performance.now() < readinessDeadline) {
+        try {
+          ready =
+            (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
+            "ready";
+          if (ready) break;
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+          // The native fixture has not published its readiness marker yet.
+        }
+        await delay(25);
       }
-      await delay(25);
-    }
-    assert.equal(ready, true);
-    await client.notification({
-      method: "notifications/cancelled",
-      params: { requestId: "0" },
-    });
-    const plan = await client.callTool({
-      name: "validation_plan",
-      arguments: {},
-    });
-    assert.equal(plan.isError, undefined);
-    const overlap = await client.callTool({
-      name: "validation_run",
-      arguments: {},
-    });
-    assert.equal(overlap.isError, true);
-    assert.match(JSON.stringify(overlap.content), /already running/);
-    controller.abort();
-    await cancelled;
-    await writeFile(path.join(root, "slow.test.js"), passingTest);
-    for (let attempt = 0; attempt < 40; attempt++) {
-      const next = await client.callTool({
-        name: "validation_run",
-        arguments: { timeoutMs: 5000 },
+      assert.equal(ready, true, "Native validation baseline did not start");
+      await client.notification({
+        method: "notifications/cancelled",
+        params: { requestId: "0" },
       });
-      if (!next.isError) {
-        assert.equal(
-          (next.structuredContent as { outcome: string }).outcome,
-          "passed",
-        );
-        return;
+      const plan = await client.callTool({
+        name: "validation_plan",
+        arguments: {},
+      });
+      assert.equal(plan.isError, undefined);
+      const overlap = await client.callTool({
+        name: "validation_run",
+        arguments: {},
+      });
+      assert.equal(overlap.isError, true);
+      assert.match(JSON.stringify(overlap.content), /already running/);
+      controller.abort();
+      await cancelled;
+      await writeFile(path.join(root, "slow.test.js"), passingTest);
+      for (let attempt = 0; attempt < 40; attempt++) {
+        const next = await client.callTool({
+          name: "validation_run",
+          arguments: { timeoutMs: 5000 },
+        });
+        if (!next.isError) {
+          assert.equal(
+            (next.structuredContent as { outcome: string }).outcome,
+            "passed",
+          );
+          return;
+        }
+        assert.match(JSON.stringify(next.content), /already running/);
+        await delay(25);
       }
-      assert.match(JSON.stringify(next.content), /already running/);
-      await delay(25);
+      assert.fail("Validation remained busy after cancellation");
+    } finally {
+      controller.abort();
+      await cancelled;
     }
-    assert.fail("Validation remained busy after cancellation");
   },
 );
 
