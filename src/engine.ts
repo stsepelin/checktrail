@@ -1,3 +1,4 @@
+import { reconcileConsumerImports } from "./consumer-imports.js";
 import { goTargetPreflight } from "./go-target.js";
 import {
   externalChecks,
@@ -120,6 +121,28 @@ export async function createPlan(
     selection.selectedProjects = [
       ...new Set(checks.map((check) => check.project)),
     ];
+  }
+  if (selection?.mode === "affected" && config?.workspace) {
+    const completeProjects = [...new Set(checks.map((check) => check.project))];
+    const opaque = checks.some(
+      (check) =>
+        check.id !== "javascript.node-test" ||
+        (check.environment?.length ?? 0) > 0,
+    );
+    const imports = opaque
+      ? undefined
+      : await reconcileConsumerImports(
+          source,
+          completeProjects,
+          config.workspace,
+        );
+    if (!imports || imports.status !== "resolved") {
+      selection.mode = "full";
+      selection.selectedProjects = completeProjects;
+      selection.reason =
+        imports?.reason ??
+        "Native runner or granted environment impact requires complete project validation.";
+    }
   }
   const selectedChecks = selection
     ? checks.filter((check) =>

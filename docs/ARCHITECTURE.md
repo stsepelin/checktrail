@@ -50,7 +50,9 @@ are errors, not silently empty inventories. Scope exclusions accompany results.
 
 Checks validate whole discovered project units. Optional operator-selected Git
 base comparison narrows projects through an explicitly declared complete dependency
-graph, with full-plan fallback whenever impact is uncertain. See `WORKSPACES.md`.
+graph. A finite captured-source Node import/resource profile additionally checks
+that declarations retain captured consumers; unknown or inconsistent evidence
+retains the full plan. See `WORKSPACES.md` and `CONSUMER-IMPACT.md`.
 Persistent caching is not implemented. An inventory fingerprint
 identifies included file contents; it is not a claim about ignored dependencies,
 outside files, runtime services or hermetic reproducibility.

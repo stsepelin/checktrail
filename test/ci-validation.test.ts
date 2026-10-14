@@ -47,6 +47,49 @@ async function repository(t: TestContext, scripts: Record<string, string>) {
   return { root: await realpath(root), outer };
 }
 const prelude = `import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import{setTimeout as delay}from'node:timers/promises';const file='dist/src/subject.txt';console.log(JSON.stringify({root:process.cwd(),tmp:process.env.TMPDIR}));`;
+
+test("consumer impact retains its guard condition and fresh installed checks on every host matrix variant after cache preparation", async () => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  type Step = { run?: string; if?: string };
+  const checks: Step[] = workflow.jobs.checks.steps;
+  const hosts: Step[] = workflow.jobs["host-validation"].steps;
+  const guard = "node scripts/verify-consumer-impact-guards.mjs";
+  const installed = "node scripts/verify-consumer-impact-package.mjs";
+  assert.equal(checks.filter((step) => step.run === guard).length, 1);
+  assert.equal(
+    checks.find((step) => step.run === guard)!.if,
+    "runner.os == 'Linux' && matrix.node == '26'",
+  );
+  assert.ok(
+    checks.findIndex((step) => step.run === guard) >
+      checks.findIndex((step) => step.run === "npm run build"),
+  );
+  assert.equal(checks.filter((step) => step.run === installed).length, 0);
+  assert.equal(hosts.filter((step) => step.run === installed).length, 1);
+  assert.equal(
+    hosts.find((step) => step.run === installed)!.if,
+    undefined,
+    "Every existing host variant must execute fresh consumer acceptance",
+  );
+  const cache = hosts.findIndex(
+    (step) => step.run === "node scripts/prepare-package-cache.mjs",
+  );
+  const lanes = hosts.findIndex(
+    (step) => step.run === "node scripts/run-ci-validation.mjs",
+  );
+  const consumer = hosts.findIndex((step) => step.run === installed);
+  assert.ok(cache >= 0 && cache < lanes && lanes < consumer);
+  assert.deepEqual(
+    workflow.jobs["host-validation"].strategy.matrix,
+    workflow.jobs.checks.strategy.matrix,
+  );
+});
+
 test("CI lanes preserve every original matrix command and keep distinct package variants", async () => {
   const baseline = JSON.parse(
     await readFile(
