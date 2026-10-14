@@ -108,6 +108,20 @@ test("CI declared native inputs match every workflow controller profile matrix a
   assert.deepEqual(selected(plan(["test/helm-extensions-fixture.ts"])), [
     "helm-extensions-arm64",
   ]);
+  assert.deepEqual(selected(plan(["test/gate-mutation-runners.test.ts"])), [
+    "mutation-native-arm64",
+  ]);
+  assert.deepEqual(selected(plan(["test/mutation-native-fixture.ts"])), [
+    "mutation-native-arm64",
+    "mutation-passive-guards",
+  ]);
+  for (const file of [
+    "test/mutation-native-evidence.test.ts",
+    "test/mutation-native-copy.test.ts",
+    "test/mutation-native-guards.test.ts",
+    "test/mutation-native-selection.test.ts",
+  ])
+    assert.deepEqual(selected(plan([file])), ["mutation-passive-guards"]);
   assert.ok(inputs["test/dotnet-build.test.ts"].includes("dotnet"));
   for (const entry of workflow.jobs.dotnet.strategy.matrix.include)
     assert.ok(inputs["scripts/" + entry.script].includes("dotnet"));
@@ -542,4 +556,41 @@ test("CI full baseline pagination rejects missing changing duplicate and malform
     );
     assert.equal(requested, false);
   }
+});
+
+test("CI passive mutation guard receipt labels do not select native cohorts while explicit invocations still do", async () => {
+  const actual = await buildNativeInputs({
+    workflow: {
+      jobs: {
+        passive: {
+          steps: [{ run: "node scripts/verify-mutation-guards.mjs passive" }],
+        },
+        native: {
+          steps: [
+            {
+              run: "node scripts/verify-required-native-tests.mjs mutation-vitest",
+            },
+          ],
+        },
+      },
+    },
+    requirements: {
+      "mutation-runners": [{ file: "dist/test/native-cohort.test.js" }],
+      "mutation-vitest": [{ file: "dist/test/native-cohort.test.js" }],
+    },
+    files: [
+      "scripts/verify-mutation-guards.mjs",
+      "scripts/verify-required-native-tests.mjs",
+      "test/native-cohort.test.ts",
+      "test/passive-cohort.test.ts",
+    ],
+    readText: (file: string) =>
+      Promise.resolve(
+        file === "scripts/verify-mutation-guards.mjs"
+          ? 'import "../test/passive-cohort.test.js"; const receipt = {profile: "mutation-runners"};'
+          : "",
+      ),
+  });
+  assert.deepEqual(actual["test/passive-cohort.test.ts"], ["passive"]);
+  assert.deepEqual(actual["test/native-cohort.test.ts"], ["native"]);
 });

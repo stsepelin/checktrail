@@ -193,6 +193,7 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -274,12 +275,15 @@
   "scripts/nuxt-tools/package.json": ["nuxt", "nuxt-assembly-arm64"],
   "scripts/php-context-tools.Dockerfile": [
     "laravel-assembly-arm64",
+    "mutation-native-arm64",
     "php-context-arm64",
     "php-extensions-arm64"
   ],
   "scripts/php-review-tools.Dockerfile": ["php-review"],
   "scripts/php-review-tools/composer.json": ["php-review"],
   "scripts/php-review-tools/composer.lock": ["php-review"],
+  "scripts/php-tools/composer.json": ["mutation-native-arm64"],
+  "scripts/php-tools/composer.lock": ["mutation-native-arm64"],
   "scripts/prepare-acceptance-cache-subset.mjs": [
     "cpp-extensions-arm64",
     "django-assembly-arm64",
@@ -295,6 +299,7 @@
     "kubernetes-extensions-arm64",
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
+    "mutation-native-arm64",
     "nuxt-assembly-arm64",
     "php-extensions-arm64",
     "python-extensions-arm64",
@@ -362,6 +367,7 @@
     "kubernetes-extensions-arm64",
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
+    "mutation-native-arm64",
     "nuxt-assembly-arm64",
     "php-context-arm64",
     "php-extensions-arm64",
@@ -392,6 +398,7 @@
   ],
   "scripts/prepare-maven-dependencies.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/prepare-maven-tools.mjs": ["jvm-wrappers-arm64", "maven"],
+  "scripts/prepare-mutation-tools.mjs": ["mutation-native-arm64"],
   "scripts/prepare-package-cache.mjs": [
     "actionlint",
     "c-context-arm64",
@@ -428,6 +435,7 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -453,7 +461,10 @@
     "windows",
     "yaml-context-arm64"
   ],
-  "scripts/prepare-python-extensions-tools.mjs": ["python-extensions-arm64"],
+  "scripts/prepare-python-extensions-tools.mjs": [
+    "mutation-native-arm64",
+    "python-extensions-arm64"
+  ],
   "scripts/prepare-ruby-tools-container-dependencies.mjs": [
     "ruby-extensions-arm64",
     "ruby-tools"
@@ -521,6 +532,7 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -547,7 +559,10 @@
     "vue-router-assembly-arm64",
     "yaml-context-arm64"
   ],
-  "scripts/python-extensions-tools.Dockerfile": ["python-extensions-arm64"],
+  "scripts/python-extensions-tools.Dockerfile": [
+    "mutation-native-arm64",
+    "python-extensions-arm64"
+  ],
   "scripts/python-extensions-wheels.json": ["python-extensions-arm64"],
   "scripts/request-cpp-tool-archive.mjs": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/request-gradle-distribution.mjs": ["gradle", "jvm-wrappers-arm64"],
@@ -616,6 +631,8 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
+    "mutation-passive-guards",
     "nuxt-assembly-arm64",
     "php-context-arm64",
     "php-extensions-arm64",
@@ -677,6 +694,8 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
+    "mutation-passive-guards",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -865,6 +884,12 @@
   "scripts/verify-laravel-supplemental.mjs": ["laravel-assembly-arm64"],
   "scripts/verify-maven-container.mjs": ["maven"],
   "scripts/verify-maven-package.mjs": ["maven"],
+  "scripts/verify-mutation-container.mjs": ["mutation-native-arm64"],
+  "scripts/verify-mutation-guards.mjs": [
+    "mutation-native-arm64",
+    "mutation-passive-guards"
+  ],
+  "scripts/verify-mutation-package.mjs": ["mutation-native-arm64"],
   "scripts/verify-nuxt-assembly-container.mjs": ["nuxt-assembly-arm64"],
   "scripts/verify-nuxt-assembly-guards.mjs": ["nuxt-assembly-arm64"],
   "scripts/verify-nuxt-container.mjs": ["nuxt"],
@@ -912,6 +937,8 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
+    "mutation-passive-guards",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -1303,6 +1330,7 @@
     "kustomize-extensions-arm64"
   ],
   "test/gate-kustomize-extensions.test.ts": ["kustomize-extensions-arm64"],
+  "test/gate-mutation-runners.test.ts": ["mutation-native-arm64"],
   "test/gate-php-extensions.test.ts": ["php-extensions-arm64"],
   "test/gate-python-extensions.test.ts": ["python-extensions-arm64"],
   "test/gate-ruby-extensions.test.ts": ["ruby-extensions-arm64"],
@@ -1457,6 +1485,8 @@
     "kustomize-extensions-arm64",
     "laravel-assembly-arm64",
     "maven",
+    "mutation-native-arm64",
+    "mutation-passive-guards",
     "nuxt",
     "nuxt-assembly-arm64",
     "php-context-arm64",
@@ -1746,12 +1776,25 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
+  "test/mutation-native-copy.test.ts": ["mutation-passive-guards"],
+  "test/mutation-native-evidence.test.ts": ["mutation-passive-guards"],
+  "test/mutation-native-fixture.ts": [
+    "mutation-native-arm64",
+    "mutation-passive-guards"
+  ],
+  "test/mutation-native-guards.test.ts": ["mutation-passive-guards"],
+  "test/mutation-native-lifecycle-fixture.ts": [
+    "mutation-native-arm64",
+    "mutation-passive-guards"
+  ],
+  "test/mutation-native-selection.test.ts": ["mutation-passive-guards"],
   "test/mypy-evidence.test.ts": ["python-extensions-arm64"],
   "test/mypy.test.ts": [
     "django-assembly-arm64",
     "external-adapters",
     "fastapi-assembly-arm64",
     "go-workspaces-arm64",
+    "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
@@ -1774,15 +1817,15 @@
   ],
   "test/node-loaders.test.ts": ["javascript-extensions-arm64"],
   "test/nuxt.test.ts": ["nuxt", "nuxt-assembly-arm64"],
-  "test/pest.test.ts": ["php-extensions-arm64"],
+  "test/pest.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
   "test/php-cs-fixer.test.ts": ["php-extensions-arm64", "php-review"],
   "test/php-extension-planning.test.ts": ["php-extensions-arm64"],
   "test/php-extensions-fixture.ts": ["php-extensions-arm64"],
   "test/php-extensions.test.ts": ["php-extensions-arm64"],
   "test/php-review-surfaces.test.ts": ["php-extensions-arm64", "php-review"],
-  "test/phpstan.test.ts": ["php-extensions-arm64"],
-  "test/phpunit.test.ts": ["php-extensions-arm64"],
-  "test/pint.test.ts": ["php-extensions-arm64"],
+  "test/phpstan.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
+  "test/phpunit.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
+  "test/pint.test.ts": ["mutation-native-arm64", "php-extensions-arm64"],
   "test/playwright.test.ts": [
     "nuxt",
     "php-extensions-arm64",
@@ -1797,6 +1840,7 @@
     "external-adapters",
     "fastapi-assembly-arm64",
     "go-workspaces-arm64",
+    "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
@@ -1902,6 +1946,7 @@
     "external-adapters",
     "fastapi-assembly-arm64",
     "go-workspaces-arm64",
+    "mutation-native-arm64",
     "python-extensions-arm64",
     "rust-extensions-arm64"
   ],
@@ -2061,6 +2106,8 @@
   ],
   "test/tool-fixture.ts": [
     "javascript-extensions-arm64",
+    "mutation-native-arm64",
+    "mutation-passive-guards",
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",

@@ -12,6 +12,7 @@ const generic = new Set([
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
   "scripts/verify-import-context-package.mjs",
+  "scripts/verify-mutation-guards.mjs",
 ]);
 const compiledSource = (file) =>
   file.startsWith("dist/") ? file.slice(5).replace(/\.js$/, ".ts") : file;

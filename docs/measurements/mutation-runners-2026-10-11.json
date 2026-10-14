@@ -1,0 +1,1187 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "profile": "mutation-runners",
+  "sourceBasis": {
+    "branch": "pr/gate-a-mutation-runners",
+    "parentCommit": "dc775254d50b11da7dd4ce460f4e667442b1390e",
+    "validationInputsBeforeDocumentationPromotion": true
+  },
+  "frozenInputs": {
+    "scopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+    "nativeInputManifestSha256": "466a7940d36771b114a6b0f3e9230d4d6223073cda31e6b65bcd5e13c636def0",
+    "beforeAfterUnchanged": true,
+    "files": [
+      {
+        "file": "src/mutation-native.ts",
+        "sha256": "e53232c0f7602f7747260a737f370c4f1fadc86fb396431e2792aeec5a09538b"
+      },
+      {
+        "file": "src/mutation-native-copy.ts",
+        "sha256": "ef46f898bdfdd924fa3ee48c1e5ebf5c503a557cc4df3daa288940171a65c80f"
+      },
+      {
+        "file": "src/mutation-native-evidence.ts",
+        "sha256": "f683e6e4bef9d14864fa290d735d8fe4f066ce1b2f5efc5b2df29681675cc97f"
+      },
+      {
+        "file": "src/mutation-native-schema.ts",
+        "sha256": "3291cc04dbc4a46aef435579a7662906b7f252d925eccf84a3bda6735cef7e2d"
+      },
+      {
+        "file": "src/mutation-vitest-runner.ts",
+        "sha256": "079507c11de52feb96c116b83ca75c8f23b5ac0acea8ba0d3c3b6da94f1796f4"
+      },
+      {
+        "file": "src/mutation-jest-runner.ts",
+        "sha256": "ef860aecccffee5d0dd4007e42bf6e903699534717abdc2fe617245d9df8562f"
+      },
+      {
+        "file": "src/mutation-jest-environment.ts",
+        "sha256": "fe31b934a137126e0bfe5f650ca58b5987eb308568d3cdba41033c3a5acc76ac"
+      },
+      {
+        "file": "src/mutation-pytest-runner.ts",
+        "sha256": "b94787f92eaadc102022b34b5010859820cffeafe56428c40e013e687c1feff5"
+      },
+      {
+        "file": "src/mutation-phpunit-runner.ts",
+        "sha256": "e719bba3e4e804c25d068507fe488e6635864b8efc3d71beecb5193031eb528d"
+      },
+      {
+        "file": "src/mutation.ts",
+        "sha256": "32ef7abe936b1f1e4850e502c8a00f4cbcd3f578022d4cd87232a3483cf8f371"
+      },
+      {
+        "file": "test/gate-mutation-runners.test.ts",
+        "sha256": "f83561d5f29c8e4bf8257bd4d0e12b608d0445e0c543ec22d55fce9fa2ee7680"
+      },
+      {
+        "file": "test/mutation-native-fixture.ts",
+        "sha256": "dc088599885b222bc23a7e998db916fdb1f0486d04ecbed695e174cc05a4fe00"
+      },
+      {
+        "file": "test/mutation-native-lifecycle-fixture.ts",
+        "sha256": "1efc191b8793889c14bf08495a274f967d010c54dd21d19b1c826da26d666298"
+      },
+      {
+        "file": "test/mutation-native-guards.test.ts",
+        "sha256": "1ca30b09833b1a1bee0656c9ff389bd974eb5cf01f67727588041c95f0ccf22a"
+      },
+      {
+        "file": "scripts/verify-mutation-package.mjs",
+        "sha256": "7ca7a19066c90c8412afe0f31f5adf0d3d72ce73a04fd2086e6ae92a2769bc44"
+      },
+      {
+        "file": "scripts/verify-mutation-container.mjs",
+        "sha256": "95444964f2f4dbd25336e57e7bbc480d9eee7fef4af036c60f4e2d31b5079f57"
+      },
+      {
+        "file": "scripts/verify-mutation-guards.mjs",
+        "sha256": "9545c961c31e2149cbce158c9b66c48ea43ac64a4c5cfef3d5e10b20569c7d43"
+      },
+      {
+        "file": "scripts/mutation-controls.json",
+        "sha256": "fb8842f040518e03bbfbab0982210558968ef3ee80a7bf7ee3457ed72720b382"
+      },
+      {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "d37f8c71087fc742ad4dda699e225b5a295a91a027bdaad36db0fda34b4f9694"
+      }
+    ]
+  },
+  "acceptance": {
+    "allFourFamiliesRequired": true,
+    "families": [
+      {
+        "family": "vitest",
+        "profile": "mutation-vitest",
+        "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "runtime": {
+          "version": "22.23.2",
+          "platform": "linux",
+          "arch": "arm64",
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        "wallMs": 300926,
+        "source": {
+          "required": 9,
+          "passed": 9,
+          "complete": true,
+          "names": [
+            "mutation-runners broken acceptance",
+            "mutation-runners fixed acceptance",
+            "mutation-runners near-miss acceptance",
+            "mutation-runners prerequisite acceptance",
+            "mutation-runners stale acceptance",
+            "mutation-runners empty acceptance",
+            "mutation-runners privacy acceptance",
+            "mutation-runners lifecycle acceptance",
+            "mutation-runners installed acceptance"
+          ]
+        },
+        "installed": {
+          "tarballSha256": "6b9a117ab63ac900540a745e3fadf547c1882ee6f61f13e09ca0d757acb9ff80",
+          "sourceHarnessSha256": "62b620b3e78292bda78e0727fa91a3cb0eb3f2f1b1084d5dcc7f8b9d81352120",
+          "productionDependencyLockSha256": "330e0fd4a903e84e0b337497ab1d2a3693ff6a4337d59f9c57838e5c648d5108",
+          "offlineProductionInstall": true,
+          "lifecycleScriptsExecuted": false,
+          "harnessOutsideInstalledPackage": true,
+          "required": 9,
+          "passed": 9,
+          "complete": true
+        },
+        "lifecycle": [
+          {
+            "family": "vitest",
+            "stage": "source",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["95937124", "46034830"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["97958253", "46315125"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["96996461", "43612748"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["92561997", "43528995"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["98480902", "45417043"]
+              }
+            ]
+          },
+          {
+            "family": "vitest",
+            "stage": "installed",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["99427452", "45067997"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["97926035", "43459121"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["99467379", "45036038"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["99972959", "43493543"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["99587248", "45530955"]
+              }
+            ]
+          }
+        ],
+        "nativeGuards": {
+          "schemaVersion": 1,
+          "profile": "mutation-runners",
+          "mode": "native",
+          "family": "vitest",
+          "controls": [
+            {
+              "id": "native-copied-source",
+              "callback": "native mutation copied source changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "source",
+                "family": "vitest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-copied-dependency",
+              "callback": "native mutation copied dependency changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "dependency",
+                "family": "vitest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-case-cohort",
+              "callback": "native mutation changed test identity cannot kill",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "547d65d14d5f10c74920524da86b40ccee2a116ec2b945b24061164dca7b77f5",
+              "nativeWitness": {
+                "kind": "cohort",
+                "family": "vitest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 1,
+                  "failed": 1,
+                  "skipped": 0
+                },
+                "trialOutcome": "assertion-failure"
+              }
+            }
+          ],
+          "originalSourceUnchanged": true,
+          "callbacksUnchanged": true,
+          "allPaired": true,
+          "nativeInvocations": true,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        }
+      },
+      {
+        "family": "jest",
+        "profile": "mutation-jest",
+        "image": "sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+        "runtime": {
+          "version": "22.23.2",
+          "platform": "linux",
+          "arch": "arm64",
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        "wallMs": 859543,
+        "source": {
+          "required": 9,
+          "passed": 9,
+          "complete": true,
+          "names": [
+            "mutation-runners broken acceptance",
+            "mutation-runners fixed acceptance",
+            "mutation-runners near-miss acceptance",
+            "mutation-runners prerequisite acceptance",
+            "mutation-runners stale acceptance",
+            "mutation-runners empty acceptance",
+            "mutation-runners privacy acceptance",
+            "mutation-runners lifecycle acceptance",
+            "mutation-runners installed acceptance"
+          ]
+        },
+        "installed": {
+          "tarballSha256": "6b9a117ab63ac900540a745e3fadf547c1882ee6f61f13e09ca0d757acb9ff80",
+          "sourceHarnessSha256": "62b620b3e78292bda78e0727fa91a3cb0eb3f2f1b1084d5dcc7f8b9d81352120",
+          "productionDependencyLockSha256": "0373917c75b7b50eddaa315fc802401b6cd8bd12d331d46cd39b0be5d25452a5",
+          "offlineProductionInstall": true,
+          "lifecycleScriptsExecuted": false,
+          "harnessOutsideInstalledPackage": true,
+          "required": 9,
+          "passed": 9,
+          "complete": true
+        },
+        "lifecycle": [
+          {
+            "family": "jest",
+            "stage": "source",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["302646011", "44354748"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["287629364", "44903128"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["269171766", "45198209"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["253995706", "42803039"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["267680409", "42652087"]
+              }
+            ]
+          },
+          {
+            "family": "jest",
+            "stage": "installed",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["242507246", "41233752"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["237876167", "42163752"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["254525067", "40413374"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["255303349", "41348996"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157",
+                "cpuNanoseconds": ["264024336", "41480917"]
+              }
+            ]
+          }
+        ],
+        "nativeGuards": {
+          "schemaVersion": 1,
+          "profile": "mutation-runners",
+          "mode": "native",
+          "family": "jest",
+          "controls": [
+            {
+              "id": "native-copied-source",
+              "callback": "native mutation copied source changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "source",
+                "family": "jest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-copied-dependency",
+              "callback": "native mutation copied dependency changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "dependency",
+                "family": "jest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-case-cohort",
+              "callback": "native mutation changed test identity cannot kill",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "547d65d14d5f10c74920524da86b40ccee2a116ec2b945b24061164dca7b77f5",
+              "nativeWitness": {
+                "kind": "cohort",
+                "family": "jest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 1,
+                  "failed": 1,
+                  "skipped": 0
+                },
+                "trialOutcome": "assertion-failure"
+              }
+            }
+          ],
+          "originalSourceUnchanged": true,
+          "callbacksUnchanged": true,
+          "allPaired": true,
+          "nativeInvocations": true,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        }
+      },
+      {
+        "family": "pytest",
+        "profile": "mutation-pytest",
+        "image": "sha256:409b1b88e0e5a4a80c8fe32574e38e63f1b71e7ce7dbfe618b52cb1b3fc939c1",
+        "runtime": {
+          "version": "22.23.2",
+          "platform": "linux",
+          "arch": "arm64",
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        "wallMs": 376410,
+        "source": {
+          "required": 9,
+          "passed": 9,
+          "complete": true,
+          "names": [
+            "mutation-runners broken acceptance",
+            "mutation-runners fixed acceptance",
+            "mutation-runners near-miss acceptance",
+            "mutation-runners prerequisite acceptance",
+            "mutation-runners stale acceptance",
+            "mutation-runners empty acceptance",
+            "mutation-runners privacy acceptance",
+            "mutation-runners lifecycle acceptance",
+            "mutation-runners installed acceptance"
+          ]
+        },
+        "installed": {
+          "tarballSha256": "6b9a117ab63ac900540a745e3fadf547c1882ee6f61f13e09ca0d757acb9ff80",
+          "sourceHarnessSha256": "62b620b3e78292bda78e0727fa91a3cb0eb3f2f1b1084d5dcc7f8b9d81352120",
+          "productionDependencyLockSha256": "2d1ab92ccbee8699cf6bad749c22fcc7102fe0690859cec7f877bb1f50283db9",
+          "offlineProductionInstall": true,
+          "lifecycleScriptsExecuted": false,
+          "harnessOutsideInstalledPackage": true,
+          "required": 9,
+          "passed": 9,
+          "complete": true
+        },
+        "lifecycle": [
+          {
+            "family": "pytest",
+            "stage": "source",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["352356707", "43291209"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["356974707", "42136333"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["342670457", "42480291"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["313388874", "41550999"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["348733416", "43200207"]
+              }
+            ]
+          },
+          {
+            "family": "pytest",
+            "stage": "installed",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["342751082", "42382375"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["344678498", "42317916"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["347725582", "42591666"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["345187166", "42817708"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "f8e41e593584d0c8830fb2c2a1ea6509714bae6cd6dc860890d5023351514d0b",
+                "cpuNanoseconds": ["346190624", "42416668"]
+              }
+            ]
+          }
+        ],
+        "nativeGuards": {
+          "schemaVersion": 1,
+          "profile": "mutation-runners",
+          "mode": "native",
+          "family": "pytest",
+          "controls": [
+            {
+              "id": "native-copied-source",
+              "callback": "native mutation copied source changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "source",
+                "family": "pytest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-copied-dependency",
+              "callback": "native mutation copied dependency changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "dependency",
+                "family": "pytest",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-pytest-physical-output",
+              "callback": "native pytest output reaches the physical output bound",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "edb75e74da8eccfb62fa9e38f313f624c314898a55443f4ca280aee6b1b695d4",
+              "mutantSha256": "d8f63f44cefb08906ebdf88d9efd0564605e6078dc8ed4f04567c77d20712402"
+            }
+          ],
+          "originalSourceUnchanged": true,
+          "callbacksUnchanged": true,
+          "allPaired": true,
+          "nativeInvocations": true,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        }
+      },
+      {
+        "family": "phpunit",
+        "profile": "mutation-phpunit",
+        "image": "sha256:8d3ea8c33219cedcbbdb4eac1787709ced15b3f8102756a36c2f0b95fac84bef",
+        "runtime": {
+          "version": "22.23.2",
+          "platform": "linux",
+          "arch": "arm64",
+          "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+        },
+        "wallMs": 506140,
+        "source": {
+          "required": 9,
+          "passed": 9,
+          "complete": true,
+          "names": [
+            "mutation-runners broken acceptance",
+            "mutation-runners fixed acceptance",
+            "mutation-runners near-miss acceptance",
+            "mutation-runners prerequisite acceptance",
+            "mutation-runners stale acceptance",
+            "mutation-runners empty acceptance",
+            "mutation-runners privacy acceptance",
+            "mutation-runners lifecycle acceptance",
+            "mutation-runners installed acceptance"
+          ]
+        },
+        "installed": {
+          "tarballSha256": "6b9a117ab63ac900540a745e3fadf547c1882ee6f61f13e09ca0d757acb9ff80",
+          "sourceHarnessSha256": "62b620b3e78292bda78e0727fa91a3cb0eb3f2f1b1084d5dcc7f8b9d81352120",
+          "productionDependencyLockSha256": "8b3b79bdbff324dcb7ad538c2600ed4f951a7115cfc41690ed991854d658cfcd",
+          "offlineProductionInstall": true,
+          "lifecycleScriptsExecuted": false,
+          "harnessOutsideInstalledPackage": true,
+          "required": 9,
+          "passed": 9,
+          "complete": true
+        },
+        "lifecycle": [
+          {
+            "family": "phpunit",
+            "stage": "source",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["56813626", "34660749"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["51329458", "34764000"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["51273333", "34185792"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["49782833", "34216042"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["49237667", "34208332"]
+              }
+            ]
+          },
+          {
+            "family": "phpunit",
+            "stage": "installed",
+            "controls": [
+              {
+                "kind": "source",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["49645250", "34227417"]
+              },
+              {
+                "kind": "dependency",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["53871374", "34167500"]
+              },
+              {
+                "kind": "cancel",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["50966333", "34512333"]
+              },
+              {
+                "kind": "timeout",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["51452583", "34956459"]
+              },
+              {
+                "kind": "output",
+                "nativeBodies": 2,
+                "nativeExecutableSha256": "a8d6f8593d8398c104ba4d7c74b23a71764ac3bfa9eb4b0dc51a9dac10bc5234",
+                "cpuNanoseconds": ["51188041", "34553708"]
+              }
+            ]
+          }
+        ],
+        "nativeGuards": {
+          "schemaVersion": 1,
+          "profile": "mutation-runners",
+          "mode": "native",
+          "family": "phpunit",
+          "controls": [
+            {
+              "id": "native-copied-source",
+              "callback": "native mutation copied source changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "source",
+                "family": "phpunit",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-copied-dependency",
+              "callback": "native mutation copied dependency changes cannot pass",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "d1b4ab7867a30566ce442305387004d981f0b15c6b2a160f1dbea6674637cd67",
+              "mutantSha256": "485daf281662c160e20f07612af54f9030399a92c0b606255633ef071ebbcd59",
+              "nativeWitness": {
+                "kind": "dependency",
+                "family": "phpunit",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "trialOutcome": "passed"
+              }
+            },
+            {
+              "id": "native-phpunit-teardown-phase",
+              "callback": "native PHPUnit teardown cannot kill",
+              "originalPassed": true,
+              "mutantJavaScriptSyntaxChecked": true,
+              "mutantFailedAssertion": true,
+              "restoredPassed": true,
+              "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+              "mutantSha256": "61aa312c04f181ec3ae147ad56665544be63f3e47c9412193acc2cb8124dcb50",
+              "nativeWitness": {
+                "kind": "teardown",
+                "family": "phpunit",
+                "baselineTests": {
+                  "total": 2,
+                  "passed": 2,
+                  "failed": 0,
+                  "skipped": 0
+                },
+                "baselineOutcome": "passed",
+                "trialTests": {
+                  "total": 2,
+                  "passed": 0,
+                  "failed": 2,
+                  "skipped": 0
+                },
+                "trialOutcome": "assertion-failure"
+              }
+            }
+          ],
+          "originalSourceUnchanged": true,
+          "callbacksUnchanged": true,
+          "allPaired": true,
+          "nativeInvocations": true,
+          "inferenceInvoked": false,
+          "fieldEvaluationExecuted": false
+        }
+      }
+    ],
+    "sourceRequired": 36,
+    "sourcePassed": 36,
+    "installedRequired": 36,
+    "installedPassed": 36,
+    "sameSourcePackageAcrossFamilies": true,
+    "publicCiEntryPointAcceptance": {
+      "family": "vitest",
+      "sourcePassed": 9,
+      "installedPassed": 9,
+      "complete": true
+    },
+    "passiveGuards": {
+      "schemaVersion": 1,
+      "profile": "mutation-runners",
+      "mode": "passive",
+      "controls": [
+        {
+          "id": "physical-json-duplicate-keys",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "f5f31359d436de1d270742e7f2fe5b11f61078d751477f821ca6b6f7af4b07f8"
+        },
+        {
+          "id": "physical-cancellation",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "e6b4c03717d0f300823411223d2b7a7e8712c17e020fbffe975b6f48708632b2"
+        },
+        {
+          "id": "physical-deadline",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "5b7798dd850c5932e93f8757ee7053c170ebef8b7d6b7d0a5fd5a9881626e2c4"
+        },
+        {
+          "id": "physical-output-exhaustion",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "caad761c1f9fc13c7e0116554b7edd87585f1a277d2178e1eb9c6ca51abf977f"
+        },
+        {
+          "id": "physical-cleanup-error",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "947488649662397f6b4c0018a768ab293aae81f673878ff8b547fbdaa51fdf9f"
+        },
+        {
+          "id": "physical-selected-address",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "57f28c823bb41b1d99c80da319d340f4946717b84fb44c0d9cd00a9b3e9000c2"
+        },
+        {
+          "id": "native-flatness",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "15fab2cec97228852ea31c8de064f198a3a9e19f66d28318a6767b40b882899d"
+        },
+        {
+          "id": "native-vitest-pin",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "1ba02b1226ec07bea5dca1321d319460c4135f213cd40e2ec9d2518ed6163db8"
+        },
+        {
+          "id": "native-jest-assertion-identity",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "1d1a5749976809dfcd538ea188a1f7c59b123756282be61fe8e9ec4e02922789"
+        },
+        {
+          "id": "native-case-uniqueness",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "d81a3ff774777a80993c61fdb846f9f180b9d55ad0a1ddcc11dc38068da44e1c"
+        },
+        {
+          "id": "native-hook-completion",
+          "callback": "interrupted Vitest setup hooks differ from completed body assertion failures",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "b0bbd12cbbe614a86535da408c8e8b7dfafba3dd3f7d3aef8ec92bce29f34b0d"
+        },
+        {
+          "id": "native-pytest-setup",
+          "callback": "pytest exception identity and native phase are both needed for an assertion kill",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "251b13cc1a2bc509a2c6562a5928f5496181796513fbafa0d53ff1f6ece45a8e"
+        },
+        {
+          "id": "native-pytest-assertion",
+          "callback": "pytest exception identity and native phase are both needed for an assertion kill",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "02fe9698d7d01cf47f50daf72ea1d879a9e5387a75a2ec7ced475e33ef768e33"
+        },
+        {
+          "id": "physical-bounded-snapshot",
+          "callback": "physical mutation snapshots enforce byte limits, preserve the selected tool cohort and relocate contained links",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "deb5a284739230fd336436ec9dc810e845b60423b65944e061fc042361f408d2",
+          "mutantSha256": "28d66306e94d759ce6588bb347d762a4583926064143875f062b9b46df6610ba"
+        },
+        {
+          "id": "native-phpunit-exact-exception",
+          "callback": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "68d3e567c5174c3dca336b859e9ea54f56b2073f8246383d7e47280a5c0bf095"
+        },
+        {
+          "id": "native-phpunit-setup-order",
+          "callback": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "a292c534e8e871929e324b733612178ca3c6f12bbe25fb8e4f237cc1cc6df267"
+        },
+        {
+          "id": "native-phpunit-teardown-order",
+          "callback": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "a371f93d3edcd2e7c6b129fb8cdf722aca7396ddd56f46a6066254937713a42a"
+        },
+        {
+          "id": "native-exit-reconciliation",
+          "callback": "native JS counts, identity, flatness, pins, structured causes and physical completion all constrain admission",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "2d389bcd2bd7db56f0bf240be02ead069bb77654e91a6290634d96857147d16b"
+        },
+        {
+          "id": "native-phpunit-hook-failure-phase",
+          "callback": "PHPUnit exact throwable and lifecycle ordering distinguish setup, body and teardown failures",
+          "originalPassed": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "74f900f65089481bf4ebd2214da8fc28118c0a4e5e6af7f2e6b2ba870843c135",
+          "mutantSha256": "61aa312c04f181ec3ae147ad56665544be63f3e47c9412193acc2cb8124dcb50"
+        }
+      ],
+      "originalSourceUnchanged": true,
+      "callbacksUnchanged": true,
+      "allPaired": true,
+      "nativeInvocations": false,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "nativeGuardInstances": 12,
+    "lifecycleControls": 40,
+    "observedNativeBodies": 80
+  },
+  "fullProjectCheck": {
+    "command": "npm run check",
+    "totals": {
+      "tests": 1743,
+      "pass": 993,
+      "fail": 0,
+      "skipped": 750,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "optionalNativeSkipsArePassing": false,
+    "wallMs": 295399.319042
+  },
+  "ci": {
+    "separateFamilyMatrix": ["vitest", "jest", "pytest", "phpunit"],
+    "failFast": false,
+    "completionRequiresEveryFamilyAndPassiveGuards": true,
+    "actionlintPassed": true,
+    "currentPrChecksNotAttestedByLocalReceipts": true
+  },
+  "limits": {
+    "sourceBytesPerFile": 8388608,
+    "sourceBytesTotal": 67108864,
+    "dependencyBytesPerFile": 67108864,
+    "dependencyBytesTotal": 402653184,
+    "dependencyEntries": 32000,
+    "dependencyDepth": 32,
+    "nativeOutputBytesPerAttempt": 1048576,
+    "mutants": 8,
+    "defaultWallMs": 30000,
+    "maximumWallMs": 120000,
+    "inspectionAndCleanupAreCooperative": true,
+    "completeHermeticRuntimeClosureEstablished": false,
+    "nativeSourceColumnsIndependentlyAttested": false,
+    "executionSandboxed": false
+  },
+  "publishingBoundary": {
+    "packagePackedAndInstalledLocally": true,
+    "tagCreated": false,
+    "packagePublished": false
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "independentAiHostSessionsEstablished": false,
+  "gateAComplete": false,
+  "qualityAssessed": false
+}
