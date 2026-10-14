@@ -5,7 +5,7 @@ import path from "node:path";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath, URL } from "node:url";
 import { run } from "node:test";
 
 export const testFileWorkerLimit = () =>
@@ -64,7 +64,7 @@ async function executeRequiredTests(
   } = {},
 ) {
   assert.ok(
-    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 1200000,
+    Number.isSafeInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= 600000,
     "Required test harness timeout must be bounded",
   );
   assert.ok(
@@ -100,6 +100,23 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
+  // This native file repeats loader/linter/build and fresh-install controls. Give
+  // its complete file an exclusive slot after the shared full-suite wave; named
+  // selection would omit unlisted callbacks. All existing deadlines still apply.
+  const exclusiveFiles =
+    additionalFiles.length > 0
+      ? files.filter((file) =>
+          ["javascript-extensions"].some(
+            (profile) =>
+              file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ),
+          ),
+        )
+      : [];
+  const exclusiveSet = new Set(exclusiveFiles);
   const before = await Promise.all(files.map(fingerprint));
   const observed = new Map(expected.map((item) => [key(item), []]));
   const terminalEvents = [];
@@ -107,11 +124,11 @@ async function executeRequiredTests(
   let passed = 0;
   let optionalSkipped = 0;
   let terminalEventCount = 0;
-  const collect = async (selection) => {
+  const collect = async (selection, batch = files, exclusive = false) => {
     let temporary;
     let execArgv = [];
     try {
-      if (selection) {
+      if (selection || exclusive) {
         temporary = await mkdtemp(
           path.join(tmpdir(), "checktrail-native-case-"),
         );
@@ -123,10 +140,29 @@ async function executeRequiredTests(
         );
         execArgv = ["--import", pathToFileURL(preload).href];
       }
+      // Only this exact isolated wrapper needs time to repeat the native cases
+      // through a fresh installation. Other callbacks and file budgets stay bounded.
+      const caseTimeoutMs =
+        timeoutMs === 600000 &&
+        [
+          "dotnet-generator-extensions",
+          "ruby-extensions",
+          "swift-extensions",
+          "mutation-runners",
+        ].some(
+          (profile) =>
+            selection?.file ===
+              path.join(
+                fileURLToPath(new URL("../dist/test/", import.meta.url)),
+                `gate-${profile}.test.js`,
+              ) && selection.name === `${profile} installed acceptance`,
+        )
+          ? 1200000
+          : timeoutMs;
       for await (const { type, data } of run({
-        files: selection ? [selection.file] : files,
-        concurrency: selection ? 1 : fileWorkerLimit,
-        timeout: timeoutMs,
+        files: selection ? [selection.file] : batch,
+        concurrency: selection || exclusive ? 1 : fileWorkerLimit,
+        timeout: caseTimeoutMs,
         execArgv,
         ...(selection
           ? {
@@ -232,7 +268,11 @@ async function executeRequiredTests(
         (outcome) => outcome.status === "rejected",
       );
       if (rejected) throw rejected.reason;
-    } else await collect(null);
+    } else {
+      const sharedFiles = files.filter((file) => !exclusiveSet.has(file));
+      if (sharedFiles.length) await collect(null, sharedFiles);
+      for (const file of exclusiveFiles) await collect(null, [file], true);
+    }
   }
   const truncated = terminalEventCount > terminalEvents.length;
   if (truncated)
@@ -280,6 +320,9 @@ async function executeRequiredTests(
   });
   return {
     fileWorkerLimit,
+    ...(exclusiveFiles.length > 0
+      ? { exclusiveFullSuiteFileCount: exclusiveFiles.length }
+      : {}),
     ...(requiredCaseWorkerLimit > 0
       ? {
           requiredCaseWorkerLimit,

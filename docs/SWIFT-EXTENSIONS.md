@@ -83,3 +83,15 @@ arbitrary package settings and remote dependencies, final artifact/license closu
 the complete runtime matrix and Gate A remain open. Fresh native processes do not
 prove independent AI host sessions. No inference, held-out scoring or real-project
 field evaluation was invoked.
+
+Setup fetches the existing pinned Swift and Debian Node indexes from their
+verified official Docker registry addresses. [The delivery measurement](measurements/swift-extensions-official-index-delivery-2026-10-13.json)
+binds the exact returned index bytes and ARM64 participation. Runtime versions,
+image digests, SwiftLint archive pins and execution limits are unchanged; this
+byte check does not establish publisher signatures or full artifact closure.
+
+The shared required-test harness keeps its ten-minute admission ceiling. The
+exact Swift installed-package callback at its expected physical compiled path
+receives a twenty-minute file budget during isolated execution with the normal
+ten-minute budget. Other callbacks, shorter custom budgets and non-isolated
+file budgets retain their existing limits.

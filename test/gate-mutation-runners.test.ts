@@ -441,6 +441,7 @@ test(
       { env, encoding: "utf8", timeout: 1170000, maxBuffer: 4 * 1048576 },
     );
     assert.equal(result.error, undefined, result.error?.message ?? "");
+    assert.equal(result.signal, null);
     assert.equal(result.status, 0, result.stderr.slice(-2000));
     const receipt = JSON.parse(result.stdout);
     assert.equal(receipt.family, family);

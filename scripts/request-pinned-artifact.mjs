@@ -33,6 +33,7 @@ export async function requestPinnedArtifactBytes(
     delayImpl = (ms) => setTimeout(ms, undefined, { signal }),
     onRetry = () => {},
     retryNotFound = false,
+    maxArtifactBytes = 128 * 1024 * 1024,
   } = {},
 ) {
   assert.equal(typeof retryNotFound, "boolean");
@@ -70,7 +71,13 @@ export async function requestPinnedArtifactBytes(
     );
   }
   assert.ok(
-    Number.isSafeInteger(bytes) && bytes > 0 && bytes <= 128 * 1024 * 1024,
+    Number.isSafeInteger(maxArtifactBytes) &&
+      maxArtifactBytes > 0 &&
+      maxArtifactBytes <= 256 * 1024 * 1024,
+    "Pinned artifact admission ceiling",
+  );
+  assert.ok(
+    Number.isSafeInteger(bytes) && bytes > 0 && bytes <= maxArtifactBytes,
   );
   const waits = [1000, 3000];
   let nextAsset = asset;

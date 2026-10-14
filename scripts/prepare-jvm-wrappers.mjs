@@ -28,6 +28,7 @@ import { gradleJvmArguments } from "../dist/src/gradle-native.js";
 import { gradleDistributionFiles } from "../dist/src/gradle-distribution.js";
 import { verifyMavenTree } from "../dist/src/maven.js";
 import { requestGradleDistribution } from "./request-gradle-distribution.mjs";
+import { requestJvmWrapperArtifact } from "./request-jvm-wrapper-artifact.mjs";
 const { values } = parseArgs({
   options: { source: { type: "string" }, output: { type: "string" } },
 });
@@ -126,16 +127,28 @@ async function verifySignatures(base) {
   }
 }
 async function download(url, destination, pin, gradle = false) {
-  const response = gradle
-    ? (
-        await requestGradleDistribution({
-          signal: globalThis.AbortSignal.timeout(600000),
-        })
-      ).response
-    : await globalThis.fetch(url, {
-        redirect: "error",
-        signal: globalThis.AbortSignal.timeout(60000),
-      });
+  if (!gradle) {
+    const bytes = await requestJvmWrapperArtifact(
+      { ...pin, url },
+      {
+        onRetry: ({ attempt, waitMs }) =>
+          console.log(
+            JSON.stringify({
+              artifact: pin.name,
+              deliveryRetry: true,
+              attempt,
+              waitMs,
+            }),
+          ),
+      },
+    );
+    await writeFile(destination, bytes, { flag: "wx", mode: 0o600 });
+    await regular(destination, pin);
+    return;
+  }
+  const { response } = await requestGradleDistribution({
+    signal: globalThis.AbortSignal.timeout(600000),
+  });
   assert.equal(response.status, 200);
   assert.ok(response.body);
   const file = await open(destination, "wx");
