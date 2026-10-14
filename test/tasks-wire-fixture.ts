@@ -15,7 +15,44 @@ type Response = {
   result?: Record<string, unknown>;
   error?: { code: number; message: string; data?: unknown };
 };
+const taskCleanups = new WeakMap<
+  TestContext,
+  Array<() => void | Promise<void>>
+>();
+function taskResources(t: TestContext) {
+  let cleanups = taskCleanups.get(t);
+  if (!cleanups) {
+    cleanups = [];
+    taskCleanups.set(t, cleanups);
+    const owned = cleanups;
+    // Node runs after hooks in registration order. Close all resources before
+    // fixture() can try to unlink their SQLite databases, including on Windows.
+    t.after(async () => {
+      const failures: unknown[] = [];
+      for (const close of owned.splice(0).reverse()) {
+        try {
+          await close();
+        } catch (error) {
+          failures.push(error);
+        }
+      }
+      if (failures.length)
+        throw new AggregateError(
+          failures,
+          "Tasks fixture resource cleanup failed",
+        );
+    });
+  }
+  return cleanups;
+}
+export function registerTaskCleanup(
+  t: TestContext,
+  close: () => void | Promise<void>,
+) {
+  taskResources(t).push(close);
+}
 export async function setup(t: TestContext, source = passingTest) {
+  taskResources(t);
   const root = await realpath(
     await fixture(t, {
       "package.json": nodeManifest,
@@ -81,7 +118,7 @@ export async function wire(
       lines.close();
     }
   }
-  t.after(close);
+  registerTaskCleanup(t, close);
   function send(
     method: string,
     params: Record<string, unknown>,
@@ -127,6 +164,7 @@ export async function wire(
     }
   }
   return {
+    pid: child.pid!,
     request,
     close,
     notify: (method: string, params: Record<string, unknown>) =>

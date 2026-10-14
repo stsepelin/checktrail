@@ -1463,3 +1463,51 @@ test("named required case progress identifies starts and terminal failures witho
     ),
   );
 });
+
+test(
+  "packaged review failure preserves its complete bounded ledger before reporting a nonzero exit",
+  { skip: process.platform === "win32" },
+  async (t) => {
+    const { chmod } = await import("node:fs/promises");
+    const { fileURLToPath } = await import("node:url");
+    const ledger = {
+      complete: false,
+      ledger: {
+        padding: "x".repeat(16000),
+        terminal: "original-final-ledger-witness",
+      },
+    };
+    const root = await fixture(t, {
+      docker: `#!${process.execPath}
+const args=process.argv.slice(2);
+if(args[0]==='image')console.log('sha256:'+'a'.repeat(64));
+else if(args.includes('--version'))console.log(args.includes('git')?'git version 2.47.3':'v22.23.2');
+else {console.log(${JSON.stringify(JSON.stringify(ledger))});process.exitCode=7;}
+`,
+    });
+    await chmod(path.join(root, "docker"), 0o755);
+    const environment: NodeJS.ProcessEnv = {
+      ...process.env,
+      PATH: root + path.delimiter + process.env.PATH,
+    };
+    delete environment.NODE_TEST_CONTEXT;
+    const result = spawnSync(
+      process.execPath,
+      [
+        fileURLToPath(
+          new URL("../../scripts/verify-review-container.mjs", import.meta.url),
+        ),
+      ],
+      {
+        env: environment,
+        encoding: "utf8",
+        timeout: 15000,
+        maxBuffer: 1024 * 1024,
+      },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Required review source cohort failed/);
+    assert.deepEqual(JSON.parse(result.stdout), ledger);
+  },
+);

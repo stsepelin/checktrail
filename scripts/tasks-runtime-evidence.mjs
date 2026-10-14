@@ -19,6 +19,10 @@ export async function tasksRuntimeRequirements() {
   assert.equal(profiles["mcp-tasks"].length, 10);
   return [
     ...profiles["mcp-tasks"],
+    {
+      file: "dist/test/mcp-validation-tasks.test.js",
+      name: "Tasks fixture teardown closes every live SQLite server before removing its directories",
+    },
     ...[
       "broken",
       "fixed",

@@ -321,7 +321,18 @@ test("tasks-matrix installed acceptance", { timeout: 180000 }, async () => {
   assert.equal(receipt.evidence.profileEvidence.complete, true);
   assert.equal(
     receipt.evidence.profileEvidence.required,
-    process.platform === "win32" ? 24 : 22,
+    process.platform === "win32" ? 25 : 23,
+  );
+  assert.deepEqual(
+    receipt.evidence.profileEvidence.ledger.cases
+      .filter(
+        (entry: { name: string }) =>
+          entry.name ===
+          "Tasks fixture teardown closes every live SQLite server before removing its directories",
+      )
+      .map((entry: { outcome: string }) => entry.outcome),
+    ["passed"],
+    "The fresh installed cohort must execute the cleanup-order control exactly once",
   );
   assert.equal(
     receipt.evidence.profileEvidence.passed,

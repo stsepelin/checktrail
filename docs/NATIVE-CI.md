@@ -652,3 +652,14 @@ remain included; adjacent names remain parallel. File, callback and production
 execution budgets are unchanged.
 
 The Tasks runtime verifier emits bounded named-case start, terminal, and finished diagnostics to stderr. These locate an interrupted source cohort without waiting for its final JSON report. A start or finished diagnostic does not establish acceptance; only the complete, stable terminal ledger can do that.
+
+Tasks wire fixtures register resource teardown before temporary-directory removal.
+Every owned server or worker is awaited before its SQLite files can be unlinked;
+cleanup attempts the remaining resources even if one closer fails. A required
+source and fresh-install control keeps two actual servers and owner databases
+open, then checks both processes have exited while both databases still exist.
+This ordering check is separate from native Windows ACL acceptance.
+
+The packaged Linux review verifier emits its bounded full source ledger before
+reporting a failed process or cohort. A nonzero exit remains a failure; retaining
+the complete ledger prevents error-display truncation from hiding the evidence.
