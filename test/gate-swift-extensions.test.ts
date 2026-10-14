@@ -37,6 +37,8 @@ const summary = (report: Awaited<ReturnType<typeof run>>) =>
       reason: c.reason,
       processes: c.processes.map((p) => ({
         exit: p.exitCode,
+        signal: p.signal,
+        errorCode: p.errorCode,
         stderr: p.stderr.slice(-1000),
         timedOut: p.timedOut,
         truncated: p.truncated,
@@ -118,7 +120,8 @@ test("swift-extensions fixed acceptance", native, async (t) => {
     const { root } = await swiftExtensionsFixture(t, mode),
       { file, original } = await breakProducer(root);
     try {
-      assert.equal((await run(root)).outcome, "failed");
+      const broken = await run(root);
+      assert.equal(broken.outcome, "failed", `${mode}: ${summary(broken)}`);
     } finally {
       await writeFile(file, original);
     }

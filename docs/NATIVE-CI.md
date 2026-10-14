@@ -124,7 +124,12 @@ Full-suite runs allow ten minutes per file, including additional files outside
 the selected required profiles. The `dotnet-method` profile allows ten minutes
 per selected file. Existing per-control and engine execution limits remain in
 force. Standalone profiles retain their existing file budgets, including five
-minutes for `review-benchmark-multi`; any timeout still fails acceptance and
+minutes for `review-benchmark`, `review-benchmark-judging`,
+`review-benchmark-scoring`, `review-claim-probability` and
+`review-benchmark-multi`. The first four profiles share the complete benchmark
+callback file, including callbacks outside the selected required names; their
+file allowance covers cumulative execution while existing callback and production
+execution deadlines stay unchanged. Any timeout still fails acceptance and
 leaves unobserved required cases visible.
 
 Standalone `jvm-wrappers` source and installed acceptance instead select each of
