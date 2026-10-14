@@ -19,7 +19,7 @@ import { fileURLToPath, URL } from "node:url";
 import { mavenHash, verifyMavenTree } from "../dist/src/maven.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const ruby =
-    "public.ecr.aws/docker/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
+    "docker.io/library/ruby@sha256:79bf10b28c9d98b7b3cffda01aba8190aa1c1c48513d205ec93372a0e2f010e3",
   node =
     "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const task = process.env.CHECKTRAIL_TEST_TASK || `ruby-tools-${process.pid}`;

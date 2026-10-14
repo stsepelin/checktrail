@@ -111,7 +111,7 @@ try {
         ...item,
         file: path.join(harness, item.file),
       })),
-      { timeoutMs: 1200000, isolatedCaseWorkers: 1 },
+      { timeoutMs: 600000, isolatedCaseWorkers: 1 },
     );
   } finally {
     if (original === undefined)
