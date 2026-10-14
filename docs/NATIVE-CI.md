@@ -64,6 +64,27 @@ regressions bind the observed error; they do not simulate the registry or certif
 a hosted delivery. See the
 [delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
 
+Pinned Go analyzer preparation uses one fixed install/version helper in both
+shared matrices and the Go extension job. Each analyzer gets at most three
+acquisition attempts, with one-second and three-second waits. Only a terminal
+`sum.golang.org` checksum-tile HTTP/2 `INTERNAL_ERROR` is retryable, and every
+other diagnostic must be a download notice. Checksum mismatches, compiler errors,
+mixed failures, command limits and signals still fail immediately; exhausted
+transport attempts also fail. Each attempt prints its bounded captured stdout and stderr before reporting
+failure. Acquisition attempts allow five minutes and 2 MiB of captured output;
+version checks allow fifteen seconds and 64 KiB. Analyzer versions, Go checksum
+verification and test
+execution remain unchanged. Go's [module authentication](https://go.dev/ref/mod#authenticating)
+remains responsible for verifying acquired module content.
+
+The native Scala CLI/MCP surface and extension privacy controls explicitly select
+120 seconds per validation, with 150-second parent process/request bounds. These
+controls require complete compiler failures; a slower compiler exhausting the
+30-second default correctly returns incomplete and cannot satisfy that assertion.
+Their trust-injection refusals, privacy checks, fixed controls and existing callback
+bounds remain in place. The production default and maximum execution limits are
+unchanged.
+
 ## Affected native jobs on pull requests
 
 PRs keep the shared full suite, selected required profiles, and every fresh

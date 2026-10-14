@@ -99,11 +99,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -230,11 +226,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -1672,9 +1664,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs

@@ -334,6 +334,7 @@
     "fastapi-assembly-arm64"
   ],
   "scripts/prepare-fsharp-format-tools.mjs": ["fsharp-format-arm64"],
+  "scripts/prepare-go-tools.mjs": ["go-workspaces-arm64"],
   "scripts/prepare-gradle-dependencies.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/prepare-gradle-tools.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/prepare-hcl-context-runtime.mjs": ["hcl-context-arm64"],
@@ -735,6 +736,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
   "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/ruby-context-tools.Dockerfile": ["ruby-context-arm64"],
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
