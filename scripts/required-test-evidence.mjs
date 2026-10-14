@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import process from "node:process";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
@@ -283,7 +284,15 @@ async function executeRequiredTests(
         if (type === "test:pass" && !suite) passed++;
       }
     } finally {
-      if (temporary) await rm(temporary, { recursive: true, force: true });
+      if (temporary)
+        await rm(temporary, {
+          recursive: true,
+          force: true,
+          // Native Windows supervisors can still be completing EOF cleanup
+          // when their test worker exits. Persistent locks remain failures.
+          maxRetries: process.platform === "win32" ? 10 : 0,
+          retryDelay: 100,
+        });
       if (selection)
         onCaseProgress?.({ phase: "finished", name: selection.name });
     }

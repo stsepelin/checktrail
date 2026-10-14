@@ -20,6 +20,18 @@ export async function tasksRuntimeRequirements() {
   return [
     ...profiles["mcp-tasks"],
     {
+      file: "dist/test/tasks-runtime-harness.test.js",
+      name: "Tasks installed wrapper selects a bounded Windows aggregate allowance while preserving POSIX deadlines and failed child status",
+    },
+    ...(process.platform === "win32"
+      ? [
+          {
+            file: "dist/test/tasks-runtime-harness.test.js",
+            name: "Windows isolated harness namespace cleanup waits for native cwd release and reports exhausted locks",
+          },
+        ]
+      : []),
+    {
       file: "dist/test/mcp-validation-tasks.test.js",
       name: "Tasks fixture teardown closes every live SQLite server before removing its directories",
     },

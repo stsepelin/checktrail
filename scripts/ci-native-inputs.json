@@ -2073,6 +2073,10 @@
     "swift-tools"
   ],
   "test/task-store.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/tasks-runtime-harness.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "test/tasks-sdk-fallback.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/tasks-wire-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/terraform-extensions-fixture.ts": ["terraform-extensions-arm64"],

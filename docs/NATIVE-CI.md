@@ -663,3 +663,19 @@ This ordering check is separate from native Windows ACL acceptance.
 The packaged Linux review verifier emits its bounded full source ledger before
 reporting a failed process or cohort. A nonzero exit remains a failure; retaining
 the complete ledger prevents error-display truncation from hiding the evidence.
+
+The Tasks fresh-install wrapper retains the 170-second child and 180-second
+callback deadlines on POSIX. Its Windows aggregate uses a 590-second child
+allowance inside a 600-second callback/file bound, because the complete native
+cohort is repeated in the fresh production installation. Per-project execution,
+other callbacks and job deadlines retain their existing limits. A dispatch
+control observes the actual wrapper options for Windows, Linux and macOS and
+checks that a refused child remains a failed callback.
+
+Owned isolated test namespaces use Windows-only bounded filesystem retries for
+transient busy-directory cleanup: ten retries with 100-millisecond linear delay
+using the [Node filesystem retry options](https://nodejs.org/docs/latest-v22.x/api/fs.html#fspromisesrmpath-options).
+A native Windows control holds a real child process's working directory open;
+release permits removal, while a persistent lock exhausts the retries and remains
+an error. POSIX removal keeps its existing immediate behavior. Namespace cleanup
+and terminal acceptance remain separate obligations.

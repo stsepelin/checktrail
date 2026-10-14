@@ -286,56 +286,73 @@ test("tasks-matrix lifecycle acceptance", { timeout: 60000 }, async (t) => {
     );
   }
 });
-test("tasks-matrix installed acceptance", { timeout: 180000 }, async () => {
-  if (process.env.CHECKTRAIL_TASKS_MATRIX_INSTALLED === "1") {
-    const runtime = await realpath(
-      fileURLToPath(new URL("../src/task-store.js", import.meta.url)),
-    );
-    assert.ok(
-      runtime.includes(
-        path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
-      ),
-    );
-    return;
-  }
-  const env = { ...process.env };
-  delete env.NODE_TEST_CONTEXT;
-  delete env.NODE_OPTIONS;
-  const result = spawnSync(
-    process.execPath,
-    [
-      fileURLToPath(
-        new URL(
-          "../../scripts/verify-tasks-runtime-package.mjs",
-          import.meta.url,
+// A fresh installation repeats the complete runtime cohort. Windows native
+// controls need their own aggregate allowance; project execution stays bounded
+// by the unchanged engine limits and the outer native-file deadline.
+const installedTimeout = process.platform === "win32" ? 600000 : 180000;
+test(
+  "tasks-matrix installed acceptance",
+  { timeout: installedTimeout },
+  async () => {
+    if (process.env.CHECKTRAIL_TASKS_MATRIX_INSTALLED === "1") {
+      const runtime = await realpath(
+        fileURLToPath(new URL("../src/task-store.js", import.meta.url)),
+      );
+      assert.ok(
+        runtime.includes(
+          path.join("node_modules", "@stsepelin", "checktrail", "dist", "src"),
         ),
-      ),
-    ],
-    { env, encoding: "utf8", timeout: 170000, maxBuffer: 4 * 1048576 },
-  );
-  assert.equal(result.error, undefined);
-  assert.equal(result.status, 0, (result.stdout + result.stderr).slice(-1600));
-  const receipt = JSON.parse(result.stdout);
-  assert.equal(receipt.offlineProductionInstall, true);
-  assert.equal(receipt.harnessOutsideInstalledPackage, true);
-  assert.equal(receipt.evidence.profileEvidence.complete, true);
-  assert.equal(
-    receipt.evidence.profileEvidence.required,
-    process.platform === "win32" ? 25 : 23,
-  );
-  assert.deepEqual(
-    receipt.evidence.profileEvidence.ledger.cases
-      .filter(
-        (entry: { name: string }) =>
-          entry.name ===
-          "Tasks fixture teardown closes every live SQLite server before removing its directories",
-      )
-      .map((entry: { outcome: string }) => entry.outcome),
-    ["passed"],
-    "The fresh installed cohort must execute the cleanup-order control exactly once",
-  );
-  assert.equal(
-    receipt.evidence.profileEvidence.passed,
-    receipt.evidence.profileEvidence.required,
-  );
-});
+      );
+      return;
+    }
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    delete env.NODE_OPTIONS;
+    const result = spawnSync(
+      process.execPath,
+      [
+        fileURLToPath(
+          new URL(
+            "../../scripts/verify-tasks-runtime-package.mjs",
+            import.meta.url,
+          ),
+        ),
+      ],
+      {
+        env,
+        encoding: "utf8",
+        timeout: process.platform === "win32" ? 590000 : 170000,
+        maxBuffer: 4 * 1048576,
+      },
+    );
+    assert.equal(result.error, undefined);
+    assert.equal(
+      result.status,
+      0,
+      (result.stdout + result.stderr).slice(-1600),
+    );
+    const receipt = JSON.parse(result.stdout);
+    assert.equal(receipt.offlineProductionInstall, true);
+    assert.equal(receipt.harnessOutsideInstalledPackage, true);
+    assert.equal(receipt.evidence.profileEvidence.complete, true);
+    assert.equal(
+      receipt.evidence.profileEvidence.required,
+      process.platform === "win32" ? 27 : 24,
+    );
+    assert.deepEqual(
+      receipt.evidence.profileEvidence.ledger.cases
+        .filter(
+          (entry: { name: string }) =>
+            entry.name ===
+            "Tasks fixture teardown closes every live SQLite server before removing its directories",
+        )
+        .map((entry: { outcome: string }) => entry.outcome),
+      ["passed"],
+      "The fresh installed cohort must execute the cleanup-order control exactly once",
+    );
+    assert.equal(
+      receipt.evidence.profileEvidence.passed,
+      receipt.evidence.profileEvidence.required,
+    );
+  },
+);
