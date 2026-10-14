@@ -125,7 +125,14 @@ export async function verifyTasksRuntime({
   const startedAt = new Date().toISOString();
   const profile = await runRequiredTests(
     requirements.map((p) => ({ ...p, file: path.join(root, p.file) })),
-    { timeoutMs: 600000, isolatedCaseWorkers: 1 },
+    {
+      timeoutMs: 600000,
+      isolatedCaseWorkers: 1,
+      onCaseProgress: (event) =>
+        process.stderr.write(
+          JSON.stringify({ profile: "tasks-runtime", ...event }) + "\n",
+        ),
+    },
   );
   assert.equal(profile.complete, true, JSON.stringify(profile.problems));
   assert.equal(profile.required, requirements.length);

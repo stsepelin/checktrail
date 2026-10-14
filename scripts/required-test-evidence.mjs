@@ -61,6 +61,7 @@ async function executeRequiredTests(
     maxTerminalEvents = MAX_EVENTS,
     additionalFiles = [],
     isolatedCaseWorkers = 0,
+    onCaseProgress,
   } = {},
 ) {
   assert.ok(
@@ -83,6 +84,11 @@ async function executeRequiredTests(
   assert.ok(
     isolatedCaseWorkers === 0 || additionalFiles.length === 0,
     "Named case isolation cannot replace a full-suite run",
+  );
+  assert.ok(
+    onCaseProgress === undefined ||
+      (typeof onCaseProgress === "function" && isolatedCaseWorkers > 0),
+    "Required case progress needs named isolation",
   );
   const requiredCaseWorkerLimit =
     isolatedCaseWorkers === 0
@@ -128,6 +134,7 @@ async function executeRequiredTests(
     let temporary;
     let execArgv = [];
     try {
+      if (selection) onCaseProgress?.({ phase: "start", name: selection.name });
       if (selection || exclusive) {
         temporary = await mkdtemp(
           path.join(tmpdir(), "checktrail-native-case-"),
@@ -210,6 +217,31 @@ async function executeRequiredTests(
           };
           terminalEvents.push(event);
           if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+          if (selection && !suite && id === key(selection))
+            onCaseProgress?.({
+              phase: "terminal",
+              name: selection.name,
+              outcome,
+              durationMs: event.durationMs,
+              ...(type === "test:fail"
+                ? {
+                    ...(typeof data.details?.error?.failureType === "string"
+                      ? {
+                          failureType: data.details.error.failureType.slice(
+                            0,
+                            128,
+                          ),
+                        }
+                      : {}),
+                    ...(typeof data.details?.error?.code === "string"
+                      ? { code: data.details.error.code.slice(0, 128) }
+                      : {}),
+                    ...(typeof data.details?.error?.message === "string"
+                      ? { message: data.details.error.message.slice(0, 1000) }
+                      : {}),
+                  }
+                : {}),
+            });
           if (event.nameTruncated)
             problems.push({
               name: event.name,
@@ -252,6 +284,8 @@ async function executeRequiredTests(
       }
     } finally {
       if (temporary) await rm(temporary, { recursive: true, force: true });
+      if (selection)
+        onCaseProgress?.({ phase: "finished", name: selection.name });
     }
   };
   if (before.every((item) => item.state === "present")) {

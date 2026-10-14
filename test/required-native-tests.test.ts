@@ -1383,3 +1383,83 @@ const{runRequiredTests}=await import(helper);const report=await runRequiredTests
   assert.equal(batch.calls.length, 1);
   assert.equal(batch.calls[0]!.timeout, 600000);
 });
+
+test("named required case progress identifies starts and terminal failures without crediting absent or skipped cases", async (t) => {
+  const root = await fixture(t, {
+    "controls.mjs": `import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';test('passed',()=>assert.match(readFileSync(new URL('progress.jsonl',import.meta.url),'utf8'),/"phase":"start","name":"passed"/));test('failed',()=>{throw Error('original synthetic failure')});test('skipped',{skip:'original unavailable'},()=>{});`,
+    "runner.mjs": `import {appendFileSync} from 'node:fs';import {fileURLToPath} from 'node:url';const {runRequiredTests}=await import(process.argv[2]);const progress=[];const evidence=await runRequiredTests(['passed','failed','skipped','absent'].map(name=>({file:fileURLToPath(new URL('controls.mjs',import.meta.url)),name})),{timeoutMs:5000,isolatedCaseWorkers:1,onCaseProgress:event=>{progress.push(event);appendFileSync(new URL('progress.jsonl',import.meta.url),JSON.stringify(event)+'\\n');}});console.log(JSON.stringify({evidence,progress}));`,
+  });
+  const env = { ...process.env };
+  delete env.NODE_TEST_CONTEXT;
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "runner.mjs"),
+      new URL("../../scripts/required-test-evidence.mjs", import.meta.url).href,
+    ],
+    { env, encoding: "utf8", timeout: 15000 },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const { evidence, progress } = JSON.parse(result.stdout) as {
+    evidence: TerminalReceipt;
+    progress: Array<{
+      phase: string;
+      name: string;
+      outcome?: string;
+      message?: string;
+    }>;
+  };
+  assert.equal(evidence.complete, false);
+  assert.equal(evidence.required, 4);
+  assert.deepEqual(
+    evidence.ledger.cases.map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "passed", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+      { name: "absent", outcome: "not-observed" },
+    ],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "start")
+      .map((event) => event.name),
+    ["passed", "failed", "skipped", "absent"],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "finished")
+      .map((event) => event.name),
+    ["passed", "failed", "skipped", "absent"],
+  );
+  assert.deepEqual(
+    progress
+      .filter((event) => event.phase === "terminal")
+      .map(({ name, outcome }) => ({ name, outcome })),
+    [
+      { name: "passed", outcome: "passed" },
+      { name: "failed", outcome: "failed" },
+      { name: "skipped", outcome: "skipped" },
+    ],
+  );
+  assert.equal(
+    progress.find(
+      (event) => event.phase === "terminal" && event.name === "failed",
+    )?.message,
+    "original synthetic failure",
+  );
+  assert.ok(
+    evidence.problems.some(
+      (problem) =>
+        problem.name === "absent" &&
+        problem.reason === "required-test-not-passed",
+    ),
+  );
+  assert.ok(
+    evidence.problems.some(
+      (problem) =>
+        problem.name === "skipped" && problem.reason === "skipped-or-todo",
+    ),
+  );
+});

@@ -650,3 +650,5 @@ physical `gate-tasks-matrix.test.js` file in an exclusive process after the shar
 wave, alongside the existing JavaScript file. Whole files and unlisted callbacks
 remain included; adjacent names remain parallel. File, callback and production
 execution budgets are unchanged.
+
+The Tasks runtime verifier emits bounded named-case start, terminal, and finished diagnostics to stderr. These locate an interrupted source cohort without waiting for its final JSON report. A start or finished diagnostic does not establish acceptance; only the complete, stable terminal ledger can do that.
