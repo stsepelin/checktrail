@@ -60,11 +60,17 @@ $ErrorActionPreference = 'Stop'
 [Console]::InputEncoding = [Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 try {
-  $request = [Console]::In.ReadToEnd() | ConvertFrom-Json
+  [void][System.Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+  $serializer = [System.Web.Script.Serialization.JavaScriptSerializer]::new()
+  $serializer.MaxJsonLength = 32768
+  $serializer.RecursionLimit = 8
+  $request = $serializer.DeserializeObject([Console]::In.ReadToEnd())
   if ($request.kind -ne 'directory' -and $request.kind -ne 'file') { throw 'invalid kind' }
-  $item = Get-Item -LiteralPath $request.path -Force
+  if ($request.kind -eq 'directory') { $item = [System.IO.DirectoryInfo]::new($request.path) }
+  else { $item = [System.IO.FileInfo]::new($request.path) }
+  if (!$item.Exists) { throw 'missing object' }
   if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'reparse point' }
-  if ([bool]$item.PSIsContainer -ne ($request.kind -eq 'directory')) { throw 'wrong type' }
+  if ([bool]($item.Attributes -band [System.IO.FileAttributes]::Directory) -ne ($request.kind -eq 'directory')) { throw 'wrong type' }
   $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
   if ($request.created) {
     if ($request.kind -eq 'directory') { $acl = [System.Security.AccessControl.DirectorySecurity]::new() }
@@ -75,13 +81,15 @@ try {
     if ($request.kind -eq 'directory') { $inheritance = [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit }
     $rule = [System.Security.AccessControl.FileSystemAccessRule]::new($identity.User, [System.Security.AccessControl.FileSystemRights]::FullControl, $inheritance, [System.Security.AccessControl.PropagationFlags]::None, [System.Security.AccessControl.AccessControlType]::Allow)
     $acl.AddAccessRule($rule)
-    Set-Acl -LiteralPath $request.path -AclObject $acl
+    $item.SetAccessControl($acl)
   }
-  $acl = Get-Acl -LiteralPath $request.path
-  $rules = @($acl.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier]) | ForEach-Object {
-    [ordered]@{sid=$_.IdentityReference.Value;rights=[int]$_.FileSystemRights;inheritance=[int]$_.InheritanceFlags;propagation=[int]$_.PropagationFlags;type=$_.AccessControlType.ToString()}
-  })
-  [ordered]@{userSid=$identity.User.Value;tokenOwnerSid=$identity.Owner.Value;ownerSid=$acl.GetOwner([System.Security.Principal.SecurityIdentifier]).Value;protected=$acl.AreAccessRulesProtected;canonical=$acl.AreAccessRulesCanonical;rules=@($rules)} | ConvertTo-Json -Depth 4 -Compress
+  $acl = $item.GetAccessControl()
+  $rules = [System.Collections.Generic.List[object]]::new()
+  foreach ($rule in $acl.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])) {
+    $rules.Add([ordered]@{sid=$rule.IdentityReference.Value;rights=[int]$rule.FileSystemRights;inheritance=[int]$rule.InheritanceFlags;propagation=[int]$rule.PropagationFlags;type=$rule.AccessControlType.ToString()})
+  }
+  $observed = [ordered]@{userSid=$identity.User.Value;tokenOwnerSid=$identity.Owner.Value;ownerSid=$acl.GetOwner([System.Security.Principal.SecurityIdentifier]).Value;protected=$acl.AreAccessRulesProtected;canonical=$acl.AreAccessRulesCanonical;rules=$rules.ToArray()}
+  [Console]::Out.WriteLine($serializer.Serialize($observed))
 } catch {
   [Console]::Error.WriteLine('Windows task ACL inspection unavailable')
   exit 1

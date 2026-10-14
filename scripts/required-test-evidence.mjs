@@ -100,13 +100,13 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
-  // This native file repeats loader/linter/build and fresh-install controls. Give
-  // its complete file an exclusive slot after the shared full-suite wave; named
+  // These native files repeat loader/build or Tasks fresh-install controls. Give
+  // each complete file an exclusive slot after the shared full-suite wave; named
   // selection would omit unlisted callbacks. All existing deadlines still apply.
   const exclusiveFiles =
     additionalFiles.length > 0
       ? files.filter((file) =>
-          ["javascript-extensions"].some(
+          ["javascript-extensions", "tasks-matrix"].some(
             (profile) =>
               file ===
               path.join(

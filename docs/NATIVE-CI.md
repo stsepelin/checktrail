@@ -635,3 +635,18 @@ the latter completed. The Tasks ACL inspector and its public-ACL negative
 fixture now use typed encoding/security constructors. Caller-only ACL validation
 and the original required Tasks/native Windows callbacks remain intact. Native
 Tasks CI must pass before treating this change as platform acceptance.
+
+The Windows Tasks diagnostic captured completed stdin followed by a JSON-cmdlet
+stall in the minimal environment; inherited-environment probes then failed ACL
+cmdlet autoloading. The inspector and public-ACL negative fixture now use fixed
+shipped .NET Framework JSON and filesystem ACL APIs. Private ACL checks, literal
+paths, the minimal environment and existing subprocess budgets remain in force.
+Native Windows source and installed acceptance remain required.
+
+The Tasks matrix fresh-install callback exceeded its unchanged 170-second child
+budget in a shared Linux Node 22 full-suite wave, while dedicated Tasks acceptance
+completed it within that budget. The full-suite harness now admits the exact
+physical `gate-tasks-matrix.test.js` file in an exclusive process after the shared
+wave, alongside the existing JavaScript file. Whole files and unlisted callbacks
+remain included; adjacent names remain parallel. File, callback and production
+execution budgets are unchanged.

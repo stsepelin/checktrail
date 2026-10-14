@@ -108,11 +108,16 @@ function changeAcl(filename: string) {
   const script = String.raw`
 $ErrorActionPreference='Stop'
 [Console]::InputEncoding=[Text.UTF8Encoding]::new($false)
-$request=[Console]::In.ReadToEnd() | ConvertFrom-Json
-$acl=Get-Acl -LiteralPath $request.path
+[void][System.Reflection.Assembly]::Load('System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35')
+$serializer=[System.Web.Script.Serialization.JavaScriptSerializer]::new()
+$serializer.MaxJsonLength=32768
+$serializer.RecursionLimit=8
+$request=$serializer.DeserializeObject([Console]::In.ReadToEnd())
+$item=[System.IO.DirectoryInfo]::new($request.path)
+$acl=$item.GetAccessControl()
 $rule=[System.Security.AccessControl.FileSystemAccessRule]::new([System.Security.Principal.SecurityIdentifier]::new('S-1-1-0'),[System.Security.AccessControl.FileSystemRights]::ReadAndExecute,[System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit,[System.Security.AccessControl.PropagationFlags]::None,[System.Security.AccessControl.AccessControlType]::Allow)
 $acl.AddAccessRule($rule)
-Set-Acl -LiteralPath $request.path -AclObject $acl
+$item.SetAccessControl($acl)
 `;
   const executable = path.join(
     process.env.SystemRoot ?? process.env.SYSTEMROOT!,
@@ -198,7 +203,7 @@ test(
   },
 );
 
-test("Windows task ACL shipped scripts retain typed constructors without the observed legacy cmdlet startup path", async () => {
+test("Windows task ACL shipped scripts use fixed framework JSON and ACL APIs without ambient cmdlet loading", async () => {
   for (const [filename, variable, expected] of [
     [
       "../src/windows-task-access.js",
@@ -244,6 +249,21 @@ test("Windows task ACL shipped scripts retain typed constructors without the obs
     assert.equal(scripts.length, 1, filename);
     for (const constructor of expected)
       assert.ok(scripts[0]!.includes(constructor), constructor);
-    assert.doesNotMatch(scripts[0]!, /(?:^|\s)New-Object(?:\s|$)/i);
+    assert.doesNotMatch(
+      scripts[0]!,
+      /(?:^|[\s|])(?:New-Object|ConvertFrom-Json|ConvertTo-Json|Get-Acl|Set-Acl|Get-Item|ForEach-Object)(?=[\s;]|$)/im,
+    );
+    assert.ok(
+      scripts[0]!.includes(
+        "System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+      ),
+    );
+    assert.ok(
+      scripts[0]!.includes(
+        "$serializer.DeserializeObject([Console]::In.ReadToEnd())",
+      ),
+    );
+    assert.ok(scripts[0]!.includes("$item.GetAccessControl()"));
+    assert.ok(scripts[0]!.includes("$item.SetAccessControl($acl)"));
   }
 });
