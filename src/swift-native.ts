@@ -247,7 +247,7 @@ export function swiftCompiled(
   );
   return compiled;
 }
-export const swiftLintOptions = (config: SwiftToolsConfig) =>
+export const swiftLintOptions = (config: Pick<SwiftToolsConfig, "rules">) =>
   "only_rules:\n" +
   config.rules.map((r) => "  - " + r + "\n").join("") +
   "force_try:\n  severity: error\nforce_unwrapping:\n  severity: error\n";
@@ -273,10 +273,12 @@ export const swiftCommon = (workspace: string, temporary: string) => [
 ];
 
 export const swiftAstArgs = (
-  config: SwiftToolsConfig,
+  config: Pick<SwiftToolsConfig, "platform"> & {
+    tests: { framework: "xctest" | "swift-testing" };
+  },
   workspace: string,
   temporary: string,
-  target: SwiftToolsConfig["targets"][number],
+  target: Pick<SwiftToolsConfig["targets"][number], "name" | "sources">,
   file: string,
   frontend: string,
 ) => [

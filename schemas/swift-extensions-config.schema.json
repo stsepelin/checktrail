@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "number", "const": 1 },
+    "profile": {
+      "type": "string",
+      "const": "declared-local-packages-build-tool-generated-sdk-v1"
+    },
+    "swiftVersion": { "type": "string", "const": "6.2.3" },
+    "toolsVersion": { "type": "string", "const": "6.2.0" },
+    "platform": { "type": "string", "const": "aarch64-unknown-linux-gnu" },
+    "packages": {
+      "minItems": 1,
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "anyOf": [
+              { "type": "string", "const": "." },
+              { "type": "string", "minLength": 1, "maxLength": 4096 }
+            ]
+          },
+          "identity": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "dependencies": {
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "identity": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                },
+                "path": { "type": "string", "minLength": 1, "maxLength": 4096 }
+              },
+              "required": ["identity", "path"],
+              "additionalProperties": false
+            }
+          },
+          "products": {
+            "minItems": 1,
+            "maxItems": 32,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                },
+                "type": { "type": "string", "enum": ["library", "executable"] },
+                "targets": {
+                  "minItems": 1,
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                  }
+                },
+                "implicit": { "type": "boolean" }
+              },
+              "required": ["name", "type", "targets", "implicit"],
+              "additionalProperties": false
+            }
+          },
+          "targets": {
+            "minItems": 1,
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["regular", "executable", "test", "plugin"]
+                },
+                "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+                "sources": {
+                  "minItems": 1,
+                  "maxItems": 256,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "dependencies": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": { "type": "string", "const": "target" },
+                          "name": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                          }
+                        },
+                        "required": ["kind", "name"],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": { "type": "string", "const": "product" },
+                          "name": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                          },
+                          "package": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                          }
+                        },
+                        "required": ["kind", "name", "package"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "plugins": {
+                  "maxItems": 8,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "type",
+                "path",
+                "sources",
+                "dependencies",
+                "plugins"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "path",
+          "identity",
+          "name",
+          "dependencies",
+          "products",
+          "targets"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "generated": {
+      "minItems": 1,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "package": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+          "target": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "plugin": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "generator": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "file": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "required": ["package", "target", "plugin", "generator", "file"],
+        "additionalProperties": false
+      }
+    },
+    "tests": {
+      "type": "object",
+      "properties": {
+        "xctest": {
+          "minItems": 1,
+          "maxItems": 128,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "testing": {
+          "minItems": 1,
+          "maxItems": 128,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "support": {
+          "maxItems": 128,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        }
+      },
+      "required": ["xctest", "testing", "support"],
+      "additionalProperties": false
+    },
+    "swiftlintVersion": { "type": "string", "const": "0.65.1" },
+    "rules": {
+      "minItems": 1,
+      "maxItems": 2,
+      "type": "array",
+      "items": { "type": "string", "enum": ["force_try", "force_unwrapping"] }
+    },
+    "sdk": {
+      "minItems": 1,
+      "maxItems": 4096,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "root": { "type": "string", "enum": ["swift", "include", "clang"] },
+          "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "bytes": { "type": "integer", "minimum": 0, "maximum": 134217728 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "required": ["root", "path", "bytes", "sha256"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profile",
+    "swiftVersion",
+    "toolsVersion",
+    "platform",
+    "packages",
+    "generated",
+    "tests",
+    "swiftlintVersion",
+    "rules",
+    "sdk"
+  ],
+  "additionalProperties": false
+}

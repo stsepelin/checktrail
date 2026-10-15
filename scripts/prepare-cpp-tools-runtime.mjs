@@ -1,5 +1,5 @@
 import { pullPinnedImage } from "./pull-pinned-image.mjs";
-import { Buffer } from "node:buffer";
+import { requestCppToolArchive } from "./request-cpp-tool-archive.mjs";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
@@ -19,7 +19,7 @@ import { mavenHash } from "../dist/src/maven.js";
 import { cppSupportedVersion, cppToolNames } from "../dist/src/cpp-native.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const base =
-  "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
+  "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32";
 const task = process.env.CHECKTRAIL_TEST_TASK || `cpp-tools-${process.pid}`;
 assert.equal(
   process.arch,
@@ -92,25 +92,10 @@ try {
           bytes = await readFile(file);
           asset = "operator-prepared-archive";
         } else {
-          for (const repository of manifest.repositories) {
-            const url = repository + pin.path,
-              response = await globalThis.fetch(url, {
-                signal: globalThis.AbortSignal.timeout(120000),
-              });
-            if (response.status === 404) continue;
-            assert.equal(response.status, 200);
-            assert.ok(response.body);
-            let count = 0;
-            const chunks = [];
-            for await (const chunk of response.body) {
-              count += chunk.length;
-              assert.ok(count <= pin.bytes);
-              chunks.push(Buffer.from(chunk));
-            }
-            bytes = Buffer.concat(chunks);
-            asset = url;
-            break;
-          }
+          ({ bytes, asset } = await requestCppToolArchive(
+            pin,
+            manifest.repositories,
+          ));
         }
         assert.ok(bytes, "Pinned archive unavailable");
         assert.equal(bytes.length, pin.bytes);

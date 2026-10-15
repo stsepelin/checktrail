@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "scope": "pinned-image-admission-and-native-impact-harness-deadlines",
+  "implementationBase": "0981740",
+  "observedFailures": [
+    {
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/38039782941/job/114177544472",
+      "check": "fsharp-format-arm64",
+      "observation": "SDK image reference was refused by the ECR-only setup allowlist before Docker was invoked"
+    },
+    {
+      "jobUrl": "https://github.com/stsepelin/checktrail/actions/runs/38039782941/job/114177544327",
+      "check": "checks (macos-latest, 24)",
+      "observation": "Native impact callback failed with outer child status null after 15041.12525 ms under a 15000 ms spawnSync deadline",
+      "substepAtDeadlineKnown": false
+    }
+  ],
+  "repair": {
+    "microsoftAdmission": "one exact frozen SDK digest; existing exact ECR reference family retained",
+    "imageAttempts": 5,
+    "imageWallLimitMs": 180000,
+    "imageChildLimitMs": 120000,
+    "impactWorkers": 6,
+    "impactWorkerLimitMs": 60000,
+    "impactAggregateLimitMs": 420000,
+    "impactSemanticAssertionsChanged": false
+  },
+  "verification": {
+    "redControl": {
+      "test": "pinned image delivery admits only the frozen Microsoft SDK reference and rejects adjacent Microsoft images",
+      "beforeRepair": "ERR_ASSERTION: Select an exact pinned official public image reference"
+    },
+    "targeted": {
+      "total": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 5291.506791,
+      "nativeImpactCallbackMs": 5062.419
+    },
+    "projectCheck": {
+      "command": "npm run check",
+      "exitCode": 0,
+      "total": 1600,
+      "passed": 930,
+      "failed": 0,
+      "skipped": 670,
+      "cancelled": 0,
+      "todo": 0,
+      "durationMs": 244278.397208,
+      "environment": {
+        "node": "v26.9.0",
+        "platform": "darwin",
+        "architecture": "arm64",
+        "release": "27.0.0"
+      }
+    },
+    "failedMacosNode24ProfileReverifiedLocally": false,
+    "nativeFsharpSuiteRerunByThisRepair": false,
+    "optionalSkippedCasesCountAsPassing": false
+  },
+  "testedImplementationFileBindings": [
+    {
+      "file": "scripts/pull-pinned-image.mjs",
+      "sha256": "5a8c0fd0d68f8576d5c7ed01b7dd2a322de65a84b85f6c0d28063bd821487101"
+    },
+    {
+      "file": "test/pinned-image-pull.test.ts",
+      "sha256": "c42e2f26fce590dafb1f2684a3b44d0cd4749104720e89b9df016d3a36472819"
+    },
+    {
+      "file": "test/impact.test.ts",
+      "sha256": "2992a00821f13125b5e412b05f9d5d17b82a167385dee54814518ac0b4ed658b"
+    }
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAcceptanceClaimed": false
+}

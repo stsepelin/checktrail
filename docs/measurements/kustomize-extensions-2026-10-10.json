@@ -1,0 +1,1639 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original synthetic selected local Kustomize patches/transforms/generator references with full native rendered-value and physical-address reconciliation; no cluster admission or reviewer quality acceptance.",
+  "sourceBaseCommit": "d1c4e65c9a5339db5c9ac918e67ed49b3b52fa29",
+  "testedChangedFileBindings": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 85570,
+      "sha256": "acc36bec50b7b29e183f440e2264879c5d0acc410e85b7b09dee1be14bfccc3b"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "bytes": 29082,
+      "sha256": "e77a9091803dbfada69da02cd736b310e9a00ea4b83acddf1a31d7224451f83b"
+    },
+    {
+      "file": "docs/EXECUTION.md",
+      "bytes": 31540,
+      "sha256": "a92d9b724117a6a1345de4fe366b23ebf2db288d2cb489fc8213c36dcd72c2ba"
+    },
+    {
+      "file": "docs/KUSTOMIZE-EXTENSIONS.md",
+      "bytes": 6443,
+      "sha256": "3f6a441ff46c1a056c7a74cd058cf68b771c1f1f734f22bc4632a592526e9880"
+    },
+    {
+      "file": "docs/KUSTOMIZE.md",
+      "bytes": 5884,
+      "sha256": "7eea98f6641244c777a330925b0e8087ebbce9f3ccafffecf4cd174a508a809d"
+    },
+    {
+      "file": "docs/LANGUAGES.md",
+      "bytes": 45002,
+      "sha256": "7fd164ce9f333115cec0ebe7a4d1d79e76a817dec0ad27402b3c24a056252f71"
+    },
+    {
+      "file": "docs/NATIVE-CI.md",
+      "bytes": 31542,
+      "sha256": "58026d2d0bef5de1d132e149210a4b012701ae552f127f39c6ae44e93128e20e"
+    },
+    {
+      "file": "docs/REQUIRED-INVENTORY.md",
+      "bytes": 44565,
+      "sha256": "9ac1d70bca7e48c2a5ae1ed598608c011800bfc736a74327d955398704c773ea"
+    },
+    {
+      "file": "docs/STATUS.md",
+      "bytes": 65878,
+      "sha256": "35fa2207aa687a3fe0b0484fee6668dda370da64e07df46f29bdd5e96987a411"
+    },
+    {
+      "file": "schemas/kustomize-config.schema.json",
+      "bytes": 1799,
+      "sha256": "e1cdbbc107a9f72dd06b89d21a4a0f2e426fc0eddddc8d9b90cc583262add1d7"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "bytes": 178453,
+      "sha256": "f8d6b36245eda4d6afad16bcc30e9f922f7ff9603d34d8ed0626804bc8e5dd50"
+    },
+    {
+      "file": "scripts/verify-import-context-package.mjs",
+      "bytes": 24167,
+      "sha256": "6a073691ca2b9b5c1f1995e763b7e9a25e84359022b87b65a7b095073833b17c"
+    },
+    {
+      "file": "scripts/verify-kustomize-extensions-container.mjs",
+      "bytes": 7472,
+      "sha256": "da05af494dc99ada5f092c413a1ed445268837efb17ba9d4b6b706567c1d5634"
+    },
+    {
+      "file": "scripts/verify-kustomize-extensions-guards.mjs",
+      "bytes": 10945,
+      "sha256": "35b2954a6032d33821ca366304e34e986d4f6818559933117ae9a3ca8b7e4471"
+    },
+    {
+      "file": "scripts/verify-required-native-tests.mjs",
+      "bytes": 4060,
+      "sha256": "5187294b76f1c93e9f67fadfb46c6621e81311b1d2e50e0a01e32f7e8d614bd2"
+    },
+    {
+      "file": "src/kustomize-evidence.ts",
+      "bytes": 8584,
+      "sha256": "38c7953ab2cf760f56827fc8057b7a2b7812493bca4bef9d4f0688ac79a59977"
+    },
+    {
+      "file": "src/kustomize-extensions.ts",
+      "bytes": 29663,
+      "sha256": "67291148793e2ee7db1bbaba668f9a34701a67b6342699ee423c27d3c4f15eb4"
+    },
+    {
+      "file": "src/kustomize.ts",
+      "bytes": 15628,
+      "sha256": "f0570f1d5bef8a6452ac018e611358987b87584a8bef0b2d446e09f6ad4e9416"
+    },
+    {
+      "file": "test/gate-kustomize-extensions.test.ts",
+      "bytes": 19233,
+      "sha256": "1c057deee5026f6ba4625196f1d361a5ae75bc684ed00fabaf15b7362a61f71d"
+    },
+    {
+      "file": "test/kustomize-evidence-controls.test.ts",
+      "bytes": 9289,
+      "sha256": "0a8dc27781793e38a10bb6f51b0e7a8f9479fd309aa37287701cde8207133f3f"
+    },
+    {
+      "file": "test/kustomize-extensions-fixture.ts",
+      "bytes": 3965,
+      "sha256": "427ae1d694feaa6293219dd329ab8527a2ba761b8417127488a078a2eb41ab08"
+    },
+    {
+      "file": "test/kustomize-extensions.test.ts",
+      "bytes": 13149,
+      "sha256": "28c1d08cab3415f06451157c4f1f45f4c09d74f68435aba800cb33859ec8f48a"
+    }
+  ],
+  "frozenScopeSha256": "3ad99e799491038a3948f170c1436b4c7047c018dd22ae6400e01f423e968794",
+  "preparedRuntime": {
+    "task": "checktrail-gatea-kustomize-ext-1010",
+    "tag": "checktrail-checktrail-gatea-kustomize-ext-1010:public",
+    "image": "sha256:a404488bfd380341c7c765e989f489440f568feb3c1a303975f21e25d9473744",
+    "base": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+    "schemaRevision": "8df8a883b68a24a104b4a9e43c1288090ae60b3b",
+    "selectedArtifacts": [
+      {
+        "path": "archives/helm-v4.3.0-linux-arm64.tar.gz",
+        "bytes": 17889190,
+        "sha256": "31c5794dd55c66a51e6b7d2e2ac7a114ae8b1de41ff1d9ba51748ac973b06a08",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/terraform_1.16.5_linux_arm64.zip",
+        "bytes": 32576164,
+        "sha256": "61a50b00485ee4810cf20581ef080fc54d34d666e175c58d9a10501c65c1ccde",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kubeconform-linux-arm64.tar.gz",
+        "bytes": 6901136,
+        "sha256": "1f53fc8e81258197a35e8603054162a5af1de8c5af13746c71ab680d9534ed87",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "archives/kustomize_v5.8.2_linux_arm64.tar.gz",
+        "bytes": 4618462,
+        "sha256": "0991957191951cb7dddd142403b5bb98a1fcd6378ba0079dddc1e2c309080a7f",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/deployment-apps-v1.json",
+        "bytes": 691967,
+        "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/configmap-v1.json",
+        "bytes": 17083,
+        "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1",
+        "asset": "operator-prepared-artifact"
+      },
+      {
+        "path": "schemas/service-v1.json",
+        "bytes": 43682,
+        "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b",
+        "asset": "operator-prepared-artifact"
+      }
+    ],
+    "selectedMembers": [
+      {
+        "tool": "helm",
+        "path": "linux-arm64/helm",
+        "bytes": 61145248,
+        "sha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+        "output": "bin/helm"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/README.md",
+        "bytes": 4410,
+        "sha256": "76795af9c4b1a2eb0f3f105319d4e624196dc255bdcb44f55f4cfc6b12e443e8",
+        "output": "notices/helm-README.md"
+      },
+      {
+        "tool": "helm",
+        "path": "linux-arm64/LICENSE",
+        "bytes": 11373,
+        "sha256": "881467e52efeb1807406134b0ec04b1c6f52dc9dc49382713ef9ac4e0cae42f8",
+        "output": "notices/helm-LICENSE"
+      },
+      {
+        "tool": "terraform",
+        "path": "LICENSE.txt",
+        "bytes": 4950,
+        "sha256": "dc4cb9f6140970b69110d82e8f25545135965ae50f6761ddfd6cd7cf9452bfa9",
+        "output": "notices/terraform-LICENSE.txt"
+      },
+      {
+        "tool": "terraform",
+        "path": "terraform",
+        "bytes": 110821538,
+        "sha256": "c9caf6b26aa487a470bd02d32ffe3e44fe5e95fa7e7f986cb9f2be61654f240c",
+        "output": "bin/terraform"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "LICENSE",
+        "bytes": 11346,
+        "sha256": "1294f9be73faeda3987cb554c1597f599641eebdcd4d4fa88f97bdb6241be275",
+        "output": "notices/kubeconform-LICENSE"
+      },
+      {
+        "tool": "kubeconform",
+        "path": "kubeconform",
+        "bytes": 12953083,
+        "sha256": "7e77b104b3ae696389f91971c60fd58c72f1f3dc218f139df67a1b070959c012",
+        "output": "bin/kubeconform"
+      },
+      {
+        "tool": "kustomize",
+        "path": "kustomize",
+        "bytes": 11927714,
+        "sha256": "f16ee4ad0f3991e5236e33070427f630f3e911a4b81be53aeeb70946182e61a8",
+        "output": "bin/kustomize"
+      }
+    ],
+    "buildNetwork": "none",
+    "releaseSignaturesVerified": false,
+    "publisherAndLicenseClosureVerified": false
+  },
+  "nativeHashCompatibility": {
+    "selectedReleaseCommit": "2e294e3e92a56fe9cfa1e755e6e57c5f1268ce22",
+    "nativeBinaryGoVersion": "go1.26.5",
+    "apiAndKyamlModuleVersions": "(devel)",
+    "configMapEncodedName": "",
+    "originalCompatibilityImplementation": true,
+    "nativeUnicodeHtmlBinaryDataAndDisabledHashCasesPassed": true,
+    "upstreamImplementationCopied": false
+  },
+  "observedRegression": {
+    "case": "image selectors/replacement repository names admitted tags outside the implemented repository identity model",
+    "beforeRepair": "missing expected rejection",
+    "afterRepair": "rejected during passive reconstruction",
+    "registryPortNativeNearMiss": "passed"
+  },
+  "native": {
+    "schemaVersion": 1,
+    "runtime": {
+      "node": {
+        "version": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64",
+        "bytes": 126241888,
+        "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+      },
+      "kubeconform": {
+        "version": "v0.8.0",
+        "bytes": 12953083,
+        "sha256": "7e77b104b3ae696389f91971c60fd58c72f1f3dc218f139df67a1b070959c012",
+        "byteVerified": true
+      },
+      "kustomize": {
+        "version": "v5.8.2",
+        "bytes": 11927714,
+        "sha256": "f16ee4ad0f3991e5236e33070427f630f3e911a4b81be53aeeb70946182e61a8",
+        "byteVerified": true
+      },
+      "schemas": [
+        {
+          "file": "deployment-apps-v1.json",
+          "bytes": 691967,
+          "sha256": "3725782fb01e3f27d8be2da565e2d653d7b78bf6debe5440804cea993c87b8f9",
+          "byteVerified": true
+        },
+        {
+          "file": "configmap-v1.json",
+          "bytes": 17083,
+          "sha256": "e0eaddebd677c08aa092b2da2264d86ac4fc34eed112b9fac2945b3f00c1e9b1",
+          "byteVerified": true
+        },
+        {
+          "file": "service-v1.json",
+          "bytes": 43682,
+          "sha256": "8bf019854daed511e7c174896a898173fa65d88ec5937c687a37303d4cc9351b",
+          "byteVerified": true
+        }
+      ],
+      "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n"
+    },
+    "environment": {
+      "image": "sha256:a404488bfd380341c7c765e989f489440f568feb3c1a303975f21e25d9473744",
+      "network": "none",
+      "init": true,
+      "rootFilesystemReadonly": true,
+      "sourceMountReadonly": true,
+      "preparedCacheReadonly": true,
+      "user": "1000:1000",
+      "cpus": 2,
+      "memoryMiB": 4096,
+      "pids": 256,
+      "temporaryFilesystemMiB": 2048,
+      "temporaryFilesystemExecutable": true
+    },
+    "preparedCache": {
+      "lockedRegistryTarballs": 21,
+      "bytes": 9396410,
+      "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+      "registryMetadataCopied": false,
+      "historicalLocalPackageTarballsCopied": false
+    },
+    "baseline": {
+      "timeoutMs": 120000,
+      "profiles": [
+        {
+          "profile": "kubeconform",
+          "required": 10
+        },
+        {
+          "profile": "kustomize",
+          "required": 14
+        }
+      ],
+      "fileWorkerLimit": 1,
+      "passed": 29,
+      "required": 24,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 29,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "c521b953f3973b80e22ff6265e6afa307fa307ce685f06931b3b8b39a13e761e"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "c521b953f3973b80e22ff6265e6afa307fa307ce685f06931b3b8b39a13e761e"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-2",
+            "before": {
+              "state": "present",
+              "sha256": "0322bd137a74fb4c788e45c6098f0cee8f2384d5070c48cf5a817573831ad570"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "0322bd137a74fb4c788e45c6098f0cee8f2384d5070c48cf5a817573831ad570"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-3",
+            "before": {
+              "state": "present",
+              "sha256": "3646be7f586cf577b89dad01f38d869ea696b409c8fb208e3d4285ec2d37a641"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "3646be7f586cf577b89dad01f38d869ea696b409c8fb208e3d4285ec2d37a641"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-4",
+            "before": {
+              "state": "present",
+              "sha256": "88330db55864602a26b660183754332aa8c6d0d168758ac5c180e896b32f532c"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "88330db55864602a26b660183754332aa8c6d0d168758ac5c180e896b32f532c"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-5",
+            "before": {
+              "state": "present",
+              "sha256": "2f285ee99fb274ede39f0da3c66fb1c95452e13438c66238710cbc3695a2e763"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "2f285ee99fb274ede39f0da3c66fb1c95452e13438c66238710cbc3695a2e763"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-6",
+            "before": {
+              "state": "present",
+              "sha256": "8b8915ca89d225c90a8f83eb22f24e2a382f68c2a5ddecb7041209d63be56e88"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "8b8915ca89d225c90a8f83eb22f24e2a382f68c2a5ddecb7041209d63be56e88"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-7",
+            "before": {
+              "state": "present",
+              "sha256": "e70de9892161ed084afa40e63f5cadd14bf99cbf439b8ba859b256095ae0af58"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e70de9892161ed084afa40e63f5cadd14bf99cbf439b8ba859b256095ae0af58"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-8",
+            "before": {
+              "state": "present",
+              "sha256": "e1431fa9362add293bcfeec47c592efe6caa0dd4e488267cb34125d64e060a67"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "e1431fa9362add293bcfeec47c592efe6caa0dd4e488267cb34125d64e060a67"
+            },
+            "stable": true
+          },
+          {
+            "id": "file-9",
+            "before": {
+              "state": "present",
+              "sha256": "ce3bd40a322d5e70bb6e8cb2dd6b29bff318ecfc510e4af6d2d69f8335692bbb"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "ce3bd40a322d5e70bb6e8cb2dd6b29bff318ecfc510e4af6d2d69f8335692bbb"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "Kubernetes document binding accounts for every raw document and rejects empty aliases duplicate keys foreign kinds and stale text",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 9.57427,
+            "required": false
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "Kubernetes physical source pointers preserve UTF8 and decode JSON pointer escapes once",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 0.970919,
+            "required": false
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 972.800932,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 183.184395,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 40.033211,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-2",
+            "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 2622.047074,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-3",
+            "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 235.56205,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-3",
+            "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 130.653074,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-3",
+            "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 213.404752,
+            "required": true
+          },
+          {
+            "sequence": 10,
+            "fileId": "file-4",
+            "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 281.223815,
+            "required": true
+          },
+          {
+            "sequence": 11,
+            "fileId": "file-4",
+            "name": "native Kubernetes source changed after the real validator starts invalidates the execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 225.737237,
+            "required": true
+          },
+          {
+            "sequence": 12,
+            "fileId": "file-4",
+            "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 222.795773,
+            "required": true
+          },
+          {
+            "sequence": 13,
+            "fileId": "file-5",
+            "name": "Kustomize passive assembly distinguishes raw source addresses from explicit overlay overrides",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 15.93216,
+            "required": false
+          },
+          {
+            "sequence": 14,
+            "fileId": "file-5",
+            "name": "Kustomize passive assembly rejects remote cyclic omitted duplicate plugin generator and ambiguous selectors",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 7.406641,
+            "required": false
+          },
+          {
+            "sequence": 15,
+            "fileId": "file-5",
+            "name": "Kustomize source ownership rejects empty claimed origins and native scratch collisions while preserving unrelated annotations",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3.862259,
+            "required": false
+          },
+          {
+            "sequence": 16,
+            "fileId": "file-5",
+            "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 40.07817,
+            "required": true
+          },
+          {
+            "sequence": 17,
+            "fileId": "file-5",
+            "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 574.739906,
+            "required": true
+          },
+          {
+            "sequence": 18,
+            "fileId": "file-6",
+            "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 3152.999094,
+            "required": true
+          },
+          {
+            "sequence": 19,
+            "fileId": "file-6",
+            "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 583.898968,
+            "required": true
+          },
+          {
+            "sequence": 20,
+            "fileId": "file-6",
+            "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 89.778569,
+            "required": true
+          },
+          {
+            "sequence": 21,
+            "fileId": "file-7",
+            "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 688.718278,
+            "required": true
+          },
+          {
+            "sequence": 22,
+            "fileId": "file-7",
+            "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 337.474645,
+            "required": true
+          },
+          {
+            "sequence": 23,
+            "fileId": "file-7",
+            "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 250.088206,
+            "required": true
+          },
+          {
+            "sequence": 24,
+            "fileId": "file-8",
+            "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 787.785158,
+            "required": true
+          },
+          {
+            "sequence": 25,
+            "fileId": "file-8",
+            "name": "native Kustomize source changed after the actual build starts invalidates the execution",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 821.100021,
+            "required": true
+          },
+          {
+            "sequence": 26,
+            "fileId": "file-8",
+            "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 900.774235,
+            "required": true
+          },
+          {
+            "sequence": 27,
+            "fileId": "file-8",
+            "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 835.809512,
+            "required": true
+          },
+          {
+            "sequence": 28,
+            "fileId": "file-8",
+            "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 817.315138,
+            "required": true
+          },
+          {
+            "sequence": 29,
+            "fileId": "file-9",
+            "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 4192.670879,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform validates all documents with source-bound defects repair and valid zero-replica near misses",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform evidence rejects changed source documents schemas tools commands skips errors and inconsistent resource counters",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "native kubeconform planning rejects empty duplicate-key omitted and corrupted-schema inputs with no executable command",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-2",
+            "name": "native Kubernetes CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes concurrent validations use distinct owned document and schema copies and remove them all",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-3",
+            "name": "native Kubernetes frozen collection rejects source and schema bytes changed after planning",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes cancellation observes the real validator body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [10]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes source changed after the real validator starts invalidates the execution",
+            "outcome": "passed",
+            "terminalSequences": [11]
+          },
+          {
+            "fileId": "file-4",
+            "name": "native Kubernetes copied document changed after the real validator starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [12]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Kustomize output reconciles passive multi-file origins prefix and replica overrides including zero",
+            "outcome": "passed",
+            "terminalSequences": [16]
+          },
+          {
+            "fileId": "file-5",
+            "name": "native Kustomize collector reconciles rendered schema defects original source addresses repair and cleanup",
+            "outcome": "passed",
+            "terminalSequences": [17]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize engine validates nested complete assembly with source-bound defects repair and overridden near misses",
+            "outcome": "passed",
+            "terminalSequences": [18]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize evidence rejects changed assembly rendered sources schemas tools commands counters skips and malformed native verdicts",
+            "outcome": "passed",
+            "terminalSequences": [19]
+          },
+          {
+            "fileId": "file-6",
+            "name": "native Kustomize planning rejects undeclared nested inputs remote resources plugins duplicate keys and corrupted schemas without executable commands",
+            "outcome": "passed",
+            "terminalSequences": [20]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize concurrent validations use distinct owned document and schema copies and remove them all",
+            "outcome": "passed",
+            "terminalSequences": [21]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize missing tools remain unavailable and operator environment cannot replace protected execution settings",
+            "outcome": "passed",
+            "terminalSequences": [22]
+          },
+          {
+            "fileId": "file-7",
+            "name": "native Kustomize frozen collection rejects source and schema bytes changed after planning",
+            "outcome": "passed",
+            "terminalSequences": [23]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize build cancellation observes the actual pinned body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [24]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize source changed after the actual build starts invalidates the execution",
+            "outcome": "passed",
+            "terminalSequences": [25]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize copied assembly changed after the actual build starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [26]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize validator cancellation observes the actual pinned body and removes its process and owned outputs",
+            "outcome": "passed",
+            "terminalSequences": [27]
+          },
+          {
+            "fileId": "file-8",
+            "name": "native Kustomize rendered document changed after the actual validator starts invalidates unchanged original source",
+            "outcome": "passed",
+            "terminalSequences": [28]
+          },
+          {
+            "fileId": "file-9",
+            "name": "native Kustomize CLI and negotiated MCP retain schema defects repair summary privacy and startup-only trust",
+            "outcome": "passed",
+            "terminalSequences": [29]
+          }
+        ]
+      }
+    },
+    "source": {
+      "timeoutMs": 300000,
+      "profile": "kustomize-extensions",
+      "fileWorkerLimit": 1,
+      "passed": 9,
+      "required": 9,
+      "problems": [],
+      "complete": true,
+      "ledger": {
+        "schemaVersion": 1,
+        "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+        "maxTerminalEvents": 4096,
+        "terminalEventCount": 9,
+        "truncated": false,
+        "files": [
+          {
+            "id": "file-1",
+            "before": {
+              "state": "present",
+              "sha256": "114f2479cc70c2263b73b87818de36a2939b16cf28c1056cddad9f5b48ec9517"
+            },
+            "after": {
+              "state": "present",
+              "sha256": "114f2479cc70c2263b73b87818de36a2939b16cf28c1056cddad9f5b48ec9517"
+            },
+            "stable": true
+          }
+        ],
+        "events": [
+          {
+            "sequence": 1,
+            "fileId": "file-1",
+            "name": "kustomize-extensions broken acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 730.95016,
+            "required": true
+          },
+          {
+            "sequence": 2,
+            "fileId": "file-1",
+            "name": "kustomize-extensions fixed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 1214.124453,
+            "required": true
+          },
+          {
+            "sequence": 3,
+            "fileId": "file-1",
+            "name": "kustomize-extensions near-miss acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 746.968195,
+            "required": true
+          },
+          {
+            "sequence": 4,
+            "fileId": "file-1",
+            "name": "kustomize-extensions prerequisite acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 169.813367,
+            "required": true
+          },
+          {
+            "sequence": 5,
+            "fileId": "file-1",
+            "name": "kustomize-extensions stale acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 991.766473,
+            "required": true
+          },
+          {
+            "sequence": 6,
+            "fileId": "file-1",
+            "name": "kustomize-extensions empty acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 882.388778,
+            "required": true
+          },
+          {
+            "sequence": 7,
+            "fileId": "file-1",
+            "name": "kustomize-extensions privacy acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 5405.011744,
+            "required": true
+          },
+          {
+            "sequence": 8,
+            "fileId": "file-1",
+            "name": "kustomize-extensions lifecycle acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 31969.699669,
+            "required": true
+          },
+          {
+            "sequence": 9,
+            "fileId": "file-1",
+            "name": "kustomize-extensions installed acceptance",
+            "nameTruncated": false,
+            "kind": "test",
+            "outcome": "passed",
+            "durationMs": 48135.812907,
+            "required": true
+          }
+        ],
+        "cases": [
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions broken acceptance",
+            "outcome": "passed",
+            "terminalSequences": [1]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions fixed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [2]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions near-miss acceptance",
+            "outcome": "passed",
+            "terminalSequences": [3]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions prerequisite acceptance",
+            "outcome": "passed",
+            "terminalSequences": [4]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions stale acceptance",
+            "outcome": "passed",
+            "terminalSequences": [5]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions empty acceptance",
+            "outcome": "passed",
+            "terminalSequences": [6]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions privacy acceptance",
+            "outcome": "passed",
+            "terminalSequences": [7]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions lifecycle acceptance",
+            "outcome": "passed",
+            "terminalSequences": [8]
+          },
+          {
+            "fileId": "file-1",
+            "name": "kustomize-extensions installed acceptance",
+            "outcome": "passed",
+            "terminalSequences": [9]
+          }
+        ]
+      }
+    },
+    "installed": {
+      "tarballSha256": "a24ddaace907c928a51280ec8dcfb468b9dc16171d38eaf7e54582661a334f60",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "installedCliEvaluated": true,
+      "installedRuntimeEvaluated": true,
+      "harnessOutsideInstalledPackage": true,
+      "acceptanceClientDependencies": {
+        "@modelcontextprotocol/client": "2.3.0",
+        "cross-spawn": "7.0.6",
+        "path-key": "3.1.1",
+        "shebang-command": "2.0.0",
+        "shebang-regex": "3.0.0",
+        "which": "2.0.2",
+        "isexe": "2.0.0",
+        "eventsource": "3.0.7",
+        "eventsource-parser": "3.1.1",
+        "jose": "6.2.12",
+        "pkce-challenge": "5.0.1"
+      },
+      "profile": {
+        "timeoutMs": 300000,
+        "profile": "kustomize-extensions",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "114f2479cc70c2263b73b87818de36a2939b16cf28c1056cddad9f5b48ec9517"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "114f2479cc70c2263b73b87818de36a2939b16cf28c1056cddad9f5b48ec9517"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "kustomize-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 662.468295,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "kustomize-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1252.600625,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "kustomize-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 715.032228,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "kustomize-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 193.697509,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "kustomize-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 948.684554,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "kustomize-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 714.830935,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "kustomize-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4852.568865,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-1",
+              "name": "kustomize-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 31885.416446,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-1",
+              "name": "kustomize-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 0.387377,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-1",
+              "name": "kustomize-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "linux",
+        "arch": "arm64"
+      },
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false,
+      "qualityGate": "not-assessed"
+    },
+    "guards": {
+      "schemaVersion": 1,
+      "profile": "kustomize-extensions",
+      "controls": [
+        {
+          "name": "Kustomize guard checks current physical source bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kustomize guard checks current physical policy bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kustomize guard checks current physical schema bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kustomize guard checks current physical kustomize tool bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kustomize guard checks current physical kubeconform tool bytes",
+          "source": "kubernetes-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "9d24338205159166f291dac6c896f24d6268f7b74d48a1ff4dc2d13590e3f287",
+          "mutantSha256": "362b6f9612a39814bb6e10500c40190b040a3e16fde336823f41ff5cf202fec8"
+        },
+        {
+          "name": "Kustomize guard checks native schema inventory",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 2,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "6eb3f8eade223d433c057bff1ac5b3bd680e43c4c0eb65c6dc313c66b046637a"
+        },
+        {
+          "name": "Kustomize guard checks native schema pre-hash",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "5b0f73203ab1308fff9fa6ae1fb59138afdbb65945d976c3f24d45dd9e83f09e"
+        },
+        {
+          "name": "Kustomize guard checks native schema post-hash",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "5b0f73203ab1308fff9fa6ae1fb59138afdbb65945d976c3f24d45dd9e83f09e"
+        },
+        {
+          "name": "Kustomize guard checks native stdout hash",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "ea5d84cf88f8fc1d9f9485733e48c33e07842db3c705dd27dc0b281dd0a7a675"
+        },
+        {
+          "name": "Kustomize guard checks native stderr hash",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "bc71d1dbfec6b5f45e3e8895ae5fa25e33dce891948db4ae19f3702e7affb774"
+        },
+        {
+          "name": "Kustomize guard checks native command arguments",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "c3b0d2bd51bbf6c547fe46d2b80d467fe7832b29a4ad97db0ad4a76ac927bf19"
+        },
+        {
+          "name": "Kustomize guard checks rendered document post-hash",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "72f1ea0c77634a94ae604b11aaca0ba6e88ef2a1ffb8888d035d583f9880a5c2"
+        },
+        {
+          "name": "Kustomize guard checks complete rendered resource participation",
+          "source": "kustomize-evidence.js",
+          "guardsRemovedTogether": 2,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "2837fc1c530fc4a73fb2a9c29eaeda695f7f7e176f302ada9b8d7538cd865f6f",
+          "mutantSha256": "5251ad1e1423f9dfe23435e2b1dd6330f5c1d79da5f21ee2a8af13ad5aea5fea"
+        },
+        {
+          "name": "Kustomize guard checks declared patch participation",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "3a8f10221857c68cd24d5bf62f8d5f77f65d222243aaa99c8609ea48a0ceb29f"
+        },
+        {
+          "name": "Kustomize guard checks whole JSON patch identifiers",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "d570a7f7c4be9a4a54e08ed4802fb367f0987cfcee0ffc86c134986fef3cf1b2"
+        },
+        {
+          "name": "Kustomize guard checks whole strategic patch identifiers",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "a1ae268245b5015d78e3eb48a86a56706177a2f610638d37c22cf710190b6034"
+        },
+        {
+          "name": "Kustomize guard checks whole replica identifiers",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "aa2a7131327c6cfc0e87f9e849a229466b8175d265fc130dda810213ffc71c1d"
+        },
+        {
+          "name": "Kustomize guard checks raw policy identity",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "92a3559f497ae4e3761b507d6141bc96ae8c0aa2e1395210aebd44bae57906a1"
+        },
+        {
+          "name": "Kustomize guard checks physical patch source file",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "867c4978a32796c2f24c4ad95968ac24889fbd2dbb0b69591dac914b3de1580b"
+        },
+        {
+          "name": "Kustomize guard checks physical patch source line",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "3550627fcc92c5982ec9a1e80e4541be0cae456cfdf96bd4a298e995b8a5bab6"
+        },
+        {
+          "name": "Kustomize guard checks whole image identifiers",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "a6fd7f8c7cf7e7f369c8c52c62880b1f511a38512efbf765348052919f041ac5"
+        },
+        {
+          "name": "Kustomize guard reconciles native generated content hash",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "30aac5c8109ec2cb0f89833f33c67b307a3510885ef10db25f1a072ad46dd133"
+        },
+        {
+          "name": "Kustomize guard reconciles native generated ConfigMap references",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "dca1420856459905a91f6ab414e7c4e92fb3a0d87c675d1763ba84086b053b73"
+        },
+        {
+          "name": "Kustomize guard reconciles native namespace transform",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "cd4a44c8f85f0bf4c7082a356600e5a0420653ba85721cdd5124587fbe685da7"
+        },
+        {
+          "name": "Kustomize guard reconciles native name prefix",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "a2ae6c55804ef432f46fca28825a9bfa42a929e171b4ec2b0bf0059ad76d3850"
+        },
+        {
+          "name": "Kustomize guard reconciles native name suffix",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "d332c34dc2373d6a111ca0355b86033418bbcb1fb29e2e21c203468d67ca7940"
+        },
+        {
+          "name": "Kustomize guard reconciles native image transform",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "64f7dc82434f2db24af7e3608fab8615f4f647aff62bfcdb79c231bc70966018"
+        },
+        {
+          "name": "Kustomize guard reconciles native replica transform",
+          "source": "kustomize-extensions.js",
+          "guardsRemovedTogether": 1,
+          "originalPassed": true,
+          "mutantCompiled": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "4b26b289f414d06a4126b6006fcb1e74d65a47f150eaa1275c3a8ec0417b54a0",
+          "mutantSha256": "77654e9281ba7e2b2c87b65aced9d057479ace1345c6b7af9a7a86df6e4d609e"
+        }
+      ],
+      "callbacks": [
+        {
+          "file": "kustomize-evidence-controls.test.js",
+          "sha256": "65b87aac69914c3a1f5ba461df13cfb1e2d16c051ab1d2435afbd85fd4810cf0"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "allComplete": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "regressions": {
+      "files": ["kustomize-extensions.test.js"],
+      "tests": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "outputSha256": "1362322980a089fc7faabbec953342f70c27dac5027dbf366b4dfb27c0189ff2"
+    },
+    "durationMs": 139971,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "gateAComplete": false,
+    "qualityAssessed": false
+  },
+  "projectCheck": {
+    "command": "npm run check",
+    "tests": 1581,
+    "passed": 920,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 661,
+    "todo": 0,
+    "durationMs": 240209.222792,
+    "optionalSkipsCreditedAsPassing": false,
+    "testedInputsMatch": true,
+    "inventoryPromotionAndMeasurementAddedAfterCheck": true
+  },
+  "gateInventory": {
+    "implementedProfiles": 33,
+    "pendingProfiles": 18,
+    "unresolvedFreezeDecisions": 3,
+    "scopeChanged": false
+  },
+  "limitations": [
+    "Linux ARM64 Node 22 selected artifact acceptance only.",
+    "The schema-inventory and rendered-participation controls each remove two coupled protections together.",
+    "Finite strategic/JSON patch semantics, repository image identities and literal ConfigMap generators only; not complete Kustomize semantics.",
+    "Current physical byte checks are not an atomic hostile-filesystem snapshot.",
+    "Whole native artifact/publisher/license closure, wider platforms and final Gate A acceptance remain open.",
+    "Local runtime preparation used previously acquired byte-verified artifacts; default network acquisition was not accepted in this run."
+  ],
+  "profileAcceptanceComplete": true,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false
+}

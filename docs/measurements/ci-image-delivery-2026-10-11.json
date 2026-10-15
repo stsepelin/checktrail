@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "scope": "Operator CI setup only: two official image delivery origins with unchanged OCI index pins",
+  "baseSourceCommit": "b7635c3142991a876ee2b8da033281ec5f771a5e",
+  "observedFailure": "The daemon refused the selected public ECR Temurin delivery with toomanyrequests: Data limit exceeded",
+  "indexes": [
+    {
+      "previousReference": "public.ecr.aws/docker/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "selectedReference": "docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "ociIndexSha256": "541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd",
+      "bytes": 2681,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "publisherSignatureVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "selectedReference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "ociIndexSha256": "c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "bytes": 6406,
+      "mediaType": "application/vnd.oci.image.index.v1+json",
+      "publisherSignatureVerified": false
+    }
+  ],
+  "implementationInputs": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "c7c3995f9a478af311a23a39ff3368495ad9079388b9735dedd24c061ae0b954"
+    },
+    {
+      "file": "scripts/actionlint-tools.Dockerfile",
+      "sha256": "15865b219516f620f3422327053a0c9cbf041db3ffd868c0be3f7612f1760f0d"
+    },
+    {
+      "file": "scripts/adoption-php.Dockerfile",
+      "sha256": "f13f8aadf695f37086a98febdb19fb75490b608e05e56dd36b2a9d2ec7f47898"
+    },
+    {
+      "file": "scripts/c-context-tools.Dockerfile",
+      "sha256": "bddd0d9627822e5a5ecc85957bb35450e349d72064d6bb7190b5c1c20fced4f0"
+    },
+    {
+      "file": "scripts/clang-tools.Dockerfile",
+      "sha256": "23e6894a9908b5e1d2af75ee888d4d752722e290418eb2df1255754cb343d68b"
+    },
+    {
+      "file": "scripts/context-tools.Dockerfile",
+      "sha256": "bc3738741d0c3271ffa8dd01ae8a1545ccf638808f07f7fef70c65eff7dc5ef6"
+    },
+    {
+      "file": "scripts/cpp-context-tools.Dockerfile",
+      "sha256": "8cffdeb6710059d53f36c502267131abe3bf1addf6eb56f931d0c4466363ede3"
+    },
+    {
+      "file": "scripts/cpp-tools.Dockerfile",
+      "sha256": "4302417062c7ca6e62f785a03da777f68dd8c8c9f020cdff3782d5bad6796491"
+    },
+    {
+      "file": "scripts/csharp-context-tools.Dockerfile",
+      "sha256": "f74286f000f2d26a28f4406de7930c065879a7208d74260c4d202caf6872447c"
+    },
+    {
+      "file": "scripts/detekt-tools.Dockerfile",
+      "sha256": "a97f2212e7d9969010d559ea3d385efd0dcfce342afbed9fa2d1e2838c5520a7"
+    },
+    {
+      "file": "scripts/dotnet-tools.Dockerfile",
+      "sha256": "77e4fb1d6b5492baf6501f9245ec165ce2c66f67a0680d6b0f7dcf416189eae7"
+    },
+    {
+      "file": "scripts/executable-bundle-tools.Dockerfile",
+      "sha256": "1f824dd2a415b2fc89bcddeb9370ddf866094ac8bcab9313583c59ebbea9c5c7"
+    },
+    {
+      "file": "scripts/external-tools.Dockerfile",
+      "sha256": "7bbdfb80aac8cf9067b53806cc4c25815dce77f42d3da38248c6b4b809155c16"
+    },
+    {
+      "file": "scripts/fastapi-assembly-tools.Dockerfile",
+      "sha256": "49c8da1cdf7bca76005f7ec03e463965509508e9029fd570f86efdf996a4dc5b"
+    },
+    {
+      "file": "scripts/fsharp-context-tools.Dockerfile",
+      "sha256": "40a5ab4ad2e52b2f41c857a443e9e06aa9eb74c0523a1486d2c4c8a2a7ac4caf"
+    },
+    {
+      "file": "scripts/fsharp-format-tools.Dockerfile",
+      "sha256": "e9a4798cb66c25f4e2a93a2de605c13ceee4a1bae3383430c951daa0a7ff0762"
+    },
+    {
+      "file": "scripts/go-workspace-tools.Dockerfile",
+      "sha256": "cf26b3c9b7029606d9cdb81242fbc74ef4b75378659b349610b6ab3217f25b10"
+    },
+    {
+      "file": "scripts/gradle-tools.Dockerfile",
+      "sha256": "3f892a66a328b577ab9251bc3b1c4900ee426c874c6a5d89531a97eaf24e2a52"
+    },
+    {
+      "file": "scripts/hcl-context-tools.Dockerfile",
+      "sha256": "608df8c0e9562fb4e1ff1f8ebb0a0596f711d12a0633d5b82295f77a0bc80344"
+    },
+    {
+      "file": "scripts/infra-tools-artifacts.json",
+      "sha256": "8d6045f37d2e9b3ead87cf31b0019996a3ae60053ea07a4a7271213ae9525fdf"
+    },
+    {
+      "file": "scripts/infra-tools.Dockerfile",
+      "sha256": "653b8ca7fbc4fc7ff4764e8d839df46f694c48f4ce1720125aa61107829b3e98"
+    },
+    {
+      "file": "scripts/java-context-tools.Dockerfile",
+      "sha256": "3bbe4aefdda01efe92b90d8d79e50e32f1dbf20e77145aca50f693407e685d5d"
+    },
+    {
+      "file": "scripts/java-review-tools.Dockerfile",
+      "sha256": "074ae52e696d9ed486197988e9cbf2ec2108d6777ce92b6613f016c7ffbf0637"
+    },
+    {
+      "file": "scripts/java-tools.Dockerfile",
+      "sha256": "4aeb4aa818d24867ae6ba6ad53044c28289edbbfcb076c9c17aa960a68872986"
+    },
+    {
+      "file": "scripts/jvm-analyzer-tools.Dockerfile",
+      "sha256": "056dd34f43e5a5ff7e11499bb4fc35b09266f1ac0bef3070735dbee94dd20fa9"
+    },
+    {
+      "file": "scripts/jvm-extension-tools.Dockerfile",
+      "sha256": "0df3027f8dc98691472ccc11ae17923939b12f015317fb9d3a1f039cca5f034c"
+    },
+    {
+      "file": "scripts/kotlin-context-tools.Dockerfile",
+      "sha256": "906d2562763848077189c79515254999438b78ca1c69d4becc0fb1e546db1aad"
+    },
+    {
+      "file": "scripts/kotlin-tools.Dockerfile",
+      "sha256": "d9704a249875fe66fedcf807d2dfd58b71fce56c7bbc81c8c0ff93caaa0b48bc"
+    },
+    {
+      "file": "scripts/maven-tools.Dockerfile",
+      "sha256": "7e198d4b0d5ff5a3bbae2f382895e833c59a7996cd998189418f016243fc4f88"
+    },
+    {
+      "file": "scripts/php-context-tools.Dockerfile",
+      "sha256": "bb578be307779f0b017918cc95a754d9684e36740f1d8c037c76fb36f5fbccc6"
+    },
+    {
+      "file": "scripts/php-review-tools.Dockerfile",
+      "sha256": "74f3085ca86854748fdf7c15acb6c5454787522d4fdfeb2738da11669cc7ca2b"
+    },
+    {
+      "file": "scripts/prepare-cpp-tools-runtime.mjs",
+      "sha256": "fd0bab4e6fda673e84893d624633183a690cddb994222d4ab95f5a7873c2d6f3"
+    },
+    {
+      "file": "scripts/prepare-hcl-context-runtime.mjs",
+      "sha256": "cbfe3afaa7e52f4f3e8398479a2e88b12e5e0934d1d389578e7a09a1e54622f5"
+    },
+    {
+      "file": "scripts/prepare-infra-tools-runtime.mjs",
+      "sha256": "d1d8e86ca69f846b5bf39dad771abb3545793b4bde60f7a43d0e26e16a1e93af"
+    },
+    {
+      "file": "scripts/prepare-ruby-tools-runtime.mjs",
+      "sha256": "bffcc8a595d73d90dcf9a96eeeef076b278a23d146a7c9621ed98ff457f8c7d9"
+    },
+    {
+      "file": "scripts/prepare-yaml-context-runtime.mjs",
+      "sha256": "06274e9dd6a577ad77273ddbd2994c4dc06d5113149a178a385c886c872668e8"
+    },
+    {
+      "file": "scripts/pull-pinned-image.mjs",
+      "sha256": "9786bdca0b8d1573bc50d95002fa4edc8175c41cfc91d5334d590bd89f42f4ed"
+    },
+    {
+      "file": "scripts/pyright-tools.Dockerfile",
+      "sha256": "feba1a9154320eedd7b346ed2fb210bf3868e7d0d7b62f1cc9d0e8e1820999f0"
+    },
+    {
+      "file": "scripts/python-extensions-tools.Dockerfile",
+      "sha256": "e0297f5191a8f446d12b84d2f610239b8fdb970081c8b7856cdd9e9d838aea73"
+    },
+    {
+      "file": "scripts/review-tools.Dockerfile",
+      "sha256": "4a8661b4e76788943daae0ce7db62ec29284ae862ba387a9bca696fd88cd5f8a"
+    },
+    {
+      "file": "scripts/ruby-context-tools.Dockerfile",
+      "sha256": "4bb70226325ab34b37b3f0f9ca084354969ce8220e51db2a5cd63cbf63f6d1db"
+    },
+    {
+      "file": "scripts/ruby-tools.Dockerfile",
+      "sha256": "51bd834b9ac8d873a08acf96b88410feb56e366d54e034f3d066e26fc0eb37d5"
+    },
+    {
+      "file": "scripts/rust-context-tools.Dockerfile",
+      "sha256": "64d4c8d7437f9fa32bb744295aa55ca3757e7bd4b77ce0aee32c7bd1ca5255b7"
+    },
+    {
+      "file": "scripts/rust-extension-tools.Dockerfile",
+      "sha256": "107019dcc650005bc46d3e626fbf588720b7b350effe311d093050f2768c81e8"
+    },
+    {
+      "file": "scripts/rust-review-tools.Dockerfile",
+      "sha256": "f6607bd43323c9aee256cec4999d16214735b6bdeceb33ded08610a02ca68faa"
+    },
+    {
+      "file": "scripts/scala-context-tools.Dockerfile",
+      "sha256": "b19774358e6aa9a258c84644d53ab5b42f3572dbe44b7adeafacc153e422f970"
+    },
+    {
+      "file": "scripts/scala-extensions-tools.Dockerfile",
+      "sha256": "29f1baa48145c2196b61b2bb4f04ca695ba34fb2e19ff905dab9bcc0027fa2cb"
+    },
+    {
+      "file": "scripts/scala-tools.Dockerfile",
+      "sha256": "2e7a64cab4056b833127720cc67772d86a65eea0fc98f8587594c6bb8645faf5"
+    },
+    {
+      "file": "scripts/spotbugs-tools.Dockerfile",
+      "sha256": "844b6887a1922bc4462cc53ebd7f42eeeb88e11e26c24f9da8e8403791d7a5ad"
+    },
+    {
+      "file": "scripts/vb-context-tools.Dockerfile",
+      "sha256": "d6be3de7b0d38010a5e59e9cc8446247812b21415fa182615c663e479e7544c8"
+    },
+    {
+      "file": "scripts/verify-external-container.mjs",
+      "sha256": "67d2c5bddabb0dc75a08560b80668c5283f1c0e1a5e9a1ca583f9d986eef0bad"
+    },
+    {
+      "file": "scripts/verify-external-evaluation-container.mjs",
+      "sha256": "942c055ede3c2687e876e519d367b4b119ede3dce6cc4dfebbbe61ad53fa530f"
+    },
+    {
+      "file": "scripts/verify-impact-container.mjs",
+      "sha256": "74343fa0292ed00b5a0a1ff5cb766416bf27d4446659d8235e812817f4fc336b"
+    },
+    {
+      "file": "scripts/verify-javascript-extensions-container.mjs",
+      "sha256": "f88271bd49725645801826f571eb119f33506e6513c536c170ede42cb7e8493b"
+    },
+    {
+      "file": "scripts/verify-nuxt-assembly-container.mjs",
+      "sha256": "c6e440889dfc89f41ddf3e3a57f91a823426e959d9af51c2c7abcef16f9a8185"
+    },
+    {
+      "file": "scripts/verify-nuxt-container.mjs",
+      "sha256": "1af49d2ea4e75363382ca6eef3fe78a63e0abbad00977acc681015c1b6608c1a"
+    },
+    {
+      "file": "scripts/verify-ruby-container.mjs",
+      "sha256": "57423a1f5a900d7959a01a6f52982ddbef97fa04ff2857136d3ce655878169fb"
+    },
+    {
+      "file": "scripts/verify-task-store-container.mjs",
+      "sha256": "4004fadf06d3a7a4e8c13e395b72f4bd07e576ae7529c163344c8f296efbb893"
+    },
+    {
+      "file": "scripts/verify-vue-router-assembly-container.mjs",
+      "sha256": "d66c06c1d8071b5f70924e8d22fbf123b6effbf9f6e231af7cd0bb22e65e7420"
+    },
+    {
+      "file": "scripts/verify-vue-router-container.mjs",
+      "sha256": "2aca6db781fb7aba1791d88638afce1a73ceec089431c4be6bfea2a7e2a8d875"
+    },
+    {
+      "file": "scripts/yaml-context-tools.Dockerfile",
+      "sha256": "c0a23aa533b5354715fb53e266f1a20f15fd2808a3ceefb2edf763976f634008"
+    },
+    {
+      "file": "test/infra-preparation.test.ts",
+      "sha256": "4b9d766a83fe78f7ad13873b34fb859765b55418c4333cc04f51a378bd6335bd"
+    },
+    {
+      "file": "test/pinned-image-pull.test.ts",
+      "sha256": "94da6dbb1ec60d761e9c3551af58469b97a308342d5654a8f38d1223b0c2950f"
+    }
+  ],
+  "focusedControls": {
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fullLocalCheck": {
+    "tests": 1675,
+    "pass": 969,
+    "fail": 0,
+    "skipped": 706,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "actionlint": {
+    "version": "1.7.12",
+    "passed": true
+  },
+  "changesNativeToolVersions": false,
+  "rootProjectExecutionGranted": false,
+  "completeNativeArtifactClosure": false,
+  "nativeWindowsTasksAccepted": false,
+  "gateAClosed": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false
+}

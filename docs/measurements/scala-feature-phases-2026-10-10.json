@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "profile": "scala-baseline-feature-phase-correction-v1",
+  "measuredAt": "2026-10-10T00:06:58.569481+00:00",
+  "sourceBase": "559b58b6a4da89cb90e66dab1be611394bfc140d",
+  "scope": "Synthetic development acceptance for the existing Scala 3 JVM source profile. No extension promotion, independent review quality or final platform matrix acceptance.",
+  "sourceFiles": [
+    {
+      "file": "src/scala-artifacts.ts",
+      "sha256": "7b30dace22f73ca13651fa105c59409078cbf242fca7e28a6363465441f185f2"
+    },
+    {
+      "file": "src/scala-evidence.ts",
+      "sha256": "69a5631ebeecb359f79050832ca621e88b666c9a2b952f9cc6e7b1cf5954bb38"
+    },
+    {
+      "file": "src/scala-native.ts",
+      "sha256": "973a7ed7990629c7629707563b6ec5fb0f97827bc10605bd5fdb0eef09491f78"
+    },
+    {
+      "file": "test/scala.test.ts",
+      "sha256": "e881e636175d2a728476fe5416fc8c17f3a67f0e2e6e37630fa14b3a06ce1dc9"
+    },
+    {
+      "file": "test/scala-feature-phases.test.ts",
+      "sha256": "da58e7271480e1daca19b1080029f7eb8734ee237d90c6aaab8df7aa49ccc6bc"
+    },
+    {
+      "file": "scripts/required-native-tests.json",
+      "sha256": "01c430ba120ab4af425e5ace58442b4c9adad09989804db0951d8f00f375cc86"
+    },
+    {
+      "file": "scripts/verify-scala-guards.mjs",
+      "sha256": "f2f0a6a99743fc89a970ff10237973f0d032384bf5c9d24b63ded66f817691a2"
+    },
+    {
+      "file": "scripts/verify-scala-package.mjs",
+      "sha256": "2edd04b79d281097ae0a115deee9a3820f1e7a252ed08e6dd5a99ecbb1fe54d2"
+    }
+  ],
+  "observedRegression": {
+    "oldBehavior": "A genuine inline source returned passed while the baseline required inconclusive.",
+    "redTestLogSha256": "9ced37731fb7dadd452dbc9ed837364c2728ac50467cd85405482069bb179723",
+    "assertion": "actual passed; expected inconclusive",
+    "compilerFlagAssignment": "posttyper",
+    "currentControls": [
+      "inline method and call",
+      "quoted expression",
+      "macro definition with splice",
+      "executed macro annotation with physical compile-time marker",
+      "distinct ordinary annotation near miss"
+    ]
+  },
+  "nativeRequired": {
+    "timeoutMs": 300000,
+    "profile": "scala",
+    "fileWorkerLimit": 1,
+    "passed": 15,
+    "required": 15,
+    "problems": [],
+    "complete": true
+  },
+  "compilingControls": {
+    "profile": "scala-compiler-guards-v1",
+    "node": "v22.23.2",
+    "platform": "linux",
+    "arch": "arm64",
+    "guards": [
+      {
+        "id": "native-feature-phase",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "3590ba807ae89e11d5e69f06f899d897214a44c4d519b52f66b65a73f08689b3",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "f17057597d7ead794a564ecef179de02212237772096a5f2d2466a7cb176d7b9",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-feature-source",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "1b69f1342fcb43e324cafeb4bbdd7bcae1368a895fff85cd55c08e89707c5e43",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "c0198496d0c7c04e58c8f4c18d1319abcb28460d7287d1eb7167475a008aa5c3",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "original-native-observer",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "127028f68dcd4210d3e996233aaf123e8c85d8e40f416ce39e9c5d8748095ef5",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "dbe0534cc7f62bfaaa019251aa3740304dc4ed0c8aec8db7a5883dbdb889ee44",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-finish",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "a7d9b076684cbaeac9dc2af59e6dc0cce9340f10357d63eef64bdc9751223475",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "7ae709c628fc767e5aab542cc5f541f924a835795be35d315bfcbfa21df37a79",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "physical-source-identity",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "3dbc4dd62763e358574f7357d418576d258edc88f618975e6ee130ebbbbd0e07",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "7ed8d53fcceda06b60d8e3c0fc0598b56abfbaa9dda4474452f9aa3dd7d1a94a",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-source-identity",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "dc0827ca48f9051eabccaad5698782facc8a98cabf5db8f5e778afbb87618079",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "2a629657bcbf781df655cf1f4cf24f169c25ee05ced89577f43dac4de484bad1",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "resolved-suppression-accounting",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "550013dfea343fbdb8f9301c2dd4a8a79bf0d987e926eefb03311692351cf4ce",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "a628ff752956951e1d1739b73aebdd9bd649a6568ed6573b4e6c6d766456b26e",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-tree-accounting",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "0fff45b0887c13811725da2003a8056f2bd9b311bd2f6fafb40353585abeb0bb",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "381c21bcd5ac70a1d336db4ed81355894b3dd9468c6a6ed82649d0f388455d04",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-type-accounting",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "80d42cfdb77dd160baf57359cee57e40895dc40545f56b3cd58fc853ed6eb762",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "1499706446fbd541c756e520bcb7fe7e9b79a3858062e6a4ea0f59c155f59681",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-phase-plan",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "08c554ba28811a1920bacd88253c2e07f1191fa92088e7a8c2f1571620ed9551",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "426d9db368780664c32a01c2183fb3455b9e2922b33716cadb7d707a83d788ce",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "native-backend-completion",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "d83e2fd8d684f636cb00656efa651c7cd0b37e4c9201df70d41bd84973f9ee4b",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "35eb16f18dfd6cb3b05948e0655d9b56340facc4f8bfbcf25605e45461d314b0",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "physical-class-output",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "b82760bd45d31316a69fece744684d15fd3f536fb6985268f751752df5f873f2",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "cf7cf28e417dfd8ea147ed542c813505ddaf643bcfb7c3e0c7e807efe9c02560",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "declared-class-target",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "c1851c7fb69388282dae05e2bc4e1058f29021f30ca64bcd21719322da4631a9",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "acb17cba7f23391879f4d041c7e09a78fabd606191363c7855c76c9f114da6e6",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "physical-raw-integrity",
+        "callback": "native Scala rejects coherent stale source missing typed backend output diagnostics and raw evidence",
+        "callbackSha256": "9ad53a7576bc5c2fc2c94af99cce4c2a052b2505d25fd931de89bf51e27e0eef",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "61f5d4154429fab8a92ee9bafafacd9b8cbb3951250fcc3b84f00e2c111e9aeb",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "a40a337e293f8a32ad4dee02dafe2cdf0413f908dd04a0d16edd0e22853b5f55",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "empty-analysis-inventory",
+        "callback": "native Scala empty or comment-only declaration inventories remain incomplete after genuine frontend backend and source callbacks",
+        "callbackSha256": "112f95b66a5a3a4b97b8d3a910d5c7629460696ceda6dde8a723e1b2121c1083",
+        "sourceSha256": "d641c65ec32eebf1f977907f2141ef83e76fbada434e4c26da0844bc7805dd15",
+        "mutantSha256": "806d02e5e17bbf4c3eae2fab80f11b7046879e6409d6ee62496ff8d5b4a3462b",
+        "originalPassed": true,
+        "mutantKilled": true,
+        "mutantOutputSha256": "1da22e83a8c533d1d0af04acf3ddd7de9a0dcc6f05be12f89097cb27736bcb50",
+        "mutantStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "positiveControlExecutions": 4,
+    "positiveControlsReusedOnlyForIdenticalBytes": true,
+    "sourceRestored": true,
+    "callbacksUnchanged": true,
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "freshCurrentInstalled": {
+    "tarballSha256": "acdc0a9de9f46c2d797f507b7df2e0dac07a3dc1504358ccb16f542f354e228f",
+    "offlineProductionInstall": true,
+    "lifecycleScriptsExecuted": false,
+    "installedCliEvaluated": true,
+    "installedRuntimeEvaluated": true,
+    "harnessOutsideInstalledPackage": true,
+    "acceptanceClientVersion": "2.3.0",
+    "acceptanceClientDependencies": {
+      "@modelcontextprotocol/client": "2.3.0",
+      "cross-spawn": "7.0.6",
+      "path-key": "3.1.1",
+      "shebang-command": "2.0.0",
+      "shebang-regex": "3.0.0",
+      "which": "2.0.2",
+      "isexe": "2.0.0",
+      "eventsource": "3.0.7",
+      "eventsource-parser": "3.1.1",
+      "jose": "6.2.12",
+      "pkce-challenge": "5.0.1"
+    },
+    "acceptanceClientCopiedOutsideInstalledPackage": true,
+    "environment": {
+      "network": "none",
+      "consumerMount": "readonly",
+      "rootFilesystemReadonly": false
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false,
+    "windowsVerified": false,
+    "profile": {
+      "timeoutMs": 300000,
+      "profile": "scala",
+      "fileWorkerLimit": 1,
+      "passed": 15,
+      "required": 15,
+      "problems": [],
+      "complete": true
+    }
+  },
+  "mandatoryCheck": {
+    "command": "npm run check",
+    "tests": 1422,
+    "passed": 904,
+    "failed": 0,
+    "skipped": 518,
+    "cancelled": 0,
+    "todo": 0,
+    "durationMs": 233379.152125,
+    "logSha256": "ea5ffb970f509696f237ff097f6a33042420acb962bbc81997287b3910ac83fe",
+    "scope": "Current host check; optional native skips are not native acceptance."
+  },
+  "environment": {
+    "node": "v22.23.2",
+    "java": "openjdk 25.0.4 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)",
+    "nativePlatform": "linux",
+    "nativeArch": "arm64",
+    "network": "none",
+    "repositoryMount": "readonly",
+    "rootFilesystemReadonly": false,
+    "cpus": 2,
+    "memory": "2g"
+  },
+  "controllerLogSha256": "bc2e372ac03f95497c29d6bd1f94c66b7edbf9f5b6dec29107116d3f34959e02",
+  "currentInstalledReceiptSha256": "f429fd335bab92e64e124a33a99091c66126b71e097c0cab67eaa2cf7542630b",
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "qualityAssessed": false,
+  "gateAComplete": false,
+  "finalRuntimeMatrixVerified": false,
+  "licenseClosureVerified": false
+}

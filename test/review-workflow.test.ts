@@ -377,18 +377,28 @@ test("neutral workflow concurrency reservations stale source timeout and cancell
   assert.equal(result.retainedBytes, 0);
   stale.dispose();
   await writeFile(path.join(root, "subject.mjs"), source);
+  // Advance the deadline timer only after a real assignment has been issued.
+  // Native source/schema preparation is not constrained to a 100 ms fixture race.
+  t.mock.timers.enable({ apis: ["setTimeout"] });
   const timed = new ReviewWorkflowEngine(root, {
     allowReviewSource: true,
-    limits: { ...limits, wallMs: 100 },
+    limits: { ...limits, wallMs: 60000 },
   });
-  const id = (await timed.open(context)).workflowId;
-  assigned(await timed.next(id));
-  await delay(150);
-  const expired = timed.status(id);
-  assert.equal(expired.status, "timed-out");
-  assert.equal(expired.assignments[0]!.status, "timed-out");
-  assert.equal(expired.retainedBytes, 0);
-  timed.dispose();
+  try {
+    const id = (await timed.open(context)).workflowId;
+    assigned(await timed.next(id));
+    const waiting = timed.status(id);
+    assert.equal(waiting.assignments[0]!.status, "awaiting-host");
+    assert.ok(waiting.retainedBytes > 0);
+    t.mock.timers.tick(60000);
+    const expired = timed.status(id);
+    assert.equal(expired.status, "timed-out");
+    assert.equal(expired.assignments[0]!.status, "timed-out");
+    assert.equal(expired.retainedBytes, 0);
+  } finally {
+    timed.dispose();
+    t.mock.timers.reset();
+  }
   const cancelled = new ReviewWorkflowEngine(root, { allowReviewSource: true });
   const cancelId = (await cancelled.open(context)).workflowId;
   const assignedCancel = assigned(await cancelled.next(cancelId));

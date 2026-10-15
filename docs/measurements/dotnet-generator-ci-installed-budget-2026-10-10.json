@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "kind": "ci-aggregate-harness-budget-repair",
+  "profile": "dotnet-generator-extensions",
+  "observedJob": "https://github.com/stsepelin/checktrail/actions/runs/38077208015/job/114286630233",
+  "sourceHead": "75aab98997f4bc9c7862c9243e446280e7ceca78",
+  "observed": {
+    "passedDirectNativeCallbacks": 8,
+    "directCallbacksDurationMs": 596368,
+    "installedCallbackDurationMs": 570033.79639,
+    "failure": "Fresh-install child returned a null status at the 570000 ms process budget. The historical callback did not record its spawn error or signal. Timing and the configured boundary support an aggregate timeout diagnosis."
+  },
+  "repair": {
+    "fileAndInstalledCallbackBudgetMs": 1200000,
+    "freshInstallChildBudgetMs": 1170000,
+    "engineInvocationBudgetMs": 120000,
+    "explicitSpawnErrorAndSignalAssertions": true,
+    "allRequiredCallbacksPreserved": true
+  },
+  "validation": {
+    "command": "npm run check",
+    "counts": {
+      "tests": 1639,
+      "pass": 942,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 697,
+      "todo": 0
+    },
+    "optionalHostSkipsAreNativeAcceptance": false,
+    "changedFilesTypecheckedLintedAndFormatted": true,
+    "nativeDotnetAcceptanceRerunLocally": false,
+    "latestHeadCiAcceptance": "pending"
+  },
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}

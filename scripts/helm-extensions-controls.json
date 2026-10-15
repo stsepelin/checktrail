@@ -1,0 +1,185 @@
+[
+  {
+    "id": "invocation-digest",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.inputSha256, mavenHash(JSON.stringify(invocation)), \"Invocation digest differs\");",
+    "to": "same(packet.inputSha256, packet.inputSha256, \"Invocation digest differs\");"
+  },
+  {
+    "id": "source-byte-cohort",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.sourceInputs, invocation.inputs.map((i) => ({ ...i, afterSha256: i.sha256 })), \"Frozen source cohort differs\");",
+    "to": "same(packet.sourceInputs, packet.sourceInputs, \"Frozen source cohort differs\");"
+  },
+  {
+    "id": "source-file-cohort",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.sourceFiles, current.files.toSorted(), \"Source copy file cohort differs\");",
+    "to": "same(packet.sourceFiles, packet.sourceFiles, \"Source copy file cohort differs\");"
+  },
+  {
+    "id": "native-file-cohort",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.nativeFiles, Object.keys(current.rendered).toSorted(), \"Native chart file cohort differs\");",
+    "to": "same(packet.nativeFiles, packet.nativeFiles, \"Native chart file cohort differs\");"
+  },
+  {
+    "id": "native-byte-cohort",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.nativeInputs, Object.entries(current.rendered)\n            .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))\n            .map(([file, text]) => ({\n            path: file,\n            sha256: mavenHash(text),\n            afterSha256: mavenHash(text),\n        })), \"Native chart byte cohort differs\");",
+    "to": "same(packet.nativeInputs, packet.nativeInputs, \"Native chart byte cohort differs\");"
+  },
+  {
+    "id": "owned-source",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.source, path.join(packet.temporary, \"source\"), \"Owned source role differs\");",
+    "to": "same(packet.source, packet.source, \"Owned source role differs\");"
+  },
+  {
+    "id": "owned-workspace",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.workspace, path.join(packet.temporary, \"native\"), \"Owned workspace role differs\");",
+    "to": "same(packet.workspace, packet.workspace, \"Owned workspace role differs\");"
+  },
+  {
+    "id": "owned-chart",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.chart, path.join(packet.workspace, \"chart\"), \"Owned chart role differs\");",
+    "to": "same(packet.chart, packet.chart, \"Owned chart role differs\");"
+  },
+  {
+    "id": "tool-after-bytes",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.tool.afterSha256, packet.tool.sha256, \"Tool changed\");",
+    "to": "same(packet.tool.afterSha256, packet.tool.afterSha256, \"Tool changed\");"
+  },
+  {
+    "id": "tool-size",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(packet.tool.bytes, tool.length, \"Current tool size differs\");",
+    "to": "same(packet.tool.bytes, packet.tool.bytes, \"Current tool size differs\");"
+  },
+  {
+    "id": "fixed-argv",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(r.args, args, \"Fixed native arguments differ\");",
+    "to": "same(r.args, r.args, \"Fixed native arguments differ\");"
+  },
+  {
+    "id": "phase-order",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(r.phase, [\"version\", \"lint\", \"render\", \"debug\"][index], \"Native phase order differs\");",
+    "to": "same(r.phase, r.phase, \"Native phase order differs\");"
+  },
+  {
+    "id": "native-executable",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(r.executable, packet.tool.entry, \"Native executable differs\");",
+    "to": "same(r.executable, r.executable, \"Native executable differs\");"
+  },
+  {
+    "id": "native-stdout-digest",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(r.stdoutSha256, mavenHash(r.stdout), \"Native stdout changed\");",
+    "to": "same(r.stdoutSha256, r.stdoutSha256, \"Native stdout changed\");"
+  },
+  {
+    "id": "native-stderr-digest",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "same(r.stderrSha256, mavenHash(r.stderr), \"Native stderr changed\");",
+    "to": "same(r.stderrSha256, r.stderrSha256, \"Native stderr changed\");"
+  },
+  {
+    "id": "physical-lint-count",
+    "file": "helm-extensions-native.js",
+    "name": "empty",
+    "from": "Number(summary[1]) === directories.length",
+    "to": "Number(summary[1]) >= 1"
+  },
+  {
+    "id": "rendered-line-marker",
+    "file": "helm-extensions-native.js",
+    "name": "empty",
+    "from": "lines[2 * index] === \"# checktrail-source-line:\" + (index + 1)",
+    "to": "lines[2 * index].startsWith(\"# checktrail-source-line:\")"
+  },
+  {
+    "id": "rendered-trailing-spine",
+    "file": "helm-extensions-native.js",
+    "name": "empty",
+    "from": "position === rendered.length, \"Rendered trailing source spine differs\"",
+    "to": "true, \"Rendered trailing source spine differs\""
+  },
+  {
+    "id": "rendered-unique-identities",
+    "file": "helm-extensions-evidence.js",
+    "name": "empty",
+    "from": "new Set(rendered.map((r) => r.identity)).size === rendered.length",
+    "to": "rendered.length > 0"
+  },
+  {
+    "id": "native-full-schema",
+    "file": "helm-extensions-native.js",
+    "name": "empty",
+    "from": "isDeepStrictEqual(helmExtensionsJson(text), helmExtensionsSchema(c)), \"Complete native chart schema differs\"",
+    "to": "true, \"Complete native chart schema differs\""
+  },
+  {
+    "id": "current-source-policy",
+    "file": "helm-extensions-physical.js",
+    "name": "stale",
+    "from": "isDeepStrictEqual(c.invocation, invocation), \"Current physical chart/policy cohort differs\"",
+    "to": "true, \"Current physical chart/policy cohort differs\""
+  },
+  {
+    "id": "physical-template-file",
+    "file": "helm-extensions-native.js",
+    "name": "broken",
+    "from": "return { file: model.file, line, message: parse ? parse[3] : execute[6] };",
+    "to": "return { file: \"templates/foreign.yaml\", line, message: parse ? parse[3] : execute[6] };"
+  },
+  {
+    "id": "physical-template-line",
+    "file": "helm-extensions-native.js",
+    "name": "broken",
+    "from": "return { file: model.file, line, message: parse ? parse[3] : execute[6] };",
+    "to": "return { file: model.file, line: line + 1, message: parse ? parse[3] : execute[6] };"
+  },
+  {
+    "id": "value-physical-origin",
+    "file": "helm-extensions-evidence.js",
+    "name": "broken",
+    "from": "file: issue.origin.file,\n                    line: lineNumber,",
+    "to": "file: \"values.schema.json\",\n                    line: lineNumber,"
+  },
+  {
+    "id": "native-subchart-flag",
+    "file": "helm-extensions-contract.js",
+    "name": "fixed",
+    "from": "    \"--with-subcharts\",\n",
+    "to": "",
+    "nativeInvocation": true
+  },
+  {
+    "id": "debug-dependency-participation",
+    "file": "helm-extensions-native.js",
+    "name": "empty",
+    "from": "lines[4 + index * 3] ===\n            'level=DEBUG msg=\"number of dependencies in the chart\" chart=' +\n                instance.name +\n                \" dependencies=\" +\n                c.dependencies.length",
+    "to": "lines[4 + index * 3].startsWith('level=DEBUG msg=\"number of dependencies in the chart\" chart=' + instance.name + \" dependencies=\")"
+  }
+]

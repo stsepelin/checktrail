@@ -43,8 +43,11 @@ cannot execute code.
 
 Only the selected `.scala` files participate. Java/Kotlin source mixtures and
 `.sc` scripts are unavailable. Build definitions are not executed. Scala 2,
-sbt/wrappers, generated sources, mixed builds, compile-time staging, macros and
-inline compilation require separate profiles and remain required inventory work.
+generated sources, mixed builds, compile-time staging, macros and inline
+compilation use the separate explicit declarations in
+[SCALA-EXTENSIONS.md](SCALA-EXTENSIONS.md). Those declarations do not run sbt or
+build wrappers. Their full platform and provenance obligations remain required
+inventory work.
 Observed native inline/staging/macro/suspension flags prevent a pass in this
 profile. They do not provide a pre-execution security boundary.
 
@@ -54,6 +57,9 @@ using only the pinned native compiler runtime. The collector records:
 - Exact compiler/JDK identity and the declared compiler phase plan.
 - Every selected native source's byte digest, declarations, typed-tree/type traversal and
   resolved declaration, expression and type annotations immediately after typing.
+- Inline, quote and splice participation from the typed tree, and native unit
+  feature flags after `posttyper`, with exactly one global feature phase and
+  one feature visit per selected source.
 - A final phase after JVM bytecode generation, driver completion and native
   `onSourceCompiled` callbacks for each selected source, including empty files.
 - Native diagnostic IDs, severity, source ranges and exact source line contents.
@@ -110,3 +116,14 @@ The bounded Scala 3 JVM profile has source, compiling-guard and offline installe
 acceptance recorded at its code revision in
 [scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
 declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The feature-phase correction is recorded in
+[scala-feature-phases-2026-10-10.json](measurements/scala-feature-phases-2026-10-10.json).
+The pinned compiler sets several unit feature flags during `posttyper`; reading
+them only immediately after typing missed real inline, quote and macro inputs.
+The collector now reads those flags after that phase and also retains typed
+inline/quote/splice evidence. Missing feature-phase or source-visit evidence is
+incomplete. A native macro-annotation control proves its compile-time body ran;
+a distinct ordinary annotation remains a valid near miss. This observation is
+a completeness check after compilation, not a barrier against compile-time code.
+The correction adds no supported extension profile and does not close Gate A.
