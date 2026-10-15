@@ -19,7 +19,7 @@ const requirements = JSON.parse(
 )["ruby-extensions"];
 const selected = selectRubyExtensionAcceptance(requirements, mode, shard);
 const result = await runRequiredTests(selected, {
-  timeoutMs: 1200000,
+  timeoutMs: 600000,
   isolatedCaseWorkers: 1,
 });
 process.stdout.write(
@@ -33,7 +33,7 @@ process.stdout.write(
       mode,
       "all",
     ),
-    timeoutMs: 1200000,
+    timeoutMs: 600000,
     ...result,
   }) + "\n",
 );

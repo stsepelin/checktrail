@@ -190,6 +190,11 @@ test("native journal physical hashes ordering identities counts lifecycle and so
       (f[2] as Extract<NativeAttemptFrame, { type: "output" }>).observedBytes =
         5;
     },
+    (f) => {
+      (
+        f.at(-1) as Extract<NativeAttemptFrame, { type: "journal-end" }>
+      ).admitted = 1;
+    },
   ];
   for (const change of changes) {
     const f = structuredClone(frames);
@@ -217,6 +222,12 @@ test("native journal physical hashes ordering identities counts lifecycle and so
       /binding/,
     );
   }
+  const oneCall = { ...h, maxNativeCalls: 1 };
+  assert.throws(
+    () => replayNativeAttemptFrames(oneCall, frames, oneCall),
+    /excessive attempt admission/,
+    "The operator call limit applies even when the header binding is valid",
+  );
   assert.equal(
     replayNativeAttemptFrames(h, frames, h).completeForRecordedCalls,
     true,

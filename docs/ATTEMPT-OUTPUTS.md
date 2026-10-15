@@ -13,10 +13,20 @@ source-granted reports. Each reached attempt binds its ordered attempt ID, actua
 request-body digest, observed HTTP status and delivered body-byte count. Full JSON
 bodies are retained within the configured response limit after scanning raw bytes
 and decoded JSON keys/values for the credential value and configured environment
-name. Interrupted reads, overflow, undecodable/non-JSON data and credential echoes
+name. The same bounded check covers structured model JSON when the engine decodes
+that second layer, before output-schema validation. A detected credential or
+inspection limit withholds the response body and prevents review output. Interrupted reads, overflow, undecodable/non-JSON data and credential echoes
 withhold the body; they do not fabricate an empty successful response. A transport
 failure before any delivered bytes retains an unobserved record. Requests denied
 before transport retain no invented attempt.
+
+An HTTP 200 body must complete credential inspection before model identity, usage
+or review text is interpreted. A body exceeding either inspection-complexity
+bound is malformed and cannot produce a review receipt or candidates. An imported
+report carrying an archive also needs a complete final body before it can retain
+a review receipt. Non-success
+HTTP responses retain their HTTP status and bounded numeric usage observations
+without retaining uninspectable bodies or interpreting their prose.
 
 Complete retained bodies replay against the recorded HTTP classification, exact
 model identity and reported input/output token observations. Retries bind one
