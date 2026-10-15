@@ -463,17 +463,26 @@ test(
           const report = await pending;
           assert.equal(report.outcome, "incomplete");
           const processResult = report.checks[0]!.processes[0]!;
+          assert.equal(
+            processResult.errorCode,
+            undefined,
+            `${token}: native cleanup error ${processResult.errorCode}`,
+          );
           assert.equal(processResult.cancelled, mode === "cancel");
           assert.equal(processResult.timedOut, mode === "timeout");
           assert.equal(processResult.truncated, mode === "output");
-          for (const pid of [ids.parent, ids.child])
+          for (const [role, pid] of [
+            ["parent", ids.parent],
+            ["child", ids.child],
+          ] as const)
             assert.throws(
               () => process.kill(pid, 0),
               (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",
               JSON.stringify({
                 adapter,
                 mode,
-                role: pid === ids.parent ? "parent" : "detached-child",
+                role,
+                pid,
                 errorCode: processResult.errorCode ?? null,
               }),
             );
@@ -533,6 +542,11 @@ test(
       const result = await pending;
       assert.equal(result.outcome, "incomplete");
       assert.equal(result.checks[0]!.processes[0]!.cancelled, true);
+      assert.equal(
+        result.checks[0]!.processes[0]!.errorCode,
+        undefined,
+        "Native TypeScript producer cleanup must complete",
+      );
       assert.throws(
         () => process.kill(pid!, 0),
         (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",

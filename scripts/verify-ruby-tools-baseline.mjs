@@ -21,7 +21,7 @@ const selected = requirements.filter(
 );
 assert.ok(selected.length > 0);
 const result = await runRequiredTests(selected, {
-  timeoutMs: 1200000,
+  timeoutMs: 600000,
   isolatedCaseWorkers: 1,
 });
 process.stdout.write(
@@ -29,7 +29,7 @@ process.stdout.write(
     profile: "ruby-tools",
     baselineShard: shard,
     fullRequiredInventory: requirements,
-    timeoutMs: 1200000,
+    timeoutMs: 600000,
     ...result,
   }) + "\n",
 );

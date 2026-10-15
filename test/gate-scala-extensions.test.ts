@@ -403,16 +403,18 @@ test(
           "run",
           "--root",
           f.root,
+          "--timeout-ms",
+          "120000",
           ...(trust ? ["--trust-project"] : []),
           ...(detailed ? ["--detailed"] : []),
         ],
-        { encoding: "utf8", timeout: 120000, maxBuffer: 2 * 1048576 },
+        { encoding: "utf8", timeout: 150000, maxBuffer: 2 * 1048576 },
       );
     const denied = run(false, false);
     assert.equal(denied.status, 2);
     assert.match(denied.stderr, /trust/i);
     const detailed = run(true, true);
-    assert.equal(detailed.status, 1, detailed.stderr);
+    assert.equal(detailed.status, 1, detailed.stderr || detailed.stdout);
     const report = reportSchema.parse(JSON.parse(detailed.stdout));
     assert.equal(report.checks[0]!.status, "failed");
     assert.ok(
@@ -421,7 +423,7 @@ test(
       ),
     );
     const summary = run(true, false);
-    assert.equal(summary.status, 1, summary.stderr);
+    assert.equal(summary.status, 1, summary.stderr || summary.stdout);
     assert.ok(
       !summary.stdout.includes(f.root) &&
         !summary.stdout.includes("Producer") &&
@@ -462,10 +464,10 @@ test(
           ).isError,
           true,
         );
-        const result = await client.callTool({
-          name: "validation_run",
-          arguments: {},
-        });
+        const result = await client.callTool(
+          { name: "validation_run", arguments: { timeoutMs: 120000 } },
+          { timeout: 150000 },
+        );
         if (!allow) assert.equal(result.isError, true);
         else {
           assert.notEqual(result.isError, true);

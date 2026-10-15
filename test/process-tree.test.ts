@@ -11,6 +11,11 @@ import {
   processSnapshot,
   stopDescendants,
 } from "../src/process-tree.js";
+
+// Native witnesses become visible only after the complete JSON is written.
+const nativeWitnessWriter =
+  'function publishWitness(filename,value){const pending=filename+".pending";fs.writeFileSync(pending,JSON.stringify(value));fs.renameSync(pending,filename);}';
+
 test("process ownership includes escaped descendants and orphaned group members but excludes sibling tasks", () => {
   const rows = [
     { pid: 41, parent: 10, group: 41, identity: "first" },
@@ -70,7 +75,9 @@ test(
       marker = path.join(root, "started.json"),
       controller = new AbortController();
     const body =
-      'const fs=require("node:fs"),cp=require("node:child_process");const child=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});child.on("spawn",()=>fs.writeFileSync(process.argv[1],JSON.stringify({parent:process.pid,child:child.pid})));setInterval(()=>{},1000);';
+      'const fs=require("node:fs"),cp=require("node:child_process");' +
+      nativeWitnessWriter +
+      'const child=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});child.on("spawn",()=>publishWitness(process.argv[1],{parent:process.pid,child:child.pid}));setInterval(()=>{},1000);';
     const running = runProcess(
       root,
       { executable: process.execPath, args: ["-e", body, marker], cwd: "." },
@@ -452,9 +459,13 @@ test(
         started = path.join(root, "root.json"),
         controller = new AbortController();
       const middle =
-        'const fs=require("node:fs"),cp=require("node:child_process");const leaf=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});leaf.on("spawn",()=>fs.writeFileSync(process.argv[1],JSON.stringify({middle:process.pid,leaf:leaf.pid})));leaf.on("exit",()=>{const replacement=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});replacement.on("spawn",()=>fs.writeFileSync(process.argv[2],JSON.stringify({replacement:replacement.pid})));});setInterval(()=>{},1000);';
+        'const fs=require("node:fs"),cp=require("node:child_process");' +
+        nativeWitnessWriter +
+        'const leaf=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});leaf.on("spawn",()=>publishWitness(process.argv[1],{middle:process.pid,leaf:leaf.pid}));leaf.on("exit",()=>{const replacement=cp.spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{detached:true,stdio:"ignore"});replacement.on("spawn",()=>publishWitness(process.argv[2],{replacement:replacement.pid}));});setInterval(()=>{},1000);';
       const outer =
-        'const fs=require("node:fs"),cp=require("node:child_process");cp.spawn(process.execPath,["-e",process.argv[1],process.argv[2],process.argv[3]],{detached:true,stdio:"ignore"});fs.writeFileSync(process.argv[4],JSON.stringify({root:process.pid}));setInterval(()=>{},1000);';
+        'const fs=require("node:fs"),cp=require("node:child_process");' +
+        nativeWitnessWriter +
+        'cp.spawn(process.execPath,["-e",process.argv[1],process.argv[2],process.argv[3]],{detached:true,stdio:"ignore"});publishWitness(process.argv[4],{root:process.pid});setInterval(()=>{},1000);';
       const running = runProcess(
         root,
         {

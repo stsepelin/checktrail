@@ -20,9 +20,9 @@ import { Buffer } from "node:buffer";
 import { mavenHash } from "../dist/src/maven.js";
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url))),
   swift =
-    "public.ecr.aws/docker/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+    "docker.io/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
   node =
-    "public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+    "docker.io/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
   asset =
     "https://github.com/realm/SwiftLint/releases/download/0.65.1/swiftlint_linux_arm64.zip",
   archiveSha256 =

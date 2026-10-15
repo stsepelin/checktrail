@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-13",
+  "observedFailure": {
+    "job": "php-review",
+    "run": 38374113735,
+    "jobId": 115229561062,
+    "phase": "image preparation before tests",
+    "message": "toomanyrequests: Data limit exceeded"
+  },
+  "scope": "Remaining production ECR image callers, each retaining its existing immutable index digest",
+  "verifiedIndexes": [
+    {
+      "previousReference": "public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "reference": "docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "indexBytes": 10093,
+      "sha256": "b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/executable-bundle-tools.Dockerfile",
+        "scripts/php-context-tools.Dockerfile",
+        "scripts/php-review-tools.Dockerfile",
+        "scripts/verify-external-container.mjs",
+        "scripts/verify-impact-container.mjs"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "reference": "docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "indexBytes": 9695,
+      "sha256": "ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/c-context-tools.Dockerfile",
+        "scripts/context-tools.Dockerfile",
+        "scripts/cpp-context-tools.Dockerfile",
+        "scripts/executable-bundle-tools.Dockerfile",
+        "scripts/external-tools.Dockerfile",
+        "scripts/go-workspace-tools.Dockerfile",
+        "scripts/hcl-context-tools.Dockerfile",
+        "scripts/java-context-tools.Dockerfile",
+        "scripts/kotlin-context-tools.Dockerfile",
+        "scripts/prepare-hcl-context-runtime.mjs",
+        "scripts/prepare-yaml-context-runtime.mjs",
+        "scripts/review-tools.Dockerfile",
+        "scripts/rust-context-tools.Dockerfile",
+        "scripts/rust-extension-tools.Dockerfile",
+        "scripts/scala-context-tools.Dockerfile",
+        "scripts/yaml-context-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "reference": "docker.io/library/node@sha256:1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "indexBytes": 5218,
+      "sha256": "1b3abbc0bf2421c8733f58c6fd7bbb961a960f37e05ed7369eccd1fbb0edcc84",
+      "arm64Present": true,
+      "productionCallers": [
+        "scripts/prepare-swift-tools-runtime.mjs",
+        "scripts/swift-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "reference": "docker.io/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "indexBytes": 5218,
+      "sha256": "48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/swift-context-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "reference": "docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "indexBytes": 6406,
+      "sha256": "c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32",
+      "arm64Present": true,
+      "productionCallers": [".github/workflows/ci.yml"],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/php@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "reference": "docker.io/library/php@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "indexBytes": 10309,
+      "sha256": "5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4",
+      "arm64Present": true,
+      "productionCallers": ["scripts/adoption-php.Dockerfile"],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "reference": "docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "indexBytes": 10301,
+      "sha256": "6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/executable-bundle-tools.Dockerfile",
+        "scripts/external-tools.Dockerfile",
+        "scripts/fastapi-assembly-tools.Dockerfile",
+        "scripts/prepare-fastapi-assembly-tools.mjs",
+        "scripts/prepare-python-extensions-tools.mjs",
+        "scripts/pyright-tools.Dockerfile",
+        "scripts/python-extensions-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "reference": "docker.io/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "indexBytes": 3902,
+      "sha256": "c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/rust-context-tools.Dockerfile",
+        "scripts/rust-review-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "reference": "docker.io/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "indexBytes": 2617,
+      "sha256": "471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd",
+      "arm64Present": true,
+      "productionCallers": [
+        ".github/workflows/ci.yml",
+        "scripts/swift-context-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    },
+    {
+      "previousReference": "public.ecr.aws/docker/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "reference": "docker.io/library/swift@sha256:6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "indexBytes": 2617,
+      "sha256": "6dd90eb2359663a2cde8f03e9951f488b23134b3b8fce20e9dcb6cada75dd803",
+      "arm64Present": true,
+      "productionCallers": [
+        "scripts/prepare-swift-tools-runtime.mjs",
+        "scripts/swift-tools.Dockerfile"
+      ],
+      "publisherSignaturesVerified": false
+    }
+  ],
+  "versionsAndDigestsChanged": false,
+  "nativeAcceptanceEstablishedByThisRecord": false,
+  "publisherOrLicenseClosureVerified": false,
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "gateAComplete": false
+}
