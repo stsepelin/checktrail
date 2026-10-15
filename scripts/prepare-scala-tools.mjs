@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { requestScalaArchive } from "./request-scala-archive.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   link,
@@ -11,7 +12,6 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
-import { Buffer } from "node:buffer";
 import process from "node:process";
 import { scalaArtifacts } from "../dist/src/scala-artifacts.js";
 const SCALA_SHA256 = scalaArtifacts.archiveSha256;
@@ -49,51 +49,23 @@ try {
   if (error.code !== "ENOENT") throw error;
 }
 if (!cached) {
-  const signal = globalThis.AbortSignal.timeout(60000);
-  let address = new URL(
-    `https://github.com/scala/scala3/releases/download/${SCALA_VERSION}/${filename}`,
+  const payload = await requestScalaArchive(
+    {
+      url: `https://github.com/scala/scala3/releases/download/${SCALA_VERSION}/${filename}`,
+      bytes: expectedBytes,
+      sha256: SCALA_SHA256,
+    },
+    {
+      onRetry: ({ attempt, waitMs }) =>
+        process.stderr.write(
+          JSON.stringify({
+            artifact: filename,
+            deliveryRetry: attempt,
+            waitMs,
+          }) + "\n",
+        ),
+    },
   );
-  let response;
-  for (let hop = 0; hop < 4; hop++) {
-    assert.equal(address.protocol, "https:");
-    assert.equal(address.username, "");
-    assert.equal(address.password, "");
-    assert.equal(address.hash, "");
-    assert.ok(
-      [
-        "github.com",
-        "release-assets.githubusercontent.com",
-        "objects.githubusercontent.com",
-      ].includes(address.hostname),
-    );
-    response = await globalThis.fetch(address, {
-      redirect: "manual",
-      signal,
-      headers: { Accept: "application/octet-stream" },
-    });
-    if ([301, 302, 303, 307, 308].includes(response.status)) {
-      const next = response.headers.get("location");
-      await response.body?.cancel();
-      assert.ok(next, "Tool redirect requires a Location");
-      address = new URL(next, address);
-      response = undefined;
-      continue;
-    }
-    assert.equal(response.status, 200);
-    break;
-  }
-  assert.ok(response?.body, "Tool download exhausted its redirect limit");
-  const chunks = [];
-  let bytes = 0;
-  for await (const chunk of response.body) {
-    bytes += chunk.byteLength;
-    assert.ok(
-      bytes <= expectedBytes,
-      "Tool download exceeds its declared size",
-    );
-    chunks.push(Buffer.from(chunk));
-  }
-  const payload = Buffer.concat(chunks);
   verify(payload);
   const staging = path.join(directory, `.scala-${randomUUID()}.part`);
   try {

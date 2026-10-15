@@ -353,7 +353,10 @@ export function swiftTestingEvidence(
     swiftRequire(
       native.kind === "issueRecorded" &&
         native.issue &&
-        native.messages.length === 1 &&
+        (native.messages.length === 1 ||
+          (native.messages.length === 2 &&
+            native.messages[1]!.symbol === "difference" &&
+            native.messages[0]!.text.startsWith("Expectation failed:"))) &&
         native.messages[0]!.symbol === "fail",
       "Swift Testing issue shape differs",
     );

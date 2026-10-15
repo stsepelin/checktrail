@@ -4,7 +4,40 @@
 
 Independent jobs and the OS/Node matrix are allowed to run in parallel. GitHub's
 account and runner capacity decides when queued jobs receive a runner. Steps
-within an individual job remain ordered.
+within an individual job remain ordered. After the complete required suite, the
+OS/Node matrix runs the unchanged host mutation and fresh-package command sets
+in two concurrent lanes inside one runner. The mutation lane receives a private
+copy of tracked/unignored working source and compiled files; package checks use
+the unchanged checkout. Each lane has its own temporary namespace. Prepared
+dependencies and caches are reused; test results are not cached. Every package
+controller still performs its original fresh-install verification.
+
+Within required full-suite execution, the complete physical JavaScript extension
+test file runs in an exclusive process after the shared file wave. Its loader,
+linter, build, lifecycle and fresh-install callbacks still run, including callbacks
+outside the selected required profiles. It receives a private temporary namespace
+that is removed after execution. Adjacent filenames stay in the parallel wave;
+file and callback deadlines are unchanged. This scheduling boundary avoids
+competition with other full-suite files without weakening native cleanup checks.
+
+The controller waits for both lanes, rejects changed original inputs, and
+requires restoration of mutation input bytes and inventory. The original command
+inventory is retained in a fixture and checked by the full suite. Output is
+bounded per command and retained in grouped CI logs. Cancellation and the bounded
+lane deadline stop owned descendants; incomplete or failed commands cannot yield
+a completed receipt. The four matrix variants, full-suite command, native jobs,
+callback assertions and 75-minute job limit are unchanged.
+
+The package lane also requires the bounded attempt-output source controller and
+its fresh locked offline installed-package controller on every existing host
+variant. These controls use synthetic offline API responses and native Go
+version/scope/test commands; they do not invoke a model or complete the frozen
+attempt-archives profile.
+
+The [dated lane comparison](measurements/ci-validation-lanes-2026-10-12.json)
+records actual sequential and concurrent executions of the sealed multi-claim
+mutation and installed-package controllers. This is one local subset comparison,
+not current hosted acceptance or a prediction for total workflow duration.
 
 Stack branches under `pr/**` use pull-request events for verification rather than
 duplicating the full workflow on their branch push. Other branch pushes and all
@@ -28,10 +61,96 @@ requested PHP version. Linux retains its existing action pin. This is a beta
 setup dependency; current hosted acceptance must verify it. It does not replace
 test execution or supply cached test results.
 
+Pinned public image setup also retries the exact Docker daemon public ECR
+`/v2/` connection/header timeout observed before the Rust context tests started.
+The same digest, attempt ceiling, monotonic wall budget and cancellation guards
+apply. Adjacent hosts/paths, extra authentication or manifest text, child signals
+and command timeout/abort codes are not admitted by this new matcher. Synthetic
+regressions bind the observed error; they do not simulate the registry or certify
+a hosted delivery. See the
+[delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
+
+Pinned Go analyzer preparation uses one fixed install/version helper in both
+shared matrices and the Go extension job. Each analyzer gets at most three
+acquisition attempts, with one-second and three-second waits. Only a terminal
+`sum.golang.org` checksum-tile HTTP/2 `INTERNAL_ERROR` is retryable, and every
+other diagnostic must be a download notice. Checksum mismatches, compiler errors,
+mixed failures, command limits and signals still fail immediately; exhausted
+transport attempts also fail. Each attempt prints its bounded captured stdout and stderr before reporting
+failure. Acquisition attempts allow five minutes and 2 MiB of captured output;
+version checks allow fifteen seconds and 64 KiB. Analyzer versions, Go checksum
+verification and test
+execution remain unchanged. Go's [module authentication](https://go.dev/ref/mod#authenticating)
+remains responsible for verifying acquired module content.
+
+The native Scala CLI/MCP surface and extension privacy controls explicitly select
+120 seconds per validation, with 150-second parent process/request bounds. These
+controls require complete compiler failures; a slower compiler exhausting the
+30-second default correctly returns incomplete and cannot satisfy that assertion.
+Their trust-injection refusals, privacy checks, fixed controls and existing callback
+bounds remain in place. The production default and maximum execution limits are
+unchanged.
+
+The standalone Clang fixture retains its fixed compiler version and pins the LLVM
+package revision in [`clang-tools.Dockerfile`](../scripts/clang-tools.Dockerfile).
+Its previous revision stopped resolving through Alpine's live APK index before
+any Clang checks could run. The separate C++ archive profile acquires original
+hashed APKs directly through [`cpp-tools-archives.json`](../scripts/cpp-tools-archives.json);
+its original archive pins are unchanged by this index-pin repair. Dated native
+measurements retain the package identities actually observed at that time.
+
+## Affected native jobs on pull requests
+
+PRs keep the shared full suite, selected required profiles, and every fresh
+package/mutation command on each original OS/Node variant. The full suite and
+package/mutation phase now have independent jobs and identical tool preparation.
+This duplicates preparation to shorten the serial path; it can increase runner
+minutes. It does not cache passing results or omit any of those commands.
+
+`ci-plan` compares the exact PR base and head with a NUL-delimited Git diff,
+including both paths of renames as delete/add changes. It reads the full Git
+inventory instead of using workflow-level path filters or a truncated PR-files
+response. `scripts/ci-native-inputs.json` is an explicit native input contract.
+The generator follows declared controller references, finite matrix members,
+required profiles and fixture imports; the contract is checked against that
+inventory before selective routing. It is not proof of every runtime dependency.
+All production source, schemas, dependency/configuration, CI and unknown inputs
+therefore select every native job. Native-specific fixture/controller inputs
+select the union of their exact recorded consumers. Markdown changes still run
+the shared suite, formatting, audits and fresh package/mutation verification.
+
+Selective routing additionally requires a successful full `main` push run of
+the exact PR base commit, with a complete job inventory and no skipped,
+cancelled or failed jobs. Missing history, an unavailable API, a pending/failed
+base or a stale input contract falls back to all jobs. Pushes, tags, manual runs
+and the weekly scheduled run always verify every native job. API access is
+read-only and confined to `ci-plan`; PRs do not receive write permissions.
+
+The initial full-verification wave admits the shared matrices, long .NET/JVM
+jobs and actionlint within the [Free plan's concurrent-job ceiling](https://docs.github.com/en/actions/reference/limits). Shorter
+native jobs wait for actionlint to terminate. An actionlint failure or skip does
+not block their selected checks: their job condition evaluates the plan even
+when that dependency did not pass. GitHub runner availability and other workflow
+runs still affect queue times; this is not a job-priority API.
+
+`ci-complete` runs even after dependency failure or cancellation and requires
+both shared matrices, the planner and every selected native job to succeed.
+It requires unselected jobs to be explicitly skipped and reports them as
+**not selected**, never as passing native acceptance. Require this aggregate
+check in branch protection when enabling selective CI. Existing native check
+names and commands remain intact. Historical full baseline evidence is not
+acceptance of a native job against the new PR revision; Gate A still requires
+its separately specified current-revision evidence.
+
+The first CI-improvement PR changes workflow/CI inputs and must run the complete
+matrix. There is no hosted speed claim before measuring that run. A source-code
+change still runs all native stacks: narrowing production-source changes needs
+separately reviewed ownership/dependency contracts, not filename prefixes.
+
 ## Acceptance time budgets
 
-The main OS/Node matrix has a 75-minute job limit, including preparation, the full
-suite, required profiles and fresh installed-package checks. The required-profile
+The shared suite and package/mutation OS/Node matrices each retain a 75-minute
+job limit, including their own preparation and required verification. The required-profile
 runner normally applies its timeout to each entire selected test file. Sequential
 controls therefore share that file budget even when each control has its own
 timeout.
@@ -40,7 +159,12 @@ Full-suite runs allow ten minutes per file, including additional files outside
 the selected required profiles. The `dotnet-method` profile allows ten minutes
 per selected file. Existing per-control and engine execution limits remain in
 force. Standalone profiles retain their existing file budgets, including five
-minutes for `review-benchmark-multi`; any timeout still fails acceptance and
+minutes for `review-benchmark`, `review-benchmark-judging`,
+`review-benchmark-scoring`, `review-claim-probability` and
+`review-benchmark-multi`. The first four profiles share the complete benchmark
+callback file, including callbacks outside the selected required names; their
+file allowance covers cumulative execution while existing callback and production
+execution deadlines stay unchanged. Any timeout still fails acceptance and
 leaves unobserved required cases visible.
 
 Standalone `jvm-wrappers` source and installed acceptance instead select each of
@@ -53,6 +177,17 @@ so lifecycle checks cannot observe another case's directories. Each process has 
 still applies. The installed callback runs the same required inventory against a
 fresh offline production installation; its nested worker ceiling is also one.
 Full-suite execution continues to select every compiled file and test.
+
+Standalone `scala-extensions` also gives each unchanged named callback its own
+fresh process and ten-minute file budget, with one callback running at a time.
+Hosted evidence reached seven passing callbacks before the shared file budget
+expired and left lifecycle/installed outcomes unobserved. The repair preserves
+callback and engine deadlines; it does not credit those missing outcomes. Native
+cleanup snapshots and MCP startup use the assigned temporary namespace. Source
+and fresh installed callbacks must still complete independently. The
+[Scala case-budget record](measurements/scala-native-case-budgets-2026-10-10.json)
+binds the repaired source and installed execution, preserved baseline, compiling
+controls, regressions and project check.
 
 The [case-isolation record](measurements/jvm-native-case-budgets-2026-10-10.json)
 binds native source and installed execution, unchanged required names, compiling
@@ -70,11 +205,89 @@ trials and invalid mapping variations. It reports each stage on stderr and still
 requires the exact unchanged callback to pass, kill its compiling mutant, and
 pass again after restoration. Nested review execution budgets remain unchanged.
 
-The Scala container job allows thirty minutes for artifact preparation, source
-acceptance, compiling guard mutations with their original and restored callbacks,
-and fresh installed-package acceptance. The verifier records phase progress on
-stderr and retains the final JSON evidence on stdout. Existing control and engine
-execution limits remain in force; a job cutoff is incomplete acceptance.
+The Scala container job retains its thirty-minute limit. It overlaps two isolated
+read-only native lanes: preserved compilation/regressions/installed warning policy,
+and extension source/fresh installation/compiling guards. Each lane owns its
+container temporary filesystem and npm cache; named heavy callbacks remain serial
+inside their container. Per-container limits stay at two CPUs, 2 GiB memory,
+256 PIDs and 1 GiB temporary storage; aggregate admission is at most two containers
+(four CPUs, 4 GiB memory, 512 PIDs and 2 GiB temporary storage). Both lanes must
+finish all original assertions before complete evidence is emitted. Stage durations
+are retained in the receipt. Control/file/engine deadlines remain unchanged.
+
+Scala 2/3 setup retries only admitted transient network and HTTP 5xx failures,
+starting each attempt at the exact original release URL. Manual redirects retain
+the original HTTPS/host restrictions, adding explicit port rejection. At most three
+attempts share the original sixty-second deadline; byte counts, SHA-256 pins,
+atomic publication and fresh native tests remain required. The common acquisition
+helper retains its default 128 MiB admission ceiling; Scala explicitly admits up to
+256 MiB because its existing pinned Scala 3 archive exceeds the default. The actual
+stream limit remains the declared archive byte count.
+
+C++ acquisition rechecks the original main URL after both bounded repository
+searches end in HTTP 404 across the existing CDN/mirror inventory. Those final primary attempts
+share the original deadline and bring the worst case to nine requests. Neither
+archive versions nor pins change. Integrity/permanent-response errors still fail
+without alternate repository fallback; the offline image build still verifies APK
+signatures. A download is preparation, not passing native acceptance.
+
+The retired `zlib-1.3.2-r0.apk` pin has an unchanged repository copy in
+`scripts/cpp-archive-fallbacks/`, with original public source attribution and
+upstream license text. Only that exact basename, byte count and SHA-256 can
+select it after the original bounded requests end in HTTP 404. Corrupt content,
+adjacent pins, cancellation and permanent network errors cannot use this fallback.
+It is CI preparation data outside the npm package's published file inventory;
+the offline image build still verifies its original APK signature.
+
+The CI cancellation control waits for complete PID contents rather than marker
+existence. Its fixture deliberately publishes an empty marker and waits for an
+observation acknowledgment before writing the PID, so the incomplete-publication
+boundary is reached before cancellation and detached-child cleanup are checked.
+
+## Kustomize transform extension acceptance
+
+The `kustomize-extensions-arm64` job prepares the original infrastructure runtime
+and repeats `verify-kustomize-extensions-container.mjs`. It requires preserved
+kubeconform/Kustomize controls, named source and fresh offline installed
+acceptance, original regressions and compiling unchanged-callback controls.
+Native runs use no network, a read-only root/source/cache, bounded resources and
+user 1000. Reached build/validator cancellation, timeout and output exhaustion
+retain cleanup requirements. See [KUSTOMIZE-EXTENSIONS.md](KUSTOMIZE-EXTENSIONS.md)
+and its [dated record](measurements/kustomize-extensions-2026-10-10.json). Wider
+semantics/platforms, artifact closures and Gate A remain open.
+
+## Kubernetes schema extension acceptance
+
+The `kubernetes-extensions-arm64` job prepares the original infrastructure runtime
+and adds thirteen pinned strict schemas in a separate directory. The controller
+requires preserved kubeconform/Kustomize cases, source and fresh offline installed
+acceptance, native regressions and compiling assertion controls. Current physical
+source, raw policy, schema and binary drift invalidates saved extension receipts.
+Validation runs without network as user 1000 with read-only root/source/cache,
+two CPUs, 4 GiB memory, 256 PIDs and a 2 GiB temporary filesystem. The required
+extension file has a five-minute budget; optional absent-native tests do not count.
+See [KUBERNETES-EXTENSIONS.md](KUBERNETES-EXTENSIONS.md) and its
+[measurement](measurements/kubernetes-extensions-2026-10-10.json). Wider cluster
+semantics, kinds, versions, platforms and artifact/license closure remain open.
+
+## JVM analyzer extension acceptance
+
+The `jvm-analyzer-extensions-arm64` job prepares pinned detekt, SpotBugs and Kotlin
+artifacts before atomically publishing a verified combined build context. The
+Dockerfile explicitly makes those public artifacts readable by the controller's
+non-root user, including when freshly prepared inputs have owner-only permissions.
+The controller runs preserved Java/SpotBugs/light-detekt callbacks, nine required
+source cases and the same nine fresh offline installed cases, native regressions
+and compiling guard controls. A required skip, timeout, surviving guard or failed
+restoration prevents acceptance. The selected-file budget is ten minutes; the job
+limit is thirty minutes. These are upper bounds, not passing evidence.
+
+The [local measurement](measurements/jvm-analyzer-extensions-2026-10-10.json) records
+its exact selected Linux ARM64 runtime and outcomes. Fresh installation uses a
+verified subset of the prepared lockfile cache with no network and no lifecycle
+scripts. Source/cache mounts and the root filesystem are read-only. Resource
+limits, operator trust and source-detail boundaries remain enforced. This
+profile does not close the remaining native matrix or Gate A.
 
 ## Pinned image delivery
 
@@ -400,3 +613,109 @@ reviews are part of this development profile.
 Native controls can launch additional compilers, adapters and child processes within each test worker. Bounding test-file fanout prevents a high-core host from starting a full CPU-sized set of those nested workloads at once. Dedicated required-native profile runners and independent CI jobs keep their existing scheduling and strict completion checks.
 
 The normal test launcher and required full-suite harness share a cap of up to four test-file workers, reduced to available parallelism. Each required receipt records the file-worker limit used. Profile-only acceptance retains serial file execution. The cap controls concurrent test files; native tools' descendant processes retain their separate execution/container limits. The original concurrency control uses multiple real overlapping files, accounts for every terminal outcome and confirms all active worker slots are released.
+
+The `confidence-provenance` profile is required in the main OS/Node full-suite
+matrix. Its frozen callbacks repeat against an offline production installation;
+`verify-confidence-provenance-guards.mjs` removes one exact compiled protection
+per control, requires an unchanged callback to fail an assertion, restores the
+source and requires it to pass again. The [profile documentation](REVIEW-PROVENANCE.md)
+separates current source-address checks, unverified host probabilities/operator
+labels, unattested native imports and descriptive scoring. The local measurement
+is scoped to its observed host; it does not close the wider runtime matrix or
+independent evaluation. No inference or field evaluation is invoked.
+
+The `dotnet-fsharp-format` profile requires nine frozen callbacks against source and a fresh offline production package. `verify-fsharp-format-container.mjs` binds the selected Linux ARM64/Node runtime, preserves the .NET build and C#/VB formatting baselines, and requires compiling controls including altered native C# observers. Tool preparation validates the exact downloaded NuGet package and installs only selected assemblies. FSHARP-FORMAT.md records current component and diagnostic limits; hosted CI and other platform acceptance are separate measurements.
+
+The C#, F#, Ruby and Visual Basic context jobs explicitly pull the existing pinned
+Microsoft SDK through `pull-pinned-image.mjs` before building their context images.
+This uses the same bounded setup path as the formatter jobs instead of allowing
+BuildKit to spend the entire job budget fetching that base. The subsequent build
+steps disable networking for build commands; image digests, native callbacks and
+job deadlines remain unchanged. A failed or incomplete pull still fails setup.
+
+## Generator installation acceptance budget
+
+The generator extension job participates in the planner, native input inventory
+and final completion gate. It starts in the initial wave; F# format admission
+waits for actionlint so the initial expanded wave stays within twenty jobs.
+The existing four shared OS/Node variants and every native callback remain.
+
+The installed generator acceptance callback repeats its original native cases
+through a fresh offline production installation. Its subprocess deadline is
+19.5 minutes and its callback deadline is twenty minutes. The harness grants the
+same twenty-minute budget only to that exact physical compiled file and exact
+installed callback during isolated execution with the ordinary ten-minute file
+budget. Other file/callback selections, full-suite budgets, engine execution
+limits, container resource limits and the sixty-minute native job limit remain
+unchanged. Errors and terminating signals are asserted before receipt admission.
+
+## Remaining official image delivery
+
+The PHP review job stopped before tests when the public ECR Composer pull returned
+`Data limit exceeded`. Remaining production ECR references now select the
+byte-verified official Docker registry addresses with the same immutable digests.
+[The delivery measurement](measurements/ci-official-index-delivery-2026-10-13.json)
+records every changed production caller and each captured index hash. Existing
+image versions, native callbacks, budgets and resource limits remain unchanged.
+CI input discovery omits pinned image addresses when reading native profile tokens.
+Explicit workflow and controller profiles still supply their required callbacks.
+The fixed mirror allowlist rejects adjacent digests, registries and repositories;
+byte identity does not establish publisher signatures or complete license closure.
+
+Laravel supplemental acceptance now inventories the exact static callback names
+in both supplemental files and requires each through the existing bounded
+acceptance ledger. This replaces a stale aggregate TAP count. Empty, duplicate,
+skipped, failed, missing, changed-file and truncated evidence stays non-passing;
+the original callbacks are preserved.
+
+The current Windows startup diagnostic independently compares the legacy
+`New-Object` encoding path with a typed managed constructor. On the observed
+Windows 2025/Node 22 runner, the former reached the diagnostic deadline while
+the latter completed. The Tasks ACL inspector and its public-ACL negative
+fixture now use typed encoding/security constructors. Caller-only ACL validation
+and the original required Tasks/native Windows callbacks remain intact. Native
+Tasks CI must pass before treating this change as platform acceptance.
+
+The Windows Tasks diagnostic captured completed stdin followed by a JSON-cmdlet
+stall in the minimal environment; inherited-environment probes then failed ACL
+cmdlet autoloading. The inspector and public-ACL negative fixture now use fixed
+shipped .NET Framework JSON and filesystem ACL APIs. Private ACL checks, literal
+paths, the minimal environment and existing subprocess budgets remain in force.
+Native Windows source and installed acceptance remain required.
+
+The Tasks matrix fresh-install callback exceeded its unchanged 170-second child
+budget in a shared Linux Node 22 full-suite wave, while dedicated Tasks acceptance
+completed it within that budget. The full-suite harness now admits the exact
+physical `gate-tasks-matrix.test.js` file in an exclusive process after the shared
+wave, alongside the existing JavaScript file. Whole files and unlisted callbacks
+remain included; adjacent names remain parallel. File, callback and production
+execution budgets are unchanged.
+
+The Tasks runtime verifier emits bounded named-case start, terminal, and finished diagnostics to stderr. These locate an interrupted source cohort without waiting for its final JSON report. A start or finished diagnostic does not establish acceptance; only the complete, stable terminal ledger can do that.
+
+Tasks wire fixtures register resource teardown before temporary-directory removal.
+Every owned server or worker is awaited before its SQLite files can be unlinked;
+cleanup attempts the remaining resources even if one closer fails. A required
+source and fresh-install control keeps two actual servers and owner databases
+open, then checks both processes have exited while both databases still exist.
+This ordering check is separate from native Windows ACL acceptance.
+
+The packaged Linux review verifier emits its bounded full source ledger before
+reporting a failed process or cohort. A nonzero exit remains a failure; retaining
+the complete ledger prevents error-display truncation from hiding the evidence.
+
+The Tasks fresh-install wrapper retains the 170-second child and 180-second
+callback deadlines on POSIX. Its Windows aggregate uses a 590-second child
+allowance inside a 600-second callback/file bound, because the complete native
+cohort is repeated in the fresh production installation. Per-project execution,
+other callbacks and job deadlines retain their existing limits. A dispatch
+control observes the actual wrapper options for Windows, Linux and macOS and
+checks that a refused child remains a failed callback.
+
+Owned isolated test namespaces use Windows-only bounded filesystem retries for
+transient busy-directory cleanup: ten retries with 100-millisecond linear delay
+using the [Node filesystem retry options](https://nodejs.org/docs/latest-v22.x/api/fs.html#fspromisesrmpath-options).
+A native Windows control holds a real child process's working directory open;
+release permits removal, while a persistent lock exhausts the retries and remains
+an error. POSIX removal keeps its existing immediate behavior. Namespace cleanup
+and terminal acceptance remain separate obligations.

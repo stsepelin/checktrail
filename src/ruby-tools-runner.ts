@@ -14,12 +14,17 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import {
   rubyToolsInvocationSchema,
-  rubyToolsLock,
+  rubyToolsManifestLock,
   rubyToolsRepository,
   rubyToolsProtectedEnvironment,
 } from "./ruby-tools.js";
-import { rubyToolsNativeSource } from "./ruby-tools-native.js";
+import {
+  rubyToolsNativeSource,
+  rubyExtensionsRestoreNativeSource,
+} from "./ruby-tools-native.js";
 import { mavenHash, mavenLocal, verifyMavenTree } from "./maven.js";
+
+import { rubyExtensionsPrerequisite } from "./ruby-extensions-prerequisite.js";
 
 async function regular(file: string, bound = 4 * 1024 * 1024) {
   const stat = await lstat(file);
@@ -92,7 +97,8 @@ async function main() {
       pin.sha256
     )
       throw Error("Ruby source changed before native execution");
-  const lock = rubyToolsLock(
+  const lock = rubyToolsManifestLock(
+    config,
     (await regular(await mavenLocal(root, project, "Gemfile"))).toString(
       "utf8",
     ),
@@ -101,6 +107,26 @@ async function main() {
     ),
   );
   const repository = await rubyToolsRepository(root, project, config, lock);
+  if (config.schemaVersion === 2) {
+    const prerequisiteEnvironment = { ...process.env };
+    for (const key of Object.keys(prerequisiteEnvironment))
+      if (
+        rubyToolsProtectedEnvironment.includes(key) ||
+        /^(?:BUNDLE_|GEM_|RUBY)/.test(key)
+      )
+        delete prerequisiteEnvironment[key];
+    if (!rubyExtensionsPrerequisite(prerequisiteEnvironment)) {
+      process.stdout.write(
+        JSON.stringify({
+          version: 1,
+          mode,
+          inputSha256: mavenHash(JSON.stringify(invocation.inputs)),
+          prerequisite: "unavailable",
+        }),
+      );
+      return;
+    }
+  }
   const temporary = await mkdtemp(
     path.join(process.env.CHECKTRAIL_TEMP || tmpdir(), "ruby-tools-"),
   );
@@ -202,14 +228,29 @@ async function main() {
           config.cops.map((cop) => cop + ":\n  Enabled: true\n").join("")
         : "";
     await writeFile(options, optionText, { flag: "wx" });
-    const restore = invoke("restore", [
-      "-S",
-      "bundle",
-      "_4.0.20_",
-      "install",
-      "--local",
-    ]);
+    const restoreObserver = path.join(temporary, "restore-observer.rb"),
+      restoreOutput = path.join(temporary, "restore-witness.json");
+    if (config.schemaVersion === 2)
+      await writeFile(restoreObserver, rubyExtensionsRestoreNativeSource, {
+        flag: "wx",
+      });
+    const restore = invoke(
+      "restore",
+      config.schemaVersion === 2
+        ? ["--disable-gems", restoreObserver, request, restoreOutput, "restore"]
+        : ["-S", "bundle", "_4.0.20_", "install", "--local"],
+    );
     if (restore.status !== 0) throw Error("Fresh offline Ruby restore failed");
+    const restoreWitness =
+      config.schemaVersion === 2
+        ? (await regular(restoreOutput, 1024 * 1024)).toString("utf8")
+        : undefined;
+    if (
+      config.schemaVersion === 2 &&
+      mavenHash(await regular(restoreObserver)) !==
+        mavenHash(rubyExtensionsRestoreNativeSource)
+    )
+      throw Error("Ruby restore observer changed");
     const installedArtifacts = await installation(install);
     const native = invoke(mode!, [
       "--disable-gems",
@@ -266,6 +307,15 @@ async function main() {
           sha256: installedArtifactsAfter.sha256,
         },
         metadata,
+        ...(restoreWitness === undefined
+          ? {}
+          : {
+              restoreWitness,
+              restoreWitnessSha256: mavenHash(restoreWitness),
+              restoreObserverSha256: mavenHash(
+                rubyExtensionsRestoreNativeSource,
+              ),
+            }),
         data,
         dataSha256: mavenHash(data),
         metadataSha256: mavenHash(metadata),

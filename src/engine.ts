@@ -1,3 +1,4 @@
+import { reconcileConsumerImports } from "./consumer-imports.js";
 import { goTargetPreflight } from "./go-target.js";
 import {
   externalChecks,
@@ -121,6 +122,28 @@ export async function createPlan(
       ...new Set(checks.map((check) => check.project)),
     ];
   }
+  if (selection?.mode === "affected" && config?.workspace) {
+    const completeProjects = [...new Set(checks.map((check) => check.project))];
+    const opaque = checks.some(
+      (check) =>
+        check.id !== "javascript.node-test" ||
+        (check.environment?.length ?? 0) > 0,
+    );
+    const imports = opaque
+      ? undefined
+      : await reconcileConsumerImports(
+          source,
+          completeProjects,
+          config.workspace,
+        );
+    if (!imports || imports.status !== "resolved") {
+      selection.mode = "full";
+      selection.selectedProjects = completeProjects;
+      selection.reason =
+        imports?.reason ??
+        "Native runner or granted environment impact requires complete project validation.";
+    }
+  }
   const selectedChecks = selection
     ? checks.filter((check) =>
         selection.selectedProjects.includes(check.project),
@@ -201,6 +224,7 @@ export async function validate(
       timeoutMs: remaining,
       environment: activeEnvironment,
       maxOutputBytes: Math.min(outputBudget, maximum),
+      captureRawOutput: true,
       ...(options.signal ? { signal: options.signal } : {}),
     });
     outputBudget -=
@@ -243,7 +267,19 @@ export async function validate(
         if (remaining <= 0 || outputBudget <= 0 || options.signal?.aborted)
           break;
         try {
-          const processResult = await execute(command);
+          const processResult = await execute(
+            command,
+            [
+              "dotnet.format-extensions",
+              "dotnet.generator-extensions",
+              "swift.build-extensions",
+              "swift.xctest-extensions",
+              "swift.testing-extensions",
+              "swift.swiftlint-extensions",
+            ].includes(check.id)
+              ? 4 * 1024 * 1024
+              : 1024 * 1024,
+          );
           if (!processResult) break;
           processes.push(processResult);
           if (

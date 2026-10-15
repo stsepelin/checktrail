@@ -66,6 +66,12 @@ export type { GuidanceContext, GuidanceReport } from "./guidance.js";
 
 export { runMutations, projectMutations } from "./mutation.js";
 export type { MutationRecipe, MutationReport } from "./mutation.js";
+export type {
+  NativeMutationProfile,
+  NativeMutationRecipe,
+  NativeMutationReport,
+  NativeMutationObservation,
+} from "./mutation-native-schema.js";
 
 export { loadExternalAdapters } from "./external-adapter.js";
 export type {
@@ -272,3 +278,51 @@ export {
   reviewHostLeaseSummarySchema,
   reviewHostLeaseOptionsSchema,
 } from "./review-host-lease.js";
+
+export {
+  inspectReviewProvenance,
+  projectReviewProvenance,
+  reviewProvenanceInputSchema,
+  reviewProvenanceReportSchema,
+  reviewProvenanceSummarySchema,
+} from "./review-provenance.js";
+export type { ReviewProvenanceReport } from "./review-provenance.js";
+
+export { fsharpFormatConfigSchema } from "./fsharp-format.js";
+export {
+  fsharpNativeSchema,
+  fsharpPacketSchema,
+} from "./fsharp-format-contract.js";
+
+export { dotnetFormatExtensionsConfigSchema } from "./dotnet-format-extensions.js";
+export {
+  dotnetFormatExtensionsNativeSchema,
+  dotnetFormatExtensionsPacketSchema,
+} from "./dotnet-format-extensions-contract.js";
+
+export { dotnetGeneratorExtensionsConfigSchema } from "./dotnet-generator-extensions.js";
+export { dotnetGeneratorIdentityNativeSchema } from "./dotnet-generator-extensions-contract.js";
+export { dotnetGeneratorExtensionsPacketSchema } from "./dotnet-generator-extensions-evidence.js";
+
+export {
+  rubyToolsConfigSchema,
+  rubyToolsConfigV1Schema,
+  rubyToolsConfigV2Schema,
+} from "./ruby-tools.js";
+export {
+  rubyExtensionsPolicySchema,
+  rubyExtensionsManifestWitnessSchema,
+  rubyExtensionsCaseWitnessSchema,
+  rubyExtensionsHookWitnessSchema,
+  rubyExtensionsRuntimeWitnessSchema,
+} from "./ruby-extensions-contract.js";
+
+export {
+  swiftExtensionsConfigSchema,
+  swiftExtensionsInvocationSchema,
+} from "./swift-extensions-contract.js";
+export type { SwiftExtensionsConfig } from "./swift-extensions-contract.js";
+
+export { cppExtensionsConfigSchema } from "./cpp-extensions-contract.js";
+export type { CppExtensionsConfig } from "./cpp-extensions-contract.js";
+export { cppExtensionsInvocationSchema } from "./cpp-extensions.js";

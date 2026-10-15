@@ -96,8 +96,9 @@ are incomplete. A source change during validation prevents an aggregate pass.
 | Kubernetes                   | Bounded offline kubeconform document/schema validation with physical source addresses                             |
 | Kustomize                    | Bounded local resource/prefix/replica assembly with native render reconciliation and source-bound schema findings |
 | Terraform                    | Bounded provider-free multi-file JSON module validation with native source diagnostics                            |
+| Helm                         | Root-chart and opt-in local application/subchart alias validation with native constraints and source diagnostics  |
 | Kotlin                       | Opt-in pinned detekt light analysis with every-selected-file rule, source, suppression and completion accounting  |
-| Scala, other infrastructure  | Discovery only; execution reports unavailable                                                                     |
+| Scala                        | Opt-in pinned Scala 2/3 compilation; explicit mixed/generated/compile-only script and ordered macro stages        |
 
 Tools must already be installed. No dependency installation, automatic fixes,
 service startup, migrations, commits or deployments are performed by the engine.
@@ -304,7 +305,9 @@ Ordinary validation calls run asynchronously and return their report on the orig
 call. Startup `--task-store` enables the bounded standard Tasks polling profile for
 capable requests, preserving ordinary-call fallback. See
 [MCP compatibility](docs/MCP-COMPATIBILITY.md) for the tested SDK 2.3.0 routing,
-lifecycle evidence and remaining client/runtime profiles.
+lifecycle evidence and remaining client/runtime profiles. The selected
+[Windows private task-store backend](docs/TASK-STORAGE.md#windows-storage-acceptance)
+has new native source/package CI controls; its platform acceptance is pending.
 
 Exact finding baselines and exceptions are available through the CLI, library and
 MCP. [Finding policy](docs/FINDING-POLICY.md) describes creation, expiration,
@@ -393,8 +396,10 @@ audits with pinned tools and every-file completion. Opt-in [Maven](docs/MAVEN.md
 and [Gradle](docs/GRADLE.md) profiles compile declared Java modules and reconcile
 native test evidence. The opt-in [SpotBugs profile](docs/SPOTBUGS.md) analyzes freshly
 compiled Java bytecode. The [Kotlin detekt profile](docs/DETEKT.md) analyzes selected
-Kotlin sources with pinned light rules. Wrappers, Kotlin compilation/type analysis,
-Scala, generated/JPMS scope and wider analyzer/platform profiles remain required.
+Kotlin sources with pinned light rules. The [Kotlin compiler profiles](docs/KOTLIN.md)
+and [Scala compiler profiles](docs/SCALA-EXTENSIONS.md)
+provide separately selected native compilation evidence. Wider analyzer/platform
+profiles and generated/JPMS analyzer scopes remain required.
 
 Reproduce synthetic planning and execution costs with the
 [performance harness](docs/PERFORMANCE.md). Reports retain raw measurements and
@@ -427,6 +432,9 @@ require `--detailed --allow-review-source`; claims and declared usage remain adv
 Core validation does not call a model or upload code. Optional
 [provider review](docs/REVIEW-PROVIDERS.md) requires separate operator inference
 and source-disclosure grants; normal output hides source and candidate prose.
+[Bounded attempt outputs](docs/ATTEMPT-OUTPUTS.md) retain physical shared-engine
+command output and credential-checked API bodies under the same output grants;
+complete all-attempt and host-usage acceptance remains pending.
 
 [Native review probes](docs/REVIEW-PROBES.md) bind operator-pinned controls to
 selected source and measured function/guard execution. Native execution requires
@@ -464,3 +472,5 @@ narrow validation plans or establish runtime reachability.
 The experimental bounded [Windows executable profile](docs/WINDOWS-EXECUTION.md)
 has a dedicated native CI gate. Its acceptance is pending; broader Windows tools,
 Git and private persistence profiles remain unverified.
+
+The selected [local Helm application/subchart profile](docs/HELM-EXTENSIONS.md) validates declared transitive and repeated alias graphs, physical defaults and root overrides, native value constraints and source-bound template/rendered diagnostics. It uses prepared pinned tools through the same trusted CLI/MCP engine; arbitrary charts and cluster behavior require separate support.

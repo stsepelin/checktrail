@@ -3,7 +3,7 @@ import { architectureSummarySchema } from "../src/architecture.js";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { Client } from "@modelcontextprotocol/client";
@@ -72,6 +72,7 @@ test("MCP 2026-07-28 advertises tools, validates input, and cannot elevate execu
     "review_multi_score",
     "review_paired_score",
     "review_probe",
+    "review_provenance",
     "review_receipt",
     "review_refute",
     "review_run",
@@ -380,13 +381,14 @@ test("MCP finding comparison retains native failure and enforces startup detail 
 
 test(
   "MCP remains responsive during validation, rejects overlap, and accepts a run after cancellation",
-  { timeout: 10_000 },
+  { timeout: 30_000 },
   async (t) => {
     const root = await fixture(t, {
       "package.json": nodeManifest,
       "slow.test.js": `import {test} from 'node:test';
 import fs from 'node:fs';
 test('waits', async () => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
   fs.mkdirSync('.checktrail', {recursive:true});
   fs.writeFileSync('.checktrail/ready', 'ready');
   await new Promise(resolve => setTimeout(resolve, 60000));
@@ -394,59 +396,68 @@ test('waits', async () => {
     });
     const client = await connect(t, root, ["--allow-execution"]);
     const controller = new AbortController();
-    t.after(() => controller.abort());
     const run = client.callTool(
       { name: "validation_run", arguments: { timeoutMs: 120_000 } },
       { signal: controller.signal },
     );
     const cancelled = assert.rejects(run, /abort|cancel/i);
-    let ready = false;
-    for (let attempt = 0; attempt < 100; attempt++) {
-      try {
-        ready =
-          (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
-          "ready";
-        if (ready) break;
-      } catch {
-        // The native fixture has not created its readiness marker yet.
+    // Cancellation must settle before the registered client teardown, including
+    // when readiness or overlap assertions fail.
+    void cancelled.catch(() => {});
+    try {
+      let ready = false;
+      const readinessDeadline = performance.now() + 20000;
+      while (performance.now() < readinessDeadline) {
+        try {
+          ready =
+            (await readFile(path.join(root, ".checktrail/ready"), "utf8")) ===
+            "ready";
+          if (ready) break;
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+          // The native fixture has not published its readiness marker yet.
+        }
+        await delay(25);
       }
-      await delay(25);
-    }
-    assert.equal(ready, true);
-    await client.notification({
-      method: "notifications/cancelled",
-      params: { requestId: "0" },
-    });
-    const plan = await client.callTool({
-      name: "validation_plan",
-      arguments: {},
-    });
-    assert.equal(plan.isError, undefined);
-    const overlap = await client.callTool({
-      name: "validation_run",
-      arguments: {},
-    });
-    assert.equal(overlap.isError, true);
-    assert.match(JSON.stringify(overlap.content), /already running/);
-    controller.abort();
-    await cancelled;
-    await writeFile(path.join(root, "slow.test.js"), passingTest);
-    for (let attempt = 0; attempt < 40; attempt++) {
-      const next = await client.callTool({
-        name: "validation_run",
-        arguments: { timeoutMs: 5000 },
+      assert.equal(ready, true, "Native validation baseline did not start");
+      await client.notification({
+        method: "notifications/cancelled",
+        params: { requestId: "0" },
       });
-      if (!next.isError) {
-        assert.equal(
-          (next.structuredContent as { outcome: string }).outcome,
-          "passed",
-        );
-        return;
+      const plan = await client.callTool({
+        name: "validation_plan",
+        arguments: {},
+      });
+      assert.equal(plan.isError, undefined);
+      const overlap = await client.callTool({
+        name: "validation_run",
+        arguments: {},
+      });
+      assert.equal(overlap.isError, true);
+      assert.match(JSON.stringify(overlap.content), /already running/);
+      controller.abort();
+      await cancelled;
+      await writeFile(path.join(root, "slow.test.js"), passingTest);
+      for (let attempt = 0; attempt < 40; attempt++) {
+        const next = await client.callTool({
+          name: "validation_run",
+          arguments: { timeoutMs: 5000 },
+        });
+        if (!next.isError) {
+          assert.equal(
+            (next.structuredContent as { outcome: string }).outcome,
+            "passed",
+          );
+          return;
+        }
+        assert.match(JSON.stringify(next.content), /already running/);
+        await delay(25);
       }
-      assert.match(JSON.stringify(next.content), /already running/);
-      await delay(25);
+      assert.fail("Validation remained busy after cancellation");
+    } finally {
+      controller.abort();
+      await cancelled;
     }
-    assert.fail("Validation remained busy after cancellation");
   },
 );
 
@@ -599,72 +610,93 @@ test("MCP mutation experiments enforce startup trust and share native assertion 
     );
 });
 
-test("MCP mutation cancellation leaves planning responsive and cleans temporary workers", async (t) => {
-  const root = await fixture(t, {
-    "package.json": nodeManifest,
-    "sum.js": "export const sum=(a,b)=>a+b;",
-    "mutations.json": JSON.stringify({
-      schemaVersion: 1,
-      profile: "node-flat-tests",
-      mutations: [
-        { id: "subtract", file: "sum.js", expected: "a+b", replacement: "a-b" },
-      ],
-    }),
-  });
-  const probe = path.join(root, ".checktrail/ready");
-  await mkdir(path.dirname(probe));
-  await writeFile(
-    path.join(root, "sum.test.js"),
-    `import {test} from 'node:test';import {writeFileSync} from 'node:fs';test('slow',async()=>{writeFileSync(${JSON.stringify(probe)},process.cwd());await new Promise(resolve=>setTimeout(resolve,60000));});`,
-  );
-  const client = await connect(t, root, ["--allow-execution"]);
-  const controller = new AbortController();
-  t.after(() => controller.abort());
-  const pending = client.callTool(
-    {
-      name: "mutation_experiment",
-      arguments: { input: "mutations.json", timeoutMs: 120000 },
-    },
-    { signal: controller.signal },
-  );
-  const cancelled = assert.rejects(pending, /abort|cancel/i);
-  let copy: string | undefined;
-  for (let i = 0; i < 100; i++) {
-    try {
-      copy = await readFile(probe, "utf8");
-      if (copy) break;
-    } catch {
-      // A created marker is not ready until the writer supplies its contents.
-    }
-    await delay(20);
-  }
-  assert.ok(copy, "Native mutation baseline did not start");
-  assert.equal(
-    (await client.callTool({ name: "validation_plan", arguments: {} })).isError,
-    undefined,
-  );
-  assert.equal(
-    (await client.callTool({ name: "validation_run", arguments: {} })).isError,
-    true,
-  );
-  assert.equal(
-    (
-      await client.callTool({
+test(
+  "MCP mutation cancellation leaves planning responsive and cleans temporary workers",
+  { timeout: 30000 },
+  async (t) => {
+    const root = await fixture(t, {
+      "package.json": nodeManifest,
+      "sum.js": "export const sum=(a,b)=>a+b;",
+      "mutations.json": JSON.stringify({
+        schemaVersion: 1,
+        profile: "node-flat-tests",
+        mutations: [
+          {
+            id: "subtract",
+            file: "sum.js",
+            expected: "a+b",
+            replacement: "a-b",
+          },
+        ],
+      }),
+    });
+    const probe = path.join(root, ".checktrail/ready");
+    await mkdir(path.dirname(probe));
+    await writeFile(
+      path.join(root, "sum.test.js"),
+      `import {test} from 'node:test';import {writeFileSync} from 'node:fs';test('slow',async()=>{await new Promise(resolve=>setTimeout(resolve,3000));writeFileSync(${JSON.stringify(probe)},process.cwd());await new Promise(resolve=>setTimeout(resolve,60000));});`,
+    );
+    const client = await connect(t, root, ["--allow-execution"]);
+    const controller = new AbortController();
+    const pending = client.callTool(
+      {
         name: "mutation_experiment",
-        arguments: { input: "mutations.json" },
-      })
-    ).isError,
-    true,
-  );
-  controller.abort();
-  await cancelled;
-  for (let i = 0; i < 100; i++) {
+        arguments: { input: "mutations.json", timeoutMs: 120000 },
+      },
+      { signal: controller.signal },
+    );
+    const cancelled = assert.rejects(pending, /abort|cancel/i);
+    // Observe cancellation even if an earlier fixture assertion fails, then await
+    // it before the client's registered teardown closes the transport.
+    void cancelled.catch(() => {});
     try {
-      await readFile(path.join(copy, "package.json"));
-      await delay(20);
-    } catch {
-      return;
+      let copy: string | undefined;
+      const readinessDeadline = performance.now() + 20000;
+      while (performance.now() < readinessDeadline) {
+        try {
+          copy = await readFile(probe, "utf8");
+          if (copy) break;
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+          // A created marker is not ready until the writer supplies its contents.
+        }
+        await delay(20);
+      }
+      assert.ok(copy, "Native mutation baseline did not start");
+      assert.equal(
+        (await client.callTool({ name: "validation_plan", arguments: {} }))
+          .isError,
+        undefined,
+      );
+      assert.equal(
+        (await client.callTool({ name: "validation_run", arguments: {} }))
+          .isError,
+        true,
+      );
+      assert.equal(
+        (
+          await client.callTool({
+            name: "mutation_experiment",
+            arguments: { input: "mutations.json" },
+          })
+        ).isError,
+        true,
+      );
+      controller.abort();
+      await cancelled;
+      for (let i = 0; i < 100; i++) {
+        try {
+          await access(copy);
+          await delay(20);
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+          throw error;
+        }
+      }
+      assert.fail("Temporary mutation copy remained after cancellation");
+    } finally {
+      controller.abort();
+      await cancelled;
     }
-  }
-  assert.fail("Temporary mutation copy remained after cancellation");
-});
+  },
+);
