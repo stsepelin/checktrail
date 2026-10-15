@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import process from "node:process";
 import { open, realpath, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { constants } from "node:fs";
 import { availableParallelism, tmpdir } from "node:os";
@@ -61,6 +62,7 @@ async function executeRequiredTests(
     maxTerminalEvents = MAX_EVENTS,
     additionalFiles = [],
     isolatedCaseWorkers = 0,
+    onCaseProgress,
   } = {},
 ) {
   assert.ok(
@@ -84,6 +86,11 @@ async function executeRequiredTests(
     isolatedCaseWorkers === 0 || additionalFiles.length === 0,
     "Named case isolation cannot replace a full-suite run",
   );
+  assert.ok(
+    onCaseProgress === undefined ||
+      (typeof onCaseProgress === "function" && isolatedCaseWorkers > 0),
+    "Required case progress needs named isolation",
+  );
   const requiredCaseWorkerLimit =
     isolatedCaseWorkers === 0
       ? 0
@@ -100,13 +107,13 @@ async function executeRequiredTests(
   const fileIds = new Map(
     files.map((file, index) => [file, "file-" + (index + 1)]),
   );
-  // This native file repeats loader/linter/build and fresh-install controls. Give
-  // its complete file an exclusive slot after the shared full-suite wave; named
+  // These native files repeat loader/build or Tasks fresh-install controls. Give
+  // each complete file an exclusive slot after the shared full-suite wave; named
   // selection would omit unlisted callbacks. All existing deadlines still apply.
   const exclusiveFiles =
     additionalFiles.length > 0
       ? files.filter((file) =>
-          ["javascript-extensions"].some(
+          ["javascript-extensions", "tasks-matrix"].some(
             (profile) =>
               file ===
               path.join(
@@ -128,6 +135,7 @@ async function executeRequiredTests(
     let temporary;
     let execArgv = [];
     try {
+      if (selection) onCaseProgress?.({ phase: "start", name: selection.name });
       if (selection || exclusive) {
         temporary = await mkdtemp(
           path.join(tmpdir(), "checktrail-native-case-"),
@@ -210,6 +218,31 @@ async function executeRequiredTests(
           };
           terminalEvents.push(event);
           if (!suite && observed.has(id)) observed.get(id).push(event.sequence);
+          if (selection && !suite && id === key(selection))
+            onCaseProgress?.({
+              phase: "terminal",
+              name: selection.name,
+              outcome,
+              durationMs: event.durationMs,
+              ...(type === "test:fail"
+                ? {
+                    ...(typeof data.details?.error?.failureType === "string"
+                      ? {
+                          failureType: data.details.error.failureType.slice(
+                            0,
+                            128,
+                          ),
+                        }
+                      : {}),
+                    ...(typeof data.details?.error?.code === "string"
+                      ? { code: data.details.error.code.slice(0, 128) }
+                      : {}),
+                    ...(typeof data.details?.error?.message === "string"
+                      ? { message: data.details.error.message.slice(0, 1000) }
+                      : {}),
+                  }
+                : {}),
+            });
           if (event.nameTruncated)
             problems.push({
               name: event.name,
@@ -251,7 +284,17 @@ async function executeRequiredTests(
         if (type === "test:pass" && !suite) passed++;
       }
     } finally {
-      if (temporary) await rm(temporary, { recursive: true, force: true });
+      if (temporary)
+        await rm(temporary, {
+          recursive: true,
+          force: true,
+          // Native Windows supervisors can still be completing EOF cleanup
+          // when their test worker exits. Persistent locks remain failures.
+          maxRetries: process.platform === "win32" ? 10 : 0,
+          retryDelay: 100,
+        });
+      if (selection)
+        onCaseProgress?.({ phase: "finished", name: selection.name });
     }
   };
   if (before.every((item) => item.state === "present")) {

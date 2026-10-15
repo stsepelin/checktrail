@@ -99,11 +99,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -230,11 +226,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -1542,6 +1534,78 @@ jobs:
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
 
+  tasks-runtime:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime']) }}
+    name: tasks-runtime (${{ matrix.slot }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slot: ci-linux-node22
+            os: ubuntu-24.04
+            node: "22.23.3"
+          - slot: ci-linux-node24
+            os: ubuntu-24.04
+            node: "24.21.0"
+          - slot: ci-linux-node26
+            os: ubuntu-24.04
+            node: "26.10.0"
+          - slot: ci-macos-node22
+            os: macos-26
+            node: "22.23.3"
+          - slot: ci-macos-node24
+            os: macos-26
+            node: "24.20.0"
+          - slot: ci-macos-node26
+            os: macos-26
+            node: "26.9.0"
+          - slot: windows-node22
+            os: windows-2025
+            node: "22.23.3"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Diagnose native Windows private-access setup boundaries
+        if: matrix.slot == 'windows-node22'
+        run: node scripts/diagnose-windows-task-access.mjs
+      - name: Require source controls with exact runtime and observed image identity
+        run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require the same controls in a fresh offline production installation
+        run: node scripts/verify-tasks-runtime-package.mjs ${{ matrix.slot }}
+
+  tasks-runtime-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime-arm64']) }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.3"
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require source and offline installed controls in the pinned native runtime
+        run: node scripts/verify-tasks-runtime-arm64.mjs
+
   windows:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['windows']) }}
@@ -1600,9 +1664,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -2106,6 +2168,8 @@ jobs:
       - kustomize
       - helm
       - helm-extensions-arm64
+      - tasks-runtime
+      - tasks-runtime-arm64
       - windows
       - go-workspaces-arm64
       - php-context-arm64

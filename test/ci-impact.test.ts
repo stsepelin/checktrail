@@ -140,6 +140,20 @@ test("CI declared native inputs match every workflow controller profile matrix a
       );
   }
 });
+test("CI Tasks runtime jobs participate in selection and the final completion inventory", () => {
+  for (const id of ["tasks-runtime", "tasks-runtime-arm64"]) {
+    assert.deepEqual(workflow.jobs[id].needs, ["ci-plan", "actionlint"]);
+    assert.equal(
+      workflow.jobs[id].if,
+      "${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['" +
+        id +
+        "']) }}",
+    );
+    assert.ok(workflow.jobs["ci-complete"].needs.includes(id));
+    assert.equal(plan(["test/gate-tasks-matrix.test.ts"]).selected[id], true);
+  }
+});
+
 test("CI image delivery addresses do not expand native callback owners while explicit controller profiles still do", async () => {
   const families = ["python", "rust", "swift"];
   const actual = await buildNativeInputs({

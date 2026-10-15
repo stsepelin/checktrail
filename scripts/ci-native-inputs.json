@@ -74,6 +74,7 @@
   "scripts/cpp-tools.Dockerfile": ["cpp-extensions-arm64", "cpp-tools"],
   "scripts/csharp-context-tools.Dockerfile": ["csharp-context-arm64"],
   "scripts/detekt-tools.Dockerfile": ["detekt"],
+  "scripts/diagnose-windows-task-access.mjs": ["tasks-runtime"],
   "scripts/dotnet-build-fixture-projects.json": [
     "c-context-arm64",
     "cpp-context-arm64",
@@ -212,6 +213,8 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -307,6 +310,7 @@
     "rust-extensions-arm64",
     "scala-extensions-arm64",
     "swift-extensions-arm64",
+    "tasks-runtime-arm64",
     "terraform-extensions-arm64",
     "vue-router-assembly-arm64"
   ],
@@ -330,6 +334,7 @@
     "fastapi-assembly-arm64"
   ],
   "scripts/prepare-fsharp-format-tools.mjs": ["fsharp-format-arm64"],
+  "scripts/prepare-go-tools.mjs": ["go-workspaces-arm64"],
   "scripts/prepare-gradle-dependencies.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/prepare-gradle-tools.mjs": ["gradle", "jvm-wrappers-arm64"],
   "scripts/prepare-hcl-context-runtime.mjs": ["hcl-context-arm64"],
@@ -453,6 +458,8 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -552,6 +559,7 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -650,6 +658,8 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -716,6 +726,8 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -724,6 +736,7 @@
     "windows",
     "yaml-context-arm64"
   ],
+  "scripts/retry-go-acquisition.mjs": ["go-workspaces-arm64"],
   "scripts/retry-maven-acquisition.mjs": ["jvm-wrappers-arm64", "maven"],
   "scripts/ruby-context-tools.Dockerfile": ["ruby-context-arm64"],
   "scripts/ruby-extensions-acceptance-selection.mjs": ["ruby-extensions-arm64"],
@@ -739,6 +752,10 @@
   "scripts/swift-context-tools.Dockerfile": ["swift-context-arm64"],
   "scripts/swift-extensions-tools.Dockerfile": ["swift-extensions-arm64"],
   "scripts/swift-tools.Dockerfile": ["swift-tools"],
+  "scripts/tasks-runtime-evidence.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
   "scripts/terraform-extensions-controls.json": ["terraform-extensions-arm64"],
   "scripts/vb-context-tools.Dockerfile": ["vb-context-arm64"],
   "scripts/verify-actionlint-container.mjs": ["actionlint"],
@@ -995,6 +1012,12 @@
   "scripts/verify-swift-extensions-guards.mjs": ["swift-extensions-arm64"],
   "scripts/verify-swift-tools-container.mjs": ["swift-tools"],
   "scripts/verify-swift-tools-package.mjs": ["swift-tools"],
+  "scripts/verify-tasks-runtime-arm64.mjs": ["tasks-runtime-arm64"],
+  "scripts/verify-tasks-runtime-package.mjs": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "scripts/verify-tasks-runtime.mjs": ["tasks-runtime", "tasks-runtime-arm64"],
   "scripts/verify-terraform-container.mjs": ["terraform"],
   "scripts/verify-terraform-extensions-container.mjs": [
     "terraform-extensions-arm64"
@@ -1027,6 +1050,7 @@
     "vue-router",
     "vue-router-assembly-arm64"
   ],
+  "scripts/windows-task-access-diagnostics.mjs": ["tasks-runtime"],
   "scripts/yaml-context-tools.Dockerfile": ["yaml-context-arm64"],
   "test/actionlint.test.ts": ["actionlint"],
   "test/checkstyle-fixture.ts": ["checkstyle"],
@@ -1337,6 +1361,7 @@
   "test/gate-rust-extensions.test.ts": ["rust-extensions-arm64"],
   "test/gate-scala-extensions.test.ts": ["scala-extensions-arm64"],
   "test/gate-swift-extensions.test.ts": ["swift-extensions-arm64"],
+  "test/gate-tasks-matrix.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/gate-terraform-extensions.test.ts": ["terraform-extensions-arm64"],
   "test/git-fixture.ts": [
     "c-context-arm64",
@@ -1507,6 +1532,8 @@
     "swift-context-arm64",
     "swift-extensions-arm64",
     "swift-tools",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "terraform",
     "terraform-extensions-arm64",
     "vb-context-arm64",
@@ -1776,6 +1803,7 @@
     "terraform",
     "terraform-extensions-arm64"
   ],
+  "test/mcp-validation-tasks.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/mutation-native-copy.test.ts": ["mutation-passive-guards"],
   "test/mutation-native-evidence.test.ts": ["mutation-passive-guards"],
   "test/mutation-native-fixture.ts": [
@@ -2046,6 +2074,13 @@
     "swift-extensions-arm64",
     "swift-tools"
   ],
+  "test/task-store.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/tasks-runtime-harness.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64"
+  ],
+  "test/tasks-sdk-fallback.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
+  "test/tasks-wire-fixture.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/terraform-extensions-fixture.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-lifecycle.test.ts": ["terraform-extensions-arm64"],
   "test/terraform-extensions-surfaces.test.ts": ["terraform-extensions-arm64"],
@@ -2111,6 +2146,8 @@
     "nuxt",
     "php-extensions-arm64",
     "python-extensions-arm64",
+    "tasks-runtime",
+    "tasks-runtime-arm64",
     "vue-router"
   ],
   "test/typescript-build.test.ts": [
@@ -2126,6 +2163,7 @@
     "python-extensions-arm64",
     "vue-router"
   ],
+  "test/validation-tasks.test.ts": ["tasks-runtime", "tasks-runtime-arm64"],
   "test/vite-library.test.ts": ["javascript-extensions-arm64"],
   "test/vitest.test.ts": [
     "nuxt",
@@ -2144,6 +2182,15 @@
     "python-extensions-arm64",
     "vue-router"
   ],
-  "test/windows-contract.test.ts": ["windows"],
-  "test/windows-process.test.ts": ["windows"]
+  "test/windows-contract.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-process.test.ts": [
+    "tasks-runtime",
+    "tasks-runtime-arm64",
+    "windows"
+  ],
+  "test/windows-task-access.test.ts": ["tasks-runtime", "tasks-runtime-arm64"]
 }

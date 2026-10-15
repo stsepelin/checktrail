@@ -8,6 +8,7 @@ import {
   type ValidationTasksOptions,
 } from "./validation-tasks-protocol.js";
 import type { StoredValidationTask } from "./task-store.js";
+import { windowsEnvironment } from "./windows-process.js";
 
 export type { ValidationTasksOptions } from "./validation-tasks-protocol.js";
 export interface ValidationTasks {
@@ -24,7 +25,8 @@ export async function openValidationTasks(
   const options = validationTasksOptionsSchema.parse(input);
   options.root = await realpath(options.root);
   options.directory = path.resolve(options.directory);
-  const environment: NodeJS.ProcessEnv = {};
+  const environment: NodeJS.ProcessEnv =
+    process.platform === "win32" ? windowsEnvironment(process.env) : {};
   for (const name of [
     "PATH",
     "HOME",
