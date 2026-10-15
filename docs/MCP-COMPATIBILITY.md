@@ -5,6 +5,16 @@ current protocol is `2026-07-28`. Local operation is a deployment choice, not a
 separately named MCP standard. No account, HTTP listener, remote service or LLM
 provider is required.
 
+## SDK dependency roles
+
+The production server and its core remain pinned to `2.3.0`. The external
+acceptance client is pinned to `2.3.1` and resolves its own nested `2.3.1` core.
+Acceptance harnesses preserve those separate dependency locations. The
+version-checked installed harnesses validate every resolved client dependency
+against its exact root lockfile entry before copying any of the graph. This client update requires fresh wire
+and installed-package acceptance; historical receipts retain their original SDK
+identities.
+
 ## Application clients
 
 Fresh offline package checks with Claude Code and Codex passed their documented
