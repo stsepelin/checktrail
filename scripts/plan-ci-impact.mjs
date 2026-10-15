@@ -8,6 +8,7 @@ import { parse } from "yaml";
 import {
   buildNativeInputs,
   acceptFullBaseline,
+  requestFullBaselineJobs,
   workflowJobNames,
   nativeJobIds,
   planNativeJobs,
@@ -85,14 +86,24 @@ try {
         r.conclusion === "success",
     );
     if (run) {
-      const result = await request(
-        api + "/actions/runs/" + run.id + "/jobs?per_page=100",
+      assert.ok(Number.isSafeInteger(run.id) && run.id > 0);
+      assert.ok(Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0);
+      const expectedNames = workflowJobNames(workflow);
+      const result = await requestFullBaselineJobs(
+        request,
+        api +
+          "/actions/runs/" +
+          run.id +
+          "/attempts/" +
+          run.run_attempt +
+          "/jobs",
+        expectedNames.length,
       );
       // A successful push is full by policy. Bind the exact runtime job names,
       // run ID and commit; no skip or truncated inventory supplies a baseline.
       baseline = acceptFullBaseline(run, result, {
         base,
-        expectedNames: workflowJobNames(workflow),
+        expectedNames,
       });
     }
   }

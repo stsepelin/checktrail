@@ -116,6 +116,21 @@ const integer = (value: unknown) =>
 export function dotnetTestEvidence(
   check: Check,
   processes: ProcessResult[],
+  methodExtension?: {
+    caseBindings: ReadonlyMap<
+      string,
+      ReadonlyMap<
+        string,
+        {
+          file: string;
+          fixtureType: string;
+          declaringType: string;
+          methodName: string;
+        }
+      >
+    >;
+    additionalNativePhases: string[];
+  },
 ): Pick<
   CheckResult,
   "status" | "reason" | "tests" | "findings" | "findingsComplete"
@@ -132,6 +147,10 @@ export function dotnetTestEvidence(
   const findings: Finding[] = [];
   let observedFailure = false;
   try {
+    requireEvidence(
+      check.id !== "dotnet.generator-extensions" || methodExtension,
+      "Compiled method extension is required for this profile",
+    );
     const raw = JSON.parse(process.stdout);
     if (raw.prerequisiteFailure) return dotnetBuildEvidence(check, processes);
     const data = dotnetTestPacketSchema.parse(raw),
@@ -163,6 +182,9 @@ export function dotnetTestEvidence(
         "test-discovery:" + p.file,
         "test-execution:" + p.file,
       ]),
+      ...(check.id === "dotnet.generator-extensions"
+        ? methodExtension!.additionalNativePhases
+        : []),
     ];
     requireEvidence(
       JSON.stringify(data.nativeReceipts.map((r) => r.phase)) ===
@@ -420,15 +442,31 @@ export function dotnetTestEvidence(
           candidate.source === run.assembly,
           "Selected native test source assembly",
         );
+        const boundMethod =
+          check.id === "dotnet.generator-extensions"
+            ? methodExtension!.caseBindings
+                .get(project.file)
+                ?.get(candidate.name)
+            : undefined;
+        requireEvidence(
+          check.id !== "dotnet.generator-extensions" || boundMethod,
+          "Every native method has a compiled source binding",
+        );
         const matching = project.testClasses.filter((role) => {
           const nativeCase = nativeDiscovery.rows.find(
             (r) => r.fullname === candidate.name,
           )!;
           if (
-            nativeCase.className !== role.className ||
+            (boundMethod?.fixtureType ?? nativeCase.className) !==
+              role.className ||
             nativeCase.name !== candidate.displayName
           )
             return false;
+          if (check.id === "dotnet.generator-extensions")
+            return (
+              nativeCase.className === boundMethod!.declaringType &&
+              nativeCase.methodName === boundMethod!.methodName
+            );
           const method = nativeCase.methodName;
           const types = module.metadata!.types.filter(
               (t) => t.className === role.className,
@@ -448,10 +486,11 @@ export function dotnetTestEvidence(
         );
         const role = matching[0]!;
         roles.add(role.className);
-        caseFiles.set(candidate.id, role.file);
+        const methodFile = boundMethod?.file ?? role.file;
+        caseFiles.set(candidate.id, methodFile);
         requireEvidence(
           !candidate.codeFile ||
-            candidate.codeFile === path.join(data.build.workspace, role.file),
+            candidate.codeFile === path.join(data.build.workspace, methodFile),
           "Native test location agrees with symbols",
         );
       }

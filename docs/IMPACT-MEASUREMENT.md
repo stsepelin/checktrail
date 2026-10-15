@@ -21,8 +21,9 @@ during the measured operations.
 
 ## Cases and checks
 
-`scripts/impact-corpus.json` freezes original case labels and expected selection
-before measurement. `scripts/impact-fixture.mjs` creates temporary repositories
+`scripts/impact-corpus-v2.json` freezes the current original case labels and
+expected selection before measurement. The version 1 corpus and published
+observations remain unchanged historical evidence. `scripts/impact-fixture.mjs` creates temporary repositories
 with fictional identities and a native Node test in each project:
 
 - `core` exports a value; `service` re-exports it; `web` consumes that export.
@@ -58,9 +59,10 @@ full run. Global and unowned changes also retained full validation.
 The deliberately misdeclared graph omitted the service-to-core dependency while
 asserting `complete: true`. Git selection ran only core and passed; full validation
 found the service and web assertions failing. The measurement retains this case
-and its missed failures in a separate group. This demonstrates a real limitation:
-selection relies on the maintainer's declared dependency graph and does not infer
-or verify every native import. Use full validation when that assertion cannot be
+and its missed failures in a separate group. This records the earlier implementation limitation. Current version 2 controls
+require full validation for that omitted captured import, using the finite
+profile in [CONSUMER-IMPACT.md](CONSUMER-IMPACT.md). Selection still relies on the
+maintainer's declaration and does not verify every native runtime import. Use full validation when that assertion cannot be
 supported. No confidence in graph completeness follows from a passing selected run.
 
 Each summary reconciles full failures into retained failures, omitted failures and

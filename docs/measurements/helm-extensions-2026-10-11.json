@@ -1,0 +1,1575 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "profile": "helm-extensions",
+  "sourceBasis": {
+    "parentCommit": "9734645d3082afc9a1ec7eb7375ebfc5b985baee",
+    "featureChangesWereUncommittedAtAcceptance": true
+  },
+  "frozenInputs": {
+    "scope": "Source, tests, scripts, schemas, emitted source/test, documentation, workflow, assets, examples, packs and top-level build/dependency manifests. Installed dependencies and whole operating-system closure are excluded.",
+    "files": 3787,
+    "sha256": "7a06e1607c23140f1b9ad239673024564541bbe811a42f8b6ec493a26e663ed9",
+    "digestFormat": "Compact UTF-8 JSON array of lexically sorted [relativePath, sha256] pairs.",
+    "beforeAndAfterMatched": true
+  },
+  "runtime": {
+    "node": {
+      "version": "v22.23.2",
+      "platform": "linux",
+      "arch": "arm64",
+      "sha256": "f3f0ca97002a6c8da4bd66987911dcc6f61d88658e5aff9d596ec27e2fda1157"
+    },
+    "os": "NAME=\"Alpine Linux\"\nID=alpine\nVERSION_ID=3.24.1\nPRETTY_NAME=\"Alpine Linux v3.24\"\nHOME_URL=\"https://alpinelinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.alpinelinux.org/alpine/aports/-/issues\"\n",
+    "image": "sha256:8d09e8ba60fa6310695415440af359a9dff98fcd7d5687827fe1b0afa1e6f7d1",
+    "base": "public.ecr.aws/docker/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+  },
+  "acceptance": {
+    "schemaVersion": 1,
+    "profile": "helm-extensions",
+    "phase": "all",
+    "preserved": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 120000,
+        "profile": "helm",
+        "fileWorkerLimit": 1,
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5fdee3a65dc8e7a24ca5e04ca7fa3634839ed74012517b072f9906c37f5ed077"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5fdee3a65dc8e7a24ca5e04ca7fa3634839ed74012517b072f9906c37f5ed077"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "2364ee0cfcc46eb3c4c2222d9906d5994efe664d76a3c8d9436ffaaa8bbea42c"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2364ee0cfcc46eb3c4c2222d9906d5994efe664d76a3c8d9436ffaaa8bbea42c"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "32032bb6921e9b7390462f73c8aa7ad5768ecd9b86e3f1dc371f7c27f6a75fbf"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "32032bb6921e9b7390462f73c8aa7ad5768ecd9b86e3f1dc371f7c27f6a75fbf"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-4",
+              "before": {
+                "state": "present",
+                "sha256": "845194642c167a08ff5646cb5ca121a333976c44c22ffc735b78549817c3d232"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "845194642c167a08ff5646cb5ca121a333976c44c22ffc735b78549817c3d232"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 680.44792,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native Helm frozen collection rejects source and configuration changed after planning",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1502.515888,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-2",
+              "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 70.772815,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-2",
+              "name": "Helm startup environment cannot override native chart cluster plugin and credential settings",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 71.038233,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-3",
+              "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 3418.746839,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-4",
+              "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1561.260078,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-4",
+              "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1498.579694,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-4",
+              "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 395.04052,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-4",
+              "name": "native Helm omitted and duplicate resources never become complete coverage",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1557.449469,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native Helm frozen collection rejects source and configuration changed after planning",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-2",
+              "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-2",
+              "name": "Helm startup environment cannot override native chart cluster plugin and credential settings",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-3",
+              "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-4",
+              "name": "native Helm omitted and duplicate resources never become complete coverage",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "e9b9f8a29f31262e102820a4d86fe26ad4d2b06a3395e8734c5a80afa32ddc84",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientVersion": "2.3.0",
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "acceptanceClientCopiedOutsideInstalledPackage": true,
+        "profile": {
+          "timeoutMs": 120000,
+          "profile": "helm",
+          "fileWorkerLimit": 1,
+          "passed": 9,
+          "required": 9,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 9,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "5fdee3a65dc8e7a24ca5e04ca7fa3634839ed74012517b072f9906c37f5ed077"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "5fdee3a65dc8e7a24ca5e04ca7fa3634839ed74012517b072f9906c37f5ed077"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "2364ee0cfcc46eb3c4c2222d9906d5994efe664d76a3c8d9436ffaaa8bbea42c"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "2364ee0cfcc46eb3c4c2222d9906d5994efe664d76a3c8d9436ffaaa8bbea42c"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "32032bb6921e9b7390462f73c8aa7ad5768ecd9b86e3f1dc371f7c27f6a75fbf"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "32032bb6921e9b7390462f73c8aa7ad5768ecd9b86e3f1dc371f7c27f6a75fbf"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-4",
+                "before": {
+                  "state": "present",
+                  "sha256": "845194642c167a08ff5646cb5ca121a333976c44c22ffc735b78549817c3d232"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "845194642c167a08ff5646cb5ca121a333976c44c22ffc735b78549817c3d232"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 645.409973,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "native Helm frozen collection rejects source and configuration changed after planning",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1441.8916,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-2",
+                "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 79.364165,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-2",
+                "name": "Helm startup environment cannot override native chart cluster plugin and credential settings",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 71.0669,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-3",
+                "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 3185.979589,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-4",
+                "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1530.613328,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-4",
+                "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1497.290352,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-4",
+                "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 378.715909,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-4",
+                "name": "native Helm omitted and duplicate resources never become complete coverage",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1476.156958,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "native Helm missing tools are unavailable and deadlines cancellations retain incomplete outcomes",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "native Helm frozen collection rejects source and configuration changed after planning",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-2",
+                "name": "Helm planning is passive and rejects incomplete chart closure unsupported functions schemas and source spoofing",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-2",
+                "name": "Helm startup environment cannot override native chart cluster plugin and credential settings",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-3",
+                "name": "native Helm CLI and negotiated MCP retain values schema defects repair summary privacy and startup-only trust",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Helm lint and rendering reconcile all templates typed values failures repair and zero near misses",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Helm maps physical Go failures and leaves rendered YAML offsets unresolved",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Helm evidence rejects changed source copies tools commands outputs and fabricated rendered participation",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-4",
+                "name": "native Helm omitted and duplicate resources never become complete coverage",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "windowsVerified": false
+      }
+    },
+    "acceptance": {
+      "cache": {
+        "lockedRegistryTarballs": 21,
+        "bytes": 9396410,
+        "lockSha256": "60f809777bfc5a187aae4ba7c387939b857a97c45a0929678b70b919765acb58",
+        "registryMetadataCopied": false,
+        "historicalLocalPackageTarballsCopied": false
+      },
+      "source": {
+        "timeoutMs": 300000,
+        "profile": "helm-extensions",
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 10,
+        "required": 10,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 10,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "2573b79cb98cf46ab27b5b464868a54a6ccccda5a3b752746f6e3f12c62b187a"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2573b79cb98cf46ab27b5b464868a54a6ccccda5a3b752746f6e3f12c62b187a"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-3",
+              "before": {
+                "state": "present",
+                "sha256": "9dfd7a1cfce2b13b7b911bc744fe1d54e7d58992afc2034ed6cc3980a337b1ac"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "9dfd7a1cfce2b13b7b911bc744fe1d54e7d58992afc2034ed6cc3980a337b1ac"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "helm-extensions broken acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4528.637098,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "helm-extensions fixed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 1024.20005,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "helm-extensions near-miss acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 539.650463,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "helm-extensions prerequisite acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 420.345152,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "helm-extensions stale acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 598.770115,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-1",
+              "name": "helm-extensions empty acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 992.154458,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-1",
+              "name": "helm-extensions diagnostic acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5947.049622,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "helm-extensions privacy acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4406.938187,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-3",
+              "name": "helm-extensions lifecycle acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10751.084634,
+              "required": true
+            },
+            {
+              "sequence": 10,
+              "fileId": "file-1",
+              "name": "helm-extensions installed acceptance",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 36793.590138,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions broken acceptance",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions fixed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions near-miss acceptance",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions prerequisite acceptance",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions stale acceptance",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions empty acceptance",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions diagnostic acceptance",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "helm-extensions privacy acceptance",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-3",
+              "name": "helm-extensions lifecycle acceptance",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            },
+            {
+              "fileId": "file-1",
+              "name": "helm-extensions installed acceptance",
+              "outcome": "passed",
+              "terminalSequences": [10]
+            }
+          ]
+        }
+      },
+      "installed": {
+        "tarballSha256": "e9b9f8a29f31262e102820a4d86fe26ad4d2b06a3395e8734c5a80afa32ddc84",
+        "offlineProductionInstall": true,
+        "lifecycleScriptsExecuted": false,
+        "installedCliEvaluated": true,
+        "installedRuntimeEvaluated": true,
+        "harnessOutsideInstalledPackage": true,
+        "acceptanceClientDependencies": {
+          "@modelcontextprotocol/client": "2.3.0",
+          "cross-spawn": "7.0.6",
+          "path-key": "3.1.1",
+          "shebang-command": "2.0.0",
+          "shebang-regex": "3.0.0",
+          "which": "2.0.2",
+          "isexe": "2.0.0",
+          "eventsource": "3.0.7",
+          "eventsource-parser": "3.1.1",
+          "jose": "6.2.12",
+          "pkce-challenge": "5.0.1"
+        },
+        "profile": {
+          "timeoutMs": 300000,
+          "profile": "helm-extensions",
+          "fileWorkerLimit": 1,
+          "requiredCaseWorkerLimit": 1,
+          "timeoutScope": "one fresh process per required named case",
+          "passed": 10,
+          "required": 10,
+          "problems": [],
+          "complete": true,
+          "ledger": {
+            "schemaVersion": 1,
+            "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+            "maxTerminalEvents": 4096,
+            "terminalEventCount": 10,
+            "truncated": false,
+            "files": [
+              {
+                "id": "file-1",
+                "before": {
+                  "state": "present",
+                  "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-2",
+                "before": {
+                  "state": "present",
+                  "sha256": "2573b79cb98cf46ab27b5b464868a54a6ccccda5a3b752746f6e3f12c62b187a"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "2573b79cb98cf46ab27b5b464868a54a6ccccda5a3b752746f6e3f12c62b187a"
+                },
+                "stable": true
+              },
+              {
+                "id": "file-3",
+                "before": {
+                  "state": "present",
+                  "sha256": "9dfd7a1cfce2b13b7b911bc744fe1d54e7d58992afc2034ed6cc3980a337b1ac"
+                },
+                "after": {
+                  "state": "present",
+                  "sha256": "9dfd7a1cfce2b13b7b911bc744fe1d54e7d58992afc2034ed6cc3980a337b1ac"
+                },
+                "stable": true
+              }
+            ],
+            "events": [
+              {
+                "sequence": 1,
+                "fileId": "file-1",
+                "name": "helm-extensions broken acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4413.868108,
+                "required": true
+              },
+              {
+                "sequence": 2,
+                "fileId": "file-1",
+                "name": "helm-extensions fixed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1023.65838,
+                "required": true
+              },
+              {
+                "sequence": 3,
+                "fileId": "file-1",
+                "name": "helm-extensions near-miss acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 519.514243,
+                "required": true
+              },
+              {
+                "sequence": 4,
+                "fileId": "file-1",
+                "name": "helm-extensions prerequisite acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 420.284525,
+                "required": true
+              },
+              {
+                "sequence": 5,
+                "fileId": "file-1",
+                "name": "helm-extensions stale acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 590.379142,
+                "required": true
+              },
+              {
+                "sequence": 6,
+                "fileId": "file-1",
+                "name": "helm-extensions empty acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 988.814809,
+                "required": true
+              },
+              {
+                "sequence": 7,
+                "fileId": "file-1",
+                "name": "helm-extensions diagnostic acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 5873.6315,
+                "required": true
+              },
+              {
+                "sequence": 8,
+                "fileId": "file-2",
+                "name": "helm-extensions privacy acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 4223.151861,
+                "required": true
+              },
+              {
+                "sequence": 9,
+                "fileId": "file-3",
+                "name": "helm-extensions lifecycle acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 10682.025285,
+                "required": true
+              },
+              {
+                "sequence": 10,
+                "fileId": "file-1",
+                "name": "helm-extensions installed acceptance",
+                "nameTruncated": false,
+                "kind": "test",
+                "outcome": "passed",
+                "durationMs": 1.379473,
+                "required": true
+              }
+            ],
+            "cases": [
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions broken acceptance",
+                "outcome": "passed",
+                "terminalSequences": [1]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions fixed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [2]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions near-miss acceptance",
+                "outcome": "passed",
+                "terminalSequences": [3]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions prerequisite acceptance",
+                "outcome": "passed",
+                "terminalSequences": [4]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions stale acceptance",
+                "outcome": "passed",
+                "terminalSequences": [5]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions empty acceptance",
+                "outcome": "passed",
+                "terminalSequences": [6]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions diagnostic acceptance",
+                "outcome": "passed",
+                "terminalSequences": [7]
+              },
+              {
+                "fileId": "file-2",
+                "name": "helm-extensions privacy acceptance",
+                "outcome": "passed",
+                "terminalSequences": [8]
+              },
+              {
+                "fileId": "file-3",
+                "name": "helm-extensions lifecycle acceptance",
+                "outcome": "passed",
+                "terminalSequences": [9]
+              },
+              {
+                "fileId": "file-1",
+                "name": "helm-extensions installed acceptance",
+                "outcome": "passed",
+                "terminalSequences": [10]
+              }
+            ]
+          }
+        },
+        "environment": {
+          "node": "v22.23.2",
+          "platform": "linux",
+          "arch": "arm64"
+        },
+        "inferenceInvoked": false,
+        "fieldEvaluationExecuted": false,
+        "qualityGate": "not-assessed"
+      },
+      "sourceLifecycle": {
+        "witnesses": [
+          {
+            "mode": "cancel",
+            "phase": "lint",
+            "cpuNanoseconds": "594458"
+          },
+          {
+            "mode": "timeout",
+            "phase": "lint",
+            "cpuNanoseconds": "978000"
+          },
+          {
+            "mode": "output",
+            "phase": "lint",
+            "cpuNanoseconds": "915375"
+          },
+          {
+            "mode": "source",
+            "phase": "lint",
+            "cpuNanoseconds": "1114749"
+          },
+          {
+            "mode": "policy",
+            "phase": "lint",
+            "cpuNanoseconds": "1087375"
+          },
+          {
+            "mode": "copied-source",
+            "phase": "lint",
+            "cpuNanoseconds": "1142208"
+          },
+          {
+            "mode": "native-chart",
+            "phase": "lint",
+            "cpuNanoseconds": "1669500"
+          },
+          {
+            "mode": "added-native",
+            "phase": "lint",
+            "cpuNanoseconds": "4632415"
+          },
+          {
+            "mode": "native-alias",
+            "phase": "lint",
+            "cpuNanoseconds": "1613167"
+          },
+          {
+            "mode": "concurrent-cancel",
+            "phase": "lint",
+            "cpuNanoseconds": "2710084"
+          }
+        ],
+        "helmSha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+        "allProcessesGone": true,
+        "ownedDirectoriesRemoved": true
+      },
+      "installedLifecycle": {
+        "witnesses": [
+          {
+            "mode": "cancel",
+            "phase": "lint",
+            "cpuNanoseconds": "595209"
+          },
+          {
+            "mode": "timeout",
+            "phase": "lint",
+            "cpuNanoseconds": "1376124"
+          },
+          {
+            "mode": "output",
+            "phase": "lint",
+            "cpuNanoseconds": "2039625"
+          },
+          {
+            "mode": "source",
+            "phase": "lint",
+            "cpuNanoseconds": "2543708"
+          },
+          {
+            "mode": "policy",
+            "phase": "lint",
+            "cpuNanoseconds": "2596125"
+          },
+          {
+            "mode": "copied-source",
+            "phase": "lint",
+            "cpuNanoseconds": "563958"
+          },
+          {
+            "mode": "native-chart",
+            "phase": "lint",
+            "cpuNanoseconds": "782958"
+          },
+          {
+            "mode": "added-native",
+            "phase": "lint",
+            "cpuNanoseconds": "1431500"
+          },
+          {
+            "mode": "native-alias",
+            "phase": "lint",
+            "cpuNanoseconds": "2773582"
+          },
+          {
+            "mode": "concurrent-cancel",
+            "phase": "lint",
+            "cpuNanoseconds": "577166"
+          }
+        ],
+        "helmSha256": "5bbdb28c8ca3f71daab33996a72392ce3135439a040ee63aed406888f82f2228",
+        "allProcessesGone": true,
+        "ownedDirectoriesRemoved": true
+      }
+    },
+    "guards-1": {
+      "schemaVersion": 1,
+      "profile": "helm-extensions",
+      "shard": "1",
+      "fullControlInventory": [
+        "invocation-digest",
+        "source-byte-cohort",
+        "source-file-cohort",
+        "native-file-cohort",
+        "native-byte-cohort",
+        "owned-source",
+        "owned-workspace",
+        "owned-chart",
+        "tool-after-bytes",
+        "tool-size",
+        "fixed-argv",
+        "phase-order",
+        "native-executable",
+        "native-stdout-digest",
+        "native-stderr-digest",
+        "physical-lint-count",
+        "rendered-line-marker",
+        "rendered-trailing-spine",
+        "rendered-unique-identities",
+        "native-full-schema",
+        "current-source-policy",
+        "physical-template-file",
+        "physical-template-line",
+        "value-physical-origin",
+        "native-subchart-flag",
+        "debug-dependency-participation"
+      ],
+      "controls": [
+        {
+          "id": "invocation-digest",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "51248b52506e62949e67744d46455a8dde8987a571fbf1afca5cae2ac741480f"
+        },
+        {
+          "id": "source-file-cohort",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "6ed4987c2297aacf422a066f24d0f8fab1777aa55d1d0dec84e4a8f4d07f5173"
+        },
+        {
+          "id": "native-byte-cohort",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "9219101bcdac8469b010186a01c12af2134d528e2882ce6a69405069b4dd010a"
+        },
+        {
+          "id": "owned-workspace",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "cf2f6859b7e163aad48f66c2dceceef1c467f2640bd4f2db396edca3455c04ea"
+        },
+        {
+          "id": "tool-after-bytes",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "ee6ce7a8d7340f89296e188e5f7c71b06a0b9f2ef59116b30cac91f29995eecd"
+        },
+        {
+          "id": "fixed-argv",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "4f3696156a01b2c0fdabf3a31a8f69076aa52ff12508b2abccc393b64076f202"
+        },
+        {
+          "id": "native-executable",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "a3de027aecf4441a22867b6396077ca9c256a71c32c01a4b7df0a64caf377d90"
+        },
+        {
+          "id": "native-stderr-digest",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "aa99073c888a35071f9af7034a0b4b40aa7889ac6ff99bf983d0b64029481383"
+        },
+        {
+          "id": "rendered-line-marker",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "bbdd73a32f610334f67869383537e434a98119bf44ac80bebb81124bb10d6619"
+        },
+        {
+          "id": "rendered-unique-identities",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "46d80a138e97ed83166b6a6a723d878a65ad18ee21ff90d09640e6e257cbbc8d"
+        },
+        {
+          "id": "current-source-policy",
+          "callback": "helm-extensions stale acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "6b38e4b1a7684f1e3cd7632af25c51aab1a1f9fca97ba4208dafc7404035731e",
+          "mutantSha256": "89541c5cd66f21e52ea83a9e75ad5487d8e48eb5d5470c70f870b85291efd18f"
+        },
+        {
+          "id": "physical-template-line",
+          "callback": "helm-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "3ccfb2b29e23536c63b716dfe0cb41f436c6d45b8b8479264b01b853836692f3"
+        },
+        {
+          "id": "native-subchart-flag",
+          "callback": "helm-extensions fixed acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "5fd80cdb7b5fa16ec4e92169eb5e97e61c60daef5780f67a2c385de22d6c4f91",
+          "mutantSha256": "c60e6475db28ed32c84c6c98fcb296d9bd5b642bb5c2273e2ad1dcf4fdd34e93",
+          "mutatedNativeLintReached": true,
+          "completeNativeChartSchemaReached": true,
+          "nativeRenderingCompleted": true,
+          "declaredChartInstances": 5
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": [
+        "empty",
+        "stale",
+        "broken",
+        "fixed"
+      ],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-helm-extensions.test.js",
+          "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "helm-extensions-fixture.js",
+          "sha256": "e8ab9b2432b2a66b0a2fb0bfe0ac02dcf2e5ceeccd6699d893567189feae5c45"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "fixturesUnchanged": true,
+      "allComplete": true,
+      "nativeHelmExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "guards-2": {
+      "schemaVersion": 1,
+      "profile": "helm-extensions",
+      "shard": "2",
+      "fullControlInventory": [
+        "invocation-digest",
+        "source-byte-cohort",
+        "source-file-cohort",
+        "native-file-cohort",
+        "native-byte-cohort",
+        "owned-source",
+        "owned-workspace",
+        "owned-chart",
+        "tool-after-bytes",
+        "tool-size",
+        "fixed-argv",
+        "phase-order",
+        "native-executable",
+        "native-stdout-digest",
+        "native-stderr-digest",
+        "physical-lint-count",
+        "rendered-line-marker",
+        "rendered-trailing-spine",
+        "rendered-unique-identities",
+        "native-full-schema",
+        "current-source-policy",
+        "physical-template-file",
+        "physical-template-line",
+        "value-physical-origin",
+        "native-subchart-flag",
+        "debug-dependency-participation"
+      ],
+      "controls": [
+        {
+          "id": "source-byte-cohort",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "3d9dcbb688c5c73f71e994b4190e98da70007a0debbce3312f0ac4ebad403bad"
+        },
+        {
+          "id": "native-file-cohort",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "61f60c50c4caff2f9b693adb2ecc062705f54c7a5a779bde33864952b79bb421"
+        },
+        {
+          "id": "owned-source",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "be45b7b99b96f7a9ed8ad07832b341019cc04821ceaeb6e205be58edb9c172fb"
+        },
+        {
+          "id": "owned-chart",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "a1ebbb7e3a9f2dc899aab3c5818591cbf83dcaf4f54d84eb0d7600584fa3b361"
+        },
+        {
+          "id": "tool-size",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "20180df81284f6389cb1e08a8063d68382454157409ac121d4cab0fdb444e15f"
+        },
+        {
+          "id": "phase-order",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "6be26c75662b083d9eab1d35fbab7416d0cbe0947101efb2abbac1942444943e"
+        },
+        {
+          "id": "native-stdout-digest",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "14eeb9185c15ed54aae6301917fbf6e5b364a71c9afbaf9675255e4e3ae35abb"
+        },
+        {
+          "id": "physical-lint-count",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "82b4312174761e0744ccccd132ef2f206a3cbdbc5bd43f15c0f7091effdb343e"
+        },
+        {
+          "id": "rendered-trailing-spine",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "1c00c736fdf8e62bdd9301e6adc99ba328266825b9335c59482c28ee48ee4db1"
+        },
+        {
+          "id": "native-full-schema",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "955c0d97c6c4f558a5f6e747e6acd3e9bee0a67811eb23570c752bb1c90489ed"
+        },
+        {
+          "id": "physical-template-file",
+          "callback": "helm-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "932dd3621a8fbcb86d78c71d59a48dacd9f91d345741449bf3777cf16e128fc7"
+        },
+        {
+          "id": "value-physical-origin",
+          "callback": "helm-extensions broken acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "80584fb3a48c70600097e4e26d8f765c69216d3694cd34a83141595d890099ce",
+          "mutantSha256": "2d41e290d3d524b4f34f974b23b0a106daa98a1c7b34210f743216d92bdaf4e1"
+        },
+        {
+          "id": "debug-dependency-participation",
+          "callback": "helm-extensions empty acceptance",
+          "expressionsReplaced": 1,
+          "originalPassed": true,
+          "originalBaselineReusedForIdenticalBytes": true,
+          "mutantJavaScriptSyntaxChecked": true,
+          "mutantFailedAssertion": true,
+          "restoredPassed": true,
+          "originalSha256": "06edf920147d583b87aed4be73c177a80e6edcc90115900847c432615883ef82",
+          "mutantSha256": "a76043324b87fb1656b190de81c51bd46c13ec60dc73a39a4055bae11b6bee7c"
+        }
+      ],
+      "distinctOriginalBaselineCallbacks": ["empty", "broken"],
+      "mutantAndRestoredProcessesPerControl": 2,
+      "callbacks": [
+        {
+          "file": "gate-helm-extensions.test.js",
+          "sha256": "5ae9a346a72bcedbf534d91f4bc05e9d5cab149a1a19b4215a12379b6cc7a439"
+        }
+      ],
+      "fixtures": [
+        {
+          "file": "helm-extensions-fixture.js",
+          "sha256": "e8ab9b2432b2a66b0a2fb0bfe0ac02dcf2e5ceeccd6699d893567189feae5c45"
+        }
+      ],
+      "sourceRestored": true,
+      "callbacksUnchanged": true,
+      "fixturesUnchanged": true,
+      "allComplete": true,
+      "nativeHelmExecutionReached": true,
+      "inferenceInvoked": false,
+      "fieldEvaluationExecuted": false
+    },
+    "timings": {
+      "preserved-native-source-and-installation": 29280,
+      "source-and-fresh-production-installation": 67979,
+      "paired-guards-1": 42866,
+      "paired-guards-2": 43989
+    },
+    "durationMs": 184118,
+    "resourceBounds": {
+      "maximumConcurrentContainers": 1,
+      "aggregateCpuQuota": 2,
+      "aggregateMemoryGiB": 3,
+      "stageDeadlineMs": 1200000,
+      "engineInvocationDeadlineMs": 120000
+    },
+    "inferenceInvoked": false,
+    "fieldEvaluationExecuted": false
+  },
+  "fullProjectCheck": {
+    "command": "npm run check",
+    "tests": 1720,
+    "passed": 984,
+    "failed": 0,
+    "cancelled": 0,
+    "optionalCallbacksNotSelected": 736,
+    "todo": 0,
+    "durationMs": 249423.536917,
+    "sourceFilesCopiedAndVerified": 2018,
+    "allCopiedFileBytesMatchedAtCompletion": true,
+    "scope": "Complete implementation, acceptance controllers, documentation and initial measurement. Only these measurement statistics were updated afterwards; production source, tests and build inputs were unchanged.",
+    "hostCheckCertifiesAllOptionalNativeProfiles": false
+  },
+  "publishingBoundary": {
+    "packageAcceptedBeforeThisMeasurementAndDocumentationWereAdded": true,
+    "laterPackageMetadataRequiresFreshAcceptance": true,
+    "remoteCiForThisRevisionVerified": false,
+    "packagesPublished": false,
+    "tagsCreated": false
+  },
+  "limits": [
+    "Selected finite local application/subchart alias profile only; Kubernetes API/schema compatibility, cluster behavior and arbitrary Helm charts remain unverified.",
+    "Native first-error aborts establish observed diagnostics, not exhaustive semantic coverage. Go execution byte columns are bounded, not independently attested exactly.",
+    "Release signatures and complete publisher/license/container closure remain unverified. Artifact hashes and observed members are separate evidence.",
+    "Receipt coherence and current source are not hostile-project attestation or AI host session independence.",
+    "Resource bounds apply to this controller, excluding host wrappers and other host work; representative CPU/RSS/archive measurements remain pending.",
+    "Final runtime matrix, attempt archives and Gate A remain open."
+  ],
+  "inferenceInvoked": false,
+  "fieldEvaluationExecuted": false,
+  "independentAiHostSessionsEstablished": false,
+  "gateAComplete": false,
+  "qualityAssessed": false
+}

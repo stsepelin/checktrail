@@ -7,10 +7,16 @@ import { applyGoScopePolicy } from "./go-scope-policy.js";
 import type { ExternalAdapter } from "./external-adapter.js";
 import { actionlintCheck, workflowRoot } from "./actionlint.js";
 import { cppToolsCheck } from "./cpp-tools.js";
+import {
+  cppExtensionsCheck,
+  cppExtensionsPolicyFile,
+} from "./cpp-extensions.js";
 import { terraformCheck } from "./terraform.js";
+import { terraformExtensionsCheck } from "./terraform-extensions.js";
 import { kubeconformCheck } from "./kubeconform.js";
 import { kustomizeCheck } from "./kustomize.js";
 import { helmCheck } from "./helm.js";
+import { helmExtensionsCheck } from "./helm-extensions.js";
 import { clangCheck } from "./clang.js";
 import { javaCheck } from "./java.js";
 import { detektCheck } from "./detekt.js";
@@ -28,6 +34,10 @@ import {
 } from "./dotnet-build.js";
 import { swiftCheck } from "./swift.js";
 import { swiftToolsCheck } from "./swift-tools.js";
+import {
+  swiftExtensionsCheck,
+  swiftExtensionsPolicyFile,
+} from "./swift-extensions.js";
 import { rubyCheck } from "./ruby.js";
 import { rubyToolsCheck } from "./ruby-tools.js";
 import { rustCheck, rustTestCheck } from "./rust.js";
@@ -45,6 +55,7 @@ import { phpCsFixerCheck } from "./php-cs-fixer.js";
 import path from "node:path";
 import { fsharpFormatCheck } from "./fsharp-format.js";
 import { dotnetFormatExtensionsCheck } from "./dotnet-format-extensions.js";
+import { dotnetGeneratorExtensionsCheck } from "./dotnet-generator-extensions.js";
 import { phpunitCheck } from "./phpunit.js";
 import { phpstanCheck } from "./phpstan.js";
 import { phpExtensionsCheck } from "./php-extensions.js";
@@ -165,17 +176,35 @@ export const adapters = [
       "dotnet.format-whitespace",
       "dotnet.format-fsharp",
       "dotnet.format-extensions",
+      "dotnet.generator-extensions",
     ],
   },
   {
     id: "ruby",
     markers: ["Gemfile"],
-    checks: ["ruby.syntax", "ruby.rubocop", "ruby.rspec", "ruby.minitest"],
+    checks: [
+      "ruby.syntax",
+      "ruby.rubocop",
+      "ruby.rspec",
+      "ruby.minitest",
+      "ruby.rubocop-extensions",
+      "ruby.rspec-extensions",
+      "ruby.minitest-extensions",
+    ],
   },
   {
     id: "swift",
     markers: ["Package.swift"],
-    checks: ["swift.syntax", "swift.build", "swift.test", "swift.swiftlint"],
+    checks: [
+      "swift.syntax",
+      "swift.build",
+      "swift.test",
+      "swift.swiftlint",
+      "swift.build-extensions",
+      "swift.xctest-extensions",
+      "swift.testing-extensions",
+      "swift.swiftlint-extensions",
+    ],
   },
   {
     id: "cpp",
@@ -186,6 +215,10 @@ export const adapters = [
       "cpp.ctest",
       "cpp.clang-format",
       "cpp.clang-tidy",
+      "cpp.build-extensions",
+      "cpp.ctest-extensions",
+      "cpp.clang-format-extensions",
+      "cpp.clang-tidy-extensions",
     ],
   },
   {
@@ -196,14 +229,18 @@ export const adapters = [
       "checktrail.kubeconform.json",
       "checktrail.kustomize.json",
       "checktrail.terraform.json",
+      "checktrail.terraform-extensions.json",
       "checktrail.helm.json",
+      "checktrail.helm-extensions.json",
     ],
     checks: [
       "infrastructure.actionlint",
       "infrastructure.kubeconform",
       "infrastructure.kustomize",
       "infrastructure.terraform-validate",
+      "infrastructure.terraform-extensions",
       "infrastructure.helm",
+      "infrastructure.helm-extensions",
     ],
   },
 ] as const;
@@ -251,9 +288,52 @@ export function discover(
       found.set(key, project);
     }
   }
-  const projects = [...found.values()].sort((a, b) =>
-    `${a.path}:${a.adapter}`.localeCompare(`${b.path}:${b.adapter}`, "en"),
+  // A declared Terraform extension owns its local Terraform-only child directories.
+  // Other infrastructure markers retain their independent project boundaries.
+  const declaredTerraformRoots = [...found.values()].filter(
+    (project) =>
+      project.adapter === "infrastructure" &&
+      project.markers.includes(
+        path.posix.join(project.path, "checktrail.terraform-extensions.json"),
+      ),
   );
+  const declaredHelmRoots = [...found.values()].filter(
+    (project) =>
+      project.adapter === "infrastructure" &&
+      project.markers.includes(
+        path.posix.join(project.path, "checktrail.helm-extensions.json"),
+      ),
+  );
+  const projects = [...found.values()]
+    .filter(
+      (project) =>
+        !declaredTerraformRoots.some(
+          (parent) =>
+            project !== parent &&
+            project.adapter === "infrastructure" &&
+            (parent.path === "." ||
+              project.path.startsWith(parent.path + "/")) &&
+            project.markers.every(
+              (marker) => marker.endsWith(".tf") || marker.endsWith(".tf.json"),
+            ),
+        ),
+    )
+    .filter(
+      (project) =>
+        !declaredHelmRoots.some(
+          (parent) =>
+            project !== parent &&
+            project.adapter === "infrastructure" &&
+            (parent.path === "." ||
+              project.path.startsWith(parent.path + "/")) &&
+            project.markers.every(
+              (marker) => path.posix.basename(marker) === "Chart.yaml",
+            ),
+        ),
+    )
+    .sort((a, b) =>
+      `${a.path}:${a.adapter}`.localeCompare(`${b.path}:${b.adapter}`, "en"),
+    );
   for (const project of projects) {
     const prefix = project.path === "." ? "" : `${project.path}/`;
     const children = projects.filter(
@@ -504,6 +584,16 @@ export async function checksFor(
         path.posix.basename(file) !== "checktrail.kubeconform.json" &&
         path.posix.basename(file) !== "checktrail.kustomize.json" &&
         path.posix.basename(file) !== "checktrail.terraform.json" &&
+        path.posix.basename(file) !== "checktrail.terraform-extensions.json" &&
+        !(
+          project.files.includes("checktrail.terraform-extensions.json") &&
+          (file.endsWith(".tf") || file.endsWith(".tf.json"))
+        ) &&
+        path.posix.basename(file) !== "checktrail.helm-extensions.json" &&
+        !(
+          project.files.includes("checktrail.helm-extensions.json") &&
+          path.posix.basename(file) === "Chart.yaml"
+        ) &&
         path.posix.basename(file) !== "checktrail.helm.json" &&
         !(
           project.files.includes("checktrail.helm.json") &&
@@ -515,6 +605,10 @@ export async function checksFor(
         ),
     );
     return [
+      ...(project.files.includes("checktrail.helm-extensions.json") ||
+      requested?.includes("infrastructure.helm-extensions")
+        ? [await helmExtensionsCheck(source, project)]
+        : []),
       ...(project.files.includes("checktrail.helm.json") ||
       requested?.includes("infrastructure.helm")
         ? [await helmCheck(source, project)]
@@ -522,6 +616,10 @@ export async function checksFor(
       ...(project.files.includes("checktrail.kustomize.json") ||
       requested?.includes("infrastructure.kustomize")
         ? [await kustomizeCheck(source, project)]
+        : []),
+      ...(project.files.includes("checktrail.terraform-extensions.json") ||
+      requested?.includes("infrastructure.terraform-extensions")
+        ? [await terraformExtensionsCheck(source, project)]
         : []),
       ...(project.files.includes("checktrail.terraform.json") ||
       requested?.includes("infrastructure.terraform-validate")
@@ -555,6 +653,19 @@ export async function checksFor(
   if (project.adapter === "cpp")
     return [
       await clangCheck(source, project),
+      ...(project.files.includes(cppExtensionsPolicyFile) ||
+      requested?.some((id) =>
+        /^cpp\.(?:build|ctest|clang-format|clang-tidy)-extensions$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "ctest", "clang-format", "clang-tidy"] as const)
+              .filter(
+                (mode) =>
+                  !requested || requested.includes(`cpp.${mode}-extensions`),
+              )
+              .map((mode) => cppExtensionsCheck(source, project, mode)),
+          )
+        : []),
       ...(project.files.includes("checktrail.cpp-tools.json") ||
       requested?.some((id) =>
         /^cpp\.(?:build|ctest|clang-format|clang-tidy)$/.test(id),
@@ -606,6 +717,9 @@ export async function checksFor(
       ...(requested?.includes("dotnet.format-extensions")
         ? [await dotnetFormatExtensionsCheck(source, project)]
         : []),
+      ...(requested?.includes("dotnet.generator-extensions")
+        ? [await dotnetGeneratorExtensionsCheck(source, project)]
+        : []),
       ...(requested?.includes("dotnet.test")
         ? [await dotnetTestCheck(source, project)]
         : []),
@@ -613,6 +727,19 @@ export async function checksFor(
   if (project.adapter === "swift")
     return [
       swiftCheck(project),
+      ...(project.files.includes(swiftExtensionsPolicyFile) ||
+      requested?.some((id) =>
+        /^swift\.(?:build|xctest|testing|swiftlint)-extensions$/.test(id),
+      )
+        ? await Promise.all(
+            (["build", "xctest", "testing", "swiftlint"] as const)
+              .filter(
+                (mode) =>
+                  !requested || requested.includes(`swift.${mode}-extensions`),
+              )
+              .map((mode) => swiftExtensionsCheck(source, project, mode)),
+          )
+        : []),
       ...(project.files.includes("checktrail.swift-tools.json") ||
       requested?.some((id) => /^swift\.(?:build|test|swiftlint)$/.test(id))
         ? await Promise.all(
@@ -637,6 +764,11 @@ export async function checksFor(
               .map((mode) => rubyToolsCheck(source, project, mode)),
           )
         : []),
+      ...(await Promise.all(
+        (["rubocop", "rspec", "minitest"] as const)
+          .filter((mode) => requested?.includes(`ruby.${mode}-extensions`))
+          .map((mode) => rubyToolsCheck(source, project, mode, true)),
+      )),
     ];
   if (project.adapter === "rust") {
     const checks = [

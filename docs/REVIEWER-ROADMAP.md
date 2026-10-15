@@ -222,3 +222,9 @@ The bounded Scala 3 JVM profile has source, compiling-guard and offline installe
 acceptance recorded at its code revision in
 [scala-native-2026-10-07.json](measurements/scala-native-2026-10-07.json). This evidence closes that
 declared profile only; the remaining Scala/JVM and Gate A obligations stay open.
+
+The selected [C/C++ extension profile](CPP-EXTENSIONS.md) now has preserved native baseline, source, fresh offline installed and paired-control evidence in its [measurement](measurements/cpp-extensions-2026-10-10.json). Its finite CMake/SDK participation remains separate from complete artifact/license closure, the final runtime matrix and review quality. The required inventory remains the source of pending Gate A work.
+
+The selected [Terraform local module/provider extension](TERRAFORM-EXTENSIONS.md) has scoped synthetic native, installed, privacy, lifecycle and paired-control evidence in [its measurement](measurements/terraform-extensions-2026-10-11.json). The implementation ledger records this profile as implemented; all remaining profiles and freeze decisions still govern Gate A. No inference or real-project field evaluation follows from this receipt.
+
+The selected [Helm application/subchart extension](HELM-EXTENSIONS.md) has scoped original native, installed, privacy, reached lifecycle and paired-control evidence in [its measurement](measurements/helm-extensions-2026-10-11.json). The implementation ledger records this profile as implemented; pending profiles and freeze decisions still govern Gate A. No inference or real-project field evaluation follows from this receipt.

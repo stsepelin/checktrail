@@ -1,6 +1,10 @@
 import { laravelAssemblyVersionRunner } from "./laravel-assembly-runner.js";
 import { laravelAssemblyPhpFlags } from "./laravel.js";
 import { cppToolNames, cppSupportedVersion } from "./cpp-native.js";
+import {
+  cppExtensionsToolNames,
+  cppExtensionsSupportedVersion,
+} from "./cpp-extensions-native.js";
 import { externalInvocationSchema } from "./external-adapter.js";
 import { clangVersion } from "./clang-protocol.js";
 import path from "node:path";
@@ -55,9 +59,12 @@ export async function toolsFor(
         "dotnet.format-whitespace",
         "dotnet.format-fsharp",
         "dotnet.format-extensions",
+        "dotnet.generator-extensions",
         "infrastructure.terraform-validate",
+        "infrastructure.terraform-extensions",
         "infrastructure.kustomize",
         "infrastructure.helm",
+        "infrastructure.helm-extensions",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
@@ -214,13 +221,19 @@ export async function toolsFor(
         : []),
     ];
   if (check.adapter === "cpp") {
-    if (check.parser === "cpp-tools-json")
+    if (
+      check.parser === "cpp-tools-json" ||
+      check.parser === "cpp-extensions-json"
+    )
       return [
         { name: "node", source: "engine-runtime" },
-        ...cppToolNames.map((name) =>
+        ...(check.parser === "cpp-extensions-json"
+          ? cppExtensionsToolNames
+          : cppToolNames
+        ).map((name) =>
           command(
             name,
-            name,
+            name === "as" || name === "ld" ? "/usr/bin/" + name : name,
             name === "clang" || name === "clang++"
               ? ["--no-default-config", "--version"]
               : ["--version"],
@@ -237,17 +250,18 @@ export async function toolsFor(
     }
     return tools;
   }
-  if (check.adapter === "swift")
+  if (check.adapter === "swift" && check.id !== "swift.syntax")
     return [
-      command("swift", "swiftc", ["--version"]),
-      ...(check.id === "swift.syntax"
-        ? []
-        : [
-            { name: "node", source: "engine-runtime" } as const,
-            command("swiftpm", "swift", ["package", "--version"]),
-            command("swiftlint", "swiftlint", ["version"]),
-          ]),
+      { name: "node", source: "engine-runtime" },
+      ...["swift", "swiftpm", "swiftlint"].map((name) =>
+        command(name, process.execPath, [
+          fileURLToPath(new URL("./swift-version-runner.js", import.meta.url)),
+          name,
+        ]),
+      ),
     ];
+  if (check.adapter === "swift")
+    return [command("swift", "swiftc", ["--version"])];
   if (check.id === "jvm.gradle-test" && check.commands[0])
     return [
       { name: "node", source: "engine-runtime" },
@@ -351,7 +365,13 @@ export async function toolsFor(
         : [{ name: "node", source: "engine-runtime" } as const]),
       command("ruby", "ruby", ["--disable-gems", "--version"]),
     ];
-  if (check.id === "infrastructure.terraform-validate" && check.commands[0])
+  if (
+    [
+      "infrastructure.terraform-validate",
+      "infrastructure.terraform-extensions",
+    ].includes(check.id) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("terraform", process.execPath, [
@@ -359,7 +379,12 @@ export async function toolsFor(
         "--version",
       ]),
     ];
-  if (check.id === "infrastructure.helm" && check.commands[0])
+  if (
+    ["infrastructure.helm", "infrastructure.helm-extensions"].includes(
+      check.id,
+    ) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("helm", process.execPath, [
@@ -396,6 +421,7 @@ export async function toolsFor(
       "dotnet.test",
       "dotnet.format-whitespace",
       "dotnet.format-extensions",
+      "dotnet.generator-extensions",
     ].includes(check.id) &&
     check.commands[0]
   )
@@ -566,6 +592,45 @@ export async function identifyTool(
   if (execution.errorCode === "ENOENT")
     return { ...result, status: "unavailable" };
   if (
+    tool.name === "helm" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "helm-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "helm-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
+    return { ...result, status: "unavailable" };
+
+  if (
+    tool.name === "terraform" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "terraform-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "terraform-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
+    return { ...result, status: "unavailable" };
+  if (
     (tool.name === "terraform" ||
       tool.name === "helm" ||
       (["kustomize", "kubeconform"].includes(tool.name) &&
@@ -624,13 +689,19 @@ export async function identifyTool(
       "llvm-dwarfdump",
       "llvm-ar",
       "llvm-ranlib",
+      "llvm-readelf",
+      "as",
+      "ld",
       "cmake",
       "ctest",
       "make",
     ].includes(tool.name)
   ) {
     const verified =
-      !execution.stderr.trim() && cppSupportedVersion(tool.name, output);
+      !execution.stderr.trim() &&
+      (tool.name === "as" || tool.name === "ld"
+        ? cppExtensionsSupportedVersion(tool.name, output)
+        : cppSupportedVersion(tool.name, output));
     return {
       ...result,
       status: verified ? "identified" : "inconclusive",
@@ -639,7 +710,9 @@ export async function identifyTool(
           ? "4.2.3"
           : tool.name === "make"
             ? "4.4.1"
-            : "22.1.3"
+            : tool.name === "as" || tool.name === "ld"
+              ? "2.45.1"
+              : "22.1.3"
         : null,
     };
   }

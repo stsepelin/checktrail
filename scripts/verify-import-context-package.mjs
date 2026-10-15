@@ -2,6 +2,7 @@ import { selectJavaScriptToolsLock } from "./prepare-javascript-tools.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { nativeAcceptanceFailure } from "./native-acceptance-diagnostics.mjs";
 import {
   access,
   cp,
@@ -60,8 +61,18 @@ assert.ok(
     "confidence-provenance",
     "dotnet-fsharp-format",
     "dotnet-format-extensions",
+    "dotnet-generator-extensions",
+    "ruby-extensions",
+    "swift-extensions",
+    "cpp-extensions",
+    "terraform-extensions",
+    "helm-extensions",
   ].includes(profile),
 );
+if (profile === "helm-extensions")
+  process.env.CHECKTRAIL_HELM_EXTENSIONS_INSTALLED = "1";
+if (profile === "terraform-extensions")
+  process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_INSTALLED = "1";
 if (profile === "review-context-limits")
   process.env.CHECKTRAIL_CONTEXT_LIMITS_INSTALLED = "1";
 if (profile === "host-session-readiness")
@@ -133,8 +144,27 @@ if (profile === "dotnet-fsharp-format")
   process.env.CHECKTRAIL_FSHARP_FORMAT_INSTALLED = "1";
 if (profile === "dotnet-format-extensions")
   process.env.CHECKTRAIL_DOTNET_FORMAT_EXTENSIONS_INSTALLED = "1";
+if (profile === "dotnet-generator-extensions")
+  process.env.CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_INSTALLED = "1";
+if (profile === "cpp-extensions")
+  process.env.CHECKTRAIL_CPP_EXTENSIONS_INSTALLED = "1";
+if (profile === "swift-extensions")
+  process.env.CHECKTRAIL_SWIFT_EXTENSIONS_INSTALLED = "1";
+if (profile === "ruby-extensions")
+  process.env.CHECKTRAIL_RUBY_EXTENSIONS_INSTALLED = "1";
 if (profile === "confidence-provenance")
   process.env.CHECKTRAIL_CONFIDENCE_PROVENANCE_INSTALLED = "1";
+const rubyAcceptanceShard =
+  process.env.CHECKTRAIL_RUBY_EXTENSIONS_ACCEPTANCE_SHARD;
+if (rubyAcceptanceShard !== undefined) {
+  assert.equal(profile, "ruby-extensions");
+  assert.ok(["all", "1", "2", "3"].includes(rubyAcceptanceShard));
+  assert.equal(
+    process.env.CHECKTRAIL_IMPORT_CONTEXT_IMAGE,
+    undefined,
+    "Ruby shard acceptance runs inside the prepared offline container",
+  );
+}
 const repository = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-import-context-package-"),
@@ -204,6 +234,29 @@ try {
     "gate-dotnet-fsharp-format.test.js",
     "gate-dotnet-format-extensions.test.js",
     "dotnet-format-extensions-fixture.js",
+    "gate-dotnet-generator-extensions.test.js",
+    "gate-ruby-extensions.test.js",
+    "gate-swift-extensions.test.js",
+    "gate-helm-extensions.test.js",
+    "helm-extensions-fixture.js",
+    "helm-extensions-surfaces.test.js",
+    "helm-extensions-lifecycle.test.js",
+    "gate-terraform-extensions.test.js",
+    "terraform-extensions-fixture.js",
+    "terraform-extensions-surfaces.test.js",
+    "terraform-extensions-lifecycle.test.js",
+    "gate-cpp-extensions.test.js",
+    "cpp-extensions-fixture.js",
+    "cpp-extensions-surfaces.test.js",
+    "cpp-extensions-cancel.test.js",
+    "swift-extensions-fixture.js",
+    "ruby-extensions-fixture.js",
+    "ruby-tools-fixture.js",
+    "dotnet-generator-extensions-fixture.js",
+    "dotnet-build-fixture.js",
+    "dotnet-generated-fixture.js",
+    "dotnet-format-fixture.js",
+    "dotnet-test-controls.js",
     "fsharp-format-fixture.js",
     "gate-confidence-provenance.test.js",
     "confidence-provenance-fixture.js",
@@ -259,6 +312,27 @@ try {
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),
     );
+  if (profile === "ruby-extensions") {
+    await mkdir(path.join(consumer, "examples"), { recursive: true });
+    await cp(
+      path.join(repository, "examples/ruby-tools"),
+      path.join(consumer, "examples/ruby-tools"),
+      { recursive: true },
+    );
+  }
+  if (profile === "dotnet-generator-extensions") {
+    await mkdir(path.join(consumer, "examples"));
+    await cp(
+      path.join(repository, "examples/dotnet-build"),
+      path.join(consumer, "examples/dotnet-build"),
+      { recursive: true },
+    );
+    await mkdir(path.join(consumer, "scripts"), { recursive: true });
+    await cp(
+      path.join(repository, "scripts/dotnet-build-fixture-projects.json"),
+      path.join(consumer, "scripts/dotnet-build-fixture-projects.json"),
+    );
+  }
   if (profile === "dotnet-fsharp-format") {
     const prepared = path.join(consumer, ".checktrail/fsharp-format-tools");
     await mkdir(path.dirname(prepared), { recursive: true });
@@ -440,10 +514,16 @@ try {
       dependencies[copy.key] = copy.version;
     }
   } else await copyClientDependency("@modelcontextprotocol/client");
-  await mkdir(path.join(consumer, "scripts"));
+  await mkdir(path.join(consumer, "scripts"), { recursive: true });
   for (const file of [
     "verify-required-native-tests.mjs",
     "required-test-evidence.mjs",
+    ...(rubyAcceptanceShard === undefined
+      ? []
+      : [
+          "verify-ruby-extensions-acceptance.mjs",
+          "ruby-extensions-acceptance-selection.mjs",
+        ]),
   ])
     await cp(
       path.join(repository, "scripts", file),
@@ -470,8 +550,16 @@ try {
       ).trim()
     : undefined;
   if (image) assert.match(image, /^sha256:[a-f0-9]{64}$/);
+  const nativeAcceptance = (...args) => {
+    try {
+      return execFileSync(...args);
+    } catch (error) {
+      process.stderr.write(nativeAcceptanceFailure(error) + "\n");
+      throw error;
+    }
+  };
   const output = image
-    ? execFileSync(
+    ? nativeAcceptance(
         "docker",
         [
           "run",
@@ -479,6 +567,26 @@ try {
           "--init",
           "--network",
           "none",
+          ...(profile === "helm-extensions"
+            ? [
+                "--env",
+                "CHECKTRAIL_HELM_EXTENSIONS_NATIVE=1",
+                "--env",
+                "CHECKTRAIL_HELM_EXTENSIONS_INSTALLED=1",
+              ]
+            : []),
+          ...(profile === "terraform-extensions"
+            ? [
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_NATIVE=1",
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_INSTALLED=1",
+                "--env",
+                "CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT=/operator-provider",
+                "--mount",
+                `type=bind,src=${process.env.CHECKTRAIL_TERRAFORM_EXTENSIONS_PROVIDER_ROOT},target=/operator-provider,readonly`,
+              ]
+            : []),
           ...(profile === "assembly-fastapi"
             ? ["--env", "CHECKTRAIL_FASTAPI_ASSEMBLY_INSTALLED=1"]
             : []),
@@ -649,9 +757,15 @@ try {
         ],
         { encoding: "utf8", maxBuffer: 1024 * 1024 },
       )
-    : execFileSync(
+    : nativeAcceptance(
         process.execPath,
-        ["scripts/verify-required-native-tests.mjs", profile],
+        rubyAcceptanceShard === undefined
+          ? ["scripts/verify-required-native-tests.mjs", profile]
+          : [
+              path.join("scripts", "verify-ruby-extensions-acceptance.mjs"),
+              "installed",
+              rubyAcceptanceShard,
+            ],
         { cwd: consumer, encoding: "utf8", maxBuffer: 1024 * 1024 },
       );
   const acceptance = JSON.parse(output);

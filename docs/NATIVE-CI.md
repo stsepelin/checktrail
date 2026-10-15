@@ -12,6 +12,14 @@ the unchanged checkout. Each lane has its own temporary namespace. Prepared
 dependencies and caches are reused; test results are not cached. Every package
 controller still performs its original fresh-install verification.
 
+Within required full-suite execution, the complete physical JavaScript extension
+test file runs in an exclusive process after the shared file wave. Its loader,
+linter, build, lifecycle and fresh-install callbacks still run, including callbacks
+outside the selected required profiles. It receives a private temporary namespace
+that is removed after execution. Adjacent filenames stay in the parallel wave;
+file and callback deadlines are unchanged. This scheduling boundary avoids
+competition with other full-suite files without weakening native cleanup checks.
+
 The controller waits for both lanes, rejects changed original inputs, and
 requires restoration of mutation input bytes and inventory. The original command
 inventory is retained in a fixture and checked by the full suite. Output is
@@ -19,6 +27,12 @@ bounded per command and retained in grouped CI logs. Cancellation and the bounde
 lane deadline stop owned descendants; incomplete or failed commands cannot yield
 a completed receipt. The four matrix variants, full-suite command, native jobs,
 callback assertions and 75-minute job limit are unchanged.
+
+The package lane also requires the bounded attempt-output source controller and
+its fresh locked offline installed-package controller on every existing host
+variant. These controls use synthetic offline API responses and native Go
+version/scope/test commands; they do not invoke a model or complete the frozen
+attempt-archives profile.
 
 The [dated lane comparison](measurements/ci-validation-lanes-2026-10-12.json)
 records actual sequential and concurrent executions of the sealed multi-claim
@@ -39,13 +53,10 @@ cancelled by a newer push. Native profiles, matrix entries and assertions are un
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
-The macOS matrix uses the commit-pinned `setup-php` 2.40.0-beta build-cache path
-for PHP 8.5. The previous pinned action failed before tests on both current main
-and the replacement PR run, leaving no PHP executable. The upstream cache path
-tries prebuilt packages before Homebrew and fails if it cannot establish the
-requested PHP version. Linux retains its existing action pin. This is a beta
-setup dependency; current hosted acceptance must verify it. It does not replace
-test execution or supply cached test results.
+The Linux and macOS matrices use commit-pinned `setup-php` 2.40.0 for PHP 8.5.
+The macOS implementation uses the upstream prebuilt-package path; current hosted
+acceptance must verify that setup establishes the requested PHP runtime before
+tests execute. Runtime setup does not supply cached test results.
 
 Pinned public image setup also retries the exact Docker daemon public ECR
 `/v2/` connection/header timeout observed before the Rust context tests started.
@@ -55,6 +66,35 @@ and command timeout/abort codes are not admitted by this new matcher. Synthetic
 regressions bind the observed error; they do not simulate the registry or certify
 a hosted delivery. See the
 [delivery record](measurements/pinned-image-header-retry-2026-10-10.json).
+
+Pinned Go analyzer preparation uses one fixed install/version helper in both
+shared matrices and the Go extension job. Each analyzer gets at most three
+acquisition attempts, with one-second and three-second waits. Only a terminal
+`sum.golang.org` checksum-tile HTTP/2 `INTERNAL_ERROR` is retryable, and every
+other diagnostic must be a download notice. Checksum mismatches, compiler errors,
+mixed failures, command limits and signals still fail immediately; exhausted
+transport attempts also fail. Each attempt prints its bounded captured stdout and stderr before reporting
+failure. Acquisition attempts allow five minutes and 2 MiB of captured output;
+version checks allow fifteen seconds and 64 KiB. Analyzer versions, Go checksum
+verification and test
+execution remain unchanged. Go's [module authentication](https://go.dev/ref/mod#authenticating)
+remains responsible for verifying acquired module content.
+
+The native Scala CLI/MCP surface and extension privacy controls explicitly select
+120 seconds per validation, with 150-second parent process/request bounds. These
+controls require complete compiler failures; a slower compiler exhausting the
+30-second default correctly returns incomplete and cannot satisfy that assertion.
+Their trust-injection refusals, privacy checks, fixed controls and existing callback
+bounds remain in place. The production default and maximum execution limits are
+unchanged.
+
+The standalone Clang fixture retains its fixed compiler version and pins the LLVM
+package revision in [`clang-tools.Dockerfile`](../scripts/clang-tools.Dockerfile).
+Its previous revision stopped resolving through Alpine's live APK index before
+any Clang checks could run. The separate C++ archive profile acquires original
+hashed APKs directly through [`cpp-tools-archives.json`](../scripts/cpp-tools-archives.json);
+its original archive pins are unchanged by this index-pin repair. Dated native
+measurements retain the package identities actually observed at that time.
 
 ## Affected native jobs on pull requests
 
@@ -116,7 +156,12 @@ Full-suite runs allow ten minutes per file, including additional files outside
 the selected required profiles. The `dotnet-method` profile allows ten minutes
 per selected file. Existing per-control and engine execution limits remain in
 force. Standalone profiles retain their existing file budgets, including five
-minutes for `review-benchmark-multi`; any timeout still fails acceptance and
+minutes for `review-benchmark`, `review-benchmark-judging`,
+`review-benchmark-scoring`, `review-claim-probability` and
+`review-benchmark-multi`. The first four profiles share the complete benchmark
+callback file, including callbacks outside the selected required names; their
+file allowance covers cumulative execution while existing callback and production
+execution deadlines stay unchanged. Any timeout still fails acceptance and
 leaves unobserved required cases visible.
 
 Standalone `jvm-wrappers` source and installed acceptance instead select each of
@@ -584,3 +629,90 @@ This uses the same bounded setup path as the formatter jobs instead of allowing
 BuildKit to spend the entire job budget fetching that base. The subsequent build
 steps disable networking for build commands; image digests, native callbacks and
 job deadlines remain unchanged. A failed or incomplete pull still fails setup.
+
+## Generator installation acceptance budget
+
+The generator extension job participates in the planner, native input inventory
+and final completion gate. It starts in the initial wave; F# format admission
+waits for actionlint so the initial expanded wave stays within twenty jobs.
+The existing four shared OS/Node variants and every native callback remain.
+
+The installed generator acceptance callback repeats its original native cases
+through a fresh offline production installation. Its subprocess deadline is
+19.5 minutes and its callback deadline is twenty minutes. The harness grants the
+same twenty-minute budget only to that exact physical compiled file and exact
+installed callback during isolated execution with the ordinary ten-minute file
+budget. Other file/callback selections, full-suite budgets, engine execution
+limits, container resource limits and the sixty-minute native job limit remain
+unchanged. Errors and terminating signals are asserted before receipt admission.
+
+## Remaining official image delivery
+
+The PHP review job stopped before tests when the public ECR Composer pull returned
+`Data limit exceeded`. Remaining production ECR references now select the
+byte-verified official Docker registry addresses with the same immutable digests.
+[The delivery measurement](measurements/ci-official-index-delivery-2026-10-13.json)
+records every changed production caller and each captured index hash. Existing
+image versions, native callbacks, budgets and resource limits remain unchanged.
+CI input discovery omits pinned image addresses when reading native profile tokens.
+Explicit workflow and controller profiles still supply their required callbacks.
+The fixed mirror allowlist rejects adjacent digests, registries and repositories;
+byte identity does not establish publisher signatures or complete license closure.
+
+Laravel supplemental acceptance now inventories the exact static callback names
+in both supplemental files and requires each through the existing bounded
+acceptance ledger. This replaces a stale aggregate TAP count. Empty, duplicate,
+skipped, failed, missing, changed-file and truncated evidence stays non-passing;
+the original callbacks are preserved.
+
+The current Windows startup diagnostic independently compares the legacy
+`New-Object` encoding path with a typed managed constructor. On the observed
+Windows 2025/Node 22 runner, the former reached the diagnostic deadline while
+the latter completed. The Tasks ACL inspector and its public-ACL negative
+fixture now use typed encoding/security constructors. Caller-only ACL validation
+and the original required Tasks/native Windows callbacks remain intact. Native
+Tasks CI must pass before treating this change as platform acceptance.
+
+The Windows Tasks diagnostic captured completed stdin followed by a JSON-cmdlet
+stall in the minimal environment; inherited-environment probes then failed ACL
+cmdlet autoloading. The inspector and public-ACL negative fixture now use fixed
+shipped .NET Framework JSON and filesystem ACL APIs. Private ACL checks, literal
+paths, the minimal environment and existing subprocess budgets remain in force.
+Native Windows source and installed acceptance remain required.
+
+The Tasks matrix fresh-install callback exceeded its unchanged 170-second child
+budget in a shared Linux Node 22 full-suite wave, while dedicated Tasks acceptance
+completed it within that budget. The full-suite harness now admits the exact
+physical `gate-tasks-matrix.test.js` file in an exclusive process after the shared
+wave, alongside the existing JavaScript file. Whole files and unlisted callbacks
+remain included; adjacent names remain parallel. File, callback and production
+execution budgets are unchanged.
+
+The Tasks runtime verifier emits bounded named-case start, terminal, and finished diagnostics to stderr. These locate an interrupted source cohort without waiting for its final JSON report. A start or finished diagnostic does not establish acceptance; only the complete, stable terminal ledger can do that.
+
+Tasks wire fixtures register resource teardown before temporary-directory removal.
+Every owned server or worker is awaited before its SQLite files can be unlinked;
+cleanup attempts the remaining resources even if one closer fails. A required
+source and fresh-install control keeps two actual servers and owner databases
+open, then checks both processes have exited while both databases still exist.
+This ordering check is separate from native Windows ACL acceptance.
+
+The packaged Linux review verifier emits its bounded full source ledger before
+reporting a failed process or cohort. A nonzero exit remains a failure; retaining
+the complete ledger prevents error-display truncation from hiding the evidence.
+
+The Tasks fresh-install wrapper retains the 170-second child and 180-second
+callback deadlines on POSIX. Its Windows aggregate uses a 590-second child
+allowance inside a 600-second callback/file bound, because the complete native
+cohort is repeated in the fresh production installation. Per-project execution,
+other callbacks and job deadlines retain their existing limits. A dispatch
+control observes the actual wrapper options for Windows, Linux and macOS and
+checks that a refused child remains a failed callback.
+
+Owned isolated test namespaces use Windows-only bounded filesystem retries for
+transient busy-directory cleanup: ten retries with 100-millisecond linear delay
+using the [Node filesystem retry options](https://nodejs.org/docs/latest-v22.x/api/fs.html#fspromisesrmpath-options).
+A native Windows control holds a real child process's working directory open;
+release permits removal, while a persistent lock exhausts the retries and remains
+an error. POSIX removal keeps its existing immediate behavior. Namespace cleanup
+and terminal acceptance remain separate obligations.

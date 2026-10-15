@@ -4,10 +4,14 @@ import { nodeLoaderEvidence } from "./node-loader-evidence.js";
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
 import { cppToolsEvidence } from "./cpp-tools-evidence.js";
 import { terraformEvidence } from "./terraform-evidence.js";
+import { terraformExtensionsEvidence } from "./terraform-extensions-evidence.js";
 import { kubeconformEvidence } from "./kubeconform-evidence.js";
 import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
+import { helmExtensionsEvidence } from "./helm-extensions-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
+import { swiftExtensionsEvidence } from "./swift-extensions-evidence.js";
+import { cppExtensionsEvidence } from "./cpp-extensions-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -30,6 +34,7 @@ import { dotnetTestEvidence } from "./dotnet-test-evidence.js";
 import { dotnetFormatEvidence } from "./dotnet-format-evidence.js";
 import { fsharpFormatEvidence } from "./fsharp-format-evidence.js";
 import { dotnetFormatExtensionsEvidence } from "./dotnet-format-extensions-evidence.js";
+import { dotnetGeneratorExtensionsEvidence } from "./dotnet-generator-extensions-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
@@ -374,14 +379,23 @@ export function evaluate(
     return { ...result, ...vueRouterEvidence(check, processes) };
   if (check.parser === "fastapi-json")
     return { ...result, ...fastapiEvidence(check, processes) };
+  if (check.parser === "terraform-extensions-json")
+    return {
+      ...result,
+      ...terraformExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "terraform-json")
     return { ...result, ...terraformEvidence(check, processes) };
+  if (check.parser === "helm-extensions-json")
+    return { ...result, ...helmExtensionsEvidence(check, processes, root) };
   if (check.parser === "helm-json")
     return { ...result, ...helmEvidence(check, processes) };
   if (check.parser === "kustomize-json")
     return { ...result, ...kustomizeEvidence(check, processes) };
   if (check.parser === "kubeconform-json")
     return { ...result, ...kubeconformEvidence(check, processes) };
+  if (check.parser === "cpp-extensions-json")
+    return { ...result, ...cppExtensionsEvidence(check, processes, root) };
   if (check.parser === "cpp-tools-json")
     return { ...result, ...cppToolsEvidence(check, processes) };
   if (check.parser === "clang-json")
@@ -409,16 +423,23 @@ export function evaluate(
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "swift-extensions-json")
+    return { ...result, ...swiftExtensionsEvidence(check, processes, root) };
   if (check.parser === "swift-tools-json")
     return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")
-    return { ...result, ...rubyToolsEvidence(check, processes) };
+    return { ...result, ...rubyToolsEvidence(check, processes, root) };
   if (check.parser === "fsharp-format-json")
     return { ...result, ...fsharpFormatEvidence(check, processes, root) };
   if (check.parser === "dotnet-format-extensions-json")
     return {
       ...result,
       ...dotnetFormatExtensionsEvidence(check, processes, root),
+    };
+  if (check.parser === "dotnet-generator-extensions-json")
+    return {
+      ...result,
+      ...dotnetGeneratorExtensionsEvidence(check, processes, root),
     };
   if (check.parser === "dotnet-format-json")
     return { ...result, ...dotnetFormatEvidence(check, processes) };

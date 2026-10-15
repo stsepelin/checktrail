@@ -12,6 +12,7 @@ const generic = new Set([
   "scripts/verify-required-native-tests.mjs",
   "scripts/required-test-evidence.mjs",
   "scripts/verify-import-context-package.mjs",
+  "scripts/verify-mutation-guards.mjs",
 ]);
 const compiledSource = (file) =>
   file.startsWith("dist/") ? file.slice(5).replace(/\.js$/, ".ts") : file;
@@ -54,7 +55,13 @@ export async function buildNativeInputs({
       ))
         admit(match[0]);
       if (expandProfiles) {
-        for (const token of text.match(/[a-z][a-z0-9-]*/g) ?? []) {
+        // Image repository names are setup data, not native profile arguments.
+        // Keep explicit profile invocations after an address visible.
+        const profileText = text.replace(
+          /\b(?:docker\.io|public\.ecr\.aws|mcr\.microsoft\.com)\/[a-z0-9_./-]+@sha256:[a-f0-9]{64}(?![a-f0-9])/g,
+          " ",
+        );
+        for (const token of profileText.match(/[a-z][a-z0-9-]*/g) ?? []) {
           if (profiles.has(token))
             for (const item of requirements[token]) admit(item.file);
         }
@@ -308,6 +315,43 @@ export function workflowJobNames(workflow) {
     })
     .sort();
 }
+// Bind every page to one immutable run attempt and the declared job inventory.
+// Any short, changing or oversized inventory falls back to full verification.
+export async function requestFullBaselineJobs(
+  request,
+  endpoint,
+  expectedCount,
+) {
+  assert.ok(
+    Number.isSafeInteger(expectedCount) &&
+      expectedCount > 0 &&
+      expectedCount <= 1000,
+    "Baseline job inventory exceeds the bounded pagination contract",
+  );
+  const jobs = [];
+  for (let page = 1; page <= Math.ceil(expectedCount / 100); page++) {
+    const result = await request(endpoint + "?per_page=100&page=" + page);
+    assert.equal(
+      result.total_count,
+      expectedCount,
+      "Baseline job inventory changed",
+    );
+    assert.ok(Array.isArray(result.jobs), "Baseline job page is malformed");
+    assert.equal(
+      result.jobs.length,
+      Math.min(100, expectedCount - jobs.length),
+      "Baseline job page is incomplete",
+    );
+    jobs.push(...result.jobs);
+  }
+  assert.equal(
+    new Set(jobs.map((job) => job.id)).size,
+    expectedCount,
+    "Duplicate baseline job",
+  );
+  return { total_count: expectedCount, jobs };
+}
+
 export function acceptFullBaseline(run, result, { base, expectedNames }) {
   if (
     !run ||

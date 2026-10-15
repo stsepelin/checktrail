@@ -2158,8 +2158,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "ruby-extensions",
@@ -2215,8 +2215,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "swift-extensions",
@@ -2272,8 +2272,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "cpp-extensions",
@@ -2329,8 +2329,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "terraform-extensions",
@@ -2386,8 +2386,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "helm-extensions",
@@ -2443,8 +2443,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "kustomize-extensions",
@@ -2671,8 +2671,8 @@
           "assertion": "The same broken/fixed/near-miss controls run against an offline production installation."
         }
       ],
-      "implementationState": "pending",
-      "acceptanceState": "not-measured"
+      "implementationState": "implemented",
+      "acceptanceState": "receipts-declared"
     },
     {
       "id": "host-session-readiness",

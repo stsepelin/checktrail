@@ -29,6 +29,33 @@ for (const profile of selection) {
     "Unknown required native test profile",
   );
 }
+const mutationProfiles = [
+  "mutation-vitest",
+  "mutation-jest",
+  "mutation-pytest",
+  "mutation-phpunit",
+];
+if (
+  selection.some(
+    (p) => mutationProfiles.includes(p) || p === "mutation-runners",
+  )
+) {
+  assert.equal(
+    selection.length,
+    1,
+    "Native mutation cohorts run separately; aggregate selection cannot reuse one family's execution",
+  );
+  assert.notEqual(
+    selection[0],
+    "mutation-runners",
+    "Mutation runners require all four per-family source and installed cohorts",
+  );
+  assert.equal(
+    selection[0],
+    "mutation-" + process.env.CHECKTRAIL_MUTATION_FAMILY,
+    "Selected native mutation family must match its required cohort",
+  );
+}
 const installedExtensionProfile =
   selection.length === 1 &&
   ((selection[0] === "javascript-extensions" &&
@@ -37,53 +64,67 @@ const installedExtensionProfile =
       process.env.CHECKTRAIL_RUST_EXTENSIONS_INSTALLED === "1"));
 // node:test applies this timeout to the whole selected file, not each callback.
 const timeoutMs =
-  fullSuite ||
-  selection.includes("dotnet-method") ||
-  selection.includes("jvm-wrappers") ||
-  selection.includes("kotlin-extensions") ||
-  selection.includes("scala-extensions") ||
-  selection.includes("jvm-analyzer-extensions") ||
-  selection.includes("dotnet-format-extensions")
-    ? 600000
-    : selection.some((profile) =>
-          ["javascript-extensions", "rust-extensions"].includes(profile),
-        )
-      ? installedExtensionProfile
-        ? 300000
-        : 480000
+  !fullSuite &&
+  selection.length === 1 &&
+  ["cpp-extensions", "terraform-extensions", "helm-extensions"].includes(
+    selection[0],
+  )
+    ? 300000
+    : fullSuite ||
+        selection.includes("dotnet-method") ||
+        selection.includes("jvm-wrappers") ||
+        selection.includes("kotlin-extensions") ||
+        selection.includes("scala-extensions") ||
+        selection.includes("jvm-analyzer-extensions") ||
+        selection.includes("dotnet-format-extensions") ||
+        selection.includes("dotnet-generator-extensions") ||
+        selection.includes("ruby-extensions") ||
+        selection.includes("swift-extensions") ||
+        selection.some((profile) => mutationProfiles.includes(profile))
+      ? 600000
       : selection.some((profile) =>
-            [
-              "dotnet-build",
-              "gradle",
-              "detekt",
-              "kotlin",
-              "scala",
-              "maven",
-              "dotnet-test",
-              "dotnet-format",
-              "dotnet-fsharp-format",
-              "dotnet-generated",
-              "review-benchmark-multi",
-              "ruby-tools",
-              "ruby-tools-rubocop",
-              "ruby-tools-assertions",
-              "ruby-tools-evidence",
-              "ruby-tools-lifecycle",
-              "ruby-tools-defaults",
-              "ruby-tools-surfaces",
-              "ruby-tools-cancellation",
-              "swift-tools",
-              "go-extensions",
-              "assembly-nuxt",
-              "javascript-extensions",
-              "python-extensions",
-              "php-extensions",
-              "kubernetes-extensions",
-              "kustomize-extensions",
-            ].includes(profile),
+            ["javascript-extensions", "rust-extensions"].includes(profile),
           )
-        ? 300000
-        : 120000;
+        ? installedExtensionProfile
+          ? 300000
+          : 480000
+        : selection.some((profile) =>
+              [
+                "dotnet-build",
+                "gradle",
+                "detekt",
+                "kotlin",
+                "scala",
+                "maven",
+                "dotnet-test",
+                "dotnet-format",
+                "dotnet-fsharp-format",
+                "dotnet-generated",
+                "review-benchmark",
+                "review-benchmark-judging",
+                "review-benchmark-scoring",
+                "review-claim-probability",
+                "review-benchmark-multi",
+                "ruby-tools",
+                "ruby-tools-rubocop",
+                "ruby-tools-assertions",
+                "ruby-tools-evidence",
+                "ruby-tools-lifecycle",
+                "ruby-tools-defaults",
+                "ruby-tools-surfaces",
+                "ruby-tools-cancellation",
+                "swift-tools",
+                "go-extensions",
+                "assembly-nuxt",
+                "javascript-extensions",
+                "python-extensions",
+                "php-extensions",
+                "kubernetes-extensions",
+                "kustomize-extensions",
+              ].includes(profile),
+            )
+          ? 300000
+          : 120000;
 // The selected wrapper, compiler and formatting inventories contain independent callbacks. Each
 // selected callback gets a fresh process and file budget; unchanged callback
 // deadlines still apply. One heavy case runs at a time: two Gradle pipelines
@@ -91,9 +132,18 @@ const timeoutMs =
 const isolatedCaseWorkers =
   !fullSuite &&
   selection.length === 1 &&
-  ["jvm-wrappers", "scala-extensions", "dotnet-format-extensions"].includes(
-    selection[0],
-  )
+  [
+    "jvm-wrappers",
+    "scala-extensions",
+    "dotnet-format-extensions",
+    "dotnet-generator-extensions",
+    "ruby-extensions",
+    "swift-extensions",
+    "cpp-extensions",
+    "terraform-extensions",
+    "helm-extensions",
+    ...mutationProfiles,
+  ].includes(selection[0])
     ? 1
     : 0;
 // Retain the single-profile report used by installed acceptance harnesses.

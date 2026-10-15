@@ -17,7 +17,7 @@ import { summarizeImpact } from "./impact-metrics.mjs";
 
 assert.equal(process.argv.length, 2, "Usage: node scripts/measure-impact.mjs");
 const repetitions = 3;
-const corpusPath = new URL("./impact-corpus.json", import.meta.url);
+const corpusPath = new URL("./impact-corpus-v2.json", import.meta.url);
 const worker = fileURLToPath(new URL("./impact-worker.mjs", import.meta.url));
 const corpusSchema = z.strictObject({
   schemaVersion: z.literal(1),

@@ -136,6 +136,16 @@
     "env": {}
   },
   {
+    "script": "scripts/verify-attempt-outputs.mjs",
+    "args": [],
+    "env": {}
+  },
+  {
+    "script": "scripts/verify-attempt-outputs-package.mjs",
+    "args": [],
+    "env": {}
+  },
+  {
     "script": "scripts/verify-native-json-package.mjs",
     "args": [],
     "env": {}

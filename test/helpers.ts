@@ -4,7 +4,7 @@ import path from "node:path";
 import type { TestContext } from "node:test";
 
 export async function fixture(
-  t: TestContext,
+  t: Pick<TestContext, "after">,
   files: Record<string, string>,
 ): Promise<string> {
   const root = await mkdtemp(path.join(tmpdir(), "checktrail-"));

@@ -75,13 +75,13 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         if: runner.os != 'macOS'
         with:
           php-version: "8.5"
           coverage: none
       - name: Prepare PHP from the pinned macOS build-cache action
-        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0-beta
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         if: runner.os == 'macOS'
         with:
           php-version: "8.5"
@@ -99,11 +99,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -143,6 +139,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+      - name: Verify captured consumer selection guards
+        if: runner.os == 'Linux' && matrix.node == '26'
+        run: node scripts/verify-consumer-impact-guards.mjs
       - name: Audit finite inventory structure and preserved native obligations
         run: node scripts/audit-gate-inventory.mjs .
       - name: Require the full suite and prepared native regression profiles
@@ -158,7 +157,7 @@ jobs:
       - name: Prepare pinned public images with bounded delivery retries
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned review runtime
         if: matrix.os == 'ubuntu-latest' && matrix.node == '22'
@@ -203,13 +202,13 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         if: runner.os != 'macOS'
         with:
           php-version: "8.5"
           coverage: none
       - name: Prepare PHP from the pinned macOS build-cache action
-        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0-beta
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2.40.0
         if: runner.os == 'macOS'
         with:
           php-version: "8.5"
@@ -227,11 +226,7 @@ jobs:
           dirname "$(rustup which --toolchain 1.98.1 rustc)" >> "$GITHUB_PATH"
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          .checktrail/go-tools/bin/staticcheck -version
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
-          .checktrail/go-tools/bin/golangci-lint version --short
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - name: Prepare locked PHP test tools
         run: |
@@ -273,6 +268,8 @@ jobs:
         run: node scripts/prepare-package-cache.mjs
       - name: Require isolated mutation and fresh package lanes
         run: node scripts/run-ci-validation.mjs
+      - name: Verify captured consumer impact in the offline production package
+        run: node scripts/verify-consumer-impact-package.mjs
 
   php-review:
     needs: [ci-plan, actionlint]
@@ -291,7 +288,7 @@ jobs:
       - run: npm run build
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned PHP runtime
         run: docker build --file scripts/php-review-tools.Dockerfile --tag checktrail-php-review:synthetic-v1 scripts
@@ -626,10 +623,10 @@ jobs:
       - run: npm run build
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
       - name: Prepare pinned external adapter runtimes
         run: docker build --file scripts/external-tools.Dockerfile --tag checktrail-external-test:1 scripts
       - name: Prepare package-install cache with network access
@@ -915,7 +912,7 @@ jobs:
           python3 scripts/extract-rust-extension-components.py
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Build the pinned offline native test image
         run: docker build --network none --label checktrail.task=ci-rust-extensions --file scripts/rust-extension-tools.Dockerfile --tag "$CHECKTRAIL_RUST_EXTENSIONS_IMAGE" .
@@ -943,7 +940,7 @@ jobs:
       - run: npm run build
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Build the pinned offline PHP native image
         run: docker build --network none --label checktrail.task=ci-php-extensions --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_PHP_EXTENSIONS_IMAGE" .
@@ -985,7 +982,7 @@ jobs:
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
       - name: Prepare exact public wheels and verify selected native APIs
         run: node scripts/prepare-python-extensions-tools.mjs
       - name: Build the pinned offline native test image
@@ -1042,7 +1039,7 @@ jobs:
       - run: npm run build
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned public PHP and Node runtime
         run: docker build --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_LARAVEL_ASSEMBLY_IMAGE" .
@@ -1172,6 +1169,76 @@ jobs:
       - if: always()
         run: node scripts/cleanup-ruby-tools-runtime.mjs
 
+  ruby-extensions-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['ruby-extensions-arm64']) }}
+    name: ruby-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        phase:
+          [
+            acceptance-1,
+            acceptance-2,
+            acceptance-3,
+            baseline-1,
+            baseline-2,
+            baseline-3,
+            guards-1,
+            guards-2,
+            guards-3,
+          ]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-ruby-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-ruby-tools-runtime.mjs
+      - run: node scripts/prepare-ruby-tools-container-dependencies.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, paired controls and fresh offline installed acceptance
+        run: node scripts/verify-ruby-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-ruby-tools-runtime.mjs
+
+  swift-extensions-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['swift-extensions-arm64']) }}
+    name: swift-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [acceptance, guards-1, guards-2, guards-3]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-swift-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-swift-extensions-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, paired controls and fresh offline installed acceptance
+        run: node scripts/verify-swift-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-swift-extensions-runtime.mjs
+
   swift:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['swift']) }}
@@ -1212,6 +1279,35 @@ jobs:
       - run: node scripts/verify-swift-tools-container.mjs
       - if: always()
         run: node scripts/cleanup-swift-tools-runtime.mjs
+
+  cpp-extensions-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['cpp-extensions-arm64']) }}
+    name: cpp-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [baseline, acceptance, guards-1, guards-2]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-cpp-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-cpp-extensions-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require native originals, paired controls and fresh offline installed acceptance
+        run: node scripts/verify-cpp-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-cpp-tools-runtime.mjs
 
   cpp-tools:
     needs: [ci-plan, actionlint]
@@ -1310,6 +1406,65 @@ jobs:
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
 
+  terraform-extensions-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['terraform-extensions-arm64']) }}
+    name: terraform-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [baseline, acceptance, guards-1, guards-2]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-terraform-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-terraform-extensions-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Native baseline, offline installation or paired controls
+        run: node scripts/verify-terraform-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
+  helm-extensions-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['helm-extensions-arm64']) }}
+    name: helm-extensions (${{ matrix.phase }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [baseline, acceptance, guards-1, guards-2]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-helm-extensions-${{ matrix.phase }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: node scripts/prepare-infra-tools-runtime.mjs
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Native baseline, offline installation or paired controls
+        run: node scripts/verify-helm-extensions-container.mjs ${{ matrix.phase }}
+      - if: always()
+        run: node scripts/cleanup-infra-tools-runtime.mjs
+
   terraform:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['terraform']) }}
@@ -1379,6 +1534,78 @@ jobs:
       - if: always()
         run: node scripts/cleanup-infra-tools-runtime.mjs
 
+  tasks-runtime:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime']) }}
+    name: tasks-runtime (${{ matrix.slot }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - slot: ci-linux-node22
+            os: ubuntu-24.04
+            node: "22.23.3"
+          - slot: ci-linux-node24
+            os: ubuntu-24.04
+            node: "24.21.0"
+          - slot: ci-linux-node26
+            os: ubuntu-24.04
+            node: "26.10.0"
+          - slot: ci-macos-node22
+            os: macos-26
+            node: "22.23.3"
+          - slot: ci-macos-node24
+            os: macos-26
+            node: "24.20.0"
+          - slot: ci-macos-node26
+            os: macos-26
+            node: "26.9.0"
+          - slot: windows-node22
+            os: windows-2025
+            node: "22.23.3"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Diagnose native Windows private-access setup boundaries
+        if: matrix.slot == 'windows-node22'
+        run: node scripts/diagnose-windows-task-access.mjs
+      - name: Require source controls with exact runtime and observed image identity
+        run: node scripts/verify-tasks-runtime.mjs ${{ matrix.slot }}
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require the same controls in a fresh offline production installation
+        run: node scripts/verify-tasks-runtime-package.mjs ${{ matrix.slot }}
+
+  tasks-runtime-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['tasks-runtime-arm64']) }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.3"
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Prepare pinned production installation cache
+        run: node scripts/prepare-package-cache.mjs
+      - name: Require source and offline installed controls in the pinned native runtime
+        run: node scripts/verify-tasks-runtime-arm64.mjs
+
   windows:
     needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['windows']) }}
@@ -1437,9 +1664,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Prepare pinned Go analyzers
         run: |
-          mkdir -p .checktrail/go-tools/bin
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
-          GOBIN="$PWD/.checktrail/go-tools/bin" go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+          node scripts/prepare-go-tools.mjs
           echo "$PWD/.checktrail/go-tools/bin" >> "$GITHUB_PATH"
       - run: npm run build
       - run: node scripts/prepare-package-cache.mjs
@@ -1478,7 +1703,7 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned PHP context runtime
         run: docker build --file scripts/php-context-tools.Dockerfile --tag checktrail-php-context:synthetic-v1 scripts
@@ -1503,9 +1728,9 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446
+          node scripts/pull-pinned-image.mjs docker.io/library/rust@sha256:c913be57168b9240b86f373f94060152a2e09ea16a72e0801a02ee3a262ca446
       - name: Prepare pinned Rust context runtime
         run: docker build --file scripts/rust-context-tools.Dockerfile --tag checktrail-rust-context:synthetic-v1 scripts
       - name: Verify original selected Rust bindings and compiling guards
@@ -1530,7 +1755,7 @@ jobs:
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Java context runtime
         run: docker build --file scripts/java-context-tools.Dockerfile --tag checktrail-java-context:synthetic-v1 scripts
@@ -1557,7 +1782,7 @@ jobs:
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Kotlin context runtime
         run: docker build --file scripts/kotlin-context-tools.Dockerfile --tag checktrail-kotlin-context:synthetic-v1 .checktrail/kotlin-tools
@@ -1585,7 +1810,7 @@ jobs:
       - name: Prepare pinned public images with bounded delivery retries
         run: |
           node scripts/pull-pinned-image.mjs docker.io/library/eclipse-temurin@sha256:541729c21f9308a68cebbe5a0627e4cd465dfe8980fc03bac0b2feaee57daafd
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned Scala context runtime
         run: docker build --file scripts/scala-context-tools.Dockerfile --tag checktrail-scala-context:synthetic-v1 .checktrail/scala-tools
@@ -1686,8 +1911,8 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:48e4b67d85f87bd551df43704e24d252f56cc5f8e9718841aace50f19948f0f9
+          node scripts/pull-pinned-image.mjs docker.io/library/swift@sha256:471acf16d3ce9b270d2f15ea177b0e150bdf1595ae2acfcc4932d1a03f43c3fd
       - name: Prepare pinned Swift context runtime
         run: docker build --file scripts/swift-context-tools.Dockerfile --tag checktrail-swift-context:synthetic-v1 scripts
       - name: Verify original selected Swift bindings and compiling guards
@@ -1736,7 +1961,7 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C context runtime
         run: docker build --file scripts/c-context-tools.Dockerfile --tag checktrail-c-context:synthetic-v1 scripts
@@ -1761,7 +1986,7 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned C++ context runtime
         run: docker build --file scripts/cpp-context-tools.Dockerfile --tag checktrail-cpp-context:synthetic-v1 scripts
@@ -1786,7 +2011,7 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned HCL witness runtime
         run: node scripts/prepare-hcl-context-runtime.mjs
@@ -1814,7 +2039,7 @@ jobs:
       - run: node scripts/prepare-package-cache.mjs
       - name: Prepare pinned public images with bounded delivery retries
         run: |
-          node scripts/pull-pinned-image.mjs public.ecr.aws/docker/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
+          node scripts/pull-pinned-image.mjs docker.io/library/golang@sha256:ae5a2316d12f3e78fd99177dad452e6ad4f240af2d71d57b480c3477f250fec6
           node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
       - name: Prepare pinned YAML witness runtime
         run: node scripts/prepare-yaml-context-runtime.mjs
@@ -1825,7 +2050,7 @@ jobs:
         run: node scripts/cleanup-yaml-context-runtime.mjs
 
   fsharp-format-arm64:
-    needs: [ci-plan]
+    needs: [ci-plan, actionlint]
     if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['fsharp-format-arm64']) }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
@@ -1929,15 +2154,22 @@ jobs:
       - nuxt
       - ruby
       - ruby-tools
+      - ruby-extensions-arm64
       - swift
       - swift-tools
+      - swift-extensions-arm64
+      - cpp-extensions-arm64
       - cpp-tools
       - kubernetes-extensions-arm64
       - kustomize-extensions-arm64
       - kubeconform
       - terraform
+      - terraform-extensions-arm64
       - kustomize
       - helm
+      - helm-extensions-arm64
+      - tasks-runtime
+      - tasks-runtime-arm64
       - windows
       - go-workspaces-arm64
       - php-context-arm64
@@ -1956,6 +2188,9 @@ jobs:
       - yaml-context-arm64
       - fsharp-format-arm64
       - dotnet-format-extensions-arm64
+      - dotnet-generator-extensions-arm64
+      - mutation-passive-guards
+      - mutation-native-arm64
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1970,3 +2205,104 @@ jobs:
         env:
           CHECKTRAIL_CI_PLAN: ${{ needs.ci-plan.outputs.plan }}
           CHECKTRAIL_CI_NEEDS: ${{ toJSON(needs) }}
+
+  dotnet-generator-extensions-arm64:
+    needs: [ci-plan]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['dotnet-generator-extensions-arm64']) }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 60
+    env:
+      CHECKTRAIL_TEST_TASK: ci-dotnet-generator-extensions
+      CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE: checktrail-dotnet-generator-extensions:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare pinned public runtime images
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+          node scripts/pull-pinned-image.mjs mcr.microsoft.com/dotnet/sdk@sha256:3cc3bbbbf93d82104892f42aa9106b6be4d120346dea0649643a97c801525256
+      - name: Build selected native runtime without build network
+        run: docker build --network none --label checktrail.task=ci-dotnet-generator-extensions --file scripts/fsharp-format-tools.Dockerfile --tag "$CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE" scripts
+      - name: Prepare public dependencies and offline package cache
+        run: |
+          CHECKTRAIL_DOTNET_BUILD_IMAGE="$CHECKTRAIL_DOTNET_GENERATOR_EXTENSIONS_IMAGE" node scripts/prepare-dotnet-build-dependencies.mjs
+          node scripts/prepare-package-cache.mjs
+      - name: Verify preserved .NET profiles, source and installed formatter, native lifecycle and compiling controls
+        run: node scripts/verify-dotnet-generator-extensions-container.mjs
+
+  mutation-passive-guards:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['mutation-passive-guards']) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Require passive parser copy and cohort-selection contracts
+        run: node --test dist/test/mutation-native-evidence.test.js dist/test/mutation-native-copy.test.js dist/test/mutation-native-guards.test.js dist/test/mutation-native-selection.test.js
+      - name: Require paired parser and bounded-copy controls
+        run: node scripts/verify-mutation-guards.mjs passive
+
+  mutation-native-arm64:
+    needs: [ci-plan, actionlint]
+    if: ${{ always() && !cancelled() && (needs.ci-plan.result != 'success' || fromJSON(needs.ci-plan.outputs.plan).selected['mutation-native-arm64']) }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        family: [vitest, jest, pytest, phpunit]
+    env:
+      CHECKTRAIL_TEST_TASK: ci-mutation-${{ matrix.family }}
+      CHECKTRAIL_MUTATION_FAMILY: ${{ matrix.family }}
+      CHECKTRAIL_MUTATION_IMAGE: checktrail-mutation-${{ matrix.family }}:ci
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.23.2"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Prepare the pinned Node image
+        run: node scripts/pull-pinned-image.mjs docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+      - name: Prepare the exact locked native JavaScript tool closure
+        if: matrix.family == 'vitest' || matrix.family == 'jest'
+        run: |
+          node scripts/prepare-mutation-tools.mjs
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/mutation-javascript-tools,target=/tools" --workdir /tools docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 npm ci --ignore-scripts --no-audit --no-fund
+          docker tag docker.io/library/node@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 "$CHECKTRAIL_MUTATION_IMAGE"
+      - name: Prepare the pinned native Python image and public tools
+        if: matrix.family == 'pytest'
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/python@sha256:6d43704baacd1bfbe7c295d7f13079d5d8104ed33568873133f8fc69980419df
+          node scripts/prepare-python-extensions-tools.mjs
+          docker build --network none --label "checktrail.task=$CHECKTRAIL_TEST_TASK" --file scripts/python-extensions-tools.Dockerfile --tag "$CHECKTRAIL_MUTATION_IMAGE" .
+      - name: Prepare the pinned native PHP image and locked tools
+        if: matrix.family == 'phpunit'
+        run: |
+          node scripts/pull-pinned-image.mjs docker.io/library/composer@sha256:b09bccd91a78fe8a9ab4b33d707b862e8fe54fec17782e32683ad2a69c46867d
+          docker build --network none --label "checktrail.task=$CHECKTRAIL_TEST_TASK" --file scripts/php-context-tools.Dockerfile --tag "$CHECKTRAIL_MUTATION_IMAGE" .
+          mkdir -p .checktrail/php-tools
+          cp scripts/php-tools/composer.json scripts/php-tools/composer.lock .checktrail/php-tools/
+          docker run --rm --mount "type=bind,src=$PWD/.checktrail/php-tools,target=/tools" --workdir /tools "$CHECKTRAIL_MUTATION_IMAGE" composer install --no-interaction --no-scripts --prefer-dist --no-progress
+          test -s .checktrail/php-tools/vendor/pest-plugins.json
+      - run: node scripts/prepare-package-cache.mjs
+      - name: Require source, fresh production installation and paired native controls
+        run: node scripts/verify-mutation-container.mjs all

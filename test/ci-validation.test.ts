@@ -47,6 +47,49 @@ async function repository(t: TestContext, scripts: Record<string, string>) {
   return { root: await realpath(root), outer };
 }
 const prelude = `import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import{setTimeout as delay}from'node:timers/promises';const file='dist/src/subject.txt';console.log(JSON.stringify({root:process.cwd(),tmp:process.env.TMPDIR}));`;
+
+test("consumer impact retains its guard condition and fresh installed checks on every host matrix variant after cache preparation", async () => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  type Step = { run?: string; if?: string };
+  const checks: Step[] = workflow.jobs.checks.steps;
+  const hosts: Step[] = workflow.jobs["host-validation"].steps;
+  const guard = "node scripts/verify-consumer-impact-guards.mjs";
+  const installed = "node scripts/verify-consumer-impact-package.mjs";
+  assert.equal(checks.filter((step) => step.run === guard).length, 1);
+  assert.equal(
+    checks.find((step) => step.run === guard)!.if,
+    "runner.os == 'Linux' && matrix.node == '26'",
+  );
+  assert.ok(
+    checks.findIndex((step) => step.run === guard) >
+      checks.findIndex((step) => step.run === "npm run build"),
+  );
+  assert.equal(checks.filter((step) => step.run === installed).length, 0);
+  assert.equal(hosts.filter((step) => step.run === installed).length, 1);
+  assert.equal(
+    hosts.find((step) => step.run === installed)!.if,
+    undefined,
+    "Every existing host variant must execute fresh consumer acceptance",
+  );
+  const cache = hosts.findIndex(
+    (step) => step.run === "node scripts/prepare-package-cache.mjs",
+  );
+  const lanes = hosts.findIndex(
+    (step) => step.run === "node scripts/run-ci-validation.mjs",
+  );
+  const consumer = hosts.findIndex((step) => step.run === installed);
+  assert.ok(cache >= 0 && cache < lanes && lanes < consumer);
+  assert.deepEqual(
+    workflow.jobs["host-validation"].strategy.matrix,
+    workflow.jobs.checks.strategy.matrix,
+  );
+});
+
 test("CI lanes preserve every original matrix command and keep distinct package variants", async () => {
   const baseline = JSON.parse(
     await readFile(
@@ -63,7 +106,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   validatePhases(validationPhases);
   assert.deepEqual(keys(validationPhases), frozen);
   assert.equal(validationPhases.mutations.length, 14);
-  assert.equal(validationPhases.packages.length, 29);
+  assert.equal(validationPhases.packages.length, 31);
   const missing = structuredClone(validationPhases);
   missing.packages.pop();
   assert.notDeepEqual(keys(missing), frozen);
@@ -108,6 +151,41 @@ test("CI lanes preserve every original matrix command and keep distinct package 
       s.run?.includes("--full-suite gate-inventory"),
     ),
   );
+});
+test("attempt output acceptance runs once in the package lane on every existing host variant", async () => {
+  const workflow = parse(
+    await readFile(
+      new URL("../../.github/workflows/ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  const controllers = [
+    "scripts/verify-attempt-outputs.mjs",
+    "scripts/verify-attempt-outputs-package.mjs",
+  ];
+  for (const script of controllers) {
+    assert.deepEqual(
+      validationPhases.packages.filter(
+        (command: { script: string }) => command.script === script,
+      ),
+      [task(script)],
+      "Source and fresh installed acceptance must each run exactly once",
+    );
+    assert.equal(
+      validationPhases.mutations.filter(
+        (command: { script: string }) => command.script === script,
+      ).length,
+      0,
+    );
+    for (const id of ["checks", "host-validation"])
+      assert.equal(
+        workflow.jobs[id].steps.some((step: { run?: string }) =>
+          step.run?.includes(script),
+        ),
+        false,
+        "Controllers must use the shared lane rather than duplicate direct steps",
+      );
+  }
 });
 test("CI mutation and package lanes overlap in separate source and temporary namespaces and restore every byte", async (t) => {
   const { root, outer } = await repository(t, {

@@ -444,7 +444,7 @@ function createConnectionServer(
     "mutation_experiment",
     {
       description:
-        "Execute bounded, operator-trusted mutation experiments in temporary copies of a dependency-free root Node project. Advisory results distinguish assertion kills, survivors and inconclusive evidence; project code is not sandboxed.",
+        "Execute bounded, operator-trusted mutation experiments in fresh copies for the selected Node, Vitest, Jest, pytest or PHPUnit flat-test profile. Advisory results distinguish assertion kills, survivors, skips and execution errors; project code is not sandboxed.",
       inputSchema: z.strictObject({
         input: z.string().min(1),
         timeoutMs: z.number().int().min(1).max(120_000).optional(),
