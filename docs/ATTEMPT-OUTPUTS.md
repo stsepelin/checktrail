@@ -18,6 +18,14 @@ withhold the body; they do not fabricate an empty successful response. A transpo
 failure before any delivered bytes retains an unobserved record. Requests denied
 before transport retain no invented attempt.
 
+An HTTP 200 body must complete credential inspection before model identity, usage
+or review text is interpreted. A body exceeding either inspection-complexity
+bound is malformed and cannot produce a review receipt or candidates. An imported
+report carrying an archive also needs a complete final body before it can retain
+a review receipt. Non-success
+HTTP responses retain their HTTP status and bounded numeric usage observations
+without retaining uninspectable bodies or interpreting their prose.
+
 Complete retained bodies replay against the recorded HTTP classification, exact
 model identity and reported input/output token observations. Retries bind one
 request identity. Canonical bytes, hashes, ordered attempt identities and physical

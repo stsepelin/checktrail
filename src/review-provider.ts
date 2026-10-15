@@ -711,11 +711,10 @@ async function runProviderAssignment(
               attempt.responseBytes = raw.bytes;
               let parsed: unknown;
               try {
-                if (
-                  capturedResponse.snapshot().bodyState ===
-                  "withheld-credential"
-                )
-                  throw new Error("Credential echo");
+                if (capturedResponse.snapshot().bodyState !== "complete")
+                  throw new Error(
+                    "Provider response could not be credential-inspected",
+                  );
                 parsed = JSON.parse(raw.text);
               } catch {
                 attempt.status = "malformed";
@@ -1010,6 +1009,10 @@ export function parseProviderReview(input: unknown): ReviewProviderRun {
         );
       replayProviderResponse(run, attempt, captured);
     }
+    if (run.receipt && run.responseArchive.at(-1)?.bodyState !== "complete")
+      throw new Error(
+        "Uninspected provider response archive cannot supply a review receipt",
+      );
   }
   return run;
 }
