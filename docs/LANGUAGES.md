@@ -476,3 +476,10 @@ The opt-in [Terraform module/provider extension](TERRAFORM-EXTENSIONS.md) adds a
 The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) validates a finite local alias graph with transitive and repeated charts, scalar value/schema constraints and physical/rendered native diagnostics. Exact source bytes, full debug schemas, all physical lint outcomes and complete template-instance participation remain current at admission. Linux ARM64/Helm 4.3.0 is the measured scope; wider charts, cluster/API schema behavior, provenance and Gate A remain open.
 
 [Selected native mutation runners](MUTATIONS.md) add flat Vitest 5.0.1, Jest 30.5.2, pytest 9.1.1/Python 3.12.13 and PHPUnit 13.3.4/PHP 8.5.6 experiments on Linux ARM64/Node 22.23.2. Fresh copies preserve originals and distinguish skips, collection/setup errors, body errors and teardown assertions from mutation kills. Wider runners/platforms, complete runtime/license closure and Gate A remain open.
+
+Journal codec/private storage foundation controls retain actual binary native child
+observations in separate bounded files with interrupted-call replay. This is a
+foundation for language wrappers, with source and fresh offline installed macOS
+Node evidence; validation does not create or consume these journals yet. Complete
+inner invocation capture and the remaining native matrix stay pending.
+See [NATIVE-ATTEMPT-JOURNALS.md](NATIVE-ATTEMPT-JOURNALS.md).
