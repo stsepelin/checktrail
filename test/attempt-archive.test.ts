@@ -9,6 +9,7 @@ import {
   projectProviderReview,
 } from "../src/review-provider.js";
 import type { ReviewProviderConfig } from "../src/review-provider-schema.js";
+import { ModelAttemptOutputCapture } from "../src/model-attempt-output.js";
 import { fixture, nodeManifest, passingTest } from "./helpers.js";
 const digest = (b: Uint8Array | string) =>
   createHash("sha256").update(b).digest("hex");
@@ -248,6 +249,10 @@ test("offline API response archives refuse literal and JSON-escaped credentials 
       state: "withheld-credential",
     },
     {
+      body: '{"' + escaped + '":"original"}',
+      state: "withheld-credential",
+    },
+    {
       body: JSON.stringify({ error: { message: config.credentialEnv } }),
       state: "withheld-credential",
     },
@@ -382,6 +387,141 @@ test("offline API response archives refuse literal and JSON-escaped credentials 
       }
       assert.deepEqual(projectProviderReview(run, true, true), run);
     }
+    for (const item of [
+      { value: key, secret: true, valid: true, keyed: false, padding: null },
+      {
+        value: config.credentialEnv,
+        secret: true,
+        valid: true,
+        keyed: false,
+        padding: null,
+      },
+      { value: key, secret: true, valid: false, keyed: false, padding: null },
+      { value: key, secret: true, valid: false, keyed: true, padding: null },
+      {
+        value: key,
+        secret: true,
+        valid: false,
+        keyed: false,
+        padding: Array(100001).fill(0),
+      },
+      {
+        value: key,
+        secret: true,
+        valid: false,
+        keyed: false,
+        padding: [Array(50001).fill(0), Array(50001).fill(0)],
+      },
+      {
+        value: key.slice(0, -1) + "b",
+        secret: false,
+        valid: true,
+        keyed: false,
+        padding: null,
+      },
+    ]) {
+      const escapedValue = item.value
+        .split("")
+        .map((c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"))
+        .join("");
+      const model = item.valid
+        ? {
+            files: [
+              {
+                path: "subject.mjs",
+                disposition: "reviewed",
+                note: item.value,
+              },
+            ],
+            candidates: [],
+          }
+        : item.keyed
+          ? { [item.value]: "original" }
+          : {
+              unexpected: item.value,
+              ...(item.padding ? { padding: item.padding } : {}),
+            };
+      const text = JSON.stringify(model).replaceAll(item.value, escapedValue);
+      assert.equal(text.includes(item.value), false);
+      const body = JSON.stringify({
+        model: config.model,
+        usage: { input_tokens: 11, output_tokens: 3 },
+        ...(kind === "openai-responses"
+          ? {
+              status: "completed",
+              output: [
+                {
+                  type: "message",
+                  role: "assistant",
+                  status: "completed",
+                  content: [{ type: "output_text", text }],
+                },
+              ],
+            }
+          : {
+              type: "message",
+              role: "assistant",
+              stop_reason: "end_turn",
+              content: [{ type: "text", text }],
+            }),
+      });
+      assert.equal(body.includes(item.value), false);
+      let calls = 0;
+      const run = await runProviderReview(root, context, {
+        allowInference: true,
+        allowSourceDisclosure: true,
+        environment: { ORIGINAL_ARCHIVE_KEY: key },
+        config: {
+          ...config,
+          kind,
+          limits: {
+            ...config.limits,
+            maxAttempts: 1,
+            maxResponseBytes: 1048576,
+          },
+        },
+        fetch: async () => {
+          calls++;
+          return new Response(body);
+        },
+      });
+      assert.equal(calls, 1);
+      assert.equal(
+        JSON.stringify(run).includes(key),
+        false,
+        "Credential inspection must cover the decoded structured model JSON",
+      );
+      assert.equal(JSON.stringify(run).includes(config.credentialEnv), false);
+      const archived = run.responseArchive![0]!;
+      assert.equal(
+        archived.bodyState,
+        item.padding
+          ? "withheld-uninspectable"
+          : item.secret
+            ? "withheld-credential"
+            : "complete",
+      );
+      assert.equal(
+        run.attempts[0]!.status,
+        item.secret ? "malformed" : "completed",
+      );
+      if (item.secret) {
+        assert.equal(run.receipt, null);
+        assert.deepEqual(run.candidates, []);
+        assert.equal(run.attempts[0]!.observedModel, null);
+        assert.equal(run.attempts[0]!.usage.inputTokens, null);
+        assert.equal(archived.bodyBase64, null);
+        assert.equal(archived.retainedBodyBytes, 0);
+      } else {
+        assert.ok(run.receipt);
+        assert.equal(run.receipt.assessment.files[0]!.note, item.value);
+        assert.equal(
+          Buffer.from(archived.bodyBase64!, "base64").toString(),
+          body,
+        );
+      }
+      assert.deepEqual(projectProviderReview(run, true, true), run);
+    }
     // Non-success responses interpret only safe numeric usage and HTTP status.
     const body = JSON.stringify({
       error: { message: key },
@@ -414,6 +554,39 @@ test("offline API response archives refuse literal and JSON-escaped credentials 
     assert.equal(JSON.stringify(run).includes(key), false);
     assert.deepEqual(projectProviderReview(run, true, true), run);
   }
+  const oversized = Array(100001).fill(null);
+  let oversizedIterations = 0;
+  Object.defineProperty(oversized, Symbol.iterator, {
+    value() {
+      oversizedIterations++;
+      return Array.prototype.values.call(oversized);
+    },
+  });
+  const capture = new ModelAttemptOutputCapture(
+    "00000000-0000-4000-8000-000000000000",
+    "0".repeat(64),
+    1048576,
+    [key, config.credentialEnv],
+  );
+  capture.status(200);
+  capture.observe(
+    Buffer.from(JSON.stringify({ text: JSON.stringify(oversized) })),
+  );
+  capture.complete();
+  assert.equal(capture.snapshot().bodyState, "complete");
+  assert.equal(capture.inspectDecodedJson(oversized), false);
+  assert.equal(
+    oversizedIterations,
+    0,
+    "The pending-value budget must refuse an oversized array before enumerating it",
+  );
+  assert.equal(capture.snapshot().bodyState, "withheld-uninspectable");
+  assert.equal(capture.inspectDecodedJson({ safe: "original" }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-uninspectable");
+  assert.equal(capture.inspectDecodedJson({ secret: key }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-credential");
+  assert.equal(capture.inspectDecodedJson({ safe: "original" }), false);
+  assert.equal(capture.snapshot().bodyState, "withheld-credential");
 });
 test("offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body", async (t) => {
   const root = await fixture(t, {

@@ -142,6 +142,7 @@ function totals(attempts: Attempt[]): ReviewProviderRun["usage"] {
 function parseEnvelope(
   input: unknown,
   config: ReviewProviderConfig,
+  inspectOutput?: (value: unknown) => boolean,
 ): {
   status: ReviewAttemptStatus;
   output?: ReviewModelOutput;
@@ -207,10 +208,17 @@ function parseEnvelope(
   if (!observedModel || texts.length !== 1 || !texts[0]?.trim())
     return { ...result, status: "malformed" };
   try {
+    const modelOutput: unknown = JSON.parse(texts[0]);
+    if (inspectOutput && !inspectOutput(modelOutput))
+      return {
+        status: "malformed",
+        observedModel: null,
+        usage: unknownUsage(),
+      };
     return {
       ...result,
       status: "completed",
-      output: reviewModelOutputSchema.parse(JSON.parse(texts[0])),
+      output: reviewModelOutputSchema.parse(modelOutput),
     };
   } catch {
     return { ...result, status: "malformed" };
@@ -720,7 +728,9 @@ async function runProviderAssignment(
                 attempt.status = "malformed";
               }
               if (parsed !== undefined) {
-                const envelope = parseEnvelope(parsed, config);
+                const envelope = parseEnvelope(parsed, config, (value) =>
+                  capturedResponse.inspectDecodedJson(value),
+                );
                 Object.assign(attempt, {
                   status: envelope.status,
                   observedModel: envelope.observedModel,
