@@ -292,8 +292,8 @@ const controls = [
     id: "root-reaping-order",
     file: "process-tree.js",
     name: "POSIX cleanup stops a quiesced root after direct children are signalled and before requiring their reaping",
-    before: "if (depth <= 1)\n            finishRoot();",
-    after: "if (false)\n            finishRoot();",
+    before: "if (depth <= 1)\n                finishRoot();",
+    after: "if (false)\n                finishRoot();",
   },
 ];
 const environment = { ...process.env };

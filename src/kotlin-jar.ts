@@ -1,9 +1,18 @@
 import { inflateRawSync } from "node:zlib";
 /** Inspect bounded ZIP directory data; never load classes or invoke project tools. */
-export function kotlinJar(bytes: Buffer): {
+export function kotlinJar(
+  bytes: Buffer,
+  maximumManifestBytes = 65536,
+): {
   classPath: string[];
   entries: number;
 } {
+  if (
+    !Number.isSafeInteger(maximumManifestBytes) ||
+    maximumManifestBytes < 1 ||
+    maximumManifestBytes > 1024 * 1024
+  )
+    throw Error("JAR manifest limit is invalid");
   let end = -1;
   for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--)
     if (
@@ -61,8 +70,8 @@ export function kotlinJar(bytes: Buffer): {
       if (
         bytes.readUInt16LE(cursor + 8) & 1 ||
         ![0, 8].includes(method) ||
-        expanded > 65536 ||
-        compressed > 65536 ||
+        expanded > maximumManifestBytes ||
+        compressed > maximumManifestBytes ||
         local + 30 > offset ||
         bytes.readUInt32LE(local) !== 0x04034b50
       )
@@ -80,7 +89,9 @@ export function kotlinJar(bytes: Buffer): {
       const encoded = bytes.subarray(data, data + compressed),
         decoded =
           method === 8
-            ? inflateRawSync(encoded, { maxOutputLength: 65537 })
+            ? inflateRawSync(encoded, {
+                maxOutputLength: maximumManifestBytes + 1,
+              })
             : encoded;
       if (decoded.length !== expanded)
         throw Error("Kotlin JAR manifest length disagrees");

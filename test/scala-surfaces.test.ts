@@ -52,22 +52,24 @@ test(
           "run",
           "--root",
           root,
+          "--timeout-ms",
+          "120000",
           ...(trust ? ["--trust-project"] : []),
           ...(detailed ? ["--detailed"] : []),
         ],
-        { encoding: "utf8", timeout: 120000 },
+        { encoding: "utf8", timeout: 150000 },
       );
     const denied = invoke(false, false);
     assert.equal(denied.status, 2);
     assert.match(denied.stderr, /trust/i);
     const output = invoke(true, true);
-    assert.equal(output.status, 1, output.stderr);
+    assert.equal(output.status, 1, output.stderr || output.stdout);
     const report = reportSchema.parse(JSON.parse(output.stdout));
     assert.equal(report.outcome, "failed");
     assert.equal(report.checks[0]!.findingsComplete, false);
     assert.equal(report.checks[0]!.findings!.length, 1);
     const summary = invoke(true, false);
-    assert.equal(summary.status, 1, summary.stderr);
+    assert.equal(summary.status, 1, summary.stderr || summary.stdout);
     const summarized = JSON.parse(summary.stdout);
     assert.equal(summarized.outcome, "failed");
     assert.ok(
@@ -77,10 +79,10 @@ test(
     );
     const client = await connect(root, true);
     try {
-      const result = await client.callTool({
-        name: "validation_run",
-        arguments: {},
-      });
+      const result = await client.callTool(
+        { name: "validation_run", arguments: { timeoutMs: 120000 } },
+        { timeout: 150000 },
+      );
       assert.notEqual(result.isError, true);
       assert.equal(
         (result.structuredContent as { outcome: string }).outcome,
@@ -100,10 +102,10 @@ test(
       });
       assert.equal(injection.isError, true);
       await writeFile(path.join(root, "Original.scala"), fixedScala);
-      const fixed = await client.callTool({
-        name: "validation_run",
-        arguments: {},
-      });
+      const fixed = await client.callTool(
+        { name: "validation_run", arguments: { timeoutMs: 120000 } },
+        { timeout: 150000 },
+      );
       assert.notEqual(fixed.isError, true);
       assert.equal(
         (fixed.structuredContent as { outcome: string }).outcome,

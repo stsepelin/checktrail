@@ -37,7 +37,7 @@ Source-bearing JARs, undeclared manifest classpaths, duplicate dependencies and
 unsupported ZIP profiles are unavailable. No dependency resolution occurs.
 
 Only inventoried `.kt` sources participate. Application `.kts` files and mixed
-Java/Scala source require separate profiles. Gradle build/settings scripts are
+Java/Scala source require separate profiles. The opt-in [Kotlin extensions](KOTLIN-EXTENSIONS.md) add selected mixed Java/Kotlin, generated Kotlin and compile-only application scripts; Scala stays separate. Gradle build/settings scripts are
 not application compiler inputs and are not executed. The fixed profile uses
 language/API 2.4, JVM target 17, 21 or 25, no default scripting, no project plugins,
 one backend thread and fresh owned output. Annotation processing is disabled

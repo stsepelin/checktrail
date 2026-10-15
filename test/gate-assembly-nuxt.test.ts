@@ -1,3 +1,4 @@
+import { frameworkReportSemantics } from "./framework-report-semantics.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -413,23 +414,7 @@ test("assembly-nuxt privacy acceptance", { skip }, async (t) => {
         detailed,
       );
       const semantic = (input: unknown): unknown =>
-        Array.isArray(input)
-          ? input.map(semantic)
-          : input !== null && typeof input === "object"
-            ? Object.fromEntries(
-                Object.entries(input)
-                  .filter(
-                    ([key]) =>
-                      ![
-                        "durationMs",
-                        "capturedAt",
-                        "stdout",
-                        "stderr",
-                      ].includes(key),
-                  )
-                  .map(([key, v]) => [key, semantic(v)]),
-              )
-            : input;
+        frameworkReportSemantics(input, { omitProcessOutput: true });
       assert.deepEqual(semantic(report.checks), semantic(value.checks));
       assert.equal(
         (

@@ -57,7 +57,11 @@ try {
     path.relative(path.join(consumer, "dist"), installed),
     path.join(consumer, "dist/src"),
   );
-  for (const file of ["mcp-validation-tasks.test.js", "helpers.js"])
+  for (const file of [
+    "mcp-validation-tasks.test.js",
+    "tasks-wire-fixture.js",
+    "helpers.js",
+  ])
     await cp(
       path.join(repository, "dist/test", file),
       path.join(consumer, "dist/test", file),

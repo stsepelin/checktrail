@@ -2,8 +2,10 @@
 
 The opt-in `infrastructure.kustomize` profile uses the shared library, CLI and MCP
 engine. Its [local measurement](measurements/kustomize-native-2026-10-06.json)
-records original native and fresh offline installed-package controls. E16 and
-Gate A remain open.
+records original native and fresh offline installed-package controls. The explicit
+[local transform extension](KUSTOMIZE-EXTENSIONS.md) adds selected patches,
+transforms and generator references; this document describes the original profile.
+E16 and Gate A remain open.
 
 Declare complete scope in `checktrail.kustomize.json` using the published
 [schema](../schemas/kustomize-config.schema.json), and select this check explicitly
@@ -69,7 +71,7 @@ acceptance harness. Validation containers have no network and read-only source
 mounts; their root filesystem remains writable. Cleanup preserves worktrees and
 branches. A configured hosted job is not evidence of a completed hosted run.
 
-Helm, wider Kustomize transforms, additional schemas/platforms, complete publisher
+Helm, Kustomize behavior outside the explicit extension, additional schemas/platforms, complete publisher
 and SDK/license closure, hosted CI for this revision, representative-project cost
 and the wider Gate A inventory remain unverified. These controls invoke no reviewer
 inference, field evaluation, cluster access or infrastructure apply.

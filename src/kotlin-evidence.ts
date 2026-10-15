@@ -102,7 +102,7 @@ const nativeSchema = z.strictObject({
     )
     .max(4001),
 });
-const evidenceSchema = z.strictObject({
+export const kotlinEvidenceSchema = z.strictObject({
   version: z.literal(1),
   requestDigest: digest,
   kotlin: z.literal(kotlinArtifacts.version),
@@ -148,6 +148,7 @@ export function kotlinEvidence(
   check: Check,
   processes: ProcessResult[],
   root: string | undefined,
+  generatedSources: ReadonlyMap<string, Buffer> = new Map(),
 ): Pick<CheckResult, "status" | "reason" | "findings" | "findingsComplete"> {
   const incomplete = {
     status: "inconclusive" as const,
@@ -186,7 +187,7 @@ export function kotlinEvidence(
       findingsComplete: false,
     };
   try {
-    const data = evidenceSchema.parse(JSON.parse(process.stdout)),
+    const data = kotlinEvidenceSchema.parse(JSON.parse(process.stdout)),
       serialized = check.commands[0]!.args[2]!,
       planned = kotlinInvocationSchema.parse(JSON.parse(serialized));
     if (
@@ -251,11 +252,14 @@ export function kotlinEvidence(
         before.file !== expected[i] ||
         snapshots.has(before.nativeFile) ||
         !path.isAbsolute(before.nativeFile) ||
-        realpathSync(before.file) !== before.file
+        (!generatedSources.has(before.file) &&
+          realpathSync(before.file) !== before.file)
       )
         return incomplete;
       snapshots.set(before.nativeFile, i);
-      const physical = kotlinReadSync(before.file, 1024 * 1024),
+      const physical =
+          generatedSources.get(before.file) ??
+          kotlinReadSync(before.file, 1024 * 1024),
         nativeBytes = physical.subarray(
           physical.subarray(0, 3).equals(Buffer.from([239, 187, 191])) ? 3 : 0,
         );

@@ -1,3 +1,4 @@
+import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import { installAcceptancePackage } from "./install-acceptance-package.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -71,7 +72,7 @@ try {
       path.join(consumer, "dist/test", file),
     );
   // The official client is acceptance-harness material, not a production dependency.
-  // Its core dependency resolves to the freshly installed production SDK core.
+  // Its matching core remains in its harness namespace, separate from production.
   const clientManifest = JSON.parse(
     await readFile(
       path.join(
@@ -81,39 +82,22 @@ try {
       "utf8",
     ),
   );
-  assert.equal(clientManifest.version, "2.3.0");
+  assert.equal(clientManifest.version, "2.3.1");
   const lock = JSON.parse(
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   const acceptanceClientDependencies = {};
-  const copyAcceptanceDependency = async (name) => {
-    if (
-      name === "@modelcontextprotocol/core" ||
-      name === "zod" ||
-      Object.hasOwn(acceptanceClientDependencies, name)
-    )
-      return;
-    const source = path.join(repository, "node_modules", name);
-    const manifest = JSON.parse(
-      await readFile(path.join(source, "package.json"), "utf8"),
-    );
-    assert.equal(
-      manifest.version,
-      lock.packages["node_modules/" + name].version,
-    );
-    // This prepared lock profile is hoisted. Nested dependencies need a separate harness profile.
-    const nested = await import("node:fs/promises");
-    await assert.rejects(nested.lstat(path.join(source, "node_modules")), {
-      code: "ENOENT",
-    });
-    acceptanceClientDependencies[name] = manifest.version;
-    const destination = path.join(consumer, "dist/node_modules", name);
-    await mkdir(path.dirname(destination), { recursive: true });
-    await cp(source, destination, { recursive: true });
-    for (const dependency of Object.keys(manifest.dependencies ?? {}))
-      await copyAcceptanceDependency(dependency);
-  };
-  await copyAcceptanceDependency("@modelcontextprotocol/client");
+  await copyInstalledPackages(
+    path.join(consumer, "dist"),
+    ["@modelcontextprotocol/client"],
+    path.join(repository, "node_modules"),
+    ({ relative, version }) => {
+      const location = relative.split(path.sep).join("/");
+      assert.equal(typeof version, "string");
+      assert.equal(version, lock.packages["node_modules/" + location].version);
+      acceptanceClientDependencies[location] = version;
+    },
+  );
   await mkdir(path.join(consumer, "scripts"));
   for (const file of [
     "verify-required-native-tests.mjs",

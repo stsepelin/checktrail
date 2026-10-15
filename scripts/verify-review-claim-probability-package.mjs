@@ -1,3 +1,4 @@
+import { copyInstalledPackages } from "../dist/test/tool-fixture.js";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -57,39 +58,27 @@ try {
     await readFile(path.join(repository, "package-lock.json"), "utf8"),
   );
   const dependencies = {};
-  async function copyClientDependency(name) {
-    if (Object.hasOwn(dependencies, name)) return;
-    const manifest = JSON.parse(
-      await readFile(
-        path.join(repository, "node_modules", name, "package.json"),
+  await copyInstalledPackages(
+    consumer,
+    ["@modelcontextprotocol/client"],
+    path.join(repository, "node_modules"),
+    async ({ relative, version }) => {
+      const location = relative.split(path.sep).join("/");
+      assert.equal(typeof version, "string");
+      assert.equal(version, lock.packages["node_modules/" + location].version);
+      const existing = await readFile(
+        path.join(consumer, "node_modules", relative, "package.json"),
         "utf8",
-      ),
-    );
-    const entry = lock.packages["node_modules/" + name];
-    assert.equal(manifest.version, entry.version);
-    const destination = path.join(consumer, "node_modules", name);
-    const existing = await readFile(
-      path.join(destination, "package.json"),
-      "utf8",
-    )
-      .then(JSON.parse)
-      .catch((error) => {
-        if (error.code !== "ENOENT") throw error;
-        return null;
-      });
-    if (existing) {
-      assert.equal(existing.version, manifest.version);
-      return;
-    }
-    dependencies[name] = manifest.version;
-    await mkdir(path.dirname(destination), { recursive: true });
-    await cp(path.join(repository, "node_modules", name), destination, {
-      recursive: true,
-    });
-    for (const dependency of Object.keys(manifest.dependencies ?? {}))
-      await copyClientDependency(dependency);
-  }
-  await copyClientDependency("@modelcontextprotocol/client");
+      )
+        .then(JSON.parse)
+        .catch((error) => {
+          if (error.code !== "ENOENT") throw error;
+          return null;
+        });
+      if (existing) assert.equal(existing.version, version);
+      dependencies[location] = version;
+    },
+  );
   await mkdir(path.join(consumer, "scripts"));
   for (const file of [
     "verify-required-native-tests.mjs",

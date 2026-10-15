@@ -4,10 +4,14 @@ import { nodeLoaderEvidence } from "./node-loader-evidence.js";
 import { rubyToolsEvidence } from "./ruby-tools-evidence.js";
 import { cppToolsEvidence } from "./cpp-tools-evidence.js";
 import { terraformEvidence } from "./terraform-evidence.js";
+import { terraformExtensionsEvidence } from "./terraform-extensions-evidence.js";
 import { kubeconformEvidence } from "./kubeconform-evidence.js";
 import { kustomizeEvidence } from "./kustomize-evidence.js";
 import { helmEvidence } from "./helm-evidence.js";
+import { helmExtensionsEvidence } from "./helm-extensions-evidence.js";
 import { swiftToolsEvidence } from "./swift-tools-evidence.js";
+import { swiftExtensionsEvidence } from "./swift-extensions-evidence.js";
+import { cppExtensionsEvidence } from "./cpp-extensions-evidence.js";
 import { rustWorkspaceEvidence } from "./rust-workspace-evidence.js";
 import { goBuildEvidence } from "./go-build-evidence.js";
 import { goTargetPreflight } from "./go-target.js";
@@ -16,10 +20,11 @@ import { externalEvidence } from "./external-evidence.js";
 import { actionlintEvidence } from "./actionlint-evidence.js";
 import { clangEvidence } from "./clang-evidence.js";
 import { javaEvidence } from "./java-evidence.js";
-import { kotlinEvidence } from "./kotlin-evidence.js";
-import { scalaEvidence } from "./scala-evidence.js";
-import { detektEvidence } from "./detekt-evidence.js";
+import { selectedKotlinEvidence } from "./kotlin-extension-evidence.js";
+import { selectedScalaEvidence } from "./scala-selected-evidence.js";
+import { selectedDetektEvidence } from "./detekt-extensions-evidence.js";
 import { spotbugsEvidence } from "./spotbugs-evidence.js";
+import { spotbugsExtensionsEvidence } from "./spotbugs-extensions-evidence.js";
 import { checkstyleEvidence } from "./checkstyle-evidence.js";
 import { mavenEvidence } from "./maven-evidence.js";
 import { gradleEvidence } from "./gradle-evidence.js";
@@ -27,6 +32,9 @@ import { dotnetEvidence } from "./dotnet-evidence.js";
 import { dotnetBuildEvidence } from "./dotnet-build-evidence.js";
 import { dotnetTestEvidence } from "./dotnet-test-evidence.js";
 import { dotnetFormatEvidence } from "./dotnet-format-evidence.js";
+import { fsharpFormatEvidence } from "./fsharp-format-evidence.js";
+import { dotnetFormatExtensionsEvidence } from "./dotnet-format-extensions-evidence.js";
+import { dotnetGeneratorExtensionsEvidence } from "./dotnet-generator-extensions-evidence.js";
 import { rustEvidence } from "./rust-evidence.js";
 import { rustTestEvidence } from "./rust-test-evidence.js";
 import { rustfmtEvidence } from "./rustfmt-evidence.js";
@@ -371,14 +379,23 @@ export function evaluate(
     return { ...result, ...vueRouterEvidence(check, processes) };
   if (check.parser === "fastapi-json")
     return { ...result, ...fastapiEvidence(check, processes) };
+  if (check.parser === "terraform-extensions-json")
+    return {
+      ...result,
+      ...terraformExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "terraform-json")
     return { ...result, ...terraformEvidence(check, processes) };
+  if (check.parser === "helm-extensions-json")
+    return { ...result, ...helmExtensionsEvidence(check, processes, root) };
   if (check.parser === "helm-json")
     return { ...result, ...helmEvidence(check, processes) };
   if (check.parser === "kustomize-json")
     return { ...result, ...kustomizeEvidence(check, processes) };
   if (check.parser === "kubeconform-json")
     return { ...result, ...kubeconformEvidence(check, processes) };
+  if (check.parser === "cpp-extensions-json")
+    return { ...result, ...cppExtensionsEvidence(check, processes, root) };
   if (check.parser === "cpp-tools-json")
     return { ...result, ...cppToolsEvidence(check, processes) };
   if (check.parser === "clang-json")
@@ -388,23 +405,42 @@ export function evaluate(
   if (check.parser === "maven-json")
     return { ...result, ...mavenEvidence(check, processes) };
   if (check.parser === "scala-json")
-    return { ...result, ...scalaEvidence(check, processes, root) };
+    return { ...result, ...selectedScalaEvidence(check, processes, root) };
   if (check.parser === "kotlin-json")
-    return { ...result, ...kotlinEvidence(check, processes, root) };
+    return { ...result, ...selectedKotlinEvidence(check, processes, root) };
   if (check.parser === "detekt-json")
-    return { ...result, ...detektEvidence(check, processes, root) };
+    return { ...result, ...selectedDetektEvidence(check, processes, root) };
   if (check.parser === "spotbugs-json")
-    return { ...result, ...spotbugsEvidence(check, processes, root) };
+    return {
+      ...result,
+      ...(check.commands[0]?.args[0]?.endsWith("/spotbugs-extensions-runner.js")
+        ? spotbugsExtensionsEvidence(check, processes, root)
+        : spotbugsEvidence(check, processes, root)),
+    };
   if (check.parser === "checkstyle-json")
     return { ...result, ...checkstyleEvidence(check, processes, root) };
   if (check.parser === "java-json")
     return { ...result, ...javaEvidence(check, processes, root) };
   if (check.parser === "actionlint-json")
     return { ...result, ...actionlintEvidence(check, processes) };
+  if (check.parser === "swift-extensions-json")
+    return { ...result, ...swiftExtensionsEvidence(check, processes, root) };
   if (check.parser === "swift-tools-json")
     return { ...result, ...swiftToolsEvidence(check, processes) };
   if (check.parser === "ruby-tools-json")
-    return { ...result, ...rubyToolsEvidence(check, processes) };
+    return { ...result, ...rubyToolsEvidence(check, processes, root) };
+  if (check.parser === "fsharp-format-json")
+    return { ...result, ...fsharpFormatEvidence(check, processes, root) };
+  if (check.parser === "dotnet-format-extensions-json")
+    return {
+      ...result,
+      ...dotnetFormatExtensionsEvidence(check, processes, root),
+    };
+  if (check.parser === "dotnet-generator-extensions-json")
+    return {
+      ...result,
+      ...dotnetGeneratorExtensionsEvidence(check, processes, root),
+    };
   if (check.parser === "dotnet-format-json")
     return { ...result, ...dotnetFormatEvidence(check, processes) };
   if (check.parser === "dotnet-test-json")

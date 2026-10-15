@@ -1,6 +1,10 @@
 import { laravelAssemblyVersionRunner } from "./laravel-assembly-runner.js";
 import { laravelAssemblyPhpFlags } from "./laravel.js";
 import { cppToolNames, cppSupportedVersion } from "./cpp-native.js";
+import {
+  cppExtensionsToolNames,
+  cppExtensionsSupportedVersion,
+} from "./cpp-extensions-native.js";
 import { externalInvocationSchema } from "./external-adapter.js";
 import { clangVersion } from "./clang-protocol.js";
 import path from "node:path";
@@ -53,9 +57,14 @@ export async function toolsFor(
         "dotnet.build",
         "dotnet.test",
         "dotnet.format-whitespace",
+        "dotnet.format-fsharp",
+        "dotnet.format-extensions",
+        "dotnet.generator-extensions",
         "infrastructure.terraform-validate",
+        "infrastructure.terraform-extensions",
         "infrastructure.kustomize",
         "infrastructure.helm",
+        "infrastructure.helm-extensions",
       ].includes(check.id) && check.commands[0]?.temporaryDirectory
         ? { temporaryDirectory: true }
         : {}),
@@ -212,13 +221,19 @@ export async function toolsFor(
         : []),
     ];
   if (check.adapter === "cpp") {
-    if (check.parser === "cpp-tools-json")
+    if (
+      check.parser === "cpp-tools-json" ||
+      check.parser === "cpp-extensions-json"
+    )
       return [
         { name: "node", source: "engine-runtime" },
-        ...cppToolNames.map((name) =>
+        ...(check.parser === "cpp-extensions-json"
+          ? cppExtensionsToolNames
+          : cppToolNames
+        ).map((name) =>
           command(
             name,
-            name,
+            name === "as" || name === "ld" ? "/usr/bin/" + name : name,
             name === "clang" || name === "clang++"
               ? ["--no-default-config", "--version"]
               : ["--version"],
@@ -235,17 +250,18 @@ export async function toolsFor(
     }
     return tools;
   }
-  if (check.adapter === "swift")
+  if (check.adapter === "swift" && check.id !== "swift.syntax")
     return [
-      command("swift", "swiftc", ["--version"]),
-      ...(check.id === "swift.syntax"
-        ? []
-        : [
-            { name: "node", source: "engine-runtime" } as const,
-            command("swiftpm", "swift", ["package", "--version"]),
-            command("swiftlint", "swiftlint", ["version"]),
-          ]),
+      { name: "node", source: "engine-runtime" },
+      ...["swift", "swiftpm", "swiftlint"].map((name) =>
+        command(name, process.execPath, [
+          fileURLToPath(new URL("./swift-version-runner.js", import.meta.url)),
+          name,
+        ]),
+      ),
     ];
+  if (check.adapter === "swift")
+    return [command("swift", "swiftc", ["--version"])];
   if (check.id === "jvm.gradle-test" && check.commands[0])
     return [
       { name: "node", source: "engine-runtime" },
@@ -277,10 +293,14 @@ export async function toolsFor(
         fileURLToPath(new URL("./java-runner.js", import.meta.url)),
         "--version",
       ]),
-      command("scala", process.execPath, [
-        ...check.commands[0].args,
-        "--version",
-      ]),
+      command(
+        JSON.parse(check.commands[0].args[2]!).config.profile ===
+          "linux-arm64-scala2-typed-class-v1"
+          ? "scala2"
+          : "scala",
+        process.execPath,
+        [...check.commands[0].args, "--version"],
+      ),
     ];
   if (check.id === "jvm.kotlin" && check.commands[0])
     return [
@@ -345,7 +365,13 @@ export async function toolsFor(
         : [{ name: "node", source: "engine-runtime" } as const]),
       command("ruby", "ruby", ["--disable-gems", "--version"]),
     ];
-  if (check.id === "infrastructure.terraform-validate" && check.commands[0])
+  if (
+    [
+      "infrastructure.terraform-validate",
+      "infrastructure.terraform-extensions",
+    ].includes(check.id) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("terraform", process.execPath, [
@@ -353,7 +379,12 @@ export async function toolsFor(
         "--version",
       ]),
     ];
-  if (check.id === "infrastructure.helm" && check.commands[0])
+  if (
+    ["infrastructure.helm", "infrastructure.helm-extensions"].includes(
+      check.id,
+    ) &&
+    check.commands[0]
+  )
     return [
       { name: "node", source: "engine-runtime" },
       command("helm", process.execPath, [
@@ -385,9 +416,13 @@ export async function toolsFor(
       ]),
     ];
   if (
-    ["dotnet.build", "dotnet.test", "dotnet.format-whitespace"].includes(
-      check.id,
-    ) &&
+    [
+      "dotnet.build",
+      "dotnet.test",
+      "dotnet.format-whitespace",
+      "dotnet.format-extensions",
+      "dotnet.generator-extensions",
+    ].includes(check.id) &&
     check.commands[0]
   )
     return [
@@ -396,6 +431,18 @@ export async function toolsFor(
         ...check.commands[0].args,
         "--version",
       ]),
+    ];
+  if (check.id === "dotnet.format-fsharp")
+    return [
+      { name: "node", source: "engine-runtime" },
+      ...(check.commands[0]
+        ? [
+            command("fantomas", process.execPath, [
+              ...check.commands[0].args,
+              "--version",
+            ]),
+          ]
+        : []),
     ];
   if (check.adapter === "dotnet")
     return [
@@ -545,6 +592,45 @@ export async function identifyTool(
   if (execution.errorCode === "ENOENT")
     return { ...result, status: "unavailable" };
   if (
+    tool.name === "helm" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "helm-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "helm-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
+    return { ...result, status: "unavailable" };
+
+  if (
+    tool.name === "terraform" &&
+    path.basename(tool.command?.args[0] ?? "") ===
+      "terraform-extensions-runner.js" &&
+    execution.exitCode === 3 &&
+    !execution.signal &&
+    !execution.errorCode &&
+    !execution.cancelled &&
+    !execution.timedOut &&
+    !execution.truncated &&
+    !execution.stderr &&
+    execution.stdout ===
+      JSON.stringify({
+        unavailable: "terraform-extensions",
+        reason: "pinned-prerequisite",
+      }) +
+        "\n"
+  )
+    return { ...result, status: "unavailable" };
+  if (
     (tool.name === "terraform" ||
       tool.name === "helm" ||
       (["kustomize", "kubeconform"].includes(tool.name) &&
@@ -578,6 +664,16 @@ export async function identifyTool(
   )
     return result;
   const output = execution.stdout.trim();
+  if (tool.name === "fantomas") {
+    const verified =
+      !execution.stderr &&
+      output === "Fantomas 8.0.7 (SDK 10.0.401; runtime 10.0.12)";
+    return {
+      ...result,
+      status: verified ? "identified" : "inconclusive",
+      version: verified ? "8.0.7" : null,
+    };
+  }
   if (tool.name === "helm") {
     const verified = !execution.stderr && output === "v4.3.0";
     return {
@@ -593,13 +689,19 @@ export async function identifyTool(
       "llvm-dwarfdump",
       "llvm-ar",
       "llvm-ranlib",
+      "llvm-readelf",
+      "as",
+      "ld",
       "cmake",
       "ctest",
       "make",
     ].includes(tool.name)
   ) {
     const verified =
-      !execution.stderr.trim() && cppSupportedVersion(tool.name, output);
+      !execution.stderr.trim() &&
+      (tool.name === "as" || tool.name === "ld"
+        ? cppExtensionsSupportedVersion(tool.name, output)
+        : cppSupportedVersion(tool.name, output));
     return {
       ...result,
       status: verified ? "identified" : "inconclusive",
@@ -608,7 +710,9 @@ export async function identifyTool(
           ? "4.2.3"
           : tool.name === "make"
             ? "4.4.1"
-            : "22.1.3"
+            : tool.name === "as" || tool.name === "ld"
+              ? "2.45.1"
+              : "22.1.3"
         : null,
     };
   }
@@ -633,86 +737,88 @@ export async function identifyTool(
                   )?.[1]
                 : tool.name === "spotbugs"
                   ? /^SpotBugs (4\.10\.4)$/.exec(output)?.[1]
-                  : tool.name === "scala"
-                    ? /^Scala compiler (3\.9\.0)$/.exec(output)?.[1]
-                    : tool.name === "kotlin"
-                      ? /^Kotlin compiler (2\.4\.10)$/.exec(output)?.[1]
-                      : tool.name === "detekt"
-                        ? /^(2\.0\.0-alpha\.6)$/.exec(output)?.[1]
-                        : tool.name === "checkstyle"
-                          ? /^Checkstyle version: (\d+\.\d+\.\d+)$/.exec(
-                              output,
-                            )?.[1]
-                          : tool.name === "clang" || tool.name === "clang++"
-                            ? clangVersion(output)
-                            : tool.name === "swift"
-                              ? /^(?:Apple )?Swift version (\d+\.\d+(?:\.\d+)?) \([^\r\n]+\)\r?\nTarget: [a-zA-Z0-9_.-]+$/.exec(
-                                  output,
-                                )?.[1]
-                              : tool.name === "ruby"
-                                ? /^ruby (\d+\.\d+\.\d+)(?:p\d+)? /.exec(
+                  : tool.name === "scala2"
+                    ? /^Scala compiler (2\.13\.18)$/.exec(output)?.[1]
+                    : tool.name === "scala"
+                      ? /^Scala compiler (3\.9\.0)$/.exec(output)?.[1]
+                      : tool.name === "kotlin"
+                        ? /^Kotlin compiler (2\.4\.10)$/.exec(output)?.[1]
+                        : tool.name === "detekt"
+                          ? /^(2\.0\.0-alpha\.6)$/.exec(output)?.[1]
+                          : tool.name === "checkstyle"
+                            ? /^Checkstyle version: (\d+\.\d+\.\d+)$/.exec(
+                                output,
+                              )?.[1]
+                            : tool.name === "clang" || tool.name === "clang++"
+                              ? clangVersion(output)
+                              : tool.name === "swift"
+                                ? /^(?:Apple )?Swift version (\d+\.\d+(?:\.\d+)?) \([^\r\n]+\)\r?\nTarget: [a-zA-Z0-9_.-]+$/.exec(
                                     output,
                                   )?.[1]
-                                : tool.name === "clippy"
-                                  ? /^clippy (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                                : tool.name === "ruby"
+                                  ? /^ruby (\d+\.\d+\.\d+)(?:p\d+)? /.exec(
                                       output,
                                     )?.[1]
-                                  : tool.name === "rustfmt"
-                                    ? /^rustfmt (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                                  : tool.name === "clippy"
+                                    ? /^clippy (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
                                         output,
                                       )?.[1]
-                                    : tool.name === "cargo" ||
-                                        tool.name === "rustc" ||
-                                        tool.name === "rustdoc"
-                                      ? output.startsWith(`${tool.name} `)
-                                        ? /^(?:cargo|rustc|rustdoc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
-                                            output,
-                                          )?.[1]
-                                        : undefined
-                                      : tool.name === "php-cs-fixer"
-                                        ? /^(3\.[0-9]+\.[0-9]+)$/.exec(
-                                            output,
-                                          )?.[1]
-                                        : tool.name === "pint"
-                                          ? /^Pint (\S+)$/.exec(output)?.[1]
-                                          : tool.name === "pest"
-                                            ? /^Pest Testing Framework (\S+)\.$/.exec(
-                                                output,
-                                              )?.[1]
-                                            : tool.name === "phpunit"
-                                              ? /^PHPUnit (\S+) by .+$/.exec(
+                                    : tool.name === "rustfmt"
+                                      ? /^rustfmt (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                                          output,
+                                        )?.[1]
+                                      : tool.name === "cargo" ||
+                                          tool.name === "rustc" ||
+                                          tool.name === "rustdoc"
+                                        ? output.startsWith(`${tool.name} `)
+                                          ? /^(?:cargo|rustc|rustdoc) (\S+) \([a-f0-9]+ [0-9-]+\)$/.exec(
+                                              output,
+                                            )?.[1]
+                                          : undefined
+                                        : tool.name === "php-cs-fixer"
+                                          ? /^(3\.[0-9]+\.[0-9]+)$/.exec(
+                                              output,
+                                            )?.[1]
+                                          : tool.name === "pint"
+                                            ? /^Pint (\S+)$/.exec(output)?.[1]
+                                            : tool.name === "pest"
+                                              ? /^Pest Testing Framework (\S+)\.$/.exec(
                                                   output,
                                                 )?.[1]
-                                              : tool.name === "phpstan"
-                                                ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
+                                              : tool.name === "phpunit"
+                                                ? /^PHPUnit (\S+) by .+$/.exec(
                                                     output,
                                                   )?.[1]
-                                                : tool.name === "staticcheck"
-                                                  ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
+                                                : tool.name === "phpstan"
+                                                  ? /^PHPStan - PHP Static Analysis Tool (\S+)$/.exec(
                                                       output,
                                                     )?.[1]
-                                                  : tool.name === "go"
-                                                    ? /^go version go(\S+) \S+$/.exec(
+                                                  : tool.name === "staticcheck"
+                                                    ? /^staticcheck \S+ \((\d+\.\d+\.\d+)\)$/.exec(
                                                         output,
                                                       )?.[1]
-                                                    : tool.name === "php"
-                                                      ? /^PHP (\S+) /.exec(
+                                                    : tool.name === "go"
+                                                      ? /^go version go(\S+) \S+$/.exec(
                                                           output,
                                                         )?.[1]
-                                                      : tool.name === "python"
-                                                        ? /^Python (\S+)$/.exec(
+                                                      : tool.name === "php"
+                                                        ? /^PHP (\S+) /.exec(
                                                             output,
                                                           )?.[1]
-                                                        : tool.name === "ruff"
-                                                          ? /^ruff (\S+)$/.exec(
+                                                        : tool.name === "python"
+                                                          ? /^Python (\S+)$/.exec(
                                                               output,
                                                             )?.[1]
-                                                          : tool.name ===
-                                                              "swiftpm"
-                                                            ? /^Swift Package Manager - Swift (\d+\.\d+\.\d+)$/.exec(
+                                                          : tool.name === "ruff"
+                                                            ? /^ruff (\S+)$/.exec(
                                                                 output,
                                                               )?.[1]
-                                                            : output;
+                                                            : tool.name ===
+                                                                "swiftpm"
+                                                              ? /^Swift Package Manager - Swift (\d+\.\d+\.\d+)$/.exec(
+                                                                  output,
+                                                                )?.[1]
+                                                              : output;
   if (
     version &&
     (tool.name === "swift"

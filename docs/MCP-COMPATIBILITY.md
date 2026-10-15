@@ -5,6 +5,16 @@ current protocol is `2026-07-28`. Local operation is a deployment choice, not a
 separately named MCP standard. No account, HTTP listener, remote service or LLM
 provider is required.
 
+## SDK dependency roles
+
+The production server and its core remain pinned to `2.3.0`. The external
+acceptance client is pinned to `2.3.1` and resolves its own nested `2.3.1` core.
+Acceptance harnesses preserve those separate dependency locations. The
+version-checked installed harnesses validate every resolved client dependency
+against its exact root lockfile entry before copying any of the graph. This client update requires fresh wire
+and installed-package acceptance; historical receipts retain their original SDK
+identities.
+
 ## Application clients
 
 Fresh offline package checks with Claude Code and Codex passed their documented
@@ -33,7 +43,20 @@ application now handles validation cancellation through the public notification
 registration API, using exact request-ID equality and the request's connection
 abort signal. String `"0"` must not cancel numeric `0`.
 
+## Attempt output support
+
+Shared-engine validation results can retain physical command output; optional
+API review results can retain bounded credential-checked response bodies. Their
+summary projections omit raw evidence, and startup source/execution/inference
+grants keep their existing independent meanings. Full inner-attempt archives and
+external host usage remain pending. See [the foundation contract](ATTEMPT-OUTPUTS.md).
+
 ## Standard Tasks polling profile
+
+The Tasks runtime foundation now includes strict source/installed checks for the
+selected runtime slots and an experimental Windows ACL backend. Native Windows
+acceptance and the frozen whole-profile Gate A cases remain pending; CI wiring
+alone does not verify them. See [task storage](TASK-STORAGE.md).
 
 The foreground server advertises `io.modelcontextprotocol/tasks` only when the
 operator supplies `--task-store`. A capable `validation_run` creates a durable

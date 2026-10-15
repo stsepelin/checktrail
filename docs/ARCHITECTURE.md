@@ -50,7 +50,9 @@ are errors, not silently empty inventories. Scope exclusions accompany results.
 
 Checks validate whole discovered project units. Optional operator-selected Git
 base comparison narrows projects through an explicitly declared complete dependency
-graph, with full-plan fallback whenever impact is uncertain. See `WORKSPACES.md`.
+graph. A finite captured-source Node import/resource profile additionally checks
+that declarations retain captured consumers; unknown or inconsistent evidence
+retains the full plan. See `WORKSPACES.md` and `CONSUMER-IMPACT.md`.
 Persistent caching is not implemented. An inventory fingerprint
 identifies included file contents; it is not a claim about ignored dependencies,
 outside files, runtime services or hermetic reproducibility.
@@ -88,7 +90,12 @@ format checks need no diagnostics. A process failure cannot be converted into a
 pass by a parser. Source changes during execution invalidate a green result.
 
 Use bounded process output and timeouts, terminate the process group on supported
-POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation; deeper children must disappear before their waiting descendant parents are stopped. Direct children are signalled before root termination, then their disappearance is required under the same bounded cleanup deadline; unavailable identity or surviving-process evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
+POSIX hosts, and propagate cancellation. The owned POSIX root is paused before descendant observation. The observed family
+must acknowledge quiescence before deeper children are killed; children forked
+before that acknowledgement are included by repeated snapshots. Physical child
+exit precedes parent termination, while final reaping follows root termination
+under one bounded cleanup deadline. Unavailable identity or surviving-process
+evidence is a cleanup error. See POSIX-CLEANUP.md for observation limits. The experimental bounded Windows
 runner uses creation-time Job Object ownership and explicit completion/cleanup
 receipts; native acceptance and wider Windows profiles remain pending in
 [WINDOWS-EXECUTION.md](WINDOWS-EXECUTION.md). No automatic dependency installation,
@@ -218,8 +225,12 @@ select its fixed API endpoint, exact model, credential environment name and limi
 `review_run` accepts a context artifact path only. Provider source disclosure is
 separate from source/prose output permission and from project execution trust.
 Attempts send one stateless inline assignment with no tools or prior messages;
-all native outcomes remain separate. See [REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md)
-for partial capability and acceptance limits.
+all native outcomes remain separate. Detailed source-granted reports can retain
+credential-checked physical API responses; summaries and prior-attempt budget
+metadata omit those bodies. Shared validation also captures physical output from
+its version/scope/body commands. Complete inner-attempt journals and host usage
+remain pending. See [ATTEMPT-OUTPUTS.md](ATTEMPT-OUTPUTS.md) and
+[REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md) for the exact scope.
 
 The experimental `review-probe` engine executes operator-pinned Boolean and bounded JSON cases
 in fresh current-source trees. Native V8 coverage and compiled-source digests
@@ -266,7 +277,8 @@ runtime and package; mixed/generated/script profiles, Scala, wider platforms and
 Gate A remain open. No inference or field evaluation is invoked.
 
 The opt-in [Scala JVM compiler profile](SCALA.md) uses an original fixed native
-collector immediately after typing and after JVM bytecode generation. Selected
+collector after typing, after post-typer feature flag assignment, and after JVM
+bytecode generation. Selected
 physical and native source bytes, declaration/tree/type counts, resolved
 suppression annotations, driver/source callbacks, diagnostics, raw bytes and
 physical class/TASTy outputs must reconcile. Empty analysis remains incomplete.
@@ -334,3 +346,44 @@ source, compiling-control and fresh offline installed acceptance recorded in
 Version 1 keeps its route inventory. Full artifact/license closure, broader
 framework semantics, final platforms and Gate A remain open; no inference or field
 evaluation is invoked.
+
+The explicit [Kustomize transform extension](KUSTOMIZE-EXTENSIONS.md) reconstructs
+selected local patches, transforms and generated references from bounded data.
+Native rendered values must match that reconstruction, and schema findings retain
+physical patch/base addresses through list edits. Saved receipts recheck current
+input, schema and both executable bytes. Planning remains data-only; CLI and MCP
+share the same operator-trusted engine.
+
+The explicit [Scala compiler extensions](SCALA-EXTENSIONS.md) use the same engine
+for Scala 2 typed/class observation and ordered Scala 3 mixed/generated/script
+stages. Later stages consume fresh earlier output, and Java bodies receive a
+separate native compiler task. Source, generated output, physical class/TASTy
+origins, feature observations and raw invocation streams must reconcile. Native
+acceptance remains scoped; wider platforms and Gate A remain open.
+
+The shared [review provenance inspector](REVIEW-PROVENANCE.md) joins a bounded
+serialized packet with current physical source/citation checks, exact host claim
+and trial bindings, imported raw-native accounting and descriptive scoring.
+Unverified claim/confidence/label declarations remain distinct from reconciled
+addresses and receipt structure. Strict derived projections retain partial and
+unknown states without quality or session-independence claims. Inspection reads
+source but executes no project code or inference. Stored projections validate
+recorded accounting; current freshness requires reinspection.
+
+The opt-in `dotnet.format-fsharp` check uses the shared engine with a strict native packet parser. It compiles an original source-string observer, verifies selected SDK/formatter bytes, stages fresh source, retains both native phases and rechecks every document/diagnostic/text binding. FSHARP-FORMAT.md records parser API limits and first-document lifecycle witnesses; source-string formatting does not establish compilation or whole runtime closure.
+
+The opt-in `dotnet.format-extensions` profile uses the shared engine and build prerequisite contract. DOTNET-FORMAT-EXTENSIONS.md defines pinned native SDK style/analyzer selection, complete physical edit/report reconciliation, generated-source participation and explicit unsupported generated semantic fixes. Mapped SDK coordinates are linked to native diagnostics whose physical source spans are validated; findings cite physical source.
+
+The opt-in `dotnet.generator-extensions` check shares build/test execution and adds pinned native PE/PDB and reflected NUnit method witnesses. DOTNET-GENERATOR-EXTENSIONS.md defines exact project-reference graphs, compiled overload signatures, receiver/declaring-module ancestry, physical source reconciliation and current-input receipt admission. Native observations remain separate from assertion correctness, review truth and full Gate A acceptance.
+
+The opt-in Ruby extension checks share the original Ruby engine/runner and use strict configuration version 2. [RUBY-EXTENSIONS.md](RUBY-EXTENSIONS.md) defines evaluated manifest/source witnesses, file-qualified RSpec shared receiver and hook cohorts, actual inherited Minitest method ownership, and mandatory current-input receipt admission. Native observations remain separate from assertion correctness, review truth and final Gate A acceptance.
+
+The opt-in [Swift extension checks](SWIFT-EXTENSIONS.md) reconcile declared local package/plugin graphs, physical generated compiler roles and selected Linux SDK/header/macro bytes. Current-root receipt admission and native XCTest/Swift Testing accounting share the engine with CLI and MCP. Wider artifact/license and runtime-matrix obligations remain separate.
+
+The opt-in [C/C++ extensions](CPP-EXTENSIONS.md) reconcile finite per-directory CMake graphs, public/private include and link interfaces, physical generated headers, object/archive bytes, native linked ELF/DWARF observations and a selected SDK closure. Current-root admission and complete native diagnostics/CTest accounting share the engine across CLI and MCP. Pre-CMake SDK mismatches remain unavailable; later changes remain inconclusive. Native coherence stays separate from runtime/claim truth and final Gate A artifact, license and matrix obligations.
+
+The opt-in [Terraform local module/provider extension](TERRAFORM-EXTENSIONS.md) admits only a finite declared HCL/JSON graph, stages a pinned local provider mirror and reconciles all native module/schema/validation phases. Physical input and diagnostic bindings remain current at receipt admission. A held descriptor gives provider IPC a short alias into engine-owned scratch storage; all actual source/tool/provider files keep physical path rules. Complete provenance, arbitrary Terraform projects and Gate A remain separate.
+
+The opt-in [Helm application/subchart extension](HELM-EXTENSIONS.md) binds a finite local alias graph, physical chart defaults, coalesced scalar origins and complete native schema/render participation. Current-root receipt admission reconciles all physical lint outcomes and physical/rendered source markers through the shared engine. Native first-error coverage and bounded columns remain separate from exhaustive semantic truth, full provenance and Gate A.
+
+The selected [native mutation profiles](MUTATIONS.md) use fresh source and complete selected physical dependency snapshots for flat Vitest/Jest, pytest and PHPUnit experiments. Typed native assertion identity, explicit lifecycle phase, unchanged test cohorts, bounded physical output and current original/copied inputs constrain killed/survived admission. Summary projections omit native observations; detailed projections retain physical output. The original Node profile keeps its existing contract. Broader runner shapes, complete executable/license closure, independent host sessions and final Gate A acceptance remain separate.
