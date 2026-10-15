@@ -27,13 +27,16 @@ Administrators (`S-1-5-32-544`). Other default owner groups are rejected before
 SQLite writes because [ownership confers control over the DACL](https://learn.microsoft.com/en-us/windows/win32/secauthz/owner-of-a-new-object). Windows
 can apply its default token owner to native SQLite journals. This uses
 [Windows token owner semantics](https://learn.microsoft.com/en-us/dotnet/api/system.security.principal.windowsidentity.owner?view=netframework-4.8.1)
-and [filesystem ACL operations](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-acl?view=powershell-5.1).
+and [filesystem ACL operations](https://learn.microsoft.com/en-us/dotnet/api/system.io.directoryinfo.setaccesscontrol?view=netframework-4.8.1).
 
 Canonical local-drive paths, regular singly linked bounded files and the existing
 SQLite ownership/root/disclosure guards remain required. Inspection runs the fixed
 system PowerShell executable with no profile, path interpolation or project
 commands. ACL inspection has a bounded timeout/output; absent or invalid inspection
-fails startup. This is an account permission check, not isolation from an
+fails startup. The inspector uses the fixed shipped .NET Framework JSON serializer
+and typed filesystem ACL methods. It does not resolve PowerShell JSON, item or ACL
+cmdlets through an ambient module path. The serializer has no type resolver and
+retains explicit length/depth bounds. This is an account permission check, not isolation from an
 administrator or trusted project execution.
 
 The [recorded original controls](measurements/tasks-runtime-controls-2026-10-11.json)

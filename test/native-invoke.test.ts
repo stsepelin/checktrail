@@ -353,6 +353,130 @@ test("native invocation respects mirror backpressure without dropping physical c
     }
   }
 });
+test("native invocation retains mirror failures before and after native exit and bounds pending writes without removing caller listeners", async () => {
+  for (const mode of [
+    "live-error",
+    "exited-error",
+    "exited-success",
+    "exited-stall",
+    "late-error",
+    "sync-error",
+  ] as const) {
+    const { store, writer } = storage();
+    let sinkPid = 0;
+    let callbackObservedExit = false;
+    const delivered: Buffer[] = [];
+    const callerErrors: Error[] = [];
+    let lateErrorObserved: (() => void) | undefined;
+    const lateError = new Promise<void>((resolve) => {
+      lateErrorObserved = resolve;
+    });
+    const callerError = (cause: Error) => {
+      callerErrors.push(cause);
+      lateErrorObserved?.();
+    };
+    const sink = new Writable({
+      write(chunk: Buffer, _encoding, callback) {
+        delivered.push(Buffer.from(chunk));
+        sinkPid = Number(chunk.toString());
+        if (mode === "sync-error")
+          throw Object.assign(Error("synthetic"), { code: "EPIPE" });
+        if (mode === "exited-stall") return;
+        if (mode === "late-error") {
+          setTimeout(
+            () =>
+              callback(Object.assign(Error("synthetic"), { code: "EPIPE" })),
+            2500,
+          );
+          return;
+        }
+        const finish = () => {
+          if (mode.startsWith("exited-")) {
+            try {
+              process.kill(sinkPid, 0);
+              setTimeout(finish, 5);
+              return;
+            } catch (cause) {
+              if ((cause as NodeJS.ErrnoException).code !== "ESRCH")
+                throw cause;
+            }
+            callbackObservedExit = true;
+          }
+          callback(
+            mode === "exited-success"
+              ? undefined
+              : Object.assign(Error("synthetic"), { code: "EPIPE" }),
+          );
+        };
+        setImmediate(finish);
+      },
+    });
+    sink.on("error", callerError);
+    try {
+      const result = await invokeNative(
+        process.execPath,
+        [
+          "-e",
+          `process.stdout.write(String(process.pid));${mode === "live-error" || mode === "sync-error" || mode === "late-error" ? "setInterval(()=>{},1000)" : ""}`,
+        ],
+        {
+          ...options(writer),
+          timeoutMs: 2000,
+          mirror: sink,
+        },
+      );
+      assert.equal(result.pid, sinkPid);
+      gone(result.pid);
+      assert.equal(
+        result.error?.code,
+        mode === "exited-success"
+          ? undefined
+          : mode === "exited-stall" || mode === "late-error"
+            ? "NATIVE_TIMEOUT"
+            : "EPIPE",
+      );
+      assert.deepEqual(result.stdout, Buffer.concat(delivered));
+      assert.equal(result.observedBytes, result.stdout.length);
+      assert.equal(
+        result.capturedOutput.completeForObservedStreams,
+        mode === "exited-success",
+      );
+      if (mode === "exited-error" || mode === "exited-success")
+        assert.equal(callbackObservedExit, true);
+      if (mode === "late-error") {
+        assert.deepEqual(sink.listeners("error"), [callerError]);
+        assert.deepEqual(callerErrors, []);
+        await lateError;
+        await new Promise<void>((resolve) => setImmediate(resolve));
+      }
+      assert.deepEqual(sink.listeners("error"), [callerError]);
+      assert.equal(sink.listenerCount("drain"), 0);
+      assert.deepEqual(
+        callerErrors.map((cause) => (cause as NodeJS.ErrnoException).code),
+        mode === "live-error" ||
+          mode === "exited-error" ||
+          mode === "late-error"
+          ? ["EPIPE"]
+          : [],
+      );
+      writer.close();
+      const receipt = store.read();
+      assert.equal(
+        receipt.attempts[0]!.state,
+        mode === "exited-success" ? "exited" : "transport-error",
+      );
+      assert.equal(receipt.attempts[0]!.errorCode, result.error?.code ?? null);
+      assert.deepEqual(
+        receipt.attempts[0]!.capturedOutput,
+        result.capturedOutput,
+      );
+    } finally {
+      sink.destroy();
+      writer.close();
+      store.destroy();
+    }
+  }
+});
 test("JVM invokers share one explicit native journal across quiet and observed calls and retain bytes rejected by strict decoding", async () => {
   const { store, writer } = storage();
   const observed: Buffer[] = [];

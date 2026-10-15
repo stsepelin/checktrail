@@ -66,70 +66,65 @@ const installedExtensionProfile =
 const timeoutMs =
   !fullSuite &&
   selection.length === 1 &&
-  [
-    "ruby-extensions",
-    "swift-extensions",
-    "dotnet-generator-extensions",
-    "mutation-vitest",
-    "mutation-jest",
-    "mutation-pytest",
-    "mutation-phpunit",
-  ].includes(selection[0])
-    ? 1200000
-    : !fullSuite &&
-        selection.length === 1 &&
-        ["cpp-extensions", "terraform-extensions", "helm-extensions"].includes(
-          selection[0],
-        )
-      ? 300000
-      : fullSuite ||
-          selection.includes("dotnet-method") ||
-          selection.includes("jvm-wrappers") ||
-          selection.includes("kotlin-extensions") ||
-          selection.includes("scala-extensions") ||
-          selection.includes("jvm-analyzer-extensions") ||
-          selection.includes("dotnet-format-extensions") ||
-          selection.includes("dotnet-generator-extensions")
-        ? 600000
+  ["cpp-extensions", "terraform-extensions", "helm-extensions"].includes(
+    selection[0],
+  )
+    ? 300000
+    : fullSuite ||
+        selection.includes("dotnet-method") ||
+        selection.includes("jvm-wrappers") ||
+        selection.includes("kotlin-extensions") ||
+        selection.includes("scala-extensions") ||
+        selection.includes("jvm-analyzer-extensions") ||
+        selection.includes("dotnet-format-extensions") ||
+        selection.includes("dotnet-generator-extensions") ||
+        selection.includes("ruby-extensions") ||
+        selection.includes("swift-extensions") ||
+        selection.some((profile) => mutationProfiles.includes(profile))
+      ? 600000
+      : selection.some((profile) =>
+            ["javascript-extensions", "rust-extensions"].includes(profile),
+          )
+        ? installedExtensionProfile
+          ? 300000
+          : 480000
         : selection.some((profile) =>
-              ["javascript-extensions", "rust-extensions"].includes(profile),
+              [
+                "dotnet-build",
+                "gradle",
+                "detekt",
+                "kotlin",
+                "scala",
+                "maven",
+                "dotnet-test",
+                "dotnet-format",
+                "dotnet-fsharp-format",
+                "dotnet-generated",
+                "review-benchmark",
+                "review-benchmark-judging",
+                "review-benchmark-scoring",
+                "review-claim-probability",
+                "review-benchmark-multi",
+                "ruby-tools",
+                "ruby-tools-rubocop",
+                "ruby-tools-assertions",
+                "ruby-tools-evidence",
+                "ruby-tools-lifecycle",
+                "ruby-tools-defaults",
+                "ruby-tools-surfaces",
+                "ruby-tools-cancellation",
+                "swift-tools",
+                "go-extensions",
+                "assembly-nuxt",
+                "javascript-extensions",
+                "python-extensions",
+                "php-extensions",
+                "kubernetes-extensions",
+                "kustomize-extensions",
+              ].includes(profile),
             )
-          ? installedExtensionProfile
-            ? 300000
-            : 480000
-          : selection.some((profile) =>
-                [
-                  "dotnet-build",
-                  "gradle",
-                  "detekt",
-                  "kotlin",
-                  "scala",
-                  "maven",
-                  "dotnet-test",
-                  "dotnet-format",
-                  "dotnet-fsharp-format",
-                  "dotnet-generated",
-                  "review-benchmark-multi",
-                  "ruby-tools",
-                  "ruby-tools-rubocop",
-                  "ruby-tools-assertions",
-                  "ruby-tools-evidence",
-                  "ruby-tools-lifecycle",
-                  "ruby-tools-defaults",
-                  "ruby-tools-surfaces",
-                  "ruby-tools-cancellation",
-                  "swift-tools",
-                  "go-extensions",
-                  "assembly-nuxt",
-                  "javascript-extensions",
-                  "python-extensions",
-                  "php-extensions",
-                  "kubernetes-extensions",
-                  "kustomize-extensions",
-                ].includes(profile),
-              )
-            ? 300000
-            : 120000;
+          ? 300000
+          : 120000;
 // The selected wrapper, compiler and formatting inventories contain independent callbacks. Each
 // selected callback gets a fresh process and file budget; unchanged callback
 // deadlines still apply. One heavy case runs at a time: two Gradle pipelines
@@ -144,13 +139,10 @@ const isolatedCaseWorkers =
     "dotnet-generator-extensions",
     "ruby-extensions",
     "swift-extensions",
-    "mutation-vitest",
-    "mutation-jest",
-    "mutation-pytest",
-    "mutation-phpunit",
     "cpp-extensions",
     "terraform-extensions",
     "helm-extensions",
+    ...mutationProfiles,
   ].includes(selection[0])
     ? 1
     : 0;

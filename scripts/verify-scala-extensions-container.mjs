@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import process from "node:process";
-import { execFileSync } from "node:child_process";
+import { execFileSync, execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { performance } from "node:perf_hooks";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -49,16 +51,19 @@ const base = [
   "/workspace",
   image,
 ];
-const run = (args) =>
-  execFileSync("docker", [...base, ...args], {
-    encoding: "utf8",
-    timeout: 1200000,
-    maxBuffer: 4 * 1048576,
-  });
+const invoke = promisify(execFile);
+const run = async (args) =>
+  (
+    await invoke("docker", [...base, ...args], {
+      encoding: "utf8",
+      timeout: 1200000,
+      maxBuffer: 4 * 1048576,
+    })
+  ).stdout;
 const stage = (name) =>
   process.stderr.write(JSON.stringify({ stage: name }) + "\n");
 const runtime = JSON.parse(
-  run([
+  await run([
     "node",
     "--input-type=module",
     "-e",
@@ -77,78 +82,126 @@ const requirements = JSON.parse(
     "utf8",
   ),
 );
-stage("preserved-native");
-const baseline = JSON.parse(
-  run(["node", "scripts/verify-required-native-tests.mjs", "scala", "java"]),
-);
-assert.equal(
-  baseline.required,
-  requirements.scala.length + requirements.java.length,
-);
-assert.equal(baseline.complete, true);
-stage("source-and-fresh-installation");
-const lines = run([
-  "/bin/sh",
-  "-c",
-  "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && CHECKTRAIL_SCALA_INSTALL_RECEIPT=/tmp/installed-receipt.json node scripts/verify-required-native-tests.mjs scala-extensions && cat /tmp/installed-receipt.json",
-])
-  .trim()
-  .split("\n");
-assert.equal(lines.length, 3);
-const preparedCache = JSON.parse(lines[0]),
-  source = JSON.parse(lines[1]),
-  installed = JSON.parse(lines[2]);
-assert.equal(source.required, 9);
-assert.equal(source.passed, 9);
-assert.equal(source.complete, true);
-assert.equal(installed.profile.required, 9);
-assert.equal(installed.profile.passed, 9);
-assert.equal(installed.profile.complete, true);
-stage("compiling-controls");
-const guards = JSON.parse(
-  run([
-    "/bin/sh",
-    "-c",
-    "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-scala-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-scala-extensions-guards.mjs",
-  ]),
-);
-assert.equal(guards.controls.length, 13);
-assert.equal(guards.allComplete, true);
-assert.ok(
-  guards.controls.every(
-    (c) =>
-      c.originalPassed &&
-      c.mutantCompiled &&
-      c.mutantFailedAssertion &&
-      c.restoredPassed,
-  ),
-);
-stage("native-regressions");
-const regressions = run([
-  "node",
-  "--test",
-  "--test-concurrency=1",
-  "--test-reporter=tap",
-  "dist/test/scala-extension-regressions.test.js",
-  "dist/test/scala-java-warning-policy.test.js",
+const timings = {};
+const measured = async (name, action) => {
+  const started = performance.now();
+  try {
+    return await action();
+  } finally {
+    timings[name] = Math.round(performance.now() - started);
+    process.stderr.write(
+      JSON.stringify({ stageCompleted: name, durationMs: timings[name] }) +
+        "\n",
+    );
+  }
+};
+// Separate read-only containers own their /tmp and caches. Heavy named callbacks
+// remain serial within each container; aggregate admission is two containers.
+const groups = await Promise.allSettled([
+  measured("baseline-regressions-installed-warning", async () => {
+    stage("preserved-native");
+    const baseline = JSON.parse(
+      await run([
+        "node",
+        "scripts/verify-required-native-tests.mjs",
+        "scala",
+        "java",
+      ]),
+    );
+    assert.equal(
+      baseline.required,
+      requirements.scala.length + requirements.java.length,
+    );
+    assert.equal(baseline.complete, true);
+    stage("native-regressions");
+    const regressions = await run([
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "dist/test/scala-extension-regressions.test.js",
+      "dist/test/scala-java-warning-policy.test.js",
+    ]);
+    assert.match(regressions, /# tests 4\n/);
+    assert.match(regressions, /# pass 4\n/);
+    assert.match(regressions, /# fail 0\n/);
+    assert.match(regressions, /# skipped 0\n/);
+    stage("fresh-installed-java-warning-policy");
+    const installedJavaWarningPolicy = JSON.parse(
+      await run([
+        "/bin/sh",
+        "-c",
+        "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs scala",
+      ]),
+    );
+    assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
+    assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
+
+    return { baseline, regressions, installedJavaWarningPolicy };
+  }),
+  measured("source-installed-compiling-controls", async () => {
+    stage("source-and-fresh-installation");
+    const lines = (
+      await run([
+        "/bin/sh",
+        "-c",
+        "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache && CHECKTRAIL_SCALA_INSTALL_RECEIPT=/tmp/installed-receipt.json node scripts/verify-required-native-tests.mjs scala-extensions && cat /tmp/installed-receipt.json",
+      ])
+    )
+      .trim()
+      .split("\n");
+    assert.equal(lines.length, 3);
+    const preparedCache = JSON.parse(lines[0]),
+      source = JSON.parse(lines[1]),
+      installed = JSON.parse(lines[2]);
+    assert.equal(source.required, 9);
+    assert.equal(source.passed, 9);
+    assert.equal(source.complete, true);
+    assert.equal(installed.profile.required, 9);
+    assert.equal(installed.profile.passed, 9);
+    assert.equal(installed.profile.complete, true);
+    stage("compiling-controls");
+    const guards = JSON.parse(
+      await run([
+        "/bin/sh",
+        "-c",
+        "mkdir /tmp/guards && cp -a dist /tmp/guards/dist && mkdir /tmp/guards/scripts && cp scripts/verify-scala-extensions-guards.mjs /tmp/guards/scripts/ && cp package.json /tmp/guards/ && ln -s /workspace/node_modules /tmp/guards/node_modules && ln -s /workspace/assets /tmp/guards/assets && cd /tmp/guards && node scripts/verify-scala-extensions-guards.mjs",
+      ]),
+    );
+    assert.equal(guards.controls.length, 13);
+    assert.equal(guards.allComplete, true);
+    assert.ok(
+      guards.controls.every(
+        (c) =>
+          c.originalPassed &&
+          c.mutantCompiled &&
+          c.mutantFailedAssertion &&
+          c.restoredPassed,
+      ),
+    );
+
+    return { preparedCache, source, installed, guards };
+  }),
 ]);
-assert.match(regressions, /# tests 4\n/);
-assert.match(regressions, /# pass 4\n/);
-assert.match(regressions, /# fail 0\n/);
-assert.match(regressions, /# skipped 0\n/);
-stage("fresh-installed-java-warning-policy");
-const installedJavaWarningPolicy = JSON.parse(
-  run([
-    "/bin/sh",
-    "-c",
-    "node scripts/prepare-acceptance-cache-subset.mjs /prepared-cache /tmp/npm-cache > /tmp/cache.json && node scripts/verify-jvm-java-warning-package.mjs scala",
-  ]),
-);
-assert.equal(installedJavaWarningPolicy.acceptance.complete, true);
-assert.equal(installedJavaWarningPolicy.acceptance.passed, 1);
+const failures = groups.filter((group) => group.status === "rejected");
+if (failures.length)
+  throw new AggregateError(
+    failures.map((group) => group.reason),
+    "Required Scala native stages failed",
+  );
+const { baseline, regressions, installedJavaWarningPolicy } = groups[0].value;
+const { preparedCache, source, installed, guards } = groups[1].value;
 process.stdout.write(
   JSON.stringify({
     schemaVersion: 1,
+    stageDurationMs: timings,
+    maxConcurrentContainers: 2,
+    aggregateLimits: {
+      cpus: 4,
+      memoryMiB: 4096,
+      pids: 512,
+      temporaryFilesystemMiB: 2048,
+    },
     runtime,
     environment: {
       image,

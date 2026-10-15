@@ -57,18 +57,17 @@ const profiles = [
   "review-benchmark-judging",
   "review-native-budget",
 ];
-process.stdout.write(
-  execFileSync(
-    "docker",
-    [
-      ...native,
-      "node",
-      "scripts/verify-required-native-tests.mjs",
-      ...profiles,
-    ],
-    { encoding: "utf8", maxBuffer: 1024 * 1024 },
-  ),
+const source = spawnSync(
+  "docker",
+  [...native, "node", "scripts/verify-required-native-tests.mjs", ...profiles],
+  { encoding: "utf8", maxBuffer: 1024 * 1024 },
 );
+// Preserve the bounded full ledger before reporting failure. Throwing an
+// execFileSync error first lets Node truncate its stdout in the error display.
+process.stdout.write(source.stdout ?? "");
+process.stderr.write(source.stderr ?? "");
+assert.equal(source.error, undefined, "Required review source process failed");
+assert.equal(source.status, 0, "Required review source cohort failed");
 const temporary = await mkdtemp(
   path.join(tmpdir(), "checktrail-review-package-"),
 );

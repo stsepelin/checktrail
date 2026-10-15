@@ -142,6 +142,7 @@ function totals(attempts: Attempt[]): ReviewProviderRun["usage"] {
 function parseEnvelope(
   input: unknown,
   config: ReviewProviderConfig,
+  inspectOutput?: (value: unknown) => boolean,
 ): {
   status: ReviewAttemptStatus;
   output?: ReviewModelOutput;
@@ -207,10 +208,17 @@ function parseEnvelope(
   if (!observedModel || texts.length !== 1 || !texts[0]?.trim())
     return { ...result, status: "malformed" };
   try {
+    const modelOutput: unknown = JSON.parse(texts[0]);
+    if (inspectOutput && !inspectOutput(modelOutput))
+      return {
+        status: "malformed",
+        observedModel: null,
+        usage: unknownUsage(),
+      };
     return {
       ...result,
       status: "completed",
-      output: reviewModelOutputSchema.parse(JSON.parse(texts[0])),
+      output: reviewModelOutputSchema.parse(modelOutput),
     };
   } catch {
     return { ...result, status: "malformed" };
@@ -711,17 +719,18 @@ async function runProviderAssignment(
               attempt.responseBytes = raw.bytes;
               let parsed: unknown;
               try {
-                if (
-                  capturedResponse.snapshot().bodyState ===
-                  "withheld-credential"
-                )
-                  throw new Error("Credential echo");
+                if (capturedResponse.snapshot().bodyState !== "complete")
+                  throw new Error(
+                    "Provider response could not be credential-inspected",
+                  );
                 parsed = JSON.parse(raw.text);
               } catch {
                 attempt.status = "malformed";
               }
               if (parsed !== undefined) {
-                const envelope = parseEnvelope(parsed, config);
+                const envelope = parseEnvelope(parsed, config, (value) =>
+                  capturedResponse.inspectDecodedJson(value),
+                );
                 Object.assign(attempt, {
                   status: envelope.status,
                   observedModel: envelope.observedModel,
@@ -1010,6 +1019,10 @@ export function parseProviderReview(input: unknown): ReviewProviderRun {
         );
       replayProviderResponse(run, attempt, captured);
     }
+    if (run.receipt && run.responseArchive.at(-1)?.bodyState !== "complete")
+      throw new Error(
+        "Uninspected provider response archive cannot supply a review receipt",
+      );
   }
   return run;
 }
