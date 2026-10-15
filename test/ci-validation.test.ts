@@ -106,7 +106,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
   validatePhases(validationPhases);
   assert.deepEqual(keys(validationPhases), frozen);
   assert.equal(validationPhases.mutations.length, 14);
-  assert.equal(validationPhases.packages.length, 31);
+  assert.equal(validationPhases.packages.length, 33);
   const missing = structuredClone(validationPhases);
   missing.packages.pop();
   assert.notDeepEqual(keys(missing), frozen);
@@ -152,7 +152,7 @@ test("CI lanes preserve every original matrix command and keep distinct package 
     ),
   );
 });
-test("attempt output acceptance runs once in the package lane on every existing host variant", async () => {
+test("attempt output and native journal acceptance run once in the package lane on every existing host variant", async () => {
   const workflow = parse(
     await readFile(
       new URL("../../.github/workflows/ci.yml", import.meta.url),
@@ -162,6 +162,8 @@ test("attempt output acceptance runs once in the package lane on every existing 
   const controllers = [
     "scripts/verify-attempt-outputs.mjs",
     "scripts/verify-attempt-outputs-package.mjs",
+    "scripts/verify-native-attempt-journals.mjs",
+    "scripts/verify-native-attempt-journals-package.mjs",
   ];
   for (const script of controllers) {
     assert.deepEqual(

@@ -146,6 +146,16 @@
     "env": {}
   },
   {
+    "script": "scripts/verify-native-attempt-journals.mjs",
+    "args": [],
+    "env": {}
+  },
+  {
+    "script": "scripts/verify-native-attempt-journals-package.mjs",
+    "args": [],
+    "env": {}
+  },
+  {
     "script": "scripts/verify-native-json-package.mjs",
     "args": [],
     "env": {}

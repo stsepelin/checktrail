@@ -1,0 +1,843 @@
+{
+  "schemaVersion": 1,
+  "profile": "native-attempt-journal-foundation",
+  "measuredDate": "2026-10-11",
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "attemptArchivesGateAcceptanceComplete": false,
+  "engineJournalIntegrationComplete": false,
+  "wholeNativeCallFamilyMigrated": false,
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "observations": [
+    {
+      "schemaVersion": 1,
+      "profile": "native-attempt-journal-foundation",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "f762fb8ac1e4ec91a624435520aab3628e526e4e77442fccdd94c528a5860b90",
+      "harnessSha256": "6813d18683b9071906679fb118d083b24067aa7153b365b472fcdedefb0ffd62",
+      "attemptArchivesGateAcceptanceComplete": false,
+      "engineJournalIntegrationComplete": false,
+      "wholeNativeCallFamilyMigrated": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 55.561334,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 58.307,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 56.888083,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 159.32775,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 59.727541,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 60.868292,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 12.248708,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6.6925,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5.159167,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "profile": "native-attempt-journal-foundation",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "f762fb8ac1e4ec91a624435520aab3628e526e4e77442fccdd94c528a5860b90",
+      "harnessSha256": "6813d18683b9071906679fb118d083b24067aa7153b365b472fcdedefb0ffd62",
+      "attemptArchivesGateAcceptanceComplete": false,
+      "engineJournalIntegrationComplete": false,
+      "wholeNativeCallFamilyMigrated": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 165.923459,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 152.362334,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 156.114875,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 461.788667,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 157.14675,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 160.640958,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.804292,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10.562708,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 6.673333,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "profile": "native-attempt-journal-foundation",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "tarballSha256": "9245de0ec43e6260054824129c3728018bc2fc07096b7805edfc3bceebb9c9f2",
+      "harnessSha256": "dc73f4165202f0ee7e1f3303e817f59c7fd3c8cd1f5df1c606c45f42fd36d021",
+      "productionDependencyLockSha256": "b995dad4996fe581b56f11d8ccc0cd83f3e2df59fa15db4cf14368234944d62e",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "compiledCodeSha256": "f762fb8ac1e4ec91a624435520aab3628e526e4e77442fccdd94c528a5860b90",
+      "harnessOutsideInstalledPackage": true,
+      "attemptArchivesGateAcceptanceComplete": false,
+      "engineJournalIntegrationComplete": false,
+      "wholeNativeCallFamilyMigrated": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 57.901416,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52.976875,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 60.351042,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 151.190708,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 52.752459,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 57.801459,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 10.343167,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 7.250875,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 4.992958,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "profile": "native-attempt-journal-foundation",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "tarballSha256": "9245de0ec43e6260054824129c3728018bc2fc07096b7805edfc3bceebb9c9f2",
+      "harnessSha256": "dc73f4165202f0ee7e1f3303e817f59c7fd3c8cd1f5df1c606c45f42fd36d021",
+      "productionDependencyLockSha256": "90a8cb22da98fd0e8eee0b1a8eb11576fceb784dffa7f31247a6fec0f2e0bb76",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "compiledCodeSha256": "f762fb8ac1e4ec91a624435520aab3628e526e4e77442fccdd94c528a5860b90",
+      "harnessOutsideInstalledPackage": true,
+      "attemptArchivesGateAcceptanceComplete": false,
+      "engineJournalIntegrationComplete": false,
+      "wholeNativeCallFamilyMigrated": false,
+      "inferenceExecuted": false,
+      "fieldEvaluationExecuted": false,
+      "profileEvidence": {
+        "fileWorkerLimit": 1,
+        "requiredCaseWorkerLimit": 1,
+        "timeoutScope": "one fresh process per required named case",
+        "passed": 9,
+        "required": 9,
+        "problems": [],
+        "complete": true,
+        "ledger": {
+          "schemaVersion": 1,
+          "scope": "Selected test files and terminal test events; imported source, dependencies, raw output and whole-process identity are not captured.",
+          "maxTerminalEvents": 4096,
+          "terminalEventCount": 9,
+          "truncated": false,
+          "files": [
+            {
+              "id": "file-1",
+              "before": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "2739b3dd1db224b5dd37717eaf5eaf0e42f7ff977c0d63aa3dd83fdec949234d"
+              },
+              "stable": true
+            },
+            {
+              "id": "file-2",
+              "before": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "after": {
+                "state": "present",
+                "sha256": "a8af63d97543b38a884f392161013bdb4bbd739af9f3a3e570354c0581a14d4f"
+              },
+              "stable": true
+            }
+          ],
+          "events": [
+            {
+              "sequence": 1,
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 169.6915,
+              "required": true
+            },
+            {
+              "sequence": 2,
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 166.435292,
+              "required": true
+            },
+            {
+              "sequence": 3,
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 167.205334,
+              "required": true
+            },
+            {
+              "sequence": 4,
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 502.77975,
+              "required": true
+            },
+            {
+              "sequence": 5,
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 163.973375,
+              "required": true
+            },
+            {
+              "sequence": 6,
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 168.030125,
+              "required": true
+            },
+            {
+              "sequence": 7,
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 9.085583,
+              "required": true
+            },
+            {
+              "sequence": 8,
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 8.301708,
+              "required": true
+            },
+            {
+              "sequence": 9,
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "nameTruncated": false,
+              "kind": "test",
+              "outcome": "passed",
+              "durationMs": 5.491959,
+              "required": true
+            }
+          ],
+          "cases": [
+            {
+              "fileId": "file-1",
+              "name": "native journal replay retains two actual binary child outputs and distinct successful and failed exit observations",
+              "outcome": "passed",
+              "terminalSequences": [1]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal omitted and unconfirmed interrupted calls remain incomplete without invented successful terminals",
+              "outcome": "passed",
+              "terminalSequences": [2]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal physical hashes ordering identities counts lifecycle and source/operator limits reject independent contradictions",
+              "outcome": "passed",
+              "terminalSequences": [3]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal exact zero and overrun shared prefixes cannot become complete or resume retained bytes",
+              "outcome": "passed",
+              "terminalSequences": [4]
+            },
+            {
+              "fileId": "file-1",
+              "name": "native journal error causes and concurrent process acknowledgements reject contradictions while sequential PID reuse and observed transport errors remain distinct",
+              "outcome": "passed",
+              "terminalSequences": [5]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal private storage preserves two distinct records and canonical physical data with closed and interrupted accounting",
+              "outcome": "passed",
+              "terminalSequences": [6]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal physical file/header changes hard links and a foreign context reject before writes resume",
+              "outcome": "passed",
+              "terminalSequences": [7]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal zero and exact prefixes bound disk data and cannot turn overrun into complete output",
+              "outcome": "passed",
+              "terminalSequences": [8]
+            },
+            {
+              "fileId": "file-2",
+              "name": "native journal directory replacement cannot redirect cleanup and weak POSIX access cannot be repaired silently",
+              "outcome": "passed",
+              "terminalSequences": [9]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
