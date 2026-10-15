@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "profile": "bounded-attempt-output-foundation",
+  "measuredAt": "2026-10-11",
+  "scope": "Shared-engine physical command output and optional offline API response retention/replay; whole frozen attempt-archives profile remains pending.",
+  "sourceVerifier": "scripts/verify-attempt-outputs.mjs",
+  "installedVerifier": "scripts/verify-attempt-outputs-package.mjs",
+  "packageReceiptsPrecedeThisMeasurementDocument": true,
+  "runtimeReceipts": [
+    {
+      "mode": "source",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "7c8961d142486ce50cecabd9a161de0ed0697002a4df63bded89ab56075ac205",
+      "harnessSha256": "9a3a6f05927c1dec37c85584e59c4d5df5a212531861c4b907bd36aec66e0d7b",
+      "required": 10,
+      "passed": 10,
+      "cases": [
+        {
+          "name": "native validation retains physical command output while summary omits every byte archive",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+          "outcome": "passed"
+        },
+        {
+          "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+          "outcome": "passed"
+        },
+        {
+          "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "mode": "installed",
+      "node": "26.9.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "91ed66b8cd139609427a3e9d93518dd3b0d5407c737fc9a265bfd991ec623d8a",
+      "compiledCodeSha256": "7c8961d142486ce50cecabd9a161de0ed0697002a4df63bded89ab56075ac205",
+      "harnessSha256": "947d7adb3f87c4ad77230fb45375f9d78e16fc329eb99e029f96b580a2ed4858",
+      "tarballSha256": "83f1d5a034c7d1a5719321baae983d8a664357c6d7dda469c0ba3fcb2bf31ce5",
+      "productionDependencyLockSha256": "36fe88274f31771b649ef9ca0f36e993d298d3e6ab7253b859ed390059548052",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "required": 10,
+      "passed": 10,
+      "cases": [
+        {
+          "name": "native validation retains physical command output while summary omits every byte archive",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+          "outcome": "passed"
+        },
+        {
+          "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+          "outcome": "passed"
+        },
+        {
+          "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "mode": "source",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "7c8961d142486ce50cecabd9a161de0ed0697002a4df63bded89ab56075ac205",
+      "harnessSha256": "9a3a6f05927c1dec37c85584e59c4d5df5a212531861c4b907bd36aec66e0d7b",
+      "required": 10,
+      "passed": 10,
+      "cases": [
+        {
+          "name": "native validation retains physical command output while summary omits every byte archive",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+          "outcome": "passed"
+        },
+        {
+          "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+          "outcome": "passed"
+        },
+        {
+          "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "mode": "installed",
+      "node": "24.20.0",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "nodeExecutableSha256": "9d050fd455b56426e25d4d603c7c501cbb2630348e836cf221dcce748e90588a",
+      "compiledCodeSha256": "7c8961d142486ce50cecabd9a161de0ed0697002a4df63bded89ab56075ac205",
+      "harnessSha256": "947d7adb3f87c4ad77230fb45375f9d78e16fc329eb99e029f96b580a2ed4858",
+      "tarballSha256": "83f1d5a034c7d1a5719321baae983d8a664357c6d7dda469c0ba3fcb2bf31ce5",
+      "productionDependencyLockSha256": "951861157c4cf995218f84d2cd424a47384a4e5d355eb7720c7cb68f2d6d7c91",
+      "offlineProductionInstall": true,
+      "lifecycleScriptsExecuted": false,
+      "harnessOutsideInstalledPackage": true,
+      "required": 10,
+      "passed": 10,
+      "cases": [
+        {
+          "name": "native validation retains physical command output while summary omits every byte archive",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API attempts retain each bounded JSON error and response with exact request/body bindings without credentials or summary disclosure",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API response archives refuse literal and JSON-escaped credentials while keeping a valid adjacent value",
+          "outcome": "passed"
+        },
+        {
+          "name": "offline API partial overflow aborted and unavailable attempts account for observed bytes without retaining an unchecked body",
+          "outcome": "passed"
+        },
+        {
+          "name": "retained model response archives reject omitted foreign reordered changed and noncanonical evidence independently",
+          "outcome": "passed"
+        },
+        {
+          "name": "native version and broken/fixed test commands retain physical output with exact two-case accounting",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical process output retains exact binary stdout stderr and digests while default presentation stays unchanged",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output zero exact and multibyte overrun limits distinguish delivered bytes from UTF8 replacements",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output codec reconciles canonical bytes digests combined ceilings and a large valid boundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "physical output invalid admission limits reject before a project command can execute",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "pairedControls": {
+    "sourceSha256": "eb02b62f7089ac7724735ec4afef6cfe6772e8d6c2ea45b8537e6f35d4d250c9",
+    "unchangedOriginalControls": true,
+    "isolatedCopies": true,
+    "controls": [
+      {
+        "guard": "native-output",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "literal-credential",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "decoded-credential",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "attempt-completeness",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "attempt-identity",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "partial-byte-accounting",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "physical-body-digest",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "response-replay",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "request-retry-identity",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      },
+      {
+        "guard": "response-limit",
+        "baselineExit": 0,
+        "removedExit": 1,
+        "restoredExit": 0
+      }
+    ]
+  },
+  "attemptArchivesGateAcceptanceComplete": false,
+  "remainingScope": [
+    "Every individually addressed inner compiler/framework/bootstrap attempt",
+    "Interrupted-attempt journals and durable replay",
+    "Remaining native runtime matrix",
+    "Independently supplied external host usage"
+  ],
+  "inferenceExecuted": false,
+  "fieldEvaluationExecuted": false,
+  "qualityComparisonExecuted": false
+}

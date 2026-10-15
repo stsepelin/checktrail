@@ -28,6 +28,12 @@ lane deadline stop owned descendants; incomplete or failed commands cannot yield
 a completed receipt. The four matrix variants, full-suite command, native jobs,
 callback assertions and 75-minute job limit are unchanged.
 
+The package lane also requires the bounded attempt-output source controller and
+its fresh locked offline installed-package controller on every existing host
+variant. These controls use synthetic offline API responses and native Go
+version/scope/test commands; they do not invoke a model or complete the frozen
+attempt-archives profile.
+
 The [dated lane comparison](measurements/ci-validation-lanes-2026-10-12.json)
 records actual sequential and concurrent executions of the sealed multi-claim
 mutation and installed-package controllers. This is one local subset comparison,
@@ -84,6 +90,14 @@ controls require complete compiler failures; a slower compiler exhausting the
 Their trust-injection refusals, privacy checks, fixed controls and existing callback
 bounds remain in place. The production default and maximum execution limits are
 unchanged.
+
+The standalone Clang fixture retains its fixed compiler version and pins the LLVM
+package revision in [`clang-tools.Dockerfile`](../scripts/clang-tools.Dockerfile).
+Its previous revision stopped resolving through Alpine's live APK index before
+any Clang checks could run. The separate C++ archive profile acquires original
+hashed APKs directly through [`cpp-tools-archives.json`](../scripts/cpp-tools-archives.json);
+its original archive pins are unchanged by this index-pin repair. Dated native
+measurements retain the package identities actually observed at that time.
 
 ## Affected native jobs on pull requests
 

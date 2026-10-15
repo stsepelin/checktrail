@@ -478,7 +478,13 @@ test(
             assert.throws(
               () => process.kill(pid, 0),
               (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",
-              `${token}: native ${role} PID ${pid} remains observable after cleanup`,
+              JSON.stringify({
+                adapter,
+                mode,
+                role,
+                pid,
+                errorCode: processResult.errorCode ?? null,
+              }),
             );
         } finally {
           abort.abort();
@@ -544,7 +550,12 @@ test(
       assert.throws(
         () => process.kill(pid!, 0),
         (e: unknown) => (e as NodeJS.ErrnoException).code === "ESRCH",
-        `Native TypeScript producer PID ${pid} remains observable after cleanup`,
+        JSON.stringify({
+          adapter: "javascript.vite-library",
+          mode: "cancel",
+          role: "producer",
+          errorCode: result.checks[0]!.processes[0]!.errorCode ?? null,
+        }),
       );
       await assert.rejects(access(temporary));
     } finally {

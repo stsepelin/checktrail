@@ -225,8 +225,12 @@ select its fixed API endpoint, exact model, credential environment name and limi
 `review_run` accepts a context artifact path only. Provider source disclosure is
 separate from source/prose output permission and from project execution trust.
 Attempts send one stateless inline assignment with no tools or prior messages;
-all native outcomes remain separate. See [REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md)
-for partial capability and acceptance limits.
+all native outcomes remain separate. Detailed source-granted reports can retain
+credential-checked physical API responses; summaries and prior-attempt budget
+metadata omit those bodies. Shared validation also captures physical output from
+its version/scope/body commands. Complete inner-attempt journals and host usage
+remain pending. See [ATTEMPT-OUTPUTS.md](ATTEMPT-OUTPUTS.md) and
+[REVIEW-PROVIDERS.md](REVIEW-PROVIDERS.md) for the exact scope.
 
 The experimental `review-probe` engine executes operator-pinned Boolean and bounded JSON cases
 in fresh current-source trees. Native V8 coverage and compiled-source digests
