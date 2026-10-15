@@ -53,13 +53,10 @@ cancelled by a newer push. Native profiles, matrix entries and assertions are un
 Superseded results are cancelled, not credited as successful acceptance. Check
 the current head and latest merge-candidate run before claiming hosted success.
 
-The macOS matrix uses the commit-pinned `setup-php` 2.40.0-beta build-cache path
-for PHP 8.5. The previous pinned action failed before tests on both current main
-and the replacement PR run, leaving no PHP executable. The upstream cache path
-tries prebuilt packages before Homebrew and fails if it cannot establish the
-requested PHP version. Linux retains its existing action pin. This is a beta
-setup dependency; current hosted acceptance must verify it. It does not replace
-test execution or supply cached test results.
+The Linux and macOS matrices use commit-pinned `setup-php` 2.40.0 for PHP 8.5.
+The macOS implementation uses the upstream prebuilt-package path; current hosted
+acceptance must verify that setup establishes the requested PHP runtime before
+tests execute. Runtime setup does not supply cached test results.
 
 Pinned public image setup also retries the exact Docker daemon public ECR
 `/v2/` connection/header timeout observed before the Rust context tests started.
