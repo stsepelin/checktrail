@@ -91,6 +91,14 @@ Their trust-injection refusals, privacy checks, fixed controls and existing call
 bounds remain in place. The production default and maximum execution limits are
 unchanged.
 
+The standalone Clang fixture retains its fixed compiler version and pins the LLVM
+package revision in [`clang-tools.Dockerfile`](../scripts/clang-tools.Dockerfile).
+Its previous revision stopped resolving through Alpine's live APK index before
+any Clang checks could run. The separate C++ archive profile acquires original
+hashed APKs directly through [`cpp-tools-archives.json`](../scripts/cpp-tools-archives.json);
+its original archive pins are unchanged by this index-pin repair. Dated native
+measurements retain the package identities actually observed at that time.
+
 ## Affected native jobs on pull requests
 
 PRs keep the shared full suite, selected required profiles, and every fresh
